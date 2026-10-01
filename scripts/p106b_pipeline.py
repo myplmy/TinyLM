@@ -16,7 +16,7 @@ from urllib.error import HTTPError
 
 from scripts.p106b_gate_runtime import ROOT, MODEL_SHA256, TOKENIZER, ToolFailure, disposition
 from scripts.p106b_shards import ShardWriter, verify
-from scripts.p106b_teacher_format import teacher_prompt, parse_reply
+from scripts.p106b_teacher_format import teacher_prompt, parse_reply, script_observations
 from scripts.p106b_teacher_wrapper import wrap_turns
 from scripts.p106b_multi_answer import multi_prompt, parse_multi, wrap_multi
 from scripts.p106b_http_errors import capture_http_error
@@ -129,6 +129,17 @@ class CandidateWriter:
                         rows = [row]
                     else:
                         rows = wrap_multi(job, parsed, ident, MODEL_SHA256, ref)
+                    for candidate in rows:
+                        for message in candidate["messages"]:
+                            text = message["content"]
+                            if not isinstance(text, str):
+                                text = "".join(p["text"] for p in text if p["type"] == "text")
+                            observed = script_observations(text, job["target_language"])
+                            if observed:
+                                print("[CHARACTER_OBSERVATION] " + json.dumps({"id": ident,
+                                    "role": message["role"], "requested_language": job["target_language"],
+                                    "observations": observed,
+                                    "effect": "WARNING_ONLY_NOT_LANGUAGE_OR_TRUTH_JUDGEMENT"}, sort_keys=True), flush=True)
                     try:
                         encoded = encode_records(rows, self.tok, 1024, 32768)
                     except ValueError as exc:

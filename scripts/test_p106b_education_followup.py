@@ -85,6 +85,9 @@ class Tests(unittest.TestCase):
                  patch.object(edu, "original_rows", return_value=self.correction_fixture_rows()), \
                  patch("tokenizers.Tokenizer.from_file", return_value=SyntheticTokenizer()):
                 report = edu.correct(target, info)
+                self.assertGreater(report["whole_wall_sec"], 0)
+                persisted = json.loads((target / "report.json").read_text(encoding="utf-8"))
+                self.assertEqual(persisted["whole_wall_sec"], report["whole_wall_sec"])
                 self.assertEqual(report["status"], "CORRECTION_WIRING_PASSED" if pilot else "CORRECTION_FORMAT_PASSED")
                 rows = edu.read_rows(target, "selected", report["selected_concat_sha256"])
                 self.assertEqual(len(rows), 4 if pilot and bad_multi else 6 if pilot else 28)

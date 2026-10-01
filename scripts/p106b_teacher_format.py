@@ -71,7 +71,9 @@ def teacher_prompt(task: str, language: str, source: dict[str, Any], *,
     language_name = "Korean" if language == "ko" else "English"
     format_instruction = (
         "Respond in " + language_name + " using exactly these field delimiters "
-        "and no JSON, ChatML, markdown fence, roles or text outside the fields:\n"
+        "and no JSON wrapper, ChatML, roles or text outside the fields. "
+        "A requested JSON object, code or foreign-language quotation INSIDE ANSWER "
+        "is allowed when the source question requires it:\n"
         "[[QUESTION]]\n<question text>\n[[/QUESTION]]\n"
         "[[ANSWER]]\n<answer text>\n[[/ANSWER]]\n"
         "[[NOTE]]\n<short change or uncertainty note>\n[[/NOTE]]\n"
@@ -103,12 +105,6 @@ def parse_tagged(final: str, *, language: str) -> dict[str, str]:
             "[[QUESTION]]", "[[/QUESTION]]", "[[ANSWER]]", "[[/ANSWER]]",
             "[[NOTE]]", "[[/NOTE]]")):
         raise ValueError("teacher field contains nested delimiter")
-    if language == "ko" and (re.search("[가-힣]", question) is None
-                             or re.search("[가-힣]", answer) is None):
-        raise ValueError("Korean task returned no Korean question or answer")
-    if language == "en" and (re.search("[A-Za-z]", question) is None
-                             or re.search("[A-Za-z]", answer) is None):
-        raise ValueError("English task returned no English question or answer")
     return {"user_text": question, "assistant_text": answer, "correction_note": note}
 
 
@@ -123,11 +119,23 @@ def parse_json_control(final: str, *, language: str) -> dict[str, str]:
     q, a, note = value["question"].strip(), value["answer"].strip(), value["note"].strip()
     if not 1 <= len(q) <= 2000 or not 1 <= len(a) <= 6000 or len(note) > 700:
         raise ValueError("teacher JSON control field length invalid")
-    if language == "ko" and (re.search("[가-힣]", q) is None or re.search("[가-힣]", a) is None):
-        raise ValueError("Korean JSON control lacks Korean question/answer")
-    if language == "en" and (re.search("[A-Za-z]", q) is None or re.search("[A-Za-z]", a) is None):
-        raise ValueError("English JSON control lacks English question/answer")
     return {"user_text": q, "assistant_text": a, "correction_note": note}
+
+
+def script_observations(text, language):
+    """Observable characters, not language correctness or admission decisions."""
+    if language not in {"ko", "en"}:
+        raise ValueError("unknown requested language")
+    observations = []
+    if re.search(r"[\u3040-\u30ff]", text):
+        observations.append("KANA_OBSERVED_NORMAL_QUOTATION_POSSIBLE")
+    if language == "ko" and re.search(r"[A-Za-z]", text):
+        observations.append("LATIN_OBSERVED_NORMAL_CODE_OR_QUOTATION_POSSIBLE")
+    if language == "ko" and not re.search(r"[가-힣]", text):
+        observations.append("NO_HANGUL_OBSERVED_NUMERIC_OR_LITERAL_ANSWER_POSSIBLE")
+    if language == "en" and not re.search(r"[A-Za-z]", text):
+        observations.append("NO_LATIN_OBSERVED_NUMERIC_OR_LITERAL_ANSWER_POSSIBLE")
+    return observations
 
 
 def parse_reply(reply: dict, *, language: str, output_format: str = "tagged") -> dict:
@@ -165,7 +173,7 @@ def parse_reply(reply: dict, *, language: str, output_format: str = "tagged") ->
 
 def self_test() -> None:
     prompt = teacher_prompt("repair", "ko", {"user_en": "What is 2+2?", "answer_en": "5"})
-    assert "no JSON, ChatML" in prompt[0]["content"]
+    assert "no JSON wrapper, ChatML" in prompt[0]["content"]
     final = "[[QUESTION]]\n2+2는?\n[[/QUESTION]]\n[[ANSWER]]\n4입니다.\n[[/ANSWER]]\n[[NOTE]]\n산술 교정\n[[/NOTE]]"
     parsed = parse_tagged(final, language="ko")
     assert parsed == {"user_text": "2+2는?", "assistant_text": "4입니다.",

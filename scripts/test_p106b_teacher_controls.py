@@ -16,6 +16,20 @@ from tinylm.data.prepare import SyntheticTokenizer
 
 
 class ControlTests(unittest.TestCase):
+    def test_numeric_and_quoted_language_is_not_a_parser_failure(self):
+        from scripts.p106b_teacher_format import parse_tagged, parse_json_control, script_observations, teacher_prompt
+        from scripts.p106b_multi_answer import parse_multi
+        final = "[[QUESTION]]\n1이라고 말해봐\n[[/QUESTION]]\n[[ANSWER]]\n1\n[[/ANSWER]]"
+        self.assertEqual(parse_tagged(final, language="ko")["assistant_text"], "1")
+        self.assertEqual(parse_json_control(json.dumps({"question":"1이라고 말해봐", "answer":"1", "note":""}), language="ko")["assistant_text"], "1")
+        self.assertTrue(script_observations("1", "ko"))
+        self.assertTrue(script_observations("Hello의 뜻은 인사", "ko"))
+        multi = "[[QUESTION]]\nGive Japanese greetings\n[[/QUESTION]]\n[[ANSWER_1]]\nこんにちは\n[[/ANSWER_1]]\n[[ANSWER_2]]\nおはよう\n[[/ANSWER_2]]"
+        self.assertEqual(parse_multi({"choices":[{"finish_reason":"stop","message":{"content":multi}}]},2,"en")["status"], "MULTI_FORMAT_READY")
+        self.assertIn("INSIDE ANSWER", teacher_prompt("qa_generate", "ko", {"topic":"JSON example"})[0]["content"])
+        array = multi.replace("こんにちは", "[[1,2],[3,4]]")
+        self.assertEqual(parse_multi({"choices":[{"finish_reason":"stop","message":{"content":array}}]},2,"en")["status"], "MULTI_FORMAT_READY")
+
     def test_native_budget_is_top_level_and_effort_matches_template(self):
         calls = []
         def http(url, _key, body=None, **kwargs):
@@ -81,6 +95,16 @@ class ControlTests(unittest.TestCase):
              patch.object(edu, "require_current_stage"), patch.object(sys.stdin, "isatty", return_value=False):
             with self.assertRaises(runtime.PrerequisiteHold):
                 edu.choose_effort({"eligible_efforts": ["medium"]})
+
+    def test_explicit_selection_never_reads_stdin(self):
+        panel = {"per_effort": {"xhigh": {"wire_complete": True}}}
+        with patch.object(edu, "read_report", return_value=panel), \
+             patch.object(edu, "require_current_stage"), \
+             patch("builtins.input", side_effect=AssertionError("input forbidden")):
+            result = edu.choose_effort({"eligible_efforts": ["xhigh"]}, "xhigh")
+            self.assertEqual(result["effort"], "xhigh")
+            with self.assertRaises(runtime.PrerequisiteHold):
+                edu.choose_effort({"eligible_efforts": ["xhigh"]}, "low")
 
 
 if __name__ == "__main__":

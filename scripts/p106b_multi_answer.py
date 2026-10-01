@@ -17,7 +17,8 @@ def multi_prompt(job: dict, count: int) -> list[dict]:
         + " Produce one question and distinct, mutually consistent answers to that same question. "
           "Answer 1 is concise, answer 2 explains briefly; when 4 are requested answer 3 uses two bullets "
           "and answer 4 is conversational. Preserve supported facts, entities, units and uncertainty. "
-          "No private reasoning in final fields. No JSON, ChatML, roles, notes or text outside exact fields:\n" + fields)
+          "No private reasoning in final fields. No JSON wrapper, ChatML, roles, notes or text outside exact fields. "
+          "JSON/code/foreign-language quotation inside an answer is allowed when required by the source question:\n" + fields)
     return [{"role": "system", "content": instruction},
             {"role": "user", "content": json.dumps(job["source_payload"], ensure_ascii=False)}]
 
@@ -47,13 +48,10 @@ def parse_multi(reply: dict, count: int, language: str) -> dict:
     question = match.group("question").strip()
     answers = [match.group(f"a{index}").strip() for index in range(1, count + 1)]
     if (not 1 <= len(question) <= 2000 or any(not 1 <= len(a) <= 6000 for a in answers)
-            or any("[[" in text or "]]" in text for text in [question] + answers)
+            or any(re.search(r"\[\[/?(?:QUESTION|ANSWER(?:_[1-4])?|NOTE)\]\]", text)
+                   for text in [question] + answers)
             or len({re.sub(r"\s+", " ", a).casefold() for a in answers}) != count):
         result["status"] = "EMPTY_DUPLICATE_OR_NESTED_FIELDS"
-        return result
-    regex = r"[가-힣]" if language == "ko" else r"[A-Za-z]"
-    if any(re.search(regex, text) is None for text in [question] + answers):
-        result["status"] = "WRONG_LANGUAGE_SCREEN"
         return result
     result.update(status="MULTI_FORMAT_READY", parsed={"question": question, "answers": answers})
     return result

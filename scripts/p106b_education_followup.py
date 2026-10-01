@@ -29,6 +29,7 @@ from scripts.p106b_gate_runtime import (TeacherSession, EffortView, GateNegative
 from scripts.p106b_pipeline import CandidateWriter, validate_job_contract
 from scripts.p106b_shards import ShardWriter, verify
 from scripts.p106b_repeat4_gate import group_split, PROBES
+from scripts.p106b_request_budget import RequestBudget
 from scripts.train_sft_p090 import (encode_records, micro_groups, loss_sum, evaluate,
     validate_parent_lineage)
 from tinylm.data.sft import conversation_split_key
@@ -96,7 +97,8 @@ def read_rows(directory, stem, expected_sha=None):
 def runtime_contract():
     paths = ("tinylm/infer/generate.py", "scripts/train_sft_p090.py", "scripts/p106b_pipeline.py",
              "scripts/p106b_gate_runtime.py", "scripts/p106b_multi_answer.py",
-             "scripts/p106b_teacher_format.py", "scripts/p106b_repeat4_gate.py")
+             "scripts/p106b_teacher_format.py", "scripts/p106b_repeat4_gate.py",
+             "scripts/p106b_request_budget.py", "scripts/view_p106b_saved_answers.py")
     return {path: sha256_file(ROOT / path) for path in paths}
 
 
@@ -598,6 +600,9 @@ def effort_panel(target, info):
         if jspec:
             verify(target, jspec)
     raw = read_rows(target, "raw", metrics["raw_concat_sha256"])
+    canonical = read_rows(target, "canonical", metrics["canonical_concat_sha256"]) if metrics["canonical_rows"] else []
+    from scripts.view_p106b_saved_answers import print_panel
+    print_panel({"records": records}, raw, canonical, BASE.relative_to(ROOT).as_posix())
     by_id = {r["generation_id"]: r for r in raw}
     summaries = {}
     for effort in EFFORTS:
@@ -618,25 +623,22 @@ def effort_panel(target, info):
         "student_training": "NOT_RUN", "quality": "NOT_RUN"}
 
 
-def choose_effort(info):
+def choose_effort(info, effort=None):
     panel = read_report(stage_directory("effort-panel") / "report.json", EFFORT_PANEL_SCHEMA, "EFFORT_PANEL_RECORDED")
     require_current_stage(panel)
-    print("저장된 최종 답안을 읽은 뒤 선택하세요. 시간·형식 통과는 정답성을 보장하지 않습니다.", flush=True)
-    for number, effort in enumerate(info["eligible_efforts"], 1):
-        print(f"{number}. {effort}: " + json.dumps(panel["per_effort"][effort], ensure_ascii=False), flush=True)
-    if not sys.stdin.isatty():
-        raise PrerequisiteHold("interactive effort choice required; no default silently adopted")
-    # runlog forwards stdout line by line; a newline makes the operator prompt visible.
-    print("번호를 입력하세요. 빈 입력은 설정을 고르지 않고 중단합니다:", flush=True)
-    raw = input().strip()
-    if not raw.isdigit() or not 1 <= int(raw) <= len(info["eligible_efforts"]):
-        raise PrerequisiteHold("effort selection not made")
-    effort = info["eligible_efforts"][int(raw) - 1]
+    print("명시된 실행 전 설정을 확인합니다. 형식 통과는 정답성을 보장하지 않습니다.", flush=True)
+    for number, candidate in enumerate(info["eligible_efforts"], 1):
+        print(f"{number}. {candidate}: " + json.dumps(panel["per_effort"][candidate], ensure_ascii=False), flush=True)
+    if effort not in info["eligible_efforts"]:
+        raise PrerequisiteHold("explicit --effort must be one of the technically complete efforts; no input wait/default")
     return {"schema": "P106B_EFFORT_CHOICE_V1", "status": "EFFORT_CHOSEN", "input": info,
             "effort": effort, "selection_owner": "user", "semantic_truth": "PSEUDO_UNVERIFIED"}
 
 
-def correct(target, info):
+def correct(target, info, *, whole_began=None):
+    # This report is write-once inside finally. Store the existing whole-wall
+    # metric before that write, and keep the exact same value in stdout.
+    whole_began = time.monotonic() if whole_began is None else whole_began
     originals = original_rows()
     plans = correction_plan(originals, pilot=info.get("mode") == "correct-pilot")
     groups = [group for _index, group in plans]
@@ -660,7 +662,10 @@ def correct(target, info):
                 rows = []
                 count = 2 if len(group) > 1 else 1
                 last_issues = content_issues(group)
-                for attempt in range(1, 4):
+                # Backend, parser and future approved variant recovery share
+                # this one existing budget; never nest an extra retry loop.
+                budget = RequestBudget(info.get("maximum_attempts_per_group", 3))
+                for attempt in budget.attempts():
                     if attempt > 1:
                         job["source_payload"]["retry_feedback"] = retry_feedback(status, last_issues)
                     ident = f"C_{index:03d}_try{attempt}"
@@ -738,6 +743,7 @@ def correct(target, info):
             "teacher_truth": "PSEUDO_UNVERIFIED", "semantic_quality": "MANUAL_REVIEW_REQUIRED",
             "required_groups_by_language": required,
             "server": session.evidence() if session else None}
+        report["whole_wall_sec"] = time.monotonic() - whole_began
         write_report(target / "report.json", report)
         print("[CORRECTION_DIAGNOSTIC] " + json.dumps({"mode": info.get("mode"),
             "status": report["status"], "exit_code": report["exit_code"],
@@ -883,18 +889,23 @@ def main():
     for flag in ("self-test", "check-only", "execute"):
         modes.add_argument("--" + flag, action="store_true")
     parser.add_argument("--mode", choices=MODES, default="parent-b")
+    parser.add_argument("--effort", choices=EFFORTS)
     args = parser.parse_args()
     target = None
     try:
         if args.self_test:
             self_test()
             return 0
+        if args.mode == "choose-effort" and not args.effort:
+            raise PrerequisiteHold("choose-effort requires explicit --effort; unattended queue never reads stdin")
+        if args.effort and args.mode != "choose-effort":
+            raise PrerequisiteHold("--effort is only a predeclared choice; other modes consume its immutable report")
         target, info = check(args.mode)
         if args.check_only:
             print(json.dumps(info, ensure_ascii=False, sort_keys=True))
             return 0
         began = time.monotonic()
-        choice_report = choose_effort(info) if args.mode == "choose-effort" else None
+        choice_report = choose_effort(info, args.effort) if args.mode == "choose-effort" else None
         if args.mode in ("parent-b", "effort-panel", "correct-pilot", "correct", "train-a", "train-b"):
             idle_before_gpu()
         target.mkdir(parents=True, exist_ok=False)
@@ -908,14 +919,14 @@ def main():
             elif args.mode == "choose-effort":
                 report = choice_report
             elif args.mode in ("correct", "correct-pilot"):
-                report = correct(target, info)
+                report = correct(target, info, whole_began=began)
             elif args.mode == "prepare":
                 report = prepare_corpus(target, info)
             elif args.mode.startswith("train-"):
                 report = educate(target, info, args.mode[-1])
             else:
                 report = compare(info)
-        report["whole_wall_sec"] = time.monotonic() - began
+        report.setdefault("whole_wall_sec", time.monotonic() - began)
         if args.mode not in ("correct", "correct-pilot"):
             write_report(target / "report.json", report)
         print("[EDUCATION_SUMMARY] " + json.dumps(report, ensure_ascii=False), flush=True)
