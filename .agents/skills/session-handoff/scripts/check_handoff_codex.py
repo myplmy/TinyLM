@@ -190,6 +190,10 @@ def validate(path: Path, *, hours_target: float = DEFAULT_HOURS_TARGET) -> Valid
             errors.append("new handoff lacks separate static-audit record link")
 
     recommendation = section_body(text, REQUIRED_SECTIONS["7"]) or ""
+    # Only the current recommendation body can explain its budget. Section7.1
+    # is immutable completion/transfer history, not today's queue justification.
+    live_recommendation = re.split(r"^###\s*7\.1\b", recommendation,
+                                   maxsplit=1, flags=re.MULTILINE)[0]
     queue_columns = ("순", "id", "실험", "배치 파일", "⚙", "누적", "인벤토리", "실행상태", "선결", "근거")
     queue_rows = table_rows_with_columns(recommendation, queue_columns)
     if queue_rows is None:
@@ -218,10 +222,10 @@ def validate(path: Path, *, hours_target: float = DEFAULT_HOURS_TARGET) -> Valid
                     errors.append(
                         f"queue row {row_number} has invalid hours value {row[hours_index]!r}"
                     )
-        if current_hours < hours_target and HOURS_REASON_MARK not in recommendation:
+        if current_hours < hours_target and HOURS_REASON_MARK not in live_recommendation:
             errors.append(
                 f"current queue totals {current_hours:.1f}h below {hours_target:.0f}h but "
-                f"section 7 lacks '{HOURS_REASON_MARK}'"
+                f"current section 7 before history lacks '{HOURS_REASON_MARK}'"
             )
     if "<br>" in recommendation.lower():
         errors.append("recommendation section must not use <br>")

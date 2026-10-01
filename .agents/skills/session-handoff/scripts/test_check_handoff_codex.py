@@ -172,6 +172,22 @@ class HandoffContractTests(unittest.TestCase):
         errors = self.write(current_text(self.previous.name, queue_row=""))
         self.assertTrue(any("no current row or transfer reason" in error for error in errors))
 
+    def test_shortfall_reason_in_history_does_not_satisfy_current_queue(self) -> None:
+        reason = "> ★**시간 미달 사유**: fixture queue는 계약 검사 한 건뿐이며 중복 실험으로 48시간을 채우지 않는다.\n"
+        text = current_text(self.previous.name, queue_row=self.carried_row).replace(reason, "")
+        text = text.replace("### 7.1 이전 큐 제외·완료 이관", "### 7.1 이전 큐 제외·완료 이관\n\n" + reason)
+        errors = self.write(text)
+        self.assertTrue(any("below 48h" in error for error in errors))
+
+    def test_history_keyword_is_not_current_shortfall_reason(self) -> None:
+        reason = "> ★**시간 미달 사유**: fixture queue는 계약 검사 한 건뿐이며 중복 실험으로 48시간을 채우지 않는다.\n"
+        text = current_text(self.previous.name, queue_row=self.carried_row).replace(reason, "")
+        text = text.replace("### 7.1 이전 큐 제외·완료 이관", "### 7.1 이전 큐 제외·완료 이관\n\n옛 시간 미달 사유는 역사 이력이다.")
+        self.assertTrue(any("below 48h" in error for error in self.write(text)))
+
+    def test_reason_in_current_queue_before_history_is_valid(self) -> None:
+        self.assertEqual(self.write(current_text(self.previous.name, queue_row=self.carried_row)), [])
+
     def test_transfer_table_can_account_for_completed_batch(self) -> None:
         text = current_text(self.previous.name, queue_row="")
         text = text.replace(

@@ -112,6 +112,27 @@ def log_blocks(path):
     return blocks
 
 
+def handoff_input_stale(script, body, log):
+    """A handoff arm depends on its selected Markdown, not just Python code.
+
+    Do not downgrade another arm because a document was created. Missing input
+    identity also remains a current failure, not inferred freshness.
+    """
+    if script != "check_handoff.py":
+        return False
+    observed = set(re.findall(r"\b\d{12}_HANDOFF\.md\b", body))
+    folder = ROOT / "handoff"
+    if not observed or not folder.is_dir():
+        return False
+    current = sorted(p for p in folder.glob("*_HANDOFF.md")
+                     if re.fullmatch(r"\d{12}_HANDOFF\.md", p.name)
+                     and p.is_file() and not p.is_symlink())
+    if not current:
+        return False
+    latest = current[-1]
+    return latest.name not in observed or latest.stat().st_mtime > log.stat().st_mtime
+
+
 def main():
     ap = argparse.ArgumentParser(description="스모크 진단런 계약 검사")
     ap.add_argument("--log", default=None, help="검사할 스모크 로그(기본: 최신)")
@@ -216,14 +237,19 @@ def main():
                 print(f"      🚫 {s}: 블록이 없다(안 돌았다)")
                 continue
             body, code = blocks[s]
+            input_stale = handoff_input_stale(s, body, log)
+            arm_sink = warns if stale or input_stale else fails
+            if input_stale:
+                print("      [NOT_RUN] check_handoff.py: selected handoff input changed; "
+                      "recorded exit remains historical; new smoke required")
             gone = [it for it in r["items"] if it not in body]
             mark = "🚫" if (gone or code) else "✅"
             print(f"      {mark} {s:<26} exit {code}"
                   + (f"  · 안 찍힌 항목 {gone}" if gone else ""))
             if gone:
-                sink.append(f"{s}: 로그에 안 찍힌 항목 {gone} — 소스엔 있는데 경로가 안 돌았다")
+                arm_sink.append(f"{s}: 로그에 안 찍힌 항목 {gone} — 소스엔 있는데 경로가 안 돌았다")
             if code:
-                sink.append(f"{s}: exit {code} — {r['exit0']} 가 성립하지 않았다")
+                arm_sink.append(f"{s}: exit {code} — {r['exit0']} 가 성립하지 않았다")
 
     print()
     print("  " + "-" * 88)
@@ -235,7 +261,11 @@ def main():
             print(f"     - {f}")
         print("  ★표가 틀렸는지 코드가 틀렸는지 먼저 정하세요(함정 34: 4번 중 4번 표가 틀렸다).")
         return 1
-    print("  ✅ 표·배치·로그 셋이 일치한다.")
+    if warns:
+        print("  ✅ 현재 표·배치·소스 계약의 불일치는 없다.")
+        print("  [NOT_RUN] 경고의 실행/입력은 현재 동적 PASS가 아니다. 원본 실패를 보존하고 새 스모크를 요구한다.")
+    else:
+        print("  ✅ 표·배치·로그 셋이 일치한다.")
     print("  🚫단 이것은 '그 검사가 돌았다' 이지 '값이 옳다' 가 아니다.")
     return 0
 

@@ -110,7 +110,7 @@ P078의 기존 종결도 유지한다. 2026-09-20 P087 Stage3bW 회수로 P087�
 
 기존 runnable P076 Stage1W·P014D Stage0bW·P087 Stage3bW는 모두 회수됐다. 2026-09-22에는
 51.1h pack의 첫 16건(P014D/P025B/P060B/P005b)을 회수했고, P014D Stage1Wc와
-P092 30M/100M·P097 Stage3 seed·P098 재주입은 2026-09-23 회수됐다. P092 구 Stage3W 3시드 SH는 -cancel로 보존하며 사용자 승인대로 Stage3Wb 병목 진단을 먼저 연다. P097 Stage4와 P029 Stage2W·P100 Stage0W도 실물 다음 검사다.
+P092 30M/100M·P097 Stage3 seed·P098 재주입은 2026-09-23 회수됐다. 당시 P092 구3시드 SH는-cancel로보존했다. 현재는 Stage3Wb 상주/가속 음성을유지하고, 사용자2026-10-02 정리승인에따라13명령/Git복구점을결과083§14로옮겨그SH만삭제했다. 연구축취소/300M실행완료가아니다. P097 Stage4/P029 Stage2W/P100 Stage0W의그때다음검사라는표현은역사이며각최신결과/계획이정본이다.
 P077/P081/P052/P057/P062/P065/P068의 낡은 계획 문구는 결과상 종결·하향이라
 시간 채우기 재실행에서 제외했다. P091 actual selector panel과 P095 full Transformer는 이번
 51.1h 연구 pack보다 선결 설계 불확실성이 높아 차순위로 두었다. 이 상태는

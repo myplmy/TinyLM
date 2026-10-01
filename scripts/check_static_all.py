@@ -64,6 +64,16 @@ CODEX_SAFE_EXCLUDED = {
     "check_handoff": "Codex uses the independent session-handoff checker",
 }
 
+# The excluded legacy handoff checker consults another agent environment.
+# Its independent Codex counterpart must actually run, not merely be mentioned
+# in the NOT_RUN reason. These entries use the same isolated mode as handoff work.
+CODEX_SAFE_CHECKS = [
+    ("check_handoff_codex", ["../.agents/skills/session-handoff/scripts/check_handoff_codex.py"],
+     "Codex 현재 인계 구조·현재큐의시간사유·역사이력구별을 독립 판독한다"),
+    ("test_handoff_codex_contract", ["../.agents/skills/session-handoff/scripts/test_check_handoff_codex.py"],
+     "시간사유가7.1역사에만있으면실패하는 현재범위 회귀"),
+]
+
 # (표시이름, 인자, 무엇을 막는가)  — ★목록을 두 곳에 두지 않는다. 여기가 정본이다.
 CHECKS = [
     ("check_attrs",         ["check_attrs.py"],
@@ -134,6 +144,10 @@ CHECKS = [
      "BAT 스모크 변환기가 미지원 실행문을 거부하고 현재 인터프리터를 사용하는가"),
     ("test_smoke_entrypoints", ["test_smoke_entrypoints.py"],
      "Windows·POSIX 스모크 래퍼가 summarize_smoke 실패를 종료코드 0으로 덮지 않는가"),
+    ("test_static_handoff_coverage", ["test_static_handoff_coverage.py"],
+     "Codex-safe 전수에서독립인계검사·회귀가실제명령으로연결되고레거시금지경로는계속제외되는가"),
+    ("test_smoke_diag_freshness", ["test_smoke_diag_freshness.py"],
+     "새 핸드오프 데이터 입력은 그 팔만 stale로 보고, 다른 팔·미확인 입력의 실패는 숨기지 않는가"),
     ("test_append_repro", ["test_append_repro.py"],
      "WSL -done SH와 접미사 P번호의 재현명령을 결과문서 보존·멱등 방식으로 이관하는가"),
     ("test_dryrun_shell", ["test_dryrun_shell.py"],
@@ -264,6 +278,16 @@ CHECKS = [
 ]
 
 
+def checks_for_profile(profile):
+    return [*CHECKS, *CODEX_SAFE_CHECKS] if profile == "codex-safe" else list(CHECKS)
+
+
+def command_for_check(name, argv):
+    isolated = name in {item[0] for item in CODEX_SAFE_CHECKS}
+    flags = ["-I", "-B"] if isolated else []
+    return [sys.executable, *flags, str(ROOT / "scripts" / argv[0]), *argv[1:]]
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     digest.update(path.read_bytes())
@@ -347,7 +371,7 @@ def main():
 
     rows, bad = [], 0
     evidence_checks = []
-    for name, argv, why in CHECKS:
+    for name, argv, why in checks_for_profile(a.profile):
         if a.profile == "codex-safe" and name in CODEX_SAFE_EXCLUDED:
             reason = CODEX_SAFE_EXCLUDED[name]
             rows.append((name, "NOT_RUN", None, why))
@@ -358,7 +382,7 @@ def main():
             if not a.quiet:
                 print(f"\n[NOT_RUN] {name}: {reason}")
             continue
-        r = subprocess.run([sys.executable, str(ROOT / "scripts" / argv[0]), *argv[1:]],
+        r = subprocess.run(command_for_check(name, argv),
                            cwd=str(ROOT), capture_output=True, text=True,
                            encoding="utf-8", errors="replace")
         ok = r.returncode == 0
