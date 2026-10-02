@@ -6,6 +6,7 @@ new data, model loading or embedding/NLI implementation.
 """
 import argparse
 import json
+import math
 from pathlib import Path
 import statistics
 import sys
@@ -16,6 +17,8 @@ from scripts.p106b_lexical_observation import TextObserver
 
 
 def benchmark(groups, repetitions=10):
+    if not groups or type(repetitions) is not int or repetitions < 1:
+        raise ValueError("lexical benchmark requires nonempty groups and positive integer repetitions")
     results = {}
     for mode in ("within", "recent"):
         durations, pair_counts, examples = [], [], []
@@ -31,9 +34,11 @@ def benchmark(groups, repetitions=10):
                     examples.append(output)
         _current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
-        p95 = sorted(durations)[max(0, int(len(durations)*.95)-1)]
+        # Nearest rank uses ceil(p*N), one-based. Floor picks the minimum at N=2.
+        p95 = sorted(durations)[math.ceil(len(durations)*.95)-1]
         results[mode] = {"requests": len(durations), "median_ms": statistics.median(durations)*1000,
-            "p95_ms": p95*1000, "cpu_peak_bytes": peak, "displayed_pairs": sum(pair_counts),
+            "p95_ms": p95*1000, "percentile_method": "nearest_rank_ceiling",
+            "cpu_peak_bytes": peak, "displayed_pairs": sum(pair_counts),
             "latency_budget_passed": p95 <= .2 and peak <= 32*1024*1024,
             "examples": examples, "false_positive_review": "NOT_RUN", "adoption": "NOT_DECIDED"}
     return results
@@ -49,6 +54,7 @@ def main():
     if args.self_test:
         results = benchmark([("same question", ["A is X", "A is Y"]), ("say1", ["1", "1"])], 1)
         assert all(r["adoption"] == "NOT_DECIDED" for r in results.values())
+        assert all(r["p95_ms"] >= r["median_ms"] for r in results.values())
     else:
         from scripts.view_p106b_saved_answers import panel_data
         _report, _raw, rows = panel_data()

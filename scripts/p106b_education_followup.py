@@ -737,7 +737,23 @@ def prepare_corpus(target, info):
         "formal_train_ready": False, "teacher_truth": "PSEUDO_UNVERIFIED"}
 
 
-def educate(target, info, arm):
+def student_metadata(report, spec):
+    """Persist the same finalized cost/domains seen by stdout and the HF report."""
+    wall = report.get("whole_wall_sec")
+    if (type(wall) not in (int, float) or not math.isfinite(wall) or wall < 0
+            or not isinstance(report.get("report_domains"), dict)):
+        raise ValueError("student metadata requires finalized whole wall and report domains")
+    return {**report, "tag": spec["stem"].split("_300M_", 1)[1],
+        "arch": "tied" if spec["tied"] else "dense", "preset": "m100R1c" if spec["tied"] else "m100s10",
+        "data": "ko-en", "steps": report["updates"], "tokenizer_lineage": spec["lineage"],
+        "tokenizer_sha256": spec["tok_sha"], "tokens": report["processed_conversation_tokens"],
+        "grad_max": report["grad_max_before_clip"], "grad_max_scope": "four-update pilot; no warmup",
+        "final": {"val_loss": report["base_after_ce"], "val_source": "own-lineage native deterministic full-val",
+                  "sft_val_ce": report["history"][-1]["sft_val_ce"]}, "best_val": None}
+
+
+def educate(target, info, arm, *, whole_began=None):
+    began = time.monotonic() if whole_began is None else whole_began
     from scripts.paired_eval import full_val_losses, paired_stats
     spec = ARMS[arm]
     torch, model, base, cfg, tok, adam, muon = load_student(arm, training=True)
@@ -805,15 +821,10 @@ def educate(target, info, arm):
         "checkpoint": checkpoint.relative_to(ROOT).as_posix(), "checkpoint_sha256": sha256_file(checkpoint),
         "formal_train_ready": False, "quality": "MANUAL_RAW_REVIEW_REQUIRED",
         "limit": "own-cache before/after only; cross-tokenizer CE ranking prohibited"}
-    write_report(ROOT / "runs/logs" / (spec["stem"] + ".json"),
-        {**report, "tag": spec["stem"].split("_300M_", 1)[1],
-         "arch": "tied" if spec["tied"] else "dense", "preset": "m100R1c" if arm == "a" else "m100s10",
-         "data": "ko-en", "steps": updates, "tokenizer_lineage": spec["lineage"],
-         "tokenizer_sha256": spec["tok_sha"], "tokens": report["processed_conversation_tokens"],
-         "grad_max": grad_max, "grad_max_scope": "four-update pilot; no warmup",
-         "final": {"val_loss": report["base_after_ce"], "val_source": "own-lineage native deterministic full-val",
-                   "sft_val_ce": history[-1]["sft_val_ce"]}, "best_val": None})
     gc.collect()
+    report["whole_wall_sec"] = time.monotonic() - began
+    report["report_domains"] = separated_report(report)
+    write_report(ROOT / "runs/logs" / (spec["stem"] + ".json"), student_metadata(report, spec))
     return report
 
 
@@ -889,7 +900,7 @@ def main():
             elif args.mode == "prepare":
                 report = prepare_corpus(target, info)
             elif args.mode.startswith("train-"):
-                report = educate(target, info, args.mode[-1])
+                report = educate(target, info, args.mode[-1], whole_began=began)
             else:
                 report = compare(info)
         report.setdefault("whole_wall_sec", time.monotonic() - began)

@@ -10,6 +10,7 @@ from scripts.p106b_output_contract import OutputContract, reviewed_contract, req
 from scripts import p106b_pipeline as pipeline
 from scripts.p106b_lexical_observation import TextObserver
 from scripts.p106b_report_domains import separated_report
+from scripts import diag_p106b_lexical_modes as lexical_modes
 from scripts.test_p106b_pipeline_gates import job
 from tinylm.data.prepare import SyntheticTokenizer
 
@@ -123,6 +124,38 @@ class Tests(unittest.TestCase):
         self.assertEqual(output["student_effect"]["status"], "NOT_RUN")
         with self.assertRaises(ValueError):
             separated_report({"canonical_rows": True})
+
+    def timed_lexical_benchmark(self, durations):
+        clock = []
+        for mode in range(2):
+            for index, duration in enumerate(durations):
+                started = mode * 1000 + index * 10
+                clock.extend((started, started + duration))
+        groups = [("fixture question", ["A is X", "A is Y"])] * len(durations)
+        # Isolate aggregation from the observer's own perf_counter calls.
+        with patch.object(lexical_modes.TextObserver, "observe", return_value={"pair_count": 0}), \
+             patch.object(lexical_modes.time, "perf_counter", side_effect=clock):
+            return lexical_modes.benchmark(groups, repetitions=1)
+
+    def test_two_samples_p95_uses_upper_rank_not_minimum(self):
+        for result in self.timed_lexical_benchmark([.01, .09]).values():
+            self.assertAlmostEqual(result["median_ms"], 50)
+            self.assertAlmostEqual(result["p95_ms"], 90)
+            self.assertGreaterEqual(result["p95_ms"], result["median_ms"])
+
+    def test_three_samples_p95_uses_ceiling_rank(self):
+        for result in self.timed_lexical_benchmark([.01, .03, .09]).values():
+            self.assertAlmostEqual(result["p95_ms"], 90)
+
+    def test_120_sample_historical_rank_is_unchanged(self):
+        for result in self.timed_lexical_benchmark([i / 1000 for i in range(1, 121)]).values():
+            self.assertAlmostEqual(result["median_ms"], 60.5)
+            self.assertAlmostEqual(result["p95_ms"], 114)
+
+    def test_empty_or_zero_repeat_is_not_a_successful_benchmark(self):
+        for groups, repetitions in (([], 1), ([("q", ["a"])], 0), ([("q", ["a"])], True)):
+            with self.assertRaises(ValueError):
+                lexical_modes.benchmark(groups, repetitions)
 
 
 if __name__ == "__main__":

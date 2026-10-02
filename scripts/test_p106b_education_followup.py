@@ -16,6 +16,28 @@ from scripts import p106b_pipeline as pipeline
 
 
 class Tests(unittest.TestCase):
+    def test_student_metadata_requires_final_cost_and_domains(self):
+        base = {"status": "EDUCATION_COMPLETE", "updates": 4,
+                "processed_conversation_tokens": 123, "grad_max_before_clip": 1.0,
+                "base_after_ce": 3.0, "history": [{"sft_val_ce": 2.0}]}
+        for incomplete in (base, {**base, "whole_wall_sec": 1.25},
+                           {**base, "report_domains": {}}):
+            with self.assertRaises(ValueError):
+                edu.student_metadata(incomplete, edu.ARMS["b"])
+
+    def test_student_metadata_preserves_final_observations_without_mutation(self):
+        report = {"status": "EDUCATION_COMPLETE", "updates": 4,
+                  "processed_conversation_tokens": 123, "grad_max_before_clip": 1.0,
+                  "base_after_ce": 3.0, "history": [{"sft_val_ce": 2.0}],
+                  "whole_wall_sec": 1.25, "report_domains": {"posthoc_review": {"status": "NOT_REVIEWED"}}}
+        before = json.dumps(report, sort_keys=True)
+        saved = edu.student_metadata(report, edu.ARMS["b"])
+        self.assertEqual(saved["whole_wall_sec"], report["whole_wall_sec"])
+        self.assertEqual(saved["report_domains"], report["report_domains"])
+        self.assertEqual(saved["final"]["val_loss"], report["base_after_ce"])
+        self.assertEqual(saved["final"]["sft_val_ce"], 2.0)
+        self.assertEqual(json.dumps(report, sort_keys=True), before)
+
     @staticmethod
     def correction_fixture_rows():
         rows = [normalize({"messages": [{"role": "user", "content": f"질문{i}"},

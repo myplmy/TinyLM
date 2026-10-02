@@ -541,16 +541,16 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 
 | 단계 | 실물 런처 | 비용/자원 | 선결 | 사전 판정·상태 |
 |---|---|---:|---|---|
-| Stage3oWb | [run_P106B_Stage3oWb_online_contract_v3_cpu.sh](../run_P106B_Stage3oWb_online_contract_v3_cpu.sh) | ⚙0.10h/CPU·GPU0 | 새 사용자 smoke0.1h | 무모델 회귀·null/UNKNOWN·총3시도·정상 슬롯 보존; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3qWa | [run_P106B_Stage3qWa_lexical_ab_cpu.sh](../run_P106B_Stage3qWa_lexical_ab_cpu.sh) | ⚙0.05h/CPU·GPU0 | 새 smoke0.1h | 정확 동결12요청 문자 A/B 비용·실문구 표시; 오탐/실시간 GPU 판단 유보; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3rW | [run_P106B_Stage3rW_review_packet_prepare.sh](../run_P106B_Stage3rW_review_packet_prepare.sh) | ⚙0.05h/CPU·GPU0 | 새 smoke0.1h | 후행20대상 패킷 준비만; 지금 GPT/로컬 의미판독0; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3qWb | [run_P106B_Stage3qWb_known_output_teacher.sh](../run_P106B_Stage3qWb_known_output_teacher.sh) | ⚙0.50h/사용자 GPU | oWb0.1h와 문자 qWa0.05h | 코드고정 유일2/변형2 한영 질문·최대12교사 요청·정상 슬롯 보존; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3iWh | [run_P106B_Stage3iWh_online_technical_wire.sh](../run_P106B_Stage3iWh_online_technical_wire.sh) | ⚙0.75h/사용자 GPU | qWb0.5h | 현재 qWb 관측 후 같은4원천 프로필/양mask 기술 통과; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3iWi | [run_P106B_Stage3iWi_online_technical_collection.sh](../run_P106B_Stage3iWi_online_technical_collection.sh) | ⚙4.00h/사용자 GPU | iWh0.75h | 현재 iWh 뒤96그룹·언어별75% 기술자료량; 내용진실 미평가; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3jWe | [run_P106B_Stage3jWe_shared_corpus_contract.sh](../run_P106B_Stage3jWe_shared_corpus_contract.sh) | ⚙0.10h/CPU·GPU0 | iWi4h | 현재 전체자료 뒤 concept/질문 split·사고target0·두어휘mask; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3kWe | [run_P106B_Stage3kWe_chat32_repeat4_contract.sh](../run_P106B_Stage3kWe_chat32_repeat4_contract.sh) | ⚙0.75h/사용자 GPU | jWe0.1h | B자기부모·동일v33자료4pass·새태그·native/실답 보존; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3lWe | [run_P106B_Stage3lWe_legacy_repeat4_contract.sh](../run_P106B_Stage3lWe_legacy_repeat4_contract.sh) | ⚙0.75h/사용자 GPU | jWe0.1h | A자기부모대조·동일v33자료4pass·B교육과 독립; STATIC_ONLY/E2E_NOT_RUN |
-| Stage3mWe | [run_P106B_Stage3mWe_lineage_pair_contract.sh](../run_P106B_Stage3mWe_lineage_pair_contract.sh) | ⚙0.10h/CPU·GPU0 | kWe/lWe 각0.75h | 두현재교육원답/childSHA 대조; 기술/정성/CE 분리; STATIC_ONLY/E2E_NOT_RUN |
+| Stage3oWb | `run_P106B_Stage3oWb_online_contract_v3_cpu.sh` | ⚙0.10h/CPU·GPU0 | 새 사용자 smoke0.1h | 완료:CPU56회귀·exit0,새의미판독0([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3qWa | `run_P106B_Stage3qWa_lexical_ab_cpu.sh` | ⚙0.05h/CPU·GPU0 | 새 smoke0.1h | 완료:동결120측정·비용선통과;소표본p95수리는qWc([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3rW | `run_P106B_Stage3rW_review_packet_prepare.sh` | ⚙0.05h/CPU·GPU0 | 새 smoke0.1h | 완료:20대상패킷준비0,판독0([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3qWb | `run_P106B_Stage3qWb_known_output_teacher.sh` | ⚙0.50h/사용자 GPU | oWb0.1h와 문자 qWa0.05h | 완료:고정4계약/실요청6·유일값보호/총3회([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3iWh | `run_P106B_Stage3iWh_online_technical_wire.sh` | ⚙0.75h/사용자 GPU | qWb0.5h | 완료:4프로필/4요청·선택6·양어휘기술연결0([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3iWi | `run_P106B_Stage3iWi_online_technical_collection.sh` | ⚙4.00h/사용자 GPU | iWh0.75h | 완료:96그룹/97요청·128기술행·교사32.5분·의미미검토([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3jWe | `run_P106B_Stage3jWe_shared_corpus_contract.sh` | ⚙0.10h/CPU·GPU0 | iWi4h | 완료:train94/val34·source48/12concept·mask/겹침0([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3kWe | `run_P106B_Stage3kWe_chat32_repeat4_contract.sh` | ⚙0.75h/사용자 GPU | jWe0.1h | 완료:B4update/57,276x-token·SFT감소/native악화·문항0/8([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3lWe | `run_P106B_Stage3lWe_legacy_repeat4_contract.sh` | ⚙0.75h/사용자 GPU | jWe0.1h | 완료:A4update/67,048x-token·SFT감소/native악화·문항0/8([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
+| Stage3mWe | `run_P106B_Stage3mWe_lineage_pair_contract.sh` | ⚙0.10h/CPU·GPU0 | kWe/lWe 각0.75h | 완료:child/raw/source SHA연결·DESCRIPTIVE_ONLY([101 §39](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md));과거계획한계유지 |
 
 **판정 분리:** qWb는 코드고정4계약과재시도/슬롯의 기술 PASS, iWh는4프로필/양mask 연결 PASS, iWi는언어별75% **기술 자료량** PASS다. 옛 quality3필드는null이며 통과 status는COLLECTION_TECHNICAL_READY다. 이 값은 정답률이나자료권리 적격이 아니다. B/A 교육은 각자 부모·각자토크나이저/기존 native crop로 전후를 비교하고 같은8질문 첫답/최대3시도를 보존한다. 기존0/8의 rubic과 의미 전체 정답성을 동일하게 취급하지 않는다.
 
@@ -559,5 +559,47 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 **preflight:** 교사입력/샘플링xhigh·8K사고/16K전체/32Kctx는동일설정, 기존실험을반복하지않도록새출력경로/태그/단계명을사용한다. 태그는 `p106b_s3k_contract_chat32_s1337`와 `p106b_s3l_contract_a_s1337`로 별도예약하며 원형을덮지않는다. 풀2배·300M표준은 이소형의4pass배선진단에충족되지않는**의도된 예외**다. 실제토큰=각자tokenizer로직렬화한비패딩대화합×4이고지도토큰/패딩계산상한은별도표시한다. 업데이트수는4×ceil(train행/128), micro8×accum16·seq≤1024·checkpoint-on이다. 동일자료라도어휘가달라토큰분모/부모/구조가달라 **tokenizer단독인과·교차CE순위·300M효과**는금지다. Codex사전조회는허용된정확아티팩트/계산전용레지스트리경로만사용하고전체runs를열지않는다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
-
 **원본 보존·한계:** 이전v32의실제품질/비용·선택값을새 코드 결과로재계산하지않는다. 신규교사/학생/GPU·스모크는사용자실행이고현재NOT_RUN이다. 교사raw/사고·canonical·선택/미선택·교정의계보는20MB이하write-once샤드로남는다. 후행 패킷20개 준비는판독이아니며지금GPT가내용을새로평가하지않는다. 제안서종료는승인범위새사용자실행/결과회수후판정하고 사용자실행대기만으로현재GPT WIP를미완료로유지하지않는다.
+
+### 2026-10-02 후속 — CPU p95 수리와 한정 생성 경로 진단 (Stage3qWc·Stage3sWa)
+
+사용자 회수10로그는 모두 본체 종료0이다. 원형 v33의 교사/양 교육·원답은 보존하며 같은 학습을 다시 실행하지 않는다. 코드 점검에서 소표본 p95의 내림순위 결함과 학생 runs JSON의 시간/분리보고 저장시점 누락을 확인했다. 후자는 원형을 고치지 않고 새 실행의 작성 시점만 수리한다.
+
+| 단계 | 구현·실물 런처 | 독립변수·측정 | 비용·선결 | 판정·한계 |
+|---|---|---|---|---|
+| Stage3qWc | `run_P106B_Stage3qWc_lexical_ab_percentile.sh` | 같은 동결12질문×10반복 문자 A/B; nearest-rank p95를 명시하고 2/3/120건 CPU 집계 회귀 | CPU0.05h·새 smoke 먼저; 코퍼스/교사/학생 새 생성0 | p95≥median·기존120건 순위 동일·기존 p95≤200ms/peak≤32MiB 유지. 실시간 GPU slowdown·오탐/정답성 미검토; B 자동 채택 없음 |
+| Stage3sWa | `run_P106B_Stage3sWa_generation_path_audit.sh` | 정확 A/B 부모·v33 학생4를 순차 로딩. 같은8질문·QA/ChatML·greedy·cache on/off·최대160토큰; 원시 token ID·최종답·기존 prefix 추출·종료 사유; CPU 부모/학생 상태 변화량 | GPU0.25h·전체실행 hard900초. 최신 사용자 smoke43/0/0/0; 이번 사용자 추가회신만 Codex CPU/GPU 직접진단 허가 | 128case와64cache쌍을 빠짐없이 저장. 학습0·교사0·기존 원형 변경0. BF16 greedy 차이는 관측이지 곧바로 cache 논리결함 확정이 아님. 좁은8문항은 광범위 지능 평가 아님 |
+
+**예측:** 업데이트는4회뿐이지만 부모/학생 가중치 변화와 SFT 손실 감소는 관측될 수 있다. 질문 형식 차이·160토큰 끝까지 이어 쓰기·정지 신호 미학습 가능성을 분리한다. 대립 가설은 생성/cache 또는 prefix 추출 결함이며, 같은 checkpoint·같은 question·동일 greedy 안에서 비교한다. 어떤 형식에서도 답변이 부족하면 ChatML만의 문제나 학습 불가능을 단정하지 않는다.
+
+**preflight:** sWa는 재학습이 없어 steps/accum/LR 변경0이고 새 checkpoint 태그를 만들지 않는다. 고정 부모 SHA와 새 v33 child SHA·두 tokenizer SHA를 검사하고 정확 파일만 읽는다. 출력은 `test_result/evidence/101_P106B_Stage3sWa_generation_path_audit.json` write-once와 새 단계 runlog다. 기존 HF/runs/cache/checkpoint는 읽기 전용이며 보호 TinyDataset·교사 모델·외부 전송은0이다. 4×8×2×2=128개 진단, 생성 상한160·greedy0/top-k1·단일모델만 상주. 주어진 표준 micro8×accum16을 accum2로 변경하지 않는다.
+
+**accum 해석:** train94에서는 현재 상한128개보다 작아 epoch당 ceil(94/128)=1·4epoch=4update가 정상이다. micro8×accum2이면 ceil(94/16)=6·4epoch=24update가 되지만 유효배치·gradient 잡음·optimizer 노출횟수가 함께 바뀌므로 단순 오류수리가 아닌 별도 대조다. 기존조건을 유지하면서 update를 늘리려면 고유 train행을 늘리되 반복≤4epoch·자료계보/검증분할을 지켜야 한다. 예: train1024행이면 동일 micro8×accum16·4epoch에서32update이며 실제 대화토큰은 패딩 상한과 별도로 계산한다. A 결과 이후 개선안은 사용자에게 다시 제안한다.
+
+#### Stage3sWb — A의 관측된6쌍만 FP32 수치 대조 (동일 일회 A 진단 범위)
+
+Stage3sWa 128건/64쌍을 실행한 뒤 BF16 greedy token이 다른6쌍을 관측했다. 새 `run_P106B_Stage3sWb_fp32_cache_recheck.sh`는 이6쌍만 같은 체크포인트/입력/160상한으로 FP32 forward·quantized shadow FP32·TF32 off에서 캐시 on/off를 비교한다. 출력은 별도 `test_result/evidence/101_P106B_Stage3sWb_fp32_cache_recheck.json`, 최대12생성·hard300초·GPU0.10h이며 모델/교사/학습 추가0이다. 관측6쌍이 아니면 거부한다. 여섯 쌍이 모두 일치하면 그 BF16 차이가 정밀도 경로와 관련 있음을 확인할 뿐 모든 캐시의 논리정확성을 일반화하지 않는다. 원형 A/로그/체크포인트는 변경하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 2026-10-02 실행 이력·예측 대조 — Stage3 완료와 Stage4 혼합75M/300M
+
+[결과101 §39~§44](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)가 지정10단계·일회 A/FP32 두단계의 원형/정본/실답/재현을 소유한다. Stage3sWa는128생성/64cache쌍에서prefix/mask오류0이고, Stage3sWb에서BF16 QA차이6쌍은FP32모두동일했다. 이 진단에만 허용된 GPU 권한은 종료됐다. sWa/sWb SH와 지정10 SH는 완료12본의 역사로 옮긴다. 새 대량자료/학습·종합smoke는NOT_RUN이다.
+
+**예측 대조:** v33 기술자료/양mask·각4update는작동했지만지능향상은확인되지않았다. 실제SFT손실감소/native악화·반복/요구형식실패0/8을유지한다. A는이번표본에서추출결함을지지하지않았고QA형식변경만으로회복하지못했다. p95/최종저장시점은기록결함이지교육0/8을고친것이아니다.
+
+**Stage4 질문/예측:** 공개 C로교사전면생성의100일규모비용을줄일수있는가? 서로다른concept2~4개를한요청에서생성하면유효학생tok/s가늘어나는가? 75M고유train의4pass에서지시/종료/QA가개선되는가? 양이커도원천분포/오답/부모한계로실답이좋아지지않을수있다.
+
+| 단계 | 정확 SH | 비용·자원 | 선결·판정·상태 |
+|---|---|---:|---|
+| Stage3qWc | [run_P106B_Stage3qWc_lexical_ab_percentile.sh](../run_P106B_Stage3qWc_lexical_ab_percentile.sh) | CPU0.05h | 새smoke 뒤 nearest-rank 수리의동결문자비용 재시험;실물NOT_RUN |
+| Stage4aW | [run_P106B_Stage4aW_mixed_public_corpus.sh](../run_P106B_Stage4aW_mixed_public_corpus.sh) | CPU0.75h·모델0 | sourceSHA/첫질문split·1024mask·37.5M/언어quota·20MB선택샤드/부족분. 기술exit0과token_target_ready/품질은별도;전량NOT_RUN |
+| Stage4bW | [run_P106B_Stage4bW_distinct_concept_batch.sh](../run_P106B_Stage4bW_distinct_concept_batch.sh) | 사용자GPU1.5h/hard3h | 같은한영각4concept·xhigh·1서버·28논리/최대84completion·1→2→4→4→2→1·8192사고/16384총/32768ctx.8slot완결과두순서쌍속도비>1.05 분리;정답성NOT_RUN |
+| Stage4cW | [run_P106B_Stage4cW_mixed_chat32_repeat4.sh](../run_P106B_Stage4cW_mixed_chat32_repeat4.sh) | 사용자GPU12h 잠정 | 실제KO/EN각37.5M train+별도val 전제. teacher를내리고B자기부모/micro8×accum16/ckptON/LR1e-4/4실제pass·토큰균형/bounded shuffle·epoch resume·native/실답전후. 현재영어부족→HOLD,학습NOT_RUN |
+| Stage4c0W | [run_P106B_Stage4c0W_mixed_student_wire.sh](../run_P106B_Stage4c0W_mixed_student_wire.sh) | 사용자GPU0.5h | 부분C언어당128train/전체8val에서원batch/optimizer/stream/저장경로2update·새wire출력·teacher다운. 대량4c 앞선결·300M과품질PASS가아님;실물NOT_RUN |
+
+**preflight/자원:** 원래batch 유지·새태그 p106b_s4_mixed300m_chat32_s1337. SFT변동길이의실제x-token을합하고패딩상한131072/step과분리한다.75M고유train/≤4epoch/300M은승인반복SFT축이고복원추출pretrain2배풀과동일비교가아니다. 마지막그룹은실제assistant targets로정규화한다. Collector는현재영어부족을적고같은문항재생성/무한반복으로채우지않는다. 판정자는기술선결·사전기존문항/자기native손실이고범용sigma를복사하지않는다. 8GiB디스크 초기선·현재32K교사와full학생의자원을단순합산해공존안전이라고하지않는다.
+
+**원천/한계:** Collection 잠재390M은4000행표본의길이외삽이며적격량아님. 알려진평가source와혼합하위평가우려family를metadata로제외한다. 공감형/Carrot는기본C에서자동채택하지않는다. 영어확대UltraChat200k train_sft의고정revision/SHA·사용자선언 어댑터만준비했고취득0이다. teacher/B속도/대량학습·전체오염/사용조건·후행GPT/임베딩NLI는NOT_RUN. 형식기술성공을지능으로올리지않는다. 추가원문재가공/고유100M은이학습의효과를보고새단계/버전으로검토한다. 보호사전/word 접근0.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

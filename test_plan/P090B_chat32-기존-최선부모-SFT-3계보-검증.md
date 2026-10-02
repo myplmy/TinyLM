@@ -125,3 +125,5 @@ Stage0W~Stage1cW 중 실제 완료한 단계의 명령·로그는 [결과096](..
 - 2026-09-27 Stage0eW: 사용자 승인 범위에서 Codex가 공개 v3와 정확한 `BasicKorean/v1/pilot`을 **CPU 읽기 전용**으로 실행([결과096 §10](../test_result/096_20260925_P090B-공개원천-구조후보-SFT-보류.md)). 양 토크나이저 마스크 기술 PASS, pilot 150/12/17행·전179행 검토 대기, 계획 P2 2~3MB 대비 현재186,312B, BasicKorean 직접 trainer schema/경로 불일치다. 공개 v3 manifest 세 필수 gate는 여전히 모두 PASS가 아니고 넓은 오염·사람 품질 미완이므로 `TRAIN_READY=false`; 학습0·원본 변경0.
 
 - 2026-10-02 계보 연계 정정: [결과101 §37~§38](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 실제 B chat32/A legacy 각각4pass·4update를 관측했지만 좁은rubric 전후0/8·native악화라 정식3계보종결/어휘단독효과는 아니다. 사용자 운영A·유일출력A·문자A/B·분리보고A 승인으로 P106B 새v33 자료/두교육을 다른태그로 준비했다. 공개v3 정식 TRAIN_READY, B pretrain2배풀, C최선부모 질문은 별도 그대로미해결이다. 후행 패킷은준비만이며GPT가이번새품질판독하지않는다.
+
+- 2026-10-02 추가 실물회수: [101 §39~§43](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서새v33의B/A각4update·자기native악화와first/within3 모두0/8을확인했고,동일4checkpoint의QA/ChatML·cache 직접진단은추출/mask오류0·BF16 QA차이6쌍을FP32동일로분리했다. 이는형식/생성수리만으로회복되지않은소형교육관측이며정식3계보종결이아니다. 이후사용자가P106B C+B 혼합75M고유train/4epoch의chat32 우선준비를승인했다. 공개원문/교사생성·처리/지도token·부모계보를구분하며보호자료/새GPU/대량학습/후행GPT판독은NOT_RUN이다.
