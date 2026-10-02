@@ -1,0 +1,680 @@
+{
+  "schema": "P106B_PUBLIC_SOURCE_SCALE_REVIEW_V1",
+  "date": "2026-10-02",
+  "evidence": "CPU_COUNTS_AND_COLLECTION_SAMPLE_ONLY",
+  "raw_source_mutation": false,
+  "model_or_teacher_execution": "NOT_RUN",
+  "student_token_denominator": "nonpadding ids[:-1]; context <=1024; nonempty assistant labels; no truncation",
+  "training_target": {
+    "unique_train_tokens": 75000000,
+    "max_epochs": 4,
+    "processed_train_tokens": 300000000,
+    "language_quota_basis": "actual nonpadding train tokens",
+    "ko_unique_tokens": 37500000,
+    "en_unique_tokens": 37500000
+  },
+  "ready": {
+    "denominator": "nonpadding x=ids[:-1]",
+    "kind": "READ_ONLY_PUBLIC_V3_TRAIN_TOKEN_CENSUS",
+    "quality": "NOT_RUN",
+    "split": {
+      "train": {
+        "rows": 2996,
+        "source_language": {
+          "aya:en": {
+            "all_targets": 102757,
+            "all_x_tokens": 142957,
+            "fit_rows": 1363,
+            "fit_targets": 102757,
+            "fit_x_tokens": 142957,
+            "multiturn_rows": 0,
+            "rows": 1363
+          },
+          "aya:ko": {
+            "all_targets": 23920,
+            "all_x_tokens": 30022,
+            "fit_rows": 172,
+            "fit_targets": 23920,
+            "fit_x_tokens": 30022,
+            "multiturn_rows": 0,
+            "rows": 172
+          },
+          "oasst:en": {
+            "all_targets": 495091,
+            "all_x_tokens": 581709,
+            "fit_rows": 1458,
+            "fit_targets": 495091,
+            "fit_x_tokens": 581709,
+            "multiturn_rows": 834,
+            "rows": 1458
+          },
+          "oasst:ko": {
+            "all_targets": 154,
+            "all_x_tokens": 206,
+            "fit_rows": 3,
+            "fit_targets": 154,
+            "fit_x_tokens": 206,
+            "multiturn_rows": 0,
+            "rows": 3
+          }
+        },
+        "unique_first_prompt": 2971
+      },
+      "val": {
+        "rows": 158,
+        "source_language": {
+          "aya:en": {
+            "all_targets": 5420,
+            "all_x_tokens": 7608,
+            "fit_rows": 76,
+            "fit_targets": 5420,
+            "fit_x_tokens": 7608,
+            "multiturn_rows": 0,
+            "rows": 76
+          },
+          "aya:ko": {
+            "all_targets": 1050,
+            "all_x_tokens": 1357,
+            "fit_rows": 8,
+            "fit_targets": 1050,
+            "fit_x_tokens": 1357,
+            "multiturn_rows": 0,
+            "rows": 8
+          },
+          "oasst:en": {
+            "all_targets": 26388,
+            "all_x_tokens": 30969,
+            "fit_rows": 73,
+            "fit_targets": 26388,
+            "fit_x_tokens": 30969,
+            "multiturn_rows": 45,
+            "rows": 73
+          },
+          "oasst:ko": {
+            "all_targets": 6,
+            "all_x_tokens": 18,
+            "fit_rows": 1,
+            "fit_targets": 6,
+            "fit_x_tokens": 18,
+            "multiturn_rows": 0,
+            "rows": 1
+          }
+        },
+        "unique_first_prompt": 158
+      }
+    },
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E"
+  },
+  "raw_census": {
+    "denominator": "nonpadding x=ids[:-1]",
+    "human_signal_union": [
+      {
+        "by_split_language": {
+          "train:en": {
+            "assistant_targets": 1607287,
+            "multiturn_rows": 1982,
+            "rows": 6860,
+            "x_tokens": 1941292
+          },
+          "train:ko": {
+            "assistant_targets": 37602,
+            "multiturn_rows": 0,
+            "rows": 348,
+            "x_tokens": 56327
+          },
+          "val:en": {
+            "assistant_targets": 85870,
+            "multiturn_rows": 105,
+            "rows": 348,
+            "x_tokens": 102078
+          },
+          "val:ko": {
+            "assistant_targets": 1918,
+            "multiturn_rows": 0,
+            "rows": 17,
+            "x_tokens": 2910
+          }
+        },
+        "duplicate_rows": {
+          "aya": 42,
+          "aya_reannotations": 45,
+          "oasst2": 2293
+        },
+        "policy": "exact_conversation"
+      },
+      {
+        "by_split_language": {
+          "train:en": {
+            "assistant_targets": 1510117,
+            "multiturn_rows": 1962,
+            "rows": 6234,
+            "x_tokens": 1825955
+          },
+          "train:ko": {
+            "assistant_targets": 31146,
+            "multiturn_rows": 0,
+            "rows": 300,
+            "x_tokens": 48614
+          },
+          "val:en": {
+            "assistant_targets": 79601,
+            "multiturn_rows": 105,
+            "rows": 312,
+            "x_tokens": 94951
+          },
+          "val:ko": {
+            "assistant_targets": 1232,
+            "multiturn_rows": 0,
+            "rows": 14,
+            "x_tokens": 2116
+          }
+        },
+        "duplicate_rows": {
+          "aya": 69,
+          "aya_reannotations": 703,
+          "oasst1": 21,
+          "oasst2": 2300
+        },
+        "policy": "one_first_prompt"
+      }
+    ],
+    "including_unreviewed_ko_synthetic_union": [
+      {
+        "by_split_language": {
+          "train:en": {
+            "assistant_targets": 1607287,
+            "multiturn_rows": 1982,
+            "rows": 6860,
+            "x_tokens": 1941292
+          },
+          "train:ko": {
+            "assistant_targets": 5650415,
+            "multiturn_rows": 17638,
+            "rows": 30804,
+            "x_tokens": 8053735
+          },
+          "val:en": {
+            "assistant_targets": 85870,
+            "multiturn_rows": 105,
+            "rows": 348,
+            "x_tokens": 102078
+          },
+          "val:ko": {
+            "assistant_targets": 298825,
+            "multiturn_rows": 928,
+            "rows": 1632,
+            "x_tokens": 422715
+          }
+        },
+        "duplicate_rows": {
+          "aya": 42,
+          "aya_reannotations": 45,
+          "carrot": 181,
+          "empathetic": 1,
+          "oasst2": 2293
+        },
+        "policy": "exact_conversation"
+      },
+      {
+        "by_split_language": {
+          "train:en": {
+            "assistant_targets": 1510117,
+            "multiturn_rows": 1962,
+            "rows": 6234,
+            "x_tokens": 1825955
+          },
+          "train:ko": {
+            "assistant_targets": 4943625,
+            "multiturn_rows": 15889,
+            "rows": 27995,
+            "x_tokens": 7105936
+          },
+          "val:en": {
+            "assistant_targets": 79601,
+            "multiturn_rows": 105,
+            "rows": 312,
+            "x_tokens": 94951
+          },
+          "val:ko": {
+            "assistant_targets": 263173,
+            "multiturn_rows": 874,
+            "rows": 1515,
+            "x_tokens": 377511
+          }
+        },
+        "duplicate_rows": {
+          "aya": 69,
+          "aya_reannotations": 703,
+          "carrot": 1040,
+          "empathetic": 2017,
+          "oasst1": 21,
+          "oasst2": 2300
+        },
+        "policy": "one_first_prompt"
+      }
+    ],
+    "max_context": 1024,
+    "quality": "NOT_RUN; synthetic Korean source is provisional, not adopted",
+    "schema": "P106B_PUBLIC_RAW_SCALE_CENSUS_V1",
+    "source_language_stats": {
+      "aya:en": {
+        "all_assistant_targets": 166770,
+        "all_x_tokens": 230472,
+        "canonical_rows": 2164,
+        "fit_assistant_targets": 165537,
+        "fit_multiturn": 0,
+        "fit_rows": 2163,
+        "fit_x_tokens": 229176,
+        "multiturn_rows": 0,
+        "over_context_or_empty": 1
+      },
+      "aya:ko": {
+        "all_assistant_targets": 24970,
+        "all_x_tokens": 31379,
+        "canonical_rows": 180,
+        "fit_assistant_targets": 24970,
+        "fit_multiturn": 0,
+        "fit_rows": 180,
+        "fit_x_tokens": 31379,
+        "multiturn_rows": 0
+      },
+      "aya_reannotations:en": {
+        "all_assistant_targets": 325733,
+        "all_x_tokens": 400994,
+        "canonical_rows": 1777,
+        "fit_assistant_targets": 273587,
+        "fit_multiturn": 0,
+        "fit_rows": 1745,
+        "fit_x_tokens": 348284,
+        "multiturn_rows": 0,
+        "over_context_or_empty": 32
+      },
+      "aya_reannotations:ko": {
+        "all_assistant_targets": 14390,
+        "all_x_tokens": 27634,
+        "canonical_rows": 181,
+        "fit_assistant_targets": 14390,
+        "fit_multiturn": 0,
+        "fit_rows": 181,
+        "fit_x_tokens": 27634,
+        "multiturn_rows": 0
+      },
+      "carrot:ko": {
+        "all_assistant_targets": 4386834,
+        "all_x_tokens": 5764278,
+        "canonical_rows": 7040,
+        "fit_assistant_targets": 3054952,
+        "fit_multiturn": 0,
+        "fit_rows": 5592,
+        "fit_x_tokens": 3942047,
+        "multiturn_rows": 0,
+        "over_context_or_empty": 1448
+      },
+      "empathetic:ko": {
+        "all_assistant_targets": 2897388,
+        "all_x_tokens": 4540593,
+        "canonical_rows": 26661,
+        "fit_assistant_targets": 2897388,
+        "fit_multiturn": 18567,
+        "fit_rows": 26661,
+        "fit_x_tokens": 4540593,
+        "multiturn_rows": 18567
+      },
+      "oasst1:en": {
+        "all_assistant_targets": 972185,
+        "all_x_tokens": 1143132,
+        "canonical_rows": 2431,
+        "fit_assistant_targets": 803638,
+        "fit_multiturn": 1314,
+        "fit_rows": 2290,
+        "fit_x_tokens": 943623,
+        "multiturn_rows": 1437,
+        "over_context_or_empty": 141
+      },
+      "oasst1:ko": {
+        "all_assistant_targets": 160,
+        "all_x_tokens": 224,
+        "canonical_rows": 4,
+        "fit_assistant_targets": 160,
+        "fit_multiturn": 0,
+        "fit_rows": 4,
+        "fit_x_tokens": 224,
+        "multiturn_rows": 0
+      },
+      "oasst2:en": {
+        "all_assistant_targets": 1656709,
+        "all_x_tokens": 1923500,
+        "canonical_rows": 3704,
+        "fit_assistant_targets": 1265959,
+        "fit_multiturn": 2085,
+        "fit_rows": 3386,
+        "fit_x_tokens": 1480684,
+        "multiturn_rows": 2378,
+        "over_context_or_empty": 318
+      },
+      "oasst2:ko": {
+        "all_assistant_targets": 160,
+        "all_x_tokens": 224,
+        "canonical_rows": 4,
+        "fit_assistant_targets": 160,
+        "fit_multiturn": 0,
+        "fit_rows": 4,
+        "fit_x_tokens": 224,
+        "multiturn_rows": 0
+      }
+    },
+    "source_reject_counts": {
+      "aya": {
+        "source_filter": 200018
+      },
+      "aya_reannotations": {
+        "empty": 3
+      },
+      "empathetic": {
+        "marker_sequence": 1
+      },
+      "oasst1": {
+        "source_filter": 7929
+      },
+      "oasst2": {
+        "incomplete_best_path": 1698,
+        "not_reviewed_ko_en_root": 8448
+      }
+    },
+    "sources": {
+      "aya": {
+        "bytes": 137195800,
+        "path": "HF/sft_sources/aya/data/train-00000-of-00001.parquet",
+        "sha256": "51BAA85043B569BA117F41516B32D1B0E4E2647FB203A08933F98A556FB1FB06"
+      },
+      "carrot": {
+        "bytes": 26399521,
+        "path": "HF/sft_sources/p090_carrot_instruction_ko_5c0e2c0/instruction_korean.json",
+        "sha256": "D9C5F5277CD1EE15D847F8AD53CB762A99FBDE2D767BE25F2C24CF865D62A5E6"
+      },
+      "empathetic": {
+        "bytes": 22158679,
+        "path": "HF/sft_sources/p090_empathetic_ko_9847cd2/Empathetic_data.jsonl",
+        "sha256": "BC2B24FBEE11782071A9F84FBCEE615721F729ED31A01103E6755F80F9BC80C8"
+      },
+      "oasst1": {
+        "bytes": 34145252,
+        "path": "HF/sft_sources/oasst/2023-04-12_oasst_ready.trees.jsonl.gz",
+        "sha256": "2A9A8FD343E9B28E04A895A669D3253F82D93E9C174D440199AE19D5FAFBDFF7"
+      },
+      "oasst2": {
+        "bytes": 54370156,
+        "path": "/home/uranus/tinyLM/HF/sft_sources/p090_oasst2_179dd21/2023-11-05_oasst2_ready.trees.jsonl.gz",
+        "sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"
+      }
+    },
+    "split_policy": "normalized first user prompt hash modulo20; split shared across sources",
+    "teacher_or_gpu": "NOT_RUN",
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "wall_sec": 25.4213314899971
+  },
+  "collection_sample": {
+    "file_estimates": [
+      {
+        "fit_estimated_x_tokens_before_split_dedup_quality": 202229353.202,
+        "fit_mean_x_per_original_row": 112.166,
+        "fit_srs_se_mean": 2.7757401811851343,
+        "non_benchmark_estimated_x_tokens_before_split_dedup_quality": 200514750.60500002,
+        "rows": 1802947,
+        "sample_n": 2000
+      },
+      {
+        "fit_estimated_x_tokens_before_split_dedup_quality": 188002298.425,
+        "fit_mean_x_per_original_row": 104.275,
+        "fit_srs_se_mean": 1.2191534215762683,
+        "non_benchmark_estimated_x_tokens_before_split_dedup_quality": 187658837.02150002,
+        "rows": 1802947,
+        "sample_n": 2000
+      }
+    ],
+    "known_benchmark_sources_excluded_from_alternative": [
+      "PIQA (T)",
+      "Flan-lambada (T)"
+    ],
+    "max_context": 1024,
+    "method": "simple random sample without replacement 2000 rows per pinned file; no rows exported",
+    "quality_and_dedup_and_contamination": "NOT_RUN; not adopted and not a train corpus",
+    "schema": "P106B_AYA_COLLECTION_KO_SCALE_SAMPLE_V1",
+    "source_sample_stats": {
+      "Adversarial QA (T)": {
+        "all_targets": 1440,
+        "all_x_tokens": 1949,
+        "fit_rows": 9,
+        "fit_targets": 1440,
+        "fit_x_tokens": 1949,
+        "sample_rows": 9
+      },
+      "Aya-Dataset": {
+        "all_targets": 96,
+        "all_x_tokens": 138,
+        "fit_rows": 2,
+        "fit_targets": 96,
+        "fit_x_tokens": 138,
+        "sample_rows": 2
+      },
+      "CNN-Daily-Mail (T)": {
+        "all_targets": 7571,
+        "all_x_tokens": 57805,
+        "fit_rows": 106,
+        "fit_targets": 7571,
+        "fit_x_tokens": 57805,
+        "sample_rows": 106
+      },
+      "Dolly-v2 (T)": {
+        "all_targets": 1961,
+        "all_x_tokens": 4239,
+        "fit_rows": 17,
+        "fit_targets": 1961,
+        "fit_x_tokens": 4239,
+        "sample_rows": 17
+      },
+      "Flan-CoT-submix (T)": {
+        "all_targets": 5035,
+        "all_x_tokens": 13282,
+        "fit_rows": 119,
+        "fit_targets": 5035,
+        "fit_x_tokens": 13282,
+        "sample_rows": 119
+      },
+      "Flan-Coqa (T)": {
+        "all_targets": 659,
+        "all_x_tokens": 4666,
+        "fit_rows": 7,
+        "fit_targets": 659,
+        "fit_x_tokens": 4666,
+        "sample_rows": 7
+      },
+      "Flan-GEM-wiki-lingua (T)": {
+        "all_targets": 3162,
+        "all_x_tokens": 13380,
+        "fit_rows": 25,
+        "fit_targets": 1938,
+        "fit_x_tokens": 10927,
+        "over_context_or_empty_mask": 2,
+        "sample_rows": 27
+      },
+      "Flan-lambada (T)": {
+        "all_targets": 16,
+        "all_x_tokens": 381,
+        "fit_rows": 6,
+        "fit_targets": 16,
+        "fit_x_tokens": 381,
+        "known_benchmark_source": 6,
+        "sample_rows": 6
+      },
+      "HotpotQA (T)": {
+        "all_targets": 2095,
+        "all_x_tokens": 19395,
+        "fit_rows": 388,
+        "fit_targets": 2095,
+        "fit_x_tokens": 19395,
+        "sample_rows": 388
+      },
+      "Joke-explaination-inst (T)": {
+        "all_targets": 282,
+        "all_x_tokens": 403,
+        "fit_rows": 3,
+        "fit_targets": 282,
+        "fit_x_tokens": 403,
+        "sample_rows": 3
+      },
+      "Mintaka-inst (T)": {
+        "all_targets": 106,
+        "all_x_tokens": 263,
+        "fit_rows": 7,
+        "fit_targets": 106,
+        "fit_x_tokens": 263,
+        "sample_rows": 7
+      },
+      "NQ-Open (T)": {
+        "all_targets": 957,
+        "all_x_tokens": 5966,
+        "fit_rows": 191,
+        "fit_targets": 957,
+        "fit_x_tokens": 5966,
+        "sample_rows": 191
+      },
+      "PAWS-Wiki (T)": {
+        "all_targets": 147,
+        "all_x_tokens": 5131,
+        "fit_rows": 57,
+        "fit_targets": 147,
+        "fit_x_tokens": 5131,
+        "sample_rows": 57
+      },
+      "PIQA (T)": {
+        "all_targets": 435,
+        "all_x_tokens": 1902,
+        "fit_rows": 18,
+        "fit_targets": 435,
+        "fit_x_tokens": 1902,
+        "known_benchmark_source": 18,
+        "sample_rows": 18
+      },
+      "SODA-inst (T)": {
+        "all_targets": 75302,
+        "all_x_tokens": 119144,
+        "fit_rows": 1326,
+        "fit_targets": 75302,
+        "fit_x_tokens": 119144,
+        "sample_rows": 1326
+      },
+      "WIKI QA (T)": {
+        "all_targets": 26,
+        "all_x_tokens": 140,
+        "fit_rows": 2,
+        "fit_targets": 26,
+        "fit_x_tokens": 140,
+        "sample_rows": 2
+      },
+      "Wiki-split-inst (T)": {
+        "all_targets": 56230,
+        "all_x_tokens": 103708,
+        "fit_rows": 1104,
+        "fit_targets": 56230,
+        "fit_x_tokens": 103708,
+        "sample_rows": 1104
+      },
+      "Xlel_wd-inst": {
+        "all_targets": 1278,
+        "all_x_tokens": 4069,
+        "fit_rows": 33,
+        "fit_targets": 1278,
+        "fit_x_tokens": 4069,
+        "sample_rows": 33
+      },
+      "Xlel_wd-inst (T)": {
+        "all_targets": 35496,
+        "all_x_tokens": 79374,
+        "empty_pair": 1,
+        "fit_rows": 577,
+        "fit_targets": 35496,
+        "fit_x_tokens": 79374,
+        "sample_rows": 578
+      }
+    },
+    "sources": [
+      {
+        "bytes": 513477364,
+        "path": "HF/sft_sources/aya_collection_ko/korean/train-00000-of-00002.parquet",
+        "rows": 1802947,
+        "sample_indices_sha256": "F79AAE06C8A0401514E7D400723F774B90CE034E316B208471D41C6F4468C65E",
+        "sample_n": 2000,
+        "sample_seed": 20261002,
+        "sha256": "0EED3F48935418B4B8C1FF55AD8DD8D2EDCDEA2BEFDB2A61A6953CC5403340F1"
+      },
+      {
+        "bytes": 460197761,
+        "path": "HF/sft_sources/aya_collection_ko/korean/train-00001-of-00002.parquet",
+        "rows": 1802947,
+        "sample_indices_sha256": "73B2531DB5A584DB120C3AB0859CFBE5C46A5066DB34C8F4F42AB98177A8750C",
+        "sample_n": 2000,
+        "sample_seed": 20261003,
+        "sha256": "42BD2F8956B74881F5FE02787388A984EA9C62A7115E98E49350F3EA963015E3"
+      }
+    ],
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "wall_sec": 4.00042513399967
+  },
+  "teacher_observation": {
+    "stage": "Stage3iWi",
+    "effort": "xhigh",
+    "request_sum_sec": 1942.128932,
+    "whole_wall_sec": 1950.0885128059895,
+    "completion_tokens": 122445,
+    "chat32_train_tokens_per_pass": 14319,
+    "train_useful_tok_per_sec": 7.3427436272604565,
+    "raw_completion_tok_per_sec": 63.046792611192096,
+    "student_learning_time_excluded": true,
+    "measurement_limit": "one 96-group pilot; different concepts/lengths/retry/split ratios may change throughput; no 2-4 distinct-concept gain observed"
+  },
+  "scenarios": [
+    {
+      "name": "public_v3_only",
+      "C_ko_train_tokens": 30228,
+      "C_en_train_tokens": 724666,
+      "C_total_train_tokens": 754894,
+      "teacher_B_ko_deficit": 37469772,
+      "teacher_B_en_deficit": 36775334,
+      "teacher_B_total_deficit": 74245106,
+      "teacher_only_days_at_observed_train_rate": 117.0296009370668
+    },
+    {
+      "name": "public_human_annotation_paths",
+      "C_ko_train_tokens": 48614,
+      "C_en_train_tokens": 1825955,
+      "C_total_train_tokens": 1874569,
+      "teacher_B_ko_deficit": 37451386,
+      "teacher_B_en_deficit": 35674045,
+      "teacher_B_total_deficit": 73125431,
+      "teacher_only_days_at_observed_train_rate": 115.26470186844386
+    },
+    {
+      "name": "including_unreviewed_ko_synthetic",
+      "C_ko_train_tokens": 7105936,
+      "C_en_train_tokens": 1825955,
+      "C_total_train_tokens": 8931891,
+      "teacher_B_ko_deficit": 30394064,
+      "teacher_B_en_deficit": 35674045,
+      "teacher_B_total_deficit": 66068109,
+      "teacher_only_days_at_observed_train_rate": 104.14052652758863
+    }
+  ],
+  "conditional_collection_ko_quota_scenario": {
+    "C_ko_train_tokens": 37500000,
+    "C_en_train_tokens": 1825955,
+    "teacher_B_total_deficit": 35674045,
+    "teacher_only_days_at_observed_train_rate": 56.2315750503604,
+    "status": "CONDITIONAL_NOT_ADOPTED; only if vetted Collection subset supplies all Korean quota"
+  },
+  "reproducibility": {
+    "public_ready": "CUDA_VISIBLE_DEVICES='' /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nfrom collections import Counter,defaultdict\nfrom tokenizers import Tokenizer\nfrom tinylm.data.sft import encode_conversation,sft_targets,IGNORE,conversation_split_key,load_canonical\nfrom scripts.p106b_education_followup import ARMS\nmanifest_file=Path('HF/sft_ready/p090_public_v3_manifest.json')\nmanifest=json.loads(manifest_file.read_text(encoding='utf-8'))\ntp=Path(ARMS['b']['tokenizer']); assert not tp.is_symlink()\nassert hashlib.sha256(tp.read_bytes()).hexdigest().upper()==ARMS['b']['tok_sha']\ntok=Tokenizer.from_file(str(tp))\nresult={'kind':'READ_ONLY_PUBLIC_V3_TRAIN_TOKEN_CENSUS','denominator':'nonpadding x=ids[:-1]','quality':'NOT_RUN','tokenizer_sha256':hashlib.sha256(tp.read_bytes()).hexdigest().upper(),'split':{}}\nfor split in ('train','val'):\n p=Path(f'HF/sft_ready/p090_public_v3_{split}.canonical.jsonl')\n assert not p.is_symlink()\n assert hashlib.sha256(p.read_bytes()).hexdigest().upper()==manifest['output_sha256'][split]\n groups=defaultdict(Counter); prompts=set()\n for row in load_canonical(p):\n  ids,labels,_=encode_conversation(row,tok)\n  x,y=sft_targets(ids,labels); supervised=sum(v!=IGNORE for v in y)\n  key=f\"{row['meta']['source']}:{row['meta']['language']}\"\n  st=groups[key];st['rows']+=1;st['all_x_tokens']+=len(x);st['all_targets']+=supervised\n  st['multiturn_rows']+=int(sum(m['role']=='assistant' for m in row['messages'])>1)\n  if len(x)<=1024 and supervised>0:\n   st['fit_rows']+=1;st['fit_x_tokens']+=len(x);st['fit_targets']+=supervised\n  else: st['excluded_rows']+=1\n  prompts.add(conversation_split_key(row))\n result['split'][split]={'source_language':{k:dict(v) for k,v in groups.items()},'rows':sum(s['rows'] for s in groups.values()),'unique_first_prompt':len(prompts)}\nprint(json.dumps(result,ensure_ascii=False,sort_keys=True))\nPY",
+    "raw_sources": "CUDA_VISIBLE_DEVICES='' /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nimport gzip,hashlib,json,time,unicodedata\nfrom pathlib import Path\nfrom collections import Counter,defaultdict\nfrom tokenizers import Tokenizer\nfrom tinylm.chat.canonical import normalize,validate\nfrom tinylm.data.sft import encode_conversation,sft_targets,IGNORE,conversation_split_key,load_canonical\nfrom scripts.prepare_public_sft import aya_to_canonical,oasst_tree_to_canonical,_iter_aya,SOURCES\nfrom scripts.diag_p090b_empathetic_contract import restore\nfrom scripts.diag_p090b_oasst2_translation_candidates import SOURCE as OASST2,SOURCE_SHA256 as OASST2_SHA\nfrom scripts.p106b_education_followup import ARMS\nbegan=time.perf_counter()\ntp=Path(ARMS['b']['tokenizer']); assert hashlib.sha256(tp.read_bytes()).hexdigest().upper()==ARMS['b']['tok_sha']\ntok=Tokenizer.from_file(str(tp))\npaths={\n 'aya':Path('HF/sft_sources/aya')/SOURCES['aya']['data'],\n 'oasst1':Path('HF/sft_sources/oasst')/SOURCES['oasst']['data'],\n 'oasst2':OASST2,\n 'empathetic':Path('HF/sft_sources/p090_empathetic_ko_9847cd2/Empathetic_data.jsonl'),\n 'carrot':Path('HF/sft_sources/p090_carrot_instruction_ko_5c0e2c0/instruction_korean.json')}\nexpected={'oasst2':OASST2_SHA,'empathetic':'BC2B24FBEE11782071A9F84FBCEE615721F729ED31A01103E6755F80F9BC80C8','carrot':'D9C5F5277CD1EE15D847F8AD53CB762A99FBDE2D767BE25F2C24CF865D62A5E6'}\nshas={}\nfor family,p in paths.items():\n assert p.is_file() and not p.is_symlink(),str(p)\n h=hashlib.sha256()\n with p.open('rb') as f:\n  for block in iter(lambda:f.read(1048576),b''):h.update(block)\n shas[family]={'path':str(p),'bytes':p.stat().st_size,'sha256':h.hexdigest().upper()}\n if family in expected:assert shas[family]['sha256']==expected[family],family\nstats=defaultdict(Counter);reject=defaultdict(Counter);all_fit=[]\ndef add(row,family):\n if row is None:reject[family]['source_filter']+=1;return\n language=row['meta']['language'];st=stats[family+':'+language];st['canonical_rows']+=1\n ids,labels,_=encode_conversation(row,tok);x,y=sft_targets(ids,labels)\n sup=sum(v!=IGNORE for v in y);st['all_x_tokens']+=len(x);st['all_assistant_targets']+=sup\n multi=sum(m['role']=='assistant' for m in row['messages'])>1\n st['multiturn_rows']+=int(multi)\n if len(x)>1024 or sup==0: st['over_context_or_empty']+=1;return\n st['fit_rows']+=1;st['fit_x_tokens']+=len(x);st['fit_assistant_targets']+=sup;st['fit_multiturn']+=int(multi)\n first=conversation_split_key(row)\n text='\\n'.join(' '.join(block['text'] for block in m['content'] if block.get('type')=='text') for m in row['messages'])\n fp=hashlib.sha256(' '.join(unicodedata.normalize('NFKC',text).casefold().split()).encode()).hexdigest()\n split='val' if int.from_bytes(first[:4],'big')%20==0 else 'train'\n all_fit.append({'family':family,'lang':language,'x':len(x),'targets':sup,'prompt':first.hex(),'fp':fp,'split':split,'multi':multi})\nfor row in _iter_aya(paths['aya']):add(row,'aya')\nimport pyarrow.parquet as pq\nfrom scripts.prepare_public_sft import _canonical\nfor batch in pq.ParquetFile(paths['aya']).iter_batches(batch_size=512,columns=['inputs','targets','language_code','annotation_type']):\n for item in batch.to_pylist():\n  language={'eng':'en','kor':'ko'}.get(item.get('language_code'))\n  if language is None or item.get('annotation_type')=='original-annotations':continue\n  q,a=item.get('inputs'),item.get('targets')\n  if not isinstance(q,str) or not isinstance(a,str) or not q.strip() or not a.strip():reject['aya_reannotations']['empty']+=1;continue\n  row=_canonical([{'role':'user','content':q.strip()},{'role':'assistant','content':a.strip()}],'aya',hashlib.sha256((language+'\\\\0'+q+'\\\\0'+a).encode()).hexdigest(),language)\n  row['meta']['annotation_type']=item.get('annotation_type')\n  add(row,'aya_reannotations')\nprint('[CENSUS] aya complete',flush=True)\nwith gzip.open(paths['oasst1'],'rt',encoding='utf-8') as f:\n for line in f:\n  if line.strip():add(oasst_tree_to_canonical(json.loads(line)),'oasst1')\nprint('[CENSUS] oasst1 complete',flush=True)\ndef reviewed(n,role,language,parent=None):\n return isinstance(n,dict) and n.get('role')==role and n.get('lang')==language and n.get('review_result') is True and isinstance(n.get('review_count'),int) and n['review_count']>=1 and not n.get('deleted') and n.get('synthetic') is False and isinstance(n.get('text'),str) and bool(n['text'].strip()) and isinstance(n.get('message_id'),str) and (parent is None or n.get('parent_id')==parent)\nwith gzip.open(paths['oasst2'],'rt',encoding='utf-8') as f:\n for line in f:\n  tree=json.loads(line);n=tree.get('prompt');language=n.get('lang') if isinstance(n,dict) else None\n  if tree.get('tree_state')!='ready_for_export' or language not in ('ko','en') or not reviewed(n,'prompter',language):reject['oasst2']['not_reviewed_ko_en_root']+=1;continue\n  messages=[]\n  while n is not None:\n   role='prompter' if not messages or messages[-1]['role']=='assistant' else 'assistant'\n   if not reviewed(n,role,language):break\n   messages.append({'role':'user' if role=='prompter' else 'assistant','content':n['text'].strip()})\n   nxt='assistant' if role=='prompter' else 'prompter'\n   replies=[c for c in n.get('replies',[]) if reviewed(c,nxt,language,n['message_id'])]\n   n=min(replies,key=lambda c:(c.get('rank') is None,c['rank'] if isinstance(c.get('rank'),int) else 999,c['message_id'])) if replies else None\n  if len(messages)<2 or messages[-1]['role']!='assistant':reject['oasst2']['incomplete_best_path']+=1;continue\n  add(validate(normalize({'messages':messages,'meta':{'source':'oasst2','source_id':str(tree.get('message_tree_id') or tree['prompt']['message_id']),'language':language,'source_license':'Apache-2.0_card'}})),'oasst2')\nprint('[CENSUS] oasst2 complete',flush=True)\nwith paths['empathetic'].open(encoding='utf-8') as f:\n for i,line in enumerate(f):\n  row=json.loads(line)\n  try:\n   if row.get('type') in ('multi_2','multi_3'):conv=restore(row,i)\n   elif row.get('type')=='single' and isinstance(row.get('instruction'),str) and isinstance(row.get('output'),str) and row['instruction'].strip() and row['output'].strip():\n    conv=validate(normalize({'messages':[{'role':'user','content':row['instruction'].strip()},{'role':'assistant','content':row['output'].strip()}],'meta':{'source':'empathetic_ko','source_id':str(i),'language':'ko','source_license':'Apache-2.0_card'}}))\n   else:reject['empathetic']['unsupported_or_empty']+=1;continue\n  except ValueError as e:reject['empathetic'][str(e)]+=1;continue\n  add(conv,'empathetic')\nprint('[CENSUS] empathetic complete',flush=True)\ncarrot=json.loads(paths['carrot'].read_text(encoding='utf-8'));assert isinstance(carrot,list)\nfor i,row in enumerate(carrot):\n q=row.get('instruction');a=row.get('output');extra=row.get('input')\n if not isinstance(q,str) or not isinstance(a,str) or not q.strip() or not a.strip():reject['carrot']['missing_text']+=1;continue\n if isinstance(extra,str) and extra.strip():q=q+'\\n'+extra\n conv=validate(normalize({'messages':[{'role':'user','content':q.strip()},{'role':'assistant','content':a.strip()}],'meta':{'source':'carrot','source_id':str(i),'language':'ko','source_license':'Apache-2.0_card'}}))\n add(conv,'carrot')\nprint('[CENSUS] carrot complete',flush=True)\n# Public v3 is a subset; do not sum it again. Exact conversation/prompt overlap are reported separately.\ndef union(families,policy):\n seen=set();out=defaultdict(Counter);duplicates=Counter()\n for row in all_fit:\n  if row['family'] not in families:continue\n  key=row['fp'] if policy=='exact_conversation' else row['prompt']\n  if key in seen:duplicates[row['family']]+=1;continue\n  seen.add(key);st=out[row['split']+':'+row['lang']];st['rows']+=1;st['x_tokens']+=row['x'];st['assistant_targets']+=row['targets'];st['multiturn_rows']+=int(row['multi'])\n return {'policy':policy,'by_split_language':{k:dict(v) for k,v in out.items()},'duplicate_rows':dict(duplicates)}\nresult={'schema':'P106B_PUBLIC_RAW_SCALE_CENSUS_V1','tokenizer_sha256':ARMS['b']['tok_sha'],'max_context':1024,'denominator':'nonpadding x=ids[:-1]','sources':shas,'source_language_stats':{k:dict(v) for k,v in stats.items()},'source_reject_counts':{k:dict(v) for k,v in reject.items()},'human_signal_union':[union({'aya','aya_reannotations','oasst1','oasst2'},p) for p in ('exact_conversation','one_first_prompt')],'including_unreviewed_ko_synthetic_union':[union(set(paths)|{'aya_reannotations'},p) for p in ('exact_conversation','one_first_prompt')],'quality':'NOT_RUN; synthetic Korean source is provisional, not adopted','split_policy':'normalized first user prompt hash modulo20; split shared across sources','teacher_or_gpu':'NOT_RUN','wall_sec':time.perf_counter()-began}\nprint(json.dumps(result,ensure_ascii=False,sort_keys=True))\nPY",
+    "collection_sample": "CUDA_VISIBLE_DEVICES='' /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nimport hashlib,json,random,time,math\nfrom pathlib import Path\nfrom collections import Counter,defaultdict\nimport pyarrow.parquet as pq\nfrom tokenizers import Tokenizer\nfrom tinylm.chat.canonical import normalize\nfrom tinylm.data.sft import encode_conversation,sft_targets,IGNORE\nfrom scripts.p106b_education_followup import ARMS\nbegan=time.perf_counter();tok=Tokenizer.from_file(str(Path(ARMS['b']['tokenizer'])))\nassert hashlib.sha256(Path(ARMS['b']['tokenizer']).read_bytes()).hexdigest().upper()==ARMS['b']['tok_sha']\nroot=Path('HF/sft_sources/aya_collection_ko/korean')\nmanifest=Path('HF/sft_ready/p090_aya_collection_ko_audit_20260923_manifest.json')\nd=json.loads(manifest.read_text(encoding='utf-8'))\nstats=defaultdict(Counter);sums=[];shas=[]\nfor file_index,item in enumerate(d['source_files']):\n p=root/Path(item['path']).name;assert not p.is_symlink();h=hashlib.sha256()\n with p.open('rb') as f:\n  for b in iter(lambda:f.read(1048576),b''):h.update(b)\n assert h.hexdigest().upper()==item['sha256'] and p.stat().st_size==item['size']\n f=pq.ParquetFile(p);rng=random.Random(20261002+file_index)\n sample=sorted(rng.sample(range(f.metadata.num_rows),2000));cursor=0;offset=0;sample_digest=hashlib.sha256(json.dumps(sample,separators=(',',':')).encode()).hexdigest().upper()\n totals=Counter();n=0;fit_values=[]\n for gi in range(f.num_row_groups):\n  length=f.metadata.row_group(gi).num_rows;indices=[]\n  while cursor<len(sample) and sample[cursor]<offset+length:indices.append(sample[cursor]-offset);cursor+=1\n  offset+=length\n  if not indices:continue\n  table=f.read_row_group(gi,columns=['inputs','targets','dataset_name','task_type'])\n  for row in table.take(indices).to_pylist():\n   n+=1;family=str(row['dataset_name']);st=stats[family];st['sample_rows']+=1\n   q,a=row['inputs'],row['targets']\n   if not isinstance(q,str) or not isinstance(a,str) or not q.strip() or not a.strip():st['empty_pair']+=1;fit_values.append(0);continue\n   conv=normalize({'messages':[{'role':'user','content':q.strip()},{'role':'assistant','content':a.strip()}]})\n   ids,labels,_=encode_conversation(conv,tok);x,y=sft_targets(ids,labels);sup=sum(t!=IGNORE for t in y)\n   st['all_x_tokens']+=len(x);st['all_targets']+=sup\n   if len(x)>1024 or not sup:st['over_context_or_empty_mask']+=1;fit_values.append(0);continue\n   st['fit_rows']+=1;st['fit_x_tokens']+=len(x);st['fit_targets']+=sup;fit_values.append(len(x));totals['fit_x_tokens']+=len(x)\n   if family not in ('PIQA (T)','Flan-lambada (T)'):totals['non_benchmark_fit_x_tokens']+=len(x)\n   else:st['known_benchmark_source']+=1\n  del table\n assert n==2000 and cursor==len(sample)\n shas.append({'path':str(p),'sha256':h.hexdigest().upper(),'bytes':p.stat().st_size,'rows':f.metadata.num_rows,'sample_n':n,'sample_indices_sha256':sample_digest,'sample_seed':20261002+file_index})\n mean=sum(fit_values)/n;var=sum((v-mean)**2 for v in fit_values)/(n-1)\n sums.append({'rows':f.metadata.num_rows,'sample_n':n,'fit_mean_x_per_original_row':mean,'fit_srs_se_mean':math.sqrt(var/n*(1-n/f.metadata.num_rows)),'fit_estimated_x_tokens_before_split_dedup_quality':mean*f.metadata.num_rows,'non_benchmark_estimated_x_tokens_before_split_dedup_quality':totals['non_benchmark_fit_x_tokens']/n*f.metadata.num_rows})\n print('[SAMPLE] file',file_index+1,'complete',flush=True)\nprint(json.dumps({'schema':'P106B_AYA_COLLECTION_KO_SCALE_SAMPLE_V1','method':'simple random sample without replacement 2000 rows per pinned file; no rows exported','sources':shas,'tokenizer_sha256':ARMS['b']['tok_sha'],'max_context':1024,'source_sample_stats':{k:dict(v) for k,v in stats.items()},'file_estimates':sums,'quality_and_dedup_and_contamination':'NOT_RUN; not adopted and not a train corpus','known_benchmark_sources_excluded_from_alternative':['PIQA (T)','Flan-lambada (T)'],'wall_sec':time.perf_counter()-began},ensure_ascii=False,sort_keys=True))\nPY"
+  }
+}
