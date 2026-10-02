@@ -16,4 +16,3 @@ fi
 "$python_bin" scripts/runlog.py --name P106B_Stage3qWc_lexical_ab_percentile --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_lexical_modes.py --self-test
 "$python_bin" scripts/runlog.py --name P106B_Stage3qWc_lexical_ab_percentile --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_lexical_modes.py --check-only
 "$python_bin" scripts/runlog.py --name P106B_Stage3qWc_lexical_ab_percentile --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_lexical_modes.py --execute
-
