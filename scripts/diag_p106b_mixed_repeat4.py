@@ -29,8 +29,10 @@ FINAL = ROOT / f"runs/ckpt/m100s10_ko-en_300M_{TAG}.pt"
 LOG = ROOT / f"runs/logs/m100s10_ko-en_300M_{TAG}.json"
 
 
-def check(*, wire=False):
-    p = PUBLIC / "report.json"
+def check(*, wire=False, balanced=False):
+    from scripts.p106b_balanced_public import OUTPUT as BALANCED_PUBLIC
+    public = BALANCED_PUBLIC if balanced else PUBLIC
+    p = public / "report.json"
     for path in (p, OUTPUT, FINAL, LOG):
         safe_repo_path(path)
     digest(p)
@@ -46,21 +48,34 @@ def check(*, wire=False):
         raise ValueError("nonpadding language quota is not 37.5M each")
     specs = {}
     for split in ("train", "val"):
-        file = PUBLIC / f"{split}_shards_manifest.json"
+        file = public / f"{split}_shards_manifest.json"
         digest(file)
         specs[split] = json.loads(file.read_text(encoding="utf-8"))
-        verify(PUBLIC, specs[split])
+        verify(public, specs[split])
         if specs[split]["concat_sha256"] != report.get(split + "_concat_sha256"):
             raise ValueError("mixed corpus concat SHA differs")
+    if balanced and not wire:
+        wire_file = ROOT / "HF/sft_ready/p106b_mixed_student_wire_v2_balanced/report.json"
+        safe_repo_path(wire_file)
+        digest(wire_file)
+        require_wire_report(json.loads(wire_file.read_text(encoding="utf-8")),
+                            specs["train"]["concat_sha256"], specs["val"]["concat_sha256"])
     output = ROOT / "HF/sft_ready/p106b_mixed_student_wire_v1" if wire else OUTPUT
     final = output / "student.pt" if wire else FINAL
     log = output / "student.json" if wire else LOG
+    if balanced:
+        output = ROOT / ("HF/sft_ready/p106b_mixed_student_wire_v2_balanced" if wire else "HF/sft_ready/p106b_mixed_student_v2_balanced")
+        final = output / "student.pt" if wire else ROOT / "runs/ckpt/m100s10_ko-en_300M_p106b_s4_mixed300m_balanced_chat32_s1337.pt"
+        log = output / "student.json" if wire else ROOT / "runs/logs/m100s10_ko-en_300M_p106b_s4_mixed300m_balanced_chat32_s1337.json"
     for path in (output, final, log):
+        safe_repo_path(path)
         if path.is_symlink():
             raise ValueError("linked student output refused")
     if final.exists() or log.exists() or (output / "report.json").exists():
         raise FileExistsError("completed outputs preserved; use a new stage")
     return report, specs, {"corpus_report_sha256": digest(p), "tokenizer_sha256": TOK_SHA,
+                           "public_directory": str(public.relative_to(ROOT)),
+                           "measurement_contract": "MIXED_COUNTS_VALIDATION_V2",
                            "train_concat_sha256": specs["train"]["concat_sha256"],
                            "val_concat_sha256": specs["val"]["concat_sha256"],
                            "micro": 8, "accum": 16, "grad_checkpoint": True, "epochs": 1 if wire else 4,
@@ -73,9 +88,9 @@ def check(*, wire=False):
                            "formal_train_ready": False, "quality": "NOT_REVIEWED"}
 
 
-def rows(spec, language=None):
+def rows(spec, language=None, *, directory=PUBLIC):
     for shard in spec["shards"]:
-        with (PUBLIC / shard["path"]).open(encoding="utf-8") as stream:
+        with (directory / shard["path"]).open(encoding="utf-8") as stream:
             for line in stream:
                 row = json.loads(line)
                 if language is None or row["meta"]["language"] == language:
@@ -95,8 +110,8 @@ def buffered_shuffle(values, rng, limit=4096):
     yield from pool
 
 
-def interleave_streams(streams, size):
-    consumed, alive, block = {k: 0 for k in streams}, set(streams), []
+def interleave_streams(streams, size, *, on_group=None):
+    consumed, alive, block, languages = {k: 0 for k in streams}, set(streams), [], []
     while alive:
         language = min(alive, key=lambda k: (consumed[k], k))
         try:
@@ -106,11 +121,41 @@ def interleave_streams(streams, size):
             continue
         consumed[language] += len(item[0])
         block.append(item)
+        languages.append(language)
         if len(block) == size:
+            if on_group is not None:
+                on_group(block, languages)
             yield block
-            block = []
+            block, languages = [], []
     if block:
+        if on_group is not None:
+            on_group(block, languages)
         yield block
+
+
+def validation_rows(values, per_language=16):
+    """Same fixed token-count-independent hash ranking, with both languages present."""
+    buckets = {lang: [] for lang in ("ko", "en")}
+    for row in values:
+        lang = row["meta"]["language"]
+        key = hashlib.sha256(json.dumps(row, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+        pool = buckets[lang]
+        pool.append((key, row))
+        pool.sort(key=lambda item: item[0])
+        del pool[per_language:]
+    if any(len(pool) < per_language for pool in buckets.values()):
+        raise ValueError("wire validation requires16 rows per language")
+    return [item[1] for lang in ("ko", "en") for item in buckets[lang]]
+
+
+def require_wire_report(report, train_sha, val_sha):
+    inputs = report.get("input", {})
+    if (report.get("status") != "WIRE_COMPLETE" or report.get("optimizer_updates") != 2
+            or inputs.get("measurement_contract") != "MIXED_COUNTS_VALIDATION_V2"
+            or inputs.get("train_concat_sha256") != train_sha
+            or inputs.get("val_concat_sha256") != val_sha
+            or report.get("processed_train_row_exposures") != 256):
+        raise ValueError("balanced full training requires the matching successful two-update wire")
 
 
 def publish_checkpoint(path, state):
@@ -132,6 +177,7 @@ def execute(report, specs, info, *, resume=False, wire=False):
     from scripts.p106b_report_domains import separated_report
     idle_before_gpu()  # Teacher/other compute must be down before student allocation.
     output = ROOT / info["output"]
+    public = ROOT / info["public_directory"]
     final, log = ROOT / info["final"], ROOT / info["log"]
     safe_repo_path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -152,7 +198,7 @@ def execute(report, specs, info, *, resume=False, wire=False):
     if pad_id is None:
         raise ValueError("student pad token missing")
     def encoded(language, epoch):
-        raw = buffered_shuffle(rows(specs["train"], language), random.Random(1337 + epoch * 2 + (language == "ko")))
+        raw = buffered_shuffle(rows(specs["train"], language, directory=public), random.Random(1337 + epoch * 2 + (language == "ko")))
         for row in raw:
             item = encode_records([row], tok, 1024, 32768)[0]
             if len(item[0]) != row["meta"]["processed_x_tokens"] or item[2] != row["meta"]["assistant_targets"]:
@@ -160,8 +206,12 @@ def execute(report, specs, info, *, resume=False, wire=False):
             yield item
     history, first_epoch, updates, total_tokens, grad_peak = [], 1, 0, 0, 0.0
     import itertools
-    validation = itertools.islice(rows(specs["val"]), 32) if wire else rows(specs["val"])
+    validation = validation_rows(rows(specs["val"], directory=public)) if wire else list(rows(specs["val"], directory=public))
     val_records = [encode_records([row], tok, 1024, 32768)[0] for row in validation]
+    from collections import Counter
+    validation_info = {"rows": len(validation), "languages": dict(Counter(r["meta"]["language"] for r in validation)),
+                       "sha256": hashlib.sha256(json.dumps(validation, ensure_ascii=False, sort_keys=True).encode()).hexdigest().upper(),
+                       "selection": "hash lowest16 per language" if wire else "all validation rows"}
     def val_ce():
         model.eval()
         base.freeze_quant()
@@ -196,9 +246,16 @@ def execute(report, specs, info, *, resume=False, wire=False):
                     "sft_ce": val_ce(), "answers": answers(base, cfg, tok, output, "parent")}
     for epoch in range(first_epoch, 2 if wire else 5):
         t0, loss_total, target_total, epoch_tokens = time.perf_counter(), 0.0, 0, 0
+        from collections import Counter
+        counts = Counter()
+        def account(group, languages):
+            for item, language in zip(group, languages):
+                counts[language + "_rows"] += 1
+                counts[language + "_x_tokens"] += len(item[0])
+                counts[language + "_assistant_targets"] += item[2]
         model.train()
         streams = {lang: iter(encoded(lang, epoch)) for lang in ("ko", "en")}
-        groups = interleave_streams(streams, 128)
+        groups = interleave_streams(streams, 128, on_group=account)
         if wire:
             groups = itertools.islice(groups, 2)
         for group in groups:
@@ -226,6 +283,8 @@ def execute(report, specs, info, *, resume=False, wire=False):
             raise ValueError("actual epoch token sum differs; never claim300M")
         total_tokens += epoch_tokens
         item = {"epoch": epoch, "updates": updates, "processed_tokens": epoch_tokens,
+                "processed_rows": sum(counts[lang + "_rows"] for lang in ("ko", "en")),
+                "language_counts": dict(counts), "epoch_complete": not wire,
                 "assistant_targets": target_total, "train_ce": loss_total / target_total,
                 "sft_val_ce": val_ce(), "wall_sec": time.perf_counter() - t0}
         history.append(item)
@@ -243,6 +302,7 @@ def execute(report, specs, info, *, resume=False, wire=False):
         raise ValueError("wire did not execute exactly2 optimizer updates")
     evidence = {"schema": "P106B_MIXED_300M_EXPERIMENT_V1", "status": "WIRE_COMPLETE" if wire else "EDUCATION_COMPLETE",
                 "scope": info["scope"], "input": input_identity,
+                "sft_validation": validation_info,
                 "history": history, "processed_conversation_tokens": total_tokens,
                 "optimizer_updates": updates, "baseline": baseline,
                 "grad_norm_peak_preclip": grad_peak,
@@ -260,7 +320,9 @@ def execute(report, specs, info, *, resume=False, wire=False):
                     base_full_val_delta=evidence["native_ce_after"] - baseline["native_ce"],
                     student_conversation_tokens=total_tokens,
                     assistant_targets=sum(item["assistant_targets"] for item in history),
-                    selected_rows=specs["train"]["rows"], selected_concat_sha256=specs["train"]["concat_sha256"],
+                    available_train_rows=specs["train"]["rows"],
+                    processed_train_row_exposures=sum(item["processed_rows"] for item in history),
+                    selected_rows=sum(item["processed_rows"] for item in history), selected_concat_sha256=specs["train"]["concat_sha256"],
                     teacher_completion_tokens=0)
     evidence["report_domains"] = separated_report(evidence)
     evidence["report_domains"]["corpus"]["label_status"] = "PUBLIC_SOURCE_UNVERIFIED"
@@ -279,17 +341,17 @@ def main():
     group = ap.add_mutually_exclusive_group(required=True)
     group.add_argument("--check-only", action="store_true")
     group.add_argument("--execute", action="store_true")
-    ap.add_argument("--mode", choices=("new", "resume", "wire"), default="new")
+    ap.add_argument("--mode", choices=("new", "resume", "wire", "new-balanced", "resume-balanced", "wire-balanced"), default="new")
     args = ap.parse_args()
     try:
-        report, specs, info = check(wire=args.mode == "wire")
+        report, specs, info = check(wire=args.mode.startswith("wire"), balanced=args.mode.endswith("-balanced"))
     except (ValueError, FileExistsError, FileNotFoundError) as exc:
         print(f"[HOLD] input prerequisite: {exc}", file=sys.stderr)
         return 8
     if args.check_only:
         print(json.dumps(info, ensure_ascii=False))
         return 0
-    return execute(report, specs, info, resume=args.mode == "resume", wire=args.mode == "wire")
+    return execute(report, specs, info, resume=args.mode.startswith("resume"), wire=args.mode.startswith("wire"))
 
 
 if __name__ == "__main__":

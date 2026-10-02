@@ -23,6 +23,7 @@ from scripts.p106b_teacher_format import content_instructions, parse_tagged, scr
 from scripts.p106b_shards import ShardWriter, verify
 
 OUTPUT = ROOT / "HF/sft_ready/p106b_concept_batch_v1"
+RECOVERY_OUTPUT = ROOT / "HF/sft_ready/p106b_concept_batch_v2_plain_fields"
 ORDER = (1, 2, 4, 4, 2, 1)
 PATTERN = re.compile(r"\s*\[\[ITEM_(\d+)\]\]\s*\n(.*?)\n\[\[/ITEM_\1\]\]", re.DOTALL)
 
@@ -59,9 +60,15 @@ def prompt(jobs, item_ids):
         "Write one focused question and answer for every requested ID. "
         "Keep the source intent/constraints; do not combine unrelated items. "
         "Never output JSON, roles, ChatML or commentary outside these fields. "
-        "Private reasoning remains outside final content. Use exactly this framing for each ID:\n"
-        "[[ITEM_<id>]]\n[[QUESTION]]\n<question>\n[[/QUESTION]]\n"
-        "[[ANSWER]]\n<answer>\n[[/ANSWER]]\n[[/ITEM_<id>]]")
+        "Translate BOTH the question and answer into the requested language when needed. "
+        "Private reasoning remains outside final content. The body of QUESTION and ANSWER "
+        "is plain content, with no extra XML wrapper or placeholder label. "
+        "For each requested numeric ID, emit these delimiter lines in order: "
+        "the item's opening delimiter, [[QUESTION]], the real question text, "
+        "[[/QUESTION]], [[ANSWER]], the real answer text, [[/ANSWER]], "
+        "then the item's closing delimiter. Do not print this explanatory sentence. "
+        "Exact item delimiters for this request are:\n"
+        + "\n".join(f"ID {i}: opening [[ITEM_{i}]]; closing [[/ITEM_{i}]]" for i in item_ids))
     items = [{"id": i, "source": job["source_payload"]} for i, job in zip(item_ids, jobs)]
     return [{"role": "system", "content": system},
             {"role": "user", "content": json.dumps({"items": items}, ensure_ascii=False)}]
@@ -81,11 +88,25 @@ def wrap_item(job, content, ident, teacher_sha, reasoning, raw_ref):
         reasoning_sha256=hashlib.sha256(reasoning.encode()).hexdigest().upper() if reasoning else "")
 
 
-def check():
+def scaffold_observations(content):
+    """Visible protocol echoes are warnings; an XML question may legitimately quote them."""
+    return {name: bool(re.search(r"</?(?:question|answer)>", content[name]))
+            for name in ("user_text", "assistant_text")}
+
+
+def speed_candidates(arms, ratios):
+    expected = set(arms[0].get("accepted_keys", [])) if arms else set()
+    complete = (len(arms) == 6 and len(expected) == 8
+                and all(set(a.get("accepted_keys", [])) == expected for a in arms))
+    return {s: complete and len(v) == 2 and min(v) > 1.05 for s, v in ratios.items()}
+
+
+def check(mode="original"):
     from scripts.p106b_gate_runtime import fixed_jobs, teacher_inputs, MODEL_SHA256
-    safe_repo_path(OUTPUT)
+    directory = RECOVERY_OUTPUT if mode == "recovery" else OUTPUT
+    safe_repo_path(directory)
     safe_repo_path(TOKENIZER)
-    if OUTPUT.exists() or OUTPUT.is_symlink():
+    if directory.exists() or directory.is_symlink():
         raise FileExistsError("preserve existing concept-batch output")
     if digest(TOKENIZER) != TOK_SHA:
         raise ValueError("chat32 tokenizer differs")
@@ -100,6 +121,8 @@ def check():
     return jobs, {"schema": "P106B_CONCEPT_BATCH_PREFLIGHT_V1", "source": source,
                   **teacher_inputs(), "script_sha256": digest(Path(__file__)),
                   "tokenizer_sha256": TOK_SHA, "order": list(ORDER), "effort": "xhigh",
+                  "mode": mode, "output": str(directory.relative_to(ROOT)),
+                  "prompt_contract": "PLAIN_FIELD_INSTRUCTIONS_V2",
                   "context": 32768, "thinking_budget": 8192, "max_output": 16384,
                   "logical_requests": 28, "max_physical_requests": 84,
                   "student_training": "NOT_RUN", "formal_train_ready": False}
@@ -113,8 +136,10 @@ def execute(jobs, info):
     from scripts.p106b_http_errors import capture_http_error
     from urllib.error import HTTPError
     idle_before_gpu()
-    OUTPUT.mkdir(parents=True, exist_ok=False)
-    raw, canonical = ShardWriter(OUTPUT, "raw"), ShardWriter(OUTPUT, "canonical")
+    directory = ROOT / info["output"]
+    safe_repo_path(directory)
+    directory.mkdir(parents=True, exist_ok=False)
+    raw, canonical = ShardWriter(directory, "raw"), ShardWriter(directory, "canonical")
     tok = Tokenizer.from_file(str(TOKENIZER))
     arms, session = [], None
     status, rc, reason = "PARTIAL", 9, "not started"
@@ -138,6 +163,7 @@ def execute(jobs, info):
                             ident = f"arm{arm_index}_{lang}_{start}_try{attempt}"
                             record = {"generation_id": ident, "source_jobs": selected,
                                       "requested_ids": missing, "reasoning_effort": "xhigh", "attempt": attempt,
+                                      "messages": messages,
                                       "semantic_truth": "PSEUDO_UNVERIFIED", "sampling": dict(__import__('scripts.diag_p106b_online_rate5', fromlist=['THINKING_SAMPLER']).THINKING_SAMPLER)}
                             parsed, reply = {}, None
                             admitted = session.count_prompt(messages, 32768, 16384)
@@ -158,7 +184,16 @@ def execute(jobs, info):
                                     job = block[item]
                                     reasoning = choices[0]["message"].get("reasoning_content") or ""
                                     row = wrap_item(job, content, ident + f"_item{item}", MODEL_SHA256,
-                                                    reasoning, f"{OUTPUT.relative_to(ROOT)}/raw_shards_manifest.json#{ident}")
+                                                    reasoning, f"{directory.relative_to(ROOT)}/raw_shards_manifest.json#{ident}")
+                                    observations = scaffold_observations(content)
+                                    row["meta"]["scaffold_observations"] = observations
+                                    row["meta"]["warning_effect"] = "OBSERVE_ONLY_NO_SEMANTIC_ADMISSION"
+                                    metrics["scaffold_warning_rows"] += int(any(observations.values()))
+                                    for role, value in (("user", content["user_text"]), ("assistant", content["assistant_text"])):
+                                        warnings = script_observations(value, lang)
+                                        if warnings:
+                                            print("[CHARACTER_OBSERVATION] " + json.dumps({"id": ident, "role": role,
+                                                  "observations": warnings, "effect": "WARNING_ONLY"}), flush=True)
                                     ids, labels, _ = encode_conversation(row, tok)
                                     x, y = sft_targets(ids, labels)
                                     if not 0 < len(x) <= 1024 or not any(v != IGNORE for v in y):
@@ -209,15 +244,15 @@ def execute(jobs, info):
         ratios = {}
     report = {"schema": "P106B_CONCEPT_BATCH_GATE_V1", "input": info, "status": status, "exit_code": rc,
               "reason": reason, "arms": arms, "order_paired_rate_ratios": ratios,
-              "speed_candidate": {s: len(v) == 2 and min(v) > 1.05 for s, v in ratios.items()},
+              "speed_candidate": speed_candidates(arms, ratios),
               "whole_wall_sec": time.perf_counter() - began, "server": session.evidence() if session else None,
               "semantic_truth": "NOT_REVIEWED", "student_updates": 0, "checkpoint_saved": False}
     for name, writer in (("raw", raw), ("canonical", canonical)):
         if writer._total_rows:
             spec = writer.close(lineage=info)
-            verify(OUTPUT, spec)
+            verify(directory, spec)
             report[name + "_concat_sha256"] = spec["concat_sha256"]
-    write_report(OUTPUT / "report.json", report)
+    write_report(directory / "report.json", report)
     print("[CONCEPT_BATCH_SUMMARY] " + json.dumps(report, ensure_ascii=False), flush=True)
     return rc
 
@@ -227,8 +262,9 @@ def main():
     group = ap.add_mutually_exclusive_group(required=True)
     group.add_argument("--check-only", action="store_true")
     group.add_argument("--execute", action="store_true")
+    ap.add_argument("--mode", choices=("original", "recovery"), default="original")
     args = ap.parse_args()
-    jobs, info = check()
+    jobs, info = check(args.mode)
     if args.check_only:
         print(json.dumps(info, ensure_ascii=False))
         return 0

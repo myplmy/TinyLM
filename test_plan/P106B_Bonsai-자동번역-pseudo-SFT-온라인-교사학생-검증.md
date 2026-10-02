@@ -559,6 +559,26 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 **preflight:** 교사입력/샘플링xhigh·8K사고/16K전체/32Kctx는동일설정, 기존실험을반복하지않도록새출력경로/태그/단계명을사용한다. 태그는 `p106b_s3k_contract_chat32_s1337`와 `p106b_s3l_contract_a_s1337`로 별도예약하며 원형을덮지않는다. 풀2배·300M표준은 이소형의4pass배선진단에충족되지않는**의도된 예외**다. 실제토큰=각자tokenizer로직렬화한비패딩대화합×4이고지도토큰/패딩계산상한은별도표시한다. 업데이트수는4×ceil(train행/128), micro8×accum16·seq≤1024·checkpoint-on이다. 동일자료라도어휘가달라토큰분모/부모/구조가달라 **tokenizer단독인과·교차CE순위·300M효과**는금지다. Codex사전조회는허용된정확아티팩트/계산전용레지스트리경로만사용하고전체runs를열지않는다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 2026-10-02 Stage4 회수·순서독립 선별/평문 교사/균형 평가 복구
+
+[결과101 §45](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 qWc/4a/4b/4c0는 모두 완료됐다. 예측한 CPU p95계산·교사4개묶음 생산성·학생2업데이트는 작동했다. 그러나 ~~공개C가 충분하고 고르게 구성될 것~~은 EN1.847M·KO의 두 위키 작업83.64%로 불성립, ~~교사 plain content가 깨끗할 것~~은48행 중44행의 literal placeholder로 불성립했다. 학생 실답 전후0/8이라 기술 성공을 교육 성공으로 올리지 않는다.
+
+사용자 A 승인으로 새 공개v2는 전체 prompt hash 정렬/내용 SHA 중복선택/언어별 목표25% source-family cap을 쓴다. 부분 코퍼스는 실제 점유율과 부족량을 따로 보고하며 cap완화/복제/새 다운로드를 하지 않는다. 교사v2는 예시 placeholder 제거·질문/답 목표언어·실제 messages보존·경고 전용 scaffold 관측을 추가한다. 새 wire는 소비한256행과전체준비행을 분리하고 val은 KO16/EN16의 고정hash로 선정한다. 과거 val/속도 원형은 그대로 둔다.
+
+| 단계 | 사용자 실행 파일 | 예상 | 선결/판정 | 현재 |
+|---|---|---:|---|---|
+| Stage4aWb | [run_P106B_Stage4aWb_balanced_public_corpus.sh](../run_P106B_Stage4aWb_balanced_public_corpus.sh) | CPU0.75h | 전체색인·고정SHA·20MB·분포/실제 x부족량, no model | STATIC_ONLY |
+| Stage4bWb | [run_P106B_Stage4bWb_concept_batch_plain_fields.sh](../run_P106B_Stage4bWb_concept_batch_plain_fields.sh) | GPU1.5h 상한 추정 | 같은8슬롯/양순서·생산성/실제답·경고. 정답성 PASS 아님 | NOT_RUN |
+| Stage4c0Wb | [run_P106B_Stage4c0Wb_balanced_student_wire.sh](../run_P106B_Stage4c0Wb_balanced_student_wire.sh) | GPU0.5h | v2 exacttrain/val·2update·256실제노출·balanced32val | NOT_RUN |
+| Stage4cWb | [run_P106B_Stage4cWb_balanced_chat32_repeat4.sh](../run_P106B_Stage4cWb_balanced_chat32_repeat4.sh) | GPU12h 잠정 | 같은v2 wire통과·각언어37.5M실제고유량·micro8/accum16/ckptON·4pass | 조건부 HOLD |
+
+이전 Stage4cW는 미실행 원형으로 보존하며 취소/삭제하지 않는다. 현 v1의 영어 부족으로 실행 전 차단된다. full v2도 부족하면 실행하지 않고 부족량을 다음 자료확보/교사생성 계획의 입력으로 삼는다. 분포 변경 때문에 v1/v2 CE 차이를 단일 소스 효과로 해석하지 않는다. 새 모델 태그는 `p106b_s4_mixed300m_balanced_chat32_s1337`; 정확 새 경로 write-once와 학습 전 부모/자료SHA를 검사한다.
+
+별도 사용자 B 승인 연구는 [P106C](P106C_실제-업데이트-선택기와-답변학습-비용게이트.md)가 소유한다. micro8×accum4의 반복 암기/선택 진단 예외를 본 P106B에 전파하지 않는다. 기존 공개75M×4/300M, 사전 파생 격리·교사원형 보존·후행판독 정책은 유지한다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 **원본 보존·한계:** 이전v32의실제품질/비용·선택값을새 코드 결과로재계산하지않는다. 신규교사/학생/GPU·스모크는사용자실행이고현재NOT_RUN이다. 교사raw/사고·canonical·선택/미선택·교정의계보는20MB이하write-once샤드로남는다. 후행 패킷20개 준비는판독이아니며지금GPT가내용을새로평가하지않는다. 제안서종료는승인범위새사용자실행/결과회수후판정하고 사용자실행대기만으로현재GPT WIP를미완료로유지하지않는다.
 
 ### 2026-10-02 후속 — CPU p95 수리와 한정 생성 경로 진단 (Stage3qWc·Stage3sWa)
