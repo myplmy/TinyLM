@@ -643,6 +643,19 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   15	P106B	run_P106B_Stage4bW_distinct_concept_batch.sh	D	1.50	Y	Y	Teacher-only xhigh distinct concepts1/2/4 in paired order; same budgets, shared3 technical attempts, raw/canonical provenance; no student or semantic PASS.	8
 #   16	P106B	run_P106B_Stage4c0W_mixed_student_wire.sh	Y	0.50	Y	Y	Teacher down; mixed-source learner2 optimizer updates with original micro8/accum16/ckpt-on and separate wire outputs; not300M, no quality claim.	8
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage4aWb_balanced_public_corpus.sh	N	0.75	N	Y	Whole-source hash selection and25 percent target source caps; preserve v1 and report actual share/shortfall.	8
+#   2	P106B	run_P106B_Stage4bWb_concept_batch_plain_fields.sh	D	1.50	Y	Y	Plain content teacher fields and both-language instruction; identical accepted slots,1/2/4 productivity, raw answers preserved.	8
+#   3	P106B	run_P106B_Stage4c0Wb_balanced_student_wire.sh	Y	0.50	Y	Y	Public v2 two-update wire: actual256 exposures,16+16 hash-fixed validation; original batch and parent.	8
+#   4	P106C	run_P106C_Stage0W_replay_data_contract.sh	N	0.05	N	Y	CPU closed-world code-gold roles and fixed token/alias fixtures; no teacher/model.	8
+#   5	P106C	run_P106C_Stage1W_replay_cost_calibration.sh	Y	1.00	Y	Y	40 diagnostic updates, A/A restoration, actual cost estimate; four-hour cumulative research cap, user GPU only.	8
+#   6	P106C	run_P106C_Stage2W_tiny_answer_memorization.sh	Y	1.00	Y	Y	Requires calibration; at most128 tiny memorization updates, exact answer+EOS29/32; not broad intelligence.	8
+#   7	P106C	run_P106C_Stage3W_actual_update_selector.sh	Y	1.50	Y	Y	Requires tiny;16 paired plus/zero candidates and four common tails,144 updates; same fresh S0.	8
+#   8	P106C	run_P106C_Stage4W_selection_policy_pair.sh	Y	1.50	Y	Y	Requires replay signal;128 matched updates per policy, sealed answers/native retention/cost; cumulative budget guard.	8
+#   18	P106C	run_P106C_Stage5Wa_prompt_cache_attribution.sh	D	0.25	Y	Y	Approved A attempt; OS NVML denial before model, preserved as runtime NOT_RUN.	8
+#   19	P106C	run_P106C_Stage5Wb_prompt_cache_attribution.sh	D	0.25	Y	Y	Approved A recovery;384 BF16 generations and divergent-pair FP32 recheck; no updates/checkpoint writes.	8
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -653,15 +666,5 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #     (번호 미배정) 2-tap 동적 conv -> REVIEW2 확정 후. 번호는 계획서를 쓸 때 붙인다(D16). 08_paper_review §11.3-2
 #     (번호 미배정) wandb 본격 활용 -> REVIEW2 이후. 도구 scripts/wandb_sync.py 는 작성 완료
 #     P014 안 A/B LUT 커널     -> ★L2+L3 목표의 유일한 길. 미착수 (02_memory §M.3.3)
-1	P106B	run_P106B_Stage4aWb_balanced_public_corpus.sh	N	0.75	N	Y	Whole-source hash selection and25 percent target source caps; preserve v1 and report actual share/shortfall.	8
-2	P106B	run_P106B_Stage4bWb_concept_batch_plain_fields.sh	D	1.50	Y	Y	Plain content teacher fields and both-language instruction; identical accepted slots,1/2/4 productivity, raw answers preserved.	8
-3	P106B	run_P106B_Stage4c0Wb_balanced_student_wire.sh	Y	0.50	Y	Y	Public v2 two-update wire: actual256 exposures,16+16 hash-fixed validation; original batch and parent.	8
-4	P106C	run_P106C_Stage0W_replay_data_contract.sh	N	0.05	N	Y	CPU closed-world code-gold roles and fixed token/alias fixtures; no teacher/model.	8
-5	P106C	run_P106C_Stage1W_replay_cost_calibration.sh	Y	1.00	Y	Y	40 diagnostic updates, A/A restoration, actual cost estimate; four-hour cumulative research cap, user GPU only.	8
-6	P106C	run_P106C_Stage2W_tiny_answer_memorization.sh	Y	1.00	Y	Y	Requires calibration; at most128 tiny memorization updates, exact answer+EOS29/32; not broad intelligence.	8
-7	P106C	run_P106C_Stage3W_actual_update_selector.sh	Y	1.50	Y	Y	Requires tiny;16 paired plus/zero candidates and four common tails,144 updates; same fresh S0.	8
-8	P106C	run_P106C_Stage4W_selection_policy_pair.sh	Y	1.50	Y	Y	Requires replay signal;128 matched updates per policy, sealed answers/native retention/cost; cumulative budget guard.	8
 9	P106B	run_P106B_Stage4cWb_balanced_chat32_repeat4.sh	Y	12.0	Y	Y	Conditional actual75M bilingual quota and same v2 wire required; original micro8/accum16/ckpt-on/four passes.	8
 1	P106C	run_P106C_Stage6W_balanced_early_policy_pair.sh	Y	0.50	Y	Y	A384 path gate complete; user B only, color/language/pair/token-matched baseline/selected,8/16/32 common evaluations; no auto adoption.	8
-18	P106C	run_P106C_Stage5Wa_prompt_cache_attribution.sh	D	0.25	Y	Y	Approved A attempt; OS NVML denial before model, preserved as runtime NOT_RUN.	8
-19	P106C	run_P106C_Stage5Wb_prompt_cache_attribution.sh	D	0.25	Y	Y	Approved A recovery;384 BF16 generations and divergent-pair FP32 recheck; no updates/checkpoint writes.	8

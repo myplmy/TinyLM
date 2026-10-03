@@ -574,9 +574,9 @@ OASST2의 review/rank는 사실성 보증이 아니다. 교사 번역도 독립 
 
 | 단계 | 사용자 실행 파일 | 예상 | 선결/판정 | 현재 |
 |---|---|---:|---|---|
-| Stage4aWb | [run_P106B_Stage4aWb_balanced_public_corpus.sh](../run_P106B_Stage4aWb_balanced_public_corpus.sh) | CPU0.75h | 전체색인·고정SHA·20MB·분포/실제 x부족량, no model | STATIC_ONLY |
-| Stage4bWb | [run_P106B_Stage4bWb_concept_batch_plain_fields.sh](../run_P106B_Stage4bWb_concept_batch_plain_fields.sh) | GPU1.5h 상한 추정 | 같은8슬롯/양순서·생산성/실제답·경고. 정답성 PASS 아님 | NOT_RUN |
-| Stage4c0Wb | [run_P106B_Stage4c0Wb_balanced_student_wire.sh](../run_P106B_Stage4c0Wb_balanced_student_wire.sh) | GPU0.5h | v2 exacttrain/val·2update·256실제노출·balanced32val | NOT_RUN |
+| Stage4aWb | `run_P106B_Stage4aWb_balanced_public_corpus.sh` | CPU0.75h | 전체색인·고정SHA·20MB·분포/실제 x부족량, no model | 완료·결과101 §46 |
+| Stage4bWb | `run_P106B_Stage4bWb_concept_batch_plain_fields.sh` | GPU1.5h 상한 추정 | 같은8슬롯/양순서·생산성/실제답·경고. 정답성 PASS 아님 | 완료·결과101 §46 |
+| Stage4c0Wb | `run_P106B_Stage4c0Wb_balanced_student_wire.sh` | GPU0.5h | v2 exacttrain/val·2update·256실제노출·balanced32val | 완료·결과101 §46 |
 | Stage4cWb | [run_P106B_Stage4cWb_balanced_chat32_repeat4.sh](../run_P106B_Stage4cWb_balanced_chat32_repeat4.sh) | GPU12h 잠정 | 같은v2 wire통과·각언어37.5M실제고유량·micro8/accum16/ckptON·4pass | 조건부 HOLD |
 
 이전 Stage4cW는 미실행 원형으로 보존하며 취소/삭제하지 않는다. 현 v1의 영어 부족으로 실행 전 차단된다. full v2도 부족하면 실행하지 않고 부족량을 다음 자료확보/교사생성 계획의 입력으로 삼는다. 분포 변경 때문에 v1/v2 CE 차이를 단일 소스 효과로 해석하지 않는다. 새 모델 태그는 `p106b_s4_mixed300m_balanced_chat32_s1337`; 정확 새 경로 write-once와 학습 전 부모/자료SHA를 검사한다.
