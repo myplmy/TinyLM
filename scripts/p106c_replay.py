@@ -516,6 +516,41 @@ def overfit(runner, target, budget):
             "memorization": observations, "generalization": "NOT_TESTED"}
 
 
+def tail_schedule(ranked, selected):
+    """Keep the best eligible candidate in the actual tail evidence, not just rank1."""
+    all_ids = [p["block"] for p in ranked]
+    if len(set(all_ids)) != len(all_ids) or len(all_ids) < 4:
+        raise ValueError("four distinct candidate tails require a valid ranking")
+    if any(block not in all_ids for block in selected):
+        raise ValueError("selected candidate is absent from ranking")
+    preferred = ([selected[0]] if selected else []) + [all_ids[0], all_ids[-1], all_ids[len(all_ids)//2]]
+    candidates = list(dict.fromkeys(preferred))[:3]
+    remaining = [i for i in all_ids if i not in candidates]
+    candidates.append(random.Random(20261002).choice(remaining))
+    return candidates
+
+
+def selected_tail_signal(selected, tails, margin):
+    if not selected:
+        return False
+    matched = [row for row in tails if row["block"] == selected[0]]
+    if len(matched) != 1:
+        raise ValueError("best selected candidate needs exactly one observed tail")
+    return matched[0]["delta_contrast"] > margin
+
+
+def parent_native_comparison(parent_ce, arm_reports):
+    """Observation only: the old between-policy gate is not parent retention."""
+    if not math.isfinite(parent_ce):
+        raise ValueError("parent native CE must be finite")
+    values = {row["arm"]: row["native_after"]["ce"]-parent_ce for row in arm_reports}
+    if not all(math.isfinite(v) for v in values.values()):
+        raise ValueError("native CE delta is nonfinite")
+    return {"parent_ce": parent_ce, "delta_from_parent": values,
+            "automatic_parent_threshold": None,
+            "interpretation": "between-policy agreement does not establish preservation of parent language ability"}
+
+
 def replay(runner, target, budget):
     calibration = read_json(BASE / "calibrate/report.json")
     points = []
@@ -540,10 +575,9 @@ def replay(runner, target, budget):
         write_json(target/f"block_{block:02d}.json", points[-1])
     ranked = sorted(points, key=lambda p: (-p["delta_contrast"], p["block"]))
     selected = [p["block"] for p in ranked if p["eligible"]][:4]
-    candidates = [ranked[0]["block"], ranked[len(ranked)//2]["block"], ranked[-1]["block"]]
-    random_block = random.Random(20261002).choice([i for i in range(16) if i not in candidates])
+    candidates = tail_schedule(ranked, selected)
     tails = []
-    for block in [*candidates, random_block]:
+    for block in candidates:
         endpoints = []
         for weight in (1, 0):
             runner.reset()
@@ -554,9 +588,10 @@ def replay(runner, target, budget):
             endpoints.append(runner.scores("dev"))
         tails.append({"block": block, "plus": endpoints[0], "zero": endpoints[1],
                       "delta_contrast": endpoints[0]["contrast"]-endpoints[1]["contrast"]})
-    signal = bool(selected) and tails[0]["delta_contrast"] > calibration["aa_noise_margin"]
+    signal = selected_tail_signal(selected, tails, calibration["aa_noise_margin"])
     return {"status": "REPLAY_SIGNAL_PASSED" if signal else "REPLAY_GATE_NEGATIVE", "success_updates": 144,
             "points": points, "eligible_blocks": selected, "tails": tails,
+            "tail_signal_candidate": selected[0] if selected else None,
             "limit": "local two-step fixed-denominator occurrence suppression; not historical deletion or general intelligence"}
 
 
@@ -594,9 +629,10 @@ def policies(runner, target, budget):
         raise ValueError("main arm token budgets differ")
     delta = right["sealed"]["pair_pass"]/64-left["sealed"]["pair_pass"]/64
     interval = paired_interval(left["sealed"]["pair_results"], right["sealed"]["pair_results"])
+    parent_ce = read_json(BASE / "calibrate/report.json")["native_parent"]["ce"]
     screens = {"sealed_pair_delta_at_least_10pp": delta >= .10,
                "retention_delta_at_most_0p01": right["retention"]["nll"]-left["retention"]["nll"] <= .01,
-               "native_delta_at_most_0p03": right["native_after"]["ce"]-left["native_after"]["ce"] <= .03,
+               "native_between_policies_delta_at_most_0p03": right["native_after"]["ce"]-left["native_after"]["ce"] <= .03,
                "no_increase_empty": right["sealed"]["observations"].get("empty_answer", 0) <= left["sealed"]["observations"].get("empty_answer", 0),
                "no_increase_loop": right["sealed"]["observations"].get("unwanted_loop", 0) <= left["sealed"]["observations"].get("unwanted_loop", 0),
                "legitimate_repeat_not_worse": right["controls"]["observations"].get("legitimate_repetition_pass", 0) >= left["controls"]["observations"].get("legitimate_repetition_pass", 0)}
@@ -604,6 +640,7 @@ def policies(runner, target, budget):
             "initialization_seeds": 1, "policy_order": ["baseline", "selected"],
             "pair_accuracy_delta": delta, "candidate_signal": all(screens.values()), "preregistered_screens": screens,
             "paired_bootstrap": interval,
+            "parent_native_comparison": parent_native_comparison(parent_ce, arm_reports),
             "retention_nll_delta": right["retention"]["nll"]-left["retention"]["nll"],
             "adoption": "NOT_DECIDED_REQUIRES_RAW_ANSWERS_RETENTION_AND_TOTAL_COST_REVIEW",
             "exposure_caps": plan["max_exposures"], "same_total_cost_comparison": "NOT_RUN"}

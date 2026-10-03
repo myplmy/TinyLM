@@ -67,6 +67,27 @@ class DataTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             replay.cost_estimate(float('nan'), 0, 0, 0, 0, 0, 0, 0, 0)
 
+    def test_tail_signal_cannot_borrow_ineligible_rank1(self):
+        points = [{"block": i} for i in range(16)]
+        schedule = replay.tail_schedule(points, [12, 11])
+        self.assertEqual(schedule[0], 12)
+        self.assertEqual(len(set(schedule)), 4)
+        tails = [{"block": 0, "delta_contrast": 1}, {"block": 12, "delta_contrast": -.1}]
+        self.assertFalse(replay.selected_tail_signal([12, 11], tails, .001))
+        self.assertFalse(replay.selected_tail_signal([], tails, .001))
+        with self.assertRaisesRegex(ValueError, "exactly one"):
+            replay.selected_tail_signal([11], tails, .001)
+
+    def test_parent_loss_drift_is_not_between_arm_agreement(self):
+        arms = [{"arm": "baseline", "native_after": {"ce": 4.10}},
+                {"arm": "selected", "native_after": {"ce": 4.12}}]
+        result = replay.parent_native_comparison(3.59, arms)
+        self.assertAlmostEqual(result['delta_from_parent']['baseline'], .51)
+        self.assertAlmostEqual(result['delta_from_parent']['selected'], .53)
+        self.assertIsNone(result['automatic_parent_threshold'])
+        with self.assertRaises(ValueError):
+            replay.parent_native_comparison(float('nan'), arms)
+
 
 class StateTests(unittest.TestCase):
     def setUp(self):

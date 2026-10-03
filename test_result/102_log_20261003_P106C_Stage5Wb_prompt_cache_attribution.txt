@@ -1,0 +1,38 @@
+A runtime recovery only; first NVML OS denial preserved; same3 models/64 prompts/cache pairs,900s cap, zero updates/checkpoint writes.
+
+==============================================================================
+[runlog] 2026-10-03 23:46:48  name=P106C_Stage5Wb_prompt_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106c_followup.py
+==============================================================================
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-10-03 23:46:53)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-03 23:46:55  name=P106C_Stage5Wb_prompt_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106c_prompt_cache.py --check-only --mode recovery
+==============================================================================
+{"subjects": [["parent", "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt", "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950"], ["baseline", "HF/sft_ready/p106c_replay_v1/policy/baseline_student.pt", "2E2187E72AE1F0505DF22CDA93C9C7DB92AF02D94F001B14CAD8230EB6D4A169"], ["selected", "HF/sft_ready/p106c_replay_v1/policy/selected_student.pt", "D00F902BBA0F2644A89D00E953776FDE7D56A034E85B990012869BC5C187AD9E"]], "grid_sha256": "C2961F7CBD72D83B40B81E073BAF51C07909292F22F8098DD12E9DA9E567D445", "prompts_per_subject": 64, "expected_cases": 384, "max_new": 32, "max_wall_sec": 900, "policy_sha256": "FE8C953F65934822957929905593DFE6D076F7F27AC302DFC98A0EAC9D306984", "prepare_sha256": "461DE0CE71A75E103F34D3098BC7D3D0E0F91C795DBD8DC3779F1CDCA91DC297", "script_sha256": "2A1E8BF13EAD9F24A0D91F17FEDD10FD7F2BA6F89FA67708A71046AA08E1441E", "training_updates": 0, "claim": "POSTHOC reused eight fact pairs; not new sealed generalization"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-03 23:46:58)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-03 23:46:58  name=P106C_Stage5Wb_prompt_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106c_prompt_cache.py --execute --mode recovery
+==============================================================================
+[A_SUBJECT] {"subject": "parent", "counts": {"table:False:ko:n": 8, "table:False:ko:pass": 0, "table:True:ko:n": 8, "table:True:ko:pass": 0, "box:False:ko:n": 8, "box:False:ko:pass": 0, "box:True:ko:n": 8, "box:True:ko:pass": 0, "table:False:en:n": 8, "table:False:en:pass": 0, "table:True:en:n": 8, "table:True:en:pass": 0, "box:False:en:n": 8, "box:False:en:pass": 0, "box:True:en:n": 8, "box:True:en:pass": 0}, "bf16_cache_differences": 11, "peak_reserved_mib": 744.0}
+[A_SUBJECT] {"subject": "baseline", "counts": {"table:False:ko:n": 8, "table:False:ko:pass": 8, "table:True:ko:n": 8, "table:True:ko:pass": 7, "box:False:ko:n": 8, "box:False:ko:pass": 8, "box:True:ko:n": 8, "box:True:ko:pass": 6, "table:False:en:n": 8, "table:False:en:pass": 8, "table:True:en:n": 8, "table:True:en:pass": 8, "box:False:en:n": 8, "box:False:en:pass": 8, "box:True:en:n": 8, "box:True:en:pass": 4}, "bf16_cache_differences": 0, "peak_reserved_mib": 740.0}
+[A_SUBJECT] {"subject": "selected", "counts": {"table:False:ko:n": 8, "table:False:ko:pass": 8, "table:True:ko:n": 8, "table:True:ko:pass": 2, "box:False:ko:n": 8, "box:False:ko:pass": 8, "box:True:ko:n": 8, "box:True:ko:pass": 1, "table:False:en:n": 8, "table:False:en:pass": 8, "table:True:en:n": 8, "table:True:en:pass": 4, "box:False:en:n": 8, "box:False:en:pass": 8, "box:True:en:n": 8, "box:True:en:pass": 2}, "bf16_cache_differences": 0, "peak_reserved_mib": 740.0}
+[P106C_A_SUMMARY] {"schema": "P106C_PROMPT_CACHE_A_V1", "status": "PROMPT_CACHE_DIAGNOSTIC_COMPLETE", "input": {"subjects": [["parent", "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt", "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950"], ["baseline", "HF/sft_ready/p106c_replay_v1/policy/baseline_student.pt", "2E2187E72AE1F0505DF22CDA93C9C7DB92AF02D94F001B14CAD8230EB6D4A169"], ["selected", "HF/sft_ready/p106c_replay_v1/policy/selected_student.pt", "D00F902BBA0F2644A89D00E953776FDE7D56A034E85B990012869BC5C187AD9E"]], "grid_sha256": "C2961F7CBD72D83B40B81E073BAF51C07909292F22F8098DD12E9DA9E567D445", "prompts_per_subject": 64, "expected_cases": 384, "max_new": 32, "max_wall_sec": 900, "policy_sha256": "FE8C953F65934822957929905593DFE6D076F7F27AC302DFC98A0EAC9D306984", "prepare_sha256": "461DE0CE71A75E103F34D3098BC7D3D0E0F91C795DBD8DC3779F1CDCA91DC297", "script_sha256": "2A1E8BF13EAD9F24A0D91F17FEDD10FD7F2BA6F89FA67708A71046AA08E1441E", "training_updates": 0, "claim": "POSTHOC reused eight fact pairs; not new sealed generalization"}, "training_updates": 0, "checkpoint_writes": 0, "precision": "BF16 autocast; TF32 off throughout; FP32 only for divergent cache pairs", "case_count": 384, "bf16_cache_differences": 11, "unresolved_fp32_cache_differences": 0, "path_gate_passed": true, "exit_code": 0, "whole_wall_sec": 75.42175400300766}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.4분  (2026-10-03 23:48:20)
+==============================================================================

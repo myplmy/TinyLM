@@ -1,0 +1,35 @@
+Approved A diagnostic only; frozen3 subjects,64 prompts, cache pair; zero updates/checkpoint writes;900s cap.
+
+==============================================================================
+[runlog] 2026-10-03 23:42:35  name=P106C_Stage5Wa_prompt_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106c_followup.py
+==============================================================================
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.002s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-03 23:42:38)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-03 23:42:38  name=P106C_Stage5Wa_prompt_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106c_prompt_cache.py --check-only
+==============================================================================
+{"subjects": [["parent", "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt", "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950"], ["baseline", "HF/sft_ready/p106c_replay_v1/policy/baseline_student.pt", "2E2187E72AE1F0505DF22CDA93C9C7DB92AF02D94F001B14CAD8230EB6D4A169"], ["selected", "HF/sft_ready/p106c_replay_v1/policy/selected_student.pt", "D00F902BBA0F2644A89D00E953776FDE7D56A034E85B990012869BC5C187AD9E"]], "grid_sha256": "C2961F7CBD72D83B40B81E073BAF51C07909292F22F8098DD12E9DA9E567D445", "prompts_per_subject": 64, "expected_cases": 384, "max_new": 32, "max_wall_sec": 900, "policy_sha256": "FE8C953F65934822957929905593DFE6D076F7F27AC302DFC98A0EAC9D306984", "prepare_sha256": "461DE0CE71A75E103F34D3098BC7D3D0E0F91C795DBD8DC3779F1CDCA91DC297", "script_sha256": "78E23D9CDA6633231B8A67E2F2A879ED41D6F780466F4C95DCFAD76F276CBB1A", "training_updates": 0, "claim": "POSTHOC reused eight fact pairs; not new sealed generalization"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-03 23:42:40)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-03 23:42:40  name=P106C_Stage5Wa_prompt_cache_attribution
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106c_prompt_cache.py --execute
+==============================================================================
+[P106C_A_SUMMARY] {"schema": "P106C_PROMPT_CACHE_A_V1", "status": "INCOMPLETE", "input": {"subjects": [["parent", "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt", "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950"], ["baseline", "HF/sft_ready/p106c_replay_v1/policy/baseline_student.pt", "2E2187E72AE1F0505DF22CDA93C9C7DB92AF02D94F001B14CAD8230EB6D4A169"], ["selected", "HF/sft_ready/p106c_replay_v1/policy/selected_student.pt", "D00F902BBA0F2644A89D00E953776FDE7D56A034E85B990012869BC5C187AD9E"]], "grid_sha256": "C2961F7CBD72D83B40B81E073BAF51C07909292F22F8098DD12E9DA9E567D445", "prompts_per_subject": 64, "expected_cases": 384, "max_new": 32, "max_wall_sec": 900, "policy_sha256": "FE8C953F65934822957929905593DFE6D076F7F27AC302DFC98A0EAC9D306984", "prepare_sha256": "461DE0CE71A75E103F34D3098BC7D3D0E0F91C795DBD8DC3779F1CDCA91DC297", "script_sha256": "78E23D9CDA6633231B8A67E2F2A879ED41D6F780466F4C95DCFAD76F276CBB1A", "training_updates": 0, "claim": "POSTHOC reused eight fact pairs; not new sealed generalization"}, "training_updates": 0, "checkpoint_writes": 0, "precision": "BF16 autocast; TF32 off throughout; FP32 only for divergent cache pairs", "exit_code": 9, "reason": "RuntimeError: cannot inspect competing GPU compute processes", "path_gate_passed": false, "whole_wall_sec": 0.04081766899616923}
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.0분  (2026-10-03 23:42:43)
+==============================================================================
