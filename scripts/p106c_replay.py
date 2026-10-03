@@ -289,13 +289,16 @@ def parameter_delta(base, plus, zero):
 
 
 class Runner:
-    def __init__(self):
+    def __init__(self, student_factory=None):
         import torch
         torch.manual_seed(1337)
         random.seed(1337)
         from scripts.p106b_education_followup import load_student
         from scripts.train_sft_p090 import encode_records
-        self.torch, self.model, self.base, self.cfg, self.tok, self.adam, self.muon = load_student("b", training=True)
+        # Explicit diagnostic injection only; all existing callers retain the
+        # exact parent loader. Scratch factories must not load parent weights.
+        factory = student_factory or load_student
+        self.torch, self.model, self.base, self.cfg, self.tok, self.adam, self.muon = factory("b", training=True)
         self.optimizers = (self.adam, self.muon)
         self.pad = self.tok.token_to_id("<pad>")
         self.end = self.tok.token_to_id("<|im_end|>")

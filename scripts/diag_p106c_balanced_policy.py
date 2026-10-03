@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 import shutil
+import statistics
 import sys
 import time
 ROOT=Path(__file__).resolve().parents[1]
@@ -48,6 +49,21 @@ def validate_native_deltas(native_deltas):
     if not all(math.isfinite(v) for v in native_deltas.values()):
         raise ValueError('nonfinite native delta')
     return dict(native_deltas)
+
+
+def training_history_evidence(history):
+    """Snapshot cumulative steps; never reconstruct missing past measurements."""
+    if not history:
+        raise ValueError('empty training history is not timing evidence')
+    trace=[dict(row) for row in history]
+    if not all(math.isfinite(row['wall_sec']) and row['wall_sec']>=0
+               and math.isfinite(row['loss']) and math.isfinite(row['grad_norm_preclip']) for row in trace):
+        raise ValueError('nonfinite training history')
+    return {'training_trace':trace, 'first_update_wall_sec':trace[0]['wall_sec'],
+            'post_first_update_count':len(trace)-1,
+            'post_first_update_median_sec':statistics.median(r['wall_sec'] for r in trace[1:]) if len(trace)>1 else None,
+            'post_first20_grad_peak_preclip':max(r['grad_norm_preclip'] for r in trace[20:]) if len(trace)>20 else None,
+            'training_timing_scope':'per update including microbatches/optimizer/synchronize; excludes evaluations and restoration; first may include compile'}
 
 
 def check():
@@ -121,7 +137,7 @@ def execute(plan,info):
                     for step in range(first,end):
                         spec=plan[arm][step]
                         rows=[runner.encoded['train'][i] for i in spec['candidate']]+[runner.encoded['rehearsal'][i] for i in spec['rehearsal']]
-                        histories[arm].append(runner.step(rows,[1]*32,12000+step))
+                        histories[arm].append({'update':step+1,**runner.step(rows,[1]*32,12000+step)})
                         counts[arm]['x_tokens']+=sum(len(r[0]) for r in rows)
                         counts[arm]['targets']+=sum(r[2] for r in rows)
                     states[arm]=snapshot(runner.base,runner.optimizers)
@@ -131,6 +147,7 @@ def execute(plan,info):
                     row={'arm':arm,'updates':end,**dict(counts[arm]),'native_ce':native['ce'],
                          'parent_native_delta':native['ce']-parent_ce,'transfer_probe':answers,'controls':extras,
                          'dev':runner.scores('dev'),'grad_peak_preclip':max(r['grad_norm_preclip'] for r in histories[arm])}
+                    row.update(training_history_evidence(histories[arm]))
                     boundary['arms'].append(row)
                     with (OUTPUT/f'{arm}_{end:03d}_student.pt').open('xb') as f:
                         runner.torch.save({'model':cpu_tree(runner.base.state_dict()),'cfg':runner.cfg.__dict__,

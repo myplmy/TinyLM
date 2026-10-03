@@ -318,7 +318,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | P106B Stage3qWc/4aW/4bW/4c0W 회수 | 정확4로그/정본4·같은B부모·생산성1/2/4묶음·원배치wire2회 | **사용자 실행 완료**, [101 §45](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). 공개39.347M/EN35.653M부족·KO위키83.64%, batch4 속도1.67~1.77×이나표지혼입44/48, 학생실제256행/87,280x·42,732target/2update·0/8. 원SFTval32=KO3/EN29이므로혼합품질/300M 아님. |
 | `p106b_s4_mixed300m_balanced_chat32_s1337` | public v2hash/source목표25%cap·B원배치4pass | **본학습미실행보존/HOLD**. [101 §46](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서39.351M준비·영어35.649M부족, 균형wire2회43,043x·0/8. 실제75M/언어quota가참일때만4cWb. 옛4cW도취소아님. |
 | P106C `HF/sft_ready/p106c_replay_v1` / baseline_student·selected_student | Bfreshparent·chat32·AdamW1e-4/Muon4e-4·micro8/accum4/256·ckptON·clip1 | **사용자실행완료**, [102](../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md). A/A동일·tiny30/32, 두128update같은199202x/11286target에서실답91vs15/128·pair27vs0/64. 원선택비채택·부모native각+.5105/+.5329. 일반300M아님. |
-| P106C Stage5Wa/Wb A·Stage6W B | A고정3checkpoint·8fact×2template×2order×2target×cache2; B원자료·원LR/micro8accum4 | **A 승인직접진단완료**: OS차단Wa는모델0, Wb75.42초에주생성384+FP32재검22·학습0. 정방향32/32두학생·역순25vs9/32·학생cache차이0. B색/언어/질문쌍/token균형각최대32·8/16/32중간관측은새HF버전/사용자실행NOT_RUN. [102 §4~5](../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md) |
+| P106C Stage5Wa/Wb A·Stage6W B | A고정3checkpoint·8fact×2template×2order×2target×cache2; B원자료·원LR/micro8accum4 | A정방향32/32·역순25vs9/32/cache정상. **Stage6 사용자완료**:32회62/64정답(128중)·쌍양팔0/64·native+.120833/+.117963·280.546초/3790MiB. 선택비채택. [102 §4~6](../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md) |
+
+| P106C Stage7W `HF/sft_ready/p106c_order_pair_v1` | 같은Stage6 baseline ID추출·Bfreshparent/chat32·micro8accum4/256·ckptON·원LR | **허가직접실행완료:** fixed64/mixed62정답·쌍각1/64·native+.121209/+.125263·64updates/292.239초.32회어순혼합이득미확인. [102 §7](../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md) |
+
+| P106C Stage8Wa/Wb/Wc `HF/sft_ready/p106c_learning_{initialization,horizon,names}_v1` | 사용자추가승인직접GPU진단·기존Stage7설정/원형불변 | **완료384updates/614.509초**:32회parent62/scratch49·coded62/familiar60·쌍모두0/64.128회fixed121/128·57/64쌍,mixed128/128·64/64쌍/64조합전부정답.단native+.629397/+.476504·control0/64·preclip후20최대75.32/19.48.형식학습범위양성·일반언어보존/300M은아님. [102 §8](../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md) |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.

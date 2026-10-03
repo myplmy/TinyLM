@@ -10,7 +10,7 @@ sys.path.insert(0,str(ROOT))
 from scripts import p106c_data as data
 from scripts.diag_p106c_prompt_cache import prompt_grid
 from scripts.p106c_pair_balance import make_plan
-from scripts.diag_p106c_balanced_policy import validate_native_deltas, require_a, POLICY_SHA, PREPARE_SHA, SUBJECTS
+from scripts.diag_p106c_balanced_policy import validate_native_deltas, require_a, training_history_evidence, POLICY_SHA, PREPARE_SHA, SUBJECTS
 
 
 class GridTests(unittest.TestCase):
@@ -65,6 +65,21 @@ class BalancedTests(unittest.TestCase):
         require_a(fixture)
         fixture['unresolved_fp32_cache_differences']=1
         with self.assertRaises(ValueError):require_a(fixture)
+
+    def test_history_snapshot_does_not_grow_with_later_updates(self):
+        history=[{'update':1,'wall_sec':40.,'loss':3.,'grad_norm_preclip':55.},
+                 {'update':2,'wall_sec':.2,'loss':2.,'grad_norm_preclip':4.}]
+        saved=training_history_evidence(history)
+        history[0]['loss']=99
+        history.append({'update':3,'wall_sec':.3,'loss':1.,'grad_norm_preclip':2.})
+        self.assertEqual(len(saved['training_trace']),2)
+        self.assertEqual(saved['training_trace'][0]['loss'],3.)
+        self.assertEqual(saved['post_first_update_median_sec'],.2)
+        self.assertIsNone(saved['post_first20_grad_peak_preclip'])
+
+    def test_missing_or_nonfinite_step_evidence_is_not_fabricated(self):
+        with self.assertRaises(ValueError):training_history_evidence([])
+        with self.assertRaises(ValueError):training_history_evidence([{'wall_sec':1.,'loss':float('nan'),'grad_norm_preclip':1.}])
 
 
 if __name__=='__main__':
