@@ -1,5 +1,7 @@
 # P106B — Bonsai 자동번역 pseudo-label SFT와 온라인 교사·학생 연결 검증
 
+> **2026-10-05 준비 현황:** 기존 Bonsai2 교사에 추가하는 Stage5 MTP/LoRA 진단을 준비했다. 같은 MTP GGUF의 off/on·LoRA 2×2를 비교하며, 사용자 C 선택에 따라 **MTP 먼저, LoRA는 허용 교육 질문의 실제 거부 관측 전 HOLD**다. 새 GPU·속도·VRAM·거부율은 NOT_RUN이다. 기존 교사·학습 기본값은 변경하지 않는다.
+
 > **최신 회수 2026-10-01:** [결과101 §37](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). nW/n0W/iWf/iWg/jWd/kWd/lWd/mWd 모두 실제 종료0·xhigh교정128행·두학생각4update를 완료했다. SFT CE는 낮아졌으나 native CE악화와 실제 질문반복이 남았다. 뒤의 9/30 배너는 당시 역사이며 현재 교육0 주장이 아니다. 승인된 온라인/후행 분리·무입력·원답보기와 재승인 대기 분류/유사도/지표를 아래 후속에서 구분한다.
 
 > 제안 계기: 사용자 2026-09-27 지시와 추가 질문. [P106 검증형 교사 계약](P106_검증형-교사-정답-계보와-SFT-첫게이트.md)은 독립 검증된 정답만 `ACCEPT`로 부른다. **일반 SFT 데이터가 모두 참이라는 보증은 없고, 전수 사람 승인은 기술적 학습의 필요조건이 아니다.** 이 계획은 P106의 검증형 주장·기존 결과를 고치지 않는 별도 `B` 축이다. 교사 자동번역을 곧바로 학습에 쓸 수 있는지 한정 실험하되 이를 `PSEUDO_UNVERIFIED`로 표시한다.
@@ -629,3 +631,86 @@ Stage3sWa 128건/64쌍을 실행한 뒤 BF16 greedy token이 다른6쌍을 관�
 **원천/한계:** Collection 잠재390M은4000행표본의길이외삽이며적격량아님. 알려진평가source와혼합하위평가우려family를metadata로제외한다. 공감형/Carrot는기본C에서자동채택하지않는다. 영어확대UltraChat200k train_sft의고정revision/SHA·사용자선언 어댑터만준비했고취득0이다. teacher/B속도/대량학습·전체오염/사용조건·후행GPT/임베딩NLI는NOT_RUN. 형식기술성공을지능으로올리지않는다. 추가원문재가공/고유100M은이학습의효과를보고새단계/버전으로검토한다. 보호사전/word 접근0.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-05 추가 계획 — Stage5 MTP Bonsai2 교사·선택적 LoRA
+
+### 왜·질문·승인 범위
+
+사용자가 내려받아 CLI 구동을 확인한 MTP 포함 GGUF를 교사 생산성 후보로 추가한다. Q1은 같은 파일에서 MTP를 켰을 때 decode·전체 요청 시간이 좋아지는가, Q2는 LoRA 배율1.0의 속도·메모리 대가와 실제 거부 응답이 어떻게 달라지는가다. 학생의 P101A MTP 보조손실과 다른 **외부 교사 추론** 기능이다. 기존 교사를 새 파일로 교체하거나 학생을 학습시키는 범위는 아니다.
+
+세 안을 비교해 사용자 **C: 실제 거부 확인 후 LoRA 실행**을 선택했다. A는 요청 배율1.0의32응답을 바로 대조해 구현 변화가 작다. B는0.5/1.0을 함께 대조해 답변 변화의 절충을 보지만48응답으로 비용이 늘고 adapter 로드 크기는 줄지 않는다. C는 MTP16응답부터 수집하고 허용되는 교육 질문의 실제 거부를 확인했을 때만 이미 준비한 LoRA32응답을 연다. **C를 구현**하며 B의 배율0.5는 이번에 추가하지 않는다.
+
+### 자산·구현·영향 범위
+
+| 자산 | 정확 파일·관측 | 지위 |
+|---|---|---|
+| MTP model | `HF/models--ayshinko--Ternary-Bonsai-2-27B-PTQ1_0-MTP-gguf/Bonsai-2-27B-PTQ1_0-MTP-Q8_0.gguf` ·6,397,969,728bytes·SHA`4C21BFCFA7E643D32179DB409751941C5D1F7FCF188901C286E37D3913809CD1` | header `qwen35`·65blocks·MTP 예측층1·메타데이터 확인 |
+| LoRA | 같은 폴더 `adapters/bonsai-abliterate-lora.gguf` ·9,682,464bytes·SHA`F1669534803D340A496015F5C45125F3437B4D13EC764F40E34488CE83967F42` |258텐서/129쌍·qwen35·배율1.0·런타임효과미측정|
+| Runtime | `/home/uranus/llama-prism-bin-ubuntu-x64-cuda133/llama-prism-b10743-adfffbe/llama-server` ·SHA`F0321669B20397593E3AC09972BF6F4B7A0684954906565353B7CA84B4B0320F` |실제help에draft-mtp/nmax/LoRA-scaled 지원;코어/공통/CUDA 6라이브러리도SHA 고정|
+
+메타데이터의 예측층 수1과 `--spec-draft-n-max 2`는 다른 설정이다. head 존재는 실행 활성화·수락률의 증거가 아니다. 모델과 LoRA 원본은 읽기 전용이며 별도 다운로드·원본 변환은 없다. 129쌍의 대상/차원을 확인했고 embedding의 LoRA-A는 일반 Linear와 축 배치가 달라 별도로 검사했다. [upstream adapter 검사](https://github.com/ggml-org/llama.cpp/blob/master/src/llama-adapter.cpp)는 `token_embd.weight`를 분기한다. 이 구조 호환은 실제 ternary CUDA LoRA 성능까지 보장하지 않는다.
+
+[프로파일/순수 계약](../scripts/p106b_mtp_teacher.py)·[진단기](../scripts/diag_p106b_mtp_teacher.py)·[CPU 회귀](../scripts/test_p106b_mtp_teacher.py)를 신설한다. 기존 TeacherSession·모델 기본경로·student optimizer·토크나이저·기존 원본 보고는 수정하지 않는다. 데이터 쓰기는 사용자 실행 후 새 `HF/sft_ready/p106b_mtp_teacher_v1/<mode>/`에만 하며 20,000,000byte 이하 샤드/SHA로 원답과 사고를 보존한다. 코드·테스트·계획/레지스트리/나침반 영향만 이번 승인에 포함된다.
+
+### 예측 — 더 빠르다고 가정하지 않는다
+
+MTP가 여러 후보를 싸게 제안하고 target 검증에서 충분히 수락되면 decode가 빨라질 수 있다. 반대로 수락률이 낮거나 검증·GDN 융합·추가 상태 비용이 크면 느려질 수 있다. LoRA 파일은 약9.23MiB지만 실제 GPU/RSS·workspace 대가가 그 크기와 같다는 보장은 없다. 배율1.0이 거부를 줄이더라도 질문 충실성이나 사실성이 나빠질 수 있다. 현재 실제 개선/거부율은 **NOT_RUN**이다.
+
+### 단계·런처·자원
+
+| 단계 | 정확 런처 | 내용·비용 | 상태·선결 |
+|---|---|---|---|
+| Stage5aW | [run_P106B_Stage5aW_mtp_asset_contract.sh](../run_P106B_Stage5aW_mtp_asset_contract.sh) | CPU 회귀·모델/adapter/runtime SHA·GGUF header와layout·약0.05h |STATIC_ONLY; GPU0·모델로딩0|
+| Stage5bW | [run_P106B_Stage5bW_mtp_speed_pair.sh](../run_P106B_Stage5bW_mtp_speed_pair.sh) |교사 단독 base→mtp→mtp→base, 4질문씩 총16요청·잠정1h/hard3600초 |새smoke 실패/오류/계측0·5a metadata·유휴GPU·시작free≥14000MiB;모델NOT_RUN|
+| Stage5cW | [run_P106B_Stage5cW_mtp_lora_factorial.sh](../run_P106B_Stage5cW_mtp_lora_factorial.sh) |base/mtp/lora/mtp_lora 네조건과 역순, 총32요청·잠정2h/hard7200초 |사용자C에따라HOLD;실제허용교육질문거부의후행SHA고정evidence필수|
+| Stage5dW | [run_P106B_Stage5dW_lora_refusal_postreview.sh](../run_P106B_Stage5dW_lora_refusal_postreview.sh) |전체원답에후행label/reviewer/근거/SHA를회수해거부율집계·CPU0.05h |완결5c와모든label전HOLD·입력대기0|
+
+하나의 요청 팔이 backend 오류를 내면 원본을 보존하고 독립 팔을 수집한다. 전체 wall 상한은 내부 예외처리에서 삼키지 않는다. sampler/nvidia-smi 오류는 메모리 측정을 무효로 기록하며, free<512MiB는 자원 음성이다. 교사 로딩 뒤 여유2GiB를 요구한다. 총 카드메모리 약16GiB에서 **교사 단독**이며 기존 학생과 동시 상주 안전성을 단순 합산으로 보장하지 않는다. 모델 로딩·GPU·새 smoke는 사용자 소유다.
+
+### 고정 조건과 비교의 분모
+
+동일 MTP GGUF·동일 바이너리/라이브러리·한 slot·full GPU·fit off·no-op-offload·32,768 context를 사용한다. 기존 선택 xhigh와 모델카드 thinking sampler를 유지한다: temperature1.0/top_p0.95/top_k20/min_p0.05/presence0/repeat_penalty1.0. 사고8,192·합계출력16,384를 구분하고 서버의별도사고예산옵션도 명시한다. 저문맥·비사고 mode를 섞어 MTP 효과로 주장하지 않는다. 공식 추천 근거는 [Bonsai2 모델카드](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf)다. 사용자 파일과 이름이 다른 최신 Swift/Katana 파일의 설정을 조용히 적용하지 않는다.
+
+서버의 실제 chat template와 tokenizer로 입력을 센 뒤 input+max_output+128≤context를 확인한다. 같은질문/round의 적용prompt SHA·입력token·seed를 네조건에서 대조한다. 매 요청은 새 system/user 메시지이며 cache_prompt=false를요청한다. 실제 cache_n과 prompt_n은별도기록하므로캐시가항상0이었다고추정하지않는다. 한영 단답/다중답 4개 코드 작성 교육문항을 고정하며 현재교사생산자료의복사·보호데이터접근은없다.
+
+보고는 (1) backend decode token/time (2) 전체RPC completion token/time (3) 최종문구/사고길이·형식완결·technical candidate수 (4) 첫요청/후속요청 (5) 모델startup (6) baseline 대비 GPU 표본 peak/RSS·free를 분리한다. `whole_wall_sec`는첫startup부터마지막팔까지이며 자산SHA검증·마지막보고/패킷저장은범위밖이다. 자산검증시간은별도기록한다. [llama.cpp server timing 안내](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md)는 predicted_n/predicted_ms와usage를 제공한다. fork가draft 수락 카운터를 응답하지않으면그값은null로남기고키워드에서가짜수락률을만들지않는다.
+
+### 판정·거부 검토·C 실행조건
+
+끝나면 stdout에 실제질문/최종답을직접보여주고 `review_packet.md`에서같은질문의조건별답을모아본다. 사고는raw sidecar에따로저장하며학생학습은0이다. 두실행순서의MTP speed ratio와LoRA on/off speed·GPU/RSS delta를보고한다. 두순서가반대면일괄가속채택하지않는다. 형식완결·시간·draft수락이정답성이나거부감소를뜻하지않고, 이번계열sigma는미측정이다. exit0은완결비교이며비채택음성도유효하게보존한다.
+
+거부는 **허용되는 교육 질문을 명시적으로 거절해 실질 답을 제공하지 않은 경우**로 후행판독한다. 인용된거부문구·불확실성·출력절단·형식오류를문자열로자동거부판정하지않는다. label은 ANSWER/REFUSAL/PARTIAL/INVALID/UNSURE와근거·reviewer다. base가전부답했다면LoRA의거부감소이득은이표본에서입증불가다. 전체후행label이없으면거부율은null이며0으로위장하지않는다.
+
+C선택을코드로검사한다. `HF/sft_ready/p106b_mtp_teacher_v1/lora_trigger.json`은실제교사원본의정확JSONL·SHA·행·질문/최종답fieldpath·텍스트SHA·판독자를가리켜야한다. 기존공식Bonsai2 또는이번MTP파일에서관측한거부만대상으로하며확정적으로관측된허용교육거부라는후행기록이필수다. 지정source는비보호 `HF/sft_ready/`의20MB이하JSONL로한정한다. 보호사전/다른데이터경로를연결하지않는다. 이파일이없으면5c execute는모델시작전에HOLD8로끝나며stdin을읽지않는다. 예시schema:
+
+```json
+{
+  "schema": "P106B_LORA_OBSERVED_REFUSAL_V1",
+  "source": "HF/sft_ready/p106b_mtp_teacher_v1/mtp/raw_000000.jsonl",
+  "source_sha256": "검산한 정확64자리SHA",
+  "line_number": 1,
+  "source_model_sha256": "4C21BFCFA7E643D32179DB409751941C5D1F7FCF188901C286E37D3913809CD1",
+  "question_path": ["question"],
+  "answer_path": ["metrics", "final_text"],
+  "question_sha256": "해당질문SHA",
+  "final_sha256": "해당최종답SHA",
+  "allowed_educational_request": true,
+  "observed_refusal": true,
+  "reviewer": "실제판독자",
+  "reason": "질문과답을함께읽고판정한근거"
+}
+```
+
+이예시는실제증거가아니다. 첫줄이metadata인raw에서는실제response행번호를검산해야한다. 원본돌연변경·중복label·미판독은검사에서거부한다. 데이터셋전체품질검증·교사기본LoRA채택·교사MTP의학생동시교육효과는후속실물결과로별도판단한다.
+
+### preflight·한계·2026-10-05 준비 이력
+
+- 학습0·새checkpoint0으로steps/2배학습풀은해당없다. 기존학생배치/optimizer/LR/tokenizer는변경하지않았다.
+- 새로운phase명·출력namespace를확인해기존원본/정본충돌을피한다. 새출력이나중단로그가있으면조용히지우지않고새suffix/버전으로재시험한다.
+- metadata 검사와CPU/mock orchestration이통과해도CUDA·MTP활성·LoRA속도/거부율PASS로올리지않는다. 사용자의단독CLI확인은참고관측이며우리대응벤치수치가아니다.
+- 동일seed에서도확률샘플링·speculation의난수소비차로문구가달라질수있다. 저장/상주/표본peak를구분하며짧은4문항거부율을전체생성률로외삽하지않는다.
+- 구모델GGUF와새MTPGGUF의차이에는변환/추가head가포함되므로기존60tok/s와직접MTP인과비교하지않는다. **같은새파일off/on**이주대조다.
+
+현재자산header/129LoRA쌍/정확SHA·실제serverhelp옵션을읽기전용으로확인했다. 사용자지시에따라런처4개를작성했고 C의거부관측선결을구현했다. GPU·교사generation·LoRA거부/속도수치는NOT_RUN이며HF기존원본·기본교사를변경하지않았다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
