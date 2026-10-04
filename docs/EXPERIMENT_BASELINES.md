@@ -324,7 +324,8 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | P106C Stage8Wa/Wb/Wc `HF/sft_ready/p106c_learning_{initialization,horizon,names}_v1` | 사용자추가승인직접GPU진단·기존Stage7설정/원형불변 | **완료384updates/614.509초**:32회parent62/scratch49·coded62/familiar60·쌍모두0/64.128회fixed121/128·57/64쌍,mixed128/128·64/64쌍/64조합전부정답.단native+.629397/+.476504·control0/64·preclip후20최대75.32/19.48.형식학습범위양성·일반언어보존/300M은아님. [102 §8](../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md) |
 
-| P106B Stage5 MTP/LoRA teacher `HF/sft_ready/p106b_mtp_teacher_v1` | 같은MTP GGUF off/on nmax2·LoRA배율1.0·xhigh/기존sampler·32Kcontext/16K총/8K사고·학생0 | **준비·정적만:** exact model/header/LoRA129쌍/runtime SHA 확인·4SH. MTP16요청과LoRA32요청 대응/역순·decode/RPC/GPU/RSS. 사용자C로LoRA실제교육거부 관측전HOLD. 새CUDA/속도/거부율NOT_RUN·기본교사불변. [P106B Stage5](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md) |
+| P106B Stage5 MTP/LoRA teacher `HF/sft_ready/p106b_mtp_teacher_v1` | 같은MTP GGUF off/on nmax2·xhigh/권장sampler·32Kcontext/16K총/8K사고·학생0 | **사용자 회수:** 자산MATCH·MTP16응답 완료. decode65.958890→53.525647tok/s·두순서비0.8224/0.7986·실제draft2278/4322·추가GPU897/900MiB·GDNenabled, 현 가속 기본 비채택. LoRA/후행은 선결8로실행0, 정답성/학생지능/장기안전 미검증. [101 §47](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| P106B `P106B_STAGE_RECEIPT_V1` Stage4cWc/5cWb/5dWb/5eW | 원모델/배치/샤드namespace 불변, caller만 회귀→선결→실행→FINAL | **준비·CPU 계약 검증:** 하위0을전체완료로읽지않고 선결8/오류9/중단130·미실행을분리. C/원형SHA·32label의check-only수리;새런처실물/모델NOT_RUN. 보류3SH는각자료/거부/상류선결. [P106B 후속](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md) |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.

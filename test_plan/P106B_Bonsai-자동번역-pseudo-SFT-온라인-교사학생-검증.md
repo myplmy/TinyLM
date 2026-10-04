@@ -1,6 +1,6 @@
 # P106B — Bonsai 자동번역 pseudo-label SFT와 온라인 교사·학생 연결 검증
 
-> **2026-10-05 준비 현황:** 기존 Bonsai2 교사에 추가하는 Stage5 MTP/LoRA 진단을 준비했다. 같은 MTP GGUF의 off/on·LoRA 2×2를 비교하며, 사용자 C 선택에 따라 **MTP 먼저, LoRA는 허용 교육 질문의 실제 거부 관측 전 HOLD**다. 새 GPU·속도·VRAM·거부율은 NOT_RUN이다. 기존 교사·학습 기본값은 변경하지 않는다.
+> **최신 회수 2026-10-05:** [결과101 §47](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). Stage5a 자산MATCH·5b MTP16요청을 정상 회수했다. 현 xhigh/nmax2의 decode는65.959→53.526tok/s·추가GPU897~900MiB로 기본 가속 채택하지 않는다. 본학습/LoRA/후행검토의 세 종료8은 각각 자료·실제거부·상류자료 선결로 실제 실행0이다. 사용자A로 P106B 단계/최종판정과 check-only를 보강하고 새 Stage4cWc/5cWb/5dWb/5eW를 준비했다. 기존 교사·학습 기본값은 불변이다.
 
 > **최신 회수 2026-10-01:** [결과101 §37](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). nW/n0W/iWf/iWg/jWd/kWd/lWd/mWd 모두 실제 종료0·xhigh교정128행·두학생각4update를 완료했다. SFT CE는 낮아졌으나 native CE악화와 실제 질문반복이 남았다. 뒤의 9/30 배너는 당시 역사이며 현재 교육0 주장이 아니다. 승인된 온라인/후행 분리·무입력·원답보기와 재승인 대기 분류/유사도/지표를 아래 후속에서 구분한다.
 
@@ -660,10 +660,10 @@ MTP가 여러 후보를 싸게 제안하고 target 검증에서 충분히 수락
 
 | 단계 | 정확 런처 | 내용·비용 | 상태·선결 |
 |---|---|---|---|
-| Stage5aW | [run_P106B_Stage5aW_mtp_asset_contract.sh](../run_P106B_Stage5aW_mtp_asset_contract.sh) | CPU 회귀·모델/adapter/runtime SHA·GGUF header와layout·약0.05h |STATIC_ONLY; GPU0·모델로딩0|
-| Stage5bW | [run_P106B_Stage5bW_mtp_speed_pair.sh](../run_P106B_Stage5bW_mtp_speed_pair.sh) |교사 단독 base→mtp→mtp→base, 4질문씩 총16요청·잠정1h/hard3600초 |새smoke 실패/오류/계측0·5a metadata·유휴GPU·시작free≥14000MiB;모델NOT_RUN|
-| Stage5cW | [run_P106B_Stage5cW_mtp_lora_factorial.sh](../run_P106B_Stage5cW_mtp_lora_factorial.sh) |base/mtp/lora/mtp_lora 네조건과 역순, 총32요청·잠정2h/hard7200초 |사용자C에따라HOLD;실제허용교육질문거부의후행SHA고정evidence필수|
-| Stage5dW | [run_P106B_Stage5dW_lora_refusal_postreview.sh](../run_P106B_Stage5dW_lora_refusal_postreview.sh) |전체원답에후행label/reviewer/근거/SHA를회수해거부율집계·CPU0.05h |완결5c와모든label전HOLD·입력대기0|
+| Stage5aW | `run_P106B_Stage5aW_mtp_asset_contract-done.sh` | CPU 회귀·모델/adapter/runtime SHA·GGUF header와layout·약0.05h |사용자 CPU 완료;[101 §47.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md);모델0|
+| Stage5bW | `run_P106B_Stage5bW_mtp_speed_pair-done.sh` |교사 단독 base→mtp→mtp→base,총16요청·실제phase184.962초 |사용자 완료·가속음성;[101 §47.3](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)|
+| Stage5cW | `run_P106B_Stage5cW_mtp_lora_factorial-done.sh` |설정32요청이나 실제교사0 |시도회수HOLD8·거부증거없음;[101 §47.4](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)|
+| Stage5dW | `run_P106B_Stage5dW_lora_refusal_postreview-done.sh` |설정후행CPU;실제검토0 |시도회수HOLD8·상류없음;[101 §47.5](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)|
 
 하나의 요청 팔이 backend 오류를 내면 원본을 보존하고 독립 팔을 수집한다. 전체 wall 상한은 내부 예외처리에서 삼키지 않는다. sampler/nvidia-smi 오류는 메모리 측정을 무효로 기록하며, free<512MiB는 자원 음성이다. 교사 로딩 뒤 여유2GiB를 요구한다. 총 카드메모리 약16GiB에서 **교사 단독**이며 기존 학생과 동시 상주 안전성을 단순 합산으로 보장하지 않는다. 모델 로딩·GPU·새 smoke는 사용자 소유다.
 
@@ -712,5 +712,26 @@ C선택을코드로검사한다. `HF/sft_ready/p106b_mtp_teacher_v1/lora_trigger
 - 구모델GGUF와새MTPGGUF의차이에는변환/추가head가포함되므로기존60tok/s와직접MTP인과비교하지않는다. **같은새파일off/on**이주대조다.
 
 현재자산header/129LoRA쌍/정확SHA·실제serverhelp옵션을읽기전용으로확인했다. 사용자지시에따라런처4개를작성했고 C의거부관측선결을구현했다. GPU·교사generation·LoRA거부/속도수치는NOT_RUN이며HF기존원본·기본교사를변경하지않았다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-05 실행 회수·후속 — 하위 성공과 전체 판정을 분리
+
+기존 Stage5 준비절은 당시 설계 이력이며 현재 수치/상태는 [결과101 §47](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)이 소유한다. 자산/같은파일 MTP가 실제 작동한다는 기능 예측은 맞았지만 **가속 예측은 현 조건에서 틀렸다**. draft수락52.7071%·GDN융합활성에서도 두 순서 decode비0.8224/0.7986이고 추가GPU 약900MiB다. 생성량/사고/문구가 달라 전체요청 시간비를 동일답 시간비로 쓰지 않는다. MTP를 자동 켜거나 한국어 향상이라고 쓰지 않는다.
+
+Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c는 사용자C의 실제거부 증거가 없어교사0,5d는그상류가없어검토0이다. 실행시도가끝났다는-done과 모델/정답 검증이끝났다는판정을구분했다. 원형/재현15child는같은결과§47.8에보존한다.
+
+회귀17PASS의화면987B는중간상태였고최종5d는35행2446B다. 로그 유실은없지만 review check-only의 무검사0과 LoRA check-only의 C검사생략은 준비판정을혼동시켰다. 사용자A의 [재발방지 제안](../proposal/done/20261005_P106B-단계완료와-전체실험판정-혼동-재발방지-제안서-approved.md)에따라 P106B caller만수리했다. 공용runlog/queue/전역훅·스킬·검사기/기본교사/원배치변경0이며학생·모델재실행은사용자소유다. 승인 구현·CPU29조건 검증을 완료해 제안은 done으로 종결하되 사용자 새smoke와 실제모델효과는 별도 미실행이다.
+
+| 단계 | 정확 SH | 비용·독립변수 | 선결·판정 |
+|---|---|---|---|
+| Stage5eW | [run_P106B_Stage5eW_stage_receipt_contract.sh](../run_P106B_Stage5eW_stage_receipt_contract.sh) |CPU0.05h, COMPLETE/HOLD/ERROR fixture3·모델0 |새smoke 뒤 FINAL 한줄·정확3phase·선결8 뒤 본실험 미실행·로깅오류9;실물런처NOT_RUN|
+| Stage4cWc | [run_P106B_Stage4cWc_balanced_final_verdict.sh](../run_P106B_Stage4cWc_balanced_final_verdict.sh) |조건부12h,원75M·micro8×accum16/ckptON/LR/4pass불변;caller만변경 |영어35.649M부족이어서HOLD;quota·원wire·부모SHA 충족전학생시작금지|
+| Stage5cWb | [run_P106B_Stage5cWb_lora_conditioned_final_verdict.sh](../run_P106B_Stage5cWb_lora_conditioned_final_verdict.sh) |조건부2h,원32요청/LoRA1.0/xhigh/nmax2/동일자산불변 |허용교육거부원형/SHA전HOLD;회귀/선결/execute/FINAL;MTP빠르다는전제없음|
+| Stage5dWb | [run_P106B_Stage5dWb_review_conditioned_final_verdict.sh](../run_P106B_Stage5dWb_review_conditioned_final_verdict.sh) |CPU0.05h,상류32원답/후행label |선결실제검산,없으면HOLD8·깨진SHA/JSON오류9;전체 검토 전 거부율 집계 금지|
+
+**preflight:** teacher-only/CPU 진단의 학습steps0은 실제 학습량이 아니다. 미승인 zero-step registry의 broad조회를 하지 않고 정확 source/태그/원배치·출력namespace를 직접대조한다. 새callback의phase명/SH/name을함께변경했고oldHF/runs/cache를재생성하지않는다. 같은벤치MTP의음성을새코드실행으로덮지않는다. 조건부 모델3SH는선결전실행순서에자동포함하지않는다.
+
+**한계:** 회귀와CPU receipt는원본/GPU/장기학생교육/한국어/정답성PASS가아니다. caller수리로 영어자료량이나 실제거부가생기지않는다. 다음 queue는새smoke→CPU5e 이후이며나머지는선결HOLD를유지한다.48h를채우기위해완료된MTP를반복하거나부족자료로학습하지않는다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

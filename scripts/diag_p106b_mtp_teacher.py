@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """User-run teacher-only MTP/LoRA benchmark; existing teacher defaults unchanged.
 
-Check-only reads metadata, not model weights/GPU. Execute uses fresh, write-once
+Check-only verifies the required metadata/data contracts, never model/GPU. Execute uses fresh, write-once
 outputs. Review consumes explicit offline annotations, never asks for input.
 """
 from __future__ import annotations
@@ -26,6 +26,10 @@ from scripts.p106b_shards import ShardWriter,verify
 from scripts.p106b_http_errors import capture_http_error
 
 OUTPUT=ROOT/'HF/sft_ready/p106b_mtp_teacher_v1'
+
+
+class PrerequisiteHold(FileNotFoundError):
+    """Expected missing upstream evidence, not an integrity/backend error."""
 
 
 def write_json(path,obj):
@@ -105,12 +109,16 @@ class Session:
 
 
 def preflight(mode,full_hash=False):
-    trigger=lora_refusal_gate() if mode=='lora' and full_hash else None
-    info=metadata_preflight(full_hash)
     if mode not in ('assets','mtp','lora'):raise ValueError('unknown execution mode')
+    trigger=None
+    if mode=='lora':
+        try:trigger=lora_refusal_gate()
+        except FileNotFoundError as exc:raise PrerequisiteHold(str(exc)) from exc
+    info=metadata_preflight(full_hash)
     if mode!='assets':
         target=OUTPUT/mode
-        if OUTPUT.is_symlink() or target.exists() or target.is_symlink():raise FileExistsError('preserve existing/partial output; new stage/version required')
+        if OUTPUT.is_symlink():raise ValueError('linked output directory')
+        if target.exists() or target.is_symlink():raise PrerequisiteHold('preserve existing/partial output; new stage/version required')
     panel=cases()
     info.update(schema='P106B_MTP_TEACHER_PREFLIGHT_V1',mode=mode,
                 profile_sha256=digest(ROOT/'scripts/p106b_mtp_teacher.py'),
@@ -223,21 +231,43 @@ def execute(mode,info):
                       model_quality='NOT_RUN',refusal_rate='NOT_REVIEWED',mtp_draft_counter_scope='only explicit response timings; missing counters stay null')
         manifest=raw.close(lineage=info);verify(target,manifest);report['raw_concat_sha256']=manifest['concat_sha256']
         review_packet(target,records);write_json(target/'report.json',report)
-        print('[MTP_TEACHER_SUMMARY] '+json.dumps(report,ensure_ascii=False),flush=True)
+        console={k:report[k] for k in ('status','exit_code','observed_requests','whole_wall_sec',
+                                      'summary','comparisons','raw_concat_sha256','model_quality','refusal_rate')}
+        console.update(schema='P106B_MTP_TEACHER_CONSOLE_V2',report_path=str(target/'report.json'))
+        print('[MTP_TEACHER_SUMMARY] '+json.dumps(console,ensure_ascii=False),flush=True)
         print(f'[REVIEW] {target}/review_packet.md; request/answer shown together, no input wait',flush=True)
     return report['exit_code']
 
 
-def review():
-    target=OUTPUT/'lora';manifest=json.loads((target/'raw_shards_manifest.json').read_text());verify(target,manifest)
-    report=json.loads((target/'report.json').read_text())
-    if report.get('status')!='TEACHER_BENCH_COMPARISON_COMPLETE':raise ValueError('complete factorial panel required for refusal-rate comparison')
-    records=[json.loads(line) for s in manifest['shards'] for line in (target/s['path']).read_text().splitlines()]
+def review_preflight():
+    target=OUTPUT/'lora'
+    if OUTPUT.is_symlink() or target.is_symlink():raise ValueError('linked review output')
+    manifest_path=target/'raw_shards_manifest.json';report_path=target/'report.json'
     labels_path=target/'review_labels.jsonl'
-    if labels_path.is_symlink() or not labels_path.is_file():raise FileNotFoundError('offline reviewed labels absent; no input wait')
+    for path in (manifest_path,report_path,labels_path):
+        if path.is_symlink():raise ValueError('linked review input')
+        if not path.is_file():raise PrerequisiteHold('LoRA report/raw manifest and offline labels required: '+path.name)
+        if path.stat().st_size>20_000_000:raise ValueError('review input exceeds20MB')
+    if (target/'review_summary.json').exists():raise PrerequisiteHold('review already saved; preserve it and use a new version')
+    manifest=json.loads(manifest_path.read_text(encoding='utf-8'));verify(target,manifest)
+    report=json.loads(report_path.read_text(encoding='utf-8'))
+    if report.get('status')!='TEACHER_BENCH_COMPARISON_COMPLETE':raise PrerequisiteHold('complete LoRA factorial panel required')
+    if report.get('observed_requests')!=32 or report.get('raw_concat_sha256')!=manifest['concat_sha256']:
+        raise ValueError('report/raw coverage or SHA mismatch')
+    records=[json.loads(line) for s in manifest['shards'] for line in (target/s['path']).read_text().splitlines()]
     labels=[json.loads(line) for line in labels_path.read_text().splitlines() if line.strip()]
+    responses=[r for r in records if r.get('kind')=='response']
+    if len(responses)!=32:raise ValueError('raw panel does not contain32 responses')
+    if len(labels)!=32 or any(x.get('label')=='UNREVIEWED' or not x.get('reviewer') or not x.get('reason') for x in labels):
+        raise PrerequisiteHold('all32 offline answers need a label/reviewer/reason')
+    assessments=validate_refusal_labels(records,labels)
+    return target,manifest,labels_path,assessments
+
+
+def review():
+    target,manifest,labels_path,assessments=review_preflight()
     result={'schema':'P106B_MTP_LORA_REFUSAL_REVIEW_V1','raw_concat_sha256':manifest['concat_sha256'],
-            'labels_sha256':digest(labels_path),'assessments':validate_refusal_labels(records,labels),
+            'labels_sha256':digest(labels_path),'assessments':assessments,
             'student_training':'NOT_RUN'}
     write_json(target/'review_summary.json',result);print(json.dumps(result,ensure_ascii=False));return 0
 
@@ -248,14 +278,18 @@ def main():
     a=p.parse_args()
     try:
         if a.mode=='review':
-            if a.check_only:print('[CHECK_ONLY] offline labels after lora bench; files/model/GPU NOT_READ');return 0
+            if a.check_only:
+                _,manifest,_,_=review_preflight()
+                print('[CHECK_ONLY] review prerequisites verified;32 labels/raw SHA; model/GPU NOT_RUN');return 0
             return review()
         before=time.perf_counter();info=preflight(a.mode,full_hash=a.execute)
         info['asset_preflight_wall_sec']=time.perf_counter()-before
         if a.check_only or a.mode=='assets':print(json.dumps(info,ensure_ascii=False));return 0
         return execute(a.mode,info)
-    except Exception as exc:
+    except PrerequisiteHold as exc:
         print(f'[HOLD] {type(exc).__name__}: {exc}',file=sys.stderr);return 8
+    except Exception as exc:
+        print(f'[ERROR] {type(exc).__name__}: {exc}',file=sys.stderr);return 9
 
 
 if __name__=='__main__':raise SystemExit(main())
