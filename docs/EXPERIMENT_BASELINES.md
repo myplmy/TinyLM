@@ -326,6 +326,8 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | P106B Stage5 MTP/LoRA teacher `HF/sft_ready/p106b_mtp_teacher_v1` | 같은MTP GGUF off/on nmax2·xhigh/권장sampler·32Kcontext/16K총/8K사고·학생0 | **사용자 회수:** 자산MATCH·MTP16응답 완료. decode65.958890→53.525647tok/s·두순서비0.8224/0.7986·실제draft2278/4322·추가GPU897/900MiB·GDNenabled, 현 가속 기본 비채택. LoRA/후행은 선결8로실행0, 정답성/학생지능/장기안전 미검증. [101 §47](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | P106B `P106B_STAGE_RECEIPT_V1` Stage4cWc/5cWb/5dWb/5eW | 원모델/배치/샤드namespace 불변, caller만 회귀→선결→실행→FINAL | **준비·CPU 계약 검증:** 하위0을전체완료로읽지않고 선결8/오류9/중단130·미실행을분리. C/원형SHA·32label의check-only수리;새런처실물/모델NOT_RUN. 보류3SH는각자료/거부/상류선결. [P106B 후속](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md) |
+| P106B Stage6aW/6bW Qwen candidate, no new checkpoint | 지정 IQ2_XS-mtp SHA/llama-b11396·full GPU·ctx8192·low/사고1024/총3072 | **제한 직접관측:** actual chat32 dense14 micro8×accum16/ckptON 1합성 update OOM0·표본free1039MiB. 빈 NOTE3/4→별도 wrapper4/4, 원답/사고 분리. 정식SFT/장기안전/기본교사채택 아님([101 §49~§50](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
+| `p106b_s4_refill300m_chat32_s1337` | 별도 v3 영어 보충·정확 KO/EN각37.5M고유 train×4·원 micro8/accum16/ckptON·LR1e-4/Muon4e-4 | **예약·미사용**. 새 원천7train revision/SHA·source25%/globalhash·같은자료 wire2update를 통과해야 본교육. oldv1/v2/기존태그 불변·teacher down, 75M/300M 미관측([P106B 새 공급 경로](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md)) |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.
@@ -352,6 +354,13 @@ fp32 상주와 int8 상주가 갈린다.**
 tokenizer, validation·생성 경로를 이 표의 순서만 보고 합산·순위화하지 않는다.
 
 ## 3. 비교 유효성 규칙 (무효 비교 방지)
+
+2026-10-05 P106B 추가 계보: [101 §48~§50](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md).
+Qwen IQ2_XS-mtp/llama-b11396 full GPU와 실제chat32 dense14/micro8×accum16/ckptON/seq1024의
+1합성 업데이트는 OOM0·표본peak15023MiB/최소free1039MiB다. 기존 Bonsai/P076 공존과
+동일조건이 아니며 장기 안정성·SFT 품질·MTP 자체 가속은 미검증이다. 기본 교사는 불변이다.
+새 `p106b_s4_refill300m_chat32_s1337`은 v3 KO/EN각37.5M·4pass·LR1e-4/Muon4e-4·
+checkpoint-on의 조건부 예약이며 **사용 전**이다. 새wire SHA와 실제75M이 필요하고 oldv2를 덮지 않는다.
 
 두 런을 비교하기 전에 **전부** 같아야 한다. 하나라도 다르면 그 비교는 무효이거나 해석에 조건이 붙는다.
 

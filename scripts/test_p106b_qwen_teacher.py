@@ -1,6 +1,9 @@
 """CPU contracts only; never model/GPU."""
 import unittest
 from unittest.mock import patch
+from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from scripts import p106b_qwen_teacher as p
 
 
@@ -29,6 +32,28 @@ class Contracts(unittest.TestCase):
         self.assertNotEqual(old.SERVER,p.SERVER)
     def test_invalid_placement(self):
         with self.assertRaises(ValueError):p.command(1,'x','auto')
+    def test_empty_optional_note_raw_preserved(self):
+        final='[[QUESTION]]\nq\n[[/QUESTION]]\n[[ANSWER]]\na\n[[/ANSWER]]\n[[NOTE]]\n[[/NOTE]]'
+        reply={'choices':[{'finish_reason':'stop','message':{'content':final,'reasoning_content':'thought'}}]}
+        result=p.parsed_response(reply,'en')
+        self.assertEqual(result['format_status'],'TAGGED_COMPLETE')
+        self.assertEqual(result['teacher_final_content'],final)
+        self.assertEqual(reply['choices'][0]['message']['content'],final)
+        self.assertEqual(result['parsed_content']['assistant_text'],'a')
+    def test_required_fields_and_length_remain_rejected(self):
+        for final,finish in [('[[NOTE]]\n[[/NOTE]]','stop'),
+            ('[[QUESTION]]\nq\n[[/QUESTION]]\n[[ANSWER]]\na','length')]:
+            self.assertNotEqual(p.parsed_response({'choices':[{'finish_reason':finish,'message':{'content':final}}]},'en')['format_status'],'TAGGED_COMPLETE')
+    def test_canonical_excludes_thinking_and_preserves_source(self):
+        from tinylm.chat.serialize import serialize
+        case=dict(id='fixture',language='en',question='q')
+        final='[[QUESTION]]\nq\n[[/QUESTION]]\n[[ANSWER]]\na\n[[/ANSWER]]'
+        reply={'choices':[{'finish_reason':'stop','message':{'content':final,'reasoning_content':'not-student-secret'}}]}
+        row=p.canonical_candidate(reply,case,'test_result/evidence/fixture.json')
+        self.assertEqual([x['role'] for x in row['messages']],['user','assistant'])
+        self.assertEqual(row['meta']['teacher_model_sha256'],p.MODEL_SHA)
+        self.assertNotIn('not-student-secret',serialize(row,'chatml'))
+        self.assertEqual(row['meta']['label_status'],'PSEUDO_UNVERIFIED')
     def test_real_student_and_width_contract(self):
         from scripts import diag_p106b_qwen_coload as d
         with patch.object(d.OUTPUT.__class__,'exists',return_value=False), \

@@ -787,4 +787,57 @@ Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c�
 자원 성공 예측은 맞았지만 빈 NOTE 파서 때문에 첫 역할 wire3/4로 전체8이다.
 실제 학생 업데이트1·OOM0·전역peak15023/최소여유1039MiB이다. 언어 전반·대량 교육은 미검증이다.
 
+## Stage6bW·Stage4aWc/Wd·4c0Wc/4cWd — 래핑 복구와 영어 부족의 실행 경로
+
+### 1. 왜 / 2. 질문
+
+기존 공급 함수는 Aya Collection의 한국어2파일만 연결했다. 영어 추가 adapter가
+존재하는 것과 실제 원천·manifest가 확보된 것은 달랐고, 이를 선결HOLD 보고로
+반복한 것이 준비상의 미완이었다. 현 v2는 한국어37,500,482/영어1,850,817 train
+비패딩 토큰이며 부족 영어35,649,183이다. 기존자료와 영어 train7파일을 함께
+해시 순서로 새 버전에 선별하면 어느 출처에서 얼마를 얻는지 확인한다.
+
+### 3. 예측
+
+같은 Collection의 영어7파일은6,321,198,481B이며 여러 실제 원천 가족을 포함한다.
+한국어보다 원문이 많은 만큼 부족분을 줄일 가능성이 있지만 1024 context·중복·평가
+가족 제외·각 가족9.375M 상한을 적용한 뒤75M이 확보될지는 미측정이다.
+빈 NOTE 선택필드 정규화는 질문/답 내용을 바꾸지 않아 배선 복구가 예상된다.
+
+### 4. 단계 / 5. 판정 / 6. 비용 / 7. 실행
+
+| 단계 | 사용자 SH | 예상 비용 | 판정·선결 |
+|---|---|---|---|
+| Stage6bW 완료 | `run_P106B_Stage6bW_qwen_wrapper_role-done.sh` |실제13.191초 teacher-only |[101 §50](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 원답 불변·빈 선택 NOTE wrapper 제거·4/4 첫 시도 완결, 학생 재학습0|
+| Stage4aWc | [run_P106B_Stage4aWc_english_collection_fetch.sh](../run_P106B_Stage4aWc_english_collection_fetch.sh) |network6.32GB·1h 추정 |정확 revision/7train SHA·크기 검산·test/validation 다운로드0·기존데이터 불변|
+| Stage4aWd | [run_P106B_Stage4aWd_english_refill_corpus.sh](../run_P106B_Stage4aWd_english_refill_corpus.sh) |CPU3h 추정 |전량 hash/source25%상한·정확ChatML·새v3·≤20MB샤드; 남는 부족은 정직하게 보고|
+| Stage4c0Wc | [run_P106B_Stage4c0Wc_refill_student_wire.sh](../run_P106B_Stage4c0Wc_refill_student_wire.sh) |GPU 약6분 추정 |v3 hash/mask·한영128행씩·2update·정확256노출. 공급 부족이어도 wire만 가능|
+| Stage4cWd | [run_P106B_Stage4cWd_refill_chat32_repeat4.sh](../run_P106B_Stage4cWd_refill_chat32_repeat4.sh) |조건부GPU12h 역사 추정 |v3 각37.5M±1023·같은train/val SHA의wire PASS 뒤4pass. micro8/accum16·ckptON·LR1e-4/Muon4e-4불변|
+
+출력은 `HF/sft_sources/p106b_aya_collection_en_a3af2fde` 및
+`HF/sft_ready/p106b_mixed_public_v3_en_refill`/학생v3뿐이다. 원형v1/v2와 기존
+추가 원천 manifest를 덮어쓰지 않는다. 영어집합은 train만 사용하고 최종 split은
+현재 계약인 첫질문 hash modulo20을 유지한다. 출처 계보/원천 품질과 번역 문항의
+cross-language 의미 누설까지 자동 해결됐다고 주장하지 않는다.
+
+Stage4cWc는 원v2만 읽으므로 임의 활성화하지 않는다. 새v3의300M 실험은 별도
+4cWd로 구분하고 기존 목록·원형은 보존한다. Stage5dWb의 결손은 SFT 영어가 아니라
+실제 LoRA32답과 후행label이다. 사용자C의 거부관측 선결을 가짜 자료로 채우지 않는다.
+
+### 8. 한계 / preflight
+
+75M×4는 반복 없는 고유75M 및 실제 노출300M 목표다. 원자료를 단순 반복해서
+75M이라고 쓰지 않는다. 이 SFT 반복 설계는 사용자 별도 승인이고 사전학습2배풀
+규칙을 기계적으로 적용하지 않는다. 적정 권리/정답성/학생 능력은 각각 후행 평가다.
+Collection 카드 Apache 표시는 모든 파생 출처의 일괄 권리 판정이 아니다.
+fetch 중 `.partial` 실패는 보존하고 완성 파일은 SHA가 같을 때만 재사용한다.
+신규 fetch/CPU선별/본학습은 Codex 직접 미실행이며 Qwen 제한게이트 허가로 확대하지 않는다.
+
+### 9. 실행 이력
+
+Stage6bW는 실제4/4로 배선 복구 예측이 맞았다. 영어 보충의 새 코드·SH 및 CPU회귀 준비는
+완료했지만 실측 공급량/다운로드 완료/75M·300M은 NOT_RUN이다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

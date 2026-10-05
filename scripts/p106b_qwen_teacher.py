@@ -1,6 +1,8 @@
 """Pinned Qwen candidate, separate from the existing Bonsai teacher defaults."""
 from __future__ import annotations
 import hashlib
+import copy
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,3 +74,41 @@ def payload(case, seed):
     return dict(SAMPLER, messages=teacher_prompt('answer_given', case['language'],
         {'question': case['question']}), reasoning_effort='low', seed=seed,
         max_tokens=MAX_OUTPUT, thinking_budget_tokens=THINKING, cache_prompt=False)
+
+
+def parsed_response(reply, language):
+    """Normalize only an empty OPTIONAL NOTE tail, never question/answer/reasoning.
+
+    The shared legacy parser expects a newline after note content even when it
+    is empty. Raw server reply is immutable and remains the provenance source.
+    Missing required fields, extra/nested markers and length stops still fail.
+    """
+    from scripts.p106b_teacher_format import parse_reply
+    original=parse_reply(reply,language=language)
+    if original['format_status']!='PARSE_ERROR' or original['finish_reason']!='stop':return original
+    final=original['teacher_final_content']
+    normalized=re.sub(r'\n\[\[NOTE\]\][ \t\r\n]*\[\[/NOTE\]\][ \t\r\n]*\Z','',final)
+    if normalized==final:return original
+    wrapped=copy.deepcopy(reply)
+    wrapped['choices'][0]['message']['content']=normalized
+    parsed=parse_reply(wrapped,language=language)
+    if parsed['format_status']!='TAGGED_COMPLETE':return original
+    parsed.update(teacher_final_content=final,final_normalization='OPTIONAL_EMPTY_NOTE_TAIL_REMOVED',
+                  raw_final_sha256=hashlib.sha256(final.encode()).hexdigest().upper())
+    return parsed
+
+
+def canonical_candidate(reply, case, source_ref):
+    from scripts.p106b_teacher_wrapper import wrap_turns
+    parsed=parsed_response(reply,case['language'])
+    if parsed['format_status']!='TAGGED_COMPLETE':raise ValueError('incomplete final cannot be student input')
+    content=parsed['parsed_content']
+    sha=lambda text:hashlib.sha256(text.encode()).hexdigest().upper()
+    thought=parsed['teacher_reasoning_content']
+    return wrap_turns([dict(user_text=content['user_text'],assistant_text=content['assistant_text'])],
+        source_id='qwenrole:'+case['id'],source_sha256=sha(case['question']),
+        teacher_model_sha256=MODEL_SHA,language=case['language'],
+        source_license='repository-code-authored-role-question',generation_id='qwenrole_'+case['id'],
+        correction_note=content.get('correction_note',''),
+        reasoning_ref=source_ref+'#'+case['id'] if thought else '',
+        reasoning_sha256=sha(thought) if thought else '')

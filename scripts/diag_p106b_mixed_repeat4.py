@@ -29,9 +29,12 @@ FINAL = ROOT / f"runs/ckpt/m100s10_ko-en_300M_{TAG}.pt"
 LOG = ROOT / f"runs/logs/m100s10_ko-en_300M_{TAG}.json"
 
 
-def check(*, wire=False, balanced=False):
+def check(*, wire=False, balanced=False, refill=False):
     from scripts.p106b_balanced_public import OUTPUT as BALANCED_PUBLIC
     public = BALANCED_PUBLIC if balanced else PUBLIC
+    if refill:
+        from scripts.p106b_public_refill import OUTPUT as REFILL_PUBLIC
+        public = REFILL_PUBLIC
     p = public / "report.json"
     for path in (p, OUTPUT, FINAL, LOG):
         safe_repo_path(path)
@@ -54,8 +57,9 @@ def check(*, wire=False, balanced=False):
         verify(public, specs[split])
         if specs[split]["concat_sha256"] != report.get(split + "_concat_sha256"):
             raise ValueError("mixed corpus concat SHA differs")
-    if balanced and not wire:
-        wire_file = ROOT / "HF/sft_ready/p106b_mixed_student_wire_v2_balanced/report.json"
+    if (balanced or refill) and not wire:
+        wire_file = ROOT / ("HF/sft_ready/p106b_mixed_student_wire_v3_en_refill/report.json" if refill
+                            else "HF/sft_ready/p106b_mixed_student_wire_v2_balanced/report.json")
         safe_repo_path(wire_file)
         digest(wire_file)
         require_wire_report(json.loads(wire_file.read_text(encoding="utf-8")),
@@ -67,6 +71,10 @@ def check(*, wire=False, balanced=False):
         output = ROOT / ("HF/sft_ready/p106b_mixed_student_wire_v2_balanced" if wire else "HF/sft_ready/p106b_mixed_student_v2_balanced")
         final = output / "student.pt" if wire else ROOT / "runs/ckpt/m100s10_ko-en_300M_p106b_s4_mixed300m_balanced_chat32_s1337.pt"
         log = output / "student.json" if wire else ROOT / "runs/logs/m100s10_ko-en_300M_p106b_s4_mixed300m_balanced_chat32_s1337.json"
+    if refill:
+        output = ROOT / ("HF/sft_ready/p106b_mixed_student_wire_v3_en_refill" if wire else "HF/sft_ready/p106b_mixed_student_v3_en_refill")
+        final = output / "student.pt" if wire else ROOT / "runs/ckpt/m100s10_ko-en_300M_p106b_s4_refill300m_chat32_s1337.pt"
+        log = output / "student.json" if wire else ROOT / "runs/logs/m100s10_ko-en_300M_p106b_s4_refill300m_chat32_s1337.json"
     for path in (output, final, log):
         safe_repo_path(path)
         if path.is_symlink():
@@ -341,10 +349,12 @@ def main():
     group = ap.add_mutually_exclusive_group(required=True)
     group.add_argument("--check-only", action="store_true")
     group.add_argument("--execute", action="store_true")
-    ap.add_argument("--mode", choices=("new", "resume", "wire", "new-balanced", "resume-balanced", "wire-balanced"), default="new")
+    ap.add_argument("--mode", choices=("new", "resume", "wire", "new-balanced", "resume-balanced", "wire-balanced",
+                                     "new-refill", "resume-refill", "wire-refill"), default="new")
     args = ap.parse_args()
     try:
-        report, specs, info = check(wire=args.mode.startswith("wire"), balanced=args.mode.endswith("-balanced"))
+        report, specs, info = check(wire=args.mode.startswith("wire"), balanced=args.mode.endswith("-balanced"),
+                                  refill=args.mode.endswith("-refill"))
     except (ValueError, FileExistsError, FileNotFoundError) as exc:
         print(f"[HOLD] input prerequisite: {exc}", file=sys.stderr)
         return 8
