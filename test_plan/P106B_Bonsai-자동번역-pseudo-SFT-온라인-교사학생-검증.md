@@ -725,7 +725,7 @@ Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c�
 
 | 단계 | 정확 SH | 비용·독립변수 | 선결·판정 |
 |---|---|---|---|
-| Stage5eW | [run_P106B_Stage5eW_stage_receipt_contract.sh](../run_P106B_Stage5eW_stage_receipt_contract.sh) |CPU0.05h, COMPLETE/HOLD/ERROR fixture3·모델0 |새smoke 뒤 FINAL 한줄·정확3phase·선결8 뒤 본실험 미실행·로깅오류9;실물런처NOT_RUN|
+| Stage5eW 완료 | `run_P106B_Stage5eW_stage_receipt_contract-done.sh` |CPU0.05h, COMPLETE/HOLD/ERROR fixture3·모델0 |[101 §48](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 사용자 CPU12/FINAL3phase PASS; 재현 원형 Git 보존|
 | Stage4cWc | [run_P106B_Stage4cWc_balanced_final_verdict.sh](../run_P106B_Stage4cWc_balanced_final_verdict.sh) |조건부12h,원75M·micro8×accum16/ckptON/LR/4pass불변;caller만변경 |영어35.649M부족이어서HOLD;quota·원wire·부모SHA 충족전학생시작금지|
 | Stage5cWb | [run_P106B_Stage5cWb_lora_conditioned_final_verdict.sh](../run_P106B_Stage5cWb_lora_conditioned_final_verdict.sh) |조건부2h,원32요청/LoRA1.0/xhigh/nmax2/동일자산불변 |허용교육거부원형/SHA전HOLD;회귀/선결/execute/FINAL;MTP빠르다는전제없음|
 | Stage5dWb | [run_P106B_Stage5dWb_review_conditioned_final_verdict.sh](../run_P106B_Stage5dWb_review_conditioned_final_verdict.sh) |CPU0.05h,상류32원답/후행label |선결실제검산,없으면HOLD8·깨진SHA/JSON오류9;전체 검토 전 거부율 집계 금지|
@@ -733,5 +733,58 @@ Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c�
 **preflight:** teacher-only/CPU 진단의 학습steps0은 실제 학습량이 아니다. 미승인 zero-step registry의 broad조회를 하지 않고 정확 source/태그/원배치·출력namespace를 직접대조한다. 새callback의phase명/SH/name을함께변경했고oldHF/runs/cache를재생성하지않는다. 같은벤치MTP의음성을새코드실행으로덮지않는다. 조건부 모델3SH는선결전실행순서에자동포함하지않는다.
 
 **한계:** 회귀와CPU receipt는원본/GPU/장기학생교육/한국어/정답성PASS가아니다. caller수리로 영어자료량이나 실제거부가생기지않는다. 다음 queue는새smoke→CPU5e 이후이며나머지는선결HOLD를유지한다.48h를채우기위해완료된MTP를반복하거나부족자료로학습하지않는다.
+
+## Stage6aW — Qwen 후보 교사의 실제 역할과 chat32 학생 공존 (2026-10-05 사전등록)
+
+### 1. 왜 / 2. 질문
+
+사용자가 지정한 IQ2_XS-mtp GGUF와 llama-b11396을 별도 후보로 고정한다.
+기존 Bonsai 한국어 우려와 영어 자료 부족은 같은 문제가 아니다. 우선 이 후보가
+교육용 최종답을 내고 **실제 목표 학생과 함께 GPU에 들어가는지** 확인한다.
+교사만 로드되거나 작은 legacy 학생만 들어간 것으로 chat32 dense 공존을 주장하지 않는다.
+
+### 3. 예측
+
+8.77GB 파일에 MTP·context·작업 버퍼가 추가되므로 16GB에서 학생 학습 peak와
+합산하면 OOM 또는 여유 부족이 가능하다. 한국어 출력 가능성은 공식 다국어 모델과
+사용자 다운로드에 근거하지만, 양자화된 해당 파일의 정답성은 이 4문항으로 일반화할 수 없다.
+
+### 4. 단계 / 5. 판정
+
+1. CPU: 모델/런타임/학생/tokenizer SHA, GGUF MTP header, 옵션·6회귀.
+2. GPU: idle/free≥14000MiB일 때만 localhost 교사 한 벌. full offload,
+   fit off/no-op-offload, MTP draft2, 한 슬롯/context8192, low, 사고1024/총3072.
+3. 교사-only: 한국어 설명·영어 산술·한국어 문맥조회·번역 4요청.
+   `reasoning_content`와 final 원형을 분리 보존하고 기존 태그 파서를 사용한다.
+   문구 blacklist/온라인 의미합격 판정은 하지 않는다.
+4. 같은 서버가 살아 있는 상태에서 P090B chat32 dense14 부모를 strict 로드.
+   micro8×accum16·checkpoint ON·compile default·길이1024의 합성 assistant-mask
+   1회 업데이트와 추가 교사 1요청을 겹친다. 시간·전역200ms peak/free·Torch peak를 기록한다.
+   길이1024 패딩은 자원 상한 측정을 위한 것이며 실제 고유 대화량과 구분한다.
+5. OOM은 실제 예외, 여유512MiB 미만은 안전음성, backend/계측 오류는 tool failure로 구분.
+   원형 JSON/최종상태를 새 경로에 남긴다. 체크포인트 저장·정식 SFT·기본교사 교체 없음.
+
+### 6. 비용 / 7. 실행
+
+최대20분·GPU16GB, 교사 최대5요청 및 학생1합성 업데이트.
+`run_P106B_Stage6aW_qwen_chat32_coload_role-done.sh` (완료 원형은 Git archive로 보존).
+이번 사용자 추가 지시에 한해 Codex 직접 CPU+GPU 실행을 허가받았다. 이 권한은 대량
+코퍼스 생성·후속 학습·smoke/queue 실행으로 확대하지 않는다.
+
+### 8. 한계 / preflight
+
+새 Qwen 파일/런타임/샘플러·low는 기존 Bonsai/xhigh와 다르므로 속도·한국어 품질의
+단독 인과 비교가 아니다. 공식 Qwen 사고 sampler의 min_p=0을 사용한다.
+1×8×16×1024=131072 **패딩 슬롯**이며 고유 train 75M 또는300M 교육이 아니다.
+2배 풀 규칙은 이번 반복 합성 자원 게이트에 해당하지 않는다. 부모/원본/캐시 불변,
+새 Stage6aW와 evidence 경로가 비어 있음을 확인하고 broad runs registry는 열지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 9. 실행 이력
+
+2026-10-05 실제 실행을 [결과101 §49](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 회수했다.
+자원 성공 예측은 맞았지만 빈 NOTE 파서 때문에 첫 역할 wire3/4로 전체8이다.
+실제 학생 업데이트1·OOM0·전역peak15023/최소여유1039MiB이다. 언어 전반·대량 교육은 미검증이다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

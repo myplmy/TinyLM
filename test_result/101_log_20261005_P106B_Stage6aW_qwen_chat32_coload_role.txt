@@ -1,0 +1,35 @@
+Bounded20min Qwen role4 and real chat32 dense micro8 accum16 checkpointON seq1024 one synthetic update. Read raw teacher answers and QWEN_GATE_FINAL. No saved checkpoint or formal SFT.
+
+==============================================================================
+[runlog] 2026-10-05 09:37:39  name=P106B_Stage6aW_qwen_chat32_coload_role
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_qwen_coload.py --execute
+==============================================================================
+[TEACHER_ANSWER] {"id": "ram_ko", "question": "RAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.", "final": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 데이터가 지워지는 임시 메모리이고, SSD는 전원이 꺼져도 데이터가 남아있는 영구적 저장 매체입니다. 즉, RAM은 프로그램을 일시적으로 실행하는 공간이고, SSD는 파일을 장기적으로 보관하는 공간입니다.\n[[/ANSWER]]\n[[NOTE]]\n[[/NOTE]]", "finish_reason": "stop", "wire_status": "PARSE_ERROR", "wall_sec": 3.1380393280123826}
+[TEACHER_ANSWER] {"id": "arithmetic_en", "question": "What is 17 + 25? Show one short calculation and then the result.", "final": "[[QUESTION]]\nWhat is 17 + 25? Show one short calculation and then the result.\n[[/QUESTION]]\n[[ANSWER]]\n17 + 25 = 42\n[[/ANSWER]]\n[[NOTE]]\nSimple arithmetic addition.\n[[/NOTE]]", "finish_reason": "stop", "wire_status": "TAGGED_COMPLETE", "wall_sec": 1.9427135989972157}
+[TEACHER_ANSWER] {"id": "context_ko", "question": "민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.", "final": "[[QUESTION]]\n민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\n[[/QUESTION]]\n[[ANSWER]]\n빨간\n[[/ANSWER]]\n[[NOTE]]\n질문에 이미 답이 명시되어 있어 그대로 답함.\n[[/NOTE]]", "finish_reason": "stop", "wire_status": "TAGGED_COMPLETE", "wall_sec": 2.2509172889986075}
+[TEACHER_ANSWER] {"id": "translation_ko", "question": "다음 문장을 한국어로 번역하세요: A leap year usually has 366 days.", "final": "[[QUESTION]]\n다음 문장을 한국어로 번역하세요: A leap year usually has 366 days.\n[[/QUESTION]]\n[[ANSWER]]\n윤년은 보통 366일이다.\n[[/ANSWER]]\n[[NOTE]]\n직역한 번역으로, 원문의 \"usually\"와 \"has\"를 자연스러운 한국어 표현으로 살려 번역했다.\n[[/NOTE]]", "finish_reason": "stop", "wire_status": "TAGGED_COMPLETE", "wall_sec": 3.55062840100436}
+[STUDENT_READY] chat32 dense14 micro8 accum16 checkpoint ON compile default seq1024
+[TEACHER_ANSWER] {"id": "ram_ko", "question": "RAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.", "final": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 정보가 사라지는 임시 저장 공간인 반면, SSD는 전원이 꺼져도 데이터가 남아있는 영구 저장 장치입니다. RAM은 처리 속도가 매우 빠르기 때문에 CPU가 즉시 접근해야 하는 데이터를 저장하는 데 적합하고, SSD는 파일을 안정적으로 보관하는 데 적합합니다.\n[[/ANSWER]]\n[[NOTE]]\n요청된 두 문장 형식 준수.\n[[/NOTE]]", "finish_reason": "stop", "wire_status": "TAGGED_COMPLETE", "wall_sec": 3.178943304999848}
+W1005 09:38:15.585000 1193318 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[STUDENT_MICRO] 1/16 sec=36.375
+[STUDENT_MICRO] 2/16 sec=0.157
+[STUDENT_MICRO] 3/16 sec=0.138
+[STUDENT_MICRO] 4/16 sec=0.138
+[STUDENT_MICRO] 5/16 sec=0.137
+[STUDENT_MICRO] 6/16 sec=0.138
+[STUDENT_MICRO] 7/16 sec=0.139
+[STUDENT_MICRO] 8/16 sec=0.137
+[STUDENT_MICRO] 9/16 sec=0.138
+[STUDENT_MICRO] 10/16 sec=0.138
+[STUDENT_MICRO] 11/16 sec=0.138
+[STUDENT_MICRO] 12/16 sec=0.142
+[STUDENT_MICRO] 13/16 sec=0.138
+[STUDENT_MICRO] 14/16 sec=0.148
+[STUDENT_MICRO] 15/16 sec=0.139
+[STUDENT_MICRO] 16/16 sec=0.140
+[QWEN_GATE_FINAL] {"status": "RESOURCE_PASS_ROLE_WIRE_NEGATIVE", "returncode": 8, "student_loaded": true, "student_oom": false, "wall_sec": 55.211932501988485}
+[EVIDENCE] test_result/evidence/101_P106B_Stage6aW_qwen_chat32_coload_role.json
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 1.1분  (2026-10-05 09:38:47)
+==============================================================================

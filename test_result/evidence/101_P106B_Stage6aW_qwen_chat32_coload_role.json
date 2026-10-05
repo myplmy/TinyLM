@@ -1,0 +1,670 @@
+{
+  "input": {
+    "model": "HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+    "model_bytes": 8771311680,
+    "model_sha256": "F3369F8D36968AB7DD12F5FF11452680AEF9371AA19C9922D22CCD5E58C2D9C8",
+    "model_hash_check": "MATCH",
+    "server": "/home/uranus/llama-b11396/llama-server",
+    "runtime_sha256": {
+      "llama-server": "C513DCE0107CD1157EE998E7DBB271180429AB194E66D81664F0365EBA68A8C9",
+      "libllama-server-impl.so": "91C3B182D2DAF4CFAB7DEAAC81E279B9D29E2938D4B46AD492D16ECE03C8A0A3",
+      "libllama-common.so.0.5.0": "6125F47E3AAAD720F89CE202B3E213CD3C8618B8BF8510EE87F1568167F1B3AC",
+      "libllama.so.0.5.0": "9F9C5D70BC0E8E3EAC387B8E5065C97F6CCD06D536FD47B5DA782270B354E7D5",
+      "libggml-cuda.so": "A7CD12A05F0A8A6BC3070F8C3290F95774FB6A258D00B0D6FF687A9BE213AEE8",
+      "libggml-base.so.0.25.3": "6814301534CAA15FC361B9AEC7463E081A6688312F0390FCF96B14C15F156C55",
+      "libggml.so.0.25.3": "6FE347469E77A19024F3EC2B1D949CF8221F014495318AF3758AF0DF3A646BC1"
+    },
+    "gguf_metadata": {
+      "general.architecture": "qwen35",
+      "general.name": "Qwen3.8-27B GSQ-RCO",
+      "general.basename": "Qwen3.8-27B",
+      "general.quantized_by": "ISTA DASLab",
+      "general.repo_url": "https://huggingface.co/ISTA-DASLab",
+      "general.license": "apache-2.0",
+      "general.tags": {
+        "array_count": 2,
+        "element_type": 8
+      },
+      "general.description": "GSQ-RCO non-uniform mixed-precision GGUF (Deep Algorithms and Systems Lab, ISTA)",
+      "general.base_model.count": 1,
+      "general.base_model.0.name": "Qwen3.8 27B",
+      "general.base_model.0.organization": "Qwen",
+      "general.base_model.0.repo_url": "https://huggingface.co/Qwen/Qwen3.8-27B",
+      "general.type": "model",
+      "general.sampling.top_k": 20,
+      "general.sampling.top_p": 0.949999988079071,
+      "general.sampling.min_p": 0.0,
+      "general.sampling.temp": 1.0,
+      "general.size_label": "27B",
+      "qwen35.block_count": 65,
+      "general.file_type": 19,
+      "general.quantization_version": 2,
+      "qwen35.nextn_predict_layers": 1
+    },
+    "sampler": {
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 20,
+      "min_p": 0.0,
+      "presence_penalty": 0.0,
+      "repetition_penalty": 1.0
+    },
+    "effort": "low",
+    "context": 8192,
+    "max_output": 3072,
+    "thinking_budget_tokens": 1024,
+    "default_teacher_changed": false,
+    "schema": "P106B_QWEN_COLOAD_ROLE_V1",
+    "parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
+    "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "micro_bs": 8,
+    "accum": 16,
+    "seq": 1024,
+    "grad_checkpoint": true,
+    "compile": "default",
+    "optimizer_updates": 1,
+    "padded_slots": 131072,
+    "meaningful_training": "NOT_RUN",
+    "source": "four code-authored benign role questions plus synthetic full-width resource input",
+    "max_wall_sec": 1200,
+    "gpu_layers": "all",
+    "output": "test_result/evidence/101_P106B_Stage6aW_qwen_chat32_coload_role.json",
+    "code_sha256": {
+      "scripts/p106b_qwen_teacher.py": "C1D67C52F71F2C1D449021E125642AAC587F1723450C5B008D50B343725CA14D",
+      "scripts/diag_p106b_qwen_coload.py": "B83A9E2A95CE2EF2EFB4F6208DD43422EB0B3D22BDE270757663228EC6FAE9BC",
+      "scripts/p106b_education_followup.py": "7DBD02831020F3AFBD7DEDC8B0C9755FB7469CF1B5C6E9EA98DEEE1D8746A962",
+      "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34"
+    }
+  },
+  "schema": "P106B_QWEN_COLOAD_ROLE_V1",
+  "status": "RESOURCE_PASS_ROLE_WIRE_NEGATIVE",
+  "returncode": 8,
+  "teacher_answers": [
+    {
+      "case": {
+        "id": "ram_ko",
+        "language": "ko",
+        "question": "RAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요."
+      },
+      "seed": 1337,
+      "reply": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 데이터가 지워지는 임시 메모리이고, SSD는 전원이 꺼져도 데이터가 남아있는 영구적 저장 매체입니다. 즉, RAM은 프로그램을 일시적으로 실행하는 공간이고, SSD는 파일을 장기적으로 보관하는 공간입니다.\n[[/ANSWER]]\n[[NOTE]]\n[[/NOTE]]",
+              "reasoning_content": "User wants a Korean answer in two sentences explaining the difference between RAM and SSD for a beginner.\n\nRAM: temporary memory (volatile), cleared on power-off.\nSSD: permanent storage (non-volatile), data persists without power.\n\nTwo sentences, concise.\n"
+            }
+          }
+        ],
+        "created": 1791160670,
+        "model": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+        "system_fingerprint": "b11396-2e7c58c54",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 165,
+          "prompt_tokens": 309,
+          "total_tokens": 474,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-l6Qo26gQipp6a2QDHJuC8HOirkHTaGGU",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 309,
+          "prompt_ms": 1081.14,
+          "prompt_per_token_ms": 3.498834951456311,
+          "prompt_per_second": 285.8094233864254,
+          "predicted_n": 165,
+          "predicted_ms": 2052.416,
+          "predicted_per_token_ms": 12.514731707317074,
+          "predicted_per_second": 79.9058280582494,
+          "draft_n": 136,
+          "draft_n_accepted": 96
+        }
+      },
+      "metrics": {
+        "completion_tokens": 165,
+        "request_wall_sec": 3.1380393280123826,
+        "completion_tok_per_sec": 52.58060296666521,
+        "decode_tokens": 165,
+        "decode_ms": 2052.416,
+        "decode_tok_per_sec": 80.39305871714116,
+        "prompt_tok_per_sec": 285.8094233864254,
+        "prompt_processed_tokens": 309,
+        "prompt_cached_tokens": 0,
+        "draft_tokens": 136,
+        "accepted_draft_tokens": 96,
+        "draft_acceptance": 0.7058823529411765,
+        "final_text": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 데이터가 지워지는 임시 메모리이고, SSD는 전원이 꺼져도 데이터가 남아있는 영구적 저장 매체입니다. 즉, RAM은 프로그램을 일시적으로 실행하는 공간이고, SSD는 파일을 장기적으로 보관하는 공간입니다.\n[[/ANSWER]]\n[[NOTE]]\n[[/NOTE]]",
+        "reasoning_text": "User wants a Korean answer in two sentences explaining the difference between RAM and SSD for a beginner.\n\nRAM: temporary memory (volatile), cleared on power-off.\nSSD: permanent storage (non-volatile), data persists without power.\n\nTwo sentences, concise.\n",
+        "finish_reason": "stop",
+        "final_characters": 236,
+        "reasoning_characters": 256,
+        "empty_final": false,
+        "semantic_refusal": "NOT_REVIEWED",
+        "semantic_truth": "NOT_RUN"
+      },
+      "parsed": {
+        "finish_reason": "stop",
+        "teacher_reasoning_content": "User wants a Korean answer in two sentences explaining the difference between RAM and SSD for a beginner.\n\nRAM: temporary memory (volatile), cleared on power-off.\nSSD: permanent storage (non-volatile), data persists without power.\n\nTwo sentences, concise.\n",
+        "teacher_final_content": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 데이터가 지워지는 임시 메모리이고, SSD는 전원이 꺼져도 데이터가 남아있는 영구적 저장 매체입니다. 즉, RAM은 프로그램을 일시적으로 실행하는 공간이고, SSD는 파일을 장기적으로 보관하는 공간입니다.\n[[/ANSWER]]\n[[NOTE]]\n[[/NOTE]]",
+        "parsed_content": null,
+        "format_status": "PARSE_ERROR",
+        "parse_error": "missing, duplicate or extra teacher field delimiter",
+        "usage": {
+          "prompt_tokens": 309,
+          "completion_tokens": 165,
+          "total_tokens": 474
+        }
+      },
+      "semantic_truth": "NOT_REVIEWED"
+    },
+    {
+      "case": {
+        "id": "arithmetic_en",
+        "language": "en",
+        "question": "What is 17 + 25? Show one short calculation and then the result."
+      },
+      "seed": 1338,
+      "reply": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[[QUESTION]]\nWhat is 17 + 25? Show one short calculation and then the result.\n[[/QUESTION]]\n[[ANSWER]]\n17 + 25 = 42\n[[/ANSWER]]\n[[NOTE]]\nSimple arithmetic addition.\n[[/NOTE]]",
+              "reasoning_content": "The user is asking a simple arithmetic question: What is 17 + 25? They want one short calculation and then the result.\n\n17 + 25 = 42\n\nI'll format the answer clearly with the calculation and result.\n"
+            }
+          }
+        ],
+        "created": 1791160671,
+        "model": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+        "system_fingerprint": "b11396-2e7c58c54",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 121,
+          "prompt_tokens": 312,
+          "total_tokens": 433,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-Oqn2XCK9fh3CEmdngaBPelq3kRNzHPab",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 312,
+          "prompt_ms": 629.158,
+          "prompt_per_token_ms": 2.0165320512820513,
+          "prompt_per_second": 495.9008706874903,
+          "predicted_n": 121,
+          "predicted_ms": 1309.057,
+          "predicted_per_token_ms": 10.908808333333333,
+          "predicted_per_second": 91.66904114946867,
+          "draft_n": 88,
+          "draft_n_accepted": 76
+        }
+      },
+      "metrics": {
+        "completion_tokens": 121,
+        "request_wall_sec": 1.9427135989972157,
+        "completion_tok_per_sec": 62.28401348632008,
+        "decode_tokens": 121,
+        "decode_ms": 1309.057,
+        "decode_tok_per_sec": 92.43294982571425,
+        "prompt_tok_per_sec": 495.9008706874903,
+        "prompt_processed_tokens": 312,
+        "prompt_cached_tokens": 0,
+        "draft_tokens": 88,
+        "accepted_draft_tokens": 76,
+        "draft_acceptance": 0.8636363636363636,
+        "final_text": "[[QUESTION]]\nWhat is 17 + 25? Show one short calculation and then the result.\n[[/QUESTION]]\n[[ANSWER]]\n17 + 25 = 42\n[[/ANSWER]]\n[[NOTE]]\nSimple arithmetic addition.\n[[/NOTE]]",
+        "reasoning_text": "The user is asking a simple arithmetic question: What is 17 + 25? They want one short calculation and then the result.\n\n17 + 25 = 42\n\nI'll format the answer clearly with the calculation and result.\n",
+        "finish_reason": "stop",
+        "final_characters": 174,
+        "reasoning_characters": 198,
+        "empty_final": false,
+        "semantic_refusal": "NOT_REVIEWED",
+        "semantic_truth": "NOT_RUN"
+      },
+      "parsed": {
+        "finish_reason": "stop",
+        "teacher_reasoning_content": "The user is asking a simple arithmetic question: What is 17 + 25? They want one short calculation and then the result.\n\n17 + 25 = 42\n\nI'll format the answer clearly with the calculation and result.\n",
+        "teacher_final_content": "[[QUESTION]]\nWhat is 17 + 25? Show one short calculation and then the result.\n[[/QUESTION]]\n[[ANSWER]]\n17 + 25 = 42\n[[/ANSWER]]\n[[NOTE]]\nSimple arithmetic addition.\n[[/NOTE]]",
+        "parsed_content": {
+          "user_text": "What is 17 + 25? Show one short calculation and then the result.",
+          "assistant_text": "17 + 25 = 42",
+          "correction_note": "Simple arithmetic addition."
+        },
+        "format_status": "TAGGED_COMPLETE",
+        "parse_error": "",
+        "usage": {
+          "prompt_tokens": 312,
+          "completion_tokens": 121,
+          "total_tokens": 433
+        }
+      },
+      "semantic_truth": "NOT_REVIEWED"
+    },
+    {
+      "case": {
+        "id": "context_ko",
+        "language": "ko",
+        "question": "민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요."
+      },
+      "seed": 1339,
+      "reply": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[[QUESTION]]\n민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\n[[/QUESTION]]\n[[ANSWER]]\n빨간\n[[/ANSWER]]\n[[NOTE]]\n질문에 이미 답이 명시되어 있어 그대로 답함.\n[[/NOTE]]",
+              "reasoning_content": "The question asks: \"민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\" (Minju chose a blue ball, Jisu chose a red ball. Answer only the color of the ball Jisu chose.)\n\nThe answer is simply: 빨간 (red).\n"
+            }
+          }
+        ],
+        "created": 1791160674,
+        "model": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+        "system_fingerprint": "b11396-2e7c58c54",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 145,
+          "prompt_tokens": 320,
+          "total_tokens": 465,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-Nf6ve4gGKh0nkN5mhknZlgTHh9hH1fTS",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 320,
+          "prompt_ms": 639.624,
+          "prompt_per_token_ms": 1.998825,
+          "prompt_per_second": 500.2939226795743,
+          "predicted_n": 145,
+          "predicted_ms": 1606.756,
+          "predicted_per_token_ms": 11.158027777777779,
+          "predicted_per_second": 89.6215729083943,
+          "draft_n": 108,
+          "draft_n_accepted": 90
+        }
+      },
+      "metrics": {
+        "completion_tokens": 145,
+        "request_wall_sec": 2.2509172889986075,
+        "completion_tok_per_sec": 64.4181821822995,
+        "decode_tokens": 145,
+        "decode_ms": 1606.756,
+        "decode_tok_per_sec": 90.24394494248037,
+        "prompt_tok_per_sec": 500.2939226795743,
+        "prompt_processed_tokens": 320,
+        "prompt_cached_tokens": 0,
+        "draft_tokens": 108,
+        "accepted_draft_tokens": 90,
+        "draft_acceptance": 0.8333333333333334,
+        "final_text": "[[QUESTION]]\n민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\n[[/QUESTION]]\n[[ANSWER]]\n빨간\n[[/ANSWER]]\n[[NOTE]]\n질문에 이미 답이 명시되어 있어 그대로 답함.\n[[/NOTE]]",
+        "reasoning_text": "The question asks: \"민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\" (Minju chose a blue ball, Jisu chose a red ball. Answer only the color of the ball Jisu chose.)\n\nThe answer is simply: 빨간 (red).\n",
+        "finish_reason": "stop",
+        "final_characters": 143,
+        "reasoning_characters": 196,
+        "empty_final": false,
+        "semantic_refusal": "NOT_REVIEWED",
+        "semantic_truth": "NOT_RUN"
+      },
+      "parsed": {
+        "finish_reason": "stop",
+        "teacher_reasoning_content": "The question asks: \"민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\" (Minju chose a blue ball, Jisu chose a red ball. Answer only the color of the ball Jisu chose.)\n\nThe answer is simply: 빨간 (red).\n",
+        "teacher_final_content": "[[QUESTION]]\n민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.\n[[/QUESTION]]\n[[ANSWER]]\n빨간\n[[/ANSWER]]\n[[NOTE]]\n질문에 이미 답이 명시되어 있어 그대로 답함.\n[[/NOTE]]",
+        "parsed_content": {
+          "user_text": "민수는 파란 공, 지수는 빨간 공을 골랐습니다. 지수가 고른 공의 색만 답하세요.",
+          "assistant_text": "빨간",
+          "correction_note": "질문에 이미 답이 명시되어 있어 그대로 답함."
+        },
+        "format_status": "TAGGED_COMPLETE",
+        "parse_error": "",
+        "usage": {
+          "prompt_tokens": 320,
+          "completion_tokens": 145,
+          "total_tokens": 465
+        }
+      },
+      "semantic_truth": "NOT_REVIEWED"
+    },
+    {
+      "case": {
+        "id": "translation_ko",
+        "language": "ko",
+        "question": "다음 문장을 한국어로 번역하세요: A leap year usually has 366 days."
+      },
+      "seed": 1340,
+      "reply": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "[[QUESTION]]\n다음 문장을 한국어로 번역하세요: A leap year usually has 366 days.\n[[/QUESTION]]\n[[ANSWER]]\n윤년은 보통 366일이다.\n[[/ANSWER]]\n[[NOTE]]\n직역한 번역으로, 원문의 \"usually\"와 \"has\"를 자연스러운 한국어 표현으로 살려 번역했다.\n[[/NOTE]]",
+              "reasoning_content": "The user wants me to translate the English sentence \"A leap year usually has 366 days.\" into Korean.\n\nThe Korean translation would be: \"윤년은 보통 366일이다.\" or \"윤년의 경우 보통 366일이다.\"\n\nLet me think about the most natural Korean phrasing:\n- \"윤년은 보통 366일이다.\" - This is straightforward and natural.\n- \"윤년의 해는 보통 366일이다.\" - slightly redundant\n- \"윤년에는 보통 366일이 있다.\" - this works well too.\n\nI'll go with \"윤년은 보통 366일이다.\" as it's the most concise and natural translation.\n"
+            }
+          }
+        ],
+        "created": 1791160677,
+        "model": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+        "system_fingerprint": "b11396-2e7c58c54",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 244,
+          "prompt_tokens": 312,
+          "total_tokens": 556,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-cNS9xy0ejlb2QDHfLR9TgybQzS0IIOOF",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 312,
+          "prompt_ms": 626.407,
+          "prompt_per_token_ms": 2.0077147435897436,
+          "prompt_per_second": 498.07872517388853,
+          "predicted_n": 244,
+          "predicted_ms": 2919.907,
+          "predicted_per_token_ms": 12.016078189300412,
+          "predicted_per_second": 83.22182864043272,
+          "draft_n": 196,
+          "draft_n_accepted": 145
+        }
+      },
+      "metrics": {
+        "completion_tokens": 244,
+        "request_wall_sec": 3.55062840100436,
+        "completion_tok_per_sec": 68.72022989817243,
+        "decode_tokens": 244,
+        "decode_ms": 2919.907,
+        "decode_tok_per_sec": 83.56430530150446,
+        "prompt_tok_per_sec": 498.07872517388853,
+        "prompt_processed_tokens": 312,
+        "prompt_cached_tokens": 0,
+        "draft_tokens": 196,
+        "accepted_draft_tokens": 145,
+        "draft_acceptance": 0.7397959183673469,
+        "final_text": "[[QUESTION]]\n다음 문장을 한국어로 번역하세요: A leap year usually has 366 days.\n[[/QUESTION]]\n[[ANSWER]]\n윤년은 보통 366일이다.\n[[/ANSWER]]\n[[NOTE]]\n직역한 번역으로, 원문의 \"usually\"와 \"has\"를 자연스러운 한국어 표현으로 살려 번역했다.\n[[/NOTE]]",
+        "reasoning_text": "The user wants me to translate the English sentence \"A leap year usually has 366 days.\" into Korean.\n\nThe Korean translation would be: \"윤년은 보통 366일이다.\" or \"윤년의 경우 보통 366일이다.\"\n\nLet me think about the most natural Korean phrasing:\n- \"윤년은 보통 366일이다.\" - This is straightforward and natural.\n- \"윤년의 해는 보통 366일이다.\" - slightly redundant\n- \"윤년에는 보통 366일이 있다.\" - this works well too.\n\nI'll go with \"윤년은 보통 366일이다.\" as it's the most concise and natural translation.\n",
+        "finish_reason": "stop",
+        "final_characters": 192,
+        "reasoning_characters": 456,
+        "empty_final": false,
+        "semantic_refusal": "NOT_REVIEWED",
+        "semantic_truth": "NOT_RUN"
+      },
+      "parsed": {
+        "finish_reason": "stop",
+        "teacher_reasoning_content": "The user wants me to translate the English sentence \"A leap year usually has 366 days.\" into Korean.\n\nThe Korean translation would be: \"윤년은 보통 366일이다.\" or \"윤년의 경우 보통 366일이다.\"\n\nLet me think about the most natural Korean phrasing:\n- \"윤년은 보통 366일이다.\" - This is straightforward and natural.\n- \"윤년의 해는 보통 366일이다.\" - slightly redundant\n- \"윤년에는 보통 366일이 있다.\" - this works well too.\n\nI'll go with \"윤년은 보통 366일이다.\" as it's the most concise and natural translation.\n",
+        "teacher_final_content": "[[QUESTION]]\n다음 문장을 한국어로 번역하세요: A leap year usually has 366 days.\n[[/QUESTION]]\n[[ANSWER]]\n윤년은 보통 366일이다.\n[[/ANSWER]]\n[[NOTE]]\n직역한 번역으로, 원문의 \"usually\"와 \"has\"를 자연스러운 한국어 표현으로 살려 번역했다.\n[[/NOTE]]",
+        "parsed_content": {
+          "user_text": "다음 문장을 한국어로 번역하세요: A leap year usually has 366 days.",
+          "assistant_text": "윤년은 보통 366일이다.",
+          "correction_note": "직역한 번역으로, 원문의 \"usually\"와 \"has\"를 자연스러운 한국어 표현으로 살려 번역했다."
+        },
+        "format_status": "TAGGED_COMPLETE",
+        "parse_error": "",
+        "usage": {
+          "prompt_tokens": 312,
+          "completion_tokens": 244,
+          "total_tokens": 556
+        }
+      },
+      "semantic_truth": "NOT_REVIEWED"
+    }
+  ],
+  "student_loaded": true,
+  "student_oom": false,
+  "checkpoint_saved": false,
+  "formal_sft": "NOT_RUN",
+  "teacher_default_adoption": "NOT_RUN",
+  "teacher_startup_sec": 2.025152116009849,
+  "server_props": {
+    "default_generation_settings": {
+      "params": {
+        "seed": 4294967295,
+        "temperature": 1.0,
+        "dynatemp_range": 0.0,
+        "dynatemp_exponent": 1.0,
+        "top_k": 20,
+        "top_p": 0.949999988079071,
+        "min_p": 0.0,
+        "top_n_sigma": -1.0,
+        "xtc_probability": 0.0,
+        "xtc_threshold": 0.10000000149011612,
+        "typical_p": 1.0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1.0,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "dry_multiplier": 0.0,
+        "dry_base": 1.75,
+        "dry_allowed_length": 2,
+        "dry_penalty_last_n": 64,
+        "mirostat": 0,
+        "mirostat_tau": 5.0,
+        "mirostat_eta": 0.10000000149011612,
+        "adaptive_target": -1.0,
+        "adaptive_decay": 0.8999999761581421,
+        "max_tokens": -1,
+        "n_predict": -1,
+        "n_keep": 0,
+        "n_discard": 0,
+        "ignore_eos": false,
+        "stream": false,
+        "n_probs": 0,
+        "min_keep": 0,
+        "chat_format": "Content-only",
+        "reasoning_format": "none",
+        "reasoning_in_content": false,
+        "generation_prompt": "",
+        "samplers": [
+          "penalties",
+          "dry",
+          "top_n_sigma",
+          "top_k",
+          "typ_p",
+          "top_p",
+          "min_p",
+          "xtc",
+          "temperature"
+        ],
+        "speculative.types": "none",
+        "timings_per_token": false,
+        "post_sampling_probs": false,
+        "backend_sampling": false,
+        "lora": []
+      },
+      "n_ctx": 8192
+    },
+    "total_slots": 1,
+    "model_alias": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+    "model_ftype": "IQ2_XXS - 2.0625 bpw",
+    "model_path": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+    "modalities": {
+      "vision": false,
+      "video": false,
+      "audio": false
+    },
+    "media_marker": "<__media_gWQdSZ0L19E0vAi38Kl1vRE3C4sQG9zH__>",
+    "endpoint_slots": true,
+    "endpoint_props": false,
+    "endpoint_metrics": false,
+    "ui": false,
+    "ui_settings": {},
+    "chat_template": "{%- set image_count = namespace(value=0) %}\n{%- set video_count = namespace(value=0) %}\n{%- macro render_content(content, do_vision_count, is_system_content=false) %}\n    {%- if content is string %}\n        {{- content }}\n    {%- elif content is iterable and content is not mapping %}\n        {%- for item in content %}\n            {%- if 'image' in item or 'image_url' in item or item.type == 'image' %}\n                {%- if is_system_content %}\n                    {{- raise_exception('System message cannot contain images.') }}\n                {%- endif %}\n                {%- if do_vision_count %}\n                    {%- set image_count.value = image_count.value + 1 %}\n                {%- endif %}\n                {%- if add_vision_id %}\n                    {{- 'Picture ' ~ image_count.value ~ ': ' }}\n                {%- endif %}\n                {{- '<|vision_start|><|image_pad|><|vision_end|>' }}\n            {%- elif 'video' in item or item.type == 'video' %}\n                {%- if is_system_content %}\n                    {{- raise_exception('System message cannot contain videos.') }}\n                {%- endif %}\n                {%- if do_vision_count %}\n                    {%- set video_count.value = video_count.value + 1 %}\n                {%- endif %}\n                {%- if add_vision_id %}\n                    {{- 'Video ' ~ video_count.value ~ ': ' }}\n                {%- endif %}\n                {{- '<|vision_start|><|video_pad|><|vision_end|>' }}\n            {%- elif 'text' in item %}\n                {{- item.text }}\n            {%- else %}\n                {{- raise_exception('Unexpected item type in content.') }}\n            {%- endif %}\n        {%- endfor %}\n    {%- elif content is none or content is undefined %}\n        {{- '' }}\n    {%- else %}\n        {{- raise_exception('Unexpected content type.') }}\n    {%- endif %}\n{%- endmacro %}\n{%- if not messages %}\n    {{- raise_exception('No messages provided.') }}\n{%- endif %}\n{%- set reasoning_instructions = '' %}\n{%- if enable_thinking is undefined or enable_thinking is true %}\n    {%- set resolved_reasoning_effort = reasoning_effort|default('xhigh') %}\n    {%- if resolved_reasoning_effort not in ('xhigh', 'medium', 'low') %}\n        {{- raise_exception('Unexpected reasoning effort ' ~ reasoning_effort ~ '. Supported types are xhigh (default), medium, and low.') }}\n    {%- endif %}\n    {%- if resolved_reasoning_effort == 'xhigh' %}\n        {%- set reasoning_instructions = 'Reasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.' %}\n    {%- elif resolved_reasoning_effort == 'low' %}\n        {%- set reasoning_instructions = 'Reasoning effort is set to low. Keep your thinking brief and focused, moving directly to the conclusion without unnecessary elaboration.' %}\n    {%- endif %}\n{%- endif %}\n{%- if tools and tools is iterable and tools is not mapping %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if reasoning_instructions %}\n        {{- reasoning_instructions + '\\n\\n' }}\n    {%- endif %}\n    {{- \"# Tools\\n\\nYou have access to the following functions:\\n\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\" }}\n    {{- '\\n\\nIf you choose to call a function ONLY reply in the following format with NO suffix:\\n\\n<tool_call>\\n<function=example_function_name>\\n<parameter=example_parameter_1>\\nvalue_1\\n</parameter>\\n<parameter=example_parameter_2>\\nThis is the value for the second parameter\\nthat can span\\nmultiple lines\\n</parameter>\\n</function>\\n</tool_call>\\n\\n<IMPORTANT>\\nReminder:\\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\\n- Required parameters MUST be specified\\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\\n</IMPORTANT>' }}\n    {%- if messages[0].role == 'system' %}\n        {%- set content = render_content(messages[0].content, false, true)|trim %}\n        {%- if content %}\n            {{- '\\n\\n' + content }}\n        {%- endif %}\n    {%- endif %}\n    {{- '<|im_end|>\\n' }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {%- set content = render_content(messages[0].content, false, true)|trim %}\n        {%- if content %}\n            {{- '<|im_start|>system\\n' + (reasoning_instructions + '\\n\\n' if reasoning_instructions else '')  + content + '<|im_end|>\\n' }}\n        {%- elif reasoning_instructions %}\n            {{- '<|im_start|>system\\n' + reasoning_instructions + '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- elif reasoning_instructions %}\n        {{- '<|im_start|>system\\n' + reasoning_instructions + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" %}\n        {%- set content = render_content(message.content, false)|trim %}\n        {%- if not(content.startswith('<tool_response>') and content.endswith('</tool_response>')) %}\n            {%- set ns.multi_step_tool = false %}\n            {%- set ns.last_query_index = index %}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if ns.multi_step_tool %}\n    {{- raise_exception('No user query found in messages.') }}\n{%- endif %}\n{%- for message in messages %}\n    {%- set content = render_content(message.content, true)|trim %}\n    {%- if message.role == \"system\" %}\n        {%- if not loop.first %}\n            {{- raise_exception('System message must be at the beginning.') }}\n        {%- endif %}\n    {%- elif message.role == \"user\" %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- endif %}\n        {%- set reasoning_content = reasoning_content|trim %}\n        {%- if preserve_thinking is undefined or preserve_thinking is true or loop.index0 > ns.last_query_index %}\n            {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content + '\\n</think>\\n\\n' + content }}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls and message.tool_calls is iterable and message.tool_calls is not mapping %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if tool_call.function is defined %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {%- if loop.first %}\n                    {%- if content|trim %}\n                        {{- '\\n\\n<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                    {%- else %}\n                        {{- '<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                    {%- endif %}\n                {%- else %}\n                    {{- '\\n<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                {%- endif %}\n                {%- if tool_call.arguments is defined and tool_call.arguments != '' %}\n                    {%- for args_name, args_value in tool_call.arguments|items %}\n                        {{- '<parameter=' + args_name + '>\\n' }}\n                        {%- set args_value = args_value | string if args_value is string else args_value | tojson | safe %}\n                        {{- args_value }}\n                        {{- '\\n</parameter>\\n' }}\n                    {%- endfor %}\n                {%- endif %}\n                {{- '</function>\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.previtem and loop.previtem.role != \"tool\" %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if not loop.last and loop.nextitem.role != \"tool\" %}\n            {{- '<|im_end|>\\n' }}\n        {%- elif loop.last %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- else %}\n        {{- raise_exception('Unexpected message role.') }}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is false %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- else %}\n        {{- '<think>\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "chat_template_caps": {
+      "supports_object_arguments": true,
+      "supports_parallel_tool_calls": true,
+      "supports_preserve_reasoning": true,
+      "supports_reasoning_effort": true,
+      "supports_string_content": true,
+      "supports_system_role": true,
+      "supports_tool_calls": true,
+      "supports_tools": true,
+      "supports_typed_content": true
+    },
+    "bos_token": "<|endoftext|>",
+    "eos_token": "<|im_end|>",
+    "build_info": "b11396-2e7c58c54",
+    "is_sleeping": false,
+    "cors_proxy_enabled": false
+  },
+  "teacher_only_memory": {
+    "sample_count": 54,
+    "sampled_gpu_global_peak_mib": 10605,
+    "baseline_gpu_used_mib": 1005,
+    "sampled_gpu_increment_mib": 9600,
+    "sampled_gpu_min_free_mib": 5457,
+    "owned_server_peak_rss_mib": 8767.25,
+    "scope": "200ms sampled process RSS/global GPU; excludes model disk size; may miss subinterval peaks"
+  },
+  "student": {
+    "optimizer_updates": 1,
+    "microbatch_seconds": [
+      36.375471830004244,
+      0.15669232000072952,
+      0.13795535601093434,
+      0.13755938700342085,
+      0.13716932199895382,
+      0.1382552410068456,
+      0.13948047401208896,
+      0.1365755459992215,
+      0.13754679400881287,
+      0.13835846599249635,
+      0.13784143399971072,
+      0.141857844995684,
+      0.13815242401324213,
+      0.1483587460097624,
+      0.13860043000022415,
+      0.13966555800288916
+    ],
+    "total_sec": 38.608587902010186,
+    "loss_sum_normalized": 13.922755241394043,
+    "grad_norm": 190.93544006347656,
+    "torch_peak_allocated_mib": 3117.99951171875,
+    "torch_peak_reserved_mib": 4152.0,
+    "scope": "synthetic assistant-masked resource update only; repeated one QA, padded fullwidth1024",
+    "padded_slots": 131072,
+    "nonpadding_tokens": 2560,
+    "assistant_targets": 256,
+    "checkpoint_saved": false
+  },
+  "concurrent_teacher": {
+    "case": {
+      "id": "ram_ko",
+      "language": "ko",
+      "question": "RAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요."
+    },
+    "seed": 1441,
+    "reply": {
+      "choices": [
+        {
+          "finish_reason": "stop",
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 정보가 사라지는 임시 저장 공간인 반면, SSD는 전원이 꺼져도 데이터가 남아있는 영구 저장 장치입니다. RAM은 처리 속도가 매우 빠르기 때문에 CPU가 즉시 접근해야 하는 데이터를 저장하는 데 적합하고, SSD는 파일을 안정적으로 보관하는 데 적합합니다.\n[[/ANSWER]]\n[[NOTE]]\n요청된 두 문장 형식 준수.\n[[/NOTE]]",
+            "reasoning_content": "사용자가 RAM과 SSD 차이를 초보자에게 두 문장으로 설명해 달라고 요청함.\n\n- RAM: 임시 저장 장치, 전원 꺼지면 데이터 소실, 빠름\n- SSD: 영구 저장 장치, 전원 꺼져도 데이터 유지\n\n두 문장으로 압축해서 설명.\n"
+          }
+        }
+      ],
+      "created": 1791160684,
+      "model": "/home/uranus/tinyLM/HF/model--ISTA-DASLab--Qwen3.8-27B-GSQ-RCO-GGUF/Qwen3.8-27B-GSQ-RCO-IQ2_XS-mtp.gguf",
+      "system_fingerprint": "b11396-2e7c58c54",
+      "object": "chat.completion",
+      "usage": {
+        "completion_tokens": 189,
+        "prompt_tokens": 309,
+        "total_tokens": 498,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "id": "chatcmpl-EluHvxuQIhl2Xzh061T6qnFuspkOIRxh",
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 309,
+        "prompt_ms": 654.256,
+        "prompt_per_token_ms": 2.1173333333333333,
+        "prompt_per_second": 472.29219143576825,
+        "predicted_n": 189,
+        "predicted_ms": 2519.336,
+        "predicted_per_token_ms": 13.400723404255318,
+        "predicted_per_second": 74.62283712851324,
+        "draft_n": 168,
+        "draft_n_accepted": 104
+      }
+    },
+    "metrics": {
+      "completion_tokens": 189,
+      "request_wall_sec": 3.178943304999848,
+      "completion_tok_per_sec": 59.45371837954469,
+      "decode_tokens": 189,
+      "decode_ms": 2519.336,
+      "decode_tok_per_sec": 75.01976711323937,
+      "prompt_tok_per_sec": 472.29219143576825,
+      "prompt_processed_tokens": 309,
+      "prompt_cached_tokens": 0,
+      "draft_tokens": 168,
+      "accepted_draft_tokens": 104,
+      "draft_acceptance": 0.6190476190476191,
+      "final_text": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 정보가 사라지는 임시 저장 공간인 반면, SSD는 전원이 꺼져도 데이터가 남아있는 영구 저장 장치입니다. RAM은 처리 속도가 매우 빠르기 때문에 CPU가 즉시 접근해야 하는 데이터를 저장하는 데 적합하고, SSD는 파일을 안정적으로 보관하는 데 적합합니다.\n[[/ANSWER]]\n[[NOTE]]\n요청된 두 문장 형식 준수.\n[[/NOTE]]",
+      "reasoning_text": "사용자가 RAM과 SSD 차이를 초보자에게 두 문장으로 설명해 달라고 요청함.\n\n- RAM: 임시 저장 장치, 전원 꺼지면 데이터 소실, 빠름\n- SSD: 영구 저장 장치, 전원 꺼져도 데이터 유지\n\n두 문장으로 압축해서 설명.\n",
+      "finish_reason": "stop",
+      "final_characters": 282,
+      "reasoning_characters": 128,
+      "empty_final": false,
+      "semantic_refusal": "NOT_REVIEWED",
+      "semantic_truth": "NOT_RUN"
+    },
+    "parsed": {
+      "finish_reason": "stop",
+      "teacher_reasoning_content": "사용자가 RAM과 SSD 차이를 초보자에게 두 문장으로 설명해 달라고 요청함.\n\n- RAM: 임시 저장 장치, 전원 꺼지면 데이터 소실, 빠름\n- SSD: 영구 저장 장치, 전원 꺼져도 데이터 유지\n\n두 문장으로 압축해서 설명.\n",
+      "teacher_final_content": "[[QUESTION]]\nRAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.\n[[/QUESTION]]\n[[ANSWER]]\nRAM은 전원이 꺼지면 저장된 정보가 사라지는 임시 저장 공간인 반면, SSD는 전원이 꺼져도 데이터가 남아있는 영구 저장 장치입니다. RAM은 처리 속도가 매우 빠르기 때문에 CPU가 즉시 접근해야 하는 데이터를 저장하는 데 적합하고, SSD는 파일을 안정적으로 보관하는 데 적합합니다.\n[[/ANSWER]]\n[[NOTE]]\n요청된 두 문장 형식 준수.\n[[/NOTE]]",
+      "parsed_content": {
+        "user_text": "RAM과 SSD의 차이를 초보자에게 두 문장으로 설명해 주세요.",
+        "assistant_text": "RAM은 전원이 꺼지면 저장된 정보가 사라지는 임시 저장 공간인 반면, SSD는 전원이 꺼져도 데이터가 남아있는 영구 저장 장치입니다. RAM은 처리 속도가 매우 빠르기 때문에 CPU가 즉시 접근해야 하는 데이터를 저장하는 데 적합하고, SSD는 파일을 안정적으로 보관하는 데 적합합니다.",
+        "correction_note": "요청된 두 문장 형식 준수."
+      },
+      "format_status": "TAGGED_COMPLETE",
+      "parse_error": "",
+      "usage": {
+        "prompt_tokens": 309,
+        "completion_tokens": 189,
+        "total_tokens": 498
+      }
+    },
+    "semantic_truth": "NOT_REVIEWED"
+  },
+  "memory": {
+    "sample_count": 202,
+    "sampled_gpu_global_peak_mib": 15023,
+    "baseline_gpu_used_mib": 1005,
+    "sampled_gpu_increment_mib": 14018,
+    "sampled_gpu_min_free_mib": 1039,
+    "owned_server_peak_rss_mib": 8767.25,
+    "scope": "200ms sampled process RSS/global GPU; excludes model disk size; may miss subinterval peaks"
+  },
+  "server_signals": {
+    "gdn_ar_enabled": null,
+    "gdn_chunked_enabled": null,
+    "kv_cache_space_warnings": 0,
+    "attention_ubatch_failures": 0
+  },
+  "server_tail": [],
+  "wall_sec": 55.211932501988485
+}
