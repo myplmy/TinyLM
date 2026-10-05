@@ -809,9 +809,9 @@ Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c�
 | 단계 | 사용자 SH | 예상 비용 | 판정·선결 |
 |---|---|---|---|
 | Stage6bW 완료 | `run_P106B_Stage6bW_qwen_wrapper_role-done.sh` |실제13.191초 teacher-only |[101 §50](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 원답 불변·빈 선택 NOTE wrapper 제거·4/4 첫 시도 완결, 학생 재학습0|
-| Stage4aWc | [run_P106B_Stage4aWc_english_collection_fetch.sh](../run_P106B_Stage4aWc_english_collection_fetch.sh) |network6.32GB·1h 추정 |정확 revision/7train SHA·크기 검산·test/validation 다운로드0·기존데이터 불변|
-| Stage4aWd | [run_P106B_Stage4aWd_english_refill_corpus.sh](../run_P106B_Stage4aWd_english_refill_corpus.sh) |CPU3h 추정 |전량 hash/source25%상한·정확ChatML·새v3·≤20MB샤드; 남는 부족은 정직하게 보고|
-| Stage4c0Wc | [run_P106B_Stage4c0Wc_refill_student_wire.sh](../run_P106B_Stage4c0Wc_refill_student_wire.sh) |GPU 약6분 추정 |v3 hash/mask·한영128행씩·2update·정확256노출. 공급 부족이어도 wire만 가능|
+| Stage4aWc 완료 | `run_P106B_Stage4aWc_english_collection_fetch-done.sh` |실제9.9분 |[101 §51](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):7train SHA검산·6.32GB 확보·모델0|
+| Stage4aWd 완료 | `run_P106B_Stage4aWd_english_refill_corpus-done.sh` |실제103.3분 |[101 §52](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 고유75,000,817 x/24,129,790지도·부족0·과제/권리품질은별도|
+| Stage4c0Wc 완료 | `run_P106B_Stage4c0Wc_refill_student_wire-done.sh` |실제4.8분 |[101 §53](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):2update/256행·38,050x·원답0/8·4pass아님|
 | Stage4cWd | [run_P106B_Stage4cWd_refill_chat32_repeat4.sh](../run_P106B_Stage4cWd_refill_chat32_repeat4.sh) |조건부GPU12h 역사 추정 |v3 각37.5M±1023·같은train/val SHA의wire PASS 뒤4pass. micro8/accum16·ckptON·LR1e-4/Muon4e-4불변|
 
 출력은 `HF/sft_sources/p106b_aya_collection_en_a3af2fde` 및
@@ -835,8 +835,75 @@ fetch 중 `.partial` 실패는 보존하고 완성 파일은 SHA가 같을 때�
 
 ### 9. 실행 이력
 
-Stage6bW는 실제4/4로 배선 복구 예측이 맞았다. 영어 보충의 새 코드·SH 및 CPU회귀 준비는
-완료했지만 실측 공급량/다운로드 완료/75M·300M은 NOT_RUN이다.
+Stage6bW는 실제4/4로 배선 복구 예측이 맞았다. 그때 미실행이었던 영어 공급은
+2026-10-05 §51~§53에서7train/75M/학생2update로 실제 회수됐다. 부족분 회복 예측은
+맞았지만 sourcecap이 QA/논리/명시적 멀티턴 균형을 보장한 것은 아니다. 본교육300M은
+아직 NOT_RUN이고 4cWd 선결 CPU는 같은v3/wire SHA로 통과했다.
+
+## Stage4dW — 기존 A 교육 뒤 B 다축 평가 (2026-10-05 승인)
+
+### 1. 왜
+
+기존8문항에서 부모와2회 학생 모두0/8이었다. 비밀 단어 한 프롬프트의 복사는 실제
+멀티턴 기억 시험이 아니며 SFT/native 손실과 실제 답안도 다른 지표다.
+사용자는 **B=A+후속 다축평가**라면 승인한다고 확정했다. 이미 준비된 같은4pass
+교육·자료·배치·LR·기존8평가는 그대로 유지하고 완성 학생과 부모의 추가 원답을 모은다.
+
+### 2. 질문
+
+지식QA/문맥조회/논리·산술/정확형식/코딩/한국어·영어와3턴 기억·수정이 각각 어느
+정도인가? 일반 언어 손실 감소만으로 놓친 답변 반복과 형식/내용 이탈은 무엇인가?
+
+### 3. 예측
+
+75M×4 교육이 실제로 수행되면2회 wire보다 형식/종료를 배울 여지가 있다.
+반면 자료의 문장변형·문단후속·요약 비중, 모델의 작은 용량, 실제3턴 학습 비율과
+기존 위키 반복 때문에 일부 능력은 실패할 수 있다. 정답이 나와도 작은 후행 패널을
+광범위 지능/한국어 전반/40MiB 배포 성공으로 확대하지 않는다.
+
+### 4. 단계 설계
+
+1. CPU:새패널24단일턴+4개3턴 대화(모델당36첫답)·72계획콜·출처/파일SHA를 고정한다.
+   선택코퍼스 SQLite를 읽기전용으로36개 첫질문해시만 조회한다. 현재 exact overlap0은
+   의미/사전학습 오염 없음의 증거가 아니다. 실제 benchmark가 아니라 후행진단이다.
+2. 본교육 기존4cWd:micro8/accum16/ckptON·LR1e-4/Muon4e-4·같은v3·4pass 유지.
+3. 새4dW:완료된4pass child와자기chat32 부모만 순차로 GPU에 로드한다. two-update
+   wire child를 대신 쓰지 않는다. 정확 교육 sidecar·4완료epoch/300,003,268x·체크포인트
+   내부sft/step·같은tokenizer/architecture를 대조한다. 이전응답을 다음user문맥에 실제로
+   넣고 각 episode마다 초기화한다. 추가 학습·교사·체크포인트 저장0.
+4. 각응답은160토큰·입력800토큰·같은greedy/seed·첫답만, 재시도0. 역할경계 표지만
+   이력에서 문자로 escape하고 raw는 보존한다. 의미내용을 교정하지 않는다.
+5. 응답마다 저장/flush한 뒤 다음질문을 요청한다. 중단/오류/누락을 부분manifest로
+   보존하고 기존출력/로그를 덮지 않는다. 각 원형질문·실제prompt·답·종료/시간·grade를
+   stdout와JSONL에 보존하며 마지막 실제호출수/72계획/미검토품질을 함께 보고한다.
+
+### 5. 판정
+
+도구 완료는 두모델의36+36 원답 수집이며 지능PASS가 아니다. 명확한literal/JSON/산술
+**출력계약**은 코드로 확인한다. JSON의정수5와float5.0/booltrue를 혼동하지 않는다.
+자유QA/번역/코드 의미는 후행판독 대상이고 생성코드는 실행하지 않는다.
+정답 문구가 다양할 수 있는 행을 word blacklist로 자동REJECT하지 않는다.
+전제파일 부재8, 스키마/SHA/추출 불일치9, 사용자중단130으로 분리한다.
+
+### 6. 비용 / 7. 실행
+
+GPU 예상0.25h·상한0.5h, 실제답 길이/초기화에 따라 달라진다. corpus재생성/추가교육0.
+[run_P106B_Stage4dW_refill_multiaxis_eval.sh](../run_P106B_Stage4dW_refill_multiaxis_eval.sh).
+모델/GPU 실행은 사용자 소유다. 지금 완성4pass checkpoint가 없어 check-only는
+패널CPU 확인 후 상류HOLD8이며 GPT 구현 완료와 사용자의 본교육 대기를 구분한다.
+
+### 8. 한계 / preflight
+
+새 같은구조/어휘 두endpoint 비교, 추가train0·2배풀은평가에서 해당없다.
+본교육 조건 변경 없음. 새4dW·새ignored HF 출력만 사용하고 원본로그/weights/cache는
+불변이다. 일부역할 표지는 안전한이력문자로 escape될 수 있으며 변형을기록한다.
+자유답의정답성은자동보증하지않고 학습노출/언어분모·loss·내용·형식을분리한다.
+기존8문항 최대3시도와 새36첫답의 점수를 같은지표로 합산하지 않는다.
+
+### 9. 실행 이력
+
+별도코드·CPU회귀·SH 준비. current corpus의 exact36첫질문 중 selected overlap0을
+CPU로 확인했다. 완성학생 부재의 HOLD는 예상선결이다. 새평가/GPU/72실답은 NOT_RUN이다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
