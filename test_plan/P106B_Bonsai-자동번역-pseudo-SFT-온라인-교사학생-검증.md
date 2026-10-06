@@ -623,7 +623,7 @@ Stage3sWa 128건/64쌍을 실행한 뒤 BF16 greedy token이 다른6쌍을 관�
 | Stage3qWc | [run_P106B_Stage3qWc_lexical_ab_percentile.sh](../run_P106B_Stage3qWc_lexical_ab_percentile.sh) | CPU0.05h | 새smoke 뒤 nearest-rank 수리의동결문자비용 재시험;실물NOT_RUN |
 | Stage4aW | [run_P106B_Stage4aW_mixed_public_corpus.sh](../run_P106B_Stage4aW_mixed_public_corpus.sh) | CPU0.75h·모델0 | sourceSHA/첫질문split·1024mask·37.5M/언어quota·20MB선택샤드/부족분. 기술exit0과token_target_ready/품질은별도;전량NOT_RUN |
 | Stage4bW | [run_P106B_Stage4bW_distinct_concept_batch.sh](../run_P106B_Stage4bW_distinct_concept_batch.sh) | 사용자GPU1.5h/hard3h | 같은한영각4concept·xhigh·1서버·28논리/최대84completion·1→2→4→4→2→1·8192사고/16384총/32768ctx.8slot완결과두순서쌍속도비>1.05 분리;정답성NOT_RUN |
-| Stage4cW | [run_P106B_Stage4cW_mixed_chat32_repeat4.sh](../run_P106B_Stage4cW_mixed_chat32_repeat4.sh) | 사용자GPU12h 잠정 | 실제KO/EN각37.5M train+별도val 전제. teacher를내리고B자기부모/micro8×accum16/ckptON/LR1e-4/4실제pass·토큰균형/bounded shuffle·epoch resume·native/실답전후. 현재영어부족→HOLD,학습NOT_RUN |
+| Stage4cW HOLD | [run_P106B_Stage4cW_mixed_chat32_repeat4-hold.sh](../run_P106B_Stage4cW_mixed_chat32_repeat4-hold.sh) | 사용자GPU12h 역사추정 | 옛v1 영어부족/별도quota는미충족. 사용자2026-10-06 A로취소없이보존. 해제는선결및새결정후만, held 직접실행8 |
 | Stage4c0W | [run_P106B_Stage4c0W_mixed_student_wire.sh](../run_P106B_Stage4c0W_mixed_student_wire.sh) | 사용자GPU0.5h | 부분C언어당128train/전체8val에서원batch/optimizer/stream/저장경로2update·새wire출력·teacher다운. 대량4c 앞선결·300M과품질PASS가아님;실물NOT_RUN |
 
 **preflight/자원:** 원래batch 유지·새태그 p106b_s4_mixed300m_chat32_s1337. SFT변동길이의실제x-token을합하고패딩상한131072/step과분리한다.75M고유train/≤4epoch/300M은승인반복SFT축이고복원추출pretrain2배풀과동일비교가아니다. 마지막그룹은실제assistant targets로정규화한다. Collector는현재영어부족을적고같은문항재생성/무한반복으로채우지않는다. 판정자는기술선결·사전기존문항/자기native손실이고범용sigma를복사하지않는다. 8GiB디스크 초기선·현재32K교사와full학생의자원을단순합산해공존안전이라고하지않는다.
@@ -726,9 +726,9 @@ Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c�
 | 단계 | 정확 SH | 비용·독립변수 | 선결·판정 |
 |---|---|---|---|
 | Stage5eW 완료 | `run_P106B_Stage5eW_stage_receipt_contract-done.sh` |CPU0.05h, COMPLETE/HOLD/ERROR fixture3·모델0 |[101 §48](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 사용자 CPU12/FINAL3phase PASS; 재현 원형 Git 보존|
-| Stage4cWc | [run_P106B_Stage4cWc_balanced_final_verdict.sh](../run_P106B_Stage4cWc_balanced_final_verdict.sh) |조건부12h,원75M·micro8×accum16/ckptON/LR/4pass불변;caller만변경 |영어35.649M부족이어서HOLD;quota·원wire·부모SHA 충족전학생시작금지|
-| Stage5cWb | [run_P106B_Stage5cWb_lora_conditioned_final_verdict.sh](../run_P106B_Stage5cWb_lora_conditioned_final_verdict.sh) |조건부2h,원32요청/LoRA1.0/xhigh/nmax2/동일자산불변 |허용교육거부원형/SHA전HOLD;회귀/선결/execute/FINAL;MTP빠르다는전제없음|
-| Stage5dWb | [run_P106B_Stage5dWb_review_conditioned_final_verdict.sh](../run_P106B_Stage5dWb_review_conditioned_final_verdict.sh) |CPU0.05h,상류32원답/후행label |선결실제검산,없으면HOLD8·깨진SHA/JSON오류9;전체 검토 전 거부율 집계 금지|
+| Stage4cWc HOLD | [run_P106B_Stage4cWc_balanced_final_verdict-hold.sh](../run_P106B_Stage4cWc_balanced_final_verdict-hold.sh) |조건부12h·옛v2불변 |옛v2 영어35.649M부족. 새v3완료와다른자료. 사용자A로보존·활성큐제외·직접8|
+| Stage5cWb HOLD | [run_P106B_Stage5cWb_lora_conditioned_final_verdict-hold.sh](../run_P106B_Stage5cWb_lora_conditioned_final_verdict-hold.sh) |조건부2h·원LoRA1.0/32요청 |실제허용교육거부원형/SHA없음. 사용자A로보존·직접8·선결과새결정후해제|
+| Stage5dWb HOLD | [run_P106B_Stage5dWb_review_conditioned_final_verdict-hold.sh](../run_P106B_Stage5dWb_review_conditioned_final_verdict-hold.sh) |CPU0.05h·상류32원답/주석 |실제LoRA32답+후행32label 부재. 사용자A로보존·직접8·허위거부율 작성금지|
 
 **preflight:** teacher-only/CPU 진단의 학습steps0은 실제 학습량이 아니다. 미승인 zero-step registry의 broad조회를 하지 않고 정확 source/태그/원배치·출력namespace를 직접대조한다. 새callback의phase명/SH/name을함께변경했고oldHF/runs/cache를재생성하지않는다. 같은벤치MTP의음성을새코드실행으로덮지않는다. 조건부 모델3SH는선결전실행순서에자동포함하지않는다.
 
@@ -812,7 +812,7 @@ Stage4cWb는 영어35,649,183토큰부족으로execute 미호출이다. Stage5c�
 | Stage4aWc 완료 | `run_P106B_Stage4aWc_english_collection_fetch-done.sh` |실제9.9분 |[101 §51](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):7train SHA검산·6.32GB 확보·모델0|
 | Stage4aWd 완료 | `run_P106B_Stage4aWd_english_refill_corpus-done.sh` |실제103.3분 |[101 §52](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 고유75,000,817 x/24,129,790지도·부족0·과제/권리품질은별도|
 | Stage4c0Wc 완료 | `run_P106B_Stage4c0Wc_refill_student_wire-done.sh` |실제4.8분 |[101 §53](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):2update/256행·38,050x·원답0/8·4pass아님|
-| Stage4cWd | [run_P106B_Stage4cWd_refill_chat32_repeat4.sh](../run_P106B_Stage4cWd_refill_chat32_repeat4.sh) |조건부GPU12h 역사 추정 |v3 각37.5M±1023·같은train/val SHA의wire PASS 뒤4pass. micro8/accum16·ckptON·LR1e-4/Muon4e-4불변|
+| Stage4cWd 완료 | `run_P106B_Stage4cWd_refill_chat32_repeat4-done.sh` |실제runlog5.615h |[101 §54](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):300003268x/96519160지도·15752updates·SFT감소/native+1.485747·원배치불변|
 
 출력은 `HF/sft_sources/p106b_aya_collection_en_a3af2fde` 및
 `HF/sft_ready/p106b_mixed_public_v3_en_refill`/학생v3뿐이다. 원형v1/v2와 기존
@@ -888,7 +888,7 @@ Stage6bW는 실제4/4로 배선 복구 예측이 맞았다. 그때 미실행이�
 ### 6. 비용 / 7. 실행
 
 GPU 예상0.25h·상한0.5h, 실제답 길이/초기화에 따라 달라진다. corpus재생성/추가교육0.
-[run_P106B_Stage4dW_refill_multiaxis_eval.sh](../run_P106B_Stage4dW_refill_multiaxis_eval.sh).
+완료원형 `run_P106B_Stage4dW_refill_multiaxis_eval-done.sh`, 재현은 [101 §55](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md).
 모델/GPU 실행은 사용자 소유다. 지금 완성4pass checkpoint가 없어 check-only는
 패널CPU 확인 후 상류HOLD8이며 GPT 구현 완료와 사용자의 본교육 대기를 구분한다.
 
@@ -902,8 +902,104 @@ GPU 예상0.25h·상한0.5h, 실제답 길이/초기화에 따라 달라진다. 
 
 ### 9. 실행 이력
 
-별도코드·CPU회귀·SH 준비. current corpus의 exact36첫질문 중 selected overlap0을
-CPU로 확인했다. 완성학생 부재의 HOLD는 예상선결이다. 새평가/GPU/72실답은 NOT_RUN이다.
+2026-10-06 사용자완료:정확부모/완성학생72첫답·자기history3턴과원답/종료/SHA를회수했다.
+명시계약양0/26·학생EOT28/36·parentMAX_NEW35/36이다. 구현된수집/종료경로는동작했으나
+예측한교육효과는미확인이다. 형식만어긴맞는색상/논리결론도별도로기록했다([101 §54~§55](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
+본교육도실제300M완료로상태변경하며, 저장epoch 대조와QA/형식/명시적멀티턴 새자료준비를 병행한다.
+
+## Stage4eW / Stage4fW / Stage4g0W / Stage4gW — 저장epoch 대조와 과제정렬 자료·새300M (2026-10-06 승인)
+
+### 1. 왜
+
+[결과101 §54~§55](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)는
+실제300M교육 완료와 native+1.485747/명시계약0/26을 함께 관측했다. 더많은같은자료 반복으로
+노출부족을 설명할 수 없다. 사용자는 A저장epoch대조+B자료·새300M준비 병행을 승인했다.
+GPU/모델은사용자 실행이고 GPT는코드·CPU검증·SH까지 준비한다.
+
+### 2. 질문
+
+어느epoch부터 답변변화/언어손실이 나타났는가? 공개 원천의 QA후보를 선별하고 명확한
+JSON 출력·명시적 대화턴을 추가하면 목표과제 학습과 언어보존이 개선되는가?
+자료량 준비·출처후보·마스크·실제역량·정식적격성을 분리한다.
+
+### 3. 예측
+
+epoch2가 SFT-val 최저였어도 native/답안 최적이란 보장은 없다.
+명시적 출력/기억 대화는 현재자료보다 목표와 가깝지만 작은부모·고정LR·원천의 미검증내용으로
+여전히 실패할 수 있다. 새자료75M을 확보할 수 있는지도 미계측이며 부족은그대로보고한다.
+
+### 4. 단계 설계
+
+- **Stage4eW**: 같은 parent와저장epoch1/2/3, 최종4pass endpoint를 비교한다.
+  부모/최종의기존72답은SHA잠금재사용하고 중간3모델108첫답만새생성한다.
+  총180답/5모델의같은패널이고 native는현재같은 val.bin SHA에서5모델 모두재측정한다.
+  원본checkpoint는읽기전용, teacher/train/newcheckpoint0, 기존EOT160/입력800/greedy를유지한다.
+- **Stage4fW**: 현재핀된12공개원천만두번순회한다. source-task metadata로QA후보를 고른다.
+  Aya/OASST1+2와Flan-Coqa/NQ-Open/MLQA/SQuAD/TyDiQA 등선언된가족 후보만단일턴으로사용하고 다른미분류는제외계수한다.
+  현재각parquet 첫16행의metadata표본에서Flan-Coqa(T)/NQ-Open(T)를직접확인해alias를반영했다.
+  이표본은전체QA가용토큰/전체자료품질census가아니다. Flan-Coqa의문자열대화도곧바로역할다회전으로세지않는다.
+  실제4메시지이상 원천대화는내용/역할을유지한다. source명은오답문구목록/내용정답검사가아니다.
+  단일원천첫질문해시당하나만50/25/25 hash배정(일반QA/JSON형식후속/기억후속)한다.
+  JSON후속은코드가정수와result/count/value/number 키를프롬프트에명시하고정답JSON을감싼다.
+  형식정수범위는train2~79/val80~98로분리하고UNIQUE_JSON 계약을기록한다. 유한형식의반복노출은
+  별도제어훈련이며새고유지식/새로운정답정보라고세지않는다. source첫질문분리와의일치를CPU로검증한다.
+  기억후속은원답→준비/READY→첫답JSON복원으로실제3user턴을구성한다.
+  이는 **코드작성형식/기억훈련이며 자연스러운사람대화·새지식이아니다**.
+  원천다회전/코드형식후속/코드기억후속·원래source토큰/직렬화x를각각집계한다.
+  QA후보도개별의미/지식분류 보증이아니므로후행실제문구검토가필요하다.
+- 후보전체 hash선택·source가족25%목표cap, 첫질문해시 train/val 분리·중복1개만선택.
+  기존8질문과새36패널을정확사용자turn해시로제외하며 의미/모든benchmark오염은미검증이다.
+  QA50/형식25/명시턴25는 초기설계목표, 각90%이상최소와104%상한+1행여유를보고한다.
+  KO/EN각37.5M±1023 **직렬화대화x**와task최소를모두충족해야ready다.
+  원천지식량/고유정보량75M이라고주장하지않고, 다른행반복으로부족을채우지않는다.
+  각행ChatML≤1024·양mask·역할/경계/출처·20MB샤드를검증하며옛v3는불변이다.
+- **Stage4g0W**: 새자료ready일때만 같은부모/micro8×accum16/ckptON/LR의2update wire.
+  양언어128행노출·같은SHA·실제x/targets/native/8질문을수집한다. 자료없음/부족은모델시작전8이다.
+- **Stage4gW**: 같은새corpus/wire SHA/자기부모의새tag로4실제pass.
+  LR1e-4/Muon4e-4·micro8×accum16·ckptON·300M 처리목표는유지한다.
+  새B profile에만 epoch마다native/기존8답을추가보고하고평가중RNG를복원해학습순서를오염시키지않는다.
+  자동최적모델선택/조기종료는도입하지않는다. 사용자중단은부분이력과저장epoch를보존한다.
+
+### 5. 판정
+
+운영완료·토큰/마스크PASS가실제QA/대화능력PASS는아니다.
+A는새108콜+계승72와같은native파일을확인하고자유답은후행판독한다.
+B에서language/task부족은유효HOLD8이며새허가없는다운로드/교사생성을자동실행하지않는다.
+새B언어/논리/종료/형식/멀티턴효과와native망각을자기부모전후로읽는다.
+해당SFT다중seed/보정σ가없어차용σ를쓰지않는다. 형식만틀린맞는내용을전부오답으로세지않는다.
+
+### 6. 비용
+
+A GPU약0.25h/상한0.667h, B전량선별CPU3h추정·새index/샤드8GiB이상저장여유,
+wire약0.10h, 교육5.6~12h참고(직전5.615h 실측이나새길이/과제에따라달라짐).
+앞코퍼스만드는동안A평가와GPU동시속도비교는하지않으며 **구현준비만병행**한다.
+B의분량/실제비용은사용자선별보고서가정본이고 현재데이터생성/학습은NOT_RUN이다.
+
+### 7. 실행
+
+| 단계 | 사용자 SH | 실행선결 |
+|---|---|---|
+| Stage4eW | `run_P106B_Stage4eW_saved_epoch_retention.sh` | 새smoke0/0/0·정확5endpoint/기존72답SHA |
+| Stage4fW | `run_P106B_Stage4fW_capability_corpus.sh` | 핀된기존12공개원천·별도namespace/8GiB |
+| Stage4g0W | `run_P106B_Stage4g0W_capability_student_wire.sh` | 새자료75000000x/task최소·양언어/출처SHA |
+| Stage4gW | `run_P106B_Stage4gW_capability_chat32_repeat4.sh` | 같은새corpus/성공wire SHA·새tag/부모·저장여유 |
+
+### 8. 한계 / preflight
+
+별도자료/스코프/태그로옛 결과를보존한다. 새B와옛v3의SFT-val셋이달라두loss를직접차감하지않는다.
+원형GPT판독패킷실행/보호TinyDataset접근/새다운로드0. source권리·PII·의미·봉인오염은
+기술mask와별도이며formal_train_ready=false이다. 코드후속으로직렬화토큰이늘어도새고유지식증가는아니다.
+모든행출처/원형질문그룹/정규화방법을보존한다. 새300M을돌리기위해과거질문을복제하지않는다.
+source캐시는학습량이아니며실제비패딩x와assistant targets/행노출/업데이트를따로보고한다.
+4pass는사용자승인SFT반복예외이지pretrain2배풀규칙을임의변경한것이아니다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 9. 실행 이력
+
+2026-10-06 준비중:현재A정확read-only check-only0, Bsource metadata preflight0.
+B신규corpus 미생성은예상HOLD8이다. tinyCPU task/계보·held-prolog fixture는새모델성공아니다.
+새4SH/실제108생성·native5모델·새75M구축/새300M은사용자E2E_NOT_RUN이다.
+
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 

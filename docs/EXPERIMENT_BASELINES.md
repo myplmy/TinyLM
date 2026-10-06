@@ -327,8 +327,9 @@ fp32 상주와 int8 상주가 갈린다.**
 | P106B Stage5 MTP/LoRA teacher `HF/sft_ready/p106b_mtp_teacher_v1` | 같은MTP GGUF off/on nmax2·xhigh/권장sampler·32Kcontext/16K총/8K사고·학생0 | **사용자 회수:** 자산MATCH·MTP16응답 완료. decode65.958890→53.525647tok/s·두순서비0.8224/0.7986·실제draft2278/4322·추가GPU897/900MiB·GDNenabled, 현 가속 기본 비채택. LoRA/후행은 선결8로실행0, 정답성/학생지능/장기안전 미검증. [101 §47](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | P106B `P106B_STAGE_RECEIPT_V1` Stage4cWc/5cWb/5dWb/5eW | 원모델/배치/샤드namespace 불변, caller만 회귀→선결→실행→FINAL | **준비·CPU 계약 검증:** 하위0을전체완료로읽지않고 선결8/오류9/중단130·미실행을분리. C/원형SHA·32label의check-only수리;새런처실물/모델NOT_RUN. 보류3SH는각자료/거부/상류선결. [P106B 후속](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md) |
 | P106B Stage6aW/6bW Qwen candidate, no new checkpoint | 지정 IQ2_XS-mtp SHA/llama-b11396·full GPU·ctx8192·low/사고1024/총3072 | **제한 직접관측:** actual chat32 dense14 micro8×accum16/ckptON 1합성 update OOM0·표본free1039MiB. 빈 NOTE3/4→별도 wrapper4/4, 원답/사고 분리. 정식SFT/장기안전/기본교사채택 아님([101 §49~§50](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)) |
-| `p106b_s4_refill300m_chat32_s1337` | 별도 v3 영어 보충·정확 KO/EN각37.5M고유 train×4·원 micro8/accum16/ckptON·LR1e-4/Muon4e-4 | **태그예약·본교육 미사용**. [101 §51~§53](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 영어7train 확보·고유75,000,817x/지도24,129,790·같은 자료wire2update 실제38,050x·0/8. 새부모4pass 목표300,003,268x/15,752update, teacher down. CPU선결0이나 실제4pass/품질은NOT_RUN. sourcecap은 과제균형/정답성/정식적격 보증아님. |
-| P106B Stage4dW, no training tag | 정확chat32 B부모와4cWd 완성학생·동일24단일턴/실제3턴4개·각36첫답·greedy/160토큰·재시도0 | **사용자B=A+후속평가 승인, STATIC_ONLY**. `HF/sft_ready/p106b_refill_multiaxis_v1` 별도write-once 원답/계보·실제assistant history·명시출력계약과후행의미판독분리. 완성4pass 로그/child가없으면선결8이고wire2 checkpoint로대체금지. 자유QA/번역/생성코드 의미는NOT_REVIEWED, 새모델72답 NOT_RUN. [P106B Stage4dW](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md) |
+| `p106b_s4_refill300m_chat32_s1337` | v3 KO/EN각37.5M·4pass·micro8/accum16/ckptON·LR1e-4/Muon4e-4 | **사용 완료**. [101 §54](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):실제300,003,268x/96,519,160지도·15,752update·5.6h. SFT전체val4.223→2.730/native같은3M3.590→5.076·첫8답0. gradpreclip29.078/clip1·reserved4330MiB. 정식적격/언어보존/지능채택성공 아님. |
+| P106B Stage4dW, no training tag | 자기부모/완성학생·24단일턴/실제3턴4개·각36첫답·greedy160·재시도0 | **사용자실물72답 완료**. [101 §55](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):양0/26계약·parentMAX_NEW35/EOS1 vsstudentEOT28/MAX_NEW8. 맞는내용의형식실패도보존·정확계보/SHA일치. 자유답10을종합0/36으로승격하지않음. |
+| `p106b_s4_capability300m_chat32_s1337` | 별도QA후보/JSON형식/명시턴 자료·원부모/배치/LR/4pass·새namespace | **예약·미사용**. source첫질문1그룹1변형·소스cap25·각37.5M/task최소와같은wire_SHA 선결. 자연다회전/코드형식/코드기억 분리·의미/권리/formal적격미검증. 새자료/모델NOT_RUN. [P106B Stage4f/g](../test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md) |
 
 > 체크포인트·로그 파일명 = `{preset}_{data}_{tokens}_{tag 또는 arch}`. **같은 (preset,data,tokens)
 > 안에서 태그가 겹치면 조용히 덮어쓴다.** 새 태그는 반드시 위 표에 추가한다.
@@ -361,7 +362,8 @@ Qwen IQ2_XS-mtp/llama-b11396 full GPU와 실제chat32 dense14/micro8×accum16/ck
 1합성 업데이트는 OOM0·표본peak15023MiB/최소free1039MiB다. 기존 Bonsai/P076 공존과
 동일조건이 아니며 장기 안정성·SFT 품질·MTP 자체 가속은 미검증이다. 기본 교사는 불변이다.
 새 `p106b_s4_refill300m_chat32_s1337`은 v3 KO/EN각37.5M·4pass·LR1e-4/Muon4e-4·
-checkpoint-on의 조건부 예약이며 **사용 전**이다. 새wire SHA와 실제75M이 필요하고 oldv2를 덮지 않는다.
+checkpoint-on에서 **실제300M 사용 완료**했다([101 §54~§55](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
+이 사용완료는지식/형식·언어보존승격이아니며후속capability자료는별도태그/평가집합이다.
 
 두 런을 비교하기 전에 **전부** 같아야 한다. 하나라도 다르면 그 비교는 무효이거나 해석에 조건이 붙는다.
 

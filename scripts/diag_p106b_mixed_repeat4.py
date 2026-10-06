@@ -29,12 +29,16 @@ FINAL = ROOT / f"runs/ckpt/m100s10_ko-en_300M_{TAG}.pt"
 LOG = ROOT / f"runs/logs/m100s10_ko-en_300M_{TAG}.json"
 
 
-def check(*, wire=False, balanced=False, refill=False):
+def check(*, wire=False, balanced=False, refill=False, capability=False):
     from scripts.p106b_balanced_public import OUTPUT as BALANCED_PUBLIC
     public = BALANCED_PUBLIC if balanced else PUBLIC
     if refill:
         from scripts.p106b_public_refill import OUTPUT as REFILL_PUBLIC
         public = REFILL_PUBLIC
+    if capability:
+        if balanced or refill:
+            raise ValueError("capability is a separate corpus, not a mixed profile override")
+        public = ROOT / "HF/sft_ready/p106b_capability_public_v1"
     p = public / "report.json"
     for path in (p, OUTPUT, FINAL, LOG):
         safe_repo_path(path)
@@ -42,6 +46,11 @@ def check(*, wire=False, balanced=False, refill=False):
     report = json.loads(p.read_text(encoding="utf-8"))
     if report.get("schema") != "P106B_MIXED_PUBLIC_C_V1" or report.get("tokenizer_sha256") != TOK_SHA:
         raise ValueError("mixed corpus identity/tokenizer mismatch")
+    required_task_keys = {lang + ":" + task for lang in ("ko", "en") for task in ("qa", "json", "multiturn")}
+    if capability and (report.get("capability_selection_version") != "CAPABILITY_QA_FORMAT_MULTITURN_V1"
+                       or set(report.get("task_deficit_tokens", {})) != required_task_keys
+                       or any(report["task_deficit_tokens"].values())):
+        raise ValueError("capability task/quantity contract incomplete")
     if not wire and report.get("token_target_ready") is not True:
         raise ValueError("75M source target incomplete; no student started: " + json.dumps(report.get("teacher_deficit_tokens")))
     if wire and (any(report.get("rows", {}).get("train:" + lang, 0) < 128 for lang in ("ko", "en"))
@@ -57,9 +66,11 @@ def check(*, wire=False, balanced=False, refill=False):
         verify(public, specs[split])
         if specs[split]["concat_sha256"] != report.get(split + "_concat_sha256"):
             raise ValueError("mixed corpus concat SHA differs")
-    if (balanced or refill) and not wire:
+    if (balanced or refill or capability) and not wire:
         wire_file = ROOT / ("HF/sft_ready/p106b_mixed_student_wire_v3_en_refill/report.json" if refill
                             else "HF/sft_ready/p106b_mixed_student_wire_v2_balanced/report.json")
+        if capability:
+            wire_file = ROOT / "HF/sft_ready/p106b_capability_student_wire_v1/report.json"
         safe_repo_path(wire_file)
         digest(wire_file)
         require_wire_report(json.loads(wire_file.read_text(encoding="utf-8")),
@@ -75,6 +86,11 @@ def check(*, wire=False, balanced=False, refill=False):
         output = ROOT / ("HF/sft_ready/p106b_mixed_student_wire_v3_en_refill" if wire else "HF/sft_ready/p106b_mixed_student_v3_en_refill")
         final = output / "student.pt" if wire else ROOT / "runs/ckpt/m100s10_ko-en_300M_p106b_s4_refill300m_chat32_s1337.pt"
         log = output / "student.json" if wire else ROOT / "runs/logs/m100s10_ko-en_300M_p106b_s4_refill300m_chat32_s1337.json"
+    if capability:
+        output = ROOT / ("HF/sft_ready/p106b_capability_student_wire_v1" if wire
+                         else "HF/sft_ready/p106b_capability_student_v1")
+        final = output / "student.pt" if wire else ROOT / "runs/ckpt/m100s10_ko-en_300M_p106b_s4_capability300m_chat32_s1337.pt"
+        log = output / "student.json" if wire else ROOT / "runs/logs/m100s10_ko-en_300M_p106b_s4_capability300m_chat32_s1337.json"
     for path in (output, final, log):
         safe_repo_path(path)
         if path.is_symlink():
@@ -295,6 +311,19 @@ def execute(report, specs, info, *, resume=False, wire=False):
                 "language_counts": dict(counts), "epoch_complete": not wire,
                 "assistant_targets": target_total, "train_ce": loss_total / target_total,
                 "sft_val_ce": val_ce(), "wall_sec": time.perf_counter() - t0}
+        if report.get("capability_selection_version") == "CAPABILITY_QA_FORMAT_MULTITURN_V1":
+            # Observe forgetting at every epoch without changing training RNG.
+            # This is reporting only: no automatic adoption/early-stop policy.
+            with torch.random.fork_rng(devices=[torch.cuda.current_device()]):
+                model.eval()
+                epoch_native, epoch_native_tokens = full_val_losses(base, cfg, ROOT / ARMS["b"]["cache"], 1024, 4, "cuda")
+                item.update(native_ce=sum(epoch_native) / len(epoch_native),
+                            native_tokens=epoch_native_tokens,
+                            native_delta_vs_parent=sum(epoch_native) / len(epoch_native) - baseline["native_ce"],
+                            fixed_answers=answers(base, cfg, tok, output, "epoch" + str(epoch)))
+            base.clear_quant()
+            model.train()
+            item["wall_sec"] = time.perf_counter() - t0
         history.append(item)
         state = {"model": {k: v.detach().cpu() for k, v in base.state_dict().items()},
                  "cfg": cfg.__dict__, "step": 2289 + updates, "input": input_identity,

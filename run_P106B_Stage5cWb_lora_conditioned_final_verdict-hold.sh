@@ -3,6 +3,12 @@
 # User execution only. Every phase and one final verdict share the runlog.
 # Missing prerequisites stop dependent execution; no stdin/pause.
 set -euo pipefail
+case "${0##*/}" in
+  *-hold.sh|*-HOLD.sh)
+    printf '%s\n' '[HOLD] Explicitly held launcher. Review prerequisites and remove the suffix only after a new user decision.' >&2
+    exit 8
+    ;;
+esac
 repo_root="$(cd "$(dirname "$0")" && pwd)"
 source "$repo_root/scripts/shell/tinylm_env.sh"
 cd "$repo_root"
