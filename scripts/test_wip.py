@@ -47,6 +47,165 @@ class WipV2Tests(unittest.TestCase):
             "낡은 PASS 주장을 되살리지 않음",
         )
 
+    def invalid_id_ledger(self) -> Path:
+        """Reproduce the old --add defect only in an isolated temporary file."""
+        path = self.create()
+        WIP.add_item(path, "3B", "추가 원문 | 보존", "다음 단계 | 보존")
+        text = path.read_text(encoding="utf-8")
+        path.write_text(text.replace("| **3B** |", "| **3AB** |", 1), encoding="utf-8")
+        return path
+
+    def test_add_rejects_unsupported_ids_before_any_write(self) -> None:
+        path = self.create()
+        before = path.read_bytes()
+        for item_id in ("3AB", "", "3-A", "3 B", "3가", "3|B", "3B\n"):
+            with self.subTest(item_id=item_id):
+                with self.assertRaisesRegex(ValueError, "invalid item id"):
+                    WIP.add_item(path, item_id, "원문", "다음 단계")
+                self.assertEqual(path.read_bytes(), before)
+                self.assertFalse(path.with_name(path.name + ".lock").exists())
+
+    def test_create_rejects_unsupported_ids_without_artifacts(self) -> None:
+        for raw in ("3AB=지시", "3-A=지시", "3가=지시", "=지시"):
+            with self.subTest(raw=raw):
+                with self.assertRaisesRegex(ValueError, "invalid"):
+                    WIP.create_ledger([raw], "prev", "docs", "GPU 금지", "없음", "없음")
+                self.assertEqual(list(self.handoff.iterdir()), [])
+
+    def test_parse_and_close_refuse_unrecognized_progress_rows(self) -> None:
+        path = self.create()
+        for item in ("1", "2A"):
+            WIP.set_state(path, item, WIP.RUN, "착수", None, "다음 단계")
+            WIP.set_state(path, item, WIP.DONE, "완료", "산출물", None)
+        valid = path.read_text(encoding="utf-8")
+        for replacement in ("| **3AB** |", "| 3B |", "| **3가** |", "| **1** ", "**1** |"):
+            with self.subTest(replacement=replacement):
+                malformed = valid.replace("| **1** |", replacement, 1)
+                path.write_text(malformed, encoding="utf-8")
+                before = path.read_bytes()
+                with self.assertRaisesRegex(ValueError, "invalid item id|malformed progress row"):
+                    WIP.parse_table(malformed)
+                with self.assertRaisesRegex(ValueError, "invalid item id|malformed progress row"):
+                    WIP.close(path)
+                self.assertEqual(path.read_bytes(), before)
+                self.assertFalse(path.with_name(path.stem + "-done.md").exists())
+
+    def test_parse_rejects_bad_separator_and_accepts_indented_rows(self) -> None:
+        path = self.create()
+        valid = path.read_text(encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "separator is malformed"):
+            WIP.parse_table(valid.replace("| --- | --- | --- | --- | --- | --- |",
+                                          "| --- | --- |", 1))
+        indented = valid.replace("| **1** |", "    | **1** |", 1)
+        self.assertEqual([row[1] for row in WIP.parse_table(indented).rows], ["1", "2A"])
+
+    def test_id_repair_preserves_directive_status_and_history(self) -> None:
+        path = self.invalid_id_ledger()
+        before = path.read_text(encoding="utf-8")
+        before_line = next(line for line in before.splitlines() if line.startswith("| **3AB** |"))
+        WIP.override_field(path, "3AB", "#", "3AB", "3B", "지원하지 않는 ID 복구",
+                           "사용자 2026-10-06 두 파일 수리 승인", False)
+        after = path.read_text(encoding="utf-8")
+        table = WIP.parse_table(after)
+        self.assertEqual(len(table.rows), 3)
+        repaired_line = after.splitlines()[table.rows[-1][0]]
+        self.assertEqual(repaired_line, before_line.replace("**3AB**", "**3B**", 1))
+        self.assertEqual(table.rows[-1][2][1:], WIP._markdown_cells(before_line)[1:])
+        self.assertIn("- **사용자 지시**: 3건(아래 표가 정본)", after)
+        log_before = before.split(WIP.LOG_HEADING, 1)[1].split(WIP.AUDIT_HEADING, 1)[0]
+        self.assertIn(log_before.rstrip(), after)
+        audit_body = after.split(WIP.AUDIT_HEADING, 1)[1].split(WIP.CAPSULE_HEADING, 1)[0]
+        record = json.loads(audit_body.split("```json", 1)[1].split("```", 1)[0])
+        self.assertEqual(record["operation"], "repair unsupported item id (compare-and-set)")
+        self.assertEqual(record["before"], "3AB")
+        self.assertEqual(record["after"], "3B")
+        self.assertEqual(record["before_sha256"], WIP._sha_text("3AB"))
+        self.assertEqual(record["after_sha256"], WIP._sha_text("3B"))
+        self.assertEqual(record["before_file_sha256"], WIP._sha_text(before))
+        self.assertEqual(record["before_row_sha256"], WIP._sha_text(before_line))
+        self.assertEqual(record["after_row_sha256"], WIP._sha_text(repaired_line))
+        self.assertIn("두 파일 수리 승인", record["approval_ref"])
+        capsule = WIP.capsule_text(path)
+        self.assertIn("사용자 지시 3건", capsule)
+        self.assertIn("3B:⏳대기", capsule)
+        WIP.set_state(path, "3B", WIP.RUN, "복구 후 착수", None, "검증")
+        WIP.set_state(path, "3B", WIP.DONE, "완료", "산출물", None)
+
+    def test_id_repair_rejects_stale_collision_and_invalid_after(self) -> None:
+        path = self.invalid_id_ledger()
+        before = path.read_bytes()
+        for item_id, expected, after, message in (
+            ("3AB", "다른 값", "3B", "STALE_BEFORE"),
+            ("3AB", "3AB", "2A", "duplicate item id"),
+            ("3AB", "3AB", "3AC", "invalid item id"),
+            ("1", "1", "5", "unsupported item id"),
+            ("9ZZ", "9ZZ", "9Z", "exactly once"),
+        ):
+            with self.subTest(item_id=item_id, after=after):
+                with self.assertRaisesRegex(ValueError, message):
+                    WIP.override_field(path, item_id, "#", expected, after, "사유", "승인", False)
+                self.assertEqual(path.read_bytes(), before)
+
+    def test_id_repair_does_not_bypass_other_malformed_rows(self) -> None:
+        path = self.invalid_id_ledger()
+        text = path.read_text(encoding="utf-8")
+        for malformed, message in (
+            (text.replace("| **1** |", "| **1ZZ** |", 1), "invalid item id"),
+            (text.replace("| **2A** |", "| **3AB** |", 1), "exactly once"),
+            (text.replace("| **3AB** |", "| **3AB** | extra |", 1), "cells"),
+        ):
+            with self.subTest(message=message):
+                path.write_text(malformed, encoding="utf-8")
+                before = path.read_bytes()
+                with self.assertRaisesRegex(ValueError, message):
+                    WIP.override_field(path, "3AB", "#", "3AB", "3B", "사유", "승인", False)
+                self.assertEqual(path.read_bytes(), before)
+
+    def test_id_repair_requires_approval_and_refuses_completed_file(self) -> None:
+        path = self.invalid_id_ledger()
+        before = path.read_bytes()
+        for reason, approval in (("", "승인"), ("사유", "")):
+            with self.subTest(reason=reason, approval=approval):
+                with self.assertRaisesRegex(ValueError, "required"):
+                    WIP.override_field(path, "3AB", "#", "3AB", "3B", reason, approval, False)
+                self.assertEqual(path.read_bytes(), before)
+        completed = path.with_name(path.stem + "-done.md")
+        path.rename(completed)
+        with self.assertRaisesRegex(ValueError, "immutable"):
+            WIP.override_field(completed, "3AB", "#", "3AB", "3B", "사유", "승인", False)
+        self.assertEqual(completed.read_bytes(), before)
+
+    def test_repaired_row_must_finish_before_close(self) -> None:
+        path = self.invalid_id_ledger()
+        WIP.override_field(path, "3AB", "#", "3AB", "3B", "사유", "승인", False)
+        for item_id in ("1", "2A"):
+            WIP.set_state(path, item_id, WIP.RUN, "착수", None, "완료 처리")
+            WIP.set_state(path, item_id, WIP.DONE, "완료", "산출물", None)
+        with self.assertRaisesRegex(ValueError, "미완료 항목 1개: 3B"):
+            WIP.close(path)
+        WIP.set_state(path, "3B", WIP.RUN, "착수", None, "완료 처리")
+        WIP.set_state(path, "3B", WIP.DONE, "완료", "산출물", None)
+        audit = self.root / "audit-repaired.json"
+        audit.write_text(json.dumps({
+            "schema": "TINYLM_STATIC_AUDIT_V1", "profile": "codex-safe",
+            "wip": {"path": path.relative_to(self.root).as_posix(),
+                    "sha256": WIP._sha_bytes(path.read_bytes()), "session_id": None},
+            "counts": {"errors": 0, "actionable_warnings": 0},
+        }), encoding="utf-8")
+        self.assertTrue(WIP.close(path, audit).is_file())
+
+    def test_existing_override_cli_repairs_id_without_new_flags(self) -> None:
+        path = self.invalid_id_ledger()
+        argv = ["wip.py", "--override", "--file", str(path), "--item", "3AB",
+                "--field", "#", "--expect-before", "3AB", "--set-after", "3B",
+                "--reason", "ID 복구", "--approval-ref", "사용자 승인"]
+        output = io.StringIO()
+        with patch.object(sys, "argv", argv), redirect_stdout(output):
+            self.assertEqual(WIP.main(), 0)
+        self.assertIn("OVERRIDE_OK item=3AB field=#", output.getvalue())
+        self.assertEqual(len(WIP.parse_table(path.read_text(encoding="utf-8")).rows), 3)
+        self.assertIn("3B:⏳대기", WIP.capsule_text(path))
+
     def test_add_updates_instruction_count_and_sync_repairs_old_header(self) -> None:
         path = self.create()
         WIP.add_item(path, "3", "추가 지시", "GPT가 다음 검사")

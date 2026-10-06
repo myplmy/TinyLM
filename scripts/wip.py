@@ -5,6 +5,9 @@ The six-column contract is:
 ``# | 사용자 지시 | 상태 | 작업 내용 | 산출물 | 이어받을 지점``.
 Legacy ledgers are read-only unless an explicit, approval-recorded migration is
 requested.  All writes use compare-before plus same-directory atomic replace.
+New and added IDs share the digits-plus-optional-letter contract. Unsupported
+raw IDs can be repaired only with an approval-recorded ``--override --field #``;
+the other cells are unchanged and every repaired table is parsed strictly.
 """
 from __future__ import annotations
 
@@ -26,6 +29,7 @@ NL = "\n"
 
 WAIT, RUN, DONE, BLOCK = "⏳대기", "🔄진행", "✅**완료**", "🚫**막힘**"
 OPEN_MARKS = ("⏳", "🔄")
+ITEM_ID_PATTERN = re.compile(r"\d+[A-Za-z]?")
 V2_HEADER = ("#", "사용자 지시", "상태", "작업 내용", "산출물", "이어받을 지점")
 LEGACY_HEADERS = {
     ("#", "지시", "상태", "작업 내용", "산출물"),
@@ -148,8 +152,13 @@ def resolve_ledger(file_arg: str | None, *, allow_multiple_for_list: bool = Fals
     return ledgers[-1]
 
 
-def parse_table(text: str) -> Table:
-    lines = text.splitlines()
+def _validate_item_id(item_id: str) -> None:
+    if ITEM_ID_PATTERN.fullmatch(item_id) is None:
+        raise ValueError(f"invalid item id: {item_id!r}; expected digits plus at most one ASCII letter")
+
+
+def _table_layout(lines: list[str]) -> tuple[int, int, int, tuple[str, ...]]:
+    """Locate the real progress section without silently accepting its item IDs."""
     heading_hits = [i for i, line in enumerate(lines) if line.strip() == BOARD_HEADING]
     if len(heading_hits) != 1:
         raise ValueError(f"'{BOARD_HEADING}' heading count must be 1")
@@ -164,12 +173,27 @@ def parse_table(text: str) -> Table:
     header = tuple(_markdown_cells(lines[header_index]))
     if header != V2_HEADER and header not in LEGACY_HEADERS:
         raise ValueError(f"unsupported WIP header: {header}")
+    separator = _markdown_cells(lines[header_index + 1])
+    if len(separator) != len(header) or any(re.fullmatch(r":?-+:?", cell) is None for cell in separator):
+        raise ValueError("progress table separator is malformed")
+    return heading, header_index, end, header
+
+
+def parse_table(text: str) -> Table:
+    lines = text.splitlines()
+    heading, header_index, end, header = _table_layout(lines)
     expected = len(header)
     parsed: list[tuple[int, str, list[str]]] = []
     for index in range(header_index + 2, end):
-        match = re.match(r"^\|\s*\*\*(\d+[A-Za-z]?)\*\*\s*\|", lines[index])
-        if not match:
+        line = lines[index].lstrip()
+        if not line.startswith("|"):
+            if line.strip() and not line.startswith("범례:"):
+                raise ValueError(f"malformed progress row at line {index + 1}")
             continue
+        match = re.match(r"^\|\s*\*\*([^*|]+)\*\*\s*\|", line)
+        if match is None:
+            raise ValueError(f"malformed progress row at line {index + 1}")
+        _validate_item_id(match.group(1))
         cells = _markdown_cells(lines[index])
         if len(cells) != expected:
             raise ValueError(f"item {match.group(1)} has {len(cells)} cells, expected {expected}")
@@ -455,6 +479,8 @@ def sync_instruction_count(path: Path, reason: str, approval_ref: str) -> None:
 
 
 def add_item(path: Path, item_id: str, directive: str, resume: str) -> None:
+    _validate_item_id(item_id)
+
     def mutate(lines: list[str], text: str) -> None:
         table = parse_table(text)
         _require_v2(table)
@@ -485,7 +511,7 @@ def override_field(
     approval_ref: str,
     allow_directive_correction: bool,
 ) -> None:
-    mapping = {"사용자 지시": 1, "상태": 2, "작업 내용": 3, "산출물": 4, "이어받을 지점": 5}
+    mapping = {"#": 0, "사용자 지시": 1, "상태": 2, "작업 내용": 3, "산출물": 4, "이어받을 지점": 5}
     if field not in mapping:
         raise ValueError(f"unsupported override field: {field}")
     if field == "상태":
@@ -494,20 +520,58 @@ def override_field(
         raise ValueError("directive correction requires --allow-directive-correction")
     if not reason.strip() or not approval_ref.strip():
         raise ValueError("--reason and --approval-ref are required")
+    if field == "#":
+        if path.name.endswith("-done.md"):
+            raise ValueError("completed ledgers are immutable and cannot have their IDs repaired")
+        if ITEM_ID_PATTERN.fullmatch(item_id) is not None:
+            raise ValueError("ID repair requires an unsupported item id; valid IDs cannot be rekeyed")
+        if item_id != expect_before:
+            raise ValueError(f"STALE_BEFORE item={item_id!r} expected={expect_before!r}")
+        _validate_item_id(set_after)
 
     def mutate(lines: list[str], text: str) -> None:
-        table = parse_table(text)
-        _require_v2(table)
-        index, cells = _find_item(table, item_id)
-        column = mapping[field]
-        current = cells[column]
-        if current != expect_before:
-            raise ValueError(
-                f"STALE_BEFORE item={item_id} field={field!r} expected={expect_before!r} actual={current!r}"
-            )
-        after = _escape_cell(set_after)
-        cells[column] = after
-        lines[index] = _render_row(cells)
+        if field == "#":
+            # Recover exactly one rejected raw ID, not a relaxed parser or state override.
+            _, header_index, end, header = _table_layout(lines)
+            if header != V2_HEADER:
+                raise ValueError("LEGACY_READ_ONLY: ID repair requires a v2 ledger")
+            hits = [
+                (index, cells)
+                for index in range(header_index + 2, end)
+                if lines[index].lstrip().startswith("|")
+                and (cells := _markdown_cells(lines[index]))
+                and cells[0] == f"**{item_id}**"
+            ]
+            if len(hits) != 1:
+                raise ValueError(f"item {item_id} must occur exactly once, found={len(hits)}")
+            index, cells = hits[0]
+            if len(cells) != len(V2_HEADER):
+                raise ValueError(f"item {item_id} has {len(cells)} cells, expected {len(V2_HEADER)}")
+            before_row = lines[index]
+            id_match = re.match(r"^\s*\|\s*\*\*(" + re.escape(item_id) + r")\*\*(?=\s*\|)", before_row)
+            if id_match is None:
+                raise ValueError(f"malformed progress row at line {index + 1}")
+            current, after = item_id, set_after
+            # Preserve the other five cells byte-for-byte, including escaped pipes.
+            lines[index] = before_row[:id_match.start(1)] + after + before_row[id_match.end(1):]
+            after_row = lines[index]
+            # Normal strict parsing must now succeed for *all* rows, including collision checks.
+            table = parse_table(NL.join(lines))
+            _require_v2(table)
+            _sync_instruction_count_line(lines, len(table.rows))
+        else:
+            table = parse_table(text)
+            _require_v2(table)
+            index, cells = _find_item(table, item_id)
+            column = mapping[field]
+            current = cells[column]
+            if current != expect_before:
+                raise ValueError(
+                    f"STALE_BEFORE item={item_id} field={field!r} expected={expect_before!r} actual={current!r}"
+                )
+            after = _escape_cell(set_after)
+            cells[column] = after
+            lines[index] = _render_row(cells)
         record = {
             "change_id": f"WIP-{dt.datetime.now().astimezone():%Y%m%dT%H%M%S%z}-{item_id}",
             "timestamp": _now(),
@@ -539,6 +603,13 @@ def override_field(
                 "<redacted: retained in approval_ref>",
             ],
         }
+        if field == "#":
+            record.update(
+                operation="repair unsupported item id (compare-and-set)",
+                before_file_sha256=_sha_text(text),
+                before_row_sha256=_sha_text(before_row),
+                after_row_sha256=_sha_text(after_row),
+            )
         payload = json.dumps(record, ensure_ascii=False, indent=2)
         _append_to_section(lines, AUDIT_HEADING, ["```json", *payload.splitlines(), "```"])
 
@@ -942,7 +1013,8 @@ def create_ledger(
             raise ValueError("--item format must be ID=directive")
         item_id, directive = raw.split("=", 1)
         item_id = item_id.strip()
-        if not re.fullmatch(r"\d+[A-Za-z]?", item_id) or not directive.strip():
+        _validate_item_id(item_id)
+        if not directive.strip():
             raise ValueError(f"invalid --item: {raw}")
         parsed.append((item_id, directive.strip()))
     if not parsed or len({item_id for item_id, _ in parsed}) != len(parsed):
@@ -1047,7 +1119,7 @@ def main() -> int:
     parser.add_argument("--not-run", default="GPU·모델·데이터셋·삭제·Git 외부 변경")
     parser.add_argument("--user-owned", default="없음으로 기록됨")
     parser.add_argument("--retired-claims", default="없음으로 기록됨")
-    parser.add_argument("--field")
+    parser.add_argument("--field", help="override cell; # repairs an unsupported raw ID with recorded approval")
     parser.add_argument("--expect-before")
     parser.add_argument("--set-after")
     parser.add_argument("--reason")
