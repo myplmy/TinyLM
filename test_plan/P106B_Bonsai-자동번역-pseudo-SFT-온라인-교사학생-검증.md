@@ -998,7 +998,113 @@ source캐시는학습량이아니며실제비패딩x와assistant targets/행노�
 
 2026-10-06 준비중:현재A정확read-only check-only0, Bsource metadata preflight0.
 B신규corpus 미생성은예상HOLD8이다. tinyCPU task/계보·held-prolog fixture는새모델성공아니다.
-새4SH/실제108생성·native5모델·새75M구축/새300M은사용자E2E_NOT_RUN이다.
+새4SH/실제108생성·native5모델·새75M구축/새300M은당시 사용자E2E_NOT_RUN이었다.
+
+2026-10-07 사용자 실행 회수완료: Stage4eW는 원형model중복키TypeError·새모델답0이고 Stage4fW는29.022176M/45.977824M부족8,
+Stage4g0W/gW는 같은 부족 선결을 보고 모델 시작 전8로 중단했다. 정확 원본 JSON 두 파일을
+지정 실험 분석 범위에서 읽기 전용 대조했고 결과101 §56~§59에 기록했다. 불필요한 재승인요청은 정정했다.
+네 착수 SH는 -done으로 보존하고 같은 출력의 재실행은 권하지 않는다. 새 자료가 필요하면 새 단계/버전을 쓴다.
+
+# P106B — Stage4eWb 저장 epoch 행 귀속 복구
+
+## 1. 왜 / 질문
+
+저장된 원답에 이미 model 키가 있는데 dict(model=현재모델, **원답)를 호출하면 TypeError가 난다.
+실제 진단의 nested persist를 추출한 CPU fixture에서 이 결함을 재현했다. 학습 결과나 생성 능력
+음성으로 취급할 수 없는 도구 결함이다. 원본 JSON의 직접 실패 사유도 같은 TypeError로 대조됐다.
+기존 최종 배너의180행/72계승은 계획량이며 실제 수행량처럼 보였고 상세 오류도 빠졌다.
+
+## 2. 설계 / 예측
+
+Stage4eW와 같은 부모/epoch1~3/완성4pass endpoint, 원형72 SHA계승, 새108 첫답, native5평가를 유지한다.
+같은 tokenizer/panel/greedy160/input800/시드/native경로/상한2400초다. 재학습·교사·체크포인트 쓰기0.
+행 복사는 원본 mapping을 먼저 복제하고 model을 현재 endpoint로 덮되 prior_source_model을 보존한다.
+별도 v2_row_attribution 경로의 사용자 진입점만 추가해 실패 v1과 이전 원문·이력을 수정하지 않는다.
+flush 완료 행/답안추출 행/원형계승 행/신규raw행과 close/verify된 manifest 행수를 각각 기록한다.
+실패 배너에는 phase/error_type/error/report 위치를 포함한다. 계획량으로 실제 행수를 대체하지 않는다.
+복사 경로는 수리될 것으로 예상하지만 실제 checkpoint/GPU/native 경로와 모델 답 품질은 사용자 재실행 전 미검증이다.
+
+## 3. 실행 / 비용 / 판정
+
+사용자: `./run_P106B_Stage4eWb_saved_epoch_row_attribution.sh`.
+실제 실행 전에 새 `./run_smoke_check.sh`의 종료/실패팔/exit0오류/계측이 모두0이어야 한다.
+기존 파일/SHA선결도 유지한다. GPU약0.25h 추정/40분 상한이며 CPU만의 회귀는 모델 동작을 보증하지 않는다.
+완료는 실제 새콜108/flush된 원답180/추출답180/계승72와5모델의같은native평가 모두가 기록될 때다.
+종료0은 수집완료이지 정답·형식·언어보존·일반지능 PASS가 아니다. 실패/중단도 부분 산출물을 그대로 보존한다.
+출력은 `HF/sft_ready/p106b_epoch_retention_v2_row_attribution`이며 기존 v1 재실행/삭제/덮어쓰기를 금지한다.
+
+## 4. 검증 / 한계 / preflight
+
+기존 자료 준비10시험에 실제 callback·계승 귀속·prefix 실패 행·flush 실패·계획/실제/오류 배너,
+재시험 namespace와 HOLD 보존 및 manifest/모델콜 분리7회귀를 더했다.
+수리 전 callback 중복키 오류와 보고 누락을 확인했고 수리 후 CPU17시험 및 사용자 Python3.10 help와 SH구문을 통과했다.
+기존10시험은 epoch 메타데이터를 검사했지만 저장된 model 키가 있는 원답을 실제 persist로 넘기지 않았다.
+일반 call-kwargs 검사는 `**kwargs`의 동적 key를 추적하지 않아 이 중복을 잡지 못한다. 실제 callback 회귀가 이 공백을 메운다.
+실물 새 답/native5는 NOT_RUN이다. 원본 JSON과 같은 오류를 확인했으며 수리된 callback CPU경로와 새 실물 실행을 구분한다.
+새 학습태그·배치·어휘 변경 없음. 같은 endpoint 비교의 기존 조건 서명을 유지하며 원형/계승과 새 답을 분리한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+# P106B — Stage4hW 원천 재고와 Gemma4 조건부 보충 준비
+
+## 1. 왜 / 질문
+
+과제자료가29.022176M에그쳤다. 미분류17,612,472행을불량자료로가정하거나같은자료로75M을부풀리지않는다.
+기존12원천의실제가족/언어/역할/현재정책분류를확인한뒤실제부족량만교사가보충할수있는가?
+사용자는원문근거형1우선, 원천부족시새공개원천탐색3, 적절한원천없으면자체생성2를선택했다.
+현재29M별도교육C는기각이다. 원75M×4와학생chat32/micro8×accum16/ckptON/LR는유지한다.
+
+## 2. 예측 / 단계
+
+Stage4hW는USER CPU, 핀된12공개원천의정규화reader행과현재분류를전수계수한다.
+같은가족/언어의해시순8원형을20MB샤드로보존하고실제역할다회전과코드후속을구분한다.
+표본만chat32 token/mask를검사하며그평균을실측전체가용량으로사용하지않는다.
+출력 p106b_capability_source_inventory_v1은새75M코퍼스가아니다. 미분류는의미불량이아니다.
+불명가족을자동QA로받거나역할구조가없는문자열을사람다회전으로바꾸어세지않는다.
+재고와표본의후행판독뒤원문보존/변환정책을확정하고75M에서실제선별량을뺀언어/task별부족분만B로보충한다.
+원출처가족25%상한은유지한다. 교사이름/작업종류를가짜별도원출처로분할하지않는다.
+학생입력x/지도량과고유질문/개념군/원형source량을각각기록한다. 20MB조각과사고sidecar는보존한다.
+자료부족이단순alias인지진짜유효범위부족인지미측정이며전체75M을보장하지않는다.
+
+## 3. Gemma4 교사 검토 / 선결
+
+정확로컬본체6,738,475,840B와MTP465,109,248B의헤더에서gemma4 48층/Q4_0와
+gemma4-assistant 4층/Q8_0/MTP4, 3840→1024→3840투영을확인했다. 저장byte는VRAM실측이아니다.
+llama-b11396실제lib에대응arch/model-draft/draft-mtp문자열이있고새helper는기존Qwen/Bonsai기본값을고치지않는다.
+Google권장temp1/top_p0.95/top_k64와native system `<|think|>`를사용한다. 저자권장과별개로
+min_p0/penalty중립·ctx8192/사고1024/총3072·MTPnmax2는첫진단제어조건으로명시한다.
+low/xhigh를Gemma지원강도로가정하지않고native thought/final을분리한다. 데이터JSON/학생ChatML은코드가소유한다.
+[모델카드](https://huggingface.co/google/gemma-4-12B-it), [MTP원제공자안내](https://huggingface.co/unsloth/gemma-4-12b-it-GGUF/blob/main/MTP/README.md).
+
+Stage6cW는USER CPU 전체GGUF/바이너리SHA와헤더/투영계약을새assets.json에보존한다.
+Stage6dW는성공asset·새smoke뒤USER GPU teacher-only off/on→on/off, 4고정질문×4팔=16요청을실행한다.
+한번씩만요청해재시도집합차이로처리율을꾸미지않는다. 실제질문/최종답/사고/raw/파싱/메모리/시간을남긴다.
+student token계수는4진단질문반복의배선계수이며고유대량생산속도가아니다. 신규학생학습/저장0.
+Gemma 한국어우수성·MTP속도/VRAM·실제큰B생산성은NOT_RUN이다. 다른GPU/quant성과를복사하지않는다.
+
+Stage4iW는성공재고와Gemma off-mode의4프로필TAGGED_COMPLETE를선결로한다. MTP가속채택은별도이며Bpilot은off기준이다.
+해시로고른실제서로다른원문16개념(KO/EN8씩)에QA4/JSON2/교사작성3턴2개씩을요청한다.
+각턴총3구조재시도상한이며잘못된문구/의미재검사/자동오조어목록은사용하지않는다.
+원문·원가족·진짜source_id/sha/revision·원개념그룹과교사생성자정보를분리해canonical에기록한다.
+원답/교정NOTE/사고는raw에보존하고성공turn별reasoning SHA/행참조를남긴다. 학생에는최종Q/A만포함한다.
+실제교사입력token+출력예산을확인하고초과시원문을보존해명시중단한다. 조용한절단/무의미한반복필러금지다.
+후보16개와준비x/target/전체wall생산률을측정하되학생학습·75M완성·정식적격은아니다.
+실제원문원천의부족벡터와sample 생산률을회수한뒤원가족cap/한영/유형을유지하는대량보충을연결한다.
+
+## 4. 비용 / 실행 / 판정 / 한계
+
+| 단계 | SH | 예상h | 판정·선결 |
+|---|---|---:|---|
+| Stage4hW | `run_P106B_Stage4hW_source_family_inventory.sh` |0.50 CPU|핀12원천·새출력; 전수행계수/후행표본, 전체가용token미측정|
+| Stage6cW | `run_P106B_Stage6cW_gemma12b_asset_contract.sh` |0.02 CPU|정확2GGUF/llama-b11396·새assets; 실제SHA/metadata만|
+| Stage6dW | `run_P106B_Stage6dW_gemma12b_role_mtp_pair.sh` |0.50 GPU|성공asset·새smoke0/0/0; 16원답/tech wire·속도/메모리, 정답성후행|
+| Stage4iW | `run_P106B_Stage4iW_gemma_grounded_pilot.sh` |0.75 GPU|성공재고·Gemma off-role·새smoke;16원개념/24turn·구조3재시도·20MB/pseudo후보|
+
+B의전체생산량/시간은재고뒤잔여D와실제수락대화token/전체교사초V에서D/V로계산한다.
+과거Bonsai숫자나Gemma출력decode tok/s를그대로학생자료생산속도로쓰지않는다.
+현재원문Bpayload·유형별초기pilot·namespace/role/MTP제어·CPU회귀를준비했지만새75M자료는생성하지않았다.
+재고/역할/pilot의원천별량과비용을회수한뒤추가원천3의필요성·원변환·대량잔여생산/새corpus-wire/새300M을설계한다.
+실행은사용자소유다. 현재GPT원장을사용자E2E대기로붙잡지않는다. 의미/PII/권리/봉인오염·광범위지능미검증이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

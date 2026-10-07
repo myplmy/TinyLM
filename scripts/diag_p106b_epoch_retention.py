@@ -28,6 +28,36 @@ PREVIOUS=ROOT/'HF/sft_ready/p106b_refill_multiaxis_v1'
 PREVIOUS_SHA='139834F28C1E80A610C4C3CEF23AC5CDA717D2C5D00F07CEB652A21852167EDD'
 
 
+def persist_answer(writer,label,row,report,flush):
+    """Copy immutable source attribution; never pass a duplicate model keyword."""
+    owned=dict(row,model=label)
+    writer.append(owned)
+    flush(writer)
+    report['actual_raw_rows']=report.get('actual_raw_rows',0)+1
+    kind='actual_carried_rows' if row.get('answer_evidence')=='HASH_LOCKED_PRIOR_COLLECTION' else 'actual_new_raw_rows'
+    report[kind]=report.get(kind,0)+1
+    if isinstance(row.get('raw_answer'),str) and isinstance(row.get('rendered_answer'),str):
+        report['actual_answer_rows']=report.get('actual_answer_rows',0)+1
+
+
+def final_summary(report):
+    """Planned inventory is not performed work or semantic answer quality."""
+    return dict(status=report['status'],returncode=report['returncode'],
+        actual_model_calls=report.get('actual_model_calls',0),planned_model_calls=108,
+        planned_total_answer_rows=180,planned_carried_rows=72,
+        actual_raw_rows=report.get('actual_raw_rows',0),
+        actual_answer_rows=report.get('actual_answer_rows',0),
+        actual_carried_rows=report.get('actual_carried_rows',0),
+        actual_new_raw_rows=report.get('actual_new_raw_rows',0),
+        verified_manifest_rows=sum(m['rows'] for m in report.get('answer_manifests',{}).values())
+                              +report.get('partial_manifest',{}).get('rows',0),
+        rows_scope='raw/answer counters after synchronous flush; manifest rows after close/verify',
+        execution_phase=report.get('execution_phase','NOT_ENTERED'),
+        completed_checkpoint_loads=report.get('completed_checkpoint_loads',0),
+        error_type=report.get('error_type'),error=report.get('error'),quality='NOT_REVIEWED',
+        evidence_report=str((OUTPUT/'report.json').relative_to(ROOT)))
+
+
 def carried_answers():
     safe_repo_path(PREVIOUS)
     if digest(PREVIOUS/'report.json')!=PREVIOUS_SHA:raise ValueError('previous answer collection changed')
@@ -93,6 +123,8 @@ def execute(info):
     from scripts.p106b_pipeline import flush_row
     idle_before_gpu();OUTPUT.mkdir(exist_ok=False)
     report=dict(schema='P106B_EPOCH_RETENTION_V1',input=info,models={},actual_model_calls=0,
+                actual_raw_rows=0,actual_answer_rows=0,actual_carried_rows=0,actual_new_raw_rows=0,
+                completed_checkpoint_loads=0,answer_manifests={},execution_phase='TOKENIZER',
                 student_training='NOT_RUN',checkpoint_saved=False,semantic_quality='NOT_REVIEWED')
     education=json.loads((SOURCE/'report.json').read_text(encoding='utf-8'));carried=carried_answers()
     writer=None;base=None;begin=time.perf_counter()
@@ -102,6 +134,8 @@ def execute(info):
             torch.set_num_threads(1);geometry=None
             for e in (0,1,2,3,4):
                 label='parent' if e==0 else f'epoch{e}'
+                report['execution_phase']='LOAD_'+label.upper()
+                print('[EPOCH_START] '+json.dumps(dict(model=label,phase=report['execution_phase'])),flush=True)
                 torch.cuda.reset_peak_memory_stats()
                 if e==0:base,cfg=load(ROOT/ARMS['b']['parent'],tok,torch)
                 elif e==4:base,cfg=load(CHILD,tok,torch,education)
@@ -111,10 +145,11 @@ def execute(info):
                     cfg=TMTConfig(**state['cfg']);base=TiedMLPTransformer(cfg).cuda()
                     base.load_state_dict(_strip(state['model']),strict=True);del state
                     base.set_anneal(1.0);base.eval();base.freeze_quant()
+                report['completed_checkpoint_loads']+=1
                 current={k:v for k,v in cfg.__dict__.items() if k!='grad_checkpoint'}
                 if geometry is not None and current!=geometry:raise ValueError('endpoint architectures differ')
                 geometry=current;writer=ShardWriter(OUTPUT,'answers_'+label)
-                def persist(row):writer.append(dict(model=label,**row));flush_row(writer)
+                def persist(row):persist_answer(writer,label,row,report,flush_row)
                 def infer(prompt,value):
                     input_tokens=len(tok.encode(prompt).ids)
                     if input_tokens>800:raise ValueError('input budget exceeded, no silent truncation')
@@ -134,11 +169,16 @@ def execute(info):
                     return answer,dict(meta,seed=seed,input_tokens=input_tokens,wall_sec=time.perf_counter()-t,
                                        raw_full_text=full)
                 if label in carried:
+                    report['execution_phase']='CARRY_'+label.upper()
                     rows=carried[label]['rows']
                     for row in rows:persist(dict(row,answer_evidence='HASH_LOCKED_PRIOR_COLLECTION',
                                               prior_source_model=carried[label]['source_model']))
-                else:rows=collect(infer,on_row=persist)
+                else:
+                    report['execution_phase']='GENERATE_'+label.upper()
+                    rows=collect(infer,on_row=persist)
                 manifest=writer.close(lineage=info);verify(OUTPUT,manifest);writer=None
+                report['answer_manifests'][label]=dict(rows=manifest['rows'],concat_sha256=manifest['concat_sha256'])
+                report['execution_phase']='NATIVE_'+label.upper()
                 losses,count=full_val_losses(base,cfg,ROOT/ARMS['b']['cache'],1024,4,'cuda')
                 result=dict(summary=summarize(rows),native_ce=sum(losses)/len(losses),native_tokens=count,
                     trained_x_tokens=0 if e==0 else sum(h['processed_tokens'] for h in education['history'][:e]),
@@ -148,9 +188,12 @@ def execute(info):
                 report['models'][label]=result
                 print('[EPOCH_RESULT] '+json.dumps(dict(model=label,**result),ensure_ascii=False),flush=True)
                 base.clear_quant();del base;base=None;gc.collect();torch.cuda.empty_cache()
+            if (report['actual_model_calls'],report['actual_raw_rows'],report['actual_answer_rows'],
+                report['actual_carried_rows'])!=(108,180,180,72):
+                raise ValueError('complete collection requires108 new calls/180 flushed answers/72 carried rows')
             parent=report['models']['parent']['native_ce']
             for label,rec in report['models'].items():rec['native_delta_vs_parent']=rec['native_ce']-parent
-            report.update(status='EPOCH_COLLECTION_COMPLETE',returncode=0)
+            report.update(status='EPOCH_COLLECTION_COMPLETE',returncode=0,execution_phase='COMPLETE')
     except BaseException as exc:
         status,rc=disposition(exc);report.update(status=status,returncode=rc,error_type=type(exc).__name__,error=str(exc)[:1600])
     finally:
@@ -158,9 +201,7 @@ def execute(info):
             m=writer.close(lineage=info);verify(OUTPUT,m);report['partial_manifest']=m
         report['whole_wall_sec']=time.perf_counter()-begin
         with (OUTPUT/'report.json').open('x',encoding='utf-8') as f:json.dump(report,f,ensure_ascii=False,indent=2);f.write('\n')
-        print('[EPOCH_FINAL] '+json.dumps(dict(status=report['status'],returncode=report['returncode'],
-             actual_model_calls=report['actual_model_calls'],planned_model_calls=108,
-             total_answer_rows=180,carried_rows=72,quality='NOT_REVIEWED'),ensure_ascii=False),flush=True)
+        print('[EPOCH_FINAL] '+json.dumps(final_summary(report),ensure_ascii=False),flush=True)
     return report['returncode']
 
 
