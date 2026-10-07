@@ -172,7 +172,7 @@ def execute(info):
         with (OUTPUT/'report.json').open('x',encoding='utf-8') as f:json.dump(report,f,ensure_ascii=False,indent=2);f.write('\n')
         print('[MULTIAXIS_FINAL] '+json.dumps(dict(status=report['status'],returncode=report['returncode'],
             actual_model_calls=report['actual_model_calls'],semantic_quality='NOT_REVIEWED',
-            evidence='HF/sft_ready/p106b_refill_multiaxis_v1/report.json'),ensure_ascii=False),flush=True)
+            evidence=str((OUTPUT/'report.json').relative_to(ROOT))),ensure_ascii=False),flush=True)
     return report['returncode']
 
 
