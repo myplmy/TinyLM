@@ -1285,3 +1285,101 @@ helper는기존learner/다축평가를프로세스내에서만새입력/출력/T
 MTPoff/기존Gemma원모델/카드sampler/native상한은원인분리계약그대로다. 새가속/출처를시간때문에몰래채택하지않는다.
 자료가75M미달이면29M교육으로목표를축소하거나재생성반복으로고유량을부풀리지않는다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+# P106B — 2026-10-08 답 본문 계약 분기와 생산 연결 복구
+
+## 1. 왜
+
+[결과101 §74~§77](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 실제31응답은 모두 라벨 완결/stop이나14/16만 후보가 됐다.
+JSON 펜스3회와 일반 영어답3회가 미완2그룹의 직접 원인이다. 이후64/생산/재개/병합은 선결8이고 학생9는 코퍼스 미생성 분류 오류로 모델 전에 끝났다.
+VRAM/OOM이나 교육 실행의 실패가 아니다. 사용자가 1안(단순 포장·복잡 구조 분리)을 승인했으므로 기존 outer 래퍼를 새로 만드는 것이 아니라 본문 계약만 수리한다.
+
+## 2. 질문·분류 근거·권한
+
+| 질문 | 코드의 근거/처리 |
+|---|---|
+| 단순/복잡을 어떻게 구분하는가 | 생성기가 직접 만든 출력 계약으로만 분기. 현재 json/3턴 마지막의 scalar answer는 단순; 명시한 배열/중첩 schema는 복잡; 원천/교사 자기분류는 권한이 아님 |
+| 복잡한 JSON도 가능한가 | 교사 JSON 전체와 declared bounded schema를 검사하며 answer 문자열로 숨기지 않는다. 미등록/미지원 구조는 자동 추정하지 않는다 |
+| 기존 포장은 없어졌는가 | 라벨 파서→canonical JSONL→기존 ChatML/assistant 마스크를 그대로 재사용한다. 답 내용 렌더링은 그 앞의 별도 단계 |
+| 내용 오류를 형식 검사로 고칠 것인가 | 아니다. 원문/원답/NOTE/사고·렌더링을 보존하고 후행 자료 검증으로 넘긴다. 온라인 의미 재시도/문구 블랙리스트는 없음 |
+
+수리 파일은 output_contract/task_contract_v2/recovery 어댑터·기존 두 생산 호출부·deficit 선결 분류·CPU 회귀/새SH다.
+사용자(1)A와 이번 1안 승인에 따른 변경이며 공용 훅/검사기·원본/HF/cache/weights·다른 WIP·GPU 직접 실행은 제외한다.
+기존 V1 모듈/출력은 보존하고 process-local opt-in 바인딩은 정상/예외 때 모두 복원한다.
+학습 레시피·출처쿼터/원개념split·마스크/샤드 정본은 기존 엔진이 계속 소유한다. 후속 원천 계약 확장은 별도 명시 어댑터가 필요하다.
+
+## 3. 예측·사전 반증
+
+단순 ANSWER를 코드가 렌더링하면 펜스/일반문장 때문에 막힌 후보는 회복될 것으로 예상한다.
+반대로 교사가 바뀐 프롬프트에서도 라벨/문맥을 틀리거나 길이1024를 넘길 수 있다. CPU 통과만으로 새16/64 성공을 보장하지 않는다.
+복잡 구조는 교사 부담이 남아 총3회 모두 실패할 수 있다. 형식이 맞아도 원문 관계 변형·오답은 남을 수 있다.
+UNKNOWN을 단순 구조로 추정하거나 배열을 answer 문자열로 바꾸면 코드 실패다. 내용 정답성은 이 게이트의 통과 항목이 아니다.
+
+## 4. 단계 설계 — CPU→소형 교사→부족량→학생
+
+| 단계 | 사용자 실행 SH | 모드 | 비용 추정/한도 | 다음 선결·사전 판정 |
+|---|---|---|---:|---|
+| Stage4iWe_output_dispatch_cpu | `run_P106B_Stage4iWe_output_dispatch_cpu.sh` | cpu | 0.02h | CPU 회귀·모델 없음 |
+| Stage4iWf_answer_render_contract16 | `run_P106B_Stage4iWf_answer_render_contract16.sh` | contract16 | 0.20h | 같은 16그룹·새 계약 기술 완결 16/16 |
+| Stage4iWg_complex_output_contract4 | `run_P106B_Stage4iWg_complex_output_contract4.sh` | structure4 | 0.10h | 한영 배열/중첩 4그룹 구조 완결 4/4 |
+| Stage4iWh_family64_output_dispatch | `run_P106B_Stage4iWh_family64_output_dispatch.sh` | family64 | 0.75h | 새 16/4 선결·원가족 분산 64/64 |
+| Stage4jWc_gemma_output_deficit_production | `run_P106B_Stage4jWc_gemma_output_deficit_production.sh` | produce | 6.00h | 성공 16/4/64·별도 train/val 부족량 생성·최대 6h |
+| Stage4jWd_gemma_output_deficit_resume | `run_P106B_Stage4jWd_gemma_output_deficit_resume.sh` | resume | 6.00h | 성공 16/4/64·별도 train/val 부족량 생성·최대 6h |
+| Stage4kWb_gemma_output_completed_corpus | `run_P106B_Stage4kWb_gemma_output_completed_corpus.sh` | finalize | 0.50h | 실제 75M·별도 val·한영/task/원가족 쿼터 충족 |
+| Stage4k0Wb_gemma_output_student_wire | `run_P106B_Stage4k0Wb_gemma_output_student_wire.sh` | wire | 0.50h | 완료 동일 자료·교사 종료·학생 2업데이트 |
+| Stage4lWb_gemma_output_chat32_repeat4 | `run_P106B_Stage4lWb_gemma_output_chat32_repeat4.sh` | train | 12.00h | 동일 성공 wire·원부모/배치/LR·실제 4epoch |
+| Stage4mWb_gemma_output_multiaxis | `run_P106B_Stage4mWb_gemma_output_multiaxis.sh` | eval | 0.50h | 완료 같은 4epoch 학생/부모·실제 72첫답 |
+
+새16은 기존 원문16/seed/교사/MTPoff·카드sampler/native1024/총3072/ctx8192를 유지한다.
+별도4는 코드작성 한영 배열2/중첩2다. 새16/4가 완결돼야64·생산을 권장한다. 같은 질문을 새seed로 무한 재생성하지 않는다.
+새 출력 task pilots v2/deficit v2/최종 corpus·wire·student v3는 옛 v1/v2 원형을 변경하지 않는다.
+production/resume 입력SHA에는 출력계약·어댑터·pilot 엔진까지 포함되며 변경 뒤 옛batch에 이어쓰지 않는다.
+동일 schema/raw/후보SHA·완결수16/4/64를 검증한다. 새 회귀→선결→본실험→최종 receipt가0/8/9와 본실험 NOT_RUN을 함께 표시한다.
+
+## 5. 판정 기준
+
+단순 렌더링은 CODE_RENDERED_ENVELOPE, 복잡은 DECLARED_STRUCTURE_PASS, 미상은 NOT_ASSESSED다. 세 값은 정답/품질 등급이 아니다.
+JSON schema는 type/properties/required/additionalProperties/items/minItems/maxItems/enum 부분집합이며 미지원 키/중복키/NaN/미완 펜스는 거부한다.
+최초 포함 총3시도는 라벨과 구조가 공유한다. 구조 오류 피드백 외 사실 심사·오조어 목록·사람 전수 승인은 추가하지 않는다.
+생산은 실제 train75M·언어당37.5M·별도val·원가족cap25%·QA/JSON/명시3턴50/25/25의 최소90% 목표를 충족해야 병합한다.
+미완이면 부족벡터/PAUSED8을 남기고 학생을 열지 않는다. 원천 소진이면 3 추가공개원천→2 자체생성 후보를 논의하며 반복필러로 채우지 않는다.
+
+## 6. 비용·자원·preflight
+
+현재 관측은2.291675 유효 student x/s·64.658395 completion tok/s다. 두 분모를 바꿔 쓰지 않는다.
+6h 생산/재개는 실행 상한이지 자료 완성 보장이나 반복 예약 횟수가 아니다. 첫 새64/실제batch의 분포·재시도·whole-wall로 남은 생성시간을 다시 산정한다.
+teacher-only peak8225MiB/minfree7837와 과거 학생 reserved4330의 단순합산은 동시 peak/OOM 보증이 아니다. 이번 학생 학습에서는 교사를 먼저 종료한다.
+
+| 항목 | 판정·근거 |
+|---|---|
+| 토큰 환산 | 75M 실제 비패딩 대화 x×4epoch≈300M; seq1024 패딩/사고/val은 별도. 기존 fixed-crop2289×8×16×1024는300.024M이지만 이SFT의 update 수 산식이 아님 |
+| 데이터 반복 | 사용자가 승인한 고유75M의 고정4epoch SFT이며 복원추출600M-pool 규칙과 다른 실험계약이다. 같은 자료 반복을 새고유75M으로 부풀리지 않음 |
+| 태그/덮어쓰기 | 새 outputv2_s1337 목표 log/ckpt 존재0의 정확metadata만 조회. 광범위 registry/원본 runs 스캔0 |
+| 중복 | 옛14/16 음성은 보존하고 같은 옛출력으로 재실행하지 않음. 독립변수는 명시 본문계약/코드렌더링·구조피드백이며 새64는 원가족 표본 축 |
+| 학습 조건 | 원 chat32 부모·micro8×accum16·checkpoint-on·LR1e-4/Muon4e-4·4epoch 불변. teacher/student 순차 |
+| 비교/노이즈 | 형식 수리 효과/내용정답/학생효과는 분리. 결과101 조건서명 PARTIAL_CONFOUNDED; 해당 과제/품질의 재현 노이즈 미측정 |
+| 실행 경계 | GPT는 CPU/정적/check-only만 수행. 사용자 새smoke 통과 뒤 조건부 GPU |
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 7. 실행·기존 큐 계승
+
+위10개 SH가 실제 파일이다. stdin/pause/자동download는 없고 동일일 기존 로그를 덮어쓰지 않는다. resume만 시각별 새run_name/확정batch를 사용한다.
+옛 착수6SH는 done 원형/SHA/100755·명령을 보존한 뒤 정확 승인된 삭제 대상으로 처리한다.
+미실행 옛 Stage4lW/4mW는 원래 v2 경로에만 연결된 보존본이어서 현재 권장 실행에서 제외한다. 자동으로 새 v3로 돌려 쓰지 않는다.
+새 lWb/mWb는 새 자료 성공 이후 원 배치의 실제4epoch/후속72답으로 바로 연결되며 구현 대기를 추가하지 않는다.
+기존6hold·다른 데이터 세션 WIP는 불변이다.
+
+## 8. 한계
+
+내용 정확성·한국어 우수·원천별 권리 전수·새75M완성·300M효과·교사/학생 동시상주는 미검증이다.
+array/nested4의 구조 통과도 의미 정답 검증이 아니다. 프롬프트가 질문을 새로 만들 때 관계 변형이 생길 수 있으므로 원문/원답을 보존한다.
+명시 계약이 없는 복잡 과제는 강제 wrapping하지 않는다. 전량 JSON Schema 지원이나 기존 원천의 모든 출력형식 분류를 구현했다고 주장하지 않는다.
+새 SH/과학코드 정적 PASS는 사용자 새 smoke/GPU PASS가 아니다.
+
+## 9. 실행 이력·예측 대조
+
+- 2026-10-08 원형4iWc: 라벨31/31였지만 그룹7/13 본문 JSON으로14/16 음성8. 라벨 프롬프트 수리만으로 전체 과제가 완결된다는 예측은 반증됐다.
+- 4iWd/4jW/4jWb/4kW: 각 선결8·본실험 미실행. 4k0W는 미생성 보고서 분류9였으며 이번 CPU에서 HOLD8로 수리했다. OOM이 아니다.
+- 핵심 CPU56 및 라벨/receipt를 포함한89시험 PASS. 새16/4 check-only0·모델0. 새16/4/64·부족량·학생은 사용자 E2E_NOT_RUN.

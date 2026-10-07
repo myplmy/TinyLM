@@ -102,6 +102,21 @@ class DeficitTests(unittest.TestCase):
              patch.object(run,'production',side_effect=AssertionError('forbidden')),redirect_stdout(io.StringIO()):
             self.assertEqual(run.main(),0)
 
+    def test_missing_completed_corpus_is_hold_before_learner_check_or_execute(self):
+        with tempfile.TemporaryDirectory(prefix='gemma_prerequisite_fixture_') as tmp,\
+             patch.object(control,'CORPUS',Path(tmp)/'absent'),\
+             patch.object(control,'safe_repo_path',side_effect=lambda p:p),\
+             patch('scripts.diag_p106b_mixed_repeat4.check',side_effect=AssertionError('must not check model')),\
+             patch('scripts.diag_p106b_mixed_repeat4.execute',side_effect=AssertionError('must not load model')):
+            with self.assertRaises(FileNotFoundError):control.learner(True,execute=True)
+
+    def test_missing_completed_report_is_not_a_hash_mismatch(self):
+        with tempfile.TemporaryDirectory(prefix='gemma_prerequisite_fixture_') as tmp,\
+             patch.object(control,'CORPUS',Path(tmp)/'absent'),\
+             patch.object(control,'safe_repo_path',side_effect=lambda p:p),\
+             patch.object(control,'digest',side_effect=AssertionError('no nonexistent hash check')):
+            with self.assertRaises(FileNotFoundError):control.completed_corpus_report()
+
     def test_finalize_shortage_cannot_publish_or_load_student(self):
         with tempfile.TemporaryDirectory(prefix='gemma_deficit_fixture_') as tmp,\
              patch.object(control,'CORPUS',Path(tmp)/'new'),patch.object(control,'safe_repo_path'),\
@@ -159,6 +174,7 @@ class DeficitTests(unittest.TestCase):
             seen.append((old.CORPUS,old.OUTPUT,old.CHILD));return {'planned_model_calls':72}
         with patch.object(control,'safe_repo_path',side_effect=lambda p:p),\
              patch.object(control,'digest',return_value='A'*64),patch.object(old,'check',side_effect=check),\
+             patch.object(control,'completed_corpus_report',return_value={'token_target_ready':True}),\
              patch.object(old,'execute',side_effect=AssertionError('must not execute')):
             self.assertEqual(control.evaluate(execute=False)['planned_model_calls'],72)
         self.assertEqual((old.CORPUS,old.OUTPUT,old.CORPUS_SHA,old.CHILD,old.CHILD_LOG),before)

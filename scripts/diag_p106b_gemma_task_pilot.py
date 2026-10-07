@@ -157,27 +157,37 @@ def execute(mode, jobs, info):
         idle_before_gpu()
         with wall_limit(3600), teacher.GemmaSession(False) as session:
             for index, job in enumerate(jobs):
-                turns, refs = [], []
+                turns, refs, output_traces = [], [], []
                 for turn in range(3 if job['task']=='multiturn' else 1):
                     accepted = None
+                    feedback = ''
+                    kwargs = tasks.producer_kwargs(job, turns) if hasattr(tasks, 'producer_kwargs') else {}
                     for attempt in range(1, 4):
                         session.check()
+                        if getattr(tasks, 'RETRY_FEEDBACK', False):
+                            kwargs['feedback'] = feedback
                         payload = tasks.payload(job['original'], job['language'], job['task'],
-                            20261007+index*100+turn*10+attempt, history=turns)
+                            20261007+index*100+turn*10+attempt, history=turns, **kwargs)
                         prompt = session.request('/apply-template', {'messages':payload['messages']})['prompt']
                         count = len(session.request('/tokenize', dict(content=prompt, add_special=False, parse_special=True))['tokens'])
                         if count+teacher.MAX_OUTPUT+128 > teacher.CONTEXT:
                             raise ValueError('source budget exceeded; no silent truncation')
                         began=time.perf_counter(); report['attempts']+=1
                         reply=session.request('/v1/chat/completions', payload, timeout=300)
-                        parsed=teacher.parsed_response(reply, job['language']); reason=''
+                        parsed=teacher.parsed_response(reply, job['language']); reason=''; trace=None
                         if parsed['format_status']==teacher.COMPLETE:
-                            try: accepted=tasks.learner_turn(parsed['parsed_content'],job['language'],job['task'],history=turns)
+                            try:
+                                if hasattr(tasks, 'render_turn'):
+                                    render_args = {k:v for k,v in kwargs.items() if k != 'feedback'}
+                                    accepted,trace=tasks.render_turn(parsed['parsed_content'],job['language'],job['task'],history=turns,**render_args)
+                                else:
+                                    accepted=tasks.learner_turn(parsed['parsed_content'],job['language'],job['task'],history=turns)
                             except (ValueError,TypeError) as exc: reason=str(exc)
                         else: reason=parsed.get('parse_error') or parsed['format_status']
+                        feedback=reason
                         raw.append(dict(group=index,turn=turn+1,attempt=attempt,job=job,payload=payload,
                             reply=reply,parsed=parsed,producer_learner_turn=accepted,
-                            structural_reason=reason,input_tokens=count,request_sec=time.perf_counter()-began))
+                            producer_output_trace=trace,structural_reason=reason,input_tokens=count,request_sec=time.perf_counter()-began))
                         print('[TASK_ANSWER] '+json.dumps(dict(group=index,language=job['language'],task=job['task'],
                             turn=turn+1,attempt=attempt,question=accepted['user_text'] if accepted else None,
                             answer=parsed.get('teacher_final_content'),structural_reason=reason,
@@ -185,6 +195,7 @@ def execute(mode, jobs, info):
                         if accepted is not None:
                             thought=parsed.get('teacher_reasoning_content','')
                             refs.append(dict(raw_row_1based=raw._total_rows,sha256=hashlib.sha256(thought.encode()).hexdigest().upper(),in_student=False))
+                            if trace is not None: output_traces.append(trace)
                             break
                     if accepted is None: break
                     turns.append(accepted)
@@ -200,6 +211,7 @@ def execute(mode, jobs, info):
                     source_rights_status=meta.get('rights_status','CARD_ONLY'))
                 row['meta'].update(source_family=job['source_family'],producer='Gemma4-12B',task_profile=job['task'],
                     wire_contract=tasks.CONTRACT,role_origin='producer_contract_teacher_content',teacher_reasoning_refs=refs)
+                if output_traces: row['meta']['producer_output_traces']=output_traces
                 ids,labels,_=encode_conversation(row,tok); x,y=sft_targets(ids,labels); targets=sum(v>=0 for v in y)
                 if not 0<len(x)<=1024 or not targets:
                     report['groups'].append(dict(group=index,accepted=False,reason='student context/mask'));continue

@@ -44,7 +44,8 @@ def require_pilots():
                 code_sha256={name:digest(ROOT/name) for name in ('scripts/p106b_gemma_deficit.py',
                     'scripts/diag_p106b_gemma_deficit_production.py','scripts/p106b_gemma_task_contract.py',
                     'scripts/p106b_gemma_labels.py','scripts/p106b_gemma_teacher.py',
-                    'scripts/p106b_teacher_wrapper.py','tinylm/chat/canonical.py','tinylm/data/sft.py')})
+                    'scripts/p106b_teacher_wrapper.py','tinylm/chat/canonical.py','tinylm/data/sft.py')
+                    + getattr(tasks,'EXTRA_CODE_PATHS',())})
 
 
 def state_from_saved(tok,base):
@@ -68,32 +69,40 @@ def state_from_saved(tok,base):
 
 
 def produce_group(session,source,language,profile,seed,raw,identity):
-    turns,refs=[],[]
+    turns,refs,output_traces=[],[],[]
     for turn in range(3 if profile=='multiturn' else 1):
         accepted=None
+        feedback=''
         for attempt in range(1,4):
             session.check()
-            payload=tasks.payload(source,language,profile,(seed+turn*10+attempt)%2147483647,history=turns)
+            kwargs={'feedback':feedback} if getattr(tasks,'RETRY_FEEDBACK',False) else {}
+            payload=tasks.payload(source,language,profile,(seed+turn*10+attempt)%2147483647,history=turns,**kwargs)
             prompt=session.request('/apply-template',{'messages':payload['messages']})['prompt']
             tokens=session.request('/tokenize',dict(content=prompt,add_special=False,parse_special=True))['tokens']
             if len(tokens)+teacher.MAX_OUTPUT+128>teacher.CONTEXT:
                 raise ValueError('source token budget: no silent truncation')
             began=time.perf_counter();reply=session.request('/v1/chat/completions',payload,timeout=300)
-            parsed=teacher.parsed_response(reply,language);reason=''
+            parsed=teacher.parsed_response(reply,language);reason='';trace=None
             if parsed['format_status']==teacher.COMPLETE:
-                try:accepted=tasks.learner_turn(parsed['parsed_content'],language,profile,history=turns)
+                try:
+                    if hasattr(tasks,'render_turn'):
+                        accepted,trace=tasks.render_turn(parsed['parsed_content'],language,profile,history=turns)
+                    else:accepted=tasks.learner_turn(parsed['parsed_content'],language,profile,history=turns)
                 except (ValueError,TypeError) as exc:reason=str(exc)
             else:reason=parsed.get('parse_error') or parsed['format_status']
+            feedback=reason
             raw.append(dict(source=source,language=language,task=profile,turn=turn+1,attempt=attempt,
                 payload=payload,reply=reply,parsed=parsed,producer_learner_turn=accepted,
-                structural_reason=reason,input_tokens=len(tokens),request_sec=time.perf_counter()-began))
+                producer_output_trace=trace,structural_reason=reason,input_tokens=len(tokens),request_sec=time.perf_counter()-began))
             print('[DEFICIT_ANSWER] '+json.dumps(dict(source_id=source['meta']['source_id'],language=language,
                 task=profile,turn=turn+1,attempt=attempt,final=parsed.get('teacher_final_content'),
                 structural_reason=reason),ensure_ascii=False),flush=True)
             if accepted is not None:
                 thought=parsed.get('teacher_reasoning_content','')
                 refs.append(dict(raw_row_1based=raw._total_rows,
-                    sha256=hashlib.sha256(thought.encode()).hexdigest().upper(),in_student=False));break
+                    sha256=hashlib.sha256(thought.encode()).hexdigest().upper(),in_student=False))
+                if trace is not None:output_traces.append(trace)
+                break
         if accepted is None:return None
         turns.append(accepted)
     m=source['meta'];key=conversation_split_key(source).hex().upper()
@@ -105,6 +114,7 @@ def produce_group(session,source,language,profile,seed,raw,identity):
     row['meta'].update(source_family=m['source_family'],original_source_language=m['language'],
         producer='Gemma4-12B',task_profile=profile,wire_contract=tasks.CONTRACT,
         teacher_reasoning_refs=refs,role_origin='producer_contract_teacher_content')
+    if output_traces:row['meta']['producer_output_traces']=output_traces
     return row
 
 

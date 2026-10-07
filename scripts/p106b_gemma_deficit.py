@@ -24,6 +24,7 @@ OUTPUT=ROOT/'HF/sft_ready/p106b_gemma_deficit_v1'
 CORPUS=ROOT/'HF/sft_ready/p106b_capability_gemma_v2'
 WIRE=ROOT/'HF/sft_ready/p106b_capability_gemma_wire_v2'
 STUDENT=ROOT/'HF/sft_ready/p106b_capability_gemma_student_v2'
+EVALUATION=ROOT/'HF/sft_ready/p106b_gemma_capability_multiaxis_v2'
 TAG='p106b_s4_gemma_capability300m_chat32_s1337'
 WEIGHTS={'qa':.5,'json':.25,'multiturn':.25}
 
@@ -161,9 +162,17 @@ def finalize(tok):
     return report
 
 
+def completed_corpus_report():
+    path=safe_repo_path(CORPUS/'report.json')
+    if not path.is_file():
+        raise FileNotFoundError('completed Gemma75M corpus report absent; no student/teacher allocated: '+str(path))
+    digest(path)
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
 def learner(wire,*,execute=False):
     from scripts import diag_p106b_mixed_repeat4 as learning
-    p=safe_repo_path(CORPUS/'report.json');digest(p);report=json.loads(p.read_text(encoding='utf-8'))
+    report=completed_corpus_report()
     if (report.get('production_version')!='GEMMA_DEFICIT_ORIGINAL_CONCEPT_V1'
             or report.get('base_report_sha256')!=BASE_SHA or report.get('token_target_ready') is not True
             or set(report.get('task_deficit_tokens',{}))!={l+':'+t for l in ('ko','en') for t in WEIGHTS}
@@ -186,8 +195,9 @@ def learner(wire,*,execute=False):
 
 def evaluate(*,execute=False):
     from scripts import diag_p106b_refill_multiaxis as evaluation
+    completed_corpus_report()
     corpus_sha=digest(safe_repo_path(CORPUS/'report.json'))
-    output=ROOT/'HF/sft_ready/p106b_gemma_capability_multiaxis_v2'
+    output=EVALUATION
     child=ROOT/('runs/ckpt/m100s10_ko-en_300M_'+TAG+'.pt')
     log=ROOT/('runs/logs/m100s10_ko-en_300M_'+TAG+'.json')
     with patch.object(evaluation,'CORPUS',CORPUS),patch.object(evaluation,'CORPUS_SHA',corpus_sha),\
