@@ -24,6 +24,7 @@ from scripts.p106b_teacher_wrapper import wrap_turns
 from scripts.p106b_mixed_scale import TOKENIZER,TOK_SHA,digest,safe_repo_path
 
 OUTPUT=ROOT/'HF/sft_ready/p106b_gemma_grounded_pilot_v1'
+COMPLETE_STATUS='TAGGED_COMPLETE'
 PROFILES=('qa','qa','qa','qa','json','json','multiturn','multiturn')
 
 
@@ -60,7 +61,7 @@ def check():
     jobs=select_jobs(samples)
     role=json.loads(safe_repo_path(TEACHER/'role/report.json').read_text(encoding='utf-8'))
     expected={c['id'] for c in teacher.cases()}
-    observed={r['case_id'] for r in role.get('answers',[]) if not r['mtp'] and r['format_status']=='TAGGED_COMPLETE'}
+    observed={r['case_id'] for r in role.get('answers',[]) if not r['mtp'] and r['format_status']==COMPLETE_STATUS}
     if role.get('actual_requests')!=16 or not expected<=observed:
         raise FileNotFoundError('Gemma base off-mode role wiring not confirmed; MTP benefit is not a prerequisite')
     if digest(TOKENIZER)!=TOK_SHA:raise ValueError('student chat32 identity differs')
@@ -103,7 +104,7 @@ def execute(jobs,info):
                         raw.append(record);raw_row=raw._total_rows
                         print('[GROUNDED_ANSWER] '+json.dumps(dict(group=index,task=job['task'],turn=turn_index+1,
                             attempt=attempt,final=parsed.get('teacher_final_content'),status=parsed['format_status']),ensure_ascii=False),flush=True)
-                        if parsed['format_status']!='TAGGED_COMPLETE':continue
+                        if parsed['format_status']!=COMPLETE_STATUS:continue
                         content=parsed['parsed_content']
                         if job['task']=='json':
                             try:obj=json.loads(content['assistant_text'])

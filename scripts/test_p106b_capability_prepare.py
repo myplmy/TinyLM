@@ -28,6 +28,23 @@ def row(i=0,family='aya_dataset',language='ko'):
 
 
 class PrepareTests(unittest.TestCase):
+    def epoch_state_fixture(self):
+        from tinylm.config import TMTConfig
+        cfg=TMTConfig(n_prelude=2,n_middle=10,n_coda=2,mlp_group=2,
+                      tie_mlp=False,vocab_size=32768)
+        hist=[dict(epoch=i,updates=i*10,processed_tokens=100) for i in (1,2,3,4)]
+        edu=dict(history=hist,input={'tokenizer_sha256':'fixture'})
+        state=dict(epoch=2,input=edu['input'],history=hist[:2],updates=20,
+                   step=2309,processed_tokens=200,cfg=dict(cfg.__dict__))
+        return state,edu
+
+    def test_epoch_metadata_uses_real_serialized_config_not_derived_property(self):
+        state,edu=self.epoch_state_fixture()
+        self.assertNotIn('n_layers',state['cfg'])
+        before=copy.deepcopy(state)
+        epoch_metadata(state,edu,2)
+        self.assertEqual(state,before)
+
     def epoch_persist_fixture(self, label, report, *, fail_flush=False):
         """Run the real nested callback, never execute/load a model or real shard."""
         callback=next(n for n in ast.walk(ast.parse(inspect.getsource(epoch_diag.execute)))
@@ -179,14 +196,25 @@ class PrepareTests(unittest.TestCase):
         self.assertEqual(result['capability_selection_version'],VERSION)
 
     def test_epoch_metadata_is_not_final_format_or_wire(self):
-        hist=[dict(epoch=i,updates=i*10,processed_tokens=100) for i in (1,2,3,4)]
-        edu=dict(history=hist,input={'tokenizer_sha256':'test'})
-        state=dict(epoch=2,input=edu['input'],history=hist[:2],updates=20,step=2309,processed_tokens=200,
-                   cfg=dict(n_layers=14,tie_mlp=False,vocab_size=32768))
+        state,edu=self.epoch_state_fixture()
         epoch_metadata(state,edu,2)
         for key,value in [('epoch',1),('updates',2),('processed_tokens',100),('input',{})]:
             with self.subTest(key=key):
                 bad=copy.deepcopy(state);bad[key]=value
+                with self.assertRaises(ValueError):epoch_metadata(bad,edu,2)
+
+    def test_epoch_metadata_rejects_real_wrong_dense_tied_vocab_geometry(self):
+        state,edu=self.epoch_state_fixture()
+        for key,value in [('n_middle',12),('tie_mlp',True),('vocab_size',32000)]:
+            with self.subTest(key=key):
+                bad=copy.deepcopy(state);bad['cfg'][key]=value
+                with self.assertRaises(ValueError):epoch_metadata(bad,edu,2)
+
+    def test_epoch_metadata_rejects_invalid_or_fabricated_saved_config(self):
+        state,edu=self.epoch_state_fixture()
+        for value in (None,[],{},dict(state['cfg'],n_layers=14)):
+            with self.subTest(cfg_type=type(value).__name__):
+                bad=copy.deepcopy(state);bad['cfg']=value
                 with self.assertRaises(ValueError):epoch_metadata(bad,edu,2)
 
     def test_legacy_modes_default_are_unchanged_and_profile_has_no_mix(self):

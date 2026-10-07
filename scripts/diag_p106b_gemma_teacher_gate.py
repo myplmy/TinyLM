@@ -20,6 +20,17 @@ from scripts.p106b_gate_runtime import idle_before_gpu,wall_limit,disposition
 from scripts.p106b_shards import ShardWriter,verify
 
 OUTPUT=ROOT/'HF/sft_ready/p106b_gemma_teacher_v1'
+ASSET_FILE=OUTPUT/'assets.json'
+COMPLETE_STATUS='TAGGED_COMPLETE'
+ROLE_SCHEMA='P106B_GEMMA4_ROLE_MTP_V1'
+REQUIRE_TECHNICAL_WIRE=False
+
+
+def collection_complete(report):
+    return (report['actual_requests']==16 and len(report['answers'])==16
+            and all(a['format_status']==COMPLETE_STATUS and
+                    (not REQUIRE_TECHNICAL_WIRE or a.get('wire',{}).get('technical_ready') is True)
+                    for a in report['answers']))
 
 
 def check(mode):
@@ -28,7 +39,7 @@ def check(mode):
     if target.exists() or target.is_symlink():raise FileExistsError('prior/partial output preserved; use new stage')
     info=profile.assets(False)
     if mode=='role':
-        asset=OUTPUT/'assets.json'
+        asset=ASSET_FILE
         if asset.is_symlink() or not asset.is_file():raise FileNotFoundError('Gemma full-hash asset gate required first')
         prior=json.loads(asset.read_text(encoding='utf-8'))
         if prior.get('whole_model_hash_check')!='MEASURED':raise ValueError('unmeasured model identity cannot enter role gate')
@@ -47,7 +58,7 @@ def role(info):
         raise ValueError('Gemma whole-file identity changed after asset gate')
     target=OUTPUT/'role';target.mkdir(parents=True,exist_ok=False)
     writer=ShardWriter(target,'raw');began=time.perf_counter();session=None
-    report=dict(schema='P106B_GEMMA4_ROLE_MTP_V1',input=info,answers=[],arms=[],actual_requests=0,
+    report=dict(schema=ROLE_SCHEMA,input=info,answers=[],arms=[],actual_requests=0,
                 student_updates=0,korean_superiority='NOT_RUN',semantic_truth='NOT_REVIEWED')
     try:
         idle_before_gpu()
@@ -77,7 +88,7 @@ def role(info):
                         arm.update(request_sum_sec=elapsed,diagnostic_student_x_tokens=supplied,
                             diagnostic_student_x_per_sec=supplied/elapsed if elapsed else None,
                             unique_question_groups=4,production_supply_rate='NOT_MEASURED')
-        complete=report['actual_requests']==16 and all(a['format_status']=='TAGGED_COMPLETE' for a in report['answers'])
+        complete=collection_complete(report)
         report.update(status='ROLE_COLLECTION_COMPLETE' if complete else 'ROLE_WIRE_NEGATIVE',returncode=0 if complete else 8)
     except BaseException as exc:
         status,rc=disposition(exc);report.update(status=status,returncode=rc,error_type=type(exc).__name__,error=str(exc)[:1600])

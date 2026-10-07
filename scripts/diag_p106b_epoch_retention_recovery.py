@@ -15,6 +15,8 @@ sys.path.insert(0,str(ROOT))
 from scripts import diag_p106b_epoch_retention as epoch
 
 OUTPUT=ROOT/'HF/sft_ready/p106b_epoch_retention_v2_row_attribution'
+STAGE='Stage4eWb'
+FAILED_OUTPUT_POLICY='v1 preserved'
 
 
 def main():
@@ -28,7 +30,7 @@ def main():
     try:
         epoch.OUTPUT=OUTPUT
         info=epoch.check()
-        info=dict(info,recovery_stage='Stage4eWb',failed_output_policy='v1 preserved',
+        info=dict(info,recovery_stage=STAGE,failed_output_policy=FAILED_OUTPUT_POLICY,
                   output=str(OUTPUT.relative_to(ROOT)))
         if args.check_only:
             print('[CHECK_ONLY] '+json.dumps(info,ensure_ascii=False));return 0

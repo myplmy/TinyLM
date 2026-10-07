@@ -81,8 +81,16 @@ def epoch_metadata(state,education,epoch):
         or state.get('step')!=2289+history[-1]['updates']
         or state.get('processed_tokens')!=sum(x['processed_tokens'] for x in history)):
         raise ValueError('epoch snapshot identity/history differs; wire/restarted model refused')
-    snapshot_cfg=state.get('cfg',{})
-    if snapshot_cfg.get('n_layers')!=14 or snapshot_cfg.get('tie_mlp') is not False or snapshot_cfg.get('vocab_size')!=32768:
+    from tinylm.config import TMTConfig
+    snapshot_cfg=state.get('cfg')
+    if not isinstance(snapshot_cfg,dict):
+        raise ValueError('serialized epoch cfg mapping required')
+    # The producer stores cfg.__dict__: n_layers is a property, not a saved key.
+    try:
+        cfg=TMTConfig(**snapshot_cfg)
+    except (TypeError,ValueError,AssertionError) as exc:
+        raise ValueError('serialized epoch configuration invalid') from exc
+    if cfg.n_layers!=14 or cfg.tie_mlp is not False or cfg.vocab_size!=32768:
         raise ValueError('same dense14/chat32 architecture required')
 
 

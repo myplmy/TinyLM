@@ -1,5 +1,7 @@
 # P106B — Bonsai 자동번역 pseudo-label SFT와 온라인 교사·학생 연결 검증
 
+> **현재 회수 2026-10-07 §61~§64:** epoch 복구는 부모36계승/native 후 저장형의 n_layers 파생속성 거부로9·새답0이었다. 재고40집단/320표본과 Gemma 자산SHA는 완료, 실제16응답은 MTP decode70.070→139.135tok/s이나 옛 필드 off3/8·on1/8로8이며 후속자료0이다. 사용자 A의 시작 라벨·코드 래핑과 실제cfg 복원을 새4eWc/6dWb/4iWb로 준비했다. 이하 이전 ‘최신/미실행’ 문구는 각 실행 전 역사이며 현재는 끝의 새 회수 절이 정본이다.
+
 > **최신 회수 2026-10-05:** [결과101 §47](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). Stage5a 자산MATCH·5b MTP16요청을 정상 회수했다. 현 xhigh/nmax2의 decode는65.959→53.526tok/s·추가GPU897~900MiB로 기본 가속 채택하지 않는다. 본학습/LoRA/후행검토의 세 종료8은 각각 자료·실제거부·상류자료 선결로 실제 실행0이다. 사용자A로 P106B 단계/최종판정과 check-only를 보강하고 새 Stage4cWc/5cWb/5dWb/5eW를 준비했다. 기존 교사·학습 기본값은 불변이다.
 
 > **최신 회수 2026-10-01:** [결과101 §37](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). nW/n0W/iWf/iWg/jWd/kWd/lWd/mWd 모두 실제 종료0·xhigh교정128행·두학생각4update를 완료했다. SFT CE는 낮아졌으나 native CE악화와 실제 질문반복이 남았다. 뒤의 9/30 배너는 당시 역사이며 현재 교육0 주장이 아니다. 승인된 온라인/후행 분리·무입력·원답보기와 재승인 대기 분류/유사도/지표를 아래 후속에서 구분한다.
@@ -297,6 +299,7 @@ A1의1.05 문턱은 이 pilot의 작은 order/noise 여유이며 통계적 신�
 **반복 근거:** P087 결과073의4배는 큰300M 풀에서 복원추출1.2B노출이었다. 그 조건에서 과적합 신호가 없었지만 이100행 assistant-only exact4pass와는 pool/목적/optimizer가 다르다. 따라서 C4의 held-out CE·base full-val·실제 답안·노출횟수 자체 기록을 생략하지 않는다. 새 SH9건의 CPU회귀10/10은 운영계약만 확인했고 실제 속도/OOM/교육효과는 NOT_RUN이다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 
 ### Stage3aWb/3bWb — 2026-09-30 사용자 A 승인: 옛 실패를 보존한 별도 재시험
 
@@ -1110,3 +1113,63 @@ B의전체생산량/시간은재고뒤잔여D와실제수락대화token/전체�
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+# P106B — 2026-10-07 새 회수: epoch 설정 직렬화와 Gemma 시작 라벨 복구
+
+## 1. 현재 실행 이력과 예측 대조
+
+[결과101 §61~§64](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)가 정본이다.
+Stage4eWb는 중복키를 넘겼으나 LOAD_EPOCH1에서 파생속성 n_layers를 저장 키로 요구해 도구9였다.
+부모 원형36행/native만 기록했고 새답0이다. 따라서 앞의 “실물 NOT_RUN”은 실행 전 역사이며
+현재는 부분수집·도구오류로 교정한다. 학습·epoch 품질 음성이나 잘못된 체크포인트의 증거가 아니다.
+
+Stage4hW의40 원천가족/언어 집단·320해시표본과 Stage6cW 전체자산SHA는 완료됐다.
+전자는 전체가용token 계측이 아니므로75M 충족 예측은 아직 판정할 수 없다.
+Stage6dW 실제16응답은 MTP decode 증가를 보였으나 옛 태그는 off3/8·on1/8, 전체4/16만 완결됐다.
+모든 응답이 stop·최대1085 completion으로3072상한 아래라 단순 출력절단으로 해석하지 않는다.
+Stage4iW는 off 역할배선 선결8에서 중단했고 교사 신규자료/학생업데이트0이다.
+
+## 2. 질문과 예측
+
+| 질문 | 검증과 반증 |
+|---|---|
+| 생산자와 같은 TMTConfig 저장형으로 epoch 메타데이터를 검사하면 거짓 거부를 없애는가 | CPU 실제cfg.__dict__ 실패→수리 통과. 실물 다른 geometry/history는 여전히 거부해야 한다 |
+| 새 시작 라벨로 질문 생성 기능을 유지하며 Gemma 필드 완결을 회복하는가 | 같은16 요청과4프로필에서 비교. 모델이 필드를 다시 누락하면 구조 음성으로 보존 |
+| MTP가 유효 학습자료 공급도 늘리는가 | 새 라벨 off/on의 필드·wire·실제토큰/시간이 필요. 기존decode 증가만으로 채택하지 않는다 |
+
+사용자는 사례 설명 뒤 A를 선택했다. QUESTION:/ANSWER:/NOTE: 시작 라벨만 교사에 요청하고
+닫는 태그와 데이터셋 JSON/ChatML은 요청하지 않는다. JSON 객체·코드가 답변 요구사항인 경우는
+ANSWER 내용으로 허용한다. 순서/중복/빈 필드/끝나지 않은 코드펜스/length 중단은 기술적으로 거부한다.
+의미 오류 문구 목록·전수 정답심사·온라인 의미 재생성은 추가하지 않는다.
+
+## 3. 단계·구현과 사전등록 판정
+
+| 단계 | SH | 출력 | 비용과 판정 |
+|---|---|---|---|
+| Stage4eWc | `run_P106B_Stage4eWc_saved_epoch_cfg_geometry.sh` | `HF/sft_ready/p106b_epoch_retention_v3_cfg_geometry` | GPU0.25h 추정/40분 상한. 같은5endpoint/108새답·72계승·180행/native5 완료가0; 예외9 |
+| Stage6dWb | `run_P106B_Stage6dWb_gemma_start_label_pair.sh` | `HF/sft_ready/p106b_gemma_teacher_v2_labels/role` | GPU0.10h 추정/30분 상한. 같은16 off/on·on/off에서 LABELS_COMPLETE와 학생문맥/지도마스크16/16이면 기술0, 그 외8 |
+| Stage4iWb | `run_P106B_Stage4iWb_gemma_grounded_label_pilot.sh` | `HF/sft_ready/p106b_gemma_grounded_pilot_v2_labels` | GPU0.75h 추정/60분 상한. 기존 재고SHA와 새 off8/8 배선 뒤16원개념/KOEN8·24turn/총3구조시도·20MB 샤드. MTP가속 채택은 선결이 아님 |
+
+전체 role가 on 실패로8이어도 off8/8의 모든 필드·wire가 확인되면 MTP-off pilot은 열 수 있다.
+검증실패나 출처변경을 자동 통과시키지 않는다. 원형 assets를 재사용하지만 실제 구동 전에
+본체·drafter 전체SHA를 다시 대조한다. 새흐름에서만 LABELS_COMPLETE를 쓰며 옛 TAGGED_COMPLETE와
+원형 판정을 바꾸지 않는다. wrapper의 OUTPUT/profile/status는 프로세스 내부에서만 선택·복원한다.
+
+## 4. 고정조건·preflight·한계
+
+Gemma 같은파일·llama-b11396·temperature1/top_p0.95/top_k64/min_p0/중립 penalty,
+native thinking1024/total3072/ctx8192·nmax2·같은시드·단일slot·cache_prompt=false를 유지한다.
+새 독립변수는 Gemma 출력 필드 계약이다. 사전등록16은 재시도 없는 최초답 수집이며 pilot만
+기존 최초포함3구조시도 한도를 적용한다. 사고/원답/출처는 보존하고 최종Q/A만 학생으로 전달한다.
+세 SH는 stdin·다운로드·정식학습·체크포인트 쓰기가 없고 각 로그/출력의 이미 존재하는 파일을 거부한다.
+
+epoch은 TMTConfig 복원/14층dense·어휘32768/history/실제기하 정합을 유지한다.
+새weights·tokenizer·학습태그/LR/배치를 만들지 않는다. 그때까지75M/새300M은 미완이며
+본교육 chat32·micro8×accum16·checkpoint-on·현재LR·4epoch/75M 목표는 유지한다.
+원천가족명이 QA여도 질문생성/문맥생성일 수 있고 SODA 본문대본은 역할3턴 데이터와 다르다.
+현재 표본을 전체 가용량·권리·정답성으로 외삽하거나 부족을 무의미한 반복으로 채우지 않는다.
+
+실제cfg.__dict__ fixture와 잘못된 geometry/history 거부·실제 callback20CPU,
+새 라벨/분리채널/코드펜스/원형/선결/namespace21CPU를 포함한 관련71시험을 통과했다.
+새 실물은 사용자 E2E_NOT_RUN이다. 새 smoke의 종료/실패팔/exit0오류/계측 모두0이 선결이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
