@@ -1383,3 +1383,93 @@ array/nested4의 구조 통과도 의미 정답 검증이 아니다. 프롬프�
 - 2026-10-08 원형4iWc: 라벨31/31였지만 그룹7/13 본문 JSON으로14/16 음성8. 라벨 프롬프트 수리만으로 전체 과제가 완결된다는 예측은 반증됐다.
 - 4iWd/4jW/4jWb/4kW: 각 선결8·본실험 미실행. 4k0W는 미생성 보고서 분류9였으며 이번 CPU에서 HOLD8로 수리했다. OOM이 아니다.
 - 핵심 CPU56 및 라벨/receipt를 포함한89시험 PASS. 새16/4 check-only0·모델0. 새16/4/64·부족량·학생은 사용자 E2E_NOT_RUN.
+
+
+# P106B — 2026-10-08 계약15/16 회수와 학생literal/관리지시 분리 수리
+
+## 1. 왜
+
+[결과101 §79~§82](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 실제계약26요청/15후보 음성8·복잡4/4 성공0과뒤7 선결미실행8을분리했다.
+학생0은SFT불가능의증거가아니다. 남은EN14의2턴은학생JSON변경지시를SYSTEM관리문장에넣고code-known틀을UNKNOWN으로분류한연결문제다.
+본수리는그혼선을새opt-in V3에서해소한다. 사용자에게수리범위·변경전CPU실패와후69/76시험을보고했다.
+
+## 2. 질문·영향도·권한
+
+| 경로/영향 | 동작/권한 근거 | NOT_RUN/제외 |
+|---|---|---|
+| task_contract_v3/literal_recovery·CPU회귀4PY | 사용자(1)A 관련구현수리·별도재시험·management/learner literal 경계 | 기존v2·공용검사기·모델구조/원본변경0 |
+| 새8SH·TSV/계획 | 같은(1)A의재실행별도단계·구현후사용자진입점 | GPT GPU/실험/스모크대리실행0 |
+| 결과/색인/기준표/방법론/COMPASS | log-to-result 연쇄·actual/NOT_RUN 일치 | 보호TinyDataset/다른세션원장0 |
+| 정확9done/raw10·새원장/인계 | (1)B 원본/원형보존·(4) 적격승인삭제·마감 | 다른삭제/push/환경훅0 |
+
+코드영향은기존transport/생산 engine의process-local 재사용이다. 새scope는정상/예외때원래모듈bindings를복원한다.
+영속형식/계보는새namespace이고원형v2/raw/정본을수정하지않는다. parse/wrap/mask/source/sampler 정본을복제하지않고원래helper를호출한다.
+시험은모의teacher·합성tokenizer/실제canonical/마스크·옵션전달·SHA/선결·namespace 복원을검증한다. 새교사실물은별도다.
+기술부채는엄격16/64가다른한행실패에도생산을막을수있다는점이며사용자에게별도3안으로기준선택을요청했다.
+데이터/체크포인트·GPU권한·메모리/속도/품질/정적/실물·풀/tokenizer/초기화/평가구분과문서연쇄를모두대조한다.
+
+## 3. 예측·반증
+
+학생literal을DATA의producer_control에두고SYSTEM은그문장을transport 지시로따르지말라고정의하면whole-header JSON/앞말실패가줄어들것으로예상한다.
+코드가정한2턴JSON 틀도렌더링하므로teacher가그포장을생성할필요가없다. 그래도라벨누락·출력절단·원문관계변형은남을수있다.
+파서를느슨하게전체JSON안의문구를추출하거나불량원답을강제수락하지않는다. 실제실패가다른그룹으로옮겨갈가능성도기록한다.
+내용정답/한국어우수·new75M 완성·학생지능을이형식수리예측으로대체하지않는다.
+
+## 4. 단계 설계
+
+| 새 단계 | 실제 사용자 SH | 모드 | 예상/상한 | 조건·현재 정책 |
+|---|---|---|---:|---|
+| Stage4iWi | `run_P106B_Stage4iWi_literal_learner_contract16.sh` | contract16 | 0.20h | 새 literal16·총3시도·기존16/16 |
+| Stage4iWj | `run_P106B_Stage4iWj_literal_family64.sh` | family64 | 0.75h | 성공새16+정확핀기존4·기존64/64 |
+| Stage4jWe | `run_P106B_Stage4jWe_literal_deficit_production.sh` | produce | 6.00h | 성공새16/64·quota/원천SHA·6h상한 |
+| Stage4jWf | `run_P106B_Stage4jWf_literal_deficit_resume.sh` | resume | 6.00h | 성공새16/64·quota/원천SHA·6h상한 |
+| Stage4kWc | `run_P106B_Stage4kWc_literal_completed_corpus.sh` | finalize | 0.50h | 완료75M/val/lang-task-source |
+| Stage4k0Wc | `run_P106B_Stage4k0Wc_literal_student_wire.sh` | wire | 0.50h | 완료동일자료/원부모·2update |
+| Stage4lWc | `run_P106B_Stage4lWc_literal_chat32_repeat4.sh` | train | 12.00h | 성공동일wire·원레시피4epoch |
+| Stage4mWc | `run_P106B_Stage4mWc_literal_multiaxis.sh` | eval | 0.50h | 새fullchild/parent/data·72실답 |
+
+새16은같은원천16·seed공식/교사·MTPoff/카드sampler1/.95/64/min_p0·native1024/총3072/ctx8192를유지한다.
+이전complex4는정확B9E45E…report/raw/candidate SHA와공유코드/프롬프트불변을검증해compatibility 근거로만계승한다.
+V3의명시complex payload는V2와바이트동일함을CPU에서대조했다. 새complex generation을PASS로표시하지않고반복모델실행을기본요청하지않는다.
+후속16/64·부족량제어는기존engine의원개념split/한영/task/source cap/정확x/target을유지한다.
+매6h의생산·명시resume은코드/입력/확정샤드/카운터/커서를검산하며완성전학생을올리지않는다.
+
+## 5. 판정·선택전 경계
+
+현재새CLI는STRICT16_STRICT64_UNCHANGED를명시한다. gate16/16·64/64는사용자선택전변경하지않는다.
+사용자에게새단계의처리경로/불량행차단technical 게이트·기존전량완결유지·작은학생배선추가의3안을제시했다.
+계속8을모두‘학생실험실패’로부르지않고단계receipt의PREFLIGHT/EXECUTE/NOT_RUN·실제량을함께읽는다.
+파서/3공유시도/끝맺음/상한·source/마스크는형식안전기준이다. 문구블랙리스트·온라인전수의미심사·행별gold승인은추가하지않는다.
+
+## 6. 비용·preflight
+
+새GPU앞단은teacher16 약7~12분추정/최대60분,64는약20~60분추정/최대60분이다. 준비/해시/seed별변동은실측뒤재계산한다.
+첫생산/재개는각6h상한으로자료완료예측이아니다.75M/val 완료와wire성공뒤학생4epoch는기존조건에서6~12h예상이고새자료때달라진다.
+새태그 `p106b_s4_gemma_capability300m_chat32_literalv3_s1337`·fresh V3 pilots/deficit·V4 corpus/wire/student/eval은옛출력을덮지않는다.
+원chat32부모·micro8/accum16/checkpointON/LR1e-4/Muon4e-4/4epoch≈300M 실제x를유지한다. 고정crop2289step 계산으로이SFT update 수를꾸미지않는다.
+교사-only 현재966x/353.958754초와history학생300M/19952.246초는동일작업/동시자원속도가아니므로직접인과비교하지않는다.
+새75M 고유train/언어각37.5M·별도val·원가족25%·과제50/25/25는생산/병합조건이다. 반복/교정변형을새original concept으로세지않는다.
+메모리7772−4330≈3442MiB는다른팔의조건부식이고Gemma 공존PASS가아니다. 현재8SH는기존순차경로이며async 학습으로속여표시하지않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 7. 실행·기록
+
+위8SH만새strict 순차재시험이다. stdin/자동download·기존log덮어쓰기0이고resume 로그시각은note/child가같은값을공유한다.
+착수9는-done·명령/SHA/100755·c9329de 원형으로먼저보존한다. 승인범위9만정리하고미실행CPU재현/옛2대안/hold6은보존한다.
+현재새16 check-only0/pinnedcomplex4 readonly검산은모델0인선결확인이고CPU76은합성계약증거다.
+새16/64/대량/새75M/wire/4epoch/72답은사용자 E2E_NOT_RUN이다.
+
+## 8. 한계·후보 A/B/C 교육
+
+학생literal/관리지시혼재수리가내용정답을보장하지않는다. 실제소형에도source 질문/답불일치와어색한번역이있었고후행검토대상이다.
+current whole75M 후학생이라는순차구조에는producer-consumer 큐가없다. async GPU동시상주/상주시간분할/GPU교사+CPU학생은분석/질문이며선택전미구현이다.
+학생실패A/B/C 추가교육은dev와독립val/final을구분하고오답assistant를문맥만으로마스킹해야한다. 기존encoder는모든assistant를target으로삼는CPU예제를확인했다.
+B의의미동등변형이literal1/JSON필드같은출력계약을바꾸지않게하고,변형/교정수·언어/source family/노출/예산/원형계보를보존한다.
+추가학습에사용한validation 사례를계속독립validation이라부르지않고teacher 교정을자유QA의확정gold로승격하지않는다.
+본선택질문은GPU직접사용·새적응루프자동구현허가를뜻하지않는다. 새학습방법은사용자확정뒤별도단계/원천계약으로준비한다.
+
+## 9. 실행 이력·예측 대조
+
+원형v2 계약16에서기존format-only 수리로14→15그룹은회복됐지만전량완결예측은반증됐다. 복잡4는4/4 실제성공이었다.
+새v3는관리/System boundary와code-owned JSON change-turn의수리다. 수리전CPU UNKNOWN/학생literal inSYSTEM assertion1과수리후69/76시험을분리했다.
+원형decode/readiness/학생실패와현재STATIC_ONLY·앞으로의새user E2E를혼동하지않는다. 정확수치/원본은결과101 §79~§82가소유한다.
