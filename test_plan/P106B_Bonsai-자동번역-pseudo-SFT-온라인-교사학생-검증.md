@@ -1473,3 +1473,11 @@ B의의미동등변형이literal1/JSON필드같은출력계약을바꾸지않게
 원형v2 계약16에서기존format-only 수리로14→15그룹은회복됐지만전량완결예측은반증됐다. 복잡4는4/4 실제성공이었다.
 새v3는관리/System boundary와code-owned JSON change-turn의수리다. 수리전CPU UNKNOWN/학생literal inSYSTEM assertion1과수리후69/76시험을분리했다.
 원형decode/readiness/학생실패와현재STATIC_ONLY·앞으로의새user E2E를혼동하지않는다. 정확수치/원본은결과101 §79~§82가소유한다.
+
+### Stage4iWe CPU 본체 — 완료(직접56회귀), SH 래퍼는 NOT_RUN
+
+사용자의추가정리요청으로원래CPU단계의3 unittest모듈명령을대조했다. 기존78중동일56을포함했으며이번직접명령도56/OK/종료0이었다.
+일부output-contract 모듈23만을전체본체수로읽지않는다. 사용자SH/runlog 원본은없고그래퍼실행을통과로승격하지않는다.
+CPU실험본체완료를근거로정확재현전용SH를 `run_P106B_Stage4iWe_output_dispatch_cpu-done.sh`로개명/원형보존하고큐중복을제외했다.
+[결과101 §85](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의명령/SHA/32adb7c 복구점을보존했다. 삭제가능판정만회신하고현재파일은삭제하지않는다.
+이는형식분기/구조재시도/마스크/원형계보의CPU회귀예측을충족한것이며새teacher/학생/75M/300M·공존은계속NOT_RUN이다. 기존실물8단계/배치/LR/엄격gate를바꾸지않는다.

@@ -1,6 +1,6 @@
 # 06. Codex용 프로젝트 지침과 메모리
 
-> **최신 갱신일자**: 2026-09-21 · **문서 유형**: live
+> **최신 갱신일자**: 2026-10-08 · **문서 유형**: live
 
 > 제정: 2026-09-11, 승인된 완전분리 제안 P2  
 > 상태: **Windows P0~P8 역사 증거 보존; WSL agent·관찰한 hook 범위 `ACTIVE_VERIFIED`, M3 사용자 범위 예외 종결(manual compact `NOT_RUN`·검증 제외), 현재 변경 뒤 smoke `E2E_NOT_RUN`**
