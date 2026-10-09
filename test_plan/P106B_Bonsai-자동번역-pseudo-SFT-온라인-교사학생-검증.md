@@ -1481,3 +1481,89 @@ B의의미동등변형이literal1/JSON필드같은출력계약을바꾸지않게
 CPU실험본체완료를근거로정확재현전용SH를 `run_P106B_Stage4iWe_output_dispatch_cpu-done.sh`로개명/원형보존하고큐중복을제외했다.
 [결과101 §85](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의명령/SHA/32adb7c 복구점을보존했다. 삭제가능판정만회신하고현재파일은삭제하지않는다.
 이는형식분기/구조재시도/마스크/원형계보의CPU회귀예측을충족한것이며새teacher/학생/75M/300M·공존은계속NOT_RUN이다. 기존실물8단계/배치/LR/엄격gate를바꾸지않는다.
+# P106B — 2026-10-09 계측 시간초과 복구·확정자료 명시 재개
+
+## 1. 왜
+
+[결과101 §86~§87](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 기존 학생literal 수리의 새16/16·64/64를 회수했다.
+생산/재개는 nvidia-smi5초 조회 실패를 latch한 오류9로 중단됐으나 확정1,490행/신규train92,770x는 보존됐다.
+완성75M·학생은 선결8로 미실행이며 OOM의 근거가 아니다. 모니터 인과는 Windows 사건증거 전 미확정이다.
+
+## 2. 질문·영향도·권한
+
+| 파일·경로 | 예정/실제 동작 | 권한 근거 | NOT_RUN·제외 |
+|---|---|---|---|
+| 새 telemetry helper/entry/test3PY | 기존 reader만 process-local 제한재시도·공백/새runtime증거·CPU회귀 | 사용자(1)A 수리·D 재개와 A 선택 | 기존 생성14코드·공용검사기·GPU reset/모델재시작 변경0 |
+| 새3SH·TSV | 별도 jWg/kWd/k0Wd와 선결/원레시피·무인 실행 | 같은 A/D 재실험/명시재개 지시 | Codex GPU/모델/SH/스모크 직접실행0 |
+| 정확5JSON·생성 batch2 조각 | readonly SHA·행수·root중복·커서 검산 | 사용자 산출물 읽기전용 허가 | 원본/HF/cache/weights writes0·보호TinyDataset0 |
+| 결과·계획·목록·baseline·방법론·COMPASS·새원장/인계/감사 | 실제 관측/NOT_RUN 일치·C2/C3/closure | 사용자 결과반영/새원장/인계·스킬 연쇄 | 제안서 작성0·공유09/환경/다른WIP 변경0 |
+| done7·정확로그7/로컬커밋 | 명령/Git/SHA 복구점을 보존한 적격정리 | 사용자(1)B와(3) | 다른삭제/push/PR0 |
+
+코드 영향은 sampler 한 호출부의 opt-in wrapping이다. 기존 Session.check/저여유/서버종료·생산/재개/원천/마스크/계보 로직은 그대로 사용한다.
+데이터는 확정입력·원형batch를 수정하지 않고 다음batch만 추가하며 runtime변경은 별도증거로 분리한다.
+시험은 일시/지속 timeout·다른오류·저여유·공백/이벤트상한·scope/receipt 복원을 CPU에서 검증한다.
+기술부채는 실제 GPU reset을 복구하지 못하는 점과 생산성 병목이 남는 점이다.
+GPU권한/소유권·학습풀/tokenizer/초기화·메모리/속도/품질의 증거등급·문서연쇄를 각각 분리했다.
+
+## 3. 예측·반증
+
+한 번의 조회만 지연되고 다음 조회가 정상이라면 생산중단을 피할 수 있을 것으로 예상한다.
+드라이버/서버가 실제로 고장나거나 조회3회 연속 실패하면 새경로도 계속 중단될 것으로 예상한다.
+공백 발생시 peak/OOM 안전은 증명할 수 없으며, 조회 복구가 정답성·공급속도·75M완성을 해결한다는 예측은 하지 않는다.
+시스템 절전/driver reset 대응은 설명·사용자 환경 확인 단계이고 자동변경하지 않는다.
+
+## 4. 단계 설계 — 기존 성공 gate 계승 뒤 이어가기
+
+| 단계 | 사용자 런처 | 모드 | 비용/선결 | 현재 상태 |
+|---|---|---|---|---|
+| Stage4iWi | 기존 실행원형 | contract16 | 실제16/16·6.4분 runlog | 회수 완료0·done/Git 보존 |
+| Stage4iWj | 기존 실행원형 | family64 | 실제64/64·26.3분 runlog | 회수 완료0·done/Git 보존 |
+| Stage4jWe / Stage4jWf | 기존 실행원형 | produce/resume | 원형2 batch·조회오류9 | 회수 완료·확정자료 보존, 생산 미완 |
+| Stage4kWc / Stage4k0Wc | 기존 실행원형 | finalize/wire | 75M 미완·학생0 | 선결보류 회수8·학습실패 아님 |
+| Stage4jWg | run_P106B_Stage4jWg_telemetry_deficit_resume.sh | resume | 앞gate 계승·기존inputs/샤드/커서검산·최대6h | 준비·사용자 모델 NOT_RUN |
+| Stage4kWd | run_P106B_Stage4kWd_resumed_completed_corpus.sh | finalize | 실제75M·별도val·한영/task/source cap 충족·CPU0.5h 추정 | 조건부·NOT_RUN |
+| Stage4k0Wd | run_P106B_Stage4k0Wd_resumed_student_wire.sh | wire | 성공완성자료·교사내림·원부모/배치2업데이트·0.5h 추정 | 조건부·NOT_RUN |
+| Stage4lWc | run_P106B_Stage4lWc_literal_chat32_repeat4.sh | train | 같은wire·4epoch·micro8×accum16/ckpt-on/LR불변·12h 추정 | 기존 파일 계승·NOT_RUN |
+| Stage4mWc | run_P106B_Stage4mWc_literal_multiaxis.sh | eval | 같은full child·실제72 첫답/일반언어손실·0.5h 추정 | 기존 파일 계승·NOT_RUN |
+
+재개 SH는 매번 다른 시각의 runlog명을 사용하고 입력 대기·자동 무한반복·download가 없다.
+완성 병합/학생 SH는 새 단계명으로 구 로그와 분리하되 아직 생성하지 않은 같은 V4 출력만 사용한다.
+출력 존재/불일치 검사는 기존코드가 GPU 전에 수행한다. old -done을 떼어 재활성화하지 않는다.
+
+## 5. 판정 기준
+
+- 재개 가능: 원형 generation SHA/inputs/확정샤드·카운터 일치, 중단 batch의 마지막커서 다음부터, 실패 원문에 새3시도 부여 없음.
+- 계측 회복: 최초 포함3조회·각5초·사이0.2초에서 timeout만 회복. 다른 오류/교사 종료/기존512MiB 선결은 우회하지 않는다.
+- 자료 완료: token_target_ready=true·고유train75M/한영37.5M씩·별도val·50/25/25 과제·25% 원출처 cap.
+- 학습: 앞 자료+wire 통과 후 기존배치/LR/4epoch. 형식/시간/자료량과 정답성·학생지능은 별도.
+- 공백: GAPPED·continuous_peak_verified=false·oom_safety=NOT_ESTABLISHED. 구 오류의 VRAM 숫자 소급 복구 금지.
+
+## 6. 비용·preflight
+
+새 계측코드는 기존 read_memory의5초×최대3회+재시도대기0.4초다. 일시 query마다 최대약15.4초 지연할 수 있다.
+원형 입력코드14 SHA가 일치하므로 재개 fingerprint를 느슨하게 하지 않는다. 새runtimeSHA는 별도receipt에 기록한다.
+생산 본체의 원천/교사/토크나이저·한영/과제/계보/상한/메모리 보수성을 그대로 유지하고 학생학습토큰은0이다.
+새학생태그 없이 기존 예약 p106b_s4_gemma_capability300m_chat32_literalv3_s1337을 유지한다.
+정확 그태그의 log/checkpoint와 V4 완료report는 metadata만 확인하고 broad runs 조회/기존checkpoint실행은 하지 않는다.
+생산6h는 완료기한이 아니다. 현재 train 부족분의 조건부 외삽과 val/task/source 선결은 결과101 §86.4가 소유한다.
+기존75M×4epoch≈300M의 actual x 노출 분모를 유지하며 2289 고정 cropsteps나 반복자료로 고유량을 부풀리지 않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 7. 실행
+
+새 사용자 smoke 통과 뒤 Stage4jWg를 먼저 실행한다. 자료미완8이면 새시각 명시resume으로 이어간다.
+오류9/130이면 원본/부분batch를 보존하고 원인·cursor/계측receipt를 확인한다.
+75M와val/task 선결이 충족될 때만 Stage4kWd→Stage4k0Wd→기존Stage4lWc→Stage4mWc 순으로 진행한다.
+
+## 8. 한계
+
+모니터 전원복귀/WSL조회지연/시스템절전/TDR 인과는 미확정이다. 새 조회정책도 실제 GPU reset을 복구하지 않는다.
+순차 생성→교사내림→학생학습 경로를 유지하며 비승인 async·교정교육/mask를 구현했다고 주장하지 않는다.
+학생지능/정식TRAIN_READY/P106 ACCEPT·교사정답/품질은 이번 technical PASS와 구분한다.
+
+## 9. 실행 이력·예측 대조
+
+2026-10-09 원본6·smoke1을 결과101 §86으로 회수했다. literal framing의 전량완결 예측은 이번16/64에서 관측됐지만
+소표본·확률적생성/수락집합변동이 있어 단독 가속·내용품질의 인과판정은 하지 않는다.
+생산은 구계측정책의조회timeout에 의해 둘 다9였고 뒤학생0이다. 새A는 CPU94 PASS·사용자 실물 NOT_RUN이다.
+이전 ‘현재파일 삭제하지 않음’은10/08의판정이다. 이번(3) 적격삭제승인에 따라 exactdone7만 Git/명령/SHA 보존 후 정리한다.
