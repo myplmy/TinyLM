@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 
 from tinylm.chat.canonical import normalize, validate
 
-VERSION = "P106B_RULE_VIEW_V1"
+VERSION = "P106B_RULE_VIEW_V2"
 KINDS = ("integer_arithmetic", "boolean_expression", "table_lookup", "json_projection", "fixed_literal")
 
 
@@ -199,13 +199,9 @@ def make_rule_view(spec, *, seed, view_index):
     return row
 
 
-def make_condition_followup(spec, *, seed, view_index):
-    """C1: change explicit conditions, retain two code-correct assistant turns."""
-    row = make_rule_view(spec, seed=seed, view_index=view_index)
-    row["meta"]["followup_kind"] = "C1_CONDITION_UPDATE"
-    if not row["meta"]["changed"]:
-        return row
-    p, ko = row["meta"]["derived_payload"], spec["language"] == "ko"
+def condition_question(spec, payload):
+    """Shared renderer for changed/sham conditions and new closed probes."""
+    p, ko = payload, spec["language"] == "ko"
     if spec["kind"] == "integer_arithmetic":
         question = (f"앞의 계산에서 첫 수를 {p['a']}, 둘째 수를 {p['b']}로 바꾸세요. 연산과 출력 형식은 유지하고 새 답만 쓰세요." if ko
                     else f"In the previous calculation change the first number to {p['a']} and the second to {p['b']}. Keep the operation and output format; return only the new answer.")
@@ -219,27 +215,39 @@ def make_condition_followup(spec, *, seed, view_index):
     else:
         question = (f"앞 입력은 유지하고 이번에는 {_json(p['fields'])} 필드만 있는 JSON을 출력하세요." if ko
                     else f"Keep the previous input and return only JSON with fields {_json(p['fields'])} this time.")
-    row["messages"][-2]["content"][0]["text"] = question
+    return question
+
+
+def make_condition_followup(spec, *, seed, view_index):
+    """C1: change explicit conditions, retain two code-correct assistant turns."""
+    row = make_rule_view(spec, seed=seed, view_index=view_index)
+    row["meta"]["followup_kind"] = "C1_CONDITION_UPDATE"
+    if not row["meta"]["changed"]:
+        return row
+    row["messages"][-2]["content"][0]["text"] = condition_question(spec, row["meta"]["derived_payload"])
     return validate(row)
 
 
-def make_format_followup(spec, *, view_index=0):
+def make_format_followup(spec, *, view_index=0, field_name="answer"):
     """C3: verbatim answer-to-JSON; no factual correction or semantic rewrite."""
     _check(spec, format_only=True)
     if type(view_index) is not int or not 0 <= view_index <= 9999:
         raise ValueError("bounded view index required")
+    if field_name not in ("answer", "value", "result", "reply"):
+        raise ValueError("producer-known format field required")
     question, answer = _render(spec, spec["payload"])
     ko = spec["language"] == "ko"
-    followup = ("앞서 한 답변의 문자열 전체를 answer 항목 하나에 넣은 JSON 객체만 출력하세요. 내용을 고치거나 요약하지 마세요." if ko
-                else "Return only one JSON object with exactly one answer key containing your entire previous answer string. Do not correct or summarize its content.")
+    followup = (f"앞서 한 답변의 문자열 전체를 {field_name} 항목 하나에 넣은 JSON 객체만 출력하세요. 내용을 고치거나 요약하지 마세요." if ko
+                else f"Return only one JSON object with exactly one {field_name} key containing your entire previous answer string. Do not correct or summarize its content.")
     return validate(normalize({"messages": [
         {"role": "user", "content": question}, {"role": "assistant", "content": answer},
-        {"role": "user", "content": followup}, {"role": "assistant", "content": _json({"answer": answer})}],
+        {"role": "user", "content": followup}, {"role": "assistant", "content": _json({field_name: answer})}],
         "meta": {"source": "p106b_rule_views", "source_id": f"{spec['root_id']}/format{view_index:04d}",
         "source_family": spec["source"]["family"], "source_license": spec["source"]["license"],
         "source_sha256": spec["source"]["sha256"].upper(), "root_concept_id": spec["root_id"],
         "source_contract_sha256": _digest(spec), "source_original": copy.deepcopy(spec["payload"]),
         "language": spec["language"], "split": "train", "rule_view_version": VERSION,
         "followup_kind": "C3_VERBATIM_FORMAT", "unique_knowledge_claim": False,
+        "output_contract": {"kind": "UNIQUE_JSON", "key": field_name, "value": answer},
         "dataset_token_coverage": "NOT_MEASURED", "original_factual_truth": "NOT_REVIEWED",
         "truth_scope": "verbatim format transformation only"}}))

@@ -1,0 +1,94 @@
+{
+  "schema": "TINYLM_PREPARATION_CHECKS_V1",
+  "scope": "P093B/P106D CPU tensor/procedural/transport fixtures only; no real parent/tokenizer/cache/model/GPU",
+  "cpu": {
+    "command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p093b_native_repair scripts.test_p106b_rule_views scripts.test_p106d_views scripts.test_p106d_teacher_views scripts.test_p106d_driver -v",
+    "exit_code": 0,
+    "tests": 59,
+    "wall_seconds": 3.323192661,
+    "output": "test_existing_lora_zero_noop (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_group_zero_rejected_for_native_lora_export (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_gsq_factor_native_roundtrip_rank_per_row (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_gsq_hard_init_matches_native_and_codes (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_gumbel_has_mask_sign_scale_gradient (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_invalid_geometry_fails_closed (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_native_ce_probe_accepts_tensor_not_tuple (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_nonfinite_function_error_fails_before_report (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_patch_restores_slots_after_forward_error (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_projection_shards_restore_exactly_and_detect_tamper (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_residual_ownership_and_finite_adam_gradient (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_shared_freezes_and_preserves_originals (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_unique_optimizer_parameters (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_weighted_full_rank_reconstruction (scripts.test_p093b_native_repair.NativeRepairTests) ... ok\ntest_96_arithmetic_cases_recalculate_answer (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_answer_json_known_envelope (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_boolean_ast_recomputes_16_changed_assignments (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_boolean_unknown_operation_not_eval (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_c1_arithmetic_previous_operation_and_format_kept (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_c1_table_and_projection_keep_context (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_c3_eval_and_protected_source_rejected (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_c3_preserves_full_answer_string_quotes_and_newlines (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_canonical_chatml_and_two_correct_assistant_targets (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_fixed_literal_is_protected_not_forced_to_vary (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_input_immutable_and_deterministic (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_invalid_bool_nan_and_source_sha_rejected (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_json_projection_recalculates_fields (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_lookup_changes_target_not_source_values (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_lookup_equal_values_are_not_bad_answers (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_no_eval_or_protected_source_augmentation (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_provenance_no_new_knowledge_or_measured_tokens_claim (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_root_first_question_split_stays_fixed (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_singleton_numeric_domain_is_protected (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_unknown_contract_never_inferred_from_words (scripts.test_p106b_rule_views.RuleViewTests) ... ok\ntest_first_user_and_source_root_preserved (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_known_format_key_and_verbatim_roundtrip (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_language_children_same_split (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_new_probes_do_not_call_train_augmenter (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_ready_balanced_rows_and_roots (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_real_signature_needs_valid_assistant_targets (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_repeat_recipe_does_not_change_source_root (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_token_target_mass_matched_at_each_slot (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_view_diversity_and_no_fake_knowledge_claim (scripts.test_p106d_views.RuleCorpusTests) ... ok\ntest_card_controls_and_single_completion_not_api_n2 (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_literal_question_transport_preserved (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_one_and_two_pairs_and_reasoning_separation (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_truncated_completion_not_rescued (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_unique_answer_duplicates_not_rejected (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_wrapper_keeps_source_anchor_and_no_thinking_target (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_wrong_label_order_missing_and_duplicate_rejected (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok\ntest_checkonly_never_calls_model_or_tokenizer (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_closed_only_rubric (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_http_error_body_preserved_and_secret_redacted (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_incomplete_report_does_not_load_student (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_rates_count_retries_and_match_complete_source_set (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_second_single_view_paraphrases_same_source (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_source_output_symlink_and_tag_escape_refused (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_successful_teacher_closes_all_raw_and_candidate_shards (scripts.test_p106d_driver.ControllerTests) ... ok\ntest_teacher_failure_preserves_raw_manifest_and_body (scripts.test_p106d_driver.ControllerTests) ... ok\n\n----------------------------------------------------------------------\nRan 59 tests in 1.119s\n\nOK\n"
+  },
+  "bash": [
+    {
+      "path": "run_P093B_Stage0W_native_repair_contract.sh",
+      "command": "bash -n run_P093B_Stage0W_native_repair_contract.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.189017263,
+      "output": ""
+    },
+    {
+      "path": "run_P093B_Stage1Wa_activation_residual.sh",
+      "command": "bash -n run_P093B_Stage1Wa_activation_residual.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.197611695,
+      "output": ""
+    },
+    {
+      "path": "run_P093B_Stage1Wb_gsq_native_assignment.sh",
+      "command": "bash -n run_P093B_Stage1Wb_gsq_native_assignment.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.254645184,
+      "output": ""
+    },
+    {
+      "path": "run_P093B_Stage2W_repair_pair_readback.sh",
+      "command": "bash -n run_P093B_Stage2W_repair_pair_readback.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.216721216,
+      "output": ""
+    },
+    {
+      "path": "run_P093B_Stage3W_gsq_factor_roundtrip.sh",
+      "command": "bash -n run_P093B_Stage3W_gsq_factor_roundtrip.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.231682279,
+      "output": ""
+    },
+    {
+      "path": "run_P106D_Stage0W_rule_view_contract.sh",
+      "command": "bash -n run_P106D_Stage0W_rule_view_contract.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.20091278,
+      "output": ""
+    },
+    {
+      "path": "run_P106D_Stage1W_matched_view_corpus.sh",
+      "command": "bash -n run_P106D_Stage1W_matched_view_corpus.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.188264226,
+      "output": ""
+    },
+    {
+      "path": "run_P106D_Stage2Wa_fixed_repeat4.sh",
+      "command": "bash -n run_P106D_Stage2Wa_fixed_repeat4.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.237886488,
+      "output": ""
+    },
+    {
+      "path": "run_P106D_Stage2Wb_rule_view_repeat4.sh",
+      "command": "bash -n run_P106D_Stage2Wb_rule_view_repeat4.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.265432683,
+      "output": ""
+    },
+    {
+      "path": "run_P106D_Stage3W_view_pair_readback.sh",
+      "command": "bash -n run_P106D_Stage3W_view_pair_readback.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.237370576,
+      "output": ""
+    },
+    {
+      "path": "run_P106D_Stage4W_gemma_two_qa_pair.sh",
+      "command": "bash -n run_P106D_Stage4W_gemma_two_qa_pair.sh",
+      "exit_code": 0,
+      "wall_seconds": 0.237711267,
+      "output": ""
+    }
+  ],
+  "real_model_execution": "NOT_RUN",
+  "static_audit": "handoff/audit/WIP_20261009c_FINAL_STATIC_AUDIT.json",
+  "frontier_queue": "handoff/audit/FRONTIER_QUEUE_178EFCABDCB0_9B8A65C7A9F2.json",
+  "frontier_semantic": "handoff/audit/FRONTIER_SEMANTIC_178EFCABDCB0_FB69DD709C87.json"
+}

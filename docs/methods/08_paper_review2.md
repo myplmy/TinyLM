@@ -557,6 +557,8 @@ LittleBit에서 차용할 것은 **잔차에 맞춘 초기화, 행/열/잠재축
 
 **현 삼진 경로 재사용은 조건부 가능하다.** V의 입력폭768은 g128에 맞지만, U의 입력폭r16은 현재 `TLinear`의 `in_f % micro_group == 0` 조건을 통과하지 못한다. 현 `_group_of`의 `micro_group=0`은 per-row sentinel이므로 factor 전용 cfg에서 r16을 한 그룹으로 쓰는 native 경로 후보는 있다. 그러나 global cfg를 바꿔 공유 본체까지 재삼진화하면 다른 실험이 된다. factor별 group을 저장/복원하고 GSQ가 정한 code/scale을 재양자화로 바꾸지 않는지 먼저 검증해야 한다. per-row LUT·int8·실험용 ternary 커널의 작은 rectangular 형상/패딩/scale·cache·wall 지원은 새 실물 gate가 필요하다.
 
+**2026-10-09 신규 구현 착수의 추가 확인:** 위 경고는 generic TLinear에 해당한다. 실제 기존 `LoRA.forward(bits=2)`는 D의 input group과 U의 **rank-per-row group**을 `ternary_g`로 이미 처리하므로 r16에서 새 슬롯/별도 binary kernel을 만들 필요가 없다. micro_group=0 sentinel은 해당 LoRA의 modulo 경로에서 별도 처리되지 않으므로 positive parent group을 유지한다. bits=16도 현재 Parameter dtype은 FP32이며 저장 표기와 runtime을 분리한다. 기존 ordinary CE ternary-LoRA 학습은 결과001에 존재하고, P093 Gaussian 근사만이 학습 전 진단이다. 새로운 [P093B](../../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md)는 이 기존 경로에 함수 목적·초기화·GSQ 배정/정합을 추가한다. full-model 공식 GSQ/RCO 성능이나 packed CPU 가속을 재현한 것으로 부르지 않는다.
+
 따라서 별도 LittleBit binary 커널 없이도 **삼진 TLinear 두 개+필요한 작은 scale 곱**으로 구조를 표현하는 연구는 가능하다. 하지만 기존 커널이 해당 rank 형상에서 빠르게 동작한다거나 목표 RSS에 든다는 증거는 없다. FP32로 full delta를 펼쳐 놓으면 작은 저장 구조의 이점도 사라진다. 잠재축 회전은 인자에 흡수하는 초기화로만 차용할 수 있으나, 원 논문의 binary Joint-ITQ를 ternary에 그대로 써도 같은 최적화가 되는 것은 아니다.
 
 후속 후보는 (1) **권장: A 실수 보정/B native GSQ 독립 대조→유효 인자만 삼진 보정**, (2) A/B 독립 대조와 factor 삼진화 비용 gate를 병행, (3) 처음부터 작은 삼진 인자·RCO 예산 후보까지 동시 구축이다. 첫 안은 복원 실패와 양자화 실패를 가장 명확히 가르며 이진화를 강제하지 않는다. 전체 A/B 구현·GPU 실행·new kernel은 이번에 하지 않았다.
@@ -673,3 +675,7 @@ LittleBit에서 차용할 것은 **잔차에 맞춘 초기화, 행/열/잠재축
 C2는 첫 잘못된 assistant를 context-only로 두고, 실제 잘못된 구간을 지도하지 않으며, 마지막 교정답만 target으로 삼는 새 mask가 선결이다. 반면 C1의 이전 답은 당시 조건에서 맞으므로 두 답 모두 지도한다. 실제 validation/test 실패를 바로 train으로 되먹이지 않고 feedback-dev를 분리한다.
 
 최종 새 회귀는 **20 tests PASS(산술96·Boolean 변경16조합 포함)**, 표준 Python CPU0.016초였다. C1의 문맥/연산/형식 유지, C3의 원답·줄바꿈·인용 보존과 두 assistant 지도구간, 평가/보호 원천 차단을 확인했다. 현재 코드 생성에 모델·교사·tokenizer·학습·데이터파일 쓰기는0이다. current mass corpus의 적용률·actual token/view budget·새 reader 연결·학생 효과는 계속 `NOT_RUN`이다.
+
+### 9.10 신규 실험 준비로의 연결
+
+이후 사용자 SH/선결구현 요청으로 [P106D](../../test_plan/P106D_규칙뷰-조건갱신-형식요구와-교사-2QA-게이트.md)를 분리했다. rule API V2는 C3의 producer-known key와 changed/sham condition renderer를 지원하고, source128중립root/한영256row·4epoch의 fixed/view actual x/target match를 사용자 준비 단계에서 계측한다. 파라미터 인스턴스와4절차가족을256개 고유지식으로 세지 않는다. B는 같은source에서 단일QA2회/2QA1회와 같은 완결source-set 처리율·전재시도 비용을 보고한다. backend/partial journal·원답·thinking은 보존하고 JSON/ChatML wrapping은 코드가 담당한다. 모든 실물/model/tokenizer/source 생성/학생 GPU는 사용자 소유이며 아직 NOT_RUN이다.
