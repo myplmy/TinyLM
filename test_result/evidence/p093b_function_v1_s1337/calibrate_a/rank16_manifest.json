@@ -1,0 +1,95 @@
+{
+  "schema": "P093B_DIAGNOSTIC_PATCH_SHARDS_V1",
+  "input": {
+    "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+    "mode": "calibrate_a",
+    "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+    "source": "data_cache/ko-en_600000000/train.bin",
+    "samples": 512,
+    "steps": 250,
+    "ranks": [
+      8,
+      16
+    ],
+    "seed": 1337,
+    "code_sha256": {
+      "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+      "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+      "scripts/test_p093b_native_repair.py": "CD7B5399E2F973F65F924509C841B1E387B94F89F8734990CC1221B2D5E528B2",
+      "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+      "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+      "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+    },
+    "model_loading": "MEASURED",
+    "full_training": "NOT_RUN",
+    "model_quality": "NOT_ESTABLISHED",
+    "max_wall_sec": 3600,
+    "offsets": [
+      172833664,
+      434020096,
+      457605376,
+      247328896,
+      110759424,
+      234081024,
+      165106304,
+      35678208,
+      549774336,
+      98507904,
+      311602816,
+      50037120,
+      3855744,
+      233738496,
+      473811328,
+      322500480,
+      115657216,
+      337270400,
+      86223616,
+      295986176,
+      135764352,
+      142843520,
+      536326144,
+      522078720,
+      199739648,
+      69098112,
+      532921088,
+      524223360,
+      326153344,
+      565096832,
+      275627264,
+      204016384
+    ],
+    "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+    "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+    "capture_seq": 128,
+    "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "group_layers": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "calibration_x_sha256": "530D05B73D8405826C52F66BDE7C9DDF93263CD55585423FF68902EF2DDCA12D",
+    "heldout_x_sha256": "F520E5A97530E12B6DBC5233932A2F64A094D09EAD7069D4E0553D0C43DBB82B",
+    "calibration_input_rows": 2048,
+    "heldout_input_rows": 512,
+    "data_access": "SELECTED_WINDOWS_MEASURED"
+  },
+  "files": [
+    {
+      "path": "rank16_gate_proj.pt",
+      "bytes": 13307141,
+      "sha256": "7028EB86C5DC5145A6FC9FCEC1C1F2EF24FD858751A78070CA12C74F4DBB76C7"
+    },
+    {
+      "path": "rank16_up_proj.pt",
+      "bytes": 13307141,
+      "sha256": "2B571E9C1D1350A95A7EFE5869974F481F50826A1AEDB73E57569134B9A07DA8"
+    },
+    {
+      "path": "rank16_down_proj.pt",
+      "bytes": 13307141,
+      "sha256": "D87CFA27B7719FC5AE7F0583C4534C2F75247E5D819CE9B053076AA05EFDFC9E"
+    }
+  ],
+  "scope": "diagnostic partial patch, not a complete deployable checkpoint"
+}

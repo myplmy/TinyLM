@@ -1,0 +1,256 @@
+{
+  "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+  "input": {
+    "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+    "mode": "calibrate_b",
+    "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+    "source": "data_cache/ko-en_600000000/train.bin",
+    "samples": 512,
+    "steps": 250,
+    "ranks": [
+      8,
+      16
+    ],
+    "seed": 1337,
+    "code_sha256": {
+      "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+      "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+      "scripts/test_p093b_native_repair.py": "CD7B5399E2F973F65F924509C841B1E387B94F89F8734990CC1221B2D5E528B2",
+      "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+      "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+      "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+    },
+    "model_loading": "MEASURED",
+    "full_training": "NOT_RUN",
+    "model_quality": "NOT_ESTABLISHED",
+    "max_wall_sec": 3600,
+    "offsets": [
+      172833664,
+      434020096,
+      457605376,
+      247328896,
+      110759424,
+      234081024,
+      165106304,
+      35678208,
+      549774336,
+      98507904,
+      311602816,
+      50037120,
+      3855744,
+      233738496,
+      473811328,
+      322500480,
+      115657216,
+      337270400,
+      86223616,
+      295986176,
+      135764352,
+      142843520,
+      536326144,
+      522078720,
+      199739648,
+      69098112,
+      532921088,
+      524223360,
+      326153344,
+      565096832,
+      275627264,
+      204016384
+    ],
+    "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+    "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+    "capture_seq": 128,
+    "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "group_layers": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "calibration_x_sha256": "530D05B73D8405826C52F66BDE7C9DDF93263CD55585423FF68902EF2DDCA12D",
+    "heldout_x_sha256": "F520E5A97530E12B6DBC5233932A2F64A094D09EAD7069D4E0553D0C43DBB82B",
+    "calibration_input_rows": 2048,
+    "heldout_input_rows": 512,
+    "data_access": "SELECTED_WINDOWS_MEASURED"
+  },
+  "shared_only": {
+    "nrms": 0.9966446161270142,
+    "layer_nrms": [
+      0.9960859417915344,
+      0.9964155554771423,
+      0.9977158308029175,
+      0.9964298605918884
+    ]
+  },
+  "parent_ce": {
+    "window_ce": [
+      3.5552804470062256,
+      3.565598487854004,
+      3.217266321182251,
+      3.9978954792022705,
+      3.7538070678710938,
+      4.443765163421631,
+      4.182697296142578,
+      3.7071292400360107
+    ],
+    "mean_ce": 3.802929937839508,
+    "prediction_tokens": 1016,
+    "truth_scope": "same source function probe, not unseen knowledge"
+  },
+  "candidates": [
+    {
+      "init": {
+        "nrms": 0.9966446161270142,
+        "layer_nrms": [
+          0.9960859417915344,
+          0.9964155554771423,
+          0.9977158308029175,
+          0.9964298605918884
+        ]
+      },
+      "fit": {
+        "steps": 250,
+        "strategy": "lion",
+        "grad_max": 0.0003765889268834144,
+        "wall_sec": 4.890531303011812,
+        "history": [
+          {
+            "step": 1,
+            "loss": 0.992576003074646
+          },
+          {
+            "step": 250,
+            "loss": 0.6335790157318115
+          }
+        ],
+        "trainable_parameters": 9474048
+      },
+      "heldout": {
+        "nrms": 0.9826305508613586,
+        "layer_nrms": [
+          0.9774336218833923,
+          0.9822097420692444,
+          0.9860839247703552,
+          0.9845671653747559
+        ]
+      },
+      "ce": {
+        "window_ce": [
+          3.735614061355591,
+          3.71405029296875,
+          3.4168624877929688,
+          4.157020092010498,
+          3.974795341491699,
+          4.548567771911621,
+          4.240777492523193,
+          3.786863327026367
+        ],
+        "mean_ce": 3.946818858385086,
+        "prediction_tokens": 1016,
+        "truth_scope": "same source function probe, not unseen knowledge"
+      },
+      "artifact": {
+        "schema": "P093B_DIAGNOSTIC_PATCH_SHARDS_V1",
+        "input": {
+          "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+          "mode": "calibrate_b",
+          "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+          "source": "data_cache/ko-en_600000000/train.bin",
+          "samples": 512,
+          "steps": 250,
+          "ranks": [
+            8,
+            16
+          ],
+          "seed": 1337,
+          "code_sha256": {
+            "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+            "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+            "scripts/test_p093b_native_repair.py": "CD7B5399E2F973F65F924509C841B1E387B94F89F8734990CC1221B2D5E528B2",
+            "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+            "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+            "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+          },
+          "model_loading": "MEASURED",
+          "full_training": "NOT_RUN",
+          "model_quality": "NOT_ESTABLISHED",
+          "max_wall_sec": 3600,
+          "offsets": [
+            172833664,
+            434020096,
+            457605376,
+            247328896,
+            110759424,
+            234081024,
+            165106304,
+            35678208,
+            549774336,
+            98507904,
+            311602816,
+            50037120,
+            3855744,
+            233738496,
+            473811328,
+            322500480,
+            115657216,
+            337270400,
+            86223616,
+            295986176,
+            135764352,
+            142843520,
+            536326144,
+            522078720,
+            199739648,
+            69098112,
+            532921088,
+            524223360,
+            326153344,
+            565096832,
+            275627264,
+            204016384
+          ],
+          "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+          "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+          "capture_seq": 128,
+          "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "group_layers": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "calibration_x_sha256": "530D05B73D8405826C52F66BDE7C9DDF93263CD55585423FF68902EF2DDCA12D",
+          "heldout_x_sha256": "F520E5A97530E12B6DBC5233932A2F64A094D09EAD7069D4E0553D0C43DBB82B",
+          "calibration_input_rows": 2048,
+          "heldout_input_rows": 512,
+          "data_access": "SELECTED_WINDOWS_MEASURED"
+        },
+        "files": [
+          {
+            "path": "gsq_shared_gate_proj.pt",
+            "bytes": 12584741,
+            "sha256": "5D63C48E07D1CD30CF15423F69C575731A5D4A64AB18179A681FB711D461EFF9"
+          },
+          {
+            "path": "gsq_shared_up_proj.pt",
+            "bytes": 12584741,
+            "sha256": "8AAD6241AC370AC4EA283733B2BC20CD21EDFA985BE5F05890D5C41024091043"
+          },
+          {
+            "path": "gsq_shared_down_proj.pt",
+            "bytes": 12584741,
+            "sha256": "4848EA77EF61B8B5B333B7CAD78573985A6E54BFF47F12996E539FD47D39B591"
+          }
+        ],
+        "scope": "diagnostic partial patch, not a complete deployable checkpoint"
+      },
+      "local_viable": false
+    }
+  ],
+  "status": "CALIBRATION_COMPLETE",
+  "local_peak_allocated_bytes": 1751052288,
+  "local_peak_reserved_bytes": 1805647872,
+  "quality": "NOT_ESTABLISHED",
+  "memory_scope": "diagnostic retains parent; not deployed graph/RSS savings"
+}

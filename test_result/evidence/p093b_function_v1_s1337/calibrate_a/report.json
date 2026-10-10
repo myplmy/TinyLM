@@ -1,0 +1,408 @@
+{
+  "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+  "input": {
+    "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+    "mode": "calibrate_a",
+    "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+    "source": "data_cache/ko-en_600000000/train.bin",
+    "samples": 512,
+    "steps": 250,
+    "ranks": [
+      8,
+      16
+    ],
+    "seed": 1337,
+    "code_sha256": {
+      "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+      "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+      "scripts/test_p093b_native_repair.py": "CD7B5399E2F973F65F924509C841B1E387B94F89F8734990CC1221B2D5E528B2",
+      "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+      "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+      "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+    },
+    "model_loading": "MEASURED",
+    "full_training": "NOT_RUN",
+    "model_quality": "NOT_ESTABLISHED",
+    "max_wall_sec": 3600,
+    "offsets": [
+      172833664,
+      434020096,
+      457605376,
+      247328896,
+      110759424,
+      234081024,
+      165106304,
+      35678208,
+      549774336,
+      98507904,
+      311602816,
+      50037120,
+      3855744,
+      233738496,
+      473811328,
+      322500480,
+      115657216,
+      337270400,
+      86223616,
+      295986176,
+      135764352,
+      142843520,
+      536326144,
+      522078720,
+      199739648,
+      69098112,
+      532921088,
+      524223360,
+      326153344,
+      565096832,
+      275627264,
+      204016384
+    ],
+    "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+    "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+    "capture_seq": 128,
+    "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "group_layers": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "calibration_x_sha256": "530D05B73D8405826C52F66BDE7C9DDF93263CD55585423FF68902EF2DDCA12D",
+    "heldout_x_sha256": "F520E5A97530E12B6DBC5233932A2F64A094D09EAD7069D4E0553D0C43DBB82B",
+    "calibration_input_rows": 2048,
+    "heldout_input_rows": 512,
+    "data_access": "SELECTED_WINDOWS_MEASURED"
+  },
+  "shared_only": {
+    "nrms": 0.9966446161270142,
+    "layer_nrms": [
+      0.9960859417915344,
+      0.9964155554771423,
+      0.9977158308029175,
+      0.9964298605918884
+    ]
+  },
+  "parent_ce": {
+    "window_ce": [
+      3.5552804470062256,
+      3.565598487854004,
+      3.217266321182251,
+      3.9978954792022705,
+      3.7538070678710938,
+      4.443765163421631,
+      4.182697296142578,
+      3.7071292400360107
+    ],
+    "mean_ce": 3.802929937839508,
+    "prediction_tokens": 1016,
+    "truth_scope": "same source function probe, not unseen knowledge"
+  },
+  "candidates": [
+    {
+      "rank": 8,
+      "init_sec": 0.21725717300432734,
+      "init": {
+        "nrms": 0.9930317997932434,
+        "layer_nrms": [
+          0.9884653091430664,
+          0.9933300018310547,
+          0.9946721792221069,
+          0.9952628016471863
+        ]
+      },
+      "fit": {
+        "steps": 250,
+        "strategy": "adam",
+        "grad_max": 0.01186852902173996,
+        "wall_sec": 2.5318666720122565,
+        "history": [
+          {
+            "step": 1,
+            "loss": 0.9479691386222839
+          },
+          {
+            "step": 250,
+            "loss": 0.5540681481361389
+          }
+        ],
+        "trainable_parameters": 270336
+      },
+      "heldout": {
+        "nrms": 1.0000064373016357,
+        "layer_nrms": [
+          0.9918475151062012,
+          1.004115343093872,
+          0.9985523819923401,
+          1.0040600299835205
+        ]
+      },
+      "ce": {
+        "window_ce": [
+          3.7509610652923584,
+          3.746398448944092,
+          3.395685911178589,
+          4.200977325439453,
+          3.985621452331543,
+          4.569430351257324,
+          4.247345447540283,
+          3.7820918560028076
+        ],
+        "mean_ce": 3.9598139822483063,
+        "prediction_tokens": 1016,
+        "truth_scope": "same source function probe, not unseen knowledge"
+      },
+      "artifact": {
+        "schema": "P093B_DIAGNOSTIC_PATCH_SHARDS_V1",
+        "input": {
+          "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+          "mode": "calibrate_a",
+          "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+          "source": "data_cache/ko-en_600000000/train.bin",
+          "samples": 512,
+          "steps": 250,
+          "ranks": [
+            8,
+            16
+          ],
+          "seed": 1337,
+          "code_sha256": {
+            "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+            "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+            "scripts/test_p093b_native_repair.py": "CD7B5399E2F973F65F924509C841B1E387B94F89F8734990CC1221B2D5E528B2",
+            "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+            "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+            "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+          },
+          "model_loading": "MEASURED",
+          "full_training": "NOT_RUN",
+          "model_quality": "NOT_ESTABLISHED",
+          "max_wall_sec": 3600,
+          "offsets": [
+            172833664,
+            434020096,
+            457605376,
+            247328896,
+            110759424,
+            234081024,
+            165106304,
+            35678208,
+            549774336,
+            98507904,
+            311602816,
+            50037120,
+            3855744,
+            233738496,
+            473811328,
+            322500480,
+            115657216,
+            337270400,
+            86223616,
+            295986176,
+            135764352,
+            142843520,
+            536326144,
+            522078720,
+            199739648,
+            69098112,
+            532921088,
+            524223360,
+            326153344,
+            565096832,
+            275627264,
+            204016384
+          ],
+          "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+          "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+          "capture_seq": 128,
+          "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "group_layers": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "calibration_x_sha256": "530D05B73D8405826C52F66BDE7C9DDF93263CD55585423FF68902EF2DDCA12D",
+          "heldout_x_sha256": "F520E5A97530E12B6DBC5233932A2F64A094D09EAD7069D4E0553D0C43DBB82B",
+          "calibration_input_rows": 2048,
+          "heldout_input_rows": 512,
+          "data_access": "SELECTED_WINDOWS_MEASURED"
+        },
+        "files": [
+          {
+            "path": "rank8_gate_proj.pt",
+            "bytes": 12946693,
+            "sha256": "A6351C92AB07595B9A35AE67D6400B8B98F709E492D5CEC91294A7C14EEDC036"
+          },
+          {
+            "path": "rank8_up_proj.pt",
+            "bytes": 12946693,
+            "sha256": "54BE760F5049C9EC25404D141EE4E2DC4693868F17939A039010408C8E9EC6D2"
+          },
+          {
+            "path": "rank8_down_proj.pt",
+            "bytes": 12946693,
+            "sha256": "014030FF09B711F2A4C317E050D516DB1BC1BE2486814EED70A200856E31E3A8"
+          }
+        ],
+        "scope": "diagnostic partial patch, not a complete deployable checkpoint"
+      },
+      "local_viable": false
+    },
+    {
+      "rank": 16,
+      "init_sec": 0.060414478997699916,
+      "init": {
+        "nrms": 0.9880807399749756,
+        "layer_nrms": [
+          0.9808059334754944,
+          0.9891079664230347,
+          0.9896635413169861,
+          0.9919493794441223
+        ]
+      },
+      "fit": {
+        "steps": 250,
+        "strategy": "adam",
+        "grad_max": 0.012096588499844074,
+        "wall_sec": 2.337527224997757,
+        "history": [
+          {
+            "step": 1,
+            "loss": 0.8830645084381104
+          },
+          {
+            "step": 250,
+            "loss": 0.37862589955329895
+          }
+        ],
+        "trainable_parameters": 540672
+      },
+      "heldout": {
+        "nrms": 1.0143804550170898,
+        "layer_nrms": [
+          1.014687418937683,
+          1.0062421560287476,
+          1.019559621810913,
+          1.0180931091308594
+        ]
+      },
+      "ce": {
+        "window_ce": [
+          3.7156431674957275,
+          3.7036855220794678,
+          3.3842713832855225,
+          4.222142219543457,
+          3.9594106674194336,
+          4.546987533569336,
+          4.25623893737793,
+          3.7964868545532227
+        ],
+        "mean_ce": 3.948108285665512,
+        "prediction_tokens": 1016,
+        "truth_scope": "same source function probe, not unseen knowledge"
+      },
+      "artifact": {
+        "schema": "P093B_DIAGNOSTIC_PATCH_SHARDS_V1",
+        "input": {
+          "schema": "P093B_NATIVE_FUNCTION_CAL_V1",
+          "mode": "calibrate_a",
+          "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+          "source": "data_cache/ko-en_600000000/train.bin",
+          "samples": 512,
+          "steps": 250,
+          "ranks": [
+            8,
+            16
+          ],
+          "seed": 1337,
+          "code_sha256": {
+            "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+            "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+            "scripts/test_p093b_native_repair.py": "CD7B5399E2F973F65F924509C841B1E387B94F89F8734990CC1221B2D5E528B2",
+            "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+            "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+            "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+          },
+          "model_loading": "MEASURED",
+          "full_training": "NOT_RUN",
+          "model_quality": "NOT_ESTABLISHED",
+          "max_wall_sec": 3600,
+          "offsets": [
+            172833664,
+            434020096,
+            457605376,
+            247328896,
+            110759424,
+            234081024,
+            165106304,
+            35678208,
+            549774336,
+            98507904,
+            311602816,
+            50037120,
+            3855744,
+            233738496,
+            473811328,
+            322500480,
+            115657216,
+            337270400,
+            86223616,
+            295986176,
+            135764352,
+            142843520,
+            536326144,
+            522078720,
+            199739648,
+            69098112,
+            532921088,
+            524223360,
+            326153344,
+            565096832,
+            275627264,
+            204016384
+          ],
+          "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+          "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+          "capture_seq": 128,
+          "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "group_layers": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "calibration_x_sha256": "530D05B73D8405826C52F66BDE7C9DDF93263CD55585423FF68902EF2DDCA12D",
+          "heldout_x_sha256": "F520E5A97530E12B6DBC5233932A2F64A094D09EAD7069D4E0553D0C43DBB82B",
+          "calibration_input_rows": 2048,
+          "heldout_input_rows": 512,
+          "data_access": "SELECTED_WINDOWS_MEASURED"
+        },
+        "files": [
+          {
+            "path": "rank16_gate_proj.pt",
+            "bytes": 13307141,
+            "sha256": "7028EB86C5DC5145A6FC9FCEC1C1F2EF24FD858751A78070CA12C74F4DBB76C7"
+          },
+          {
+            "path": "rank16_up_proj.pt",
+            "bytes": 13307141,
+            "sha256": "2B571E9C1D1350A95A7EFE5869974F481F50826A1AEDB73E57569134B9A07DA8"
+          },
+          {
+            "path": "rank16_down_proj.pt",
+            "bytes": 13307141,
+            "sha256": "D87CFA27B7719FC5AE7F0583C4534C2F75247E5D819CE9B053076AA05EFDFC9E"
+          }
+        ],
+        "scope": "diagnostic partial patch, not a complete deployable checkpoint"
+      },
+      "local_viable": false
+    }
+  ],
+  "status": "CALIBRATION_COMPLETE",
+  "local_peak_allocated_bytes": 969495040,
+  "local_peak_reserved_bytes": 1700790272,
+  "quality": "NOT_ESTABLISHED",
+  "memory_scope": "diagnostic retains parent; not deployed graph/RSS savings"
+}
