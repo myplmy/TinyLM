@@ -28,6 +28,31 @@ class ControllerTests(unittest.TestCase):
         for name in ("../bad","bad/path","UPPER"):
             with self.assertRaises(ValueError): driver.paths(name,"prepare")
 
+    def test_expanded_count_is_not_padding_or_new_knowledge(self):
+        a=SimpleNamespace(seed=1337,max_wall_sec=1800,mode="fixed",tag="fixture",samples=4096)
+        metadata=driver.info(a)
+        self.assertEqual(metadata["train_rows"],4096)
+        self.assertEqual(metadata["optimizer_updates"],128)
+        self.assertEqual(metadata["max_padded_slots"],16777216)
+        self.assertEqual(metadata["actual_data_tokens"],"MEASURE_IN_MANIFEST")
+
+    def test_checkonly_expanded_does_not_read_source_or_tokenizer(self):
+        with patch.object(sys,"argv",["diag","--mode","prepare","--samples","4096","--check-only"]), \
+             patch.object(driver,"prior_validation",side_effect=AssertionError("source read")), \
+             patch.object(driver,"tokenizer",side_effect=AssertionError("tokenizer read")), \
+             patch("sys.stdout",new=io.StringIO()):
+            self.assertEqual(driver.main(),0)
+
+    def test_saved_teacher_zero_complete_does_not_return_success(self):
+        bad={"request":{"messages":[{}, {"content":json.dumps({"producer_control":{"qa_count":1,"view_number":1}})}]},
+            "reply":{"choices":[{"finish_reason":"stop","message":{"content":"invalid"}}]},
+            "case":wire.cases()[0],"generation_id":"fixture","attempt":1,"parsed":{"status":"PARSE_ERROR"}}
+        manifest={"concat_sha256":"B"*64,"lineage":{"assets":{"model_sha256":"A"*64}}}
+        with patch.object(driver,"get_rows",return_value=([bad]*72,manifest)), \
+             patch.object(driver,"digest",return_value="C"*64),patch("sys.stdout",new=io.StringIO()):
+            report,rc=driver.saved_teacher({},Path("/tmp"))
+            self.assertEqual(rc,8);self.assertEqual(report["status"],"SAVED_WIRE_READBACK_INCOMPLETE")
+
     def test_closed_only_rubric(self):
         self.assertTrue(driver.classify("+5","5")); self.assertTrue(driver.classify("TRUE","true"))
         self.assertTrue(driver.classify('{"answer":"5"}','{"answer":"5"}'))

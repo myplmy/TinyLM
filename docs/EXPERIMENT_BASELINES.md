@@ -233,8 +233,10 @@ fp32 상주와 int8 상주가 갈린다.**
 | 접두사 | 용도 | 상태 |
 |---|---|---|
 | `dense`, `tied` | 정본 기준선(태그 없음 = arch 이름) | **덮어쓰기 절대 금지** |
-| `p093b_function_v1_s1337` | P093B native 함수·r8/16잔차·GSQ배정 독립/삼진인자 | **예약 2026-10-09**. 정확 d16 RMS4 원부모·첫middle4·실제활성값/calibration250·새103log/분할patch. 정상300M·지능·packed 배포 NOT_RUN. [계획](../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md) |
-| `p106d_ruleviews_v1_s1337_{fixed,views}` | P106D closed procedural fixed/view4epoch 소형학생 | **예약 2026-10-09**. 같은chat32부모·micro8/accum16/ckptON/원LR·256canonical row/4epoch8update·actual x/target match. 실제모델/새300M·지능 NOT_RUN. [계획](../test_plan/P106D_규칙뷰-조건갱신-형식요구와-교사-2QA-게이트.md) |
+| `p093b_function_v1_s1337` | P093B native 함수·r8/16잔차·GSQ배정 독립/삼진인자 | **사용 완료**. [103 §2~§3](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): r8/16 NRMS1.000006/1.014380, B0.982631로local문턱 미달. factor는모델전HOLD8. 훈련오차감소가독립입력 복원/지능·packed배포PASS는아님. |
+| `p106d_ruleviews_v1_s1337_{fixed,views}` | P106D closed procedural fixed/view4epoch 소형학생 | **사용 완료**. [104 §2~§4](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md):각88,864x/7,280targets/8updates·8/64이며옛답복사 정답8/조건변경0. oldfixed sham-only 교락;교사72응답은inline파서가거부. 지능·75M/새300M 미완료. |
+| `p093b_recovery_v2_s1337` | dev-only endpoint/LR 선택·r8/16와독립r32/64·실제8답/조건부저장정밀도 | **예약·새실물NOT_RUN**. train/dev/test위치2048/512/512/층;동일weighted초기화·LR1e-3/1e-4·0/20/50/100/250중dev선택·test최종. FP16저장→FP32와native삼진은조건부이며배포상주아님. [P093B 후속](../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md) |
+| `p106d_ruleviews_v2_4096_s1337_{fixed,views}` | 양팔공통변경/미변경균형·4096canonical/4epoch128updates | **예약·새실물NOT_RUN**. 기존chat32/micro8×accum16/ckptON/LR유지. oldval32root/64첫질문제외·fresh64+old64판독. 각epochactualx/target실측선결,16,777,216은padding상한이지학습토큰이아님. [P106D 후속](../test_plan/P106D_규칙뷰-조건갱신-형식요구와-교사-2QA-게이트.md) |
 | `t_*` | 300M 풀 tied 계열 | 사용중(위 §2.1) |
 | `p6*` | 600M 풀 토큰스윕(P007) | 사용중 |
 | `sp_*` | 속도 벤치(P021) | 사용중 |

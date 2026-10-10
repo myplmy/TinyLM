@@ -1,0 +1,152 @@
+{
+  "schema": "TINYLM_SCOPED_PREPARATION_V1",
+  "session_id": "01a0b33b-d14e-7c40-ada8-229a1f97eabd",
+  "wip": "handoff/WIP_20261010_작업원장.md",
+  "execution_scope": "CPU leaf operators and fake codec only; exact old JSON/JSONL read-only; no GPU/model/tokenizer/cache/data generation",
+  "combined_suite": {
+    "command": "python -B -X utf8 -m unittest scripts.test_p093b_native_repair scripts.test_p093b_calibration_recovery scripts.test_p106b_rule_views scripts.test_p106d_views scripts.test_p106d_expanded_views scripts.test_p106d_teacher_views scripts.test_p106d_driver -v",
+    "tests": 84,
+    "exit_code": 0,
+    "test_elapsed_sec": 1.342
+  },
+  "smoke_regression": {
+    "command": "python -B -X utf8 scripts/test_check_diag_data.py",
+    "exit_code": 0,
+    "checker_body_changed": false,
+    "known_warnings_retained": 3,
+    "random_target_mutations_rejected": true
+  },
+  "cpu_readback": {
+    "readback": {
+      "schema": "P106D_VIEW_GATE_V2",
+      "input": {
+        "model_loading": "NOT_RUN"
+      },
+      "status": "SAVED_WIRE_READBACK_COMPLETE",
+      "source_manifest_sha256": "731C83529B49EA6F4A518B3DF9275CBECB4A59A6938CC07B494E102DA5CA8D47",
+      "source_concat_sha256": "3EB1D7DB076B30AD175EFF787BF1CC42F29C229132C13CB4F5C646D8109EC0D4",
+      "records": 72,
+      "pairs": 96,
+      "structural_status": {
+        "QA_VIEWS_WIRE_COMPLETE": 72
+      },
+      "old_result_changed": false,
+      "tokenizer_validation": "NOT_RUN",
+      "new_teacher_generation": "NOT_RUN",
+      "teacher_identity": "inherited from immutable raw manifest; not reloaded",
+      "scope": "counterfactual transport/schema only, not a new GPU, speed or semantic PASS"
+    },
+    "readback_exit": 0,
+    "readback_stdout_bytes": 10396,
+    "codec_fixture": {
+      "schema": "P106D_BALANCED_MATCHED4096_V1",
+      "ready": true,
+      "train_rows": 4096,
+      "val_rows": 64,
+      "desired_train_rows": 4096,
+      "root_instances": {
+        "train": 2048,
+        "val": 32
+      },
+      "seed": 1337,
+      "task_families": [
+        "arithmetic",
+        "boolean",
+        "lookup",
+        "format"
+      ],
+      "family_root_counts": {
+        "arithmetic": {
+          "train": 512,
+          "val": 8
+        },
+        "boolean": {
+          "train": 512,
+          "val": 8
+        },
+        "lookup": {
+          "train": 512,
+          "val": 8
+        },
+        "format": {
+          "train": 512,
+          "val": 8
+        }
+      },
+      "curriculum_policy_rows": {
+        "ANSWER_UNCHANGED": 1536,
+        "ANSWER_CHANGED": 1536,
+        "FORMAT_VERBATIM": 1024
+      },
+      "selection_rejected": {
+        "not_enough_matched_distinct_views": 121,
+        "excluded_or_duplicate_root": 32
+      },
+      "epoch_x_tokens": 1094928,
+      "epoch_assistant_targets": 102801,
+      "four_epoch_processed_tokens": 4379712,
+      "slot_token_target_match": true,
+      "source_definition_sha256": "55ECA706E6AC187F0253CC8752F24648F9FFD15B06B07C478D49431E08F25930",
+      "excluded_prior_val_roots": 32,
+      "knowledge_claim": "four procedural families; instances are not new independent knowledge",
+      "view_policy": "at least2 distinct matched views/root; repetitions allowed, not four guaranteed unique views",
+      "model_loading": "NOT_RUN",
+      "meaningful_training": "NOT_RUN"
+    },
+    "prior_validation": {
+      "rows": 64,
+      "roots": 32,
+      "questions": 64
+    },
+    "actual_stop_counts": {
+      "fixed/answers_parent": {
+        "MAX_NEW": 63,
+        "EOS": 1
+      },
+      "fixed/answers_child": {
+        "STOP_SEQUENCE": 64
+      },
+      "views/answers_parent": {
+        "MAX_NEW": 63,
+        "EOS": 1
+      },
+      "views/answers_child": {
+        "STOP_SEQUENCE": 64
+      }
+    },
+    "execution_scope": "CPU fake codec/read-only exact original JSONL; no actual tokenizer/cache/model/GPU"
+  },
+  "new_launchers": [
+    "run_P093B_Stage0bW_recovery_contract.sh",
+    "run_P093B_Stage4Wa_dev_selected_rank8_16.sh",
+    "run_P093B_Stage4Wb_dev_selected_rank32_64.sh",
+    "run_P093B_Stage4Wc_recovery_actual_answers.sh",
+    "run_P093B_Stage5W_factor_precision_roundtrip.sh",
+    "run_P106D_Stage0bW_recovery_contract.sh",
+    "run_P106D_Stage4Wa_saved_inline_reaudit.sh",
+    "run_P106D_Stage4Wb_inline_gemma_two_qa.sh",
+    "run_P106D_Stage1Wb_balanced4096_corpus.sh",
+    "run_P106D_Stage2Wc_balanced_fixed128.sh",
+    "run_P106D_Stage2Wd_balanced_view128.sh",
+    "run_P106D_Stage3Wb_balanced_view_pair.sh"
+  ],
+  "launcher_count": 12,
+  "launchers_verified": {
+    "bash_n_individual": 12,
+    "ascii_lf_individual": 12,
+    "flag_errors": 0,
+    "flag_warnings": 0,
+    "actual_launcher_execution": 0
+  },
+  "archive_commit": "499e5f19f3396141520be13af7d89da2333c07ea",
+  "raw_input_intake": "handoff/audit/WIP_20261010_INTAKE.json",
+  "not_run": [
+    "actual tokenizer/model/GPU",
+    "new teacher responses",
+    "new restoration answers/semantic review",
+    "new4096 student training",
+    "smoke/queue",
+    "protected data",
+    "original cache/checkpoint mutation"
+  ]
+}

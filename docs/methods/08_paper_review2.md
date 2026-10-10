@@ -26,8 +26,8 @@
 | **5** | **QK-Normed MLA**(arXiv:2606.16310, 2026-06-15) ⚠️**초록만** | MLA 에서 전체 K 캐싱 없이 QK 정규화를 쓴다 | RMSNorm 을 **static affine weight + dynamic scalar RMS** 로 분해 | `architecture`(01) · `memory`(02) | ✅**대조 근거로만 채택** — 400M·100B 에서 **QK-Norm 이 QK-Clip 을 이긴다**. 🚫MLA 는 우리 구조가 아니다 | 🚫없음 |
 | **6** | **TTPO**(arXiv:2608.27448v1, 2026-08-27) | 무정답 시험 시점 수학 문제의 정책 갱신 | 다수결 positive/negative 분기, positive OPSD·negative GRPO와 토큰 선택 | `training_quality`(06) · `benchmarks`(10) | ⏸**개념만 차용** — 현 TinyLM에는 thinking teacher·안정적인 정답 추출·64회 rollout 자원이 없고 held-out 오염 위험이 큼 | 🚫즉시 계획 없음(§6) |
 | **7** | **Ternary Bonsai 2 27B**(PrismML 백서, 2026-09, 로컬14쪽) | 27B hybrid reasoning 모델의 저비트 저장·직접 커널·능력 보존 | 고정 Hadamard 회전·group128 삼진·소수 FP16 예외·PTQ1_0/PQ2_0 | `memory`(02) · `training_quality`(06) · `inference_speed`(12) | ⚠️**배포 계측 개념 차용** — TinyLM from-scratch 학습/한국어 전이는 미증명, 외부 교사 pilot은 별도 검증 | 🚫즉시 기본경로 제안 없음(§7) |
-| **8** | **LittleBit**(제공 PDF: arXiv:2506.13771v5, NeurIPS 2025) 및 GSQ/RCO 재검토 | 작은 복원층과 저비트 가중치의 품질 손실을 목적함수·초기화·예산으로 제어 | 이진 저랭크 인자·행/열/잠재 스케일·잔차 QAT; GSQ 이산 배정; RCO 예산 배정 | `architecture`(01) · `memory`(02) · `training_quality`(06) | **조건부 연구 후보**. 기존 P093은 실제 복원층 학습이 아닌 근사 진단이며, TinyLM 복원 성공은 미측정. §1·§2의 과거 단정과 비용은 §8의 정정으로 구분 | 새 구현/실험 없음; §8.8 비교안 |
-| **9** | **DeepSeek V3/R1/V4.1**, Self-Instruct, WizardLM, GSM-Symbolic | 교사 생성 자료와 반복 epoch에서 논리·조건·문맥의 일반화 | 검증 가능한 합성 과제·과제 확장·조건 보존 변형·문맥조회; 동일자료 반복과 증강 대조 | `corpus_selection`(07) · `knowledge_quality`(03) · `training_quality`(06) | **개념 차용 후보**. 모든 재표현을 DeepSeek의 검증된 학습법으로 부르지 않음. 변형별 정답·마스크·token 계약이 선결 | 새 자료 생성/학습 없음; §9.6 비교안 |
+| **8** | **LittleBit**(제공 PDF: arXiv:2506.13771v5, NeurIPS 2025) 및 GSQ/RCO 재검토 | 작은 복원층과 저비트 가중치의 품질 손실을 목적함수·초기화·예산으로 제어 | 이진 저랭크 인자·행/열/잠재 스케일·잔차 QAT; GSQ 이산 배정; RCO 예산 배정 | `architecture`(01) · `memory`(02) · `training_quality`(06) | **조건부 연구 후보**. 기존 P093은 실제 복원층 학습이 아닌 근사 진단이며, TinyLM 복원 성공은 미측정. §1·§2의 과거 단정과 비용은 §8의 정정으로 구분 | [P093B 결과103](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md) local음성·dev/r32·64/저장정밀도 후속준비 |
+| **9** | **DeepSeek V3/R1/V4.1**, Self-Instruct, WizardLM, GSM-Symbolic | 교사 생성 자료와 반복 epoch에서 논리·조건·문맥의 일반화 | 검증 가능한 합성 과제·과제 확장·조건 보존 변형·문맥조회; 동일자료 반복과 증강 대조 | `corpus_selection`(07) · `knowledge_quality`(03) · `training_quality`(06) | **개념 차용 후보**. 모든 재표현을 DeepSeek의 검증된 학습법으로 부르지 않음. 변형별 정답·마스크·token 계약이 선결 | [P106D 결과104](../../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md) 조건변경음성·양팔균형4096/128update 후속준비 |
 
 ---
 
@@ -679,3 +679,9 @@ C2는 첫 잘못된 assistant를 context-only로 두고, 실제 잘못된 구간
 ### 9.10 신규 실험 준비로의 연결
 
 이후 사용자 SH/선결구현 요청으로 [P106D](../../test_plan/P106D_규칙뷰-조건갱신-형식요구와-교사-2QA-게이트.md)를 분리했다. rule API V2는 C3의 producer-known key와 changed/sham condition renderer를 지원하고, source128중립root/한영256row·4epoch의 fixed/view actual x/target match를 사용자 준비 단계에서 계측한다. 파라미터 인스턴스와4절차가족을256개 고유지식으로 세지 않는다. B는 같은source에서 단일QA2회/2QA1회와 같은 완결source-set 처리율·전재시도 비용을 보고한다. backend/partial journal·원답·thinking은 보존하고 JSON/ChatML wrapping은 코드가 담당한다. 모든 실물/model/tokenizer/source 생성/학생 GPU는 사용자 소유이며 아직 NOT_RUN이다.
+
+### 9.11 2026-10-10 실물 회수와 다음 검증
+
+위 NOT_RUN은 당시 상태다. 결과103/104가 원형을 보존하며 갱신한다. 실제 함수 손실 최적화는 가능했지만 r8/16 보정의 heldout 개선은 사라졌고 GSQ식 공유 배정도 문턱에 못 미쳤다. 이 결과는 LittleBit binary·공식 전체 GSQ/RCO의 재현 실험이 아니다. 새 dev 선택/큰 rank·FP16저장과 native 삼진은 표현력·최적화·압축 손실을 나눠 시험한다.
+
+규칙뷰 학생은 종료/답 길이가 달라졌어도 조건 갱신은 배우지 못했고 old 교육 구성도 교락됐다. 균형4096 새 팔의 양·원배치·root/actual token을 고정하고 실제 답을 다시 본다. 교사 완결72응답은 inline 라벨 코드결함으로 모두 거부됐으므로 새 문법/문맥 보존으로 구조와 의미 품질을 분리해 회복한다. CPU 시험/소급 구조 재판독은 새 교사·학생 지능·75M/300M의 성공이 아니다.

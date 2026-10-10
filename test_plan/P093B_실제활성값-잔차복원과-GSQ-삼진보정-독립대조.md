@@ -2,7 +2,7 @@
 
 > 계기: 사용자2026-10-09 LittleBit/GSQ/RCO 검토·A/B 독립 대조·신규 계획/SH/추가구현 요청.
 > [P093](P093_구조조건부-직접공유와-완화타잉.md)·[결과086 §4](../test_result/086_20260919_P093-회계상-R1은-남고-D1은-고계산이다.md)·[논문 리뷰08 §8](../docs/methods/08_paper_review2.md).
-> 원래 근사 음성을 보존하는 분리 후속 파일이다. 새 실물은 `NOT_RUN`이다.
+> 2026-10-10 [결과103](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): A r8/16과GSQ식B는실제보정후문턱미달, factor는미호출HOLD다. 후속분할/LR·r32/64/실제답·정밀도게이트는준비/실물NOT_RUN이다.
 
 ## 1. 왜 — 함수 복원과 양자화 손실을 분리
 
@@ -25,27 +25,51 @@ P093의0.75% 개선은 Gaussian128입력·raw master·rank4/8/16 근사다. 반�
 
 ## 4. 단계 설계 (싼 것 → 비싼 것)
 
-### Stage0W — native slot·초기화·배정·복원 CPU 계약
+### Stage0W — native slot·초기화·배정·복원 CPU 계약 (완료: 기술0)
 
 CPU tensor fixture로 원형 불변·0-no-op·gradient 소유·weighted-SVD·삼진 group/rank·artifact SHA/20MB를 검증한다. 부모/cache/GPU 실행 없음이다.
 
-### Stage1Wa — A: 실제 활성값 함수 잔차
+### Stage1Wa — A: 실제 활성값 함수 잔차 (완료: 과학적 음성8)
 
 정확 부모 `runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt`, source `data_cache/ko-en_600000000/train.bin`이다. 사용자 실행에서16층/untied/CLA2 및 mode/FiLM/LRM/기존LoRA 부재를 확인한다. 첫 middle4층만 바꾸며 attention/prelude/coda/embedding은 고정한다.
 
 native MLP input/output hook을 실제 토큰 창에서 수집한다. calibration/held-out 창을 먼저 고정하고 offset/선택 bytes/활성값 hash를 보존한다. shared core는 master mean 뒤 native 삼진화하고 동결한다. 기존 LoRA r8/r16의 실수 인자에 residual/data-aware SVD 초기화 후 **SwiGLU 출력 목적**으로250update/AdamW LR1e-3/WD0/seed1337을 적용한다. 이는 정상 SFT의 micro/accum/Muon 변경이 아닌 local calibration이다.
 
-### Stage1Wb — B: 공유 삼진 배정·scale
+### Stage1Wb — B: 공유 삼진 배정·scale (완료: 과학적 음성8)
 
 A 성공에 종속하지 않고 같은 parent/source/offset/참조로 실행한다. shared core의 mask/sign logits와 양수 group scale을 Gumbel-Softmax/Lion으로 보정하고 층별 delta는 없다. hard eval을 보존한다. 공식 whole-model GSQ의 성능 재현이 아닌 GSQ 파라미터화/목적의 소형 구현이다.
 
-### Stage2W — 독립 A/B 대응 판독
+### Stage2W — 독립 A/B 대응 판독 (완료: 대응0)
 
 부모/입력/분할/코드 지문이 같아야 비교한다. shared/init/fitted의 local NRMS·층별 오류·grad_max·wall·VRAM와 같은 held-out token창의 전체 CE를 기록한다. A/B 구조와 optimizer가 달라 그 둘의 차이를 단일 알고리즘 효과로 귀속하지 않는다.
 
-### Stage3W — 조건부 GSQ 삼진 인자·native LoRA round-trip
+### Stage3W — 조건부 GSQ 삼진 인자·native LoRA round-trip (종료: 선결HOLD8·실물NOT_RUN)
 
 A의 사전등록 r16 viability 뒤에만 해당 인자의 현재 `ternary_g` 전/후와 GSQ 배정/scale 보정을 비교한다. export된 D/U를 기존 `LoRA(bits=2)`로 복원해 정합/NRMS/CE를 기록한다. 직접 packed kernel 가속은 아니다. RCO는 후보별 byte/효용 DB가 준비된 후의 별도 단계다.
+
+### Stage0bW — 복구 계약 CPU / 새 단계
+
+사용자2026-10-10 선택으로 기존r8/16 실제 음성 이후의 분할·LR·중간점 대조와 별도r32/64 표현력 대조를 모두 준비한다. 기존GSQ 배정B(Stage1Wb)와 후속의 ‘표현력 B’는 다른 질문이다.
+
+### Stage4Wa — dev 선택 r8/16 대조 / 사용자 GPU NOT_RUN
+
+같은 정확부모·first-middle4·source32창을 먼저 고정한다.24앞창을 train16창/2048위치, dev4창/512위치, test4창/512위치로 분리하고 마지막8창은 별도wholeCE용이다.4층 관측수를 다른텍스트 수로 부풀리지 않는다.
+같은 weighted-SVD 초기인자를 복사해LR1e-3/1e-4·AdamW/WD0·250update를 대조하며0/20/50/100/250회 train/dev 곡선을 보존한다. rank별 LR/종료시점은dev만으로 고르고 test를 optimizer/선택 함수에 넣지 않는다.
+부모·shared-only·선택후 각rank의 실제 한영8질문 첫답/종료를 보존한다. local음성이어도 추론자료는 남기며 회수 후 GPT가 의미를 판독한다.
+
+### Stage4Wb — 같은 분할/절차 r32/64 / 사용자 GPU NOT_RUN
+
+r8/16 성공에 종속하지 않는다. rank를32/64로만 바꾼 같은 LR/초기화/분할 절차다. r64 FP32 인자8.25MiB의비용을 함께 공개하며 추가표현력이 실제 함수와답안에서효용을내는지본다. independenttest는 최종평가이며 이후rank를낮은test점수만으로고르지않는다.
+
+### Stage4Wc — 대응 자료·원답 CPU 판독
+
+두 report의 parent/window/train/dev/test/코드SHA와실물완료를검산한다. 실제문구판독을 CPU 완료로대체하지않는다.
+
+### Stage5W — 조건부 저장 정밀도·native삼진 미리보기 / 사용자 GPU NOT_RUN
+
+유효한 unquantized capacity rank가 없으면모델시작전HOLD8이다. 통과한각r32/64에서FP32참조·FP16저장왕복(FP32실행)·현재native삼진인자왕복의test/wholeCE/실제8답/byte를비교한다. FP16resident/kernel이나GSQ인자추가최적화/RCO전체는아직아니다. 재구성함수·서버sampler·정상SFT기본을바꾸지않는다.
+
+후속 실물은아직NOT_RUN이다. 시간후보는A/B/precision각0.5h(상한3600초)·CPU각.02h다. 진단parent상주를deployment RSS와혼동하지않으며artifact는projection별20MB이하다.
 
 ## 5. 판정 기준
 
@@ -72,13 +96,13 @@ init/수집/보정/eval 시간을 나눠 공개한다. 실물 자원 미계측�
 
 ## 7. 실행 → 사용자 WSL SH
 
-- `run_P093B_Stage0W_native_repair_contract.sh`
-- `run_P093B_Stage1Wa_activation_residual.sh`
-- `run_P093B_Stage1Wb_gsq_native_assignment.sh`
-- `run_P093B_Stage2W_repair_pair_readback.sh`
-- `run_P093B_Stage3W_gsq_factor_roundtrip.sh`
+- `run_P093B_Stage0bW_recovery_contract.sh`
+- `run_P093B_Stage4Wa_dev_selected_rank8_16.sh`
+- `run_P093B_Stage4Wb_dev_selected_rank32_64.sh`
+- `run_P093B_Stage4Wc_recovery_actual_answers.sh`
+- `run_P093B_Stage5W_factor_precision_roundtrip.sh` (유효한 unquantized capacity rank 뒤에만)
 
-입력 대기 없음·새 namespace·write-once·phase/final 판정을 사용한다. 원본로그 번호103 예약, 실물 회수 때 결과문서 작성이다. 기존086을 덮지 않는다.
+입력 대기 없음·새 namespace·write-once·phase/final 판정이다. [결과103](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)에 옛5단계의 정확 재현 명령/Git 복구점이 있다. 새5SH는 [복구 driver](../scripts/diag_p093b_calibration_recovery.py)·[dev 선택 helper](../scripts/p093b_calibration_recovery.py)를 사용하며 STATIC_ONLY/새 모델 NOT_RUN이다. 일반300M·기본 모델 변경은 없다.
 
 ## 8. 한계 (반드시 함께 기록)
 
@@ -89,3 +113,6 @@ init/수집/보정/eval 시간을 나눠 공개한다. 실물 자원 미계측�
 - 2026-10-09 신규 준비 착수. 기존 MLP/LoRA/삼진 경로를 재사용한다. 실물/GPU/실제 활성값 수집은 NOT_RUN이다.
 - preflight: 독립변수 A=층별잔차, B=공유배정; 같은 parent/source/참조. registry 기본/--tag/--plan은 broad runs JSON을 읽으므로 Codex는 금지 경계를 지키며 명시 출력충돌·공개 기록으로 제한 확인한다.
 - 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+- 2026-10-10 원형5로그/정본5회수: 실제활성값/SVD초기화가능성은미달. rank8/16의초기소폭이득이250회뒤사라져‘현재조건에서복원문턱을넘는다’는예측은기각한다. B도10%문턱미달,삼진factor는선결HOLD로실물실패가아니다.
+- 사용자A+B 선택: train/dev/test·LR/endpoint/r32/64/실제8답·조건부FP16storage/native삼진을새단계로준비했다. 새실물효용·GPT답안판독·배포손익은NOT_RUN이다.

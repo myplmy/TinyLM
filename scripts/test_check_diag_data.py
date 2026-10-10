@@ -3,11 +3,57 @@
 from __future__ import annotations
 
 from pathlib import Path
+import ast
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from check_diag_data import audit
+
+
+def known_heuristic_warning_regressions():
+    """Keep three known warnings visible; never whitelist their diagnostics.
+
+    Inspect source only. Do not import diagnostics, open datasets/checkpoints,
+    or turn these structural checks into model/measurement correctness claims.
+    """
+    cases = (("diag_p093b_native_repair.py", 1),
+             ("diag_p106c_prompt_cache.py", 2))
+    for filename, count in cases:
+        path = ROOT / "scripts" / filename
+        source = path.read_text(encoding="utf-8")
+        errors, warnings, _ = audit(path, source_text=source)
+        if errors or len(warnings) != count:
+            raise RuntimeError(f"known heuristic warning contract changed: {filename}")
+        damaged = source + ("\nregression_labels = torch.randint(0, 10, (3,))\n"
+                            "regression_ce = F.cross_entropy(logits, regression_labels)\n")
+        errors, _, _ = audit(path, source_text=damaged)
+        if not errors:
+            raise RuntimeError(f"known warning hid random-target CE: {filename}")
+        tree = ast.parse(source)
+        if filename == "diag_p093b_native_repair.py":
+            functions = [n for n in tree.body if isinstance(n, ast.FunctionDef)
+                         and n.name == "viable"]
+            expected = ast.parse("baseline > 1e-12 and candidate <= .90 and "
+                                 "1-candidate/baseline >= .10", mode="eval").body
+            if (len(functions) != 1 or len(functions[0].body) != 1
+                    or not isinstance(functions[0].body[0], ast.Return)
+                    or ast.dump(functions[0].body[0].value) != ast.dump(expected)):
+                raise RuntimeError("P093B explicit NRMS/relative-improvement gate changed")
+        else:
+            functions = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+            role = ast.unparse(functions["frozen_role"])
+            grid = ast.unparse(functions["prompt_grid"])
+            check = ast.unparse(functions["check"])
+            execute = ast.unparse(functions["execute"])
+            if not all(("locked_report(" in role, "verify(" in role,
+                        "concat_sha256" in role, "values[target]" in grid,
+                        "left['gold'] == right['gold']" in grid,
+                        "'expected_cases': 384" in check,
+                        "len(report['records']) == 192" in execute,
+                        "unresolved_fp32_cache_differences" in execute)):
+                raise RuntimeError("P106C frozen-facts/cache-count source contract changed")
+    print("[PASS] three known heuristic warnings remain visible; random-target mutations still fail")
 
 
 def main():
@@ -84,6 +130,7 @@ def main():
     errors, warnings, _ = audit(p103_path, source_text=fake)
     if errors or len(warnings) != 2:
         raise RuntimeError("P103A filename/constant text bypassed the AST contract")
+    known_heuristic_warning_regressions()
     print("[PASS] difference-only and P103A real-target/exact-gate contracts; damaged paths warn")
 
 

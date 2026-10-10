@@ -12,11 +12,12 @@ import time
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-MODES=("contract","prepare","fixed","views","readback","teacher")
+MODES=("contract","prepare","fixed","views","readback","teacher","saved_teacher")
 CODE=("scripts/diag_p106d_views.py","scripts/p106d_views.py","scripts/p106d_teacher_views.py",
       "scripts/p106b_rule_views.py","scripts/train_sft_p090.py","scripts/p106b_education_followup.py",
-      "scripts/test_p106d_views.py","scripts/test_p106d_teacher_views.py","scripts/test_p106d_driver.py")
-SCHEMA="P106D_VIEW_GATE_V1"
+      "scripts/test_p106d_views.py","scripts/test_p106d_teacher_views.py","scripts/test_p106d_driver.py",
+      "scripts/p106d_expanded_views.py","scripts/test_p106d_expanded_views.py")
+SCHEMA="P106D_VIEW_GATE_V2"
 
 
 def digest(path):
@@ -43,12 +44,17 @@ def write(path,value):
 
 def info(args):
     if args.seed!=1337 or not 1<=args.max_wall_sec<=3600: raise ValueError("preregistered seed/wall budget required")
+    samples=getattr(args,"samples",256)
+    if samples not in (256,4096): raise ValueError("samples means canonical train rows:256 or4096")
+    updates=4*samples//128
     return {"schema":SCHEMA,"mode":args.mode,"tag":args.tag,"seed":args.seed,
         "code_sha256":{p:digest(ROOT/p) for p in CODE},"max_wall_sec":args.max_wall_sec,
         "parent_spec":"scripts.p106b_education_followup.ARMS[b]","micro_bs":8,"accum":16,
         "grad_checkpoint":True,"compile":"default","lr":1e-4,"muon_lr":4e-4,
-        "epochs":4,"optimizer_updates":8,"actual_data_tokens":"MEASURE_IN_MANIFEST",
-        "max_padded_slots":8*8*16*1024,"model_loading":"NOT_RUN","student_intelligence":"NOT_ESTABLISHED"}
+        "epochs":4,"train_rows":samples,"sample_unit":"canonical training rows",
+        "optimizer_updates":updates,"actual_data_tokens":"MEASURE_IN_MANIFEST",
+        "optimizer_setting_scope":"intended student recipe, not an execution measurement",
+        "max_padded_slots":updates*8*16*1024,"model_loading":"NOT_RUN","student_intelligence":"NOT_ESTABLISHED"}
 
 
 def read_report(path):
@@ -92,16 +98,48 @@ def prepare(args,metadata,corpus):
     tok,spec=tokenizer()
     if corpus.exists(): raise FileExistsError("preserve old corpus namespace")
     corpus.mkdir(parents=True)
-    started=time.perf_counter(); data=build(lambda row:real_signature(row,tok),seed=args.seed)
+    started=time.perf_counter(); previous=None
+    if metadata.get("train_rows",256)==4096:
+        from scripts import p106d_expanded_views as expanded
+        previous,excluded_roots,excluded_questions=prior_validation()
+        data=expanded.build(lambda row:real_signature(row,tok),seed=args.seed,
+            excluded_roots=excluded_roots,excluded_questions=excluded_questions,
+            deadline=time.monotonic()+args.max_wall_sec)
+    else: data=build(lambda row:real_signature(row,tok),seed=args.seed)
     report=data["report"]; lineage={"source":"code-owned procedural fixtures","root_definition_sha256":report["source_definition_sha256"],"tokenizer_sha256":spec["tok_sha"]}
     shards={"fixed_train":put_rows(corpus,"fixed_train",data["fixed"],lineage) if data["fixed"] else None}
     for epoch,rows in enumerate(data["epochs"],1):
         shards[f"view_train_{epoch:02d}"]=put_rows(corpus,f"view_train_{epoch:02d}",rows,lineage) if rows else None
     shards["val_probes"]=put_rows(corpus,"val_probes",data["probes"],lineage) if data["probes"] else None
+    if previous is not None:
+        shards["prior_probes"]=put_rows(corpus,"prior_probes",previous,{"source":"immutable prior diagnostic64; never training"})
     report.update(input=metadata,tokenizer_sha256=spec["tok_sha"],shards=shards,
         status="CORPUS_READY" if report["ready"] else "CORPUS_INCOMPLETE",wall_sec=time.perf_counter()-started)
     write(corpus/"report.json",report)
     return report,0 if report["ready"] else 8
+
+
+def prior_validation():
+    from tinylm.chat.canonical import normalize,validate
+    from tinylm.chat.serialize import serialize
+    from scripts.p106d_views import text_at
+    source=ROOT/"test_result/evidence/p106d_ruleviews_v1_s1337"
+    records,_=get_rows(source/"fixed","answers_parent")
+    roots=set(read_report(source/"prepare/report.json")["roots"]["val"])
+    if len(records)!=64 or len(roots)!=32: raise ValueError("exact prior64/32root diagnostics required")
+    rows=[]; questions=set()
+    for record in records:
+        messages=[{"role":m.group(1),"content":m.group(2)} for m in re.finditer(
+            r"<\|im_start\|>(user|assistant)\n(.*?)<\|im_end\|>\n?",record["prompt"],re.S)]
+        messages.append({"role":"assistant","content":record["gold"]})
+        row=validate(normalize({"messages":messages,"meta":{"source":"p106d_prior_diagnostic",
+            "source_family":"p106d_prior_closed64","root_concept_id":record["root"],
+            "language":record["language"],"split":"val","source_license":"repository-code-generated",
+            "diagnostic_reuse":"known failures, not new blind generalization"}}))
+        if serialize({"messages":row["messages"][:-1]},"chatml",add_generation_prompt=True)!=record["prompt"]:
+            raise ValueError("prior prompt round-trip changed")
+        questions.add(text_at(row,0)); rows.append(row)
+    return rows,roots,questions
 
 
 def classify(answer,gold):
@@ -173,9 +211,11 @@ def train(args,metadata,corpus,evidence):
     from scripts.train_sft_p090 import encode_records,micro_groups,loss_sum
     from scripts.p106b_gate_runtime import idle_before_gpu
     report=read_report(corpus/"report.json")
-    if (not report.get("ready") or report.get("train_rows")!=256 or report["input"]["code_sha256"]!=metadata["code_sha256"]):
-        raise FileNotFoundError("matched256 corpus absent/incomplete/stale; no student loaded")
+    expected=metadata.get("train_rows",256); expected_updates=metadata.get("optimizer_updates",8)
+    if (not report.get("ready") or report.get("train_rows")!=expected or report["input"]["code_sha256"]!=metadata["code_sha256"]):
+        raise FileNotFoundError("matched corpus absent/incomplete/stale; no student loaded")
     tok,spec=tokenizer(); fixed,_=get_rows(corpus,"fixed_train"); probes,_=get_rows(corpus,"val_probes")
+    if expected==4096: probes= get_rows(corpus,"prior_probes")[0]+probes
     if report.get("tokenizer_sha256")!=spec["tok_sha"]:
         raise ValueError("corpus tokenizer identity differs from parent")
     views=[get_rows(corpus,f"view_train_{epoch:02d}")[0] for epoch in range(1,5)]
@@ -195,7 +235,7 @@ def train(args,metadata,corpus,evidence):
     grad_max=0.0; torch.cuda.reset_peak_memory_stats()
     for epoch in range(4):
         rows=fixed_encoded if args.mode=="fixed" else encoded_views[epoch]
-        order=list(range(256)); random.Random(args.seed+epoch).shuffle(order)
+        order=list(range(expected)); random.Random(args.seed+epoch).shuffle(order)
         begin=time.perf_counter(); epoch_x=epoch_targets=0; base.train(); model.train()
         for groups in micro_groups(rows,order,8,16):
             if time.monotonic()>=deadline: raise TimeoutError("student gate wall budget")
@@ -211,7 +251,7 @@ def train(args,metadata,corpus,evidence):
         if epoch_x!=report["epoch_x_tokens"] or epoch_targets!=report["epoch_assistant_targets"]: raise ValueError("actual epoch exposure mismatch")
         processed+=epoch_x; targets+=epoch_targets
         history.append({"epoch":epoch+1,"updates":updates,"processed_tokens":epoch_x,"assistant_targets":epoch_targets,"wall_sec":time.perf_counter()-begin})
-    if updates!=8: raise ValueError("optimizer count differs from preregistered8")
+    if updates!=expected_updates: raise ValueError("optimizer count differs from preregistered student recipe")
     child_answers=probe_answers(base,cfg,tok,probes,evidence,"child")
     child_native=native_probe_ce(base,cfg,spec,"cuda")
     checkpoint.parent.mkdir(parents=True,exist_ok=True)
@@ -269,6 +309,40 @@ def teacher_rates(rows):
     return output
 
 
+def saved_teacher(metadata,evidence):
+    """Retrospective structural readback, never a new teacher/semantic PASS."""
+    from scripts import p106d_teacher_views as wire
+    source=ROOT/"test_result/evidence/p106d_ruleviews_v1_s1337/teacher"
+    records,manifest=get_rows(source,"teacher_raw")
+    if len(records)!=72: raise ValueError("exact prior72 response journal required")
+    parsed_rows=[]; counts={}; pairs_count=0
+    teacher_sha=manifest.get("lineage",{}).get("assets",{}).get("model_sha256")
+    if not isinstance(teacher_sha,str) or not re.fullmatch(r"[0-9A-Fa-f]{64}",teacher_sha):
+        raise ValueError("prior teacher identity absent")
+    for record in records:
+        control=json.loads(record["request"]["messages"][1]["content"])["producer_control"]
+        parsed=wire.parse(record["reply"],control["qa_count"],record["case"],view_number=control["view_number"])
+        counts[parsed["status"]]=counts.get(parsed["status"],0)+1
+        pairs_count+=len(parsed["pairs"])
+        for j,pair in enumerate(parsed["pairs"]):
+            wire.wrap(record["case"],pair,group_id=record["case"]["id"],
+                view_id=record["generation_id"]+f"_a{record['attempt']}_v{j+1}",teacher_sha=teacher_sha)
+        parsed_rows.append({"generation_id":record["generation_id"],"attempt":record["attempt"],
+            "old_status":record["parsed"]["status"],"old_reason":record["parsed"].get("reason"),
+            "new_status":parsed["status"],"reason":parsed.get("reason"),"pairs":parsed["pairs"],
+            "semantic_truth":"NOT_REVIEWED"})
+        if record["attempt"]==1:
+            print("[SAVED_ACTUAL_QA] "+json.dumps(parsed_rows[-1],ensure_ascii=False),flush=True)
+    ready=counts.get("QA_VIEWS_WIRE_COMPLETE",0)==72 and pairs_count==96
+    return {"schema":SCHEMA,"input":metadata,"status":"SAVED_WIRE_READBACK_COMPLETE" if ready else "SAVED_WIRE_READBACK_INCOMPLETE",
+        "source_manifest_sha256":digest(source/"teacher_raw_shards_manifest.json"),
+        "source_concat_sha256":manifest["concat_sha256"],"records":len(records),"pairs":pairs_count,
+        "structural_status":counts,"responses":parsed_rows,"old_result_changed":False,
+        "tokenizer_validation":"NOT_RUN","new_teacher_generation":"NOT_RUN",
+        "teacher_identity":"inherited from immutable raw manifest; not reloaded",
+        "scope":"counterfactual transport/schema only, not a new GPU, speed or semantic PASS"},0 if ready else 8
+
+
 def teacher(args,metadata,evidence):
     from scripts import p106d_teacher_views as wire
     from scripts import p106b_gemma_teacher as gemma
@@ -289,6 +363,7 @@ def teacher(args,metadata,evidence):
         raw.append(record); counts["raw"]+=1
     try:
         with telemetry_scope(reader),gemma.GemmaSession(mtp=False) as session:
+            metadata.update(model_loading="MEASURED",teacher_model_loading="MEASURED",student_model_loading="NOT_RUN")
             for i,case in enumerate(wire.cases()):
                 conditions=("single","paired") if i%2==0 else ("paired","single")
                 for condition in conditions:
@@ -300,7 +375,7 @@ def teacher(args,metadata,evidence):
                             if time.monotonic()>=deadline: raise TimeoutError("teacher QA-view wall budget")
                             request=wire.payload(case,count,args.seed+i*100+view_number+attempt,view_number=view_number)
                             if attempt:
-                                request["messages"][0]["content"]+=" STRUCTURE RETRY: exact ordered start labels and copied QUESTION_1 literal required. Preserve source."
+                                request["messages"][0]["content"]+=wire.feedback(case,count,view_number=view_number,reason=result.get("reason","structure"))
                             started=time.perf_counter(); reply=request_with_evidence(session,request,append_raw,generation,timeout=min(300,max(1,int(deadline-time.monotonic()))))
                             session.check(); elapsed=time.perf_counter()-started
                             result=wire.parse(reply,count,case,view_number=view_number); metrics=response_metrics(reply,elapsed)
@@ -309,6 +384,7 @@ def teacher(args,metadata,evidence):
                                 "request":request,"reply":reply,"parsed":result,"metrics":metrics}
                             append_raw(record)
                             print("[TEACHER_VIEW] "+json.dumps({"id":generation,"attempt":attempt+1,"status":result["status"],
+                                "source_question":case["question"],"reason":result.get("reason"),"raw_final":result["raw_final"],
                                 "pairs":result["pairs"],"wall_sec":elapsed,"semantic_truth":"NOT_REVIEWED"},ensure_ascii=False),flush=True)
                             if result["status"]=="QA_VIEWS_WIRE_COMPLETE": break
                         useful_x=useful_targets=0
@@ -348,6 +424,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__); p.add_argument("--mode",choices=MODES,required=True)
     p.add_argument("--execute",action="store_true"); p.add_argument("--check-only",action="store_true")
     p.add_argument("--tag",default="p106d_ruleviews_v1_s1337"); p.add_argument("--seed",type=int,default=1337)
+    p.add_argument("--samples",type=int,choices=(256,4096),default=256,help="canonical train rows; tokens/roots measured separately")
     p.add_argument("--max-wall-sec",type=int,default=None); a=p.parse_args()
     a.max_wall_sec=a.max_wall_sec or (1800 if a.mode in ("fixed","views") else 3600)
     if a.mode in ("fixed","views") and a.max_wall_sec>1800:
@@ -360,7 +437,7 @@ def main():
     print("[PHASE] regression/preconditions then "+a.mode+"; readiness is separate from student intelligence",flush=True)
     try:
         if a.mode=="contract":
-            modules=["scripts.test_p106b_rule_views","scripts.test_p106d_views","scripts.test_p106d_teacher_views","scripts.test_p106d_driver"]
+            modules=["scripts.test_p106b_rule_views","scripts.test_p106d_views","scripts.test_p106d_teacher_views","scripts.test_p106d_driver","scripts.test_p106d_expanded_views"]
             r=subprocess.run([sys.executable,"-B","-X","utf8","-m","unittest",*modules,"-v"],cwd=ROOT,timeout=600)
             if r.returncode: raise ValueError("CPU rule/view transport regression failed")
             report={"schema":SCHEMA,"input":metadata,"status":"CPU_CONTRACT_PASS","model_loading":"NOT_RUN"}; rc=0
@@ -369,6 +446,7 @@ def main():
             if a.mode=="prepare": report,rc=prepare(a,metadata,corpus)
             elif a.mode in ("fixed","views"): report,rc=train(a,metadata,corpus,evidence)
             elif a.mode=="teacher": report,rc=teacher(a,metadata,evidence)
+            elif a.mode=="saved_teacher": report,rc=saved_teacher(metadata,evidence)
             else:
                 rows=[read_report(paths(a.tag,m)[1]/"report.json") for m in ("fixed","views")]
                 if any(r.get("status")!="STUDENT_GATE_COMPLETE" for r in rows): raise FileNotFoundError("two student arms not complete")

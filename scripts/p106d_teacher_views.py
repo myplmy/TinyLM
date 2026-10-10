@@ -10,7 +10,51 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from tinylm.chat.canonical import normalize,validate
 
-VERSION="P106D_START_LABEL_QA_VIEWS_V1"
+VERSION="P106D_START_LABEL_QA_VIEWS_V2"
+_HEADER=re.compile(r"^([A-Z]+(?:_[0-9]+)?):[ \t]*(.*)$")
+
+
+def fields(final,labels):
+    """Indexed counterpart of the existing Gemma start-label grammar.
+
+    Inline and multiline content are equivalent; ordering and fenced literals
+    remain explicit. This parser does not infer missing fields or judge meaning.
+    """
+    result={}; current=None; fence=None
+    for line in final.splitlines():
+        marker=re.match(r"^(`{3,}|~{3,})",line.lstrip())
+        if marker:
+            token=marker.group(1)
+            if current is None: raise ValueError("field_boundaries")
+            if fence is None: fence=token
+            elif token[0]==fence[0] and len(token)>=len(fence): fence=None
+            result[current].append(line); continue
+        header=_HEADER.fullmatch(line) if fence is None else None
+        if header:
+            name,inline=header.groups()
+            if len(result)>=len(labels) or name!=labels[len(result)]:
+                raise ValueError("label_order_duplicate_or_missing")
+            current=name; result[name]=[inline] if inline else []
+            marker=re.match(r"^(`{3,}|~{3,})",inline.lstrip())
+            if marker: fence=marker.group(1)
+        elif current is None:
+            if line.strip(): raise ValueError("field_boundaries")
+        else: result[current].append(line)
+    if tuple(result)!=tuple(labels) or fence is not None:
+        raise ValueError("label_order_duplicate_or_missing" if fence is None else "field_boundaries")
+    return {name:"\n".join(body).strip() for name,body in result.items()}
+
+
+def feedback(case,count,*,view_number=1,reason="field_boundaries"):
+    labels=", ".join(label+":" for i in range(1,count+1) for label in (f"QUESTION_{i}",f"ANSWER_{i}"))+", NOTE:"
+    known={"field_boundaries","label_order_duplicate_or_missing","empty_or_oversized_fields","producer_fixed_question_literal_changed"}
+    why=reason if reason in known else "structure"
+    question_rule=("copy QUESTION_1 exactly from the supplied learner question"
+                   if count==2 or view_number==1 else
+                   "paraphrase QUESTION_1 as view2, preserving the source meaning and output constraint")
+    return (" STRUCTURE RETRY: "+why+". Use these ordered start labels: "+labels+
+        ". Content may follow the colon on the same line or continue on following lines. "
+        "NOTE may be empty. No missing, duplicate or outside headers; preserve source. For this request, "+question_rule+".")
 
 
 def cases():
@@ -38,9 +82,9 @@ def payload(case, count, seed, *, view_number=1):
         "For QUESTION_2 when requested, paraphrase that same request without changing its meaning or output constraints. "
         "Do not force different answers when a literal/numeric/Boolean answer is unique. For free explanation, concise alternative phrasing is allowed. "
         "Do not create dataset JSON, roles or ChatML; software owns all wrappers. No private reasoning in final fields. "
-        "Put each start label at column zero on its own line in the exact order shown. No closing tags, preface or outside text. "
+        "Put each start label at column zero in the exact order shown. Content may follow its colon on that line or continue on following lines. No closing tags, preface or outside text. "
         "Indent a literal label if it occurs inside content. NOTE is not a truth certificate. "
-        "Fill real content below each label; do not copy placeholder words. Required start labels in order: "+fields)
+        "Fill real content in each field; do not copy placeholder words. Required start labels in order: "+fields)
     instruction+=(" QUESTION_1 must copy the supplied learner question exactly."
                   if count==2 or view_number==1 else
                   " QUESTION_1 is view2: paraphrase the supplied learner question while preserving meaning and output constraints.")
@@ -62,18 +106,15 @@ def parse(reply,count,case,*,view_number=1):
         "finish_reason":item.get("finish_reason"),"usage":reply.get("usage",{}),"pairs":[],"semantic_truth":"NOT_REVIEWED"}
     if result["finish_reason"]!="stop": return result
     labels=[label for i in range(1,count+1) for label in (f"QUESTION_{i}",f"ANSWER_{i}")]+["NOTE"]
-    found=re.findall(r"^([A-Z]+(?:_[0-9]+)?):\s*$",final,re.M)
-    if found!=labels: result.update(status="PARSE_ERROR",reason="label_order_duplicate_or_missing"); return result
-    pattern=r"\A\s*"+r"\n".join(
-        rf"{label}:\s*\n(?P<f{j}>.*?)" for j,label in enumerate(labels))+r"\s*\Z"
-    match=re.fullmatch(pattern,final,re.S)
-    if match is None: result.update(status="PARSE_ERROR",reason="field_boundaries"); return result
-    pairs=[{"question":match.group(f"f{2*i}").strip(),"answer":match.group(f"f{2*i+1}").strip()} for i in range(count)]
+    try: values=fields(final,labels)
+    except ValueError as error:
+        result.update(status="PARSE_ERROR",reason=str(error)); return result
+    pairs=[{"question":values[f"QUESTION_{i}"],"answer":values[f"ANSWER_{i}"]} for i in range(1,count+1)]
     if any(not 1<=len(p[k])<=8192 for p in pairs for k in ("question","answer")):
         result.update(status="PARSE_ERROR",reason="empty_or_oversized_fields"); return result
     if (count==2 or view_number==1) and pairs[0]["question"]!=case["question"]:
         result.update(status="PARSE_ERROR",reason="producer_fixed_question_literal_changed"); return result
-    result.update(status="QA_VIEWS_WIRE_COMPLETE",pairs=pairs,note=match.group(f"f{len(labels)-1}").strip())
+    result.update(status="QA_VIEWS_WIRE_COMPLETE",pairs=pairs,note=values["NOTE"])
     return result
 
 
@@ -81,6 +122,7 @@ def wrap(case,pair,*,group_id,view_id,teacher_sha):
     # A legitimate source-preparation acknowledgement fixes the first-user key.
     anchor=("아래 문제에 대한 질문을 준비하려고 합니다. 지금은 준비 한 단어만 답하세요. 문제: "+case["question"]
             if case["language"]=="ko" else "I am preparing a question about the problem below. For now reply only READY. Problem: "+case["question"])
+    anchor+=("\n문제의 근거 문맥: " if case["language"]=="ko" else "\nEvidence context for the problem: ")+case["context"]
     row=normalize({"messages":[{"role":"user","content":anchor},
         {"role":"assistant","content":"준비" if case["language"]=="ko" else "READY"},
         {"role":"user","content":pair["question"]},{"role":"assistant","content":pair["answer"]}],
