@@ -1,0 +1,2140 @@
+{
+  "input": {
+    "schema": "P093B_CAUSAL_PROBE_V1",
+    "mode": "intervene",
+    "tag": "p093b_causal_v1_s1337",
+    "code_sha256": {
+      "scripts/diag_p093b_causal_probe.py": "84631416811D455E2DC0B474CB8BE676E3C51FAA020E95CF49089123B682C839",
+      "scripts/p093b_causal_probe.py": "19E70423A4036B86C3649AC86D5B0D4A6BAAF12AFBEBBC6ABBBC8E09EEF75341",
+      "scripts/test_p093b_causal_probe.py": "72A3D160C64872F5AE0B3577800B59D26BEC5FF1CAD7FC705CAE594B25FA05D1",
+      "scripts/diag_p093b_live_trace.py": "49C21B79538573A0DA9661740C7ACEFB3EDBEAFDD27C1ADB4693AF0DC90CDE94",
+      "scripts/p093b_live_trace.py": "46B3DA46A6653A7A622B69BCB4353D39A83C87771E935AFC78426DD95D5DA862",
+      "scripts/test_p093b_live_trace.py": "10460B5DC3302E8902ECA35E5A580BCF177AAA8EA3D6606785AEFC55335F874D",
+      "scripts/diag_p093b_generation_attribution.py": "FA82D0020B8A0DC0F988C67C8C3F1352F10E8FBB8EA35728158AD4B2642F71EE",
+      "scripts/p093b_generation_probe.py": "C983566BDE79BC1E636411AB1EDAF9BB2386077382BABF53551E4AD0227BFA9E",
+      "scripts/test_p093b_generation_probe.py": "DAE7F1E6A0617B4918E8E45741E44244643ACB8B8921ECFA3338B3743496F533",
+      "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+      "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+      "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D",
+      "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+      "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+      "tinylm/model/transformer.py": "7370DB07656AF31E7D26AAA0D86712F7A372E4186183209D1784BD3230D65ECE",
+      "tinylm/config.py": "E2B285D75A5B8C97EAC2FC1BFBABFFCD807006878FA4788775B837664AD0F655"
+    },
+    "live_source_sha256": "D50DF5EF024D02A41FE18F3CF5E699C3306224201C225341F5DA46CD114EA98A",
+    "model_loading": "MEASURED",
+    "new_generations": 18,
+    "optimizer_updates": 0,
+    "checkpoint_writes": 0,
+    "max_wall_sec": 600,
+    "planned_scope": "4 existing cases/3 unique questions x3MLP variants; history1/3/8 x3controls; last-layer patch16 x2donors; R1/R2 inference; 6cache prefixes x3precision",
+    "factor_pin": {
+      "manifest": "test_result/evidence/p093b_recovery_v2_s1337/recovery_capacity_b/rank64_manifest.json",
+      "sha256": "7B1EC16A7AEC843DB1BC84400C9DDA7E2D73EA8578A938BBDEC078197BA0B099",
+      "files": [
+        {
+          "path": "rank64_gate_proj.pt",
+          "bytes": 15469829,
+          "sha256": "C6953F044E5F32E8870FD1F540EC47983CF12FA8E3E3F4EABC168FAA9F5833F6"
+        },
+        {
+          "path": "rank64_up_proj.pt",
+          "bytes": 15469829,
+          "sha256": "AE138D40AC5CC4EAC585C1B1CB1E801E1BA4ADF460C40795380742398CC847AB"
+        },
+        {
+          "path": "rank64_down_proj.pt",
+          "bytes": 15469829,
+          "sha256": "98751624E1125CB5C7EF61AF1E7CF3FBC018981528A0B50E4392FAF18A94FAAE"
+        }
+      ]
+    },
+    "training_metadata": {
+      "arch": "dense",
+      "n_layers": 16,
+      "train_repeat": 1.0,
+      "repeat_mode": "uniform",
+      "reuse_attn_on_dup": false,
+      "init_from": true,
+      "init_from_src": "m100_ko-en_300M_dense.pt",
+      "tokens": 300023808
+    },
+    "initializer_metadata": {
+      "sha256": "7852F89DE9A6CCD4D232062D61D11CD513C0D7AB60225915C45B786C93B7828F",
+      "arch": "dense",
+      "train_repeat": null,
+      "n_layers": null,
+      "init_from": false,
+      "init_from_src": null,
+      "tokens": 300023808
+    },
+    "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
+    "cfg": {
+      "train_repeat": 1.0,
+      "infer_repeat": 1.0,
+      "repeat_mode": "uniform",
+      "repeat_where": "front",
+      "reuse_attn_on_dup": false,
+      "repeat_kv_reuse": false,
+      "tie_mlp": false,
+      "cla_group": 2,
+      "n_modes": 1,
+      "n_middle": 12,
+      "n_prelude": 2,
+      "n_coda": 2
+    },
+    "native_visit_schedule": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "bf16_reduced_precision_reduction": true
+  },
+  "rows_manifest": {
+    "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+    "limit_bytes": 20000000,
+    "rows": 564,
+    "bytes": 8867061,
+    "concat_sha256": "7EBB1E501E7E1B1130ED5C9CF6643B95C01FB18E4E94D583CE8EF002152B6918",
+    "lineage": {
+      "schema": "P093B_CAUSAL_PROBE_V1",
+      "mode": "intervene",
+      "tag": "p093b_causal_v1_s1337",
+      "code_sha256": {
+        "scripts/diag_p093b_causal_probe.py": "84631416811D455E2DC0B474CB8BE676E3C51FAA020E95CF49089123B682C839",
+        "scripts/p093b_causal_probe.py": "19E70423A4036B86C3649AC86D5B0D4A6BAAF12AFBEBBC6ABBBC8E09EEF75341",
+        "scripts/test_p093b_causal_probe.py": "72A3D160C64872F5AE0B3577800B59D26BEC5FF1CAD7FC705CAE594B25FA05D1",
+        "scripts/diag_p093b_live_trace.py": "49C21B79538573A0DA9661740C7ACEFB3EDBEAFDD27C1ADB4693AF0DC90CDE94",
+        "scripts/p093b_live_trace.py": "46B3DA46A6653A7A622B69BCB4353D39A83C87771E935AFC78426DD95D5DA862",
+        "scripts/test_p093b_live_trace.py": "10460B5DC3302E8902ECA35E5A580BCF177AAA8EA3D6606785AEFC55335F874D",
+        "scripts/diag_p093b_generation_attribution.py": "FA82D0020B8A0DC0F988C67C8C3F1352F10E8FBB8EA35728158AD4B2642F71EE",
+        "scripts/p093b_generation_probe.py": "C983566BDE79BC1E636411AB1EDAF9BB2386077382BABF53551E4AD0227BFA9E",
+        "scripts/test_p093b_generation_probe.py": "DAE7F1E6A0617B4918E8E45741E44244643ACB8B8921ECFA3338B3743496F533",
+        "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+        "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+        "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D",
+        "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+        "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+        "tinylm/model/transformer.py": "7370DB07656AF31E7D26AAA0D86712F7A372E4186183209D1784BD3230D65ECE",
+        "tinylm/config.py": "E2B285D75A5B8C97EAC2FC1BFBABFFCD807006878FA4788775B837664AD0F655"
+      },
+      "live_source_sha256": "D50DF5EF024D02A41FE18F3CF5E699C3306224201C225341F5DA46CD114EA98A",
+      "model_loading": "MEASURED",
+      "new_generations": 18,
+      "optimizer_updates": 0,
+      "checkpoint_writes": 0,
+      "max_wall_sec": 600,
+      "planned_scope": "4 existing cases/3 unique questions x3MLP variants; history1/3/8 x3controls; last-layer patch16 x2donors; R1/R2 inference; 6cache prefixes x3precision",
+      "factor_pin": {
+        "manifest": "test_result/evidence/p093b_recovery_v2_s1337/recovery_capacity_b/rank64_manifest.json",
+        "sha256": "7B1EC16A7AEC843DB1BC84400C9DDA7E2D73EA8578A938BBDEC078197BA0B099",
+        "files": [
+          {
+            "path": "rank64_gate_proj.pt",
+            "bytes": 15469829,
+            "sha256": "C6953F044E5F32E8870FD1F540EC47983CF12FA8E3E3F4EABC168FAA9F5833F6"
+          },
+          {
+            "path": "rank64_up_proj.pt",
+            "bytes": 15469829,
+            "sha256": "AE138D40AC5CC4EAC585C1B1CB1E801E1BA4ADF460C40795380742398CC847AB"
+          },
+          {
+            "path": "rank64_down_proj.pt",
+            "bytes": 15469829,
+            "sha256": "98751624E1125CB5C7EF61AF1E7CF3FBC018981528A0B50E4392FAF18A94FAAE"
+          }
+        ]
+      },
+      "training_metadata": {
+        "arch": "dense",
+        "n_layers": 16,
+        "train_repeat": 1.0,
+        "repeat_mode": "uniform",
+        "reuse_attn_on_dup": false,
+        "init_from": true,
+        "init_from_src": "m100_ko-en_300M_dense.pt",
+        "tokens": 300023808
+      },
+      "initializer_metadata": {
+        "sha256": "7852F89DE9A6CCD4D232062D61D11CD513C0D7AB60225915C45B786C93B7828F",
+        "arch": "dense",
+        "train_repeat": null,
+        "n_layers": null,
+        "init_from": false,
+        "init_from_src": null,
+        "tokens": 300023808
+      },
+      "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+      "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
+      "cfg": {
+        "train_repeat": 1.0,
+        "infer_repeat": 1.0,
+        "repeat_mode": "uniform",
+        "repeat_where": "front",
+        "reuse_attn_on_dup": false,
+        "repeat_kv_reuse": false,
+        "tie_mlp": false,
+        "cla_group": 2,
+        "n_modes": 1,
+        "n_middle": 12,
+        "n_prelude": 2,
+        "n_coda": 2
+      },
+      "native_visit_schedule": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "bf16_reduced_precision_reduction": true
+    },
+    "shards": [
+      {
+        "path": "causal_rows_000000.jsonl",
+        "bytes": 8867061,
+        "rows": 564,
+        "sha256": "7EBB1E501E7E1B1130ED5C9CF6643B95C01FB18E4E94D583CE8EF002152B6918"
+      }
+    ]
+  },
+  "summaries": [
+    {
+      "subject": "parent",
+      "case": "question_copy",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 13.066046714782715,
+            "focus_probability": 0.7728444933891296,
+            "eos_logit": 1.4776489734649658,
+            "eos_probability": 7.166627710830653e-06,
+            "focus_minus_eos_logit": 11.588397979736328,
+            "focus_minus_best_other_logit": 3.7333898544311523,
+            "entropy_nats": 1.9127851724624634
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 11.593658447265625,
+            "focus_probability": 0.45211920142173767,
+            "eos_logit": 2.495022773742676,
+            "eos_probability": 5.055518340668641e-05,
+            "focus_minus_eos_logit": 9.09863567352295,
+            "focus_minus_best_other_logit": 2.8489465713500977,
+            "entropy_nats": 4.127719879150391
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 571,
+            "argmax_text": " 가",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 6.819698810577393,
+            "focus_probability": 0.013441759161651134,
+            "eos_logit": 1.6073049306869507,
+            "eos_probability": 7.323897443711758e-05,
+            "focus_minus_eos_logit": 5.212393760681152,
+            "focus_minus_best_other_logit": -2.2294058799743652,
+            "entropy_nats": 6.482186794281006
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 15.370504379272461,
+            "focus_probability": 0.9589902758598328,
+            "eos_logit": 1.3693957328796387,
+            "eos_probability": 7.965447252900049e-07,
+            "focus_minus_eos_logit": 14.001108169555664,
+            "focus_minus_best_other_logit": 5.1913862228393555,
+            "entropy_nats": 0.393052875995636
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 8.753382682800293,
+            "focus_probability": 0.05734413117170334,
+            "eos_logit": 1.7905676364898682,
+            "eos_probability": 5.427210999187082e-05,
+            "focus_minus_eos_logit": 6.962815284729004,
+            "focus_minus_best_other_logit": 1.1389694213867188,
+            "entropy_nats": 6.8238115310668945
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 792,
+            "argmax_text": " 나",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 6.623926162719727,
+            "focus_probability": 0.008319878950715065,
+            "eos_logit": 2.0531868934631348,
+            "eos_probability": 8.611327939433977e-05,
+            "focus_minus_eos_logit": 4.570739269256592,
+            "focus_minus_best_other_logit": -2.5188207626342773,
+            "entropy_nats": 6.231659412384033
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 16.56920623779297,
+            "focus_probability": 0.9880605340003967,
+            "eos_logit": 1.537282943725586,
+            "eos_probability": 2.9275358315317135e-07,
+            "focus_minus_eos_logit": 15.031923294067383,
+            "focus_minus_best_other_logit": 6.310907363891602,
+            "entropy_nats": 0.12736853957176208
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 8.62989616394043,
+            "focus_probability": 0.10076704621315002,
+            "eos_logit": 2.5480105876922607,
+            "eos_probability": 0.0002301385102327913,
+            "focus_minus_eos_logit": 6.08188533782959,
+            "focus_minus_best_other_logit": 0.2417888641357422,
+            "entropy_nats": 6.537978172302246
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 792,
+            "argmax_text": " 나",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 6.048380374908447,
+            "focus_probability": 0.0031889548990875483,
+            "eos_logit": 1.4660584926605225,
+            "eos_probability": 3.2626565371174365e-05,
+            "focus_minus_eos_logit": 4.582322120666504,
+            "focus_minus_best_other_logit": -4.178849697113037,
+            "entropy_nats": 4.8618268966674805
+          }
+        }
+      ]
+    },
+    {
+      "subject": "parent",
+      "case": "single_word",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.57353401184082,
+            "focus_probability": 0.03613140806555748,
+            "eos_logit": 1.705258846282959,
+            "eos_probability": 1.3827268958266359e-05,
+            "focus_minus_eos_logit": 7.868275165557861,
+            "focus_minus_best_other_logit": 0.00951385498046875,
+            "entropy_nats": 6.110781669616699
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.57353401184082,
+            "focus_probability": 0.03613140806555748,
+            "eos_logit": 1.705258846282959,
+            "eos_probability": 1.3827268958266359e-05,
+            "focus_minus_eos_logit": 7.868275165557861,
+            "focus_minus_best_other_logit": 0.00951385498046875,
+            "entropy_nats": 6.110781669616699
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.57353401184082,
+            "focus_probability": 0.03613140806555748,
+            "eos_logit": 1.705258846282959,
+            "eos_probability": 1.3827268958266359e-05,
+            "focus_minus_eos_logit": 7.868275165557861,
+            "focus_minus_best_other_logit": 0.00951385498046875,
+            "entropy_nats": 6.110781669616699
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 10.787324905395508,
+            "focus_probability": 0.16886183619499207,
+            "eos_logit": 1.9420166015625,
+            "eos_probability": 2.4325563572347164e-05,
+            "focus_minus_eos_logit": 8.845308303833008,
+            "focus_minus_best_other_logit": 1.879201889038086,
+            "entropy_nats": 5.63877010345459
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 10.787324905395508,
+            "focus_probability": 0.16886183619499207,
+            "eos_logit": 1.9420166015625,
+            "eos_probability": 2.4325563572347164e-05,
+            "focus_minus_eos_logit": 8.845308303833008,
+            "focus_minus_best_other_logit": 1.879201889038086,
+            "entropy_nats": 5.63877010345459
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 14881,
+            "argmax_text": " 누구",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 7.916174411773682,
+            "focus_probability": 0.020970480516552925,
+            "eos_logit": 2.624103307723999,
+            "eos_probability": 0.00010550941078690812,
+            "focus_minus_eos_logit": 5.292071342468262,
+            "focus_minus_best_other_logit": -0.21763181686401367,
+            "entropy_nats": 6.615345001220703
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 11.994908332824707,
+            "focus_probability": 0.5390325784683228,
+            "eos_logit": 2.6170413494110107,
+            "eos_probability": 4.5588913053506985e-05,
+            "focus_minus_eos_logit": 9.377866744995117,
+            "focus_minus_best_other_logit": 3.177962303161621,
+            "entropy_nats": 3.6901514530181885
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 11.994908332824707,
+            "focus_probability": 0.5390325784683228,
+            "eos_logit": 2.6170413494110107,
+            "eos_probability": 4.5588913053506985e-05,
+            "focus_minus_eos_logit": 9.377866744995117,
+            "focus_minus_best_other_logit": 3.177962303161621,
+            "entropy_nats": 3.6901514530181885
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 14881,
+            "argmax_text": " 누구",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 7.86635684967041,
+            "focus_probability": 0.01829550415277481,
+            "eos_logit": 2.8297955989837646,
+            "eos_probability": 0.00011884850391652435,
+            "focus_minus_eos_logit": 5.036561012268066,
+            "focus_minus_best_other_logit": -0.29967212677001953,
+            "entropy_nats": 6.657665729522705
+          }
+        }
+      ]
+    },
+    {
+      "subject": "parent",
+      "case": "numbered_listing",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 9.932429313659668,
+            "focus_probability": 0.2490941435098648,
+            "eos_logit": 1.939857006072998,
+            "eos_probability": 8.418476500082761e-05,
+            "focus_minus_eos_logit": 7.99257230758667,
+            "focus_minus_best_other_logit": 0.8437824249267578,
+            "entropy_nats": 4.930359840393066
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 9.455849647521973,
+            "focus_probability": 0.20115332305431366,
+            "eos_logit": 2.4241552352905273,
+            "eos_probability": 0.00017770560225471854,
+            "focus_minus_eos_logit": 7.031694412231445,
+            "focus_minus_best_other_logit": 0.4467811584472656,
+            "entropy_nats": 5.06712007522583
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 9.442078590393066,
+            "focus_probability": 0.18073421716690063,
+            "eos_logit": 0.9410697817802429,
+            "eos_probability": 3.6736611946253106e-05,
+            "focus_minus_eos_logit": 8.501008987426758,
+            "focus_minus_best_other_logit": 0.9619150161743164,
+            "entropy_nats": 5.605869770050049
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 12.696747779846191,
+            "focus_probability": 0.7707815170288086,
+            "eos_logit": 3.173434019088745,
+            "eos_probability": 5.636490459437482e-05,
+            "focus_minus_eos_logit": 9.523313522338867,
+            "focus_minus_best_other_logit": 2.7439069747924805,
+            "entropy_nats": 1.3601839542388916
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 1363,
+            "argmax_text": "하기",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 5.036123752593994,
+            "focus_probability": 0.002105541294440627,
+            "eos_logit": 1.9753493070602417,
+            "eos_probability": 9.864756430033594e-05,
+            "focus_minus_eos_logit": 3.060774326324463,
+            "focus_minus_best_other_logit": -3.7166647911071777,
+            "entropy_nats": 6.6940484046936035
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 9.656293869018555,
+            "focus_probability": 0.11565162986516953,
+            "eos_logit": 2.007411479949951,
+            "eos_probability": 5.51168413949199e-05,
+            "focus_minus_eos_logit": 7.6488823890686035,
+            "focus_minus_best_other_logit": 0.4537363052368164,
+            "entropy_nats": 5.674679756164551
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 13.106687545776367,
+            "focus_probability": 0.800512433052063,
+            "eos_logit": 2.078925371170044,
+            "eos_probability": 1.300384337810101e-05,
+            "focus_minus_eos_logit": 11.027762413024902,
+            "focus_minus_best_other_logit": 2.1155433654785156,
+            "entropy_nats": 1.0809723138809204
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 296,
+            "argmax_text": "이",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 3.5733437538146973,
+            "focus_probability": 0.0009336618240922689,
+            "eos_logit": 1.279715657234192,
+            "eos_probability": 9.420621063327417e-05,
+            "focus_minus_eos_logit": 2.293628215789795,
+            "focus_minus_best_other_logit": -4.620143413543701,
+            "entropy_nats": 6.356882095336914
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3309,
+            "argmax_text": " 질",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 6.810680866241455,
+            "focus_probability": 0.01643967628479004,
+            "eos_logit": 0.8824613690376282,
+            "eos_probability": 4.3782474676845595e-05,
+            "focus_minus_eos_logit": 5.928219318389893,
+            "focus_minus_best_other_logit": -1.8906664848327637,
+            "entropy_nats": 6.32086181640625
+          }
+        }
+      ]
+    },
+    {
+      "subject": "parent",
+      "case": "english_question",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 12.978279113769531,
+            "focus_probability": 0.6549412608146667,
+            "eos_logit": 3.919475793838501,
+            "eos_probability": 7.621035183547065e-05,
+            "focus_minus_eos_logit": 9.05880355834961,
+            "focus_minus_best_other_logit": 1.7619590759277344,
+            "entropy_nats": 1.9947466850280762
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 10.143882751464844,
+            "focus_probability": 0.30523666739463806,
+            "eos_logit": 4.087790489196777,
+            "eos_probability": 0.0007153346668928862,
+            "focus_minus_eos_logit": 6.056092262268066,
+            "focus_minus_best_other_logit": 1.1775226593017578,
+            "entropy_nats": 4.355103015899658
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 10.737590789794922,
+            "focus_probability": 0.3228853642940521,
+            "eos_logit": 6.004234313964844,
+            "eos_probability": 0.0028403885662555695,
+            "focus_minus_eos_logit": 4.733356475830078,
+            "focus_minus_best_other_logit": 1.1648378372192383,
+            "entropy_nats": 3.8168439865112305
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 14.22139835357666,
+            "focus_probability": 0.7852136492729187,
+            "eos_logit": 4.796499252319336,
+            "eos_probability": 6.335868965834379e-05,
+            "focus_minus_eos_logit": 9.424899101257324,
+            "focus_minus_best_other_logit": 2.130462646484375,
+            "entropy_nats": 1.193561315536499
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 7.049344539642334,
+            "focus_probability": 0.005978304427117109,
+            "eos_logit": 5.3559160232543945,
+            "eos_probability": 0.0010993382893502712,
+            "focus_minus_eos_logit": 1.6934285163879395,
+            "focus_minus_best_other_logit": -3.2897658348083496,
+            "entropy_nats": 3.664853811264038
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 10.364072799682617,
+            "focus_probability": 0.176820307970047,
+            "eos_logit": 5.433154582977295,
+            "eos_probability": 0.0012766198487952352,
+            "focus_minus_eos_logit": 4.930918216705322,
+            "focus_minus_best_other_logit": -0.27451229095458984,
+            "entropy_nats": 3.145824670791626
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 14.622346878051758,
+            "focus_probability": 0.8287932276725769,
+            "eos_logit": 4.9370436668396,
+            "eos_probability": 5.1543353038141504e-05,
+            "focus_minus_eos_logit": 9.685302734375,
+            "focus_minus_best_other_logit": 2.386904716491699,
+            "entropy_nats": 0.9735612869262695
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 22481,
+            "argmax_text": "swer",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 6.889430522918701,
+            "focus_probability": 0.009323230013251305,
+            "eos_logit": 2.9573662281036377,
+            "eos_probability": 0.00018276476475875825,
+            "focus_minus_eos_logit": 3.9320642948150635,
+            "focus_minus_best_other_logit": -3.6790499687194824,
+            "entropy_nats": 4.890838623046875
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 586,
+            "argmax_text": " 3",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 10.817560195922852,
+            "focus_probability": 0.20653103291988373,
+            "eos_logit": 6.480212688446045,
+            "eos_probability": 0.002699598902836442,
+            "focus_minus_eos_logit": 4.337347507476807,
+            "focus_minus_best_other_logit": -0.2547483444213867,
+            "entropy_nats": 2.9430792331695557
+          }
+        }
+      ]
+    },
+    {
+      "subject": "shared",
+      "case": "question_copy",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 12.392017364501953,
+            "focus_probability": 0.6650412678718567,
+            "eos_logit": 1.1469312906265259,
+            "eos_probability": 8.693004929227754e-06,
+            "focus_minus_eos_logit": 11.245085716247559,
+            "focus_minus_best_other_logit": 3.6265945434570312,
+            "entropy_nats": 2.783754587173462
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 11.438276290893555,
+            "focus_probability": 0.5421664714813232,
+            "eos_logit": 2.6413984298706055,
+            "eos_probability": 8.197796705644578e-05,
+            "focus_minus_eos_logit": 8.79687786102295,
+            "focus_minus_best_other_logit": 2.981853485107422,
+            "entropy_nats": 3.6140635013580322
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 571,
+            "argmax_text": " 가",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.101587772369385,
+            "focus_probability": 0.02010238543152809,
+            "eos_logit": 1.490487813949585,
+            "eos_probability": 7.35153371351771e-05,
+            "focus_minus_eos_logit": 5.611100196838379,
+            "focus_minus_best_other_logit": -1.2086024284362793,
+            "entropy_nats": 7.21638298034668
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 14.92525863647461,
+            "focus_probability": 0.9329524040222168,
+            "eos_logit": 1.0977894067764282,
+            "eos_probability": 9.218622949447308e-07,
+            "focus_minus_eos_logit": 13.827468872070312,
+            "focus_minus_best_other_logit": 4.926211357116699,
+            "entropy_nats": 0.625376284122467
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 8.295348167419434,
+            "focus_probability": 0.056217361241579056,
+            "eos_logit": 1.436589002609253,
+            "eos_probability": 5.9040401538368315e-05,
+            "focus_minus_eos_logit": 6.858758926391602,
+            "focus_minus_best_other_logit": 1.2916383743286133,
+            "entropy_nats": 7.086678504943848
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 571,
+            "argmax_text": " 가",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.413689613342285,
+            "focus_probability": 0.019367041066288948,
+            "eos_logit": 1.0316002368927002,
+            "eos_probability": 3.2760988688096404e-05,
+            "focus_minus_eos_logit": 6.382089614868164,
+            "focus_minus_best_other_logit": -1.7322816848754883,
+            "entropy_nats": 6.336598873138428
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 16.829683303833008,
+            "focus_probability": 0.9855168461799622,
+            "eos_logit": 1.2825653553009033,
+            "eos_probability": 1.7443612421175203e-07,
+            "focus_minus_eos_logit": 15.547118186950684,
+            "focus_minus_best_other_logit": 6.118589401245117,
+            "entropy_nats": 0.14871183037757874
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 296,
+            "argmax_text": "이",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.6446075439453125,
+            "focus_probability": 0.03230617567896843,
+            "eos_logit": 2.3599061965942383,
+            "eos_probability": 0.00016374533879570663,
+            "focus_minus_eos_logit": 5.284701347351074,
+            "focus_minus_best_other_logit": -0.5812778472900391,
+            "entropy_nats": 6.903961181640625
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 571,
+            "argmax_text": " 가",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.774923324584961,
+            "focus_probability": 0.013427694328129292,
+            "eos_logit": -0.38623908162117004,
+            "eos_probability": 3.834013568848604e-06,
+            "focus_minus_eos_logit": 8.161162376403809,
+            "focus_minus_best_other_logit": -2.888981819152832,
+            "entropy_nats": 4.669229507446289
+          }
+        }
+      ]
+    },
+    {
+      "subject": "shared",
+      "case": "single_word",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.534326553344727,
+            "focus_probability": 0.043801333755254745,
+            "eos_logit": 2.2873473167419434,
+            "eos_probability": 3.120069231954403e-05,
+            "focus_minus_eos_logit": 7.246979236602783,
+            "focus_minus_best_other_logit": 0.1289215087890625,
+            "entropy_nats": 6.187182426452637
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.534326553344727,
+            "focus_probability": 0.043801333755254745,
+            "eos_logit": 2.2873473167419434,
+            "eos_probability": 3.120069231954403e-05,
+            "focus_minus_eos_logit": 7.246979236602783,
+            "focus_minus_best_other_logit": 0.1289215087890625,
+            "entropy_nats": 6.187182426452637
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.534326553344727,
+            "focus_probability": 0.043801333755254745,
+            "eos_logit": 2.2873473167419434,
+            "eos_probability": 3.120069231954403e-05,
+            "focus_minus_eos_logit": 7.246979236602783,
+            "focus_minus_best_other_logit": 0.1289215087890625,
+            "entropy_nats": 6.187182426452637
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.431063652038574,
+            "focus_probability": 0.07110793143510818,
+            "eos_logit": 3.29618501663208,
+            "eos_probability": 0.0001540189259685576,
+            "focus_minus_eos_logit": 6.134878635406494,
+            "focus_minus_best_other_logit": 1.0206012725830078,
+            "entropy_nats": 6.083644866943359
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.431063652038574,
+            "focus_probability": 0.07110793143510818,
+            "eos_logit": 3.29618501663208,
+            "eos_probability": 0.0001540189259685576,
+            "focus_minus_eos_logit": 6.134878635406494,
+            "focus_minus_best_other_logit": 1.0206012725830078,
+            "entropy_nats": 6.083644866943359
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 14,
+            "argmax_text": ",",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 8.135187149047852,
+            "focus_probability": 0.02658662386238575,
+            "eos_logit": 3.122559070587158,
+            "eos_probability": 0.00017689129163045436,
+            "focus_minus_eos_logit": 5.012628078460693,
+            "focus_minus_best_other_logit": -0.5096654891967773,
+            "entropy_nats": 6.460043907165527
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.9636812210083,
+            "focus_probability": 0.23686863481998444,
+            "eos_logit": 4.766270637512207,
+            "eos_probability": 0.001310089137405157,
+            "focus_minus_eos_logit": 5.197410583496094,
+            "focus_minus_best_other_logit": 1.3595504760742188,
+            "entropy_nats": 5.2871294021606445
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.9636812210083,
+            "focus_probability": 0.23686863481998444,
+            "eos_logit": 4.766270637512207,
+            "eos_probability": 0.001310089137405157,
+            "focus_minus_eos_logit": 5.197410583496094,
+            "focus_minus_best_other_logit": 1.3595504760742188,
+            "entropy_nats": 5.2871294021606445
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 33,
+            "argmax_text": "?",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 7.5419230461120605,
+            "focus_probability": 0.013175874017179012,
+            "eos_logit": 3.3426103591918945,
+            "eos_probability": 0.00019771566439885646,
+            "focus_minus_eos_logit": 4.199312686920166,
+            "focus_minus_best_other_logit": -1.518144130706787,
+            "entropy_nats": 6.398980140686035
+          }
+        }
+      ]
+    },
+    {
+      "subject": "shared",
+      "case": "numbered_listing",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 9.038511276245117,
+            "focus_probability": 0.13525523245334625,
+            "eos_logit": 1.3444938659667969,
+            "eos_probability": 6.161475903354585e-05,
+            "focus_minus_eos_logit": 7.69401741027832,
+            "focus_minus_best_other_logit": 0.3715553283691406,
+            "entropy_nats": 5.568662643432617
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 8.792607307434082,
+            "focus_probability": 0.1461283266544342,
+            "eos_logit": 1.7913851737976074,
+            "eos_probability": 0.00013308902271091938,
+            "focus_minus_eos_logit": 7.001222133636475,
+            "focus_minus_best_other_logit": 0.10986995697021484,
+            "entropy_nats": 5.26326322555542
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 8.191009521484375,
+            "focus_probability": 0.0876062735915184,
+            "eos_logit": 0.5137565732002258,
+            "eos_probability": 4.058323611388914e-05,
+            "focus_minus_eos_logit": 7.677252769470215,
+            "focus_minus_best_other_logit": 0.36523962020874023,
+            "entropy_nats": 6.387062072753906
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 11.620577812194824,
+            "focus_probability": 0.5075933933258057,
+            "eos_logit": 3.1266520023345947,
+            "eos_probability": 0.00010390842362539843,
+            "focus_minus_eos_logit": 8.493926048278809,
+            "focus_minus_best_other_logit": 1.6409778594970703,
+            "entropy_nats": 2.435373544692993
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 1363,
+            "argmax_text": "하기",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 4.948047161102295,
+            "focus_probability": 0.0014009600272402167,
+            "eos_logit": 0.5515410304069519,
+            "eos_probability": 1.726026675896719e-05,
+            "focus_minus_eos_logit": 4.396506309509277,
+            "focus_minus_best_other_logit": -4.724282741546631,
+            "entropy_nats": 5.920211315155029
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 10.64444351196289,
+            "focus_probability": 0.2885805666446686,
+            "eos_logit": 1.3600943088531494,
+            "eos_probability": 2.6799418264999986e-05,
+            "focus_minus_eos_logit": 9.28434944152832,
+            "focus_minus_best_other_logit": 0.9152469635009766,
+            "entropy_nats": 4.2210564613342285
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 11.624634742736816,
+            "focus_probability": 0.44793468713760376,
+            "eos_logit": 2.1291513442993164,
+            "eos_probability": 3.368050965946168e-05,
+            "focus_minus_eos_logit": 9.4954833984375,
+            "focus_minus_best_other_logit": 0.6809101104736328,
+            "entropy_nats": 2.4942002296447754
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 14,
+            "argmax_text": ",",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 4.3158721923828125,
+            "focus_probability": 0.0022653855849057436,
+            "eos_logit": 1.0625691413879395,
+            "eos_probability": 8.754891314310953e-05,
+            "focus_minus_eos_logit": 3.253303050994873,
+            "focus_minus_best_other_logit": -4.94797420501709,
+            "entropy_nats": 5.179889678955078
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3309,
+            "argmax_text": " 질",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 7.746449947357178,
+            "focus_probability": 0.039684079587459564,
+            "eos_logit": -0.20271815359592438,
+            "eos_probability": 1.4006725905346684e-05,
+            "focus_minus_eos_logit": 7.9491682052612305,
+            "focus_minus_best_other_logit": -1.7119507789611816,
+            "entropy_nats": 5.452909469604492
+          }
+        }
+      ]
+    },
+    {
+      "subject": "shared",
+      "case": "english_question",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 11.277322769165039,
+            "focus_probability": 0.3902992904186249,
+            "eos_logit": 3.4974205493927,
+            "eos_probability": 0.00016316576511599123,
+            "focus_minus_eos_logit": 7.779902458190918,
+            "focus_minus_best_other_logit": 1.123147964477539,
+            "entropy_nats": 3.4611692428588867
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 8.64355182647705,
+            "focus_probability": 0.1302974969148636,
+            "eos_logit": 4.0709452629089355,
+            "eos_probability": 0.0013461030321195722,
+            "focus_minus_eos_logit": 4.572606563568115,
+            "focus_minus_best_other_logit": 0.8728694915771484,
+            "entropy_nats": 5.4198408126831055
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 201,
+            "argmax_text": "\n",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 9.40589714050293,
+            "focus_probability": 0.12824049592018127,
+            "eos_logit": 5.613154888153076,
+            "eos_probability": 0.0028897360898554325,
+            "focus_minus_eos_logit": 3.7927422523498535,
+            "focus_minus_best_other_logit": -0.20107078552246094,
+            "entropy_nats": 4.500389099121094
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 12.649069786071777,
+            "focus_probability": 0.5831499695777893,
+            "eos_logit": 4.426692962646484,
+            "eos_probability": 0.00015662005171179771,
+            "focus_minus_eos_logit": 8.222376823425293,
+            "focus_minus_best_other_logit": 1.3721656799316406,
+            "entropy_nats": 2.1962223052978516
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 7.021750450134277,
+            "focus_probability": 0.006425486411899328,
+            "eos_logit": 4.3686065673828125,
+            "eos_probability": 0.00045254340511746705,
+            "focus_minus_eos_logit": 2.653143882751465,
+            "focus_minus_best_other_logit": -3.4882640838623047,
+            "entropy_nats": 3.295168399810791
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 9.272296905517578,
+            "focus_probability": 0.11900609731674194,
+            "eos_logit": 5.300680637359619,
+            "eos_probability": 0.0022424261551350355,
+            "focus_minus_eos_logit": 3.971616268157959,
+            "focus_minus_best_other_logit": -0.0347747802734375,
+            "entropy_nats": 4.207550048828125
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 13.528759956359863,
+            "focus_probability": 0.675539493560791,
+            "eos_logit": 4.764121055603027,
+            "eos_probability": 0.00010549124999670312,
+            "focus_minus_eos_logit": 8.764638900756836,
+            "focus_minus_best_other_logit": 1.6243677139282227,
+            "entropy_nats": 1.6665512323379517
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 22481,
+            "argmax_text": "swer",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 6.7684431076049805,
+            "focus_probability": 0.010504595004022121,
+            "eos_logit": 2.5124709606170654,
+            "eos_probability": 0.0001489478599978611,
+            "focus_minus_eos_logit": 4.255971908569336,
+            "focus_minus_best_other_logit": -2.591320037841797,
+            "entropy_nats": 6.064630508422852
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 586,
+            "argmax_text": " 3",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 9.309242248535156,
+            "focus_probability": 0.06441013514995575,
+            "eos_logit": 6.244781017303467,
+            "eos_probability": 0.0030065998435020447,
+            "focus_minus_eos_logit": 3.0644612312316895,
+            "focus_minus_best_other_logit": -1.3283042907714844,
+            "entropy_nats": 3.175015687942505
+          }
+        }
+      ]
+    },
+    {
+      "subject": "rank64",
+      "case": "question_copy",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 12.613344192504883,
+            "focus_probability": 0.6933236718177795,
+            "eos_logit": 1.2499334812164307,
+            "eos_probability": 8.051361874095164e-06,
+            "focus_minus_eos_logit": 11.363410949707031,
+            "focus_minus_best_other_logit": 3.750178337097168,
+            "entropy_nats": 2.551295042037964
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 11.31368637084961,
+            "focus_probability": 0.5061678290367126,
+            "eos_logit": 2.748324394226074,
+            "eos_probability": 9.647284605307505e-05,
+            "focus_minus_eos_logit": 8.565361976623535,
+            "focus_minus_best_other_logit": 2.7587127685546875,
+            "entropy_nats": 3.8279149532318115
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 571,
+            "argmax_text": " 가",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 6.660545349121094,
+            "focus_probability": 0.014200794510543346,
+            "eos_logit": 1.6772220134735107,
+            "eos_probability": 9.72932975855656e-05,
+            "focus_minus_eos_logit": 4.983323097229004,
+            "focus_minus_best_other_logit": -1.5149955749511719,
+            "entropy_nats": 7.19853401184082
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 15.324650764465332,
+            "focus_probability": 0.9466259479522705,
+            "eos_logit": 1.1565133333206177,
+            "eos_probability": 6.653259561062441e-07,
+            "focus_minus_eos_logit": 14.168137550354004,
+            "focus_minus_best_other_logit": 5.123861312866211,
+            "entropy_nats": 0.49840253591537476
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 8.250603675842285,
+            "focus_probability": 0.05139737203717232,
+            "eos_logit": 1.444413661956787,
+            "eos_probability": 5.689186218660325e-05,
+            "focus_minus_eos_logit": 6.806190013885498,
+            "focus_minus_best_other_logit": 0.9965434074401855,
+            "entropy_nats": 7.059266090393066
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 792,
+            "argmax_text": " 나",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.401750087738037,
+            "focus_probability": 0.019431130960583687,
+            "eos_logit": 1.1324071884155273,
+            "eos_probability": 3.679230940178968e-05,
+            "focus_minus_eos_logit": 6.26934289932251,
+            "focus_minus_best_other_logit": -1.6580185890197754,
+            "entropy_nats": 6.324277877807617
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 17780,
+            "argmax_text": " 나의",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 16.776865005493164,
+            "focus_probability": 0.9855522513389587,
+            "eos_logit": 1.2968767881393433,
+            "eos_probability": 1.8655471478723484e-07,
+            "focus_minus_eos_logit": 15.479988098144531,
+            "focus_minus_best_other_logit": 6.14913272857666,
+            "entropy_nats": 0.1468474119901657
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 296,
+            "argmax_text": "이",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.760212421417236,
+            "focus_probability": 0.03843938186764717,
+            "eos_logit": 2.202425718307495,
+            "eos_probability": 0.00014827243285253644,
+            "focus_minus_eos_logit": 5.55778694152832,
+            "focus_minus_best_other_logit": -0.25196313858032227,
+            "entropy_nats": 7.079169273376465
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 792,
+            "argmax_text": " 나",
+            "focus_id": 17780,
+            "focus_text": " 나의",
+            "focus_logit": 7.543506622314453,
+            "focus_probability": 0.01090494729578495,
+            "eos_logit": 0.032389722764492035,
+            "eos_probability": 5.964676802250324e-06,
+            "focus_minus_eos_logit": 7.511116981506348,
+            "focus_minus_best_other_logit": -3.241225242614746,
+            "entropy_nats": 4.487594127655029
+          }
+        }
+      ]
+    },
+    {
+      "subject": "rank64",
+      "case": "single_word",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3317,
+            "argmax_text": " 하고",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.187768936157227,
+            "focus_probability": 0.03347420319914818,
+            "eos_logit": 2.344141960144043,
+            "eos_probability": 3.5691173252416775e-05,
+            "focus_minus_eos_logit": 6.843626976013184,
+            "focus_minus_best_other_logit": -0.21631240844726562,
+            "entropy_nats": 6.211498260498047
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 3317,
+            "argmax_text": " 하고",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.187768936157227,
+            "focus_probability": 0.03347420319914818,
+            "eos_logit": 2.344141960144043,
+            "eos_probability": 3.5691173252416775e-05,
+            "focus_minus_eos_logit": 6.843626976013184,
+            "focus_minus_best_other_logit": -0.21631240844726562,
+            "entropy_nats": 6.211498260498047
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3317,
+            "argmax_text": " 하고",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.187768936157227,
+            "focus_probability": 0.03347420319914818,
+            "eos_logit": 2.344141960144043,
+            "eos_probability": 3.5691173252416775e-05,
+            "focus_minus_eos_logit": 6.843626976013184,
+            "focus_minus_best_other_logit": -0.21631240844726562,
+            "entropy_nats": 6.211498260498047
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.498863220214844,
+            "focus_probability": 0.07743057608604431,
+            "eos_logit": 2.8957912921905518,
+            "eos_probability": 0.0001050109785865061,
+            "focus_minus_eos_logit": 6.603072166442871,
+            "focus_minus_best_other_logit": 1.2499189376831055,
+            "entropy_nats": 6.131349563598633
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 9.498863220214844,
+            "focus_probability": 0.07743057608604431,
+            "eos_logit": 2.8957912921905518,
+            "eos_probability": 0.0001050109785865061,
+            "focus_minus_eos_logit": 6.603072166442871,
+            "focus_minus_best_other_logit": 1.2499189376831055,
+            "entropy_nats": 6.131349563598633
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 14,
+            "argmax_text": ",",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 7.618358612060547,
+            "focus_probability": 0.01782405748963356,
+            "eos_logit": 3.1828649044036865,
+            "eos_probability": 0.00021120112796779722,
+            "focus_minus_eos_logit": 4.435493469238281,
+            "focus_minus_best_other_logit": -0.9340934753417969,
+            "entropy_nats": 6.595022201538086
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 10.301711082458496,
+            "focus_probability": 0.30096182227134705,
+            "eos_logit": 4.266169548034668,
+            "eos_probability": 0.0007199610699899495,
+            "focus_minus_eos_logit": 6.035541534423828,
+            "focus_minus_best_other_logit": 1.9029359817504883,
+            "entropy_nats": 5.159994602203369
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 11346,
+            "argmax_text": " 어떻게",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 10.301711082458496,
+            "focus_probability": 0.30096182227134705,
+            "eos_logit": 4.266169548034668,
+            "eos_probability": 0.0007199610699899495,
+            "focus_minus_eos_logit": 6.035541534423828,
+            "focus_minus_best_other_logit": 1.9029359817504883,
+            "entropy_nats": 5.159994602203369
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 33,
+            "argmax_text": "?",
+            "focus_id": 11346,
+            "focus_text": " 어떻게",
+            "focus_logit": 6.865562438964844,
+            "focus_probability": 0.007400681264698505,
+            "eos_logit": 3.762347936630249,
+            "eos_probability": 0.0003323249111417681,
+            "focus_minus_eos_logit": 3.1032145023345947,
+            "focus_minus_best_other_logit": -2.3883209228515625,
+            "entropy_nats": 6.336882591247559
+          }
+        }
+      ]
+    },
+    {
+      "subject": "rank64",
+      "case": "numbered_listing",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 9.023204803466797,
+            "focus_probability": 0.12953366339206696,
+            "eos_logit": 1.6409554481506348,
+            "eos_probability": 8.059581159614027e-05,
+            "focus_minus_eos_logit": 7.382249355316162,
+            "focus_minus_best_other_logit": 0.3223543167114258,
+            "entropy_nats": 5.753170967102051
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 8.516390800476074,
+            "focus_probability": 0.11376365274190903,
+            "eos_logit": 2.0812137126922607,
+            "eos_probability": 0.0001824911159928888,
+            "focus_minus_eos_logit": 6.435176849365234,
+            "focus_minus_best_other_logit": 0.1188669204711914,
+            "entropy_nats": 5.728216171264648
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 8.556937217712402,
+            "focus_probability": 0.10099844634532928,
+            "eos_logit": 0.7691940069198608,
+            "eos_probability": 4.189294122625142e-05,
+            "focus_minus_eos_logit": 7.787743091583252,
+            "focus_minus_best_other_logit": 0.49701786041259766,
+            "entropy_nats": 6.170775890350342
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 11.590696334838867,
+            "focus_probability": 0.5630422830581665,
+            "eos_logit": 3.40185546875,
+            "eos_probability": 0.00015637690376024693,
+            "focus_minus_eos_logit": 8.188840866088867,
+            "focus_minus_best_other_logit": 2.073920249938965,
+            "entropy_nats": 2.335925579071045
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 1363,
+            "argmax_text": "하기",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 4.5523362159729,
+            "focus_probability": 0.0013413704000413418,
+            "eos_logit": 0.8594390153884888,
+            "eos_probability": 3.3399795938748866e-05,
+            "focus_minus_eos_logit": 3.692897319793701,
+            "focus_minus_best_other_logit": -4.395860195159912,
+            "entropy_nats": 6.574049949645996
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 10.052277565002441,
+            "focus_probability": 0.2024620771408081,
+            "eos_logit": 1.8323192596435547,
+            "eos_probability": 5.4508112953044474e-05,
+            "focus_minus_eos_logit": 8.219958305358887,
+            "focus_minus_best_other_logit": 0.772822380065918,
+            "entropy_nats": 5.061038970947266
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 12.66844654083252,
+            "focus_probability": 0.6811503767967224,
+            "eos_logit": 1.987607717514038,
+            "eos_probability": 1.5653582522645593e-05,
+            "focus_minus_eos_logit": 10.680838584899902,
+            "focus_minus_best_other_logit": 1.447047233581543,
+            "entropy_nats": 1.5099890232086182
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 14,
+            "argmax_text": ",",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 4.1769118309021,
+            "focus_probability": 0.002046141540631652,
+            "eos_logit": 1.2793493270874023,
+            "eos_probability": 0.00011286005610600114,
+            "focus_minus_eos_logit": 2.8975625038146973,
+            "focus_minus_best_other_logit": -4.871545314788818,
+            "entropy_nats": 5.395877838134766
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3309,
+            "argmax_text": " 질",
+            "focus_id": 356,
+            "focus_text": " 2",
+            "focus_logit": 8.519155502319336,
+            "focus_probability": 0.08339086920022964,
+            "eos_logit": 0.2606489658355713,
+            "eos_probability": 2.1602028937195428e-05,
+            "focus_minus_eos_logit": 8.258506774902344,
+            "focus_minus_best_other_logit": -0.2826557159423828,
+            "entropy_nats": 5.762300968170166
+          }
+        }
+      ]
+    },
+    {
+      "subject": "rank64",
+      "case": "english_question",
+      "baselines": [
+        {
+          "chunks": 1,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 11.588274002075195,
+            "focus_probability": 0.4253608286380768,
+            "eos_logit": 3.6401960849761963,
+            "eos_probability": 0.00015029724454507232,
+            "focus_minus_eos_logit": 7.948078155517578,
+            "focus_minus_best_other_logit": 1.2052640914916992,
+            "entropy_nats": 3.2654128074645996
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 8.230863571166992,
+            "focus_probability": 0.1000622883439064,
+            "eos_logit": 3.964557647705078,
+            "eos_probability": 0.0014042268740013242,
+            "focus_minus_eos_logit": 4.266305923461914,
+            "focus_minus_best_other_logit": 0.7515101432800293,
+            "entropy_nats": 5.702723979949951
+          }
+        },
+        {
+          "chunks": 1,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 9.58078670501709,
+            "focus_probability": 0.14801576733589172,
+            "eos_logit": 5.6230316162109375,
+            "eos_probability": 0.0028279831167310476,
+            "focus_minus_eos_logit": 3.9577550888061523,
+            "focus_minus_best_other_logit": 0.054473876953125,
+            "entropy_nats": 4.528032302856445
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 12.966554641723633,
+            "focus_probability": 0.6173207759857178,
+            "eos_logit": 4.563767433166504,
+            "eos_probability": 0.0001384289062116295,
+            "focus_minus_eos_logit": 8.402787208557129,
+            "focus_minus_best_other_logit": 1.4713506698608398,
+            "entropy_nats": 2.0149645805358887
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 356,
+            "argmax_text": " 2",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 6.993360996246338,
+            "focus_probability": 0.007413825951516628,
+            "eos_logit": 4.2744059562683105,
+            "eos_probability": 0.0004888945841230452,
+            "focus_minus_eos_logit": 2.7189550399780273,
+            "focus_minus_best_other_logit": -3.2306504249572754,
+            "entropy_nats": 3.598116397857666
+          }
+        },
+        {
+          "chunks": 3,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 10.00671100616455,
+            "focus_probability": 0.20155586302280426,
+            "eos_logit": 5.221668720245361,
+            "eos_probability": 0.0016837514704093337,
+            "focus_minus_eos_logit": 4.7850422859191895,
+            "focus_minus_best_other_logit": 0.8697977066040039,
+            "entropy_nats": 4.0088396072387695
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "observed",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 13.809653282165527,
+            "focus_probability": 0.7022814154624939,
+            "eos_logit": 4.780721664428711,
+            "eos_probability": 8.419687947025523e-05,
+            "focus_minus_eos_logit": 9.028931617736816,
+            "focus_minus_best_other_logit": 1.6924962997436523,
+            "entropy_nats": 1.5154258012771606
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "order_shuffle",
+          "metrics": {
+            "argmax_id": 22481,
+            "argmax_text": "swer",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 6.594254970550537,
+            "focus_probability": 0.006753905210644007,
+            "eos_logit": 2.566572904586792,
+            "eos_probability": 0.00012032474478473887,
+            "focus_minus_eos_logit": 4.027682304382324,
+            "focus_minus_best_other_logit": -3.799363613128662,
+            "entropy_nats": 5.354154109954834
+          }
+        },
+        {
+          "chunks": 8,
+          "variant": "prompt_cycle",
+          "metrics": {
+            "argmax_id": 3041,
+            "argmax_text": " What",
+            "focus_id": 3041,
+            "focus_text": " What",
+            "focus_logit": 10.913400650024414,
+            "focus_probability": 0.26922282576560974,
+            "eos_logit": 6.599307537078857,
+            "eos_probability": 0.003601845121011138,
+            "focus_minus_eos_logit": 4.314093112945557,
+            "focus_minus_best_other_logit": 0.6337728500366211,
+            "entropy_nats": 3.1372628211975098
+          }
+        }
+      ]
+    }
+  ],
+  "new_generations": 18,
+  "optimizer_updates": 0,
+  "checkpoint_writes": 0
+}
