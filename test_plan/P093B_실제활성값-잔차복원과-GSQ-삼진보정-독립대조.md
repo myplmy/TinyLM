@@ -2,7 +2,7 @@
 
 > 계기: 사용자2026-10-09 LittleBit/GSQ/RCO 검토·A/B 독립 대조·신규 계획/SH/추가구현 요청.
 > [P093](P093_구조조건부-직접공유와-완화타잉.md)·[결과086 §4](../test_result/086_20260919_P093-회계상-R1은-남고-D1은-고계산이다.md)·[논문 리뷰08 §8](../docs/methods/08_paper_review2.md).
-> 2026-10-10 [결과103](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): A r8/16과GSQ식B는실제보정후문턱미달, factor는미호출HOLD다. 후속분할/LR·r32/64/실제답·정밀도게이트는준비/실물NOT_RUN이다.
+> 초기2026-10-10 r8/16·GSQ식B의복원음성과factor선결HOLD는유지한다. 최신2026-10-11 [결과103 §8~§12](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):dev선택/r8~64실물·표현48·실제반복24답/2186step회수. precision은선결HOLD,고정precision수치원인·C새학습은NOT_RUN이다.
 
 ## 1. 왜 — 함수 복원과 양자화 손실을 분리
 
@@ -69,7 +69,7 @@ r8/16 성공에 종속하지 않는다. rank를32/64로만 바꾼 같은 LR/초�
 
 유효한 unquantized capacity rank가 없으면모델시작전HOLD8이다. 통과한각r32/64에서FP32참조·FP16저장왕복(FP32실행)·현재native삼진인자왕복의test/wholeCE/실제8답/byte를비교한다. FP16resident/kernel이나GSQ인자추가최적화/RCO전체는아직아니다. 재구성함수·서버sampler·정상SFT기본을바꾸지않는다.
 
-후속 실물은아직NOT_RUN이다. 시간후보는A/B/precision각0.5h(상한3600초)·CPU각.02h다. 진단parent상주를deployment RSS와혼동하지않으며artifact는projection별20MB이하다.
+이 절의 준비시점 예상은A/B/precision각0.5h(상한3600초)·CPU각.02h였다. 현재실물회수는§10과결과103 §8에기록했으며정밀도는선결HOLD로모델미호출이다. 진단parent상주를deployment RSS와혼동하지않으며artifact는projection별20MB이하다.
 
 ## 5. 판정 기준
 
@@ -94,7 +94,7 @@ r8/16 성공에 종속하지 않는다. rank를32/64로만 바꾼 같은 LR/초�
 
 init/수집/보정/eval 시간을 나눠 공개한다. 실물 자원 미계측이다. d768/f2048/4층/r16 FP32 인자 한 벌 약2.063MiB 외에 참조/활성/optimizer가 추가다. 진단은 원부모를 보존하므로 active graph의 가상절감과 실제 process RSS를 혼동하지 않는다. projection별 artifact20MB 상한을 지킨다.
 
-## 7. 실행 → 사용자 WSL SH
+## 7. 초기 복구 실행 이력 → 현재 완료·Git 보존
 
 - `run_P093B_Stage0bW_recovery_contract.sh`
 - `run_P093B_Stage4Wa_dev_selected_rank8_16.sh`
@@ -102,7 +102,7 @@ init/수집/보정/eval 시간을 나눠 공개한다. 실물 자원 미계측�
 - `run_P093B_Stage4Wc_recovery_actual_answers.sh`
 - `run_P093B_Stage5W_factor_precision_roundtrip.sh` (유효한 unquantized capacity rank 뒤에만)
 
-입력 대기 없음·새 namespace·write-once·phase/final 판정이다. [결과103](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)에 옛5단계의 정확 재현 명령/Git 복구점이 있다. 새5SH는 [복구 driver](../scripts/diag_p093b_calibration_recovery.py)·[dev 선택 helper](../scripts/p093b_calibration_recovery.py)를 사용하며 STATIC_ONLY/새 모델 NOT_RUN이다. 일반300M·기본 모델 변경은 없다.
+위5SH는이제역사적완료이력이다. [결과103 §8](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)의원형969761e/-done/SHA/명령보존뒤사용자승인범위에서삭제했다. 현재큐에서없는파일을다시권하지않는다. [복구 driver](../scripts/diag_p093b_calibration_recovery.py)·[dev 선택 helper](../scripts/p093b_calibration_recovery.py)의실물보정음성과precision선결HOLD를구분하며일반300M·모델기본변경은없다. 새계측/현재다음단계는§10~§16이다.
 
 ## 8. 한계 (반드시 함께 기록)
 
@@ -121,9 +121,9 @@ init/수집/보정/eval 시간을 나눠 공개한다. 실물 자원 미계측�
 
 [결과103 §8~§9](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)에서 Stage0bW/4Wc는완료0,4Wa/4Wb는실제보정종료8,5W는선결HOLD8로회수했다. dev 선택이 늦은 과적합을 줄일 예측은 일부 관측됐지만 모든 rank의 test NRMS/10% 회복선은 여전히 미달이다. 부모도 질문을 반복하므로 r64가 반복을 새로 만들었다는 예측은 성립하지 않는다.
 
-### Stage6aW — 생성·cache·입력 계약 CPU 준비 / STATIC_ONLY
+### Stage6aW — 생성·cache·입력 계약 CPU 본체 완료 / wrapper NOT_RUN
 
-`run_P093B_Stage6aW_generation_contract.sh`는 새 helper/entry의 nucleus 확률·few-shot prefix·원형 재사용·체크포인트 접근 없는 check-only·partial 보존 계약을 검사한다. namespace `p093b_generation_v1_s1337`, CPU0.02h·600초 cap. 새 실물 NOT_RUN이다.
+`run_P093B_Stage6aW_generation_contract-done.sh`의 CPU 본체10시험은 직접 실행 완료이며 SH/runlog wrapper는 NOT_RUN이다. namespace `p093b_generation_v1_s1337`의 계약 report를 보존해 재실행하지 않는다. nucleus·few-shot·원형 재사용·check-only·partial 보존의 CPU 계약이며 모델 품질/Stage6bW 실행 증거는 아니다.
 
 ### Stage6bW — 같은 부모/shared/r64의 prompt×decoder 원인진단 / 사용자 GPU NOT_RUN
 
@@ -143,10 +143,115 @@ native sampler에는 top_p 인자가 없어 진단 scope에서 multinomial 확�
 
 사용자는1안과2안을우선채택하고저비용표현진단부터요청했다. 이는새C학습실행승인이아니다. 실제체크포인트/GPU진단은일반질문으로별도범위를확인하며승인전에는CPU회귀와SH준비만한다.
 
-### Stage6cW — 저장 원답의 마지막 hidden 소형 관찰 / 준비·실물NOT_RUN
+### Stage6cW — 저장 원답의 마지막 hidden 소형 관찰 / 완료0·표현인과 미확정
 
 `run_P093B_Stage6cW_hidden_representation_observation.sh`, 약0.08h추정/전체600초cap. 동일parent/shared/r64·기존8prompt와그prompt+저장원답의48forward만한다. return_hidden으로head logits/KVcache/새답생성을하지않고최종RMSnorm hidden만읽는다. source/토크나이저/보정원형 SHA는같으며optimizer/체크포인트쓰기0이다.
 
 위치수≤256·finite/0norm검사·같은tokenID쌍과다른tokenID쌍의cosine을분리한다. 중심화한단위벡터Gram의eigenvalue정규화로covariance entropy rank를보고하며특정점수로자동‘표현붕괴/오답’을판정하지않는다. 같은token을쓴정상JSON/코드반복의높은유사성과서로다른token도비슷한경우를혼동하지않는다.8개의짧은과제/루프 원답이므로일반LM isotropy나반복의인과를증명하지못한다. 낮은rank가보이면정상문장/다른부모의후속대조가필요하다.
 
 Stage6aW의최신CPU계약뒤6cW표현관찰을6bW긴원답진단보다먼저회수할수있다. 기본SFT/함수복원기준은불변이고C의SimCTG/ORPO 손실은후속설계·별도학습권한을필요로한다.
+
+## 13. 2026-10-11 Stage6cW 허가된 실물 관찰 완료
+
+[결과103 §10](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)의sameparent/shared/r64·8prompt/저장답포함48forward는GPU0/NOT_RUN 준비상태를**금번한정실물완료0**으로갱신한다. CPU계약10회귀뒤runlog약9초/본체3.533945초,학습·새생성·checkpoint쓰기0이다. oldmode/원형은불변이다.
+
+다른token이모두같은표현으로붕괴하는것은관측되지않았고sameprompt의cosine·covrank 차이는작은관찰이다. ‘SimCTG가필요하다’는인과예측은이번실험으로확증되지않았다. 반대로8shortprompt/정상응답대조없음으로SimCTG를기각하지도않는다. 이미준비된6bW의cache/decoder/fewshot이별도실행선결이다. 사용자1안 ORPO/SFT·2안 표현/SimCTG의추가학습은미실행이다.
+
+실행한6cW SH는재현명령/117f460의원형SHA/mode를보존해-done개명후사용자승인범위의해당1개만삭제했다. 다음권장큐에서는이단계를완료이관하고반복실행으로시간을채우지않는다. 6aW의직접CPU본체/새code contract도완료이며SH wrapper E2E와분리한다.
+## 14. 저장 표현 관찰의 재검토
+
+Stage6aW의 CPU 본체10시험은 완료이며 wrapper 실행은 NOT_RUN으로 구분한다. 완료 파일은 `run_P093B_Stage6aW_generation_contract-done.sh`에 보존한다.
+Stage6cW의48forward는8질문×3조건×2입력이지48독립질문이 아니다. 동일prompt의168위치/조건은 대응하지만 각 조건의 저장답을 붙인 입력은7/8질문에서 달라 기술 관찰로만 비교한다. 중심화한covariance rank의 상한은문장당N−1이며768차원과 직접 비교하지 않는다.
+실제 생성 중의 로짓·EOS·KV·층별 시간 변화를 측정하지 않았으므로 반복 시작 원인검증으로 충분하지 않다. 새 단계는 이 누락을 겨냥한다. 과거 관찰을 실패·인과PASS로 바꾸지 않는다.
+
+## 15. 실제 반복 시작점 — Stage6dW/6eW/6fW
+
+### 조건·변경 축
+
+실제 반복 시작점은 옛8문항의 native greedy sample(max96,temperature0,top_k1,같은seed·cacheON) 24시퀀스로 재현한다. 모델·토크나이저·r64 manifest와3projection SHA를 원형보고서에 묶고 별도 p093b_live_trace_v1_s1337에 저장한다.
+새 변수는 읽기 전용 hook 관찰과 동일한 실제 prefix의 cache-OFF 그림자 forward다. native sampler·가중치·초기질문·정밀도·학습 레시피는 바꾸지 않는다. CUDA BF16의 cached/noncached 차이는 bitwise 같음이 아니라 logit차이/argmax 일치로 보고한다.
+
+### 단계·선결·권한
+
+| 단계 | 런처 | 측정 | 비용/실행 |
+| --- | --- | --- | --- |
+| Stage6dW 완료0 | `run_P093B_Stage6dW_live_trace_contract-done.sh` | hook 불변·선택ID·KV prefix·출력 manifest CPU14회귀 | 실측0.058초. GPU/모델0 |
+| Stage6eW 완료·기술8 | `run_P093B_Stage6eW_repetition_onset_live_trace-done.sh` | 옛24답 재현·2186step 로짓/KV/16층·동일prefix cacheOFF | 본체115.916848초. 옛KV불변/6argmax차이,학습/save0·권한종료 |
+| Stage6fW 완료·선행기술8 | `run_P093B_Stage6fW_live_trace_readback-done.sh` | 동일코드·실물24시퀀스·shard SHA/행수·기술 판정 회수 | CPU 회수 완료. 추가모델0 |
+
+최대24×96=2304개의 primary token선택과 같은 수의 cache-OFF forward를 기록한다. prefilling은각시퀀스첫step에포함된다. 원형 namespace·runs/HF/cache를 쓰지 않으며 JSONL은20,000,000bytes 이하로 나눈다. 시간초과/부분결과는 보존하고 자동 cleanup/재시작·입력대기를 두지 않는다. 다음 실물 실행은 현재승인의 영구 연장이 아니다.
+
+### 방법·판정·예측
+
+- 반복 후보는 같은 tokenblock이3번 이어지는 경우다. 첫블록·두번째블록 시작(반복 onset)·세번째 완결(확인)을 모두 기록한다. onset 앞뒤3step을 연결하며 정상 숫자/복사/코드의 반복을 품질 불합격이나 재생성 조건으로 삼지 않는다.
+- native head의 top10·margin·entropy·EOS확률·기존생성/질문 token집합의 확률질량을 기록한다. logit는 마지막 입력위치에서 다음token을 고르는 값임을 명시한다.
+- 실제owner별KV 길이/dtype/bytes·기존prefix 불변·새K/V와직전token의 차이를 기록한다. 각16층의 attention잔차/MLP잔차·출력과직전위치 변화 및 동일prefix shadow 차이를 대응한다.
+- 과거24답의 text/finish/count 일치와 모든cached/shadow argmax·KVprefix 정합은 기술판정이다. 반복/나열은 실제답을 별도 읽어 해석한다. 시간·층변화의 동반은 특정층의 인과증명이 아니다.
+- 예측: 반복문구가 재현된다면 onset 창에서 copy질량/종료확률/층변화 패턴을 관찰할 수 있다. KV가 정합이면 캐시 누적손상이 관측 반복의 직접 원인이라는 가설은 약해지지만 모델 전체구현·모든입력의 무결성을 증명하지는 않는다. 정상응답 대조나 선택적 개입 없이 SimCTG/ORPO 필요성을 확정하지 않는다.
+- hook을 단 관찰 시간은 순수 추론속도 벤치마크로 쓰지 않는다. 피크는 PyTorch tensor allocated/reserved이며 전체VRAM과 혼동하지 않는다.
+
+현재 코드는 CPU 검증 후 실물1회만 수행한다. Stage6bW의prompt×decoder 장행렬이나 새C학습을 대리 실행하는 승인이 아니다.
+## 16. 실제 반복 trace 회수·예측 대조·권한 종료
+
+Stage6dW CPU14(0.058초)/0,6eW 실물24답/2186step(115.916848초)/8,6fW SHA/행수판독/8로회수했다. 정확3SH는동일본문-done으로보존하고추가삭제0이다.
+[결과103 §12](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)에서옛24원답재현·옛KVprefix불변은맞았으나cached/uncached argmax전부일치예측은6건에서틀렸다. 부모와r64의같은블록위치에서copy선호강화/EOS감소,shared단일token루프에서층출력근접을실제관측했다. 그래도정상응답·동일위상벡터·정밀도개입없음으로인과나특정C손실효용은미확정이다.
+
+새runtime승인은이번약123초실행으로종료했다. 다음은6불일치prefix의FP32/math수치대조범위를사용자와정한뒤준비하며6bW를자동재실행하지않는다. 어느후속도이번권한의영구연장/기본레시피변경이아니다. 기존원형namespace를삭제하고재시작하지않는다.
+## 17. 추가 승인 — 반복 피드백·공유 MLP·층상태의 제어 개입
+
+사용자는2026-10-12 반복의원인/결과·공유MLP/재귀기여를진단하도록CPU+GPU를추가허가했다. 새 `p093b_causal_v1_s1337`에서최대600초·학습/체크포인트쓰기0으로준비한다. 원형24답과2186trace는그대로보존한다.
+
+### 원인 가설·방법·한계
+
+[DITTO 원문](https://proceedings.neurips.cc/paper_files/paper/2022/file/148c0aeea1c5da82f4fa86a09d4190da-Paper-Conference.pdf)의수동반복prefix로다음선호를측정하는관점과 [활성값 patch 방법론](https://arxiv.org/pdf/2309.16042)을참고한다. 뒤방법은metric/입력변형에민감하므로단일‘원인층’순위를확정하지않는다. 이번에는정답품질기준선이아니라**같은반복token 대EOS logit차이**·확률/entropy를보고하며교정/학습은하지않는다.
+
+| 개입 | 고정/변경 | 측정·주장 범위 |
+| --- | --- | --- |
+| 반복 이력1/3/8 | 질문·가중치고정; 이력길이/내용은변함 | 반복피드백의조건부선호변화,길이교락공개 |
+| 같은길이order shuffle / prompt token cycle | anchor·길이·마지막token고정; shuffle은token다중집합도고정 | 이력배열/내용개입효과. 문법/의미도변해정상분포STR라고주장하지않음 |
+| native/shared/r64 | 모든subject에같은prefix IDs. middle[2..5]만공유/보정 | 해당MLP재매개화의직접효과. 공유가반복에필요한지/정도를분리;전층공유학습효과아님 |
+| 마지막위치 activation patch | 같은길이control의같은마지막token 층출력을한층씩이식 | 16층×2donor·실제로output을변경한효과. 정상대조없는상태이식/OOD가능성/후속정확답은별도 |
+| 같은상태no-op patch | 수신자자신의상태를16층에넣음 | 로짓불변과hook/weight/config 복구를검증 |
+| R1→R2 inference | 같은R1-trained weights를한시적infer_repeat2로변경 | 추가방문기여만. **재귀학습부모의인과효과와동일하지않음** |
+| 6같은prefix cache대조 | 실제ID열고정;BF16auto/BF16math/FP32math IEEE | 낮은margin swap의dtype/backend기여. 동일prefixteacherforcing이고자유생성전체동일성아님 |
+
+현재정확parent학습JSON의train_repeat1과dense16은확인했다. 초기화원천 `m100_ko-en_300M_dense`는옛JSON에train_repeat/n_layers가없어전체학습계보무재귀까지단정하지않는다. 추가원천weights는로드하지않는다.
+
+### 표본·실행·예측
+
+기존 `ko_context`의질문copy와shared ‘어떻게’, `ko_math`의값이달라지는9token목록, `en_math`의질문copy를4사례로삼는다. 서로다른원질문은3개다. fixedprefix/4사례×3subject의108baseline·12noop·384single-layer patch·24R2·18precision pair·18native짧은답을묶는다. noop을위해추가재계산하며개입수와forward횟수를같게부르지않는다.
+native sample은그대로사용해R1/R2 각16token의총18짧은답을보존한다. R1의9답은기존ID열첫16과text를대조하고,R2는분포mismatch 진단으로구분한다. CODE·원부모/tokenizer/r64의SHA·actualvisit·donor벡터/입력IDs를20MB이하JSONL에보존한다.
+
+예측: 같은길이이력교체로copy선호가줄면반복history가다음선택의한원인인근거다. parent/R1에서도남으면공유MLP·활성재귀가필수원인은아니다. 특정층patch만으로선호가변하면그상태가효과를매개할수있지만전면붕괴/유일원인증명은아니다. FP32/math에서6swap이줄면수치설명은강해지나전체구현검증이나수리성공으로승격하지않는다.
+
+| 단계 | 런처 | 비용/경계 |
+| --- | --- | --- |
+| Stage7aW | `run_P093B_Stage7aW_causal_contract.sh` | CPU 작은실제아키텍처fixture14·private body0 |
+| Stage7bW | `run_P093B_Stage7bW_history_mlp_layer_interventions.sh` | 이번원인진단한정GPU최대600초·학습/save0 |
+| Stage7cW | `run_P093B_Stage7cW_causal_readback.sh` | CPU exactreport/CODE/losslessSHA 회수 |
+
+기술0은같은상태no-op·복구/finite·완결측정의통과이지반복수리/학생지능PASS가아니다. 단일token shuffle은원형과같아효과0이예상되고별도표시한다. 작은donor/receiver logit차이의정규화는null로두며반복token/eos를모든틀린문구목록이나온라인품질선별에쓰지않는다. 새로운학습기본/공용sampler/커널·원래출력은변경하지않는다.
+### Stage7dW/7eW/7fW — cosine 단독 필요성의 출력불변 통제
+
+층전체벡터patch는의미정보까지바꿔유사도변화만의효과로읽을수없다. 같은추가진단허가범위에서현재768→256 factorized output head의영공간성분만반사하는소형통제를더한다. 기본모델/기존code/weight는수정하지않고새 `p093b_similarity_control_v1_s1337`에최대120초진단을기록한다.
+
+마지막raw잔차x의readout-visible부분을P x,영공간을(I−P)x로두면 x'=P x−(I−P)x다. 학습된final scale을effective head에포함한다. 이상적인산술에서norm과출력projection이같아RMS뒤의전체vocab logits가보존되지만직전같은위상hidden과의cosine은달라질수있다.
+이검사는**현재한위치만반사**하고직전위상reference는보존한다. 모든위치에같은직교반사를적용하면cosine도같아지므로그런실험을유사도변화로주장하지않는다. 실제FP32/math logit최대차≤1e-4+1e-5×참조logit절대최대및argmax동일을수치정합으로따로검사한다.
+
+4사례×3subject=12쌍·samephase 마지막token·원형/반사벡터·전체logit차이·실제/분석RMS cos를보존한다. 같은부모/r64/shared·학습/save0·전체자유생성새답0이다.
+성공하면‘이마지막층의높은cosine그자체가다음반복token선택에필요하다’는주장의국소반례가된다. **초기층기전·head-visible 정보·반복의유일원인·SimCTG훈련효용은검증하지않는다.** 낮은cosine이항상좋다는품질문턱도만들지않는다.
+
+- `run_P093B_Stage7dW_similarity_cpu_contract.sh`: CPU선형대수5fixture·부모읽기0.
+- `run_P093B_Stage7eW_head_nullspace_similarity.sh`: 같은추가허가의소형GPU대조·최대120초.
+- `run_P093B_Stage7fW_similarity_readback.sh`: CPU source/CODE/shardSHA 회수.
+
+이번원인진단GPU합계실측과준비/CPU시간은분리보고하며600/120초실행cap을실제사용시간으로쓰지않는다.
+## 18. 2026-10-12 원인 개입 회수·예측 대조
+
+[결과103 §13](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):CPU14/5·제어개입564행과영공간12쌍·본체22.629876/3.449240초/모두0. 새native18짧은답과기존R1앞16token 9/9재현,학습/save0이다. 실행6SH는동일본문-done에보존·추가삭제0이며이진단권한은종료했다.
+
+같은길이shuffle에서parent‘나의’98.8061%→10.0767%로낮아져길이만의설명이부족했다. 그러나문법/의미를바꾸는대조라정상분포전체나학습원천인과는미확정이다. native/R1에도반복이있으므로공유MLP·활성재귀는필수단독원인이아니다. R2는실제28방문/9짧은답의내용실패를남겼고R1-trained 분포mismatch와재귀학습효과를분리했다.
+
+layerpatch는부호가엇갈렸고coda14의큰억제도유일원인이라고부르지않는다. 출력에영향없는최종상태의512차원부분공간을반사해shared‘어떻게’cos.998507→−.525330에도확률.236868635와전체logit/argmax를유지했다. ‘cosine이높아야즉시반복한다’는필요조건예측의국소반례다. head-visible 정보/초기층/전시퀀스원인은남는다.
+
+BF16auto6불일치를재현하고BF16math5/6·FP32/math6/6이일치해수치/계산경로설명을지지했다. old기술8을소급PASS로바꾸지않고새측정0과구분했다. C의정답·종료SFT/ORPO·SimCTG는후속범위/별도학습권한을필요로하며기본학습레시피와75M/300M 목표는불변이다.

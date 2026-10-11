@@ -753,3 +753,25 @@ native r64 FP32 인자만8.25MiB, FP16 저장은4.125MiB이며 실제 half 계�
 사용자는정답·종료SFT/ORPO와표현진단/SimCTG를우선채택했다. 먼저새 [P093B Stage6cW](../../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md)의48개짧은forward를준비했다. 기존return_hidden은head logits를만들지않고마지막RMS정규화hidden을반환하므로학습·추가답생성없이관찰할수있다. 최대로256위치만쓰고전체600초cap을두며사용자GPU 약0.08h추정이다. 실제GPU시간은아직미측정이고GPT직접실행에는이번범위별도허가가필요하다.
 
 같은tokenID쌍/다른tokenID쌍의cosine을분리하고중심화unit hidden Gram의eigenvalue분포로covariance entropy rank를계산한다. 이는standard singular-value effective rank와분모가다르므로같은이름으로부르지않는다. prompt/저장loop답포함의대조는관찰이며문장길이·같은단어빈도의교락이있다. 자동collapse문턱·의미품질PASS로사용하지않고정상문장/더넓은source 대조는뒤에결정한다. 현재native return_hidden/마스크/EOF를조용히변경하지않았고C손실학습도미착수다.
+
+### 10.7 2026-10-11 짧은 실물 관찰 회수
+
+사용자한정GPU허가의 [103 §10](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)은sameparent/shared/r64의48forward·3.533945초·학습/새답0을실행했다. 같은8prompt macro distinct-token cosine은.758413/.769011/.772988, covariance entropy rank는14.9374/14.5878/14.5650이다. finite/서로다른token의변별은남아있어전면한점붕괴를관측하지않았다. 그러나8shortquestion/정상답변모델대조/학습개입없음으로반복원인이나SimCTG의필요성을확증하지못한다.
+
+단어ID중복/위치/문장길이와질문내용의교락을공개한다. 저장된조건별loop답은길이/텍스트가달라그부분순위를구조인과로쓰지않는다. 선호학습·정답/종료SFT의양성대조와기존A 생성/cache대조가먼저이며사용자선택한두후보를임의취소하지않는다. 이번48forward권한은정식C학습/추가GPU의영구허가가아니다.
+### 10.8 관찰방법의 충분성과 실제 반복 시작점
+
+[103 §11~§12](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)은옛48행이8문항×3조건×2입력임과짧은중심화rank의N−1상한을명시했다. 조건별저장답은7/8입력에서달라표현통계와구조인과를분리한다.
+[Ethayarajh2019](https://aclanthology.org/D19-1006.pdf)의층별무작위문맥비등방성기준선이나[SimCTG](https://papers.nips.cc/paper_files/paper/2022/file/871cae8f599cb8bbfcb0f58fe1af95ad-Paper-Conference.pdf)의생성/학습개입을이작은표본이대체하지않는다.
+
+새한정실물진단은24원답·2186native선택을재현하고같은prefix cacheOFF·실제KV·16층을측정했다. parent/r64의같은반복위상에서copy선호가강해졌고shared단일token루프의last-layer 출력은가까워졌다. 이는반복의결과일수있어SimCTG의필요성/효용을확정하지않는다. 다중token루프의인접위치cosine은단어도달라동일위상비교가아니다.
+
+옛KVprefix불변·원답24/24일치이나BF16 cacheargmax6/2186차이로기술8이다. [PyTorch2.10 수치정확성](https://docs.pytorch.org/docs/2.10/notes/numerical_accuracy.html)에서설명하는행렬형태/precision 차이는가능원인이지이번6건의확정원인이아니다. fixedprecision/math 대조·정상응답기준선·attention확률·선택적층개입은NOT_RUN이다.
+보유prefix를추가한상태의확률변화와SFT/ORPO/SimCTG 학습효과를같게보지않는다. 기본micro/accum·추론/학습손실·삼진커널은변경하지않았다.
+### 10.9 반복 원인분리의 실물 개입과 readout-aware 한계
+
+[103 §13](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)의같은길이/같은token 다중집합shuffle은반복prefix의다음선호를크게바꿨다. [DITTO](https://proceedings.neurips.cc/paper_files/paper/2022/file/148c0aeea1c5da82f4fa86a09d4190da-Paper-Conference.pdf)식입력이력피드백의국소근거이지만문법/의미변형/OOD의교락은남는다.
+[활성값patch 연구](https://arxiv.org/pdf/2309.16042)의metric/donor 민감성을반영해확률과고정focus−EOS logit차를함께보고부호가반대인층도보존했다. shared/r64와R2가반복양상을바꿔도untied/R1에서이미반복하므로그들만의고유문제라고말할수없다. R2_on_R1-trained의분포mismatch는재귀학습의인과와별개다.
+
+단일마지막위치의output-equivalent 영공간반사로cosine을약1→음수로내려도전체next-token logits가유지됐다. raw/global cosine이좋거나나쁘다는것만으로학습처방을정하는근거는부족하다. 이TinyLM의factorizedhead(768→256)에서head-visible 정보/출력분포와cosine을함께봐야한다는방법상경고이지embedding factorization이반복의원인이라는결론은아니다.
+SimCTG의원목적함수효용을자동기각하지않고정답/종료SFT 양성대조·head-visible/전체출력분포 보존·normal-copy 보호와새학습대조가필요하다. 이번에는어떤손실도추가하지않았다. FP32/math에서6cache차이가사라진결과도현재반복의유일원인이나모든입력구현PASS로승격하지않는다.

@@ -1,0 +1,319 @@
+{
+  "schema": "TINYLM_FINAL_METHOD_SCOPE_REVIEW_V1",
+  "session_id": "01a0b33b-d14e-7c40-ada8-229a1f97eabd",
+  "historic_audit": "handoff/audit/WIP_20261011_EXECUTION_DISK_POST_PATH_STATIC_AUDIT.json",
+  "historic_counts": {
+    "pass": 67,
+    "errors": 0,
+    "not_run": 7
+  },
+  "not_run_reasons": [
+    {
+      "name": "check_heldout_defects",
+      "source": "scripts/check_heldout_defects.py",
+      "reason": "보호 datasets/TinyDataset의 held-out 본문을 읽는다. 해당 데이터 접근 승인이 없어 미실행.",
+      "alternative": "지정 원본과 CPU 합성 계약 검산만 수행. held-out 실제 품질 검증은 NOT_RUN.",
+      "code_sha256": "5C7ECFCA9B271400397CD3093B8580F999E395890ADA9609D2A582C1AD3EEA87"
+    },
+    {
+      "name": "check_eval_pool",
+      "source": "scripts/check_eval_pool.py",
+      "reason": "현재 코드는 BAT와 광범위 runs/logs의 pool_tokens 메타데이터를 읽는다. val.bin/train.bin 토큰 본문을 읽는다는 이전 이유는 잘못됐으며 정정한다. 전체 역사 run 메타데이터 접근은 이번 허용목록 밖이다.",
+      "alternative": "정확 지정 report·서명만 대조. BAT 위주 검사로 현재 WSL SH의 모든 풀 조건을 검증했다고 주장하지 않는다.",
+      "correction": "prior reason data_cache and validation token content is inaccurate; keep original audit immutable",
+      "code_sha256": "AA263BC227DCB9BEE2848F87225F2BC85AE0D03F286224E2EE412A9D579F20B6"
+    },
+    {
+      "name": "registry --scan",
+      "source": "scripts/registry.py",
+      "reason": "전체 run JSON과 registry 목록을 스캔한다. --scan은 읽기 전용이지만 이번 정확 로그/역할 메타데이터 범위를 넘어 미실행.",
+      "alternative": "지정17 원본·짝 evidence·checkpoint 역할 메타데이터를 검산. --backfill/DB 변경 없음.",
+      "code_sha256": "93C5697816E075EA4BA5667992D036BA5C8B5AA8CC36CE25F73EB719774B9C6C"
+    },
+    {
+      "name": "check_handoff",
+      "source": "scripts/check_handoff.py",
+      "reason": "소스가 CLAUDE.md를 환경 검사 원천으로 읽어 Codex 완전분리 경계에 맞지 않는다. 레거시 검사 실행을 건너뛰었다.",
+      "alternative": "독립 check_handoff_codex 및 그 회귀는 실제 실행. 기존 check_handoff의 PASS로 대체 표기하지 않는다.",
+      "code_sha256": "8BF720A14A573B83934920581CF9FAB21263683CA63B81C63F0D2438A7CE3BDC"
+    },
+    {
+      "name": "check_run_registry",
+      "source": "scripts/check_run_registry.py",
+      "reason": "전체 역사 run JSON의 학습/최종/중복 조건을 읽는다. 이번 허가된 정확 증거/68짝 메타데이터/417부모키 검토와 같지 않아 process-local 제외.",
+      "alternative": "공용 파일/화이트리스트는 변경하지 않고 이번 프로세스에만 제외 사유를 추가. 전체 registry 안정성 PASS 아님.",
+      "code_sha256": "23BED4B6D527A34F57337798C54C730E2FF2FECD936CD3C28138BA60B115EFBA"
+    },
+    {
+      "name": "plot_results --verify",
+      "source": "scripts/plot_results.py",
+      "reason": "옛 표의 수치와 광범위 run JSON을 대조한다. 이번 표현/trace 원본의 직접 검산과 무관하고 접근 범위 밖이다.",
+      "alternative": "이번 실제48forward/24생성 보고서를 직접 파생값과 대조. 옛 전체 표의 정합은 NOT_RUN.",
+      "code_sha256": "413D49E3E2711B3449EB7E7E7C100FA8EF1797B4305E2F0C88B3C76053E02C0F"
+    },
+    {
+      "name": "check_tag_arch",
+      "source": "scripts/check_tag_arch.py",
+      "reason": "전체 run JSON의 태그·구조·설정을 검사하므로 범위 밖.",
+      "alternative": "이번 정확 부모 cfg16층/mode1/untied/CLA2·native 방문0..15·factor SHA를 실물에서 확인.",
+      "code_sha256": "D8278B3B140F072586D370E1B65D1D2335C525AA72E5CC03E9A0312ECA00C768"
+    }
+  ],
+  "representation_scope": {
+    "report_sha256": "9AA278EF5D39FBFCB12F64E3359E4076F72E4235B5B1117095A772B87933109D",
+    "status": "REPRESENTATION_OBSERVATION_COMPLETE",
+    "whole_wall_sec": 3.5339450840256177,
+    "metadata": {
+      "schema": "P093B_GENERATION_ATTRIBUTION_V1",
+      "mode": "representation",
+      "tag": "p093b_generation_v1_s1337",
+      "code_sha256": {
+        "scripts/diag_p093b_generation_attribution.py": "FA82D0020B8A0DC0F988C67C8C3F1352F10E8FBB8EA35728158AD4B2642F71EE",
+        "scripts/p093b_generation_probe.py": "C983566BDE79BC1E636411AB1EDAF9BB2386077382BABF53551E4AD0227BFA9E",
+        "scripts/test_p093b_generation_probe.py": "DAE7F1E6A0617B4918E8E45741E44244643ACB8B8921ECFA3338B3743496F533",
+        "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+        "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+        "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D",
+        "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+        "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+        "tinylm/model/transformer.py": "7370DB07656AF31E7D26AAA0D86712F7A372E4186183209D1784BD3230D65ECE",
+        "tinylm/config.py": "E2B285D75A5B8C97EAC2FC1BFBABFFCD807006878FA4788775B837664AD0F655"
+      },
+      "source_recovery_report_sha256": "4C8D5952F3803E98106A830CF0F446682AADC0F556CE1394C8D03033DC1C937F",
+      "max_new": 96,
+      "new_generations": 0,
+      "reused_plain_greedy_answers": 24,
+      "subjects": [
+        "parent",
+        "shared",
+        "rank64"
+      ],
+      "prompt_types": [
+        "plain",
+        "fewshot"
+      ],
+      "decoder_types": [
+        "greedy",
+        "nucleus_p095_t1"
+      ],
+      "nucleus_seeds": [
+        17,
+        29,
+        43
+      ],
+      "model_loading": "MEASURED",
+      "optimizer_updates": 0,
+      "checkpoint_writes": 0,
+      "quality": "PENDING_GPT_REVIEW",
+      "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+      "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
+      "return_hidden_scope": "final RMS normalized hidden; head logits not computed"
+    },
+    "observations": 48,
+    "new_generations": 0,
+    "optimizer_updates": 0,
+    "groups": {
+      "parent/prompt": {
+        "n": 8,
+        "positions": 168,
+        "max_positions": 31,
+        "dims": [
+          768
+        ],
+        "rank_upper_bounds": [
+          26,
+          26,
+          14,
+          12,
+          12,
+          13,
+          27,
+          30
+        ],
+        "cosine_macro": 0.7584129646420479,
+        "cov_rank_macro": 14.937418341636658,
+        "per_row_ranks": [
+          18.972549438476562,
+          19.19198226928711,
+          11.583181381225586,
+          10.048311233520508,
+          9.979757308959961,
+          11.138775825500488,
+          18.525779724121094,
+          20.059009552001953
+        ]
+      },
+      "parent/prompt_with_saved_answer": {
+        "n": 8,
+        "positions": 874,
+        "max_positions": 127,
+        "dims": [
+          768
+        ],
+        "rank_upper_bounds": [
+          122,
+          122,
+          110,
+          108,
+          108,
+          109,
+          61,
+          126
+        ],
+        "cosine_macro": 0.7208235785365105,
+        "cov_rank_macro": 17.535942316055298,
+        "per_row_ranks": [
+          17.380569458007812,
+          23.764528274536133,
+          12.828042984008789,
+          12.071391105651855,
+          13.3406400680542,
+          18.06792640686035,
+          25.846084594726562,
+          16.98835563659668
+        ]
+      },
+      "shared/prompt": {
+        "n": 8,
+        "positions": 168,
+        "max_positions": 31,
+        "dims": [
+          768
+        ],
+        "rank_upper_bounds": [
+          26,
+          26,
+          14,
+          12,
+          12,
+          13,
+          27,
+          30
+        ],
+        "cosine_macro": 0.7690107747912407,
+        "cov_rank_macro": 14.58779001235962,
+        "per_row_ranks": [
+          18.53940200805664,
+          18.79352569580078,
+          11.105302810668945,
+          9.926074028015137,
+          9.568636894226074,
+          10.802482604980469,
+          17.98954200744629,
+          19.977354049682617
+        ]
+      },
+      "shared/prompt_with_saved_answer": {
+        "n": 8,
+        "positions": 936,
+        "max_positions": 127,
+        "dims": [
+          768
+        ],
+        "rank_upper_bounds": [
+          122,
+          122,
+          110,
+          108,
+          108,
+          109,
+          123,
+          126
+        ],
+        "cosine_macro": 0.6722174808382988,
+        "cov_rank_macro": 15.55177503824234,
+        "per_row_ranks": [
+          10.662873268127441,
+          14.777886390686035,
+          21.011701583862305,
+          12.3737154006958,
+          6.375878810882568,
+          16.499088287353516,
+          19.8027400970459,
+          22.910316467285156
+        ]
+      },
+      "rank64/prompt": {
+        "n": 8,
+        "positions": 168,
+        "max_positions": 31,
+        "dims": [
+          768
+        ],
+        "rank_upper_bounds": [
+          26,
+          26,
+          14,
+          12,
+          12,
+          13,
+          27,
+          30
+        ],
+        "cosine_macro": 0.7729883119463921,
+        "cov_rank_macro": 14.565006494522095,
+        "per_row_ranks": [
+          18.803421020507812,
+          18.76127815246582,
+          11.104066848754883,
+          9.73305606842041,
+          9.668405532836914,
+          10.878386497497559,
+          17.743913650512695,
+          19.827524185180664
+        ]
+      },
+      "rank64/prompt_with_saved_answer": {
+        "n": 8,
+        "positions": 878,
+        "max_positions": 127,
+        "dims": [
+          768
+        ],
+        "rank_upper_bounds": [
+          122,
+          122,
+          110,
+          108,
+          108,
+          109,
+          65,
+          126
+        ],
+        "cosine_macro": 0.7255449071526527,
+        "cov_rank_macro": 18.689998507499695,
+        "per_row_ranks": [
+          17.477798461914062,
+          23.56044578552246,
+          18.193899154663086,
+          12.228055000305176,
+          14.414124488830566,
+          10.629115104675293,
+          28.753725051879883,
+          24.26282501220703
+        ]
+      }
+    },
+    "same_prompt_match": true,
+    "saved_answer_same_input_by_id": {
+      "ko_context": 2,
+      "en_context": 2,
+      "ko_math": 3,
+      "en_math": 1,
+      "ko_literal": 3,
+      "en_literal": 3,
+      "ko_reason": 3,
+      "en_reason": 3
+    },
+    "dimensions_all": [
+      768
+    ],
+    "obs_key_unique": 48,
+    "statistics_finite": true,
+    "rank_bound_all": true
+  },
+  "new_live_review": "handoff/audit/WIP_20261011_LIVE_TRACE_REVIEW.json",
+  "global_checker_mutations": 0,
+  "legacy_environment_source_reads": 0,
+  "protected_data_reads": 0
+}

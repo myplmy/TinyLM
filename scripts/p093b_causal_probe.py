@@ -1,9 +1,14 @@
 """Small controlled forward interventions; no checkpoint/data IO or training."""
 from __future__ import annotations
 from contextlib import contextmanager, nullcontext
+from pathlib import Path
+import sys
 import math
 import random
 import torch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 
 def history_controls(anchor, body, *, seed=1337):

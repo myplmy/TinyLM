@@ -3,12 +3,16 @@ from __future__ import annotations
 import io
 import json
 from pathlib import Path
+import sys
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest import mock
 import unittest
 import torch
 from torch import nn
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 from scripts import p093b_live_trace as trace
 from tinylm.infer.generate import sample

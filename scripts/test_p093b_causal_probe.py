@@ -1,8 +1,14 @@
 """CPU synthetic tiny-architecture intervention contracts. No private IO."""
 from contextlib import nullcontext
+from pathlib import Path
+import sys
 from unittest import mock
 import unittest
 import torch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 from tinylm.config import TMTConfig
 from tinylm.model.transformer import TiedMLPTransformer
 from scripts import p093b_causal_probe as core
