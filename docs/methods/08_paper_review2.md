@@ -26,8 +26,8 @@
 | **5** | **QK-Normed MLA**(arXiv:2606.16310, 2026-06-15) ⚠️**초록만** | MLA 에서 전체 K 캐싱 없이 QK 정규화를 쓴다 | RMSNorm 을 **static affine weight + dynamic scalar RMS** 로 분해 | `architecture`(01) · `memory`(02) | ✅**대조 근거로만 채택** — 400M·100B 에서 **QK-Norm 이 QK-Clip 을 이긴다**. 🚫MLA 는 우리 구조가 아니다 | 🚫없음 |
 | **6** | **TTPO**(arXiv:2608.27448v1, 2026-08-27) | 무정답 시험 시점 수학 문제의 정책 갱신 | 다수결 positive/negative 분기, positive OPSD·negative GRPO와 토큰 선택 | `training_quality`(06) · `benchmarks`(10) | ⏸**개념만 차용** — 현 TinyLM에는 thinking teacher·안정적인 정답 추출·64회 rollout 자원이 없고 held-out 오염 위험이 큼 | 🚫즉시 계획 없음(§6) |
 | **7** | **Ternary Bonsai 2 27B**(PrismML 백서, 2026-09, 로컬14쪽) | 27B hybrid reasoning 모델의 저비트 저장·직접 커널·능력 보존 | 고정 Hadamard 회전·group128 삼진·소수 FP16 예외·PTQ1_0/PQ2_0 | `memory`(02) · `training_quality`(06) · `inference_speed`(12) | ⚠️**배포 계측 개념 차용** — TinyLM from-scratch 학습/한국어 전이는 미증명, 외부 교사 pilot은 별도 검증 | 🚫즉시 기본경로 제안 없음(§7) |
-| **8** | **LittleBit**(제공 PDF: arXiv:2506.13771v5, NeurIPS 2025) 및 GSQ/RCO 재검토 | 작은 복원층과 저비트 가중치의 품질 손실을 목적함수·초기화·예산으로 제어 | 이진 저랭크 인자·행/열/잠재 스케일·잔차 QAT; GSQ 이산 배정; RCO 예산 배정 | `architecture`(01) · `memory`(02) · `training_quality`(06) | **조건부 연구 후보**. 기존 P093은 실제 복원층 학습이 아닌 근사 진단이며, TinyLM 복원 성공은 미측정. §1·§2의 과거 단정과 비용은 §8의 정정으로 구분 | [P093B 결과103](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md) local음성·dev/r32·64/저장정밀도 후속준비 |
-| **9** | **DeepSeek V3/R1/V4.1**, Self-Instruct, WizardLM, GSM-Symbolic | 교사 생성 자료와 반복 epoch에서 논리·조건·문맥의 일반화 | 검증 가능한 합성 과제·과제 확장·조건 보존 변형·문맥조회; 동일자료 반복과 증강 대조 | `corpus_selection`(07) · `knowledge_quality`(03) · `training_quality`(06) | **개념 차용 후보**. 모든 재표현을 DeepSeek의 검증된 학습법으로 부르지 않음. 변형별 정답·마스크·token 계약이 선결 | [P106D 결과104](../../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md) 조건변경음성·양팔균형4096/128update 후속준비 |
+| **8** | **LittleBit**(제공 PDF: arXiv:2506.13771v5, NeurIPS 2025) 및 GSQ/RCO 재검토 | 작은 복원층과 저비트 가중치의 품질 손실을 목적함수·초기화·예산으로 제어 | 이진 저랭크 인자·행/열/잠재 스케일·잔차 QAT; GSQ 이산 배정; RCO 예산 배정 | `architecture`(01) · `memory`(02) · `training_quality`(06) | **조건부 연구 후보**. 기존 P093은 실제 복원층 학습이 아닌 근사 진단이며, TinyLM 복원 성공은 미측정. §1·§2의 과거 단정과 비용은 §8의 정정으로 구분 | [P093B 결과103](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md) dev-selected r8~64 local미달·정밀도선결보류·무학습A/표현진단준비 |
+| **9** | **DeepSeek V3/R1/V4.1**, Self-Instruct, WizardLM, GSM-Symbolic | 교사 생성 자료와 반복 epoch에서 논리·조건·문맥의 일반화 | 검증 가능한 합성 과제·과제 확장·조건 보존 변형·문맥조회; 동일자료 반복과 증강 대조 | `corpus_selection`(07) · `knowledge_quality`(03) · `training_quality`(06) | **개념 차용 후보**. 모든 재표현을 DeepSeek의 검증된 학습법으로 부르지 않음. 변형별 정답·마스크·token 계약이 선결 | [P106D 결과104](../../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md) 조건변경역사음성·3074자료미완/새학생0·교사24완결/32QA·길이복구준비 |
 
 ---
 
@@ -685,3 +685,71 @@ C2는 첫 잘못된 assistant를 context-only로 두고, 실제 잘못된 구간
 위 NOT_RUN은 당시 상태다. 결과103/104가 원형을 보존하며 갱신한다. 실제 함수 손실 최적화는 가능했지만 r8/16 보정의 heldout 개선은 사라졌고 GSQ식 공유 배정도 문턱에 못 미쳤다. 이 결과는 LittleBit binary·공식 전체 GSQ/RCO의 재현 실험이 아니다. 새 dev 선택/큰 rank·FP16저장과 native 삼진은 표현력·최적화·압축 손실을 나눠 시험한다.
 
 규칙뷰 학생은 종료/답 길이가 달라졌어도 조건 갱신은 배우지 못했고 old 교육 구성도 교락됐다. 균형4096 새 팔의 양·원배치·root/actual token을 고정하고 실제 답을 다시 본다. 교사 완결72응답은 inline 라벨 코드결함으로 모두 거부됐으므로 새 문법/문맥 보존으로 구조와 의미 품질을 분리해 회복한다. CPU 시험/소급 구조 재판독은 새 교사·학생 지능·75M/300M의 성공이 아니다.
+
+## 10. 반복·질문 나열 연구 — 일반 현상과 TinyLM 원인, 최저비용 처방을 구분한다
+
+> 2026-10-11 사용자 추가 조사. 학술 원문을 읽고 현재 코드/저장 원답과 대조한 검토이며, 새 C 학습·모델/GPU 실행은 0이다. [결과103 §8](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)이 실제 관측을 소유한다.
+
+### 10.1 먼저 확인된 것과 아직 확인되지 않은 것
+
+현재 dense d16 CLA2 부모도 문맥 질문을 반복하고 숫자를 나열한다. shared-only와 r8/16/32/64에도 같은 가족의 문제가 있다. 따라서 ‘r64 때문에 반복이 시작됐다’, ‘TinyLM만의 현상’, ‘재귀 라우터 결함’은 현재 증거로 성립하지 않는다. 이 부모는 이름과 복구 계약상 norecur이며 이 진단은 n_modes=1이다. 복원 NRMS를 낮추는 것과 지시를 이해하고 답을 끝내는 것은 다른 목적이다.
+
+코드 점검상 native sample은 반환된 전체 문자열에서 동일 tokenizer의 decoded prompt를 제거한다. 원답 파일의 answer에도 반복이 남아 있어 화면에 입력을 함께 보여 준 착시만은 아니다. EOS는 발견되면 정지하며, attention의 증분 mask는 past_len을 반영하고 RoPE도 절대위치를 쓴다. MLP/LoRA 패치는 finally로 원래 슬롯을 복구한다. 그렇다고 실제 체크포인트의 캐시·정밀도·마스크 정합성을 증명한 것은 아니다. 실제 24개의 cache on/off 원답 대조는 새 A 진단의 사용자 실행 항목이다.
+
+ChatML SFT의 assistant loss span에는 im_end가 이미 포함된다. ‘종료 토큰을 학습하지 않는 코드’라고 단정하거나 무조건 EOS를 더 붙이지 않는다. legacy 부모의 문서 EOS 학습과 chat32의 대화 종료는 구분하고 각 토크나이저의 실제 mask를 확인한다. teacher thinking은 현재 자료에서 sidecar이며 학생 target이 아니다.
+
+현재 아키텍처가 질문에 답하는 학습 자체를 못 한다는 주장에도 반례가 있다. [P106C 결과102 §6~§8](../../test_result/102_20261003_P106C-암기는-통과했지만-선택은-일반화를-해쳤다.md)의 양순서128회 학생은 폐쇄형 조회128/128·쌍64/64를 맞혔으나 일반 언어 손실은 +.476504 악화했다. 이는 특정조건에서 학습 가능함만 뜻하며 P093B 부모·r64의 지시능력, 망각 없는 일반화, 구조별 원인을 대신 증명하지 않는다.
+
+### 10.2 원문에서 확인한 대안과 실제 적용 한계
+
+| 연구/방법 | 무엇을 바꾸는가 | TinyLM 판단 |
+|---|---|---|
+| [Holtzman, Neural Text Degeneration](https://arxiv.org/html/1904.09751v2) | greedy/beam 대신 누적확률로 후보 집합을 제한하는 nucleus sampling | 일반 GPT 계열에서도 반복이 발생한다는 근거. 무학습 진단에 유용하나 새 지식·정답성을 가르치지 않음 |
+| [ScaleGrad, ICML 2021 §3~§4](https://proceedings.mlr.press/v139/lin21b/lin21b.pdf) | prefix에서 아직 쓰지 않은 토큰의 softmax 확률을 재조정해 NLL gradient를 바꿈 | 별도 모델 없이 학습 가능. 한국어 공용 subword·정답 복사·JSON 키·숫자 재사용까지 약화할 위험. 원형 전역 적용은 비권장 |
+| [SimCTG/Contrastive Search, NeurIPS 2022 §3](https://papers.nips.cc/paper_files/paper/2022/file/871cae8f599cb8bbfcb0f58fe1af95ad-Paper-Conference.pdf) | MLE에 hidden cosine margin loss 추가; 추론에서 확률과 이전 hidden의 최대 유사도를 함께 비교 | 학습 인자/배포 커널을 추가하지 않고 표현 공간을 조정할 후보. 별도 hidden·쌍 비교·candidate KV 관리가 필요하고 정상 복사에도 불리할 수 있음 |
+| [Su/Collier, TMLR 2023](https://arxiv.org/abs/2210.14140) | 후속 다언어 조사에서는 모든 LM의 표현 공간이 비등방적이라는 전제를 부정하며, 재학습 없는 contrastive search도 검토 | TinyLM도 표현 붕괴라는 측정 전 가정을 하지 않음. masked hidden 통계와 일반/반복 답 비교가 먼저 |
+| [Contrastive Decoding, ACL 2023](https://aclanthology.org/2023.acl-long.687/) | 큰 expert의 log likelihood에서 작은 amateur의 값을 빼고 plausibility를 제한 | 무학습이지만 두 모델의 실행과 토큰 정렬이 필요. Gemma와 TinyLM의 어휘가 달라 logit을 직접 뺄 수 없고 엣지 단일 모델 목표에도 부적합 |
+| [DPO, NeurIPS 2023](https://arxiv.org/html/2305.18290v2) | 같은 질문의 선호/비선호 답 상대 확률을 기준 정책과 비교 | 반복이 맥락상 불필요한지 후행 판독한 쌍에 적용 가능. reference를 별도 상주시킬 필요 없이 고정 점수를 미리 계산할 수도 있으나 추가 pass/정확한 mask가 필요 |
+| [ORPO, EMNLP 2024 §3](https://aclanthology.org/2024.emnlp-main.626.pdf) | 선호답 NLL에 길이 정규화 확률의 odds-ratio 선호 손실을 추가, reference 모델 없음 | 작은 모델에 시험한 원문이 있으나 TinyLM 삼진/공유층 재현은 아님. 정답·종료를 적극 가르치면서 불필요한 답을 낮출 구조라 우선 후보 |
+| [SimPO, NeurIPS 2024 §2](https://arxiv.org/html/2405.14734v3) | 응답 평균 log probability의 선호 margin을 학습, reference 없음 | 비용상 후보지만 좋은 답 확률을 올리기보다 나쁜 답만 낮춰 margin을 만족할 수 있고 작은 학생의 언어 망각을 별도 확인해야 함 |
+| [AQLM, ICML 2024 Appendix A](https://arxiv.org/html/2401.06118v4) | local/block 복원 뒤 전체 모델 출력분포 KL로 조정 | 공유·삼진 때문에 추가된 오차를 가를 수 있는 아이디어. 현재처럼 부모도 못 답하면 KL은 그 나쁜 능력도 보존하므로 지시 교육을 대신하지 못함 |
+
+Unlikelihood의 음성 후보와 DITTO의 반복 pseudo-data는 기존 후보로 남기되 모든 반복 토큰을 부정하지 않는다. [Unlikelihood](https://arxiv.org/html/1908.04319v2)는 gold 제외·negative 설정이 중요하고, [DITTO](https://arxiv.org/html/2206.02369v2)는 반복 뒤 확률의 자기강화를 다룬다. 원문의 영어 생성/요약 성과를 한국어 소형 공유 모델의 성공률로 환산하지 않는다. 원문의 실험 조건·목적함수는 이 절에서 검토했지만 전 방법의 전체 부록/공식 코드 재현을 수행한 것은 아니다.
+
+### 10.3 현재 최적의 준비 방향: 정답·종료 SFT 기준선 → 보수적인 ORPO 대조
+
+이는 TinyLM에서 검증된 최적 알고리즘이라는 뜻이 아니라 현재 관측·메모리 목표를 반영한 우선순위 판단이다. 사용자 승인한 A 진단이 먼저다.
+
+1. A에서 실제 cache/prompt/종료 결함이 보이면 이를 고친 뒤 학습한다. sampler/few-shot만으로 변화하면 greedy 원답을 보존하고 생성 정책 영향으로 보고한다.
+2. 부모도 지시/종료를 못 배운 경우 정상 QA·형식·조건변경·대화 종료 SFT를 기준선으로 둔다. ‘반복하지 마세요’ 문장만 추가하거나 EOS를 무조건 조기 강제해서 정답 손실을 감추지 않는다.
+3. SFT 뒤에도 불필요한 loop가 남으면 같은 질문·사실·출력 요구의 후행 판독 쌍을 만든다. 예: 요구가 ‘2+3의 값만’일 때 좋은 답은 ‘5+종료’, 나쁜 답은 ‘5.5.5…’; 반대로 ‘5를 세 번 적으세요’의 ‘5 5 5’는 보호 사례다.
+4. 먼저 frozen native shared core와 층별 실수 보정 인자만 조정하는 SFT-only/ORPO 대조를 고려한다. 동일 parent·자료 split·좋은 target·실제 토큰/업데이트 예산을 맞춘다. local NRMS와 일반 언어 손실도 함께 확인한다. 능력 부족이 이 작은 인자로 해결될지는 미확인이다.
+5. 미래 정상 chat32 지시 부모의 압축 복원은 별도 실험이다. legacy d16을 chat32 부모로 조용히 바꾸거나 그 결과를 현 r64 재현이라고 부르지 않는다.
+
+권장 손실은 원문 ORPO의 형태인 `L = L_SFT(chosen) + lambda * L_OR(chosen,rejected)`이며, `log P`는 assistant 유효 위치의 평균으로 계산한다. prompt/pad/교사 사고/옛 오답 문맥은 제외하되 정상 종료 표지는 포함한다. odds 계산은 FP32 log-space의 안정한 log1mexp로 처리할 필요가 있다. chosen/rejected의 동일 입력 조건·첫 답·종료/길이·검토 근거를 보존한다. 이 구현은 아직 하지 않았다.
+
+원래 전역 새로움 억제보다 ORPO를 권하는 이유는 이미 나온 ‘새 단어 부족’만을 벌주는 대신 좋은 답의 확률을 직접 올리고, 특정 문구의 오조어 목록 없이 질문에 맞는 답 쌍을 이용하기 때문이다. 반복이 아닌 지식 오답이 함께 다른 쌍은 ‘반복만의 효과’ 분석에서 분리한다. 단답만 선호하도록 length bias를 만들지 않도록 긴 정상 설명·목록·코드·인용·정답복사도 dev/test에 넣는다.
+
+### 10.4 대안별 최적화와 정량 비용의 의미
+
+| 안 | 범위·최적화 | 구현/CPU 회귀 추정 | 추가 학습/메모리 |
+|---|---|---:|---|
+| A 권장 | 정답·종료 SFT-only 기준선과 reference-free ORPO의 작은 대조; 문제 쌍은 후행 작성, frozen 공유층/기존 보정 인자 우선 | 12~20시간; mask·pair/odds·stable gradient·정상반복 회귀 포함 | 쌍마다 두 응답 forward/backward. 추가 pair 비율을 r, 길이 비를 q라 하면 token 작업량은 대략 1+r*q배이며 실제 시간은 compile/길이/패딩에 따라 계측. 별도 판독/교사 모델 동시 상주 없음 |
+| B | representation 이상이 실제 확인되면 SimCTG를 assistant 위치·정상복사 보호에 맞춘 제한 대조; 전체 T² 대신 표본 쌍은 별도 근사 방법으로 표기 | 16~28시간; hidden/마스크/candidate cache 경로 포함 | B8,T1024의 FP32 단일 T×T 행렬만32MiB; 역전파/hidden 별도. 원문 목적함수의 비용은 O(B*T²*d). 무학습 contrastive search는 k 후보 계산/KV가 늘어 엣지 속도 비용 필수 |
+| C | 자유 설명 자료에 한정한 낮은 강도 ScaleGrad 또는 selective UL/DITTO 대조, 고정답/코드/복사/JSON은 보호 | 8~16시간; GPU 커널/기존 F.cross_entropy와 분모 정합 비용 별도 | dense B8*T1024*V32768 boolean novelty mask는256MiB, FP32면1GiB. chunk/window/출력구간 제한은 원문과 다른 근사라 정확한 CPU·gradient 대조가 필요 |
+
+추정은 코딩+검증 작업시간이지 GPU 실측 시간이 아니다. 현재 축별 activation 보정은 수초였지만 전체 LM 선호학습 시간에 그대로 쓸 수 없다. 첫 8~32업데이트의 별도 비용계측 뒤 상한을 제시해야 한다. 기존 micro8×accum16·4epoch 본교육은 유지한다. 선호 쌍을 넣으면 micro8 ‘행’의 분모가 응답인지 쌍인지 달라지므로 동일이라고 주장하지 않고 token/target/update를 따로 검산한다.
+
+native r64 FP32 인자만8.25MiB, FP16 저장은4.125MiB이며 실제 half 계산/배포 상주는 별개다. 추가 학습의 optimizer 감소가 전체 활성값·backward 비용을 없애지는 않는다. GSQ/양자화 압축은 이 목적함수 대조 뒤에 별도로 시험한다. AQLM식 KL과 local 복원을 섞을 때는 제대로 지시를 수행하는 부모가 기준이어야 한다.
+
+### 10.5 데이터·평가 보호와 후속 상태
+
+실시간 생성 중 틀린 문구 목록을 만들거나 의미 심사를 다시 붙이지 않는다. pair는 생성이 끝난 별도 feedback-dev/검토 패킷에서 원질문·대화·정상 반복 허용 계약·오류 구간을 확인해 만든다. validation/test 실패를 즉시 train으로 되먹이지 않는다. 최종 시험 질문은 분리하고 보호 원천은 별도 승인 없이 읽거나 교사에게 보내지 않는다.
+
+보고는 반복 관찰값, 요구 정답/형식, 종료 성공, 정상 반복 보존, 일반 언어 손실, 처리율/상주를 분리한다. ‘반복 감소’만으로 지능 향상이나 복원 문턱 통과를 선언하지 않는다. 현재 선택된 것은 무학습 A 준비이고 C의 새 손실·새 자료·학습은 조건부 연구 후보다. 다음 단계가 필요하면 세 안의 실제 변경 범위와 비용을 사용자에게 다시 제시한 뒤 구현한다.
+
+### 10.6 사용자 선택: 1안과2안 채택·짧은 표현 관찰부터
+
+사용자는정답·종료SFT/ORPO와표현진단/SimCTG를우선채택했다. 먼저새 [P093B Stage6cW](../../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md)의48개짧은forward를준비했다. 기존return_hidden은head logits를만들지않고마지막RMS정규화hidden을반환하므로학습·추가답생성없이관찰할수있다. 최대로256위치만쓰고전체600초cap을두며사용자GPU 약0.08h추정이다. 실제GPU시간은아직미측정이고GPT직접실행에는이번범위별도허가가필요하다.
+
+같은tokenID쌍/다른tokenID쌍의cosine을분리하고중심화unit hidden Gram의eigenvalue분포로covariance entropy rank를계산한다. 이는standard singular-value effective rank와분모가다르므로같은이름으로부르지않는다. prompt/저장loop답포함의대조는관찰이며문장길이·같은단어빈도의교락이있다. 자동collapse문턱·의미품질PASS로사용하지않고정상문장/더넓은source 대조는뒤에결정한다. 현재native return_hidden/마스크/EOF를조용히변경하지않았고C손실학습도미착수다.

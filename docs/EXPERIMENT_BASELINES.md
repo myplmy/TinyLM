@@ -235,8 +235,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | `dense`, `tied` | 정본 기준선(태그 없음 = arch 이름) | **덮어쓰기 절대 금지** |
 | `p093b_function_v1_s1337` | P093B native 함수·r8/16잔차·GSQ배정 독립/삼진인자 | **사용 완료**. [103 §2~§3](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): r8/16 NRMS1.000006/1.014380, B0.982631로local문턱 미달. factor는모델전HOLD8. 훈련오차감소가독립입력 복원/지능·packed배포PASS는아님. |
 | `p106d_ruleviews_v1_s1337_{fixed,views}` | P106D closed procedural fixed/view4epoch 소형학생 | **사용 완료**. [104 §2~§4](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md):각88,864x/7,280targets/8updates·8/64이며옛답복사 정답8/조건변경0. oldfixed sham-only 교락;교사72응답은inline파서가거부. 지능·75M/새300M 미완료. |
-| `p093b_recovery_v2_s1337` | dev-only endpoint/LR 선택·r8/16와독립r32/64·실제8답/조건부저장정밀도 | **예약·새실물NOT_RUN**. train/dev/test위치2048/512/512/층;동일weighted초기화·LR1e-3/1e-4·0/20/50/100/250중dev선택·test최종. FP16저장→FP32와native삼진은조건부이며배포상주아님. [P093B 후속](../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md) |
-| `p106d_ruleviews_v2_4096_s1337_{fixed,views}` | 양팔공통변경/미변경균형·4096canonical/4epoch128updates | **예약·새실물NOT_RUN**. 기존chat32/micro8×accum16/ckptON/LR유지. oldval32root/64첫질문제외·fresh64+old64판독. 각epochactualx/target실측선결,16,777,216은padding상한이지학습토큰이아님. [P106D 후속](../test_plan/P106D_규칙뷰-조건갱신-형식요구와-교사-2QA-게이트.md) |
+| `p093b_recovery_v2_s1337` | dev-only endpoint/LR 선택·r8/16와독립r32/64·실제8답/조건부저장정밀도 | **사용 완료** [103 §8](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): test .977839/.970336/.955230/.923356 전부복원선미달·실제답반복·precision모델전HOLD. parent/shared/rank별원답과FP16저장/상주계산을분리. |
+| `p106d_ruleviews_v2_4096_s1337_{fixed,views}` | 양팔변경/미변경균형·4096canonical/4epoch128updates 목표 | **원시도 종료·학생 tag 미사용** [104 §8](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md):실제3074행/format2·128update0. 교사24요청32QA와옛72readonly구조는완료0이며학생효능증거가아님. |
+| `p093b_generation_v1_s1337` | 같은 legacy 부모/shared/r64 무학습 prompt×decoder/cache 대조 | **새예약/실물NOT_RUN**. oldgreedy24재사용·새192답/24cacheoff·nucleus.p95/t1·fewshotprefix. C손실/학습은조건부검토,새checkpoint0. |
+| `p106d_ruleviews_v3_length_s1337_{fixed,views}` | C3고정key/실제재표현·길이bucket·4096균형 | **새예약/실물NOT_RUN**. micro8×accum16/ckptON/LR/4epoch128update 유지·원형v2/oldval보존. 원답/actualx/target별도. |
+| `p106b_gemma_ac_v1_s1337` | 원source8·개념1/2/4×thinking256/1024 역순factorial | **새예약/실물NOT_RUN**. teacheronly/slot1/MTPoff·56논리request/168physical상한·ctx16K/total6144. 별도ctx8K/16K/32K sparse자원probe,75M corpus와별도. |
 | `t_*` | 300M 풀 tied 계열 | 사용중(위 §2.1) |
 | `p6*` | 600M 풀 토큰스윕(P007) | 사용중 |
 | `sp_*` | 속도 벤치(P021) | 사용중 |

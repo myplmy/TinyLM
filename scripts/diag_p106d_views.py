@@ -17,7 +17,7 @@ CODE=("scripts/diag_p106d_views.py","scripts/p106d_views.py","scripts/p106d_teac
       "scripts/p106b_rule_views.py","scripts/train_sft_p090.py","scripts/p106b_education_followup.py",
       "scripts/test_p106d_views.py","scripts/test_p106d_teacher_views.py","scripts/test_p106d_driver.py",
       "scripts/p106d_expanded_views.py","scripts/test_p106d_expanded_views.py")
-SCHEMA="P106D_VIEW_GATE_V2"
+SCHEMA="P106D_VIEW_GATE_V3"
 
 
 def digest(path):

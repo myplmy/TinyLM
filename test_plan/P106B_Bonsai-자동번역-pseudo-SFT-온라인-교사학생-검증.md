@@ -1567,3 +1567,58 @@ GPU권한/소유권·학습풀/tokenizer/초기화·메모리/속도/품질의 �
 소표본·확률적생성/수락집합변동이 있어 단독 가속·내용품질의 인과판정은 하지 않는다.
 생산은 구계측정책의조회timeout에 의해 둘 다9였고 뒤학생0이다. 새A는 CPU94 PASS·사용자 실물 NOT_RUN이다.
 이전 ‘현재파일 삭제하지 않음’은10/08의판정이다. 이번(3) 적격삭제승인에 따라 exactdone7만 Git/명령/SHA 보존 후 정리한다.
+
+# P106B — 2026-10-11 예산 종료 명시재개와 교사 단독 생산성 A×C
+
+## 1. 왜
+
+[결과101 §90](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): Stage4jWg는조회3회모두회복/교사6h생산후ownedbudget alarm이9로분류됐고newtrain75,901x·총29.190847M·부족45.809153M이남았다. kWd/k0Wd/lWc/mWc는완성선결보류·학생0이다. 생산속도3.5136x/sec의잔여외삽151일은정식교육목표에너무길어기존명시재개와A×C생산성검증을병행준비한다.
+
+## 2. 질문·범위
+
+Q1은순수 시간예산만료와실제서버/메모리오류의구별,Q2는서로다른개념1/2/4/request×thinking256/1024의공급량/시간,Q3는교사단독ctx상한의실제여유다. 사용자 선택 A+C와교사단독상한검토범위로코드/SH·CPU만작성하고 Codex 모델/GPU는0이다. 기존generation code14·source/tokenizer/배치/LR·HF 원형·공용검사·새온라인의미심사·후행C학습은제외한다.
+
+## 3. 예측
+
+owned alarm의typedpause는예산만료를8로명확히표현할것이다. 실제서버/OOM/지속조회실패는계속중단해야한다. 여러개념/낮은thinking으로요청비용이줄수있지만출력절단·내용품질·구조실패가늘면유효공급은줄수있다. 큰ctx는VRAM여유가있어도SWA/KV할당방식에따라OOM일수있고생성속도향상을보장하지않는다.
+
+## 4. 단계 설계
+
+| 단계 | 런처 | 선결·범위 | 시간h/상한 | 상태 |
+|---|---|---|---:|---|
+| Stage4jWh | run_P106B_Stage4jWh_budget_pause_resume.sh | 원형inputs/code14·샤드/cursor 재검산;계측3회/별도receipt·ownedpause8 | 6.00/21600초 | 새실물NOT_RUN |
+| Stage4kWe | run_P106B_Stage4kWe_budget_completed_corpus.sh | 성공75M/val/언어·과제·출처cap 검산 | .50 | 자료미완이면8 |
+| Stage4k0We | run_P106B_Stage4k0We_budget_student_wire.sh | 완성같은V4·teacher내림·원부모2updates | .50 | 조건부NOT_RUN |
+| Stage4lWd | run_P106B_Stage4lWd_budget_literal_repeat4.sh | 같은wire·75M×4pass actual약300M | 12.00 | 조건부NOT_RUN |
+| Stage4mWd | run_P106B_Stage4mWd_budget_literal_multiaxis.sh | 같은새자식·72실제답/멀티턴/언어손실 | .50 | 조건부NOT_RUN |
+| Stage4n0W | run_P106B_Stage4n0W_ac_cpu_contract.sh | 슬롯·source/사고·card·공유3구조시도·SAMPLED_ONLY계약 | .02/600초 | CPU준비만 |
+| Stage4nWa | run_P106B_Stage4nWa_teacher_context_budget.sh | CPU계약·teacher단독8K/16K/32K | .50/3600초 | 새GPU NOT_RUN |
+| Stage4nWb | run_P106B_Stage4nWb_concepts_thinking_factorial.sh | current16K자원통과·공개family64의원source8 | .75/7200초 | 새GPU NOT_RUN |
+
+A×C namespace `p106b_gemma_ac_v1_s1337`, 원source report D8C72117…을고정한다. 한영각4원source에서samecompletedset8을두순서에서맞춘다.1/2/4개×256/1024의6조건을앞/역순12팔로실행해논리56요청/총3시도최대168요청이다. 여러개념을같은질문의여러재표현답과혼동하지않는다.
+교사는번호형QUESTION_i/ANSWER_i/NOTE시작라벨로내용만쓰고코드는source별canonical/ChatML·thinking sidecar를만든다. 성공slot은재시도에서보존하며의미불량문구목록·정답성필터는추가하지않는다. x/assistanttarget·재시도포함wall·완결source집합·실제답·VRAM을보고한다.
+
+## 5. 판정 기준
+
+기존생산수락/한영37.5M씩·task50/25/25·출처25%cap·별도val·75M/fourpass 목표는그대로다. pause8은완성PASS가아니다.
+capacity는teacher단독 sparse입력에서8K/3072/1024,16K/6144/1024,32K/12288/2048을각각보존하고16K관측minfree≥2048MiB·조회공백없음이패널선결이다.32K실패는보존하지만16K통과를무효로하지않는다. SAMPLED_ONLY는연속peak증명이아니다.
+A×C는ctx16K/total6144/card t1.0/p.95/k64고정이며sameacceptedsource8/arm·양순서의유효x/초와내용후행검토·자원증거뒤에생산정책채택을판단한다. 단순completion tok/s로75M완성시간이나학생교육효과를추론하지않는다.
+
+## 6. 비용·preflight
+
+새16SH전체조건부후보약22.41h이고48h큐를채우기위해미승인중복생산을넣지않는다. 기존producer6h는완료시한이아니다. 교사본체약6,426MiB+KV/graph/ctx/Draft별도이며MTPoff/1slot로가속축과메모리축을분리한다. 공식config256K최대문맥과16GiB실제여유는동일하지않다.
+14파일SHA/원cursor/자료version을바꾸지않는resume은계보연속이며,A×C는독립진단출력이다. 사용자가패널결과를선택하기전대량production정책을자동교체하지않는다.75M×4epoch는사용자허용반복SFT의actualtoken분모이며normal600M-pool CPT비교로부르지않는다.
+새SFTcheckpointtag는추가하지않고기존미사용예약 p106b_s4_gemma_capability300m_chat32_literalv3_s1337을유지한다. broad runs/registry 내용검사는보호경계로미실행이며source/state/HOLD·정확출력충돌만사용자단계에서재검산한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 7. 실행
+
+새사용자smoke 통과후 §4의선결순서만실행한다. 새AC source/canonical20MB 이하shards·전체원답/재시도/SHA·partialreport를보존한다. 전부무인으로입력대기/자동무한loop/download는없다.
+
+## 8. 한계
+
+teacher단독ctx소형probe는상한까지채운context/decode나장시간OOM안전을증명하지않는다. sparse memory와생산6h계측공백은분리한다. 원천8의복잡도/언어/수락률이45.81M부족분전체에적용되는지는미확정이다. 온라인동시학생·추가teacher정답검증·C반복억제학습은미실행이다.
+
+## 9. 실행 이력
+
+2026-10-11 raw17+smoke1과 지정evidence를 원형로컬969761e에보존했다. 조회복구예측은3/3에서관측됐지만budget8분류는코드경로차이로실패했다. 새typedpause·D실제재표현·A×C·P093무학습진단은CPU정적준비이며새실물완료는아니다.

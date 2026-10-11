@@ -60,4 +60,36 @@ class ExpandedTests(unittest.TestCase):
         with self.assertRaises(TimeoutError):
             large.build(forbidden,train_rows=64,val_rows=16,deadline=0)
 
+    def test_format_has_real_paraphrases_with_one_fixed_key(self):
+        spec=large.make_spec(large.expanded_recipe("format",7),"en","train")
+        rows=list(large.candidates(spec,changed=None,key="answer",seed=1337,count=64))
+        import json
+        self.assertEqual({next(iter(json.loads(small.text_at(r,-1)))) for r in rows},{"answer"})
+        self.assertGreaterEqual(len({small.text_at(r,-2) for r in rows}),8)
+        self.assertEqual(len({small.text_at(r,0) for r in rows}),1)
+
+    def test_per_key_token_length_does_not_fake_a_matched_view(self):
+        import json
+        def codec(row):
+            if row["meta"].get("followup_kind")=="C3_VERBATIM_FORMAT":
+                key=next(iter(json.loads(small.text_at(row,-1))))
+                return 100+large.KEYS.index(key),8
+            return fixture_signature(row)
+        data=large.build(codec,train_rows=64,val_rows=16,attempts=64)
+        self.assertTrue(data["report"]["ready"])
+        for i,base in enumerate(data["fixed"]):
+            if base["meta"]["root_family"]!="format":continue
+            target=small.text_at(base,-1)
+            self.assertTrue(all(small.text_at(rows[i],-1)==target for rows in data["epochs"]))
+
+    def test_viable_matching_bucket_need_not_include_first_candidate(self):
+        spec=large.make_spec(large.expanded_recipe("format",3),"en","train")
+        rows=list(large.candidates(spec,changed=None,key="answer",seed=1337,count=8))
+        first=small.text_at(rows[0],-2)
+        def sig(r):return (101,9) if small.text_at(r,-2)==first else (100,9)
+        base,options,signature=large.matched_class(rows,sig)
+        self.assertEqual(signature,(100,9))
+        self.assertGreaterEqual(len(options),2)
+        self.assertNotEqual(small.text_at(base,-2),first)
+
 if __name__=="__main__": unittest.main(verbosity=2)

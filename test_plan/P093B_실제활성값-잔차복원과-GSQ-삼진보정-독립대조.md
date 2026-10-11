@@ -47,25 +47,25 @@ A 성공에 종속하지 않고 같은 parent/source/offset/참조로 실행한�
 
 A의 사전등록 r16 viability 뒤에만 해당 인자의 현재 `ternary_g` 전/후와 GSQ 배정/scale 보정을 비교한다. export된 D/U를 기존 `LoRA(bits=2)`로 복원해 정합/NRMS/CE를 기록한다. 직접 packed kernel 가속은 아니다. RCO는 후보별 byte/효용 DB가 준비된 후의 별도 단계다.
 
-### Stage0bW — 복구 계약 CPU / 새 단계
+### Stage0bW — 복구 계약 CPU / 완료0
 
 사용자2026-10-10 선택으로 기존r8/16 실제 음성 이후의 분할·LR·중간점 대조와 별도r32/64 표현력 대조를 모두 준비한다. 기존GSQ 배정B(Stage1Wb)와 후속의 ‘표현력 B’는 다른 질문이다.
 
-### Stage4Wa — dev 선택 r8/16 대조 / 사용자 GPU NOT_RUN
+### Stage4Wa — dev 선택 r8/16 대조 / 완료·과학적 음성8
 
 같은 정확부모·first-middle4·source32창을 먼저 고정한다.24앞창을 train16창/2048위치, dev4창/512위치, test4창/512위치로 분리하고 마지막8창은 별도wholeCE용이다.4층 관측수를 다른텍스트 수로 부풀리지 않는다.
 같은 weighted-SVD 초기인자를 복사해LR1e-3/1e-4·AdamW/WD0·250update를 대조하며0/20/50/100/250회 train/dev 곡선을 보존한다. rank별 LR/종료시점은dev만으로 고르고 test를 optimizer/선택 함수에 넣지 않는다.
 부모·shared-only·선택후 각rank의 실제 한영8질문 첫답/종료를 보존한다. local음성이어도 추론자료는 남기며 회수 후 GPT가 의미를 판독한다.
 
-### Stage4Wb — 같은 분할/절차 r32/64 / 사용자 GPU NOT_RUN
+### Stage4Wb — 같은 분할/절차 r32/64 / 완료·과학적 음성8
 
 r8/16 성공에 종속하지 않는다. rank를32/64로만 바꾼 같은 LR/초기화/분할 절차다. r64 FP32 인자8.25MiB의비용을 함께 공개하며 추가표현력이 실제 함수와답안에서효용을내는지본다. independenttest는 최종평가이며 이후rank를낮은test점수만으로고르지않는다.
 
-### Stage4Wc — 대응 자료·원답 CPU 판독
+### Stage4Wc — 대응 자료·원답 CPU 판독 / 완료0
 
 두 report의 parent/window/train/dev/test/코드SHA와실물완료를검산한다. 실제문구판독을 CPU 완료로대체하지않는다.
 
-### Stage5W — 조건부 저장 정밀도·native삼진 미리보기 / 사용자 GPU NOT_RUN
+### Stage5W — 조건부 저장 정밀도·native삼진 미리보기 / 종료·선결보류8
 
 유효한 unquantized capacity rank가 없으면모델시작전HOLD8이다. 통과한각r32/64에서FP32참조·FP16저장왕복(FP32실행)·현재native삼진인자왕복의test/wholeCE/실제8답/byte를비교한다. FP16resident/kernel이나GSQ인자추가최적화/RCO전체는아직아니다. 재구성함수·서버sampler·정상SFT기본을바꾸지않는다.
 
@@ -116,3 +116,37 @@ init/수집/보정/eval 시간을 나눠 공개한다. 실물 자원 미계측�
 
 - 2026-10-10 원형5로그/정본5회수: 실제활성값/SVD초기화가능성은미달. rank8/16의초기소폭이득이250회뒤사라져‘현재조건에서복원문턱을넘는다’는예측은기각한다. B도10%문턱미달,삼진factor는선결HOLD로실물실패가아니다.
 - 사용자A+B 선택: train/dev/test·LR/endpoint/r32/64/실제8답·조건부FP16storage/native삼진을새단계로준비했다. 새실물효용·GPT답안판독·배포손익은NOT_RUN이다.
+
+## 10. 2026-10-11 회수와 무학습 반복 원인진단
+
+[결과103 §8~§9](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)에서 Stage0bW/4Wc는완료0,4Wa/4Wb는실제보정종료8,5W는선결HOLD8로회수했다. dev 선택이 늦은 과적합을 줄일 예측은 일부 관측됐지만 모든 rank의 test NRMS/10% 회복선은 여전히 미달이다. 부모도 질문을 반복하므로 r64가 반복을 새로 만들었다는 예측은 성립하지 않는다.
+
+### Stage6aW — 생성·cache·입력 계약 CPU 준비 / STATIC_ONLY
+
+`run_P093B_Stage6aW_generation_contract.sh`는 새 helper/entry의 nucleus 확률·few-shot prefix·원형 재사용·체크포인트 접근 없는 check-only·partial 보존 계약을 검사한다. namespace `p093b_generation_v1_s1337`, CPU0.02h·600초 cap. 새 실물 NOT_RUN이다.
+
+### Stage6bW — 같은 부모/shared/r64의 prompt×decoder 원인진단 / 사용자 GPU NOT_RUN
+
+`run_P093B_Stage6bW_parent_shared_r64_decode.sh`; 새 가중치/optimizer/체크포인트 저장0. parent SHA A402BF1D…·원형 recovery capacity report4C8D5952…·legacy32를 유지한다. 원형 plain-greedy24답은 재사용하며 few-shot 예시는 평가 gold와 다른값을 쓴다. plain/few-shot ×greedy/nucleus(p.95,t1,3seed)를 대응해 새168답, 추가 cache-off plain-greedy24답을 남긴다. 총 새192답이며 같은 문구 재생성을 semantic 승인으로 세지 않는다.
+
+native sampler에는 top_p 인자가 없어 진단 scope에서 multinomial 확률만 nucleus로 바꾸고 복제 generation 루프를 만들지 않는다. 실제24 cache text/finish/count 대응은 전체 logit bitwise 증명과 구분한다. source/코드/원답 지문·종료·실제 질문/답을 콘솔과20MB 이하 shards로 남긴다. 0.25h 추정·1800초 cap이며 partial 원답도 보존한다.
+
+판정: 완결/원형/마스크/추출은 기술계약, 반복·정답·조건·종료·속도는 분리 관찰. cache 불일치 시 구현/정밀도 진단을 먼저 이어가고 반복 억제 학습으로 덮지 않는다. few-shot/nucleus가 좋아져도 새 지식을 학습한 것이 아니다.
+
+## 11. C 반복억제의 조건부 최적안
+
+[논문 검토08 §10](../docs/methods/08_paper_review2.md)에 UL/DITTO 외 ScaleGrad·SimCTG·contrastive decoding·DPO·ORPO·SimPO·전체 출력분포 보존을 검토했다. 우선은 A 원답을 회수한다. C 후보는 지시/종료 SFT 기준선과 reference-free ORPO의 후행 판독 쌍 대조이며 정상복사/유일답/코드/JSON 보호·train/dev/test 분리·토큰/업데이트 대응·망각 검증이 필요하다. C 신규 학습/손실 구현은 미착수, 선택·별도 범위 승인 전 실험을 열지 않는다. 과거 local 문턱과 기본 SFT 레시피를 변경하지 않았다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 12. 사용자 추가 선택 — SFT/ORPO와 표현 진단/SimCTG 우선 보존
+
+사용자는1안과2안을우선채택하고저비용표현진단부터요청했다. 이는새C학습실행승인이아니다. 실제체크포인트/GPU진단은일반질문으로별도범위를확인하며승인전에는CPU회귀와SH준비만한다.
+
+### Stage6cW — 저장 원답의 마지막 hidden 소형 관찰 / 준비·실물NOT_RUN
+
+`run_P093B_Stage6cW_hidden_representation_observation.sh`, 약0.08h추정/전체600초cap. 동일parent/shared/r64·기존8prompt와그prompt+저장원답의48forward만한다. return_hidden으로head logits/KVcache/새답생성을하지않고최종RMSnorm hidden만읽는다. source/토크나이저/보정원형 SHA는같으며optimizer/체크포인트쓰기0이다.
+
+위치수≤256·finite/0norm검사·같은tokenID쌍과다른tokenID쌍의cosine을분리한다. 중심화한단위벡터Gram의eigenvalue정규화로covariance entropy rank를보고하며특정점수로자동‘표현붕괴/오답’을판정하지않는다. 같은token을쓴정상JSON/코드반복의높은유사성과서로다른token도비슷한경우를혼동하지않는다.8개의짧은과제/루프 원답이므로일반LM isotropy나반복의인과를증명하지못한다. 낮은rank가보이면정상문장/다른부모의후속대조가필요하다.
+
+Stage6aW의최신CPU계약뒤6cW표현관찰을6bW긴원답진단보다먼저회수할수있다. 기본SFT/함수복원기준은불변이고C의SimCTG/ORPO 손실은후속설계·별도학습권한을필요로한다.

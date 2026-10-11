@@ -246,3 +246,9 @@ m100R1q 기준
 [P093B 결과103](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)은 실제 문장 활성값을 썼어도 r8/16 잔차와 GSQ식 공유 배정의 복원 문턱이 미달이었다. 원부모를 동시에 보존한 진단 GPU peak는 타잉 배포 상주 절감이 아니다. r32/64 FP32 인자4.125/8.25MiB를 FP16으로 저장하면2.0625/4.125MiB라는 인자만의 계산값이다. 스케일·master·optimizer·양자화 cache·전체 모델·KV는 포함하지 않는다.
 
 [후속 계획](../../test_plan/P093B_실제활성값-잔차복원과-GSQ-삼진보정-독립대조.md)은 독립 test 함수·전체 forward CE·실제 답안을 확인한 뒤 모든 유효 capacity rank의 FP16저장왕복/현재 native 삼진 인자를 비교한다. FP16은 저장 후 FP32로 실행하므로 resident 절감·별도 커널 속도·32MiB 목표 성공을 주장하지 않는다. GSQ factor 추가 보정·RCO 예산 배정·LittleBit binary 커널은 이번 구현 범위가 아니다.
+
+## 2026-10-11 — r64 저장비용과 교사 단독 context
+
+[103 §8](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)의 r64 testNRMS.92336은비채택, 정밀도는선결보류다. FP32인자8.25MiB/FP16저장4.125MiB/이상적2bit.515625MiB는factor payload만이며 실제상주나배포커널가속이아니다. half+sharedcore5.25MiB도원래4MLP의이상적4.5MiB보다크다.
+
+[101 §90](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의teacher단독8K는minfree7295MiB이나공백3회/GAPPED다. 새16K/32K sparseprobe·유효자원선결을별도로준비하며256K모델최대문맥을16GiBGPU보증으로쓰지않는다. [반복연구 비용](08_paper_review2.md#104-대안별-최적화와-정량-비용의-의미)의별도모델/hidden/noveltymask비용도설계계산값으로구분한다.

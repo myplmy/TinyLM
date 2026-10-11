@@ -10,7 +10,7 @@ import time
 from scripts import p106d_views as small
 from scripts import p106b_rule_views as rules
 
-VERSION="P106D_BALANCED_MATCHED4096_V1"
+VERSION="P106D_BALANCED_MATCHED4096_V2"
 KEYS=("answer","value","result","reply")
 
 
@@ -81,12 +81,45 @@ def candidates(spec,*,changed,key,seed,count=64):
     base_answer=rules._render(spec,spec["payload"])[1]
     for i in range(count):
         if spec["kind"]=="verbatim_qa":
-            yield rules.make_format_followup(spec,view_index=i,field_name=KEYS[(KEYS.index(key)+i)%len(KEYS)])
+            row=rules.make_format_followup(spec,view_index=i,field_name=key)
+            row["messages"][-2]["content"][0]["text"]=format_instruction(spec["language"],key,i)
+            row["meta"]["format_prompt_variant"]=i%16
+            yield row
         else:
             p=draw_payload(spec,changed=changed,rng=rng)
             answer=rules._render(spec,p)[1]
             if (answer!=base_answer)!=changed: continue
             yield small.closed_row(spec,p)
+
+
+def format_instruction(language,key,index):
+    """Real instruction paraphrases, with the same exact one-key/string target."""
+    if key not in KEYS or language not in ("ko","en"):
+        raise ValueError("known language/key required")
+    if language=="en":
+        verbs=("Return","Output","Write","Give")
+        ends=("Preserve the answer exactly.","Keep the answer unchanged.",
+              "Do not alter the answer.","Do not change the answer.")
+        return (f"{verbs[index%4]} only a JSON object with exactly one key {key} and "
+                f"the complete previous answer as its string value. {ends[index//4%4]}")
+    verbs=("출력하세요","반환하세요","작성하세요","제시하세요")
+    ends=("답변의 내용은 그대로 보존하세요.","답변을 변경하지 마세요.",
+          "답변 내용을 바꾸지 마세요.","답변을 고치거나 요약하지 마세요.")
+    return (f"이전 답변의 전체 문자열을 {key} 키 하나만 가진 JSON 객체의 값으로 "
+            f"{verbs[index%4]}. {ends[index//4%4]}")
+
+
+def matched_class(rows,signature):
+    """Choose a deterministic viable length bucket; never pad or inspect quality."""
+    buckets={}
+    for row in rows:
+        sig=signature(row)
+        identity=(small.text_at(row,-2),small.text_at(row,-1))
+        buckets.setdefault(sig,{}).setdefault(identity,row)
+    viable=[(sig,list(values.values())) for sig,values in buckets.items() if len(values)>=2]
+    if not viable:raise ValueError("not_enough_matched_distinct_views")
+    sig,options=min(viable,key=lambda item:(-len(item[1]),item[0]))
+    return options[0],options,sig
 
 
 def build(signature,*,train_rows=4096,val_rows=64,seed=1337,attempts=64,
@@ -127,19 +160,13 @@ def build(signature,*,train_rows=4096,val_rows=64,seed=1337,attempts=64,
                                     row=small.closed_row(spec,p,probe=True); break
                         if row is None: raise ValueError("no_closed_probe")
                         signature(row); children.append((first,row)); continue
-                    accepted={}
-                    baseline=None; sig=None
+                    candidate_rows=[]
                     for row in candidates(spec,changed=changed,key=key,seed=seed,count=attempts):
                         if deadline is not None and time.monotonic()>=deadline:
                             raise TimeoutError("balanced4096 candidate wall budget")
                         if small.text_at(row,0)!=first: raise ValueError("first_question_drift")
-                        current_sig=signature(row)
-                        if baseline is None: baseline=row; sig=current_sig
-                        if current_sig!=sig: continue
-                        identity=(small.text_at(row,-2),small.text_at(row,-1))
-                        accepted.setdefault(identity,row)
-                    if baseline is None or len(accepted)<2: raise ValueError("not_enough_matched_distinct_views")
-                    options=list(accepted.values())
+                        candidate_rows.append(row)
+                    baseline,options,sig=matched_class(candidate_rows,signature)
                     selected=[copy.deepcopy(options[e%len(options)]) for e in range(4)]
                     policy="FORMAT_VERBATIM" if family=="format" else ("ANSWER_CHANGED" if changed else "ANSWER_UNCHANGED")
                     for row in [baseline,*selected]:
@@ -172,5 +199,5 @@ def build(signature,*,train_rows=4096,val_rows=64,seed=1337,attempts=64,
         "four_epoch_processed_tokens":4*sum(x for x,t in expected),"slot_token_target_match":True,
         "source_definition_sha256":small.hash_object(roots),"excluded_prior_val_roots":len(excluded_roots),
         "knowledge_claim":"four procedural families; instances are not new independent knowledge",
-        "view_policy":"at least2 distinct matched views/root; repetitions allowed, not four guaranteed unique views",
+        "view_policy":"at least2 distinct matched views/root; fixed output key in C3; deterministic largest viable length bucket; no padding",
         "model_loading":"NOT_RUN","meaningful_training":"NOT_RUN"}}
