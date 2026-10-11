@@ -1,0 +1,674 @@
+{
+  "input": {
+    "schema": "P093B_RECOVERY_V2",
+    "mode": "tune_a",
+    "tag": "p093b_recovery_v2_s1337",
+    "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+    "parent_expected_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "source": "data_cache/ko-en_600000000/train.bin",
+    "seed": 1337,
+    "code_sha256": {
+      "scripts/diag_p093b_calibration_recovery.py": "D595AEFCC6BF02A849F08D6C7E6A2A35E72B1BE1C36B33EA73036B0280B2F534",
+      "scripts/p093b_calibration_recovery.py": "C5D050AA1A4DE527C9A307709B252832BCC89C80F39CFB746F0C55927B469D39",
+      "scripts/test_p093b_calibration_recovery.py": "591BFD4B83B61736FF4F34FE8B695E2A75E46AC50589E32ED755CB79E1801F90",
+      "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+      "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+      "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+      "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+      "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+    },
+    "model_loading": "MEASURED",
+    "full_training": "NOT_RUN",
+    "model_quality": "NOT_ESTABLISHED",
+    "max_wall_sec": 3600,
+    "lr_grid": [
+      0.001,
+      0.0001
+    ],
+    "checkpoints": [
+      0,
+      20,
+      50,
+      100,
+      250
+    ],
+    "selection": "DEV_ONLY per rank/LR; independent final test/CE/actual answers",
+    "activation_positions_per_layer": {
+      "train": 2048,
+      "dev": 512,
+      "test": 512
+    },
+    "prompt_schema": "legacy plaintext QA; not ChatML",
+    "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
+    "train_x_sha256": "312A19CB01204BE0BC829EF56E940F38219CECFB69BBFAFCAD2CF56315BEC4D5",
+    "dev_x_sha256": "7254C8EB445216355D6F40BAF3A6A7E9B33D889F7390FD3D1A9BE10E120A5AB7",
+    "test_x_sha256": "B6EC2031A8D5EA7015D2D8229419913A68AFA030C131E6D57C55E7323A46E35B",
+    "offsets": [
+      172833664,
+      434020096,
+      457605376,
+      247328896,
+      110759424,
+      234081024,
+      165106304,
+      35678208,
+      549774336,
+      98507904,
+      311602816,
+      50037120,
+      3855744,
+      233738496,
+      473811328,
+      322500480,
+      115657216,
+      337270400,
+      86223616,
+      295986176,
+      135764352,
+      142843520,
+      536326144,
+      522078720,
+      199739648,
+      69098112,
+      532921088,
+      524223360,
+      326153344,
+      565096832,
+      275627264,
+      204016384
+    ],
+    "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+    "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+    "capture_seq": 128,
+    "group_layers": [
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "status": "RECOVERY_CALIBRATION_COMPLETE",
+  "ranks": [
+    {
+      "rank": 8,
+      "lr_trials": [
+        {
+          "lr": 0.001,
+          "completed_updates": 250,
+          "selected_step": 100,
+          "selected_dev_nrms": 0.9728319048881531,
+          "curve": [
+            {
+              "step": 0,
+              "train_nrms": 0.9859572649002075,
+              "dev_nrms": 0.9936975836753845
+            },
+            {
+              "step": 20,
+              "train_nrms": 0.9574387073516846,
+              "dev_nrms": 0.9837619066238403
+            },
+            {
+              "step": 50,
+              "train_nrms": 0.9335391521453857,
+              "dev_nrms": 0.9743993282318115
+            },
+            {
+              "step": 100,
+              "train_nrms": 0.9098116755485535,
+              "dev_nrms": 0.9728319048881531
+            },
+            {
+              "step": 250,
+              "train_nrms": 0.8684126734733582,
+              "dev_nrms": 0.9853410720825195
+            }
+          ],
+          "grad_max": 0.00558069534599781,
+          "wall_sec": 3.7199763100070413,
+          "trainable_parameters": 270336,
+          "selection_scope": "DEV_ONLY; test not an argument"
+        },
+        {
+          "lr": 0.0001,
+          "completed_updates": 250,
+          "selected_step": 250,
+          "selected_dev_nrms": 0.9788778424263,
+          "curve": [
+            {
+              "step": 0,
+              "train_nrms": 0.9859572649002075,
+              "dev_nrms": 0.9936975836753845
+            },
+            {
+              "step": 20,
+              "train_nrms": 0.9825085997581482,
+              "dev_nrms": 0.9926300048828125
+            },
+            {
+              "step": 50,
+              "train_nrms": 0.9773817658424377,
+              "dev_nrms": 0.9909990429878235
+            },
+            {
+              "step": 100,
+              "train_nrms": 0.9686302542686462,
+              "dev_nrms": 0.9879847168922424
+            },
+            {
+              "step": 250,
+              "train_nrms": 0.9465979933738708,
+              "dev_nrms": 0.9788778424263
+            }
+          ],
+          "grad_max": 0.005621137097477913,
+          "wall_sec": 3.438597443018807,
+          "trainable_parameters": 270336,
+          "selection_scope": "DEV_ONLY; test not an argument"
+        }
+      ],
+      "selected_trial": 0,
+      "selected_lr": 0.001,
+      "selected_step": 100,
+      "selected_dev_nrms": 0.9728319048881531,
+      "test": {
+        "nrms": 0.9778389930725098,
+        "layer_nrms": [
+          0.9758763909339905,
+          0.9712149500846863,
+          0.9797117114067078,
+          0.9854707717895508
+        ]
+      },
+      "ce": {
+        "window_ce": [
+          3.717400550842285,
+          3.711980104446411,
+          3.4179649353027344,
+          4.149394989013672,
+          3.9244182109832764,
+          4.553838729858398,
+          4.2417473793029785,
+          3.783092498779297
+        ],
+        "mean_ce": 3.9374796748161316,
+        "prediction_tokens": 1016,
+        "truth_scope": "same source function probe, not unseen knowledge"
+      },
+      "actual_answers": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 8,
+        "bytes": 7506,
+        "concat_sha256": "C1E4BDD4E83450CA85BA88723D9F5CB102EE04C50640F5BBF2111B20ECBACB38",
+        "lineage": {
+          "first_answer_only": true,
+          "questions": 8,
+          "quality": "PENDING_GPT_REVIEW"
+        },
+        "shards": [
+          {
+            "path": "actual_answers_rank8_000000.jsonl",
+            "bytes": 7506,
+            "rows": 8,
+            "sha256": "C1E4BDD4E83450CA85BA88723D9F5CB102EE04C50640F5BBF2111B20ECBACB38"
+          }
+        ]
+      },
+      "local_viable": false,
+      "artifact_stem": "rank8",
+      "artifact": {
+        "schema": "P093B_DIAGNOSTIC_PATCH_SHARDS_V1",
+        "input": {
+          "schema": "P093B_RECOVERY_V2",
+          "mode": "tune_a",
+          "tag": "p093b_recovery_v2_s1337",
+          "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+          "parent_expected_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "source": "data_cache/ko-en_600000000/train.bin",
+          "seed": 1337,
+          "code_sha256": {
+            "scripts/diag_p093b_calibration_recovery.py": "D595AEFCC6BF02A849F08D6C7E6A2A35E72B1BE1C36B33EA73036B0280B2F534",
+            "scripts/p093b_calibration_recovery.py": "C5D050AA1A4DE527C9A307709B252832BCC89C80F39CFB746F0C55927B469D39",
+            "scripts/test_p093b_calibration_recovery.py": "591BFD4B83B61736FF4F34FE8B695E2A75E46AC50589E32ED755CB79E1801F90",
+            "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+            "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+            "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+            "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+            "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+          },
+          "model_loading": "MEASURED",
+          "full_training": "NOT_RUN",
+          "model_quality": "NOT_ESTABLISHED",
+          "max_wall_sec": 3600,
+          "lr_grid": [
+            0.001,
+            0.0001
+          ],
+          "checkpoints": [
+            0,
+            20,
+            50,
+            100,
+            250
+          ],
+          "selection": "DEV_ONLY per rank/LR; independent final test/CE/actual answers",
+          "activation_positions_per_layer": {
+            "train": 2048,
+            "dev": 512,
+            "test": 512
+          },
+          "prompt_schema": "legacy plaintext QA; not ChatML",
+          "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
+          "train_x_sha256": "312A19CB01204BE0BC829EF56E940F38219CECFB69BBFAFCAD2CF56315BEC4D5",
+          "dev_x_sha256": "7254C8EB445216355D6F40BAF3A6A7E9B33D889F7390FD3D1A9BE10E120A5AB7",
+          "test_x_sha256": "B6EC2031A8D5EA7015D2D8229419913A68AFA030C131E6D57C55E7323A46E35B",
+          "offsets": [
+            172833664,
+            434020096,
+            457605376,
+            247328896,
+            110759424,
+            234081024,
+            165106304,
+            35678208,
+            549774336,
+            98507904,
+            311602816,
+            50037120,
+            3855744,
+            233738496,
+            473811328,
+            322500480,
+            115657216,
+            337270400,
+            86223616,
+            295986176,
+            135764352,
+            142843520,
+            536326144,
+            522078720,
+            199739648,
+            69098112,
+            532921088,
+            524223360,
+            326153344,
+            565096832,
+            275627264,
+            204016384
+          ],
+          "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+          "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+          "capture_seq": 128,
+          "group_layers": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "files": [
+          {
+            "path": "rank8_gate_proj.pt",
+            "bytes": 12946693,
+            "sha256": "50CD26A569198BE53476694DA59D08C92654A1FEBF8E63E09D66606A32E8DBCA"
+          },
+          {
+            "path": "rank8_up_proj.pt",
+            "bytes": 12946693,
+            "sha256": "9C4FBB26E1D612C7CA766A3813EB1FD38DEE80F298369F663A8415D890FDFE5A"
+          },
+          {
+            "path": "rank8_down_proj.pt",
+            "bytes": 12946693,
+            "sha256": "A9FED738AC6E040B92CA2C7371ABB1AEFF7DC2471887FB0A982EB03E7EF9E57E"
+          }
+        ],
+        "scope": "diagnostic partial patch, not a complete deployable checkpoint"
+      },
+      "factor_bytes": {
+        "factor_parameters": 270336,
+        "fp32_parameter_bytes": 1081344,
+        "fp16_storage_bytes": 540672,
+        "ideal_ternary2bit_storage_bytes": 67584,
+        "native_runtime_dtype": "FP32",
+        "fp16_roundtrip_runtime_saving": false,
+        "exclusions": "shared core, master/cache copies, scales, metadata, KV, allocator and full model",
+        "scope": "factor payload arithmetic, not deployed RSS/32MiB proof"
+      }
+    },
+    {
+      "rank": 16,
+      "lr_trials": [
+        {
+          "lr": 0.001,
+          "completed_updates": 250,
+          "selected_step": 50,
+          "selected_dev_nrms": 0.9641995429992676,
+          "curve": [
+            {
+              "step": 0,
+              "train_nrms": 0.96940016746521,
+              "dev_nrms": 0.9869902729988098
+            },
+            {
+              "step": 20,
+              "train_nrms": 0.9207304120063782,
+              "dev_nrms": 0.9723528623580933
+            },
+            {
+              "step": 50,
+              "train_nrms": 0.8873999714851379,
+              "dev_nrms": 0.9641995429992676
+            },
+            {
+              "step": 100,
+              "train_nrms": 0.8526830077171326,
+              "dev_nrms": 0.9667797684669495
+            },
+            {
+              "step": 250,
+              "train_nrms": 0.7928334474563599,
+              "dev_nrms": 0.9976223111152649
+            }
+          ],
+          "grad_max": 0.006648036185652018,
+          "wall_sec": 3.48021810001228,
+          "trainable_parameters": 540672,
+          "selection_scope": "DEV_ONLY; test not an argument"
+        },
+        {
+          "lr": 0.0001,
+          "completed_updates": 250,
+          "selected_step": 250,
+          "selected_dev_nrms": 0.9664381742477417,
+          "curve": [
+            {
+              "step": 0,
+              "train_nrms": 0.96940016746521,
+              "dev_nrms": 0.9869902729988098
+            },
+            {
+              "step": 20,
+              "train_nrms": 0.9621865153312683,
+              "dev_nrms": 0.9848791360855103
+            },
+            {
+              "step": 50,
+              "train_nrms": 0.9521722793579102,
+              "dev_nrms": 0.9821344017982483
+            },
+            {
+              "step": 100,
+              "train_nrms": 0.9371753931045532,
+              "dev_nrms": 0.9778100252151489
+            },
+            {
+              "step": 250,
+              "train_nrms": 0.9054504036903381,
+              "dev_nrms": 0.9664381742477417
+            }
+          ],
+          "grad_max": 0.006648036185652018,
+          "wall_sec": 3.51548466400709,
+          "trainable_parameters": 540672,
+          "selection_scope": "DEV_ONLY; test not an argument"
+        }
+      ],
+      "selected_trial": 0,
+      "selected_lr": 0.001,
+      "selected_step": 50,
+      "selected_dev_nrms": 0.9641995429992676,
+      "test": {
+        "nrms": 0.970335841178894,
+        "layer_nrms": [
+          0.969156801700592,
+          0.9644469022750854,
+          0.9718326926231384,
+          0.976750373840332
+        ]
+      },
+      "ce": {
+        "window_ce": [
+          3.720862627029419,
+          3.7019457817077637,
+          3.3929712772369385,
+          4.147365093231201,
+          3.920045852661133,
+          4.554494857788086,
+          4.240212917327881,
+          3.784601926803589
+        ],
+        "mean_ce": 3.9328125417232513,
+        "prediction_tokens": 1016,
+        "truth_scope": "same source function probe, not unseen knowledge"
+      },
+      "actual_answers": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 8,
+        "bytes": 7662,
+        "concat_sha256": "2561CC2239D6552F2B87E77CDBD4FD67835C54F38DABDD8A8A0EDCE295E0619B",
+        "lineage": {
+          "first_answer_only": true,
+          "questions": 8,
+          "quality": "PENDING_GPT_REVIEW"
+        },
+        "shards": [
+          {
+            "path": "actual_answers_rank16_000000.jsonl",
+            "bytes": 7662,
+            "rows": 8,
+            "sha256": "2561CC2239D6552F2B87E77CDBD4FD67835C54F38DABDD8A8A0EDCE295E0619B"
+          }
+        ]
+      },
+      "local_viable": false,
+      "artifact_stem": "rank16",
+      "artifact": {
+        "schema": "P093B_DIAGNOSTIC_PATCH_SHARDS_V1",
+        "input": {
+          "schema": "P093B_RECOVERY_V2",
+          "mode": "tune_a",
+          "tag": "p093b_recovery_v2_s1337",
+          "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+          "parent_expected_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "source": "data_cache/ko-en_600000000/train.bin",
+          "seed": 1337,
+          "code_sha256": {
+            "scripts/diag_p093b_calibration_recovery.py": "D595AEFCC6BF02A849F08D6C7E6A2A35E72B1BE1C36B33EA73036B0280B2F534",
+            "scripts/p093b_calibration_recovery.py": "C5D050AA1A4DE527C9A307709B252832BCC89C80F39CFB746F0C55927B469D39",
+            "scripts/test_p093b_calibration_recovery.py": "591BFD4B83B61736FF4F34FE8B695E2A75E46AC50589E32ED755CB79E1801F90",
+            "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+            "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+            "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+            "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+            "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+          },
+          "model_loading": "MEASURED",
+          "full_training": "NOT_RUN",
+          "model_quality": "NOT_ESTABLISHED",
+          "max_wall_sec": 3600,
+          "lr_grid": [
+            0.001,
+            0.0001
+          ],
+          "checkpoints": [
+            0,
+            20,
+            50,
+            100,
+            250
+          ],
+          "selection": "DEV_ONLY per rank/LR; independent final test/CE/actual answers",
+          "activation_positions_per_layer": {
+            "train": 2048,
+            "dev": 512,
+            "test": 512
+          },
+          "prompt_schema": "legacy plaintext QA; not ChatML",
+          "parent_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+          "tokenizer_sha256": "3A69001ECC28A5BDF1E951A1036B234C9BDCB847B310252C6D72CFC6C52C48E3",
+          "train_x_sha256": "312A19CB01204BE0BC829EF56E940F38219CECFB69BBFAFCAD2CF56315BEC4D5",
+          "dev_x_sha256": "7254C8EB445216355D6F40BAF3A6A7E9B33D889F7390FD3D1A9BE10E120A5AB7",
+          "test_x_sha256": "B6EC2031A8D5EA7015D2D8229419913A68AFA030C131E6D57C55E7323A46E35B",
+          "offsets": [
+            172833664,
+            434020096,
+            457605376,
+            247328896,
+            110759424,
+            234081024,
+            165106304,
+            35678208,
+            549774336,
+            98507904,
+            311602816,
+            50037120,
+            3855744,
+            233738496,
+            473811328,
+            322500480,
+            115657216,
+            337270400,
+            86223616,
+            295986176,
+            135764352,
+            142843520,
+            536326144,
+            522078720,
+            199739648,
+            69098112,
+            532921088,
+            524223360,
+            326153344,
+            565096832,
+            275627264,
+            204016384
+          ],
+          "source_hash_scope": "selected32_disjoint_uint16_windows_only",
+          "source_selected_sha256": "7C3DF46F2044F1799E7D0BC18AB2CBE1AB10B6BF95A69A65F2D4E28CB96DF7AD",
+          "capture_seq": 128,
+          "group_layers": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        "files": [
+          {
+            "path": "rank16_gate_proj.pt",
+            "bytes": 13307141,
+            "sha256": "4B2115FAEF9D5C003872A78ADF70E3F9F37E79DB1AC73E32B90C6BE4779F399E"
+          },
+          {
+            "path": "rank16_up_proj.pt",
+            "bytes": 13307141,
+            "sha256": "4EC9CC08035A39FB5D931E765AAAFF52714A15C3B9E2898E60AC01AB21CC1C31"
+          },
+          {
+            "path": "rank16_down_proj.pt",
+            "bytes": 13307141,
+            "sha256": "CC78D8F0B200B15AC57F6695E28F5D93B2164FAA78B91DDD3EA09710F17ED9B9"
+          }
+        ],
+        "scope": "diagnostic partial patch, not a complete deployable checkpoint"
+      },
+      "factor_bytes": {
+        "factor_parameters": 540672,
+        "fp32_parameter_bytes": 2162688,
+        "fp16_storage_bytes": 1081344,
+        "ideal_ternary2bit_storage_bytes": 135168,
+        "native_runtime_dtype": "FP32",
+        "fp16_roundtrip_runtime_saving": false,
+        "exclusions": "shared core, master/cache copies, scales, metadata, KV, allocator and full model",
+        "scope": "factor payload arithmetic, not deployed RSS/32MiB proof"
+      }
+    }
+  ],
+  "shared_test": {
+    "nrms": 0.9953065514564514,
+    "layer_nrms": [
+      0.995090901851654,
+      0.9953911900520325,
+      0.9957109689712524,
+      0.9950332641601562
+    ]
+  },
+  "parent_ce": {
+    "window_ce": [
+      3.5552804470062256,
+      3.565598487854004,
+      3.217266321182251,
+      3.9978954792022705,
+      3.7538070678710938,
+      4.443765163421631,
+      4.182697296142578,
+      3.7071292400360107
+    ],
+    "mean_ce": 3.802929937839508,
+    "prediction_tokens": 1016,
+    "truth_scope": "same source function probe, not unseen knowledge"
+  },
+  "shared_ce": {
+    "window_ce": [
+      3.7362427711486816,
+      3.7202157974243164,
+      3.391463041305542,
+      4.173543453216553,
+      3.9781606197357178,
+      4.531063079833984,
+      4.220572471618652,
+      3.8111772537231445
+    ],
+    "mean_ce": 3.945304811000824,
+    "prediction_tokens": 1016,
+    "truth_scope": "same source function probe, not unseen knowledge"
+  },
+  "parent_answers": {
+    "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+    "limit_bytes": 20000000,
+    "rows": 8,
+    "bytes": 8394,
+    "concat_sha256": "3274192AFA6D5DFA113D401801B3304ABF1491F9EAB9E3352B21E21BF21460D3",
+    "lineage": {
+      "first_answer_only": true,
+      "questions": 8,
+      "quality": "PENDING_GPT_REVIEW"
+    },
+    "shards": [
+      {
+        "path": "actual_answers_parent_000000.jsonl",
+        "bytes": 8394,
+        "rows": 8,
+        "sha256": "3274192AFA6D5DFA113D401801B3304ABF1491F9EAB9E3352B21E21BF21460D3"
+      }
+    ]
+  },
+  "shared_answers": {
+    "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+    "limit_bytes": 20000000,
+    "rows": 8,
+    "bytes": 10354,
+    "concat_sha256": "F85D58333C059C0FDB62485479E457A3CD5165380051C89D77B1EDAB7F99000D",
+    "lineage": {
+      "first_answer_only": true,
+      "questions": 8,
+      "quality": "PENDING_GPT_REVIEW"
+    },
+    "shards": [
+      {
+        "path": "actual_answers_shared_000000.jsonl",
+        "bytes": 10354,
+        "rows": 8,
+        "sha256": "F85D58333C059C0FDB62485479E457A3CD5165380051C89D77B1EDAB7F99000D"
+      }
+    ]
+  },
+  "local_peak_reserved_bytes": 1738539008,
+  "quality": "PENDING_GPT_REVIEW",
+  "memory_scope": "parent reference retained; not deployed RSS"
+}

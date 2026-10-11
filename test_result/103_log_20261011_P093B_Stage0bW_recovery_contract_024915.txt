@@ -1,0 +1,40 @@
+CPU operator/ownership/dev-only/half-storage contracts; no parent, tokenizer, model or GPU.
+
+==============================================================================
+[runlog] 2026-10-11 02:49:15  name=P093B_Stage0bW_recovery_contract_024915
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p093b_calibration_recovery.py --mode contract --tag p093b_recovery_v2_s1337 --execute --max-wall-sec 600
+==============================================================================
+test_existing_lora_zero_noop (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_group_zero_rejected_for_native_lora_export (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_gsq_factor_native_roundtrip_rank_per_row (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_gsq_hard_init_matches_native_and_codes (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_gumbel_has_mask_sign_scale_gradient (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_invalid_geometry_fails_closed (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_native_ce_probe_accepts_tensor_not_tuple (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_nonfinite_function_error_fails_before_report (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_patch_restores_slots_after_forward_error (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_projection_shards_restore_exactly_and_detect_tamper (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_residual_ownership_and_finite_adam_gradient (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_shared_freezes_and_preserves_originals (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_unique_optimizer_parameters (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_weighted_full_rank_reconstruction (scripts.test_p093b_native_repair.NativeRepairTests) ... ok
+test_actual_answer_prompts_are_explicit_legacy_and_bilingual (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_checkonly_never_loads_private_or_model (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_dev_fit_restores_selected_state_and_preserves_shared (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_dev_selection_has_no_test_data_argument (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_earliest_tied_dev_endpoint_is_selected (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_half_roundtrip_does_not_claim_half_residency (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_invalid_lr_and_missing_endpoint_fail (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_native_half_dtype_is_not_transparently_compatible (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_precision_negative_prerequisite_is_before_model_loading (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+test_snapshot_restore_exact_ownership (scripts.test_p093b_calibration_recovery.RecoveryTests) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.632s
+
+OK
+[EXPERIMENT_FINAL] {"mode": "contract", "status": "CPU_CONTRACT_PASS", "exit_code": 0, "evidence": "test_result/evidence/p093b_recovery_v2_s1337/recovery_contract", "actual_answer_review": "PENDING_GPT_REVIEW"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-11 02:49:17)
+==============================================================================

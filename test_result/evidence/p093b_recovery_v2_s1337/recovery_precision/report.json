@@ -1,0 +1,46 @@
+{
+  "input": {
+    "schema": "P093B_RECOVERY_V2",
+    "mode": "precision",
+    "tag": "p093b_recovery_v2_s1337",
+    "parent": "runs/ckpt/m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt",
+    "parent_expected_sha256": "A402BF1DC982134C762D116AC312B4338ECA2BAFD9545EE8CB16DBF4C67A4749",
+    "source": "data_cache/ko-en_600000000/train.bin",
+    "seed": 1337,
+    "code_sha256": {
+      "scripts/diag_p093b_calibration_recovery.py": "D595AEFCC6BF02A849F08D6C7E6A2A35E72B1BE1C36B33EA73036B0280B2F534",
+      "scripts/p093b_calibration_recovery.py": "C5D050AA1A4DE527C9A307709B252832BCC89C80F39CFB746F0C55927B469D39",
+      "scripts/test_p093b_calibration_recovery.py": "591BFD4B83B61736FF4F34FE8B695E2A75E46AC50589E32ED755CB79E1801F90",
+      "scripts/diag_p093b_native_repair.py": "3BDB81E377FA06BA2B4FA543A21C25536C13709505936384AA3941F1DA340BAB",
+      "scripts/p093b_native_repair.py": "85AEF4A35C79B600ED10ABDD257F6B08B86D82F9C329BF222B4354813F522078",
+      "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+      "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+      "tinylm/infer/generate.py": "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D"
+    },
+    "model_loading": "NOT_RUN",
+    "full_training": "NOT_RUN",
+    "model_quality": "NOT_ESTABLISHED",
+    "max_wall_sec": 3600,
+    "lr_grid": [
+      0.001,
+      0.0001
+    ],
+    "checkpoints": [
+      0,
+      20,
+      50,
+      100,
+      250
+    ],
+    "selection": "DEV_ONLY per rank/LR; independent final test/CE/actual answers",
+    "activation_positions_per_layer": {
+      "train": 2048,
+      "dev": 512,
+      "test": 512
+    },
+    "prompt_schema": "legacy plaintext QA; not ChatML"
+  },
+  "status": "PREREQUISITE_HOLD",
+  "reason": "no_viable_unquantized_capacity_rank",
+  "model_loading": "NOT_RUN"
+}
