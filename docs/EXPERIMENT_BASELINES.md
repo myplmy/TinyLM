@@ -243,6 +243,10 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p093b_similarity_control_v1_s1337` | 최종상태 영공간부분공간 반사/출력불변 | **실물12쌍완료0** [103 §13.4](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):3.449240초·cos낮춰도전체logit최대차4.77e-6/argmax12동일. raw cosine필요성국소반례,전층/전시퀀스/SimCTG훈련효용은미확정. |
 | `p106d_ruleviews_v3_length_s1337_{fixed,views}` | C3고정key/실제재표현·길이bucket·4096균형 | **새예약/실물NOT_RUN**. micro8×accum16/ckptON/LR/4epoch128update 유지·원형v2/oldval보존. 원답/actualx/target별도. |
 | `p106b_gemma_ac_v1_s1337` | 원source8·개념1/2/4×thinking256/1024 역순factorial | **새예약/실물NOT_RUN**. teacheronly/slot1/MTPoff·56논리request/168physical상한·ctx16K/total6144. 별도ctx8K/16K/32K sparse자원probe,75M corpus와별도. |
+| `p106b_gemma_mtp_production_quick_v1_s1337` / `p106b_gemma_mtp_production_transport_v2_s1337` | Gemma MTP 진단의 고정 질문 전송 계약 | **시도 종료8 보존**. Wa는OFF에서 종료, Wc는OFF/ON 각각5/6. 실제 생산에는 없는 고정echo 제약이며 OOM/본생산 품질 실패가 아님. [101 §91](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). |
+| `p106b_gemma_mtp_original_replay_v3_s1337` | 원형 생산payload·한영 QA/JSON/3턴·MTPON | **소형 실제 수집6/6·58.66초**. 후행공통문맥/과장 결함2, sampled free6918MiB. 학생0·장기안전/대량품질/인과가속미확정. 기존생산OFF불변. |
+| `p106b_gemma_mtp_production_order_v1_s1337` | 원형payload6개 OFF→ON/ON→OFF, 최대72구조시도 | **새 예약·실물NOT_RUN**. 학생/학습0·단독교사·두순서 원답/유효x/시간/계측을 보고 ON생산 정책을 결정한다. |
+| `p101a_sft_mtp_v1_s1337` | 동일8M×4epoch·scratch/parent×NTP/MTP, micro8accum16/ckptON/compiledefault | **CPU29/13SH check-only PASS·실물학습NOT_RUN**. 별도8M준비→각32update 비용→각약32M학습→동일학생head off/2/3/4 추론이다. 원75M/300M·M0/E384판정은불변. [092 §10](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md). |
 | `t_*` | 300M 풀 tied 계열 | 사용중(위 §2.1) |
 | `p6*` | 600M 풀 토큰스윕(P007) | 사용중 |
 | `sp_*` | 속도 벤치(P021) | 사용중 |

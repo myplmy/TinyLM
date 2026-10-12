@@ -116,6 +116,7 @@ class TMTConfig:
     sdpa_gqa: bool = False
     qk_gain_learnable: bool = False  # P101A: per-layer/head Q scale, default off
     mtp_aux: bool = False            # P101A training-only horizon 2/4 heads; default off
+    mtp_horizons: tuple = (2, 4)     # old checkpoints keep 2/4; opt-in SFT may use 2/3/4
     x2_tile_size: int = 512         # P103A X2 physical FFN tile width, opt-in only
     x2_active_tiles: tuple = ()     # empty = original full FFN; static model gate only
     # ── P014C 단계2 (2026-08-14) : per-row 융합 int8 matmul ────────────────────

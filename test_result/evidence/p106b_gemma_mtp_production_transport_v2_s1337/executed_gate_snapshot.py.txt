@@ -1,0 +1,262 @@
+#!/usr/bin/env python3
+"""Frozen production questions: historical off versus paired Gemma MTP off/on.
+
+No student, training, source mutation, online semantic filter or auto adoption.
+The complete bounded phase, including loading and cleanup, is limited by the
+caller. Each original request keeps its source and historical previous turns.
+"""
+from __future__ import annotations
+import argparse
+import copy
+import hashlib
+import json
+from pathlib import Path
+import re
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts.p106b_shards import ShardWriter, verify
+from scripts.p106b_qwen_teacher import digest
+from scripts import p106b_gemma_labels as teacher
+from scripts import p106b_gemma_output_contract as output
+
+SOURCE = ROOT / 'HF/sft_ready/p106b_gemma_task_family64_v3'
+SOURCE_SHA = 'D8C7211799208081CF4DE1D624E3E8A5A3223E8ACAF7ED9D1A0A266B5960874B'
+SCHEMA = 'P106B_GEMMA_MTP_PRODUCTION_PAIR_V1'
+
+
+class StructureNegative(ValueError):
+    """Valid teacher responses did not satisfy the transport contract."""
+
+
+def frozen_request(record):
+    """Fix the old learner question, not the old answer or reasoning."""
+    request = copy.deepcopy(record['payload'])
+    body = json.loads(request['messages'][1]['content'])
+    question = record['producer_output_trace'].get('original_teacher_question',
+        record['producer_learner_turn']['user_text'])
+    if not question or 'producer_control' not in body:
+        raise ValueError('literal production control/question absent')
+    body['producer_control']['learner_question_literal'] = question
+    request['messages'][1]['content'] = json.dumps(body, ensure_ascii=False)
+    request['cache_prompt'] = False
+    return request
+
+
+def select_units(records):
+    units = []
+    for language in ('ko', 'en'):
+        for task in ('qa', 'json', 'multiturn'):
+            turn = 3 if task == 'multiturn' else 1
+            candidates = [r for r in records if r.get('job', {}).get('language') == language
+                and r['job'].get('task') == task and r.get('turn') == turn
+                and r.get('producer_learner_turn') and r.get('producer_output_trace')
+                and len(json.dumps(r['job']['original']['messages'], ensure_ascii=False)) <= 3000]
+            if not candidates:
+                raise FileNotFoundError('bounded source missing: ' + language + ':' + task)
+            record = min(candidates, key=lambda r: (r['job']['source_group_id'], r['attempt']))
+            units.append(dict(id=language+'_'+task, language=language, task=task,
+                source_group_id=record['job']['source_group_id'], original_record=record,
+                request=frozen_request(record)))
+    return units
+
+
+def sources():
+    path = SOURCE / 'report.json'
+    if path.is_symlink() or digest(path) != SOURCE_SHA:
+        raise ValueError('immutable family64 identity differs')
+    report = json.loads(path.read_text(encoding='utf-8'))
+    if report.get('status') != 'TASK_PILOT_COMPLETE' or report.get('accepted_groups') != 64:
+        raise ValueError('successful production family64 required')
+    verify(SOURCE, report['raw_manifest'])
+    records = []
+    for shard in report['raw_manifest']['shards']:
+        with (SOURCE / shard['path']).open(encoding='utf-8') as stream:
+            records.extend(json.loads(line) for line in stream)
+    return select_units(records), report['raw_manifest']['concat_sha256']
+
+
+def rendered(unit, reply):
+    parsed = teacher.parsed_response(reply, unit['language'])
+    if parsed['format_status'] != teacher.COMPLETE:
+        raise ValueError(parsed.get('parse_error') or parsed['format_status'])
+    content = parsed['parsed_content']
+    record = unit['original_record']
+    question = record['producer_learner_turn']['user_text']
+    transport_question = record['producer_output_trace'].get('original_teacher_question', question)
+    if content['user_text'].strip() != transport_question.strip():
+        raise ValueError('fixed learner question changed')
+    contract = unit['original_record']['producer_output_trace']['output_contract']
+    answer, trace = output.render(content['assistant_text'], contract)
+    return dict(user_text=question, assistant_text=answer), trace, parsed
+
+
+def write_json(path, value):
+    body = json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n'
+    if len(body.encode('utf-8')) > 20_000_000:
+        raise ValueError('20MB report limit')
+    with path.open('x', encoding='utf-8') as stream:
+        stream.write(body)
+
+
+def execute(args, units, raw_sha, destination):
+    from tokenizers import Tokenizer
+    from scripts.p106b_mixed_scale import TOKENIZER, TOK_SHA
+    from tinylm.data.sft import encode_conversation, sft_targets
+    from tinylm.chat.canonical import normalize
+    from scripts.p106b_gate_runtime import idle_before_gpu, wall_limit
+    from scripts.diag_p106d_views import request_with_evidence
+    from scripts import diag_p106b_gemma_telemetry_resume as telemetry
+    from scripts.p106b_mtp_teacher import response_metrics
+    if digest(TOKENIZER) != TOK_SHA:
+        raise ValueError('student tokenizer identity differs')
+    tok = Tokenizer.from_file(str(TOKENIZER))
+    destination.mkdir(parents=True, exist_ok=False)
+    writer = ShardWriter(destination, 'paired_raw')
+    report = dict(schema=SCHEMA, source_report_sha256=SOURCE_SHA, source_raw_sha256=raw_sha,
+        code_sha256=digest(Path(__file__)),
+        units=[dict(id=u['id'],source_group_id=u['source_group_id']) for u in units],
+        rounds=args.rounds, arms=[], status='STARTED', returncode=9,
+        semantic_quality='NOT_REVIEWED', production_default_changed=False,
+        historical_comparison='DESCRIPTIVE_ONLY: fixed question added to current paired requests',
+        new_comparison='same source/question/history/seed/sampler; MTP only',
+        student_training='NOT_RUN', checkpoint_saved=False)
+    began = time.perf_counter()
+    deadline = time.monotonic() + args.max_wall_sec
+    try:
+        idle_before_gpu()
+        with wall_limit(args.max_wall_sec):
+            report['assets'] = teacher.assets(True)
+            for round_index in range(args.rounds):
+                for mtp in ((False, True) if round_index % 2 == 0 else (True, False)):
+                    reader = telemetry.RetryingMemoryReader(telemetry.memory_source.read_memory,
+                        emit=lambda line: print(line, flush=True))
+                    arm = dict(round=round_index, mtp=mtp, requests=0, accepted=0,
+                        student_x_tokens=0, assistant_targets=0, request_seconds=0.0, rows=[])
+                    report['arms'].append(arm)
+                    arm_began = time.perf_counter()
+                    with telemetry.telemetry_scope(reader), teacher.GemmaSession(mtp) as session:
+                        arm['startup_sec'] = session.startup_sec
+                        for unit in units:
+                            success = False
+                            for attempt in range(1, 4):
+                                remaining = deadline - time.monotonic()
+                                if remaining < 15:
+                                    raise TimeoutError('bounded comparison budget exhausted')
+                                session.check()
+                                request = copy.deepcopy(unit['request'])
+                                request['seed'] += round_index*100 + attempt-1
+                                if attempt > 1:
+                                    request['messages'][0]['content'] += (
+                                        ' STRUCTURE RETRY: preserve the fixed question; repair labels/structure only. '
+                                        + reason[:400])
+                                prompt = session.request('/apply-template', {'messages':request['messages']})['prompt']
+                                source_count = len(session.request('/tokenize', dict(content=prompt,
+                                    add_special=False, parse_special=True))['tokens'])
+                                if source_count + teacher.MAX_OUTPUT + 128 > teacher.CONTEXT:
+                                    raise StructureNegative('fixed source exceeds context; no silent truncation')
+                                generation = f'r{round_index}_{int(mtp)}_{unit["id"]}_a{attempt}'
+                                start = time.perf_counter()
+                                reply = request_with_evidence(session, request, writer.append, generation,
+                                    timeout=min(180, max(1, int(remaining)-10)))
+                                seconds = time.perf_counter()-start
+                                metric = response_metrics(reply, seconds)
+                                arm['requests'] += 1
+                                arm['request_seconds'] += seconds
+                                reason = ''
+                                turn = None
+                                try:
+                                    turn, trace, parsed = rendered(unit, reply)
+                                    conv = normalize({'messages':[{'role':'user','content':turn['user_text']},
+                                        {'role':'assistant','content':turn['assistant_text']}]})
+                                    ids, labels, _ = encode_conversation(conv, tok)
+                                    xx, yy = sft_targets(ids, labels)
+                                    targets = sum(v >= 0 for v in yy)
+                                    if not 0 < len(xx) <= 1024 or not targets:
+                                        raise ValueError('student context/mask contract')
+                                except (ValueError, TypeError) as error:
+                                    reason = str(error)
+                                row = dict(round=round_index, mtp=mtp, unit=unit['id'], attempt=attempt,
+                                    generation_id=generation, request=request, reply=reply, metrics=metric,
+                                    source=unit['original_record']['job']['original'],
+                                    previous_turns=json.loads(request['messages'][1]['content'])['source']['explicit_previous_turns'],
+                                    historical_off=unit['original_record']['producer_learner_turn'],
+                                    original_raw_row=unit['original_record'],
+                                    learner_turn=turn, structural_reason=reason, prompt_tokens=source_count,
+                                    semantic_quality='NOT_REVIEWED')
+                                writer.append(row)
+                                arm['rows'].append(dict(unit=unit['id'],attempt=attempt,reason=reason,
+                                    request_sec=seconds,completion_tokens=metric['completion_tokens'],
+                                    complete=not reason))
+                                print('[MTP_PRODUCTION_ANSWER] '+json.dumps(dict(round=round_index,mtp=mtp,
+                                    unit=unit['id'],question=unit['original_record']['producer_learner_turn']['user_text'],
+                                    historical_off=unit['original_record']['producer_learner_turn']['assistant_text'],
+                                    current_answer=turn['assistant_text'] if turn else metric['final_text'],
+                                    attempt=attempt,structural_reason=reason,request_sec=seconds,
+                                    semantic_quality='NOT_REVIEWED'),ensure_ascii=False),flush=True)
+                                if not reason:
+                                    arm['accepted'] += 1
+                                    arm['student_x_tokens'] += len(xx)
+                                    arm['assistant_targets'] += targets
+                                    success = True
+                                    break
+                            if not success:
+                                arm.setdefault('failed_units',[]).append(unit['id'])
+                        arm['memory'] = session.memory()
+                        arm['telemetry'] = reader.snapshot()
+                    arm['whole_arm_sec'] = time.perf_counter()-arm_began
+                    arm['student_x_per_whole_arm_sec'] = arm['student_x_tokens']/arm['whole_arm_sec']
+            complete = len(report['arms']) == args.rounds*2 and all(a['accepted']==len(units) for a in report['arms'])
+            report.update(status='MTP_PRODUCTION_COLLECTION_COMPLETE' if complete else 'STRUCTURE_GATE_NEGATIVE',
+                returncode=0 if complete else 8)
+    except BaseException as error:
+        if isinstance(error, KeyboardInterrupt):
+            rc, status = 130, 'INTERRUPTED'
+        elif isinstance(error, TimeoutError) or time.monotonic() >= deadline:
+            rc, status = 8, 'BOUNDED_PARTIAL'
+        elif isinstance(error, StructureNegative):
+            rc, status = 8, 'STRUCTURE_GATE_NEGATIVE'
+        else:
+            rc, status = 9, 'EXECUTION_ERROR'
+        report.update(returncode=rc,status=status,error_type=type(error).__name__,reason=str(error)[:1000])
+    finally:
+        report['whole_wall_sec'] = time.perf_counter()-began
+        if writer._total_rows:
+            report['raw_manifest'] = writer.close(lineage={'schema':SCHEMA,'source_sha256':SOURCE_SHA})
+            verify(destination, report['raw_manifest'])
+        write_json(destination/'report.json',report)
+        print('[MTP_PRODUCTION_FINAL] '+json.dumps({k:report[k] for k in
+            ('status','returncode','whole_wall_sec','semantic_quality','production_default_changed')},ensure_ascii=False),flush=True)
+    return report['returncode']
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--tag',required=True)
+    parser.add_argument('--rounds',type=int,choices=(1,2),default=1)
+    parser.add_argument('--max-wall-sec',type=int,default=540)
+    choice = parser.add_mutually_exclusive_group(required=True)
+    choice.add_argument('--check-only',action='store_true')
+    choice.add_argument('--execute',action='store_true')
+    args = parser.parse_args()
+    if not re.fullmatch(r'p106b_gemma_mtp_[a-z0-9_]+',args.tag) or not 30 <= args.max_wall_sec <= 1800:
+        raise ValueError('safe new tag and bounded time required')
+    if args.rounds == 1 and args.max_wall_sec > 540:
+        raise ValueError('direct quick phase must leave cleanup margin within600 seconds')
+    destination = ROOT/'test_result/evidence'/args.tag
+    if destination.exists() or any(p.is_symlink() for p in (destination,*destination.parents)):
+        raise FileExistsError('existing/linked evidence preserved; use a new tag')
+    units, raw_sha = sources()
+    if args.check_only:
+        print('[CHECK_ONLY] '+json.dumps(dict(schema=SCHEMA,units=[u['id'] for u in units],
+            rounds=args.rounds,maximum_requests=len(units)*args.rounds*2*3,
+            max_wall_sec=args.max_wall_sec,source_report_sha256=SOURCE_SHA,
+            model_loading='NOT_RUN',semantic_quality='NOT_REVIEWED'),ensure_ascii=False))
+        return 0
+    return execute(args,units,raw_sha,destination)
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

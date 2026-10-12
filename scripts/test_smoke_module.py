@@ -50,7 +50,7 @@ class SmokeModuleParserTests(unittest.TestCase):
     def test_canonical_module_is_parseable_without_execution(self) -> None:
         actions = smoke_module.parse_smoke_module()
         # P076 B3 adds one note and one tiny train action after the existing ag2 arm.
-        self.assertEqual(sum(action.kind == "run" for action in actions), 97)
+        self.assertEqual(sum(action.kind == "run" for action in actions), 98)
         self.assertEqual(sum(action.kind == "sleep" for action in actions), 8)
 
 

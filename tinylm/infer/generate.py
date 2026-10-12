@@ -27,7 +27,8 @@ def _strip(sd):
 
 
 def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8_store=False,
-               unpack_cache=False, emb_quant=None, emb_chunk=0, lut=False, lut_out_chunk=0):
+               unpack_cache=False, emb_quant=None, emb_chunk=0, lut=False, lut_out_chunk=0,
+               mtp_heads=None):
     """`drop_latent=True` 면 P034 단계2 — fp32 latent 를 해제해 **상주를 약 절반**으로 줄인다.
 
     되돌릴 수 없으므로 **추론 전용**이다. 학습·진단(gradient 필요)에서는 절대 켜지 않는다.
@@ -37,10 +38,23 @@ def load_model(arch="tied", ckpt_path=None, device=None, drop_latent=False, int8
     """
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     path = Path(ckpt_path) if ckpt_path else CKPT / f"{arch}.pt"
-    st = torch.load(path, map_location=device)
+    st = torch.load(path, map_location='cpu' if mtp_heads is not None else device)
     cfg = TMTConfig(**st["cfg"])
-    model = TiedMLPTransformer(cfg).to(device)
     state = _strip(st["model"])
+    if mtp_heads is not None:
+        if mtp_heads == 'off':
+            selected = ()
+        elif type(mtp_heads) is int and mtp_heads in (2, 3, 4):
+            selected = tuple(range(2, mtp_heads+1))
+        else:
+            raise ValueError("MTP load policy must be off or total-token count2/3/4")
+        if any(f'mtp_up{h}' not in state for h in selected):
+            raise ValueError("checkpoint lacks requested trained MTP heads")
+        cfg.mtp_aux = bool(selected)
+        cfg.mtp_horizons = selected or (2, 4)
+        state = {k:v for k,v in state.items()
+                 if k not in {f'mtp_up{h}' for h in (2, 3, 4) if h not in selected}}
+    model = TiedMLPTransformer(cfg).to(device)
     # P092: a None buffer is omitted from state_dict. Register the saved bool
     # mask before strict loading, otherwise connectivity checkpoints have
     # unexpected keys and cannot be used for inference or resident audits.
@@ -94,7 +108,7 @@ def _pick(logits, temperature, top_k):
 @torch.no_grad()
 def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, device=None,
            use_cache=True, stop_at_eos=True, eos_id=None, logits_last_only=False,
-           return_metadata=False, stop_token_sequences=None):
+           return_metadata=False, stop_token_sequences=None, mtp_tokens=1):
     """★샘플링 루프의 **단일 소스**. 이미 로드된 모델을 받아 텍스트를 이어쓴다.
 
     `generate()`(체크포인트 경로로 매번 로드)와 여러 프롬프트를 한 모델로 돌리는 도구
@@ -109,6 +123,12 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
       * `stop_at_eos`     — `<eos>` 에서 멈춘다. 없으면 문서 경계를 넘어 계속 생성한다
         (결과 013 에서 한국어 프롬프트에 영문 문서가 난입한 원인).
     """
+    if mtp_tokens != 1:
+        from .mtp import sample_verified
+        return sample_verified(model,cfg,tok,prompt,max_new=max_new,temperature=temperature,
+            top_k=top_k,device=device,use_cache=use_cache,stop_at_eos=stop_at_eos,eos_id=eos_id,
+            return_metadata=return_metadata,stop_token_sequences=stop_token_sequences,
+            mtp_tokens=mtp_tokens)
     device = device or next(model.parameters()).device
     stop_requested = bool(stop_at_eos)
     if eos_id is None:

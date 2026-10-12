@@ -15,7 +15,7 @@
 | **데이터 비동기 프리페치** | 💡 | — | 데이터 로딩과 연산 겹침 | 복잡도↑ | 연산 바운드라 이득 미미 → 보류 |
 | **Sequence packing (패딩 제거)** | ✅ | v4~ | 문서를 이어붙인 스트림에서 연속 크롭 → 패딩 0, 밀도 100% | — | 이미 적용(Loader). 제안의 "15~30% 이득"은 이미 반영됨 |
 | ★**Muon 옵티마이저** | ✅**RMS4 사용자 기본 채택**(결과 078 §11~§15; 2026-09-18 결정) | v6 `--optimizer muon --muon-scale {jordan,rms} --muon-lr-mult N` | 행렬 73개(72.7M = 전체의 89.5%)에 Newton-Schulz 5스텝, 나머지 62개는 AdamW | RMS4는 상단·matrix WD·재귀/무재귀 네 형상·seed2024·600M·1.2B 방향 게이트를 통과. 기본 recipe는 `rms ×4, matrix WD 0`, KD off. 코드 기본 구현은 새 사용자 smoke 전 `STATIC_ONLY` | seed2024 +0.0052~+0.0061, 600M +0.0043~+0.0089, 1.2B +0.0045. 단 Stage11/12의 **1.2B-pool val은 한국어 0%**라 한국어 품질 근거가 아니며 신규 1.2B SH는 금지. WD parameter-group 정본은 [20260918 보고서](../20260918_TinyLM-Muon-RMS4-Weight-Decay-방법론-조사와-권고.md) |
-| **MTP(학습 aux head)** | 💡 | — | 미래 2~4토큰 동시 예측 aux loss → 수렴·표현력↑ | 헤드·loss 추가 연산, 소형 모델 이득 불확실 | factorized 헤드와 결합 가능. 학습용은 DeepSeek-V3식. FastMTP는 추론용(별건) |
+| **MTP(학습 aux head)** | 🧪CPU 계약 | P101A | assistant-turn 미래2/3/4 지도·shared vocabulary | 추가 head/CE 계산·소형 효과 미확정 | 무부모/부모 네 팔 준비, 실제 학습NOT_RUN. DeepSeek 순차 모듈 전체 재현 아님 |
 | **커스텀 삼진 커널(분리 모듈)** | 🧪→⚠️GPU | v6 (`--ternary-kernel[-triton]`) | int8 codes+그룹alpha 패킹, STE backward 보존. 레퍼런스=기존 경로와 등가, Triton=속도 시도 | GPU 학습 가속은 **원리상 불가**(dequant 후 dense와 동일 FLOPs). `--compile` 병용 시 dynamo 크래시 → 현재 코드가 SystemExit 차단 | **"10×+ 느림"은 정정됨**(결과 003): torch.compile 재컴파일 아티팩트였고, `--compile` 없이 재측정하니 k_triton 160~250ms/step 로 정상. **커널 자체는 문제 없음.** 다만 GPU 학습 목적은 여전히 무의미 → **실사용처 = CPU LUT/AVX2 배포**(P016 3:4 정합). 벤치는 `--compile` 없이 |
 | **Skip-Forward / Dynamic KD** | ✅**역사적 측정·현재 기본 비활성** | v6 (`--kd-every K [--kd-dynamic]`) | 교사 forward를 K스텝마다 1회 → 교사 연산 1/K. dynamic은 초반 촘촘·후반 성김 | KD off에서는 작동하지 않음. 명시적 KD 연구 팔에만 적용 | 결과 005에서는 정적 k4가 full KD보다 빨랐으나, 결과 038과 사용자 결정으로 기준 recipe는 KD off. `kd_every=4`를 전역 기본이라고 부르지 않음 |
 | **압축 교사 distill** | ✅**측정** | v6 (`--kd-teacher-tag`) | 교사를 dense(132.5M) 대신 압축 tied(≈63.5M)로 → 교사 forward 대폭↓ | 교사 상한=압축 교사 품질, 순환성(교사 1회 학습 비용은 지불) | ★결과 007: k4+압축교사+no-ckpt 조합으로 **교사 오버헤드 = dense-nockpt 대비 +19%**(2940 vs 2467 ms/step), full-KD 대비 스텝시간 **-32%**. `load_dense`가 cfg로 범용 복원. P018 |
@@ -169,3 +169,8 @@ forward 속도를 학습 속도·end-to-end throughput으로 확대하지 않는
 [결과093 §10](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)의 100M 네 팔은 T0→T1에서 T1 whole-wall 0.990×, T1→T0에서 1.073×로 방향이 바뀌었다. eval/save 절약은 두 순서에서 재현됐지만 총시간 이득은 아니다. host wall·GPU kernel·각 팔 뒤 W&B 자동 송신과 팔 사이 유휴 조건을 구별해야 하며, 한 세션 두 순서를 독립 시드로 세지 않는다. [결과094 §9](../../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)의 exact6.14GB/INT8 1.63GB는 캐시 **파일 크기/구축 기능** 관측이다. Stage1cW의 tail 학습시간·I/O·RSS·품질을 재기 전에는 가속으로 부르지 않는다.
 
 2026-09-28 [결과094 §11](../../test_result/094_20260925_P103A-X2-함수통과-X3-하부MLP-동결누락.md)의 세 선택창은 저장 exact boundary의 logits·gradient가 uncached 대비 각각 최대2.956e-5·9.537e-6으로 기능 문턱5e-5를 통과했다. 그러나 타이머는 캐시 memmap 읽기·CPU→GPU 전송·dequant를 제외하고, 첫 uncached 호출0.2492초는 다른 uncached 창 약0.05초보다 느렸으며 RSS·CUDA reserved는 reset 없는 누적 high-water다. 따라서 이 결과도 **X3 학습 가속·팔별 상주 절감 실측이 아니다**. 동일 조건의 교차 순서·I/O 포함 whole-wall과 프로세스별 peak, 전체2M 반복/빌드 상각을 별도 계측해야 한다.
+
+
+## 2026-10-12 — MTP 학습 비용을 효과와 함께 계측
+
+[P101A 후속](../../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)의 네 팔은 같은8M·4epoch·micro8×accum16·checkpoint-on에서 main NTP와 assistant-turn MTP를 비교한다. 미래 타깃을 늘리는 것은 새 고유 데이터가 아니다. head/CE를 유효 위치별로 모아 chunk 재계산하고 양팔 모두 같은 방식으로 처리한다. 실제32업데이트의 비용/VRAM부터 계측하며 update시간·실제x·추가aux지도량·준비/평가/저장을 포함한 wall을 분리한다. CPU29 PASS는 학습 가속 증거가 아니고 실제학습은NOT_RUN이다([092 §10](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)).

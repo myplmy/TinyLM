@@ -89,3 +89,68 @@ Stage0W·Stage1W·Stage1Wb·Stage1Wc 사용자 실행 이력과 정확 재현명
 - 2026-09-25 Stage1Wb 후속: [결과092 §7](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에서 실제 M0 독립 팔 중 E384만 `1.23977661e-5 > 1e-5`로 기능 FAIL, QK/MTP 주 로짓0·top1변경0, MTP aux 제거 차0이다. 작은 NRMS `4.01000563e-7`은 사전등록 문턱을 대신하지 않는다. Stage1Wc 별도 CPU 원인분리 코드·SH는 tensor-only self-test PASS/실제 M0 `NOT_RUN`, E384 Stage2 학습 HOLD. QK/MTP도 GPU·품질 자동 개방은 아니다. 원 Stage1Wb SH는 `-done` 시도 이력으로 개명했다.
 
 - 2026-09-25 Stage1Wc 사용자 로그 회수: [결과092 §8](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에서 old E256 block bit-identical·new U zero, 세 seed의 FP32 전체 logits 차 1.1444e-5~1.2398e-5가 원 문턱을 모두 넘었다. FP64 공통 hidden head 차는 3.55e-15 이하라 shape/연산 순서 반올림 가설을 지지한다. §3의 실수산술 동치 예상은 지지됐지만 FP32 기능 문턱은 실패했다. Stage2 E384 학습 HOLD, 새로운 remedy는 원 문턱 완화 없이 별도 사전등록한다.
+
+# P101A — 2026-10-12 SFT MTP와 선택형 검증 추론 후속
+
+## 1. 왜
+
+옛 E384 기능 실패는 독립 MTP 실패가 아니다. 사용자 현재 지시로 미래 타깃의 assistant/턴 마스크를 구현하고, 학습효과와 추론 가속을 별개로 시험한다. 현재 사용자 선택은 고유8M 표본×4epoch의 무부모/부모×NTP/MTP 네 팔이다. 정상75M×4epoch/약300M 본교육 목표는 축소하지 않는다.
+
+## 2. 질문
+
+- Q1: 미래2/3/4 타깃이 같은 assistant 턴 안에만 있고 종료 토큰은 지도되는가?
+- Q2: 같은 초기 본체·자료·배치·LR·순서에서 보조 손실이 main NTP val, 실제 질문/멀티턴, 망각, 전체시간의 교환비를 개선하는가?
+- Q3: 학습한 헤드를 선택적으로 유지·제거하고 본 모델로 검증하여 greedy 생성2/3/4토큰 블록의 실제 수락/속도/메모리·출력 정합을 관측할 수 있는가?
+
+## 3. 예측
+
+보조 미래 예측은 학습 신호를 늘릴 수 있지만 스텝당 추가 계산과 gradient 간섭으로 이득이 없을 수 있다. 무부모32M은 일반 언어능력 확보를 보증하지 않는다. head 수가 늘면 저장은 선형 증가하지만 수락률·검증/캐시 재구축 비용 때문에 속도는 비단조일 수 있다. 본 모델 검증 없이 초안을 출력하지 않는다.
+
+## 4. 단계 설계
+
+- Stage3aW: 합성 CPU 마스크·turn/EOS·누적분모·손실/gradient·head attach/drop·검증 생성 계약. 실물 모델/GPU 없이 회귀.
+- Stage3bW: 현재 공개 capability 자료와 보존된 Gemma 생성물을 읽기 전용으로 선별해 새8M 표본/별도val을 동결한다. 출처 개념 split·한영·QA/JSON/멀티턴·20MB 샤드·실제 x/assistant/horizon 토큰을 남긴다. 동일자료4pass이며 반복을 고유토큰으로 세지 않는다. 부족하면 정확한 부족량을 보고한다.
+- Stage3cW: 네 팔의 실제 비용/VRAM을 먼저 재는 짧은 사용자 GPU gate. 품질 판정은 하지 않는다.
+- Stage3dWa/Wb/Wc/Wd: scratch NTP/scratch MTP/parent NTP/parent MTP, 각8M×4epoch 약32M actual x. 구조·토크나이저·micro8×accum16·checkpoint-on·compile default·LR1e-4/Muon RMS4 4e-4를 동일하게 둔다. scratch의 공통 본체 RNG/지문이 같고 MTP 초기 헤드는 main U 복사로 RNG를 추가 소비하지 않는다. 부모 두 팔은 같은 chat32 부모 SHA에서 시작한다.
+- Stage3eW: main NTP 고정 val·실제 답/형식/종료·멀티턴·일반 언어 손실·추가 계산·유효 처리율을 비교한다. 단일seed 결과를 아키텍처 일반 우열로 쓰지 않는다.
+- Stage4aW: 학습 완료 MTP 학생에서 헤드 off/2/3/4 총예측토큰의 검증 greedy 대응. 모든 미수락 초안은 폐기하고 main 예측으로 교체한다. sampling의 분포 보존·FastMTP 원문 재현은 이번 범위가 아니다.
+
+## 5. 판정
+
+기술 gate와 실제 학습효과를 분리한다. 새로운 SFT 조건의 sigma는 미측정이므로 옛 CPT의 고정 자를 복사하지 않는다. main NTP val/실제 답/망각/비용을 별도로 보고한다. 추론은 같은 학생의 NTP 원답과 정확한 token/종료가 맞아야 속도 후보로 판단한다. 낮은 draft 정확성은 검증 비용/속도 문제이며 무검증 출력의 품질손상을 허용하는 근거가 아니다.
+
+## 6. 비용
+
+각학습은 CPU 선별과 GPU 비용 gate 실측 뒤 비용을 재산정한다. 네 팔 총 actual 처리 약128M, aux 지도량은 별도다. E256×dim768 독립 projection 하나는196,608개로FP32 0.75MiB/FP16 0.375MiB이며 공유 어휘는 복제하지 않는다. 총예측2/3/4는 보조1/2/3개, FP32 0.75/1.5/2.25MiB. logits·KV·임시 승격·optimizer·allocator는 이 식 밖이다.
+
+## 7. 실행
+
+Gemma 생산 MTP 비교 다음에 아래 SH 순서로 진행한다. CPU contract 본문29시험은 GPT가 직접 완료했고 wrapper는 NOT_RUN인 -done 이력이다. 선별 뒤 각 비용 팔32업데이트를 먼저 실행하고 시간·VRAM을 확인한다. 각 본학습의1.5h는 미실측 추정이며 비용 report의 전체 update 예상으로 재산정한다. 본학습 hard cap3h, 비용 hard cap30분이고 부분 실행/기존 report를 덮어쓰기하지 않는다.
+
+| 순 | 단계·SH | 선결/판정 |
+|---|---|---|
+| 완료 | `run_P101A_Stage3aW_sft_mtp_cpu_contract-done.sh` | 본문29 CPU PASS, 실제 모델/학습 아님 |
+| 1 | `run_P101A_Stage3bW_sft_mtp_frozen8m_corpus.sh` | 현재 contract SHA, 정확train8M·val0.4M/한영/task quota·개념/질문val 제외·20MB SHA |
+| 2 | `run_P101A_Stage3cWa_scratch_ntp_cost.sh` | 같은 complete8M, scratchNTP32update 자원/비용만 |
+| 2 | `run_P101A_Stage3cWb_scratch_mtp_cost.sh` | scratchMTP32update; aux2/3/4 gradient와자원 |
+| 2 | `run_P101A_Stage3cWc_parent_ntp_cost.sh` | parentNTP32update 자원/비용만 |
+| 2 | `run_P101A_Stage3cWd_parent_mtp_cost.sh` | parentMTP32update 자원/비용만 |
+| 3 | `run_P101A_Stage3dWa_scratch_ntp_frozen8m.sh` | matching cost·새무부모NTP32M |
+| 3 | `run_P101A_Stage3dWb_scratch_mtp_frozen8m.sh` | matching cost·새무부모MTP32M |
+| 3 | `run_P101A_Stage3dWc_parent_ntp_frozen8m.sh` | matching cost·고정부모NTP32M |
+| 3 | `run_P101A_Stage3dWd_parent_mtp_frozen8m.sh` | matching cost·고정부모MTP32M |
+| 4 | `run_P101A_Stage3eW_sft_mtp_four_arm_readback.sh` | 네 성공report·쌍별본체/자료/실제토큰/업데이트 동일 |
+| 5 | `run_P101A_Stage4aWa_scratch_mtp_verified_infer.sh` | 저장된scratchMTP 학생·같은body off/2/3/4/FP16·FP32 |
+| 5 | `run_P101A_Stage4aWb_parent_mtp_verified_infer.sh` | 저장된parentMTP 학생·같은body off/2/3/4/FP16·FP32 |
+
+8M은 기존 public capability와 sealed Gemma batch에서 선택하며 원천/source/원개념을 보존한다. 같은 대화의 완전 중복은 제외하지만 QA·형식·멀티턴 변형을 각각 새 개념으로 세지 않는다. 고유개념수·실제family share·교사분량은 report에 별도로 남기며 새25%source상한을 검증했다고 주장하지 않는다. whole-row 경계의 소폭 초과와 actual x/assistant/aux/padding 분모를 공개한다. 학습 전후 동일32 native crop CE와실제8질문 첫답/최대3시도·최대4이어쓰기, epoch별SFT val을 남긴다.
+
+기본태그는 `p101a_sft_mtp_v1_s1337`; 새 corpus는 `HF/sft_ready/<tag>/corpus`, report는 `test_result/evidence/<tag>`, 학생4개는 `runs/ckpt/m100s10_ko-en_32M_dense_chat32_<tag>_<arm>.pt`다. 기존 parent/HF/cache/checkpoint 수정·optimizer 재사용·학습 재개는 없다. 이번 Codex TinyLM 실물 모델/GPU 학습·추론 실행은 NOT_RUN이다.
+
+## 8. 한계·원문 차이
+
+현재 경량 projection은 [DeepSeek-V3 §2.2](https://arxiv.org/html/2412.19437v2#S2.SS2)의 순차 Transformer MTP 모듈이나 [FastMTP §3](https://arxiv.org/html/2509.18362v1)의 position-shared self-distillation 전체 재현이 아니다. 검증 생성은 [speculative decoding §2](https://proceedings.mlr.press/v202/leviathan23a.html)의 원칙을 참고하되 첫 범위는 greedy로 제한한다. 코드·FP32 CPU 정합이 모든 GPU/backend/샘플링/장기 배포의 무손실 증명은 아니다.
+
+## 9. 실행 이력
+
+2026-10-12: 사용자2안으로 무부모+부모 네 팔을 확정했다. assistant-turn mask, up2/3/4·optional export/hotplug, head/CE 재계산, main 검증 greedy를 구현했다. 합성CPU29 PASS·13SH argparse route PASS, legacyM0 계약도 회귀했다. [092 §10](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md). 기존기본off·E384/M0 실패는불변이며 actual8M 준비/실물학습/추론가속은NOT_RUN이다.

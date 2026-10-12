@@ -94,7 +94,7 @@
 |---|---|---|
 | ★**추측 디코딩**(speculative) | 작은 초안 모델이 여러 토큰 제안, 큰 모델이 한 번에 검증 | ⚠️★**우리는 이미 작다.** 초안 모델을 또 두면 **상주가 는다** — 🚫**메모리 우선 목표와 충돌** |
 | **Medusa / 다중헤드** | 헤드를 여러 개 붙여 여러 위치를 동시 예측 | ⚠️**헤드가 임베딩과 tie** 돼 있어 추가 헤드는 **상주 +** |
-| ★**FastMTP / MTP** | 학습 시 다중 토큰 예측 aux | ⏸**계획 [P006](../../test_plan/P006_MTP-학습aux-및-FastMTP추론.md) 에 있고 미실행.** 📄`article/FastMTP...pdf` **로컬에 있다** |
+| ★**FastMTP / MTP** | assistant-turn MTP 학습과 greedy 검증 | **P101A 구현/CPU 계약·실물학습/추론NOT_RUN**. P006의 완전 FastMTP self-distillation/동적어휘는 미구현. 12.11과 결과092 §10 참조 |
 | **조기 종료**(early exit) | 쉬운 토큰은 얕은 층에서 끝낸다 | ★★**우리 구조와 잘 맞는다**(§12.3) |
 
 ### 12.2.3 ★★조기 종료 — **재귀의 거울상**
@@ -175,7 +175,7 @@ custom LUT kernel의 상한을 직접 실측한 것도 아니다.
 | 📄[arXiv:2407.00088](https://arxiv.org/abs/2407.00088) | T-MAC: CPU Renaissance via Table Lookup for Low-Bit LLM Deployment | ⚠️**초록·리포 실사만** |
 | 📄[arXiv:2502.11880](https://arxiv.org/abs/2502.11880) | bitnet.cpp: Efficient Edge Inference for Ternary LLMs | ⚠️**초록·리포 실사만** |
 | 📄[arXiv:2608.16157](https://arxiv.org/abs/2608.16157) | FreeToken: Edge-Native MoE Serving with Bandwidth-Adaptive Execution | ✅**본문 8쪽** → [08 §13](08_paper_review.md) |
-| 📄`article/FastMTP...pdf` | FastMTP: Accelerating LLM Inference with Enhanced Multi-Token Prediction | ⚠️**미확인 — 로컬에 있다** |
+| 📄`article/FastMTP...pdf` | FastMTP: Accelerating LLM Inference with Enhanced Multi-Token Prediction | **원문 HTML 확인**. 독립 projection prototype과 원문의 순차/position-shared 방법을 구분하며 로컬 PDF 원형 판독은 별도 |
 
 ⚠️★**추측 디코딩·Medusa·조기 종료는 원문을 안 읽었다.** 🚫**수치를 인용하지 않았다.**
 ★**PDF 가 필요하면 사용자에게 요청한다.** 우선순위는 **bitnet.cpp(2502.11880)** — §12.4-1 의 근거다.
@@ -231,3 +231,10 @@ actual model 속도는 Stage1Wc 전 `NOT_RUN`이다([069 §10](../../test_result
 ## 12.10 2026-09-26 P060B decode·P014E 회전 부분 계측
 
 [결과088 §11](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md)의 같은 checkpoint·KV에서 BF16 GQA decode는 첫 층부터 수치가 갈렸고 on/off 시간이 1.14~2.08배로 나빠졌다. FP32 MATH 대조가 맞는 것과 BF16 경로 배포 채택은 별개다. [결과099 §5](../../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md)의 세 checkpoint 선택 투영에서 3×256 오차 개선은 계보/층에 따라 달랐고, 1024 padding은 이론 byte +33.3%와 online 회전 시간을 요구한다. 두 실험 모두 전체 모델 CPU decode·RSS·언어 품질의 순이득 증거가 아니다.
+
+
+## 12.11 2026-10-12 — 선택형 MTP 검증 추론 준비
+
+[새 구현](../../tinylm/infer/mtp.py)은 학습한 독립 horizon2/3/4가 초안을 제안하고 main 모델의 greedy 선택과 일치한 접두부만 반영한다. 불일치 suffix KV를 버리고 실제 prefix로 재구축한다. FP32 CPU에서 EOS·stop·max_new·cache와 CLA1/2 multi-query를 검산했지만 실물BF16 정합·속도는 [P101A Stage4](../../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)의 사용자 실행 전 NOT_RUN이다. 출력 검증으로 잘못된 초안 자체를 확정하지 않으며 head off도 제공한다. FP16 저장은 임시 연산 버퍼까지 절반으로 줄인다는 뜻이 아니다.
+
+이 경량 projection은 [FastMTP 원문](https://arxiv.org/html/2509.18362v1)의 position-shared self-distillation·동적어휘를 완전히 구현한 것이 아니다. 그2.03배를 TinyLM 예측치로 쓰지 않는다. [Gemma 외부교사 실측](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 별개이며 교사 completion속도와 학생 공급속도를 구분한다. 학습한 head에서 total2/3/4·FP32/FP16을 대조하고 수락률·재구축 비용·whole-wall을 함께 측정한다. CPU edge/packed커널 가속·sampling 분포 보존은 아직 미검증이다.

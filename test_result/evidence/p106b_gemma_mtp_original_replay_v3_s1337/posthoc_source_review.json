@@ -1,0 +1,60 @@
+{
+  "schema": "P106B_GEMMA_MTP_POSTHOC_SOURCE_REVIEW_V1",
+  "scope": "GPT_REVIEW_6_SELECTED_PRODUCTION_UNITS_NOT_GLOBAL_TRUTH",
+  "raw_path": "test_result/evidence/p106b_gemma_mtp_original_replay_v3_s1337/paired_raw_000000.jsonl",
+  "raw_sha256": "536BC91F1874F1B3817F7A39D74194809BCCC1F81BB4B6036519FF17CF74F3F2",
+  "old_report_sha256": "D8C7211799208081CF4DE1D624E3E8A5A3223E8ACAF7ED9D1A0A266B5960874B",
+  "reviewer": "GPT",
+  "online_filter": false,
+  "modifies_old_rows": false,
+  "cases": [
+    {
+      "unit": "ko_qa",
+      "generation_id": "r0_1_ko_qa_a1",
+      "source_family": "PAWS-Wiki (T)",
+      "finding": "두 문장은 형제의 연령 관계가 달라 아니오가 원문에 맞다. OFF/ON 모두 생성된 학생 질문에 비교할 두 문장 자체가 빠져 독립 문답으로는 문맥 부족.",
+      "common_existing_issue": true,
+      "obvious_new_mtp_regression": false
+    },
+    {
+      "unit": "ko_json",
+      "generation_id": "r0_1_ko_json_a1",
+      "source_family": "Flan-GEM-wiki-lingua (T)",
+      "finding": "원문에 단색 티셔츠가 더 세련되고 다재다능하다고 명시된다. 새 좁은 질문과 단색 티셔츠 답은 자연스럽고 원문에 근거한다. 과거 질문은 전체 스타일링으로 더 넓어 답의 길이/포괄성을 직접 우열 비교할 수 없다.",
+      "comparison": "QUESTION_CHANGED_NOT_PAIRED_ANSWER_RANKING",
+      "obvious_new_mtp_regression": false
+    },
+    {
+      "unit": "ko_multiturn",
+      "generation_id": "r0_1_ko_multiturn_a1",
+      "source_family": "Dolly-v2 (T)",
+      "finding": "과거/새 답 모두 세 번 반복 규칙이 게임 종료를 보장한다고 한다. 주어진 원문에는 자동 종료가 아니라 플레이어의 무승부 주장이라고 명시돼 보장이라는 설명은 과장이다. 옛 앞 대화에 이미 같은 답이 포함되며 새 MTP에서만 생긴 결함이 아니다.",
+      "common_existing_issue": true,
+      "obvious_new_mtp_regression": false
+    },
+    {
+      "unit": "en_qa",
+      "generation_id": "r0_1_en_qa_a1",
+      "source_family": "UNER-LLM-inst",
+      "finding": "PER/ORG/LOC 범주에서 TIME 문장에 해당 개체가 없다는 과거/새 답은 주어진 빈 원문 annotation과 일치한다. ON 질문은 범주를 더 명확히 적었다.",
+      "obvious_new_mtp_regression": false
+    },
+    {
+      "unit": "en_json",
+      "generation_id": "r0_1_en_json_a1",
+      "source_family": "Flan-GEM-wiki-lingua (T)",
+      "finding": "원문은 커피 필터 둘레에 스테이플 4~5개를 사용한다고 명시한다. OFF/ON 질문과 JSON 답이 같고 원문에 부합한다.",
+      "obvious_new_mtp_regression": false
+    },
+    {
+      "unit": "en_multiturn",
+      "generation_id": "r0_1_en_multiturn_a1",
+      "source_family": "Joke-explaination-inst (T)",
+      "finding": "bright의 빛/영리함 중의성을 두 답 모두 적절히 설명한다. 옛 2턴 ACK에는 JSON 문자열 내부 answer 태그 잔재가 있고 새 3턴에도 같은 앞 대화를 입력했으므로 이 부분은 새 MTP 답변 결함이 아니다.",
+      "common_existing_history_artifact": true,
+      "obvious_new_mtp_regression": false
+    }
+  ],
+  "conclusion": "기술 ON 가능/소형 6건에서 명백한 새 품질 악화 없음. 일반 정답성·광범위 품질 동등성·장시간 생산성·학생 학습효과는 미확정. 원문 문맥/과장/옛 래핑 결함은 후행 검토 대상이며 온라인 잘못된 문자열 목록으로 걸러내지 않는다.",
+  "production_policy": "EXISTING_PINNED_PRODUCER_OFF_UNCHANGED; NEXT_ORDERED_PRODUCTION_PAIR_READY"
+}

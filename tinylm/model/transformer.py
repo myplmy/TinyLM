@@ -38,12 +38,11 @@ class TiedMLPTransformer(nn.Module):
 
         # P101A: independent training-only readouts, initialized from main U.
         # No keys or computation are added when mtp_aux is disabled.
-        self.mtp_up2 = self.mtp_up4 = None
+        self.mtp_up2 = self.mtp_up3 = self.mtp_up4 = None
         if getattr(cfg, "mtp_aux", False):
             if self.emb_up is None:
                 raise ValueError("P101A MTP requires a factorized main head")
-            self.mtp_up2 = nn.Parameter(self.emb_up.weight.detach().clone())
-            self.mtp_up4 = nn.Parameter(self.emb_up.weight.detach().clone())
+            self.attach_mtp_heads(getattr(cfg, "mtp_horizons", (2, 4)))
 
         self.pre_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_prelude)])
         self.mid_mlps = nn.ModuleList([MLP(cfg) for _ in range(cfg.n_mlp_groups)])
@@ -468,19 +467,71 @@ class TiedMLPTransformer(nn.Module):
         return torch.cat(outs, dim=-1)
 
     def mtp_aux_logits(self, hidden, horizon):
-        """Training-only reference readout; deployment uses the main head only."""
-        if not getattr(self.cfg, "mtp_aux", False) or horizon not in (2, 4):
+        """Opt-in future readout; shared vocabulary is never copied per head."""
+        if not getattr(self.cfg, "mtp_aux", False) or horizon not in self.cfg.mtp_horizons:
             raise ValueError("MTP auxiliary head is disabled or horizon is invalid")
-        projection = self.mtp_up2 if horizon == 2 else self.mtp_up4
-        return F.linear(F.linear(hidden, projection.t()), self._emb_w())
+        projection = getattr(self, f"mtp_up{horizon}")
+        if projection is None:
+            raise ValueError("requested MTP head is absent")
+        x = F.linear(hidden.float(), projection.float().t())
+        fmt = getattr(self, "_emb_fmt", None)
+        if fmt is None or fmt in ("bf16", "fp16"):
+            return F.linear(x, self._emb_w())
+        chunk = int(getattr(self.cfg, "emb_chunk", 0) or self._emb_code.shape[0])
+        return torch.cat([F.linear(x, self._emb_rows(slice(start, min(start+chunk, self._emb_code.shape[0]))))
+                          for start in range(0, self._emb_code.shape[0], chunk)], dim=-1)
 
-    def mtp_deployment_payload(self):
-        """Strict-loadable main-model state with both auxiliary keys removed."""
+    def attach_mtp_heads(self, horizons=(2, 3, 4), tensors=None):
+        """Attach small projections without changing main weights or consuming RNG.
+
+        Only call before constructing an optimizer or in inference mode. The
+        caller owns checkpoint/sidecar identity checks; geometry alone is not
+        proof that an unrelated trained head belongs to this main model.
+        """
+        horizons = tuple(horizons)
+        if (not horizons or len(set(horizons)) != len(horizons)
+                or any(type(h) is not int or h not in (2, 3, 4) for h in horizons)
+                or self.emb_up is None):
+            raise ValueError("MTP needs unique horizons2/3/4 and a factorized head")
+        tensors = {} if tensors is None else tensors
+        if tensors and set(tensors) != {f"mtp_up{h}" for h in horizons}:
+            raise ValueError("MTP sidecar keys differ from requested horizons")
+        prepared = {}
+        for h in horizons:
+            value = tensors.get(f"mtp_up{h}", self._emb_up_w().detach())
+            if (value.shape != self.emb_up.weight.shape or not value.is_floating_point()
+                    or not bool(torch.isfinite(value).all())):
+                raise ValueError("MTP projection geometry/value differs")
+            prepared[h] = nn.Parameter(value.detach().clone().to(self.emb.weight.device))
+        for h in (2, 3, 4):
+            setattr(self, f"mtp_up{h}", prepared.get(h))
+        self.cfg.mtp_aux = True
+        self.cfg.mtp_horizons = horizons
+
+    def detach_mtp_heads(self):
+        """Remove parameters, not just an execution flag; main model is unchanged."""
+        for h in (2, 3, 4):
+            setattr(self, f"mtp_up{h}", None)
+        self.cfg.mtp_aux = False
+
+    def mtp_head_bytes(self):
+        """Live projection tensor bytes only; excludes logits/KV/allocator buffers."""
+        return sum(p.numel()*p.element_size() for h in (2, 3, 4)
+                   if (p := getattr(self, f"mtp_up{h}")) is not None)
+
+    def mtp_deployment_payload(self, *, keep_aux=False, horizons=None):
+        """Default old export still drops heads; opt-in keeps a requested subset."""
         if not getattr(self.cfg, "mtp_aux", False):
             raise ValueError("MTP deployment export requires enabled auxiliary heads")
+        selected = tuple(self.cfg.mtp_horizons if horizons is None else horizons) if keep_aux else ()
+        if len(set(selected)) != len(selected) or any(h not in self.cfg.mtp_horizons for h in selected):
+            raise ValueError("requested export heads were not trained/attached")
         state = {k: v for k, v in self.state_dict().items()
-                 if k not in ("mtp_up2", "mtp_up4")}
-        return {"model": state, "cfg": dict(self.cfg.__dict__, mtp_aux=False)}
+                 if k not in {f"mtp_up{h}" for h in (2, 3, 4) if h not in selected}}
+        cfg = dict(self.cfg.__dict__, mtp_aux=bool(selected))
+        if selected:
+            cfg['mtp_horizons'] = selected
+        return {"model": state, "cfg": cfg}
 
     def enable_unpack_cache(self, on=True):
         """★P034 단계3C — int8 언팩 결과를 **유니크 모듈당 1회**로 줄인다(타잉 전용 이득).
@@ -696,7 +747,8 @@ class TiedMLPTransformer(nn.Module):
 
     # ---------- forward ----------
     def forward(self, tokens, mode_override=None, return_aux=False,
-                past_kv=None, use_cache=False, logits_last_only=False, return_hidden=False):
+                past_kv=None, use_cache=False, logits_last_only=False, return_hidden=False,
+                return_mtp_hidden=False):
         """`past_kv` 는 **owner 층 인덱스 → (k, v)** 딕셔너리다.
 
         ★CLA 주의: KV 를 공유하는 층들은 **캐시도 공유**한다. 그래서 캐시 키는 층 인덱스가
@@ -706,6 +758,8 @@ class TiedMLPTransformer(nn.Module):
         cfg = self.cfg
         if return_hidden and (return_aux or use_cache or past_kv is not None or logits_last_only):
             raise ValueError("return_hidden is training-only and cannot mix with cache, aux or last-logits")
+        if return_mtp_hidden and (self.training or return_aux or return_hidden):
+            raise ValueError("MTP decode hidden is inference-only and cannot mix with auxiliary returns")
         # Default False keeps the original logits path and public generation contract.
         B, T = tokens.shape
         # 캐시가 있으면 이번 forward 의 토큰은 past 뒤에 붙는다 → 절대위치가 past_len 만큼 밀린다.
@@ -898,7 +952,11 @@ class TiedMLPTransformer(nn.Module):
                 _dt = {"bf16": torch.bfloat16, "fp16": torch.float16}[_kvd]
                 kv_bank = {k: (None if v is None else (v[0].to(_dt), v[1].to(_dt)))
                            for k, v in kv_bank.items()}
+            if return_mtp_hidden:
+                return logits, x, kv_bank
             return (logits, kv_bank) if not return_aux else (logits, kv_bank, None)
+        if return_mtp_hidden:
+            return logits, x
         if not return_aux:
             return logits
         aux = {"router_loss": self._balance(mode_hist),
@@ -930,7 +988,7 @@ class TiedMLPTransformer(nn.Module):
             #   🚫`endswith(".lrm")` 만 보면 벡터 승수가 아래 `nodecay`(dim<2)로 새어
             #   **wd 가 조용히 0 이 된다** = 팔 B 와 B' 를 못 가른다.
             #   ✅스칼라 모드의 `.lrm` 도 이 규칙에 그대로 걸리므로 **비트 동일**이다.
-            if n in ("mtp_up2", "mtp_up4"):
+            if n in ("mtp_up2", "mtp_up3", "mtp_up4"):
                 mtp.append(p)
             elif n.endswith(".qk_gain_logit"):
                 qkg.append(p)

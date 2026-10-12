@@ -479,6 +479,8 @@ REM  It runs on the SYNTHETIC tokenizer and four built-in conversations, so it
 REM    needs no dataset file. That is deliberate - arm 21c died in 2026-09-08
 REM    because it demanded a file that by design never exists.
 python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\diag_sft_mask.py --data synthetic
+REM Opt-in SFT MTP: synthetic CPU mask/gradient/head-hotplug/verified decode.
+python scripts\runlog.py --name !TL_LOGNAME! -- python scripts\test_p101a_sft_mtp.py
 if errorlevel 1 echo [WARN] SFT mask check FAILED - read which of M1 to M5
 if errorlevel 1 echo [WARN] LUT residency arm FAILED - the deployment number cannot be quoted
 
