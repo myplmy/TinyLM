@@ -68,3 +68,7 @@ ORPO/SFT·SimCTG후속은별도feedback-dev/normal-copy/유일답 보호·실제
 ## 2026-10-12 — 무부모와 계속학습의 MTP 효과 대조
 
 새 [P101A](../../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)는 scratch/parent 각각의 초기 본체 지문을 맞춘 NTP/MTP 네 팔이다. assistant의 같은 턴 안 horizon2/3/4만 지도하며 사용자·다음턴·PAD는 제외한다. 한글/영어·QA/JSON/멀티턴 자료, main val·실제 답·형식·종료·같은 native crop 언어손실을 보고한다. aux CE 감소만으로 지능 향상을 판정하지 않는다. 약32M/팔의 무부모 SFT가 일반 언어능력을 확보한다는 보장은 없고 기존75M×4epoch 목표를 대체하지 않는다. 새로운 조건의 sigma는 미측정이며 구 CPT의 자를 복사하지 않는다. [092 §10](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의 CPU 검증과 실제 학습효과는 별개다.
+
+## 2026-10-13 — SFT 손실 감소와 보존 실패의 동시 기록
+
+[092 §11](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의MTP finalCE 방향은한seed관측이고parentbestepoch2는NTP가더낮다. 부모의원문32crop CE악화와parentMTPgrad_max>10을보존한다. [104 §9](../../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md)의128업데이트도종료/절차형답개선과native악화를함께본다. 같은8M/부모/NTP1epoch의jointLR scale1/.1 승인대조로이동량영향을가르며75M×4 본교육설정은불변이다.

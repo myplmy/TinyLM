@@ -154,3 +154,66 @@ Gemma 생산 MTP 비교 다음에 아래 SH 순서로 진행한다. CPU contract
 ## 9. 실행 이력
 
 2026-10-12: 사용자2안으로 무부모+부모 네 팔을 확정했다. assistant-turn mask, up2/3/4·optional export/hotplug, head/CE 재계산, main 검증 greedy를 구현했다. 합성CPU29 PASS·13SH argparse route PASS, legacyM0 계약도 회귀했다. [092 §10](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md). 기존기본off·E384/M0 실패는불변이며 actual8M 준비/실물학습/추론가속은NOT_RUN이다.
+
+## 2026-10-13 실행 회수·Stage3f~h / Stage4b 후속
+
+### 1. 왜·예측 대조
+
+[092 §11](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에서 실제 네 팔4epoch가 완료됐지만 엄격 첫답0~1/8·부모 원문손실 악화가 남았다.
+최종 CE 감소를 일반 능력 향상으로 옮기는 예측은 성립하지 않았다. 원형 MTP 추론의 비트/출력 정합 예측도GPU에서 미달했다.
+
+### 2. 질문
+
+| 질문 | 다음 분리 |
+|---|---|
+| 검증 블록/재구축이 같은 이력에서도 선택을 바꾸는가 | 재학습 없이 BF16/FP32·query1/multiquery/rebuild 로짓과 KV |
+| 같은8M에서 LR만 낮추면 망각을 줄이는가 | 부모NTP1epoch 두 LRscale; 실제 답/원문/SFT 손실 동시 |
+
+### 3. 예측과 실패 가능성
+
+낮은 LR은 이동량을 줄일 수 있지만 현재 부모가 지시를 잘 못 따르거나 원천이 편중돼 있으면 답안 효과가 없을 수 있다.
+FP32가 정합을 회복해도 속도가 느려지고 정답성이 개선되는 것은 아니다. 단일 seed의 작은 CE 차이에 과거 CPT σ를 적용하지 않는다.
+
+### 4. 단계 설계·현재 상태
+
+| 단계 | 상태 | 조건과 판정 | 시간/GPU |
+|---|---|---|---|
+| Stage3bW~3eW | 실제 자료·비용·네팔 학습·readback 완료 | 각3296updates/32.006Mx, MTP 일반 효능 미확정 | 원본 회수 |
+| Stage4aWa/Wb | 실제추론 음성 | scratch5/8,parent6/8 native 정합; 헤드정밀도 모두동일 실패집합 | 원본 회수 |
+| Stage4b0W | CPU회귀/SH STATIC_ONLY | 작은synthetic cache/first-divergence 시험; actual GPU별도 | .02h/N |
+| Stage4bWa/Wb | 준비·E2E_NOT_RUN | 같은saved2학생·8질문·native/MTP2/4·BF16/FP32, shadow정합을원답으로판독 | 각.25h/Y |
+| Stage3f0W | CPU회귀/SH STATIC_ONLY | 새epochs API기본4 보존·양optimizer0.1scale | .02h/N |
+| Stage3fWa/Wb | 준비·E2E_NOT_RUN | 같은8M/parentNTP 각32update 비용·새독립출력 | 각.15h/Y |
+| Stage3gWa/Wb | 준비·E2E_NOT_RUN | 같은8M·각824updates/1epoch·새checkpoint; samecodecost필수 | 각.60h/Y, wall상한90분 |
+| Stage3hW | 조건부 준비 | 두팔source/body/x/target/update일치, actual8답+native tradeoff판독 | .02h/N |
+
+새팔은 Adam1e-4/Muon4e-4와1e-5/4e-5로 양optimizer를같은배율로 낮춘다. RMS4 비율을 유지한 ‘전체LR scale’ 대조이며 Adam만 바꾸는 실험이 아니다.
+1epoch대조가75M×4 본목표나 과거4epoch기준을 대체하지 않는다. 배치8×16·ckptON·compile·seed·source는고정이다.
+SFT 실제 x=8,001,524이고 패딩 계산자리824×131072=108,003,328은분리한다.
+CPT의 pool≥2× 규칙은 승인된 고정자료 SFT 반복실험의근거로기계 적용하지않는다.
+
+### 5. 실행
+
+`run_P101A_Stage4b0W_mtp_parity_cpu.sh` — CPU synthetic first-divergence/real-id/cache-shadow regression; no checkpoint
+
+`run_P101A_Stage4bWa_scratch_mtp_numeric_paths.sh` — Saved scratch student only; native/MTP same-prefix BF16/FP32 diagnostic; no training
+
+`run_P101A_Stage4bWb_parent_mtp_numeric_paths.sh` — Saved parent student only; diagnose parallel verification versus cache rebuild; no quality adoption
+
+`run_P101A_Stage3f0W_lr_retention_cpu.sh` — CPU one-pass exposure and joint Adam/Muon scale regression
+
+`run_P101A_Stage3fWa_lrhi_onepass_cost.sh` — Fresh frozen8M parentNTP cost32; Adam1e-4 Muon4e-4; not quality gate
+
+`run_P101A_Stage3fWb_lrlo_onepass_cost.sh` — Fresh frozen8M parentNTP cost32; Adam1e-5 Muon4e-5; same RMS4
+
+`run_P101A_Stage3gWa_lrhi_onepass_train.sh` — User-only same frozen8M onepass824updates; micro8 accum16 ckptON; same-code cost prerequisite
+
+`run_P101A_Stage3gWb_lrlo_onepass_train.sh` — User-only same8M onepass lower joint LR; native language retention and raw answers
+
+`run_P101A_Stage3hW_lr_retention_pair.sh` — Both completed onepass arms required; comparable x/targets/parent; no models
+
+### 6. 한계·preflight
+
+신규lrhi/lrlo 두 tag는 registry에실제로그 없음으로 확인했고 현재 inference namespace는별도신설한다.
+정의된독립변수 이외에는 바꾸지않고, actualquality를읽은뒤설정을 결정한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

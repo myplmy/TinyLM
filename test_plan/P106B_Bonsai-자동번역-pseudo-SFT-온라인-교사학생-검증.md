@@ -1665,3 +1665,64 @@ CPU 약1분, Wa 전체최대600초, Wb 최대1800초. 교사 단독·학생/학�
 최초 설계 사전등록 뒤 Wa/Wc의 고정질문 전송 제약을 원형 생산 payload 재생으로 교정했다. [결과101 §91](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 Wa78.91초/8·Wc211.75초/8·Wd58.66초/0을 원형대로 남겼다. Wc의 질문echo 음성은 실제 생산계약 음성이 아니었다. Stage6eWc는 fixed 전송 복구, Stage6eWd는 원형payload MTPON6/6첫시도이다. 학생/학습0·기존생산OFF불변이며한정GPU승인은끝났다.
 
 새 Stage6eWb는 같은 **원형 생산** 요청6개·OFF→ON/ON→OFF 두 순서24논리요청/최대72구조시도로 준비했다. 교사가 질문 자체를 재작성할 수 있는 실제 생산 계약이므로 원형/새질문·내용/학생x를 모두 기록하며 ‘같은 생성 답의 우열’로 혼동하지 않는다. body 통과·source불변과 후행6건 판독은 ON기술가능 근거지만 대량 정답성·본생산 가속은 미확정이다. 현재 실물 SH는 `run_P106B_Stage6eWb_mtp_production_order_pair.sh`, 완료3SH는동일 stem의-done으로보존한다. 사용자입력대기/온라인 의미문구검사/본생산자동ON은없다. §4의 최초Wa 고정질문안은 역사설계이고 현재Wb의production protocol이 실행정본이다.
+
+## 2026-10-13 실행 회수·MTP ON 분리생산과 도구 복구
+
+[101 §92](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)가 양순서24요청·원답·생산량/계측·capacity 코드오류의 정본이다.
+실제 MTP 공급 가속 방향은 관찰됐지만 의미 품질 동급·장기OOM 안전 예측은 미확정이다.
+문맥 시험은 AttributeError로생성0, factorial은선결HOLD로요청0이다. 큰상한이측정됐다고쓰지않는다.
+
+### 1. 왜·질문·예측
+
+동일12request쌍의 한영6프로필 두순서에서 ON이 더 빨랐다. 현재생산은고유75M에 못미쳐교사생산을늘려야한다.
+단독교사의목표는유효student x/시간이며 completion속도/생각문자수와다르다.
+작은표본과그대로복제된문맥결함이있어대량가속/내용PASS는예상으로도보장하지않는다.
+
+### 2. 단계·실행·선결
+
+| 단계 | 상태/실행 | 선결·판정 |
+|---|---|---|
+| Stage4n0W / nWa / nWb | 원시도종료: CPU0 / AttributeError(생성0) / HOLD8 | 과거원본보존,자원음성으로부르지않음 |
+| Stage4n0Wb→nWc→nWd | 새tag p106b_gemma_ac_v2_s1337 준비 | currentCPU·실제template/tokenize·같은16Kcapacity이후56논리request의factorial |
+| Stage4jWh→kWe→k0We | 정상6h예산보류→quotaHOLD→학생전HOLD | 실제신규77500x·학습0 |
+| Stage4j0W | CPU6회귀·budget회귀와새SH | OFF4선조/14코드불변·namespace복원·ON플래그검사 |
+| Stage4jWi | MTP ON 최초fork6h 사용자실행용 | 정확OFF4배치/입력/원source SHA·기존cursor계승·fresh ON namespace |
+| Stage4jWj | 명시6h재개 사용자실행용 | ON fork inputs같음·새batch번호·동시producer금지;중단batch자동삭제안함 |
+| Stage4kWf→k0Wf | CPU75Mmerge→학생2업데이트 | ko/en37.5M씩·task/source/valquota·teacher내림 |
+| Stage4lWe→mWe | 조건부약300M4epoch→다축평가 | 동일completed corpus/wire·현재학생배치/LR·새CPT·72첫답 |
+| 옛 Stage4lWd/mWd | 아직미실행·선결GATED | OFFv3 자료완성필요,원런처보존 |
+
+### 3. 고정 계약·판정 기준
+
+같은Gemma target/draft, t1/p.95/k64/minp0/presence0/repeat1,ctx8192/thinking1024/total3072를 유지한다.
+새 ON 생산은자료/사고/마스크/출처와모든구조시도(최초포함총3)를보존한다.
+절단/라벨/빈답/학생문맥·mask는기술조건으로계속거부하지만 의미오류 문자열 검사는추가하지않는다.
+OFF원본/진행위치/중간보고를고치지않고, 새ON자료만HF/sft_ready/p106b_gemma_deficit_mtp_v4에쓴다.
+75M불충족은예산보류/원천소진/선결HOLD로분리하고학생을올리지않는다. ON실행0/정식TRAIN_READY아님.
+
+### 4. 비용·배치·한계
+
+`run_P106B_Stage4n0Wb_ac_recovery_cpu.sh` — 0.02h, CPU regression/current template-token contract; no models
+
+`run_P106B_Stage4nWc_teacher_context_recovery.sh` — 0.5h, User-only capacity rerun; ctx8K/16K/32K; success is sampled resource not semantic truth
+
+`run_P106B_Stage4nWd_concepts_thinking_recovery.sh` — 0.75h, Only after current16K capacity; MTP OFF factorial concepts1/2/4 and thinking256/1024
+
+`run_P106B_Stage4j0W_mtp_fork_cpu.sh` — 0.02h, CPU pinned-OFF-ancestor/new-ON-namespace/shared retry budget contracts; no model
+
+`run_P106B_Stage4jWi_mtp_on_fork_production.sh` — 6h, User teacher-only first ON fork6h; old four OFF batches read-only; quota incomplete is pause8
+
+`run_P106B_Stage4jWj_mtp_on_explicit_resume.sh` — 6h, Explicit existing ON fork6h resume; fresh batch only; no reset or concurrent producer
+
+`run_P106B_Stage4kWf_mtp_completed_corpus.sh` — 0.5h, Only when cumulative unique train75M and language/task/val/source quotas complete; CPU merge
+
+`run_P106B_Stage4k0Wf_mtp_corpus_student_wire.sh` — 0.5h, Completed75M only, teacher down; two student updates not full300M
+
+`run_P106B_Stage4lWe_mtp_corpus_chat32_repeat4.sh` — 12h, User-only completed75M and wire; micro8 accum16 ckptON four real passes approx300M
+
+`run_P106B_Stage4mWe_mtp_corpus_multiaxis.sh` — 0.5h, Exact completed new student; same72 first answers/native loss; no teacher quality automatic PASS
+
+6h는1개제한창이지75M완성시간이아니다. 현OFF 실측의 잔여외삽은약147.54일이며 ON작은속도비로최종일정확정하지않는다.
+teacheronlyMTP와학생MTP헤드는서로다른방법/가중치다. 새입력에mtp=true/draft/config/선조SHA를명시한다.
+현재수리/SH STATIC_ONLY·모델/GPU E2E_NOT_RUN. 보호원천/다운로드/원본변경없음.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

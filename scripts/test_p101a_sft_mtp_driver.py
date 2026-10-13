@@ -2,6 +2,7 @@
 """CPU route/precondition contracts; never touch real corpus/model/GPU."""
 from __future__ import annotations
 import json
+import hashlib
 from pathlib import Path
 import subprocess
 import sys
@@ -9,6 +10,21 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from scripts import diag_p101a_sft_mtp as driver
+
+
+def launcher_text(path):
+    if path.is_file():return path.read_text()
+    # Completion cleanup is allowed only after exact Git/SHA/command archival.
+    # Read immutable Git bytes, never recreate an old runnable file or skip it.
+    for manifest in sorted((ROOT/'handoff/audit').glob('WIP_*_DONE_LAUNCHER_ARCHIVE.json')):
+        for row in json.loads(manifest.read_text()).get('entries',[]):
+            if row.get('done_path')!=path.name:continue
+            proc=subprocess.run(['git','show',row['source_commit']+':'+row['path']],
+                cwd=ROOT,capture_output=True,timeout=10)
+            if proc.returncode or hashlib.sha256(proc.stdout).hexdigest().upper()!=row['sha256']:
+                raise AssertionError('archived launcher Git/SHA differs')
+            return proc.stdout.decode('utf-8')
+    raise FileNotFoundError('exact completed launcher archive absent: '+path.name)
 
 
 class Contracts(unittest.TestCase):
@@ -53,7 +69,7 @@ class Contracts(unittest.TestCase):
         for stem,mode,arm in expected:
             path=ROOT/('run_P101A_'+stem+'.sh')
             if not path.is_file():path=ROOT/('run_P101A_'+stem+'-done.sh')
-            commands=[shlex.split(line) for line in path.read_text().splitlines()
+            commands=[shlex.split(line) for line in launcher_text(path).splitlines()
                 if 'scripts/diag_p101a_sft_mtp.py --' in line]
             self.assertEqual(len(commands),1,stem)
             command=commands[0];args=command[command.index('scripts/diag_p101a_sft_mtp.py')+1:]

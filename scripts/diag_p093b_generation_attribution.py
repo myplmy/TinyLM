@@ -17,6 +17,12 @@ from scripts.p106b_shards import ShardWriter,verify
 
 BASE=ROOT/"test_result/evidence/p093b_recovery_v2_s1337/recovery_capacity_b"
 REPORT_SHA="4C8D5952F3803E98106A830CF0F446682AADC0F556CE1394C8D03033DC1C937F"
+# Exact known migration only. Original calibration report/factors stay immutable.
+# Adding default-off MTP dispatch did not replace the default NTP sample body;
+# fresh CPU contracts and24 actual cache-off pairs still gate the new diagnosis.
+NATIVE_MTP_API_MIGRATION={"tinylm/infer/generate.py":(
+    "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D",
+    "774BFDE6324545B8E9295E1524FB438E2C6DDE6DB009D25DBF0CE1AC7A0C5B27")}
 CODE=("scripts/diag_p093b_generation_attribution.py","scripts/p093b_generation_probe.py",
       "scripts/test_p093b_generation_probe.py","scripts/diag_p093b_native_repair.py",
       "scripts/p093b_native_repair.py","tinylm/infer/generate.py","tinylm/model/modules.py",
@@ -40,16 +46,30 @@ def original_answers(role):
         raise ValueError("exact prior8 questions required")
     return rows,old.digest(p)
 
+def validate_calibration_sources(recorded,current):
+    if set(recorded)!=set(current):raise ValueError("calibration source set differs")
+    updates=[]
+    for name,sha in recorded.items():
+        now=current[name]
+        if now==sha:continue
+        if NATIVE_MTP_API_MIGRATION.get(name)!=(sha,now):
+            raise ValueError("unreviewed original recovery source changed: "+name)
+        updates.append({"path":name,"recorded_sha256":sha,"runtime_sha256":now,
+            "reason":"known default-off MTP API migration; original result is data, not current-runtime PASS",
+            "runtime_scope":"fresh CPU contract and new24 cache-off pairs required"})
+    return updates
+
+
 def source():
     if not old.regular(BASE/"report.json") or old.digest(BASE/"report.json")!=REPORT_SHA:
         raise FileNotFoundError("exact saved capacity report absent/stale")
     report=json.loads((BASE/"report.json").read_text())
     if report.get("status")!="RECOVERY_CALIBRATION_COMPLETE":
         raise FileNotFoundError("capacity run incomplete")
-    for name,sha in report["input"]["code_sha256"].items():
-        if old.digest(ROOT/name)!=sha:raise ValueError("original recovery source changed: "+name)
+    recorded=report["input"]["code_sha256"]
+    updates=validate_calibration_sources(recorded,{name:old.digest(ROOT/name) for name in recorded})
     if not any(r["rank"]==64 for r in report["ranks"]):raise ValueError("saved rank64 absent")
-    return report
+    return dict(report,runtime_calibration_code_updates=updates)
 
 def representation(a,info,directory):
     import torch
@@ -58,7 +78,8 @@ def representation(a,info,directory):
     from scripts import p093b_native_repair as native
     from scripts.p106b_education_followup import ARMS
     from scripts.p106b_gate_runtime import idle_before_gpu,wall_limit
-    report=source();spec=ARMS["a"];tok_path=ROOT/spec["tokenizer"]
+    report=source();info['runtime_calibration_code_updates']=report['runtime_calibration_code_updates']
+    spec=ARMS["a"];tok_path=ROOT/spec["tokenizer"]
     if old.digest(old.PARENT)!=recovery.PARENT_SHA or old.digest(tok_path)!=spec["tok_sha"]:
         raise ValueError("parent/tokenizer identity differs")
     idle_before_gpu();start=time.perf_counter()
@@ -100,7 +121,8 @@ def execute(a,info,directory):
     from scripts import p093b_native_repair as native
     from scripts.p106b_education_followup import ARMS
     from scripts.p106b_gate_runtime import idle_before_gpu,wall_limit
-    report=source();spec=ARMS["a"];tok_path=ROOT/spec["tokenizer"]
+    report=source();info['runtime_calibration_code_updates']=report['runtime_calibration_code_updates']
+    spec=ARMS["a"];tok_path=ROOT/spec["tokenizer"]
     if old.digest(old.PARENT)!=recovery.PARENT_SHA or old.digest(tok_path)!=spec["tok_sha"]:
         raise ValueError("parent/tokenizer identity differs")
     idle_before_gpu();start=time.perf_counter()

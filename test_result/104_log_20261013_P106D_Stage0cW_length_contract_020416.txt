@@ -1,0 +1,80 @@
+CPU actual-paraphrase/fixed-key/length-bucket contracts; no real tokenizer/model.
+
+==============================================================================
+[runlog] 2026-10-13 02:04:16  name=P106D_Stage0cW_length_contract_020416
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106d_views.py --mode contract --tag p106d_ruleviews_v3_length_s1337 --samples 4096 --execute --max-wall-sec 600
+==============================================================================
+[PHASE] regression/preconditions then contract; readiness is separate from student intelligence
+test_96_arithmetic_cases_recalculate_answer (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_answer_json_known_envelope (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_boolean_ast_recomputes_16_changed_assignments (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_boolean_unknown_operation_not_eval (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_c1_arithmetic_previous_operation_and_format_kept (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_c1_table_and_projection_keep_context (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_c3_eval_and_protected_source_rejected (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_c3_preserves_full_answer_string_quotes_and_newlines (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_canonical_chatml_and_two_correct_assistant_targets (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_fixed_literal_is_protected_not_forced_to_vary (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_input_immutable_and_deterministic (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_invalid_bool_nan_and_source_sha_rejected (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_json_projection_recalculates_fields (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_lookup_changes_target_not_source_values (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_lookup_equal_values_are_not_bad_answers (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_no_eval_or_protected_source_augmentation (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_provenance_no_new_knowledge_or_measured_tokens_claim (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_root_first_question_split_stays_fixed (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_singleton_numeric_domain_is_protected (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_unknown_contract_never_inferred_from_words (scripts.test_p106b_rule_views.RuleViewTests) ... ok
+test_first_user_and_source_root_preserved (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_known_format_key_and_verbatim_roundtrip (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_language_children_same_split (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_new_probes_do_not_call_train_augmenter (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_ready_balanced_rows_and_roots (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_real_signature_needs_valid_assistant_targets (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_repeat_recipe_does_not_change_source_root (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_token_target_mass_matched_at_each_slot (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_view_diversity_and_no_fake_knowledge_claim (scripts.test_p106d_views.RuleCorpusTests) ... ok
+test_card_controls_and_single_completion_not_api_n2 (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_context_reaches_learner_and_paraphrase_retry_is_not_literal (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_fenced_literal_labels_are_content_not_additional_fields (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_inline_and_multiline_fields_mix_without_changing_content (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_inline_duplicate_outside_preface_empty_answer_still_rejected (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_literal_question_transport_preserved (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_observed_inline_labels_are_valid_fields (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_one_and_two_pairs_and_reasoning_separation (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_truncated_completion_not_rescued (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_unique_answer_duplicates_not_rejected (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_wrapper_keeps_source_anchor_and_no_thinking_target (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_wrong_label_order_missing_and_duplicate_rejected (scripts.test_p106d_teacher_views.TeacherViewTests) ... ok
+test_checkonly_expanded_does_not_read_source_or_tokenizer (scripts.test_p106d_driver.ControllerTests) ... ok
+test_checkonly_never_calls_model_or_tokenizer (scripts.test_p106d_driver.ControllerTests) ... ok
+test_closed_only_rubric (scripts.test_p106d_driver.ControllerTests) ... ok
+test_expanded_count_is_not_padding_or_new_knowledge (scripts.test_p106d_driver.ControllerTests) ... ok
+test_http_error_body_preserved_and_secret_redacted (scripts.test_p106d_driver.ControllerTests) ... ok
+test_incomplete_report_does_not_load_student (scripts.test_p106d_driver.ControllerTests) ... ok
+test_rates_count_retries_and_match_complete_source_set (scripts.test_p106d_driver.ControllerTests) ... ok
+test_saved_teacher_zero_complete_does_not_return_success (scripts.test_p106d_driver.ControllerTests) ... ok
+test_second_single_view_paraphrases_same_source (scripts.test_p106d_driver.ControllerTests) ... ok
+test_source_output_symlink_and_tag_escape_refused (scripts.test_p106d_driver.ControllerTests) ... ok
+test_successful_teacher_closes_all_raw_and_candidate_shards (scripts.test_p106d_driver.ControllerTests) ... ok
+test_teacher_failure_preserves_raw_manifest_and_body (scripts.test_p106d_driver.ControllerTests) ... ok
+test_c3_fixed_contains_all_known_keys_not_only_answer (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_each_arm_has_same_gold_change_policy (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_expired_wall_budget_stops_before_codec (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_format_has_real_paraphrases_with_one_fixed_key (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_matching_and_at_least_two_views (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_more_than80_boolean_roots_without_enum_fake_uniqueness (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_old_val_roots_and_questions_are_excluded (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_per_key_token_length_does_not_fake_a_matched_view (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_ready_and_balanced_changed_and_unchanged (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+test_viable_matching_bucket_need_not_include_first_candidate (scripts.test_p106d_expanded_views.ExpandedTests) ... ok
+
+----------------------------------------------------------------------
+Ran 63 tests in 1.211s
+
+OK
+[EXPERIMENT_FINAL] {"mode": "contract", "status": "CPU_CONTRACT_PASS", "exit_code": 0, "evidence": "test_result/evidence/p106d_ruleviews_v3_length_s1337/contract", "student_intelligence": "NOT_ESTABLISHED"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-13 02:04:17)
+==============================================================================

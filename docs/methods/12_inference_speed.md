@@ -238,3 +238,7 @@ actual model 속도는 Stage1Wc 전 `NOT_RUN`이다([069 §10](../../test_result
 [새 구현](../../tinylm/infer/mtp.py)은 학습한 독립 horizon2/3/4가 초안을 제안하고 main 모델의 greedy 선택과 일치한 접두부만 반영한다. 불일치 suffix KV를 버리고 실제 prefix로 재구축한다. FP32 CPU에서 EOS·stop·max_new·cache와 CLA1/2 multi-query를 검산했지만 실물BF16 정합·속도는 [P101A Stage4](../../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)의 사용자 실행 전 NOT_RUN이다. 출력 검증으로 잘못된 초안 자체를 확정하지 않으며 head off도 제공한다. FP16 저장은 임시 연산 버퍼까지 절반으로 줄인다는 뜻이 아니다.
 
 이 경량 projection은 [FastMTP 원문](https://arxiv.org/html/2509.18362v1)의 position-shared self-distillation·동적어휘를 완전히 구현한 것이 아니다. 그2.03배를 TinyLM 예측치로 쓰지 않는다. [Gemma 외부교사 실측](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 별개이며 교사 completion속도와 학생 공급속도를 구분한다. 학습한 head에서 total2/3/4·FP32/FP16을 대조하고 수락률·재구축 비용·whole-wall을 함께 측정한다. CPU edge/packed커널 가속·sampling 분포 보존은 아직 미검증이다.
+
+## 2026-10-13 — 학생 MTP 정합 음성과 외부교사 ON 관측
+
+[092 §11](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의학생MTP는native와출력/토큰수가달라시간이작아도같은작업량가속으로판정할수없다. 이번시간방향도열세이며원학습헤드저장정밀도만으로회복하지못했다. 새same-prefixquery/rebuild/KV진단만준비했다. [101 §92](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의Gemma는별도가중치/llama.cpp/draft-MTP 계열로양순서24요청의유효x 공급이증가했으나장기품질/연속peak는미확정이다.

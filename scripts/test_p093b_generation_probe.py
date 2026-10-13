@@ -78,4 +78,28 @@ class ProbeTests(unittest.TestCase):
         self.assertEqual(probe.representation_stats(torch.ones(1,2),[1])["status"],"INSUFFICIENT_POSITIONS")
         with self.assertRaises(ValueError):probe.representation_stats(torch.zeros(2,2),[1,2])
 
+    def test_calibration_allows_only_exact_reviewed_default_off_migration(self):
+        from scripts import diag_p093b_generation_attribution as d
+        key='tinylm/infer/generate.py';before,after=d.NATIVE_MTP_API_MIGRATION[key]
+        updates=d.validate_calibration_sources({key:before,'other':'A'}, {key:after,'other':'A'})
+        self.assertEqual(len(updates),1)
+        for current in ({key:'unknown','other':'A'}, {key:after,'other':'B'}, {key:after}):
+            with self.assertRaises(ValueError):d.validate_calibration_sources({key:before,'other':'A'},current)
+
+    def test_default_ntp_sample_body_matches_archived_pre_mtp_implementation(self):
+        import ast,subprocess,hashlib
+        archived=subprocess.check_output(['git','show','cb9b335:tinylm/infer/generate.py'],cwd=ROOT,text=True)
+        from scripts import diag_p093b_generation_attribution as d
+        self.assertEqual(hashlib.sha256(archived.encode()).hexdigest().upper(),
+            d.NATIVE_MTP_API_MIGRATION['tinylm/infer/generate.py'][0])
+        current=(ROOT/'tinylm/infer/generate.py').read_text()
+        def default_body(text):
+            fn=next(n for n in ast.parse(text).body if isinstance(n,ast.FunctionDef) and n.name=='sample')
+            nodes=[n for n in fn.body if not(isinstance(n,ast.Expr) and isinstance(n.value,ast.Constant)
+                and isinstance(n.value.value,str))]
+            nodes=[n for n in nodes if not(isinstance(n,ast.If) and isinstance(n.test,ast.Compare)
+                and isinstance(n.test.left,ast.Name) and n.test.left.id=='mtp_tokens')]
+            return ast.dump(ast.Module(body=nodes,type_ignores=[]),include_attributes=False)
+        self.assertEqual(default_body(archived),default_body(current))
+
 if __name__=="__main__":unittest.main(verbosity=2)

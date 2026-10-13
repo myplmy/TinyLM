@@ -174,3 +174,7 @@ forward 속도를 학습 속도·end-to-end throughput으로 확대하지 않는
 ## 2026-10-12 — MTP 학습 비용을 효과와 함께 계측
 
 [P101A 후속](../../test_plan/P101A_M0-U2-QK-MTP-기능계약.md)의 네 팔은 같은8M·4epoch·micro8×accum16·checkpoint-on에서 main NTP와 assistant-turn MTP를 비교한다. 미래 타깃을 늘리는 것은 새 고유 데이터가 아니다. head/CE를 유효 위치별로 모아 chunk 재계산하고 양팔 모두 같은 방식으로 처리한다. 실제32업데이트의 비용/VRAM부터 계측하며 update시간·실제x·추가aux지도량·준비/평가/저장을 포함한 wall을 분리한다. CPU29 PASS는 학습 가속 증거가 아니고 실제학습은NOT_RUN이다([092 §10](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)).
+
+## 2026-10-13 — 공급·학습·패딩 속도 분모
+
+[092 §11](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의MTP학습시간은전체시간과첫compile제외update를분리한다. 각32.006M 실제x는432.013M padded compute자리와다르다. [101 §92](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의teacher-onlyON소형유효x공급과6hOFF 장기창은다른자료/길이분모라직접완성일정을보장하지않는다. 75M부족·출처/task/valquota를반복토큰이나completion토큰으로채우지않는다.

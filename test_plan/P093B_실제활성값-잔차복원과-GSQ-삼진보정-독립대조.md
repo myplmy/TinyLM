@@ -255,3 +255,19 @@ native sample은그대로사용해R1/R2 각16token의총18짧은답을보존한�
 layerpatch는부호가엇갈렸고coda14의큰억제도유일원인이라고부르지않는다. 출력에영향없는최종상태의512차원부분공간을반사해shared‘어떻게’cos.998507→−.525330에도확률.236868635와전체logit/argmax를유지했다. ‘cosine이높아야즉시반복한다’는필요조건예측의국소반례다. head-visible 정보/초기층/전시퀀스원인은남는다.
 
 BF16auto6불일치를재현하고BF16math5/6·FP32/math6/6이일치해수치/계산경로설명을지지했다. old기술8을소급PASS로바꾸지않고새측정0과구분했다. C의정답·종료SFT/ORPO·SimCTG는후속범위/별도학습권한을필요로하며기본학습레시피와75M/300M 목표는불변이다.
+
+## 2026-10-13 — 원시도 HOLD 판독과 새 계약/decoder 준비
+
+[103 §14](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): Stage6bW는낡은CPUcontract로모델/생성0이다.
+‘실제decoder가반복을줄일것’이라는예측은실행되지않아맞다/틀리다판정할수없다.
+기본-off MTP이관의 정확generate SHA쌍/AST 동등성을회귀로보증하되 실제cache24쌍은별도소유한다.
+
+| 단계 | 실행·상태 | 비용·판정 |
+|---|---|---|
+| Stage6aWb | run_P093B_Stage6aWb_generation_current_contract.sh·CPU준비 | .02h,N/current SHA+12회귀 |
+| Stage6bWb | run_P093B_Stage6bWb_parent_shared_r64_decode.sh·모델준비 | .25h,Y/same source+부모/shared/r64·cacheOFF24·실제답192 |
+| 반복억제 ORPO/SimCTG | 이번학습미구현·보류 | 위원답으로원인진단후추가선택,자동교육없음 |
+
+새tag p093b_generation_v2_s1337; oldcalibration/원CPT/복원선/실제음성불변.
+알려지지않은hash변경은거부한다. CPU동등성이실물BF16이나전역KV무결성PASS는아니다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

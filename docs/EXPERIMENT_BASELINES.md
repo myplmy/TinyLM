@@ -230,6 +230,15 @@ fp32 상주와 int8 상주가 갈린다.**
 
 ### 2.6 예약·사용중 태그 네임스페이스 (충돌 금지)
 
+2026-10-13 새별도준비 namespace(실물미실행):
+
+| 접두사 | 용도 | 상태 |
+|---|---|---|
+| `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 승인 동일8M·parentNTP1epoch/824updates·Adam/Muon joint scale1/.1 | 새예약·NOT_RUN·원75M×4 유지 |
+| `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32·같은prefix query/rebuild/KV | 새예약·NOT_RUN·학습/save0 |
+| `p106b_gemma_ac_v2_s1337` / `p093b_generation_v2_s1337` | AttributeError/낡은CPU계약의새단계복구 | STATIC_ONLY·실물NOT_RUN |
+| `p106b_s4_gemma_capability300m_chat32_mtponv4_s1337` | pinned OFF4배치 이후 별도 MTP ON75M/4epoch·student단독 | 새예약·NOT_RUN·old14SHA불변 |
+
 | 접두사 | 용도 | 상태 |
 |---|---|---|
 | `dense`, `tied` | 정본 기준선(태그 없음 = arch 이름) | **덮어쓰기 절대 금지** |
@@ -237,16 +246,16 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106d_ruleviews_v1_s1337_{fixed,views}` | P106D closed procedural fixed/view4epoch 소형학생 | **사용 완료**. [104 §2~§4](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md):각88,864x/7,280targets/8updates·8/64이며옛답복사 정답8/조건변경0. oldfixed sham-only 교락;교사72응답은inline파서가거부. 지능·75M/새300M 미완료. |
 | `p093b_recovery_v2_s1337` | dev-only endpoint/LR 선택·r8/16와독립r32/64·실제8답/조건부저장정밀도 | **사용 완료** [103 §8](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): test .977839/.970336/.955230/.923356 전부복원선미달·실제답반복·precision모델전HOLD. parent/shared/rank별원답과FP16저장/상주계산을분리. |
 | `p106d_ruleviews_v2_4096_s1337_{fixed,views}` | 양팔변경/미변경균형·4096canonical/4epoch128updates 목표 | **원시도 종료·학생 tag 미사용** [104 §8](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md):실제3074행/format2·128update0. 교사24요청32QA와옛72readonly구조는완료0이며학생효능증거가아님. |
-| `p093b_generation_v1_s1337` | 같은 legacy 부모/shared/r64 무학습 prompt×decoder/cache 및표현관찰 | **CPU contract/표현48forward 사용완료** [103 §10](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):3.534초·새답/학습0·표현인과미확정. decode old24계승/new192/cache24는NOT_RUN. 코드변경시currentcontract를별도새버전에서재검증하며원출력덮어쓰기금지. |
+| `p093b_generation_v1_s1337` | 같은 legacy 부모/shared/r64 무학습 prompt×decoder/cache 및표현관찰 | 과거CPU contract·표현/인과는별도보존, 이번decode는STALE_CONTRACT HOLD8·모델0. [103 §14](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md) |
 | `p093b_live_trace_v1_s1337` | 기존8문항×parent/shared/r64의 실제 반복 onset·로짓/KV/16층 대응 | **실물24답/2186step 완료·기술8** [103 §12](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):옛24답/옛KV정합·cached/shadow2180일치/6차·115.916848초. 학습/save0·GPU권한종료. 고정precision/정상대조 없이 반복인과/캐시무결성PASS 아님. |
 | `p093b_causal_v1_s1337` | 같은4사례/3질문의이력/공유/층상태/R1-R2/precision 개입 | **실물564행완료0** [103 §13](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):22.629876초/새18짧은답/학습0·이력피드백효과·공유/R2필수원인아님·FP32/math6/6 cache선택일치. OODcontrol/재귀학습계보불완전·품질PASS아님. |
 | `p093b_similarity_control_v1_s1337` | 최종상태 영공간부분공간 반사/출력불변 | **실물12쌍완료0** [103 §13.4](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):3.449240초·cos낮춰도전체logit최대차4.77e-6/argmax12동일. raw cosine필요성국소반례,전층/전시퀀스/SimCTG훈련효용은미확정. |
-| `p106d_ruleviews_v3_length_s1337_{fixed,views}` | C3고정key/실제재표현·길이bucket·4096균형 | **새예약/실물NOT_RUN**. micro8×accum16/ckptON/LR/4epoch128update 유지·원형v2/oldval보존. 원답/actualx/target별도. |
-| `p106b_gemma_ac_v1_s1337` | 원source8·개념1/2/4×thinking256/1024 역순factorial | **새예약/실물NOT_RUN**. teacheronly/slot1/MTPoff·56논리request/168physical상한·ctx16K/total6144. 별도ctx8K/16K/32K sparse자원probe,75M corpus와별도. |
+| `p106d_ruleviews_v3_length_s1337_{fixed,views}` | C3고정key/실제재표현·길이bucket·4096균형 | 사용완료·각128updates/1.440Mx·fixed73/view68의128첫답. grad>10/native악화·뷰비채택관측 [104 §9](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md) |
+| `p106b_gemma_ac_v1_s1337` | 원source8·개념1/2/4×thinking256/1024 역순factorial | 원시도종료: CPU0·capacity의AttributeError(교사생성0)·패널HOLD0요청. 자원미달로쓰지않음 [101 §92](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_gemma_mtp_production_quick_v1_s1337` / `p106b_gemma_mtp_production_transport_v2_s1337` | Gemma MTP 진단의 고정 질문 전송 계약 | **시도 종료8 보존**. Wa는OFF에서 종료, Wc는OFF/ON 각각5/6. 실제 생산에는 없는 고정echo 제약이며 OOM/본생산 품질 실패가 아님. [101 §91](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md). |
 | `p106b_gemma_mtp_original_replay_v3_s1337` | 원형 생산payload·한영 QA/JSON/3턴·MTPON | **소형 실제 수집6/6·58.66초**. 후행공통문맥/과장 결함2, sampled free6918MiB. 학생0·장기안전/대량품질/인과가속미확정. 기존생산OFF불변. |
-| `p106b_gemma_mtp_production_order_v1_s1337` | 원형payload6개 OFF→ON/ON→OFF, 최대72구조시도 | **새 예약·실물NOT_RUN**. 학생/학습0·단독교사·두순서 원답/유효x/시간/계측을 보고 ON생산 정책을 결정한다. |
-| `p101a_sft_mtp_v1_s1337` | 동일8M×4epoch·scratch/parent×NTP/MTP, micro8accum16/ckptON/compiledefault | **CPU29/13SH check-only PASS·실물학습NOT_RUN**. 별도8M준비→각32update 비용→각약32M학습→동일학생head off/2/3/4 추론이다. 원75M/300M·M0/E384판정은불변. [092 §10](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md). |
+| `p106b_gemma_mtp_production_order_v1_s1337` | 원형payload6개 OFF→ON/ON→OFF, 최대72구조시도 | 양순서24request 완료·입력/상한/seed동일·ON공급방향관측. 실제thinking/출력차이·샘플자원·내용미확정 [101 §92](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p101a_sft_mtp_v1_s1337` | 동일8M×4epoch·scratch/parent×NTP/MTP, micro8accum16/ckptON/compiledefault | 네팔8M×4epoch 실물완료·학습한헤드실물추론정합음성. parent원문망각·첫답0~1/8. 새LR1epoch/경로진단별도 [092 §11](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `t_*` | 300M 풀 tied 계열 | 사용중(위 §2.1) |
 | `p6*` | 600M 풀 토큰스윕(P007) | 사용중 |
 | `sp_*` | 속도 벤치(P021) | 사용중 |

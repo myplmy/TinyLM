@@ -86,4 +86,34 @@ class ACTests(unittest.TestCase):
         for free in (2047,None,True):
             self.assertFalse(driver.sampled_resource_ok({"sampled_gpu_min_free_mib":free},proof))
 
+    def test_generic_request_only_session_counts_actual_template_tokens(self):
+        class Session:
+            def __init__(self):self.calls=[]
+            def request(self,path,payload):
+                self.calls.append((path,payload))
+                return {'prompt':'exact prompt'} if path=='/apply-template' else {'tokens':[1,2,3]}
+        session=Session()
+        info=driver.count_prompt(session,[{'role':'user','content':'fixture'}],8192,3072)
+        self.assertEqual(info['prompt_tokens'],3)
+        self.assertEqual([p for p,b in session.calls],['/apply-template','/tokenize'])
+        self.assertTrue(session.calls[1][1]['parse_special'])
+
+    def test_budget_rejects_overflow_and_bad_server_contract(self):
+        from scripts.p106b_gate_runtime import GateNegative
+        class Session:
+            def request(self,path,payload):
+                return {'prompt':'x'} if path=='/apply-template' else {'tokens':[1]*150}
+        with self.assertRaises(GateNegative):driver.count_prompt(Session(),[],256,128)
+        class Bad:
+            def request(self,path,payload):return {'tokens':[True]}
+        with self.assertRaises(ValueError):driver.count_prompt(Bad(),[],8192,3072)
+
+    def test_attribute_error_is_tool9_not_resource8(self):
+        rows=[{'context':c,'passed':False,'error_type':'AttributeError'} for c,m,t in core.CAPACITY]
+        self.assertEqual(driver.capacity_verdict(rows),(False,'CAPACITY_PARTIAL_ERROR',9))
+        rows=[{'context':core.CONTEXT,'passed':False}]
+        self.assertEqual(driver.capacity_verdict(rows),(False,'CAPACITY_MEASURED',8))
+        rows=[{'context':core.CONTEXT,'passed':True},{'context':32768,'passed':False,'error_type':'GateNegative'}]
+        self.assertEqual(driver.capacity_verdict(rows),(True,'CAPACITY_MEASURED',0))
+
 if __name__=="__main__":unittest.main(verbosity=2)

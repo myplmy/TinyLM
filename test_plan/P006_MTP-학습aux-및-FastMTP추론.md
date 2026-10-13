@@ -38,3 +38,8 @@
 Part A의 경량 projection/미래지도 개념은 [P101A 후속](P101A_M0-U2-QK-MTP-기능계약.md)에서 assistant-turn horizon2/3/4·shared vocabulary로 구현했다. 사용자 선택은 같은8M×4epoch·scratch/parent×NTP/MTP 네 팔이며 CPU29시험은 [092 §10](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)에 있다. 실제 학습효과는 NOT_RUN이다. M0의E384 실패를 모든MTP가막힌사유로 쓰지 않는다.
 
 Part B는 **완전 FastMTP 구현/실험이 아니다**. 별도 greedy prototype만 draft/main 검증·잘못된 suffix KV 재구축·head off/2/3/4로 준비했다. [FastMTP 원문](https://arxiv.org/html/2509.18362v1)의 position-shared self-distillation·recursive alignment·dynamic vocabulary compression은 아직 구현하지 않았다. 원문2.03배를 TinyLM 속도로 옮겨 쓰지 않는다. 학습된 새head가 생긴 뒤 P101A Stage4aWa/Wb에서 실물BF16 정합·시간·자원을 측정한다. Gemma외부교사 MTP의 실제6건은 [101 §91](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 별개 트랙이다.
+
+## 2026-10-13 현재 상태 정정
+
+Part A는 [092 §11](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의동일8M 네팔실물학습까지완료했다. 작은최종CE 이득이일반능력보장은아니며부모native망각과실제첫답0~1/8을같이본다.
+Part B prototype은실물greedy정합에미달했다. 새P101A same-prefix수치/캐시진단을준비하며FastMTP전체방법이구현됐다고쓰지않는다. 외부Gemma의양순서24요청과생산ONfork는 [101 §92](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의별개가중치/배포계열이다.

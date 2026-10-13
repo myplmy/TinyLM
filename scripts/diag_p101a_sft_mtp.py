@@ -186,7 +186,9 @@ def native_ce(base,cache):
         scope='same fixed first32 1024-token crops; not whole-pool native CE')
 
 
-def train_arm(args,corpus,evidence,metadata,*,calibrate=False):
+def train_arm(args,corpus,evidence,metadata,*,calibrate=False,epochs=4):
+    if type(epochs) is not int or epochs < 1:
+        raise ValueError('positive explicit exposure count required')
     arm=args.arm;report=corpus_report(corpus)
     target=report_path(evidence,arm,calibrate)
     out=checkpoint(args.tag,arm)
@@ -204,7 +206,7 @@ def train_arm(args,corpus,evidence,metadata,*,calibrate=False):
     with wall_limit(args.max_wall_sec):
         torch,base,cfg,tok,initial=load_runtime(arm)
         records=encoded(corpus,report,tok)
-        expected_steps=4*math.ceil(len(records['train'])/128)
+        expected_steps=epochs*math.ceil(len(records['train'])/128)
         pad=tok.token_to_id('<|pad|>')
         if pad is None:pad=tok.token_to_id('<pad>')
         if pad is None:raise ValueError('PAD identity absent')
@@ -224,7 +226,7 @@ def train_arm(args,corpus,evidence,metadata,*,calibrate=False):
             before_native=native_text_probes(base,cfg,tok,target.parent,'initial_'+arm,ROOT/STUDENTS['b']['cache'])
             before_native_ce=native_ce(base,ROOT/STUDENTS['b']['cache'])
         initial_val=None if calibrate else evaluate(base,records['val'],pad)
-        for epoch in range(4):
+        for epoch in range(epochs):
             epoch_x=epoch_targets=0;epoch_started=time.perf_counter()
             epoch_nll={h:torch.zeros((),device='cuda') for h in (1,2,3,4)}
             epoch_valid={h:0 for h in (1,2,3,4)}
@@ -272,8 +274,8 @@ def train_arm(args,corpus,evidence,metadata,*,calibrate=False):
                     active_head_target_counts={str(h):v for h,v in epoch_valid.items()},
                     wall_sec=time.perf_counter()-epoch_started))
             if stop:break
-        if not calibrate and (updates!=expected_steps or processed!=4*report['actual_unique_train_x_tokens']):
-            raise ValueError('real row/token/four-pass exposure differs')
+        if not calibrate and (updates!=expected_steps or processed!=epochs*report['actual_unique_train_x_tokens']):
+            raise ValueError('real row/token/explicit-pass exposure differs')
         result=dict(metadata,arm=arm,initial_core_sha256=initial,
             initializer='SCRATCH_NO_WEIGHT_INIT' if arm.startswith('scratch_') else 'PINNED_PARENT_WEIGHT_ONLY',
             corpus_sha256=data.digest(corpus/'report.json'),updates=updates,expected_full_updates=expected_steps,

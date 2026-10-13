@@ -28,23 +28,6 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-1	P106B	run_P106B_Stage6eWa_mtp_production_quality.sh	D	0.17	Y	N	현재 승인10분 이내 진단 시도79초; 학생JSON문구를teacherQUESTION과혼동해OFF에서종료8. 원형보존·Wc수리	8
-1	P106B	run_P106B_Stage6eWc_mtp_production_transport_recovery.sh	D	0.12	Y	N	새OFF/ON실제수집211.75초; 고정질문echo계약음성은 실제원형생산과분리.원본보존	8
-1	P106B	run_P106B_Stage6eWd_mtp_original_production_replay.sh	D	0.05	Y	N	원형payload그대로MTPON6/6첫시도·58.66초·samplefree6918MiB; 기존off와내용후행대조;자동생산변경0	8
-2	P106B	run_P106B_Stage6eWb_mtp_production_order_pair.sh	D	0.50	Y	N	원형생산payload6개의 두순서 MTP 원답·생산성·자원 비교; 첫원형ON6/6 뒤 본생산채택 판단	8
-3	P101A	run_P101A_Stage3aW_sft_mtp_cpu_contract.sh	N	0.03	Y	N	CPU 본문20+4+5시험 직접 완료;13SH 실제 check-only 경로 포함. wrapper/모델/GPU NOT_RUN; 같은 코드 contract/report 보존	8
-4	P101A	run_P101A_Stage3bW_sft_mtp_frozen8m_corpus.sh	N	0.50	Y	N	SFT MTP prepare/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-5	P101A	run_P101A_Stage3cWa_scratch_ntp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-5	P101A	run_P101A_Stage3cWb_scratch_mtp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/scratch_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-5	P101A	run_P101A_Stage3cWc_parent_ntp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/parent_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-5	P101A	run_P101A_Stage3cWd_parent_mtp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/parent_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-6	P101A	run_P101A_Stage3dWa_scratch_ntp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-6	P101A	run_P101A_Stage3dWb_scratch_mtp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/scratch_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-6	P101A	run_P101A_Stage3dWc_parent_ntp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/parent_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-6	P101A	run_P101A_Stage3dWd_parent_mtp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/parent_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-7	P101A	run_P101A_Stage3eW_sft_mtp_four_arm_readback.sh	N	0.03	Y	N	SFT MTP compare/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-8	P101A	run_P101A_Stage4aWa_scratch_mtp_verified_infer.sh	D	0.50	Y	N	SFT MTP infer/scratch_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
-8	P101A	run_P101A_Stage4aWb_parent_mtp_verified_infer.sh	D	0.50	Y	N	SFT MTP infer/parent_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.
@@ -673,6 +656,39 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   18	P106C	run_P106C_Stage5Wa_prompt_cache_attribution.sh	D	0.25	Y	Y	Approved A attempt; OS NVML denial before model, preserved as runtime NOT_RUN.	8
 #   19	P106C	run_P106C_Stage5Wb_prompt_cache_attribution.sh	D	0.25	Y	Y	Approved A recovery;384 BF16 generations and divergent-pair FP32 recheck; no updates/checkpoint writes.	8
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage6eWa_mtp_production_quality.sh	D	0.17	Y	N	현재 승인10분 이내 진단 시도79초; 학생JSON문구를teacherQUESTION과혼동해OFF에서종료8. 원형보존·Wc수리	8
+#   1	P106B	run_P106B_Stage6eWc_mtp_production_transport_recovery.sh	D	0.12	Y	N	새OFF/ON실제수집211.75초; 고정질문echo계약음성은 실제원형생산과분리.원본보존	8
+#   1	P106B	run_P106B_Stage6eWd_mtp_original_production_replay.sh	D	0.05	Y	N	원형payload그대로MTPON6/6첫시도·58.66초·samplefree6918MiB; 기존off와내용후행대조;자동생산변경0	8
+#   2	P106B	run_P106B_Stage6eWb_mtp_production_order_pair.sh	D	0.50	Y	N	원형생산payload6개의 두순서 MTP 원답·생산성·자원 비교; 첫원형ON6/6 뒤 본생산채택 판단	8
+#   3	P101A	run_P101A_Stage3aW_sft_mtp_cpu_contract.sh	N	0.03	Y	N	CPU 본문20+4+5시험 직접 완료;13SH 실제 check-only 경로 포함. wrapper/모델/GPU NOT_RUN; 같은 코드 contract/report 보존	8
+#   4	P101A	run_P101A_Stage3bW_sft_mtp_frozen8m_corpus.sh	N	0.50	Y	N	SFT MTP prepare/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   5	P101A	run_P101A_Stage3cWa_scratch_ntp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   5	P101A	run_P101A_Stage3cWb_scratch_mtp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/scratch_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   5	P101A	run_P101A_Stage3cWc_parent_ntp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/parent_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   5	P101A	run_P101A_Stage3cWd_parent_mtp_cost.sh	Y	0.15	Y	N	SFT MTP calibrate/parent_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   6	P101A	run_P101A_Stage3dWa_scratch_ntp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   6	P101A	run_P101A_Stage3dWb_scratch_mtp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/scratch_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   6	P101A	run_P101A_Stage3dWc_parent_ntp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/parent_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   6	P101A	run_P101A_Stage3dWd_parent_mtp_frozen8m.sh	Y	1.50	Y	N	SFT MTP train/parent_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   7	P101A	run_P101A_Stage3eW_sft_mtp_four_arm_readback.sh	N	0.03	Y	N	SFT MTP compare/scratch_ntp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   8	P101A	run_P101A_Stage4aWa_scratch_mtp_verified_infer.sh	D	0.50	Y	N	SFT MTP infer/scratch_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   8	P101A	run_P101A_Stage4aWb_parent_mtp_verified_infer.sh	D	0.50	Y	N	SFT MTP infer/parent_mtp; current contract then frozen8M; matched micro8accum16/ckptON/compiledefault fourpasses; original source untouched.	8
+#   20	P106D	run_P106D_Stage0cW_length_contract.sh	N	0.02	Y	Y	CPU actual-paraphrase/fixed-key/length-bucket contracts; no real tokenizer/model.	8
+#   22	P106D	run_P106D_Stage1Wc_length_corpus4096.sh	N	0.25	Y	Y	User CPU only after fresh contract. Same4096 canonical target; no padding/filler; real chat32 lengths and prior val exclusion.	8
+#   26	P106D	run_P106D_Stage2We_length_fixed128.sh	Y	0.50	Y	Y	User GPU only after complete4096 corpus. Originalmicro8 accum16 checkpointON LR fourepochs128updates.	8
+#   26	P106D	run_P106D_Stage2Wf_length_views128.sh	Y	0.50	Y	Y	User GPU independent view arm. Same inputs/target mass/curriculum; fixed answer success not prerequisite.	8
+#   27	P106D	run_P106D_Stage3Wc_length_pair_readback.sh	N	0.02	Y	Y	CPU reports/actual128updates/old64 and fresh64 answer readback; completion not intelligence PASS.	8
+#   28	P106B	run_P106B_Stage4jWh_budget_pause_resume.sh	Y	6.00	Y	Y	User GPU explicit literalV3 continuation. Only owned budget alarm pauses8; server/OOM/persistent query failures still stop; preserve generation14 and cursor.	8
+#   29	P106B	run_P106B_Stage4kWe_budget_completed_corpus.sh	N	0.50	Y	Y	User CPU exact75M/disjointval/language/task/source quota verification. Not ready remains HOLD8.	8
+#   30	P106B	run_P106B_Stage4k0We_budget_student_wire.sh	Y	0.50	Y	Y	User GPU only after complete same V4 corpus and teacher down. Originalparent/micro8 accum16/checkpointON two updates.	8
+#   21	P106B	run_P106B_Stage4n0W_ac_cpu_contract.sh	N	0.02	Y	Y	CPU distinct-source slots1/2/4 and thinking256/1024/card params/sidecar/shared3 retries; no original source or model.	8
+#   23	P106B	run_P106B_Stage4nWa_teacher_context_budget.sh	Y	0.50	Y	Y	User teacher-only GPU ctx8k/16k/32k totaloutput3072/6144/12288. Samplefree2GiB; larger context not guaranteed or full-length decode proof.	8
+#   24	P106B	run_P106B_Stage4nWb_concepts_thinking_factorial.sh	Y	0.75	Y	Y	User teacher-only after same16k capacity proof. Public family64 QA8 exactsources; size1/2/4 x thinking256/1024 two reverse orders56 logical requests/max168 attempts. No student.	8
+#   1	P093B	run_P093B_Stage6aW_generation_contract.sh	N	0.02	Y	Y	CPU nucleus/prefix/current entry contracts only; no checkpoint/tokenizer/GPU.	8
+#   25	P093B	run_P093B_Stage6bW_parent_shared_r64_decode.sh	Y	0.25	Y	Y	User GPU no-training sameparent/shared/r64 prompt x greedy/nucleus p.95 t1. Reuse old24 greedyplain; new192 answers including24 cache-off pairs. C learning remains conditional after actual A.	8
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -776,21 +792,8 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE 2026-10-11 results101/103/104; archived969761e; 3	P106D	run_P106D_Stage2Wd_balanced_view128.sh	Y	0.50	Y	Y	User GPU independent view arm with same4096 roots/curriculum/x/targets and128updates. At least2 matched views per root, no unique-knowledge inflation; fixed success not required.	8
 # DONE 2026-10-11 results101/103/104; archived969761e; 4	P106D	run_P106D_Stage3Wb_balanced_view_pair.sh	N	0.02	Y	Y	CPU compare both128update reports/actual exposure/firstanswers/native CE. Technical completion is not context reasoning or general intelligence PASS.	8
 # 2026-10-11 bounded successor/attribution/factorial paths; no automatic model execution.
-20	P106D	run_P106D_Stage0cW_length_contract.sh	N	0.02	Y	Y	CPU actual-paraphrase/fixed-key/length-bucket contracts; no real tokenizer/model.	8
-22	P106D	run_P106D_Stage1Wc_length_corpus4096.sh	N	0.25	Y	Y	User CPU only after fresh contract. Same4096 canonical target; no padding/filler; real chat32 lengths and prior val exclusion.	8
-26	P106D	run_P106D_Stage2We_length_fixed128.sh	Y	0.50	Y	Y	User GPU only after complete4096 corpus. Originalmicro8 accum16 checkpointON LR fourepochs128updates.	8
-26	P106D	run_P106D_Stage2Wf_length_views128.sh	Y	0.50	Y	Y	User GPU independent view arm. Same inputs/target mass/curriculum; fixed answer success not prerequisite.	8
-27	P106D	run_P106D_Stage3Wc_length_pair_readback.sh	N	0.02	Y	Y	CPU reports/actual128updates/old64 and fresh64 answer readback; completion not intelligence PASS.	8
-28	P106B	run_P106B_Stage4jWh_budget_pause_resume.sh	Y	6.00	Y	Y	User GPU explicit literalV3 continuation. Only owned budget alarm pauses8; server/OOM/persistent query failures still stop; preserve generation14 and cursor.	8
-29	P106B	run_P106B_Stage4kWe_budget_completed_corpus.sh	N	0.50	Y	Y	User CPU exact75M/disjointval/language/task/source quota verification. Not ready remains HOLD8.	8
-30	P106B	run_P106B_Stage4k0We_budget_student_wire.sh	Y	0.50	Y	Y	User GPU only after complete same V4 corpus and teacher down. Originalparent/micro8 accum16/checkpointON two updates.	8
 31	P106B	run_P106B_Stage4lWd_budget_literal_repeat4.sh	Y	12.00	Y	Y	User GPU only after same corpus/wire: originalchat32 batch/LR four actualepochs about300M. Dataset shortage is not closed by preparing this SH.	8
 32	P106B	run_P106B_Stage4mWd_budget_literal_multiaxis.sh	Y	0.50	Y	Y	User GPU after new complete child; preserve actual72 firstanswers/multiturn/native loss; not quality PASS by collection.	8
-21	P106B	run_P106B_Stage4n0W_ac_cpu_contract.sh	N	0.02	Y	Y	CPU distinct-source slots1/2/4 and thinking256/1024/card params/sidecar/shared3 retries; no original source or model.	8
-23	P106B	run_P106B_Stage4nWa_teacher_context_budget.sh	Y	0.50	Y	Y	User teacher-only GPU ctx8k/16k/32k totaloutput3072/6144/12288. Samplefree2GiB; larger context not guaranteed or full-length decode proof.	8
-24	P106B	run_P106B_Stage4nWb_concepts_thinking_factorial.sh	Y	0.75	Y	Y	User teacher-only after same16k capacity proof. Public family64 QA8 exactsources; size1/2/4 x thinking256/1024 two reverse orders56 logical requests/max168 attempts. No student.	8
-1	P093B	run_P093B_Stage6aW_generation_contract.sh	N	0.02	Y	Y	CPU nucleus/prefix/current entry contracts only; no checkpoint/tokenizer/GPU.	8
-25	P093B	run_P093B_Stage6bW_parent_shared_r64_decode.sh	Y	0.25	Y	Y	User GPU no-training sameparent/shared/r64 prompt x greedy/nucleus p.95 t1. Reuse old24 greedyplain; new192 answers including24 cache-off pairs. C learning remains conditional after actual A.	8
 # DONE 2026-10-11 result103 section10; raw_212058 exit0 observations48; renamed-done byte unchanged and exact SH1 deleted; replay archive117f460.
 # 2	P093B	run_P093B_Stage6cW_hidden_representation_observation.sh	Y	0.08	Y	Y	User GPU only after exact permission. Sameparent/shared/r64 saved-text48 forwards, finalhidden return without head; same-token and distinct-token cosine/rank observations. No generation/update/checkpoint.	8
 # DONE exact P093B live contract0/trace8/readback8; 24 reproduced answers/2186 steps. Three unchanged -done SH retained; no new deletion. Source files and replay commands in result103 section12.
@@ -805,3 +808,25 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # 1	P093B	run_P093B_Stage7dW_similarity_cpu_contract.sh	N	0.02	Y	Y	CPU readout-nullspace reflection algebra5 and per-channel RMS/scale controls only; no private source or model.	8
 # 2	P093B	run_P093B_Stage7eW_head_nullspace_similarity.sh	Y	0.04	Y	Y	Approved cause-diagnosis subcontrol120sec. Same12 final states: change nullspace cosine while preserving complete next-token logits. No generation/training/checkpoint.	8
 # 3	P093B	run_P093B_Stage7fW_similarity_readback.sh	N	0.02	Y	Y	CPU same-code reflection12 and invariant readout manifest readback. No further model execution.	8
+
+1	P106B	run_P106B_Stage4n0Wb_ac_recovery_cpu.sh	N	0.02	-	-	CPU regression/current template-token contract; no models
+2	P106B	run_P106B_Stage4nWc_teacher_context_recovery.sh	Y	0.5	-	-	User-only capacity rerun; ctx8K/16K/32K; success is sampled resource not semantic truth
+3	P106B	run_P106B_Stage4nWd_concepts_thinking_recovery.sh	Y	0.75	-	-	Only after current16K capacity; MTP OFF factorial concepts1/2/4 and thinking256/1024
+4	P093B	run_P093B_Stage6aWb_generation_current_contract.sh	N	0.02	-	-	CPU exact default-off migration guard; no model
+5	P093B	run_P093B_Stage6bWb_parent_shared_r64_decode.sh	Y	0.25	-	-	Same saved parents/factors; fresh24 cache-off guards; no training or checkpoint write
+6	P101A	run_P101A_Stage4b0W_mtp_parity_cpu.sh	N	0.02	-	-	CPU synthetic first-divergence/real-id/cache-shadow regression; no checkpoint
+7	P101A	run_P101A_Stage4bWa_scratch_mtp_numeric_paths.sh	Y	0.25	-	-	Saved scratch student only; native/MTP same-prefix BF16/FP32 diagnostic; no training
+8	P101A	run_P101A_Stage4bWb_parent_mtp_numeric_paths.sh	Y	0.25	-	-	Saved parent student only; diagnose parallel verification versus cache rebuild; no quality adoption
+9	P101A	run_P101A_Stage3f0W_lr_retention_cpu.sh	N	0.02	-	-	CPU one-pass exposure and joint Adam/Muon scale regression
+10	P101A	run_P101A_Stage3fWa_lrhi_onepass_cost.sh	Y	0.15	-	-	Fresh frozen8M parentNTP cost32; Adam1e-4 Muon4e-4; not quality gate
+11	P101A	run_P101A_Stage3fWb_lrlo_onepass_cost.sh	Y	0.15	-	-	Fresh frozen8M parentNTP cost32; Adam1e-5 Muon4e-5; same RMS4
+12	P101A	run_P101A_Stage3gWa_lrhi_onepass_train.sh	Y	0.6	-	-	User-only same frozen8M onepass824updates; micro8 accum16 ckptON; same-code cost prerequisite
+13	P101A	run_P101A_Stage3gWb_lrlo_onepass_train.sh	Y	0.6	-	-	User-only same8M onepass lower joint LR; native language retention and raw answers
+14	P101A	run_P101A_Stage3hW_lr_retention_pair.sh	N	0.02	-	-	Both completed onepass arms required; comparable x/targets/parent; no models
+15	P106B	run_P106B_Stage4j0W_mtp_fork_cpu.sh	N	0.02	-	-	CPU pinned-OFF-ancestor/new-ON-namespace/shared retry budget contracts; no model
+16	P106B	run_P106B_Stage4jWi_mtp_on_fork_production.sh	Y	6	-	-	User teacher-only first ON fork6h; old four OFF batches read-only; quota incomplete is pause8
+17	P106B	run_P106B_Stage4jWj_mtp_on_explicit_resume.sh	Y	6	-	-	Explicit existing ON fork6h resume; fresh batch only; no reset or concurrent producer
+18	P106B	run_P106B_Stage4kWf_mtp_completed_corpus.sh	N	0.5	-	-	Only when cumulative unique train75M and language/task/val/source quotas complete; CPU merge
+19	P106B	run_P106B_Stage4k0Wf_mtp_corpus_student_wire.sh	Y	0.5	-	-	Completed75M only, teacher down; two student updates not full300M
+20	P106B	run_P106B_Stage4lWe_mtp_corpus_chat32_repeat4.sh	Y	12	-	-	User-only completed75M and wire; micro8 accum16 ckptON four real passes approx300M
+21	P106B	run_P106B_Stage4mWe_mtp_corpus_multiaxis.sh	Y	0.5	-	-	Exact completed new student; same72 first answers/native loss; no teacher quality automatic PASS

@@ -97,6 +97,34 @@ def sampled_resource_ok(memory,proof):
         and proof.get("measurement_coverage")=="SAMPLED_ONLY"
         and proof.get("successful_queries",0)>0 and proof.get("fatal_calls",0)==0)
 
+
+def count_prompt(session,messages,context,maximum):
+    """Owned generic Session exposes request(), not TeacherSession.count_prompt()."""
+    if (type(context) is not int or type(maximum) is not int
+            or not 0<maximum<context or not isinstance(messages,list)):
+        raise ValueError("explicit context/output/message budget required")
+    formatted=session.request('/apply-template',{'messages':messages})
+    if not isinstance(formatted,dict) or not isinstance(formatted.get('prompt'),str):
+        raise ValueError("server template did not return a prompt")
+    reply=session.request('/tokenize',{'content':formatted['prompt'],
+        'add_special':False,'parse_special':True})
+    tokens=reply.get('tokens') if isinstance(reply,dict) else None
+    if not isinstance(tokens,list) or any(type(token) is not int or token<0 for token in tokens):
+        raise ValueError("server tokenize did not return exact nonnegative token IDs")
+    size=len(tokens)
+    if size+maximum+128>context:
+        from scripts.p106b_gate_runtime import GateNegative
+        raise GateNegative("input+output+128 exceeds context; no truncation")
+    return {'prompt_tokens':size,'maximum_output_tokens':maximum,'context_tokens':context,
+        'reserved_margin_tokens':128,'tokenizer':'owned server /apply-template then /tokenize',
+        'scope':'input budget only; not full-length generation or OOM proof'}
+
+
+def capacity_verdict(rows):
+    ready=any(r['context']==core.CONTEXT and r['passed'] for r in rows)
+    unexpected=any(r.get('error_type') not in (None,'GateNegative') for r in rows)
+    return ready,('CAPACITY_PARTIAL_ERROR' if unexpected else 'CAPACITY_MEASURED'),(9 if unexpected else 0 if ready else 8)
+
 def capacity(a,metadata,output):
     assets=teacher.assets(True);rows=[];deadline=time.monotonic()+a.max_wall_sec
     from scripts.p106d_teacher_views import cases
@@ -111,7 +139,7 @@ def capacity(a,metadata,output):
                 metadata["model_loading"]="MEASURED"
                 from scripts.p106d_teacher_views import payload
                 request=payload(case,1,1337);request["max_tokens"]=maximum
-                session.count_prompt(request["messages"],context,maximum)
+                row['input_budget']=count_prompt(session,request["messages"],context,maximum)
                 reply=request_with_evidence(session,request,lambda record:None,"capacity",timeout=300)
                 memory=session.memory();free=memory.get("sampled_gpu_min_free_mib")
                 row.update(memory=memory,server_props=session.props,usage=reply.get("usage",{}),
@@ -121,9 +149,9 @@ def capacity(a,metadata,output):
             if isinstance(e,KeyboardInterrupt):raise
             row.update(error_type=type(e).__name__,reason=str(e),partial_telemetry=reader.snapshot())
         rows.append(row);print("[CAPACITY_PROFILE] "+json.dumps(row,ensure_ascii=False),flush=True)
-    ready=any(r["context"]==core.CONTEXT and r["passed"] for r in rows)
-    return {"input":metadata,"status":"CAPACITY_MEASURED","profiles":rows,"panel_resource_ready":ready,
-        "assets":assets,"scope":"teacher-only sampled memory; no long-production/OOM guarantee"},0 if ready else 8
+    ready,status,rc=capacity_verdict(rows)
+    return {"input":metadata,"status":status,"profiles":rows,"panel_resource_ready":ready,
+        "assets":assets,"scope":"teacher-only sampled memory; program errors9 are not resource-negative8"},rc
 
 def panel(a,metadata,output):
     from tinylm.data.sft import encode_conversation,sft_targets
@@ -153,7 +181,7 @@ def panel(a,metadata,output):
                         record={"generation_id":generation,"repeat":repeat,"size":size,"thinking":thought,
                             "source_group_ids":[j["source_group_id"] for j in block],"request":request,"attempt":attempt}
                         try:
-                            record["input_budget"]=session.count_prompt(request["messages"],core.CONTEXT,core.MAX_OUTPUT)
+                            record["input_budget"]=count_prompt(session,request["messages"],core.CONTEXT,core.MAX_OUTPUT)
                             reply=request_with_evidence(session,request,raw.append,generation,
                                 timeout=min(300,max(1,int(deadline-time.monotonic()))))
                             parsed=core.parse(reply,len(block));record.update(reply=reply,parsed=parsed)
