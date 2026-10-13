@@ -178,3 +178,11 @@ forward 속도를 학습 속도·end-to-end throughput으로 확대하지 않는
 ## 2026-10-13 — 공급·학습·패딩 속도 분모
 
 [092 §11](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의MTP학습시간은전체시간과첫compile제외update를분리한다. 각32.006M 실제x는432.013M padded compute자리와다르다. [101 §92](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의teacher-onlyON소형유효x공급과6hOFF 장기창은다른자료/길이분모라직접완성일정을보장하지않는다. 75M부족·출처/task/valquota를반복토큰이나completion토큰으로채우지않는다.
+
+## 2026-10-14 — 계측 신뢰성과 교사 생산성은 별도
+
+[101 §95](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의owned persistent query는same24요청에서timeout을줄였으나cadence와process lifetime을함께바꿨다.
+timestamp는수신시각이고2초관측은연속peak를보증하지않는다.
+queryworker가생성중겹쳐일하므로누락초를생성wall에서단순공제해가상의throughput을만들지않는다.
+[092 §14](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의1query MTP검증은정확성대조이며병렬가속채택과다르다.
+원답정합·유효자료x/s·completion/s·head/캐시/평가를포함한비용을각분모로보고한다.

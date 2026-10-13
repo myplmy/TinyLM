@@ -27,4 +27,16 @@ class ParityTests(unittest.TestCase):
         self.assertTrue(trace['incremental_vs_rebuild']['argmax_equal'])
         self.assertTrue(trace['kv_max_abs_by_owner'])
 
+    def test_shadow_uses_actual_prediction_block(self):
+        model,cfg=tiny(True);model.eval()
+        for k in (2,4):
+            with torch.no_grad():
+                trace=gate.shadow(model,[1,2],[3,4,5,6,7,8],2,'cpu',k)
+            self.assertEqual(trace['multi_query_tokens'],k)
+
+    def test_profile_label_is_bound_to_row_not_completed_loop(self):
+        source=Path(gate.__file__).read_text()
+        self.assertIn("total_prediction_tokens=row['k']",source)
+        self.assertNotIn('total_prediction_tokens=k,profile=row',source)
+
 if __name__=='__main__':unittest.main(verbosity=2)

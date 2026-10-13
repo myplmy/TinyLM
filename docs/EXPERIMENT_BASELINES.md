@@ -230,14 +230,17 @@ fp32 상주와 int8 상주가 갈린다.**
 
 ### 2.6 예약·사용중 태그 네임스페이스 (충돌 금지)
 
-2026-10-13 새별도준비 namespace(실물미실행):
+2026-10-14 회수·새별도 namespace(기존원형/기본 recipe 불변):
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
-| `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 승인 동일8M·parentNTP1epoch/824updates·Adam/Muon joint scale1/.1 | 새예약·NOT_RUN·원75M×4 유지 |
-| `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32·같은prefix query/rebuild/KV | 새예약·NOT_RUN·학습/save0 |
-| `p106b_gemma_ac_v2_s1337` / `p093b_generation_v2_s1337` | AttributeError/낡은CPU계약의새단계복구 | STATIC_ONLY·실물NOT_RUN |
-| `p106b_s4_gemma_capability300m_chat32_mtponv4_s1337` | pinned OFF4배치 이후 별도 MTP ON75M/4epoch·student단독 | 새예약·NOT_RUN·old14SHA불변 |
+| `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 동일8M·parentNTP1epoch/824updates·joint scale1/.1 | 실제완료·native악화high+0.623144/low+0.127744·첫답1/0대8·[092 §12](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
+| `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32 query/rebuild/KV | 원수집48×2완료0·상위K4집계결함을profile.k로대조·원형보존 [092 §13](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
+| `p101a_mtp_parity_v3_s1337` | 실제K/세검증방식·두precision·같은8질문 | GPT실물112×2완료·serial BF16/native8/8두학생·병렬은조건부. 학습/save0·의미/가속미채택 [092 §14](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
+| `p106b_gemma_ac_v2_s1337` / `p093b_generation_v2_s1337` | capacity/panel·currentdecoder 복구 | 실물완료·AC구조2원천미완/계측공백8, P093B cache3/24불일치8 [101 §93](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)/[103 §15](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md) |
+| `p106b_s4_gemma_capability300m_chat32_mtponv4_s1337` | pinned OFF4 이후 ON batch4/5·75M 목표 | 교사257후보/15,231신규trainx 뒤조회9·합계29.283578M·학생0. old14SHA/커서보존 [101 §93](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_memory_query_v1_s1337` | 동일24교사요청·one-shot/persistent2s 두순서 | 실물완료0·timeout3대0·cadence/lifetime결합변경. 지속peak/원생산채택아님 [101 §95](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_context_clarify_v1_s1337_{ntp_hi,ntp_lo,mtp_hi}` | 별도209478x×4·parent동일·micro8accum16seq1024/ckptON·128updates | 코드48첫답25/17/26·native악화·free후행판독. 세계지능/75M대체/새recipe아님 [101 §96~§97](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|

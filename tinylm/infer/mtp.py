@@ -14,11 +14,14 @@ import torch
 @torch.no_grad()
 def sample_verified(model,cfg,tok,prompt,*,max_new=100,temperature=0.,top_k=0,
                     device=None,use_cache=True,stop_at_eos=True,eos_id=None,
-                    return_metadata=False,stop_token_sequences=None,mtp_tokens=2):
+                    return_metadata=False,stop_token_sequences=None,mtp_tokens=2,
+                    verification_mode='parallel_rebuild'):
     if type(mtp_tokens) is not int or mtp_tokens not in (2,3,4) or temperature!=0:
         raise ValueError('verified MTP currently supports greedy total tokens2/3/4 only')
     if model.training or max_new<0:
         raise ValueError('MTP decode needs eval model and nonnegative generation length')
+    if verification_mode not in ('parallel_rebuild','parallel_truncate','serial_truncate'):
+        raise ValueError('unknown MTP verification mode')
     needed=set(range(2,mtp_tokens+1))
     if not getattr(cfg,'mtp_aux',False) or not needed.issubset(cfg.mtp_horizons):
         raise ValueError('requested contiguous horizons were not trained/attached')
@@ -46,6 +49,7 @@ def sample_verified(model,cfg,tok,prompt,*,max_new=100,temperature=0.,top_k=0,
     generated=[];past=None;matched=None;ended=False
     stats=dict(total_prediction_tokens=mtp_tokens,primary_calls=0,verification_calls=0,
         proposed_aux_tokens=0,verified_aux_tokens=0,accepted_aux_tokens=0,cache_rebuilds=0,
+        cache_truncations=0,verification_mode=verification_mode,
         head_tensor_bytes=model.mtp_head_bytes(),distribution_scope='GREEDY_MAIN_VERIFICATION',
         gpu_backend_parity='REQUIRES_RUNTIME_GATE')
     start=time.perf_counter()
@@ -89,6 +93,30 @@ def sample_verified(model,cfg,tok,prompt,*,max_new=100,temperature=0.,top_k=0,
             proposals.append(int(value[:,-1].float().argmax(-1).item()))
         stats['proposed_aux_tokens']+=gamma
         draft=torch.tensor([proposals],dtype=torch.long,device=device)
+        if verification_mode=='serial_truncate':
+            # A correctness reference: exactly the native one-query shapes.
+            # Cache contains only consumed accepted tokens, never a rejected draft.
+            committed=[];current_past=past;new_hidden=hidden
+            for i in range(gamma+1):
+                prefix=torch.cat((x,draft[:,:i]),dim=1)
+                with torch.autocast(dev_type,dtype=torch.bfloat16,enabled=dev_type=='cuda'):
+                    if use_cache:
+                        values,new_hidden,current_past=model(prefix[:,-1:],past_kv=current_past,
+                            use_cache=True,logits_last_only=True,return_mtp_hidden=True)
+                    else:
+                        values,new_hidden=model(prefix,logits_last_only=True,return_mtp_hidden=True)
+                stats['verification_calls']+=1
+                selected=int(values[:,-1].float().argmax(-1).item());committed.append(selected)
+                if i<gamma:
+                    stats['verified_aux_tokens']+=1
+                    if selected==proposals[i]:stats['accepted_aux_tokens']+=1
+                    else:break
+                if stop_at_eos and selected==eos_id:break
+                if any(len(generated+committed)>=len(s) and
+                       tuple((generated+committed)[-len(s):])==s for s in stops):break
+                if len(generated)+len(committed)>=max_new:break
+            emit(committed);hidden=new_hidden[:,-1:,:];past=current_past
+            continue
         with torch.autocast(dev_type,dtype=torch.bfloat16,enabled=dev_type=='cuda'):
             if use_cache:
                 values,new_hidden,new_past=model(torch.cat((x[:,-1:],draft),dim=1),
@@ -109,10 +137,19 @@ def sample_verified(model,cfg,tok,prompt,*,max_new=100,temperature=0.,top_k=0,
         if not rejected and len(committed)==gamma and not (stop_at_eos and committed[-1]==eos_id):
             committed.append(choices[-1])  # target-model bonus, never an unverified draft
         emit(committed)
-        if rejected:
+        if rejected and verification_mode=='parallel_rebuild':
             hidden=None;past=None
         else:
-            hidden=new_hidden[:,-1:,:];past=new_past
+            # Keep only the consumed accepted prefix, excluding the final emitted
+            # pending token. All owner/pass keys are preserved, including CLA/R2.
+            consumed=len(committed)
+            hidden=new_hidden[:,consumed-1:consumed,:]
+            past=new_past
+            if rejected and use_cache:
+                keep=x.shape[1]-1
+                past={key:tuple(value[:,:,:keep,:] for value in pair)
+                      for key,pair in new_past.items()}
+                stats['cache_truncations']+=1
     text=tok.decode(x[0].tolist())
     stats.update(wall_sec=time.perf_counter()-start,generated_tokens=len(generated),
         draft_acceptance=(stats['accepted_aux_tokens']/stats['proposed_aux_tokens']

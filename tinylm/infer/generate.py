@@ -108,7 +108,8 @@ def _pick(logits, temperature, top_k):
 @torch.no_grad()
 def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, device=None,
            use_cache=True, stop_at_eos=True, eos_id=None, logits_last_only=False,
-           return_metadata=False, stop_token_sequences=None, mtp_tokens=1):
+           return_metadata=False, stop_token_sequences=None, mtp_tokens=1,
+           mtp_verify_mode='parallel_rebuild'):
     """★샘플링 루프의 **단일 소스**. 이미 로드된 모델을 받아 텍스트를 이어쓴다.
 
     `generate()`(체크포인트 경로로 매번 로드)와 여러 프롬프트를 한 모델로 돌리는 도구
@@ -128,7 +129,7 @@ def sample(model, cfg, tok, prompt, max_new=100, temperature=0.8, top_k=40, devi
         return sample_verified(model,cfg,tok,prompt,max_new=max_new,temperature=temperature,
             top_k=top_k,device=device,use_cache=use_cache,stop_at_eos=stop_at_eos,eos_id=eos_id,
             return_metadata=return_metadata,stop_token_sequences=stop_token_sequences,
-            mtp_tokens=mtp_tokens)
+            mtp_tokens=mtp_tokens,verification_mode=mtp_verify_mode)
     device = device or next(model.parameters()).device
     stop_requested = bool(stop_at_eos)
     if eos_id is None:

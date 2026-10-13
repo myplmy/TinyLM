@@ -1726,3 +1726,88 @@ OFF원본/진행위치/중간보고를고치지않고, 새ON자료만HF/sft_read
 teacheronlyMTP와학생MTP헤드는서로다른방법/가중치다. 새입력에mtp=true/draft/config/선조SHA를명시한다.
 현재수리/SH STATIC_ONLY·모델/GPU E2E_NOT_RUN. 보호원천/다운로드/원본변경없음.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4p — 조회 프로세스 수명과 표본 신선도 대조
+
+### 1. 왜·질문·예측
+
+사용자 Stage4jWi/Wj는 실제257후보·15,231 신규 train x를 남겼으나
+VRAM 조회의 최대3회 실패로각exit9였다. OOM·교사생성0으로 해석하지 않는다.
+기존 reader는 RLock으로 직렬화하며200ms 기다림마다 새 nvidia-smi를 실행한다.
+5초 timeout 후 kill/wait 때문에 실제 누락창은5초보다 길 수 있다.
+
+동일 교사/6원형 payload/MTP ON/seed/8K context/3072 total/1024 thinking에서
+현 one-shot 조회와 하나의 지속2초 조회 프로세스를 비교한다.
+주요 질문은 조회 지연·실패와 프로세스 생성 부담이며 내용 정답성을 자동 판정하지 않는다.
+프로세스 생성이 줄어도 WSL/드라이버 지연이 지속하면 생산 중단은 여전히 가능하다.
+
+### 2. 단계·판정
+
+| 단계 | 계약 | 자원·판정 |
+|---|---|---|
+| Stage4p0W | CPU 파싱·새 sequence만 전달·오래된/죽은/잘못된 표본 거부·종료/원형 복원 | 모델0·설치0 |
+| Stage4pWa | single-process one-shot 대 persistent-loop2s; 한영 QA/JSON/3턴6개 각각 | 단독 Gemma MTP ON·같은 sampler; timeout/gap/age/프로세스수/원답/요청시간 분리 |
+| 후속 생산 | 비교 후에만 별도 production namespace·선조 SHA/명시 cursor로 연결 | 옛OFFv3/ONv4·generation14코드/inputs/원형 불변 |
+
+표본은 memory.used/free 두 정수이며2초는 조회 요청 간격이지 연속 peak 측정이 아니다.
+각 호출은 이전과 다른 표본 sequence를 받아야 한다. 수신 시각과 전달 age를 기록하며
+하드웨어의 정확 측정 시각을 아는 것으로 주장하지 않는다.
+영구 오류·5초 동안 신선한 표본 없음·낮은free·교사 종료는 계속 fail-closed다.
+timeout만 기존최대3시도 내 회복하고 누락구간을 숨기지 않는다.
+백엔드가 계속 정상인 것과 측정이 충분한 것은 별도다.
+
+### 3. 비용·실행·한계
+
+CPU1분 미만, GPU12교사요청약5~10분 추정/hard cap900초.
+새tag p106b_memory_query_v1_s1337, 새evidence만 저장·새데이터를 본학습에 자동 포함하지 않는다.
+실행파일: run_P106B_Stage4p0W_memory_stream_cpu.sh,
+run_P106B_Stage4pWa_teacher_memory_backend_pair.sh.
+GPT 직접실행은 사용자7의2026-10-14 17시 이전 승인에만 의존한다.
+표본신선도·오류수리가 생성품질·장기OOM안전의 증거는 아니다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4q — 학생에게 보이는 문맥과 재질문 SFT 소형 대조
+
+### 1. 왜·질문·예측
+
+원천4238/4473행의 문맥형 가족과 한국어해시표본32중11행의 누락문맥을 확인했다.
+교사 원문 근거와 학생 입력의 차이를 먼저 줄이는 별도 진단이다.
+8개의 코드계산 과제 유형에서 주어진 문맥은 읽고, 식별 정보가 없으면 재질문하며,
+추가 user정보 뒤 답을 고치는 학습 가능성을 본다. 새로운 일반 지식75M을 만들었다고 보지 않는다.
+
+질문: 같은 부모/같은 자료에서 NTP high(Adam1e-4/Muon4e-4),
+NTP low(1e-5/4e-5), MTP high(1e-4/4e-4)가 지시·문맥조회·정보부족 대응을 개선하는가?
+짧은 반복은 과제 형식만 외울 수 있고, 재질문을 과잉 사용하거나 기존 언어능력을 잃을 수 있다.
+따라서 실제 첫답·가족별 정확 조건·실제2턴 rollout·native CE를 모두 기록한다.
+
+### 2. 자료·단계·판정
+
+가상 key/value·산수·bool·알려진 JSON·조건갱신·명시 정보부족/재질문/추가정보를
+한영50:50의고유4096 train/별도512 val로 구성한다.
+같은 질문·대화의 완전 중복과 같은 semantic root의 split교차0을 CPU검증한다.
+이는8유형의규칙 변형이며4096개의새세계지식이나75M고유토큰으로 부풀리지 않는다.
+실제학생 x/assistant/horizon 분모는 tokenizer실측으로 공개한다.
+val에는 학습에 없는 문장구성의 질문을 포함하고 기존8질문은 학습에 넣지 않는다.
+
+| 단계 | 내용 | 시간·경계 |
+|---|---|---|
+| Stage4q0W | 생성/중복/semantic root split·Canonical/ChatML·모든 MTP 턴 마스크 CPU 회귀 | 모델0 |
+| Stage4q1W | 실제 tokenizer로 새 frozen corpus·분모/원천지문 | CPU·20MB shards |
+| Stage4qWa/Wb/Wc | 같은 parent·micro8accum16·seq1024·ckptON·compiledefault·4epoch128updates | 각약10~20분 추정·hard cap30분 |
+| Stage4qWd | 같은body/source/x/target/update 비교와 실제답 판독 | CPU 정합·GPU추가0 |
+
+CPT부모는 기존chat32 dense14를 weight-only로 읽고 새optimizer를 만든다.
+NTP/MTP의 초기body 지문·순서·실제노출은 같아야 한다.
+MTP는같은assistant턴2/3/4타깃·기존0.1계수경로며 teacherMTP와별개다.
+모든추론평가는 native1토큰 경로의FP32/math로 고정해 BF16블록 반올림을 비교에 섞지 않는다.
+정확답을코드로아는 과제는 그정확계약만 채점하고, 재질문 자유표현은 원답 후행판독으로 따로 읽는다.
+틀린모든문구목록·온라인 의미검사·재생성은 없다.
+
+### 3. 실행·비용·한계
+
+tag p106b_context_clarify_v1_s1337; 새HF/sft_ready corpus·small evidence·새weight-only checkpoint.
+원본HF/runs/cache/생성자료 수정0·TinyDataset0·다운로드0.
+GPT 직접 실행은 사용자7의당일17시한도 안에서만 한다.
+원75M×4/300M의부족45.716M을 이소형과제로대체하지 않는다.
+측정한 과제 개선을 일반지능·새구조/라우터채택·전량자료정답성으로승격하지 않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

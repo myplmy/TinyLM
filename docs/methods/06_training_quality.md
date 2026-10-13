@@ -72,3 +72,11 @@ ORPO/SFT·SimCTG후속은별도feedback-dev/normal-copy/유일답 보호·실제
 ## 2026-10-13 — SFT 손실 감소와 보존 실패의 동시 기록
 
 [092 §11](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의MTP finalCE 방향은한seed관측이고parentbestepoch2는NTP가더낮다. 부모의원문32crop CE악화와parentMTPgrad_max>10을보존한다. [104 §9](../../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md)의128업데이트도종료/절차형답개선과native악화를함께본다. 같은8M/부모/NTP1epoch의jointLR scale1/.1 승인대조로이동량영향을가르며75M×4 본교육설정은불변이다.
+
+## 2026-10-14 — LR 보존과 지시 과제 학습은 서로 다른 축
+
+[092 §12](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의같은8M1epoch lower jointLR은native망각을줄였지만엄격첫답을회복하지못했다.
+[101 §96~§97](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의별도작은문맥/재질문course에서는실제코드첫답이개선됐으나계산갱신·일반8문항·native보존은미달한다.
+데이터/평가/노출규모가다르므로두연구의차이를LR단독이득으로빼지않는다.
+동일작은course의MTP는aux gradient가실제로흘렀지만한문항이득과더큰native대가를함께본다.
+SFT val최저시점·초기포함gradmax·clip1·실제x/assistant targets와padding을별도로공개한다.

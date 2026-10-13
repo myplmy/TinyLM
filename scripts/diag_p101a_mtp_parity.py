@@ -51,7 +51,7 @@ def logit_difference(left,right):
         argmax_equal=int(ids[0])==int(other.argmax()))
 
 
-def shadow(model,prompt_ids,native_generated,index,device):
+def shadow(model,prompt_ids,native_generated,index,device,total_prediction_tokens=3):
     import torch
     history=prompt_ids+native_generated[:index]
     past=None
@@ -62,7 +62,7 @@ def shadow(model,prompt_ids,native_generated,index,device):
         pending=[history[-1]]
     else:pending=history
     a,kv_a=model(torch.tensor([pending],device=device),past_kv=past,use_cache=True,logits_last_only=True)
-    future=native_generated[index:index+2] or [history[-1]]
+    future=native_generated[index:index+total_prediction_tokens-1] or [history[-1]]
     b,_=model(torch.tensor([pending+future],device=device),past_kv=past,use_cache=True)
     c,kv_c=model(torch.tensor([history],device=device),use_cache=True,logits_last_only=True)
     differences={}
@@ -75,7 +75,7 @@ def shadow(model,prompt_ids,native_generated,index,device):
         interpretation='same-prefix numerical counterfactual; not a training or semantic cause proof')
 
 
-def check(arm):
+def check(arm,tag='p101a_mtp_parity_v2_s1337'):
     _,old=prior.paths('p101a_sft_mtp_v1_s1337')
     source=prior.report_path(old,arm)
     report=json.loads(source.read_text())
@@ -83,12 +83,15 @@ def check(arm):
         raise FileNotFoundError('completed exact trained MTP arm required')
     path=prior.checkpoint('p101a_sft_mtp_v1_s1337',arm)
     if not path.is_file() or path.is_symlink():raise FileNotFoundError('trained checkpoint absent or linked')
-    target=ROOT/'test_result/evidence/p101a_mtp_parity_v2_s1337'/arm
+    if tag not in ('p101a_mtp_parity_v2_s1337','p101a_mtp_parity_v3_s1337'):
+        raise ValueError('unregistered parity namespace')
+    target=ROOT/'test_result/evidence'/tag/arm
     if target.exists() or target.is_symlink():raise FileExistsError('preserve prior parity evidence')
     return path,target,dict(source_report=str(source.relative_to(ROOT)),source_report_sha256=prior.data.digest(source),
         checkpoint_sha256=report['checkpoint_sha256'],tokenizer_sha256=prior.data.TOK_SHA,
         diagnostic_code_sha256={name:prior.data.digest(ROOT/name) for name in
-            ('scripts/diag_p101a_mtp_parity.py','scripts/test_p101a_mtp_parity.py')},
+            ('scripts/diag_p101a_mtp_parity.py','scripts/test_p101a_mtp_parity.py',
+             'scripts/test_p101a_sft_mtp.py','tinylm/infer/mtp.py','tinylm/infer/generate.py')},
         student_training='NOT_RUN',checkpoint_save=False)
 
 
@@ -100,7 +103,12 @@ def execute(args):
     from scripts.p106b_repeat4_gate import PROBES
     from scripts.p106b_gate_runtime import idle_before_gpu,wall_limit
     from scripts.p106b_shards import ShardWriter,verify
-    path,target,info=check(args.arm)
+    path,target,info=check(args.arm,args.tag)
+    torch.backends.cuda.matmul.allow_tf32=False
+    torch.backends.cudnn.allow_tf32=False
+    info.update(torch_version=torch.__version__,cuda_build=torch.version.cuda,
+        tf32_matmul=False,tf32_cudnn=False,verify_modes=list(args.verify_modes),
+        output_tag=args.tag,actual_k_label=True,shadow_block_size='profile.k')
     if prior.data.digest(path)!=info['checkpoint_sha256']:raise ValueError('saved model changed')
     if prior.data.digest(prior.data.TOKENIZER)!=prior.data.TOK_SHA:raise ValueError('tokenizer changed')
     tok=Tokenizer.from_file(str(prior.data.TOKENIZER));target.mkdir(parents=True,exist_ok=False)
@@ -115,21 +123,23 @@ def execute(args):
                 for ident,question in PROBES:
                     prompt=serialize({'messages':[{'role':'user','content':question}]},'chatml',add_generation_prompt=True)
                     prompt_ids=tok.encode(prompt).ids;captured=[]
-                    for k in (1,2,4):
+                    profiles=[(1,'parallel_rebuild')]+[(k,mode) for mode in args.verify_modes for k in (2,4)]
+                    for k,mode in profiles:
                         wrapped=CaptureTokens(tok);torch.cuda.synchronize();tick=time.perf_counter()
                         text,meta=sample(model,cfg,wrapped,prompt,max_new=64,temperature=0.,top_k=1,
                             device='cuda',logits_last_only=True,return_metadata=True,mtp_tokens=k,
-                            stop_token_sequences=[tok.encode('<|im_end|>').ids])
+                            stop_token_sequences=[tok.encode('<|im_end|>').ids],mtp_verify_mode=mode)
                         torch.cuda.synchronize()
-                        captured.append(dict(k=k,ids=wrapped.decoded_ids[len(prompt_ids):],text=text,
+                        captured.append(dict(k=k,verification_mode=mode,ids=wrapped.decoded_ids[len(prompt_ids):],text=text,
                             metadata=meta,seconds=time.perf_counter()-tick))
                     native=captured[0]
                     for row in captured:
                         difference=first_difference(native['ids'],row['ids'])
                         trace=None
                         if difference is not None and difference<len(native['ids']):
-                            trace=shadow(model,prompt_ids,native['ids'],difference,'cuda')
-                        record=dict(id=ident,question=question,precision=precision,total_prediction_tokens=k,profile=row,
+                            trace=shadow(model,prompt_ids,native['ids'],difference,'cuda',row['k'])
+                        record=dict(id=ident,question=question,precision=precision,total_prediction_tokens=row['k'],
+                            verification_mode=row['verification_mode'],profile=row,
                             equivalent_to_native=(difference is None and row['metadata']['finish_reason']==native['metadata']['finish_reason']),
                             first_difference=difference,shadow=trace)
                         writer.append(record)
@@ -144,7 +154,7 @@ def execute(args):
     finally:
         manifest=writer.close(lineage=info) if writer._total_rows else None
         if manifest:verify(target,manifest)
-        prior.write(target/'report.json',dict(info,schema='P101A_MTP_NUMERIC_PARITY_DIAGNOSTIC_V1',
+        prior.write(target/'report.json',dict(info,schema='P101A_MTP_NUMERIC_PARITY_DIAGNOSTIC_V2',
             status=status,returncode=rc,records=summary,raw_manifest=manifest,whole_sec=time.perf_counter()-began,
             production_mtp_adopted=False,semantic_truth='NOT_REVIEWED',
             result_scope='diagnostic completion is not output parity or speed PASS'))
@@ -155,11 +165,15 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--arm',choices=('scratch_mtp','parent_mtp'),required=True)
     p.add_argument('--max-wall-sec',type=int,default=900)
+    p.add_argument('--tag',choices=('p101a_mtp_parity_v2_s1337','p101a_mtp_parity_v3_s1337'),
+        default='p101a_mtp_parity_v2_s1337')
+    p.add_argument('--verify-modes',nargs='+',choices=('parallel_rebuild','parallel_truncate','serial_truncate'),
+        default=['parallel_rebuild'])
     g=p.add_mutually_exclusive_group(required=True)
     g.add_argument('--execute',action='store_true');g.add_argument('--check-only',action='store_true')
     a=p.parse_args()
     if not 60<=a.max_wall_sec<=1800:p.error('bounded diagnostic time required')
-    if a.check_only:print('[CHECK_ONLY] '+json.dumps(check(a.arm)[2]));return 0
+    if a.check_only:print('[CHECK_ONLY] '+json.dumps(check(a.arm,a.tag)[2]));return 0
     return execute(a)
 
 

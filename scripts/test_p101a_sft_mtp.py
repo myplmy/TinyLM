@@ -134,6 +134,43 @@ class Contracts(unittest.TestCase):
         self.assertEqual(actual,expected)
         self.assertGreater(meta['mtp']['cache_rebuilds'],0)
 
+    def test_opt_in_verified_modes_preserve_native_and_rejection_prefix(self):
+        model,cfg=tiny(True);model.eval();tok=Tokens()
+        expected=sample(model,cfg,tok,'x',max_new=9,temperature=0.,stop_at_eos=False)
+        def wrong(hidden,h):
+            value=torch.full((*hidden.shape[:-1],31),-100.)
+            value[...,0]=100.;return value
+        for cache in (False,True):
+            for mode in ('parallel_rebuild','parallel_truncate','serial_truncate'):
+                with patch.object(model,'mtp_aux_logits',side_effect=wrong):
+                    actual,meta=sample(model,cfg,tok,'x',max_new=9,temperature=0.,
+                        use_cache=cache,stop_at_eos=False,mtp_tokens=4,
+                        mtp_verify_mode=mode,return_metadata=True)
+                self.assertEqual(actual,expected,(cache,mode))
+                self.assertEqual(meta['mtp']['verification_mode'],mode)
+                if mode!='parallel_rebuild':self.assertEqual(meta['mtp']['cache_rebuilds'],0)
+                if cache and mode=='parallel_truncate':
+                    self.assertGreater(meta['mtp']['cache_truncations'],0)
+
+    def test_opt_in_modes_stop_and_cla_repeat_cache(self):
+        for cla,repeat in ((1,1.),(2,2.)):
+            model,cfg=tiny(True);cfg.cla_group=cla;cfg.train_repeat=repeat
+            torch.manual_seed(17);model=TiedMLPTransformer(cfg);model.eval();tok=Tokens()
+            native=sample(model,cfg,tok,'x',max_new=7,temperature=0.,stop_at_eos=False)
+            stop=[int(t) for t in native.split(',')[3:5]]
+            expected=sample(model,cfg,tok,'x',max_new=7,temperature=0.,stop_at_eos=False,
+                return_metadata=True,stop_token_sequences=[stop])
+            for mode in ('parallel_truncate','serial_truncate'):
+                actual=sample(model,cfg,tok,'x',max_new=7,temperature=0.,stop_at_eos=False,
+                    return_metadata=True,stop_token_sequences=[stop],mtp_tokens=4,mtp_verify_mode=mode)
+                self.assertEqual(actual[0],expected[0],(cla,repeat,mode))
+                self.assertEqual(actual[1]['generated_tokens'],expected[1]['generated_tokens'])
+
+    def test_verify_mode_validation(self):
+        model,cfg=tiny(True);model.eval()
+        with self.assertRaisesRegex(ValueError,'verification mode'):
+            sample(model,cfg,Tokens(),'x',temperature=0.,mtp_tokens=2,mtp_verify_mode='guess')
+
     def test_stop_sequence_and_max_new(self):
         model,cfg=tiny(True);model.eval();tok=Tokens()
         full=sample(model,cfg,tok,'x',max_new=8,temperature=0.,stop_at_eos=False)

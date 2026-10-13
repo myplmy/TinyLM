@@ -217,3 +217,48 @@ CPT의 pool≥2× 규칙은 승인된 고정자료 SFT 반복실험의근거로�
 신규lrhi/lrlo 두 tag는 registry에실제로그 없음으로 확인했고 현재 inference namespace는별도신설한다.
 정의된독립변수 이외에는 바꾸지않고, actualquality를읽은뒤설정을 결정한다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4c — 검증 경로의 수치 정합 원인 분리
+
+### 1. 왜·질문·예측
+
+Stage4b는 실제 두 저장 학생을 실행했다. BF16에서는 scratch 18/24·parent 20/24,
+FP32/math에서는 각각24/24가 native와 같은 토큰·종료를 보였다.
+원본 상위 필드의 K가 모두4인 집계 결함은 내부 profile.k로 교차 확인하고 원형을 보존한다.
+기존 shadow는 실제 K가 아닌 항상3query여서 블록 크기별 원인 귀속으로 쓰지 않는다.
+학습용 MTP는 이전 네 팔에서 실제 실행됐고, 이번 LR 두 팔은 NTP-only다.
+
+질문은 같은 본체·질문·precision에서 (a) 병렬 query 형상과
+(b) 거부 뒤 prefix 전체 재구축 중 어떤 경로가 native의 토큰을 바꾸는가다.
+캐시를 유효 길이로 잘라도 병렬 BF16의 반올림은 남을 수 있고,
+1query 검증이 정합을 회복해도 가속 이득은 없어질 수 있다.
+동일 토큰은 정답성이나 지능 개선의 증거가 아니다.
+
+### 2. 단계·조건·판정
+
+| 단계 | 새 출력·조건 | 판정·실행 경계 |
+|---|---|---|
+| Stage4c0W | CPU28 회귀 목표; 실제 K 라벨·2/4query·CLA/R2·강제 거부·종료 | 본체/기본 경로 보존·합성 정합, 실물 품질 아님 |
+| Stage4cWa | 저장 scratch MTP, 새 v3; 8질문×BF16/FP32×native/3검증방식×K2/4 | 각112행; native 토큰/종료 정합과 wall·재구축/절단/수락 별도 |
+| Stage4cWb | 같은 조건의 저장 parent MTP | 같은 팔 내부 비교만; 서로 다른 초기화 우열을 수치 경로에 귀속하지 않음 |
+
+세 검증 방식은 기존 parallel_rebuild(기본 불변), parallel_truncate,
+serial_truncate다. 마지막은 native처럼 항상1query로 검증하는 정확성 대조이며
+CPU/GPU에서 실측 전 무손실을 주장하지 않는다.
+새 namespace는 p101a_mtp_parity_v3_s1337이며 checkpoint·tokenizer는 이전 정확 SHA를
+읽기 전용으로 쓴다. 학습/optimizer/체크포인트 저장0, 새 evidence만 기록한다.
+한 요청군의 전체 원답·실제 token IDs·종료·K·mode·precision을 보존한다.
+
+### 3. 비용·실행·한계
+
+예상 CPU1분 미만, 저장 학생 두 진단 각각5~15분(미측정); hard cap각900초.
+사용자7에 따라 GPT 실행은 2026-10-14 17:00 KST 전까지의 단독 자원 게이트만 허가됐다.
+그 이후 SH는 사용자 실행용이며 기본 경로를 자동 채택하지 않는다.
+
+- run_P101A_Stage4c0W_mtp_verify_modes_cpu.sh
+- run_P101A_Stage4cWa_scratch_mtp_verify_modes.sh
+- run_P101A_Stage4cWb_parent_mtp_verify_modes.sh
+
+동일 source·saved body·tokenizer·seed·max_new64·greedy·stop sequence를 유지한다.
+코드 시그니처와 회귀·새 원답은 결과092에 연결하고 원본 Stage4b를 덮어쓰지 않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
