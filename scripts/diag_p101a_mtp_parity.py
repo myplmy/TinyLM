@@ -87,6 +87,8 @@ def check(arm):
     if target.exists() or target.is_symlink():raise FileExistsError('preserve prior parity evidence')
     return path,target,dict(source_report=str(source.relative_to(ROOT)),source_report_sha256=prior.data.digest(source),
         checkpoint_sha256=report['checkpoint_sha256'],tokenizer_sha256=prior.data.TOK_SHA,
+        diagnostic_code_sha256={name:prior.data.digest(ROOT/name) for name in
+            ('scripts/diag_p101a_mtp_parity.py','scripts/test_p101a_mtp_parity.py')},
         student_training='NOT_RUN',checkpoint_save=False)
 
 
@@ -127,12 +129,14 @@ def execute(args):
                         trace=None
                         if difference is not None and difference<len(native['ids']):
                             trace=shadow(model,prompt_ids,native['ids'],difference,'cuda')
-                        record=dict(id=ident,question=question,precision=precision,profile=row,
+                        record=dict(id=ident,question=question,precision=precision,total_prediction_tokens=k,profile=row,
                             equivalent_to_native=(difference is None and row['metadata']['finish_reason']==native['metadata']['finish_reason']),
                             first_difference=difference,shadow=trace)
                         writer.append(record)
                         summary.append({key:value for key,value in record.items() if key not in ('profile','shadow','question')})
-                        print('[PARITY_CASE] '+json.dumps(summary[-1]),flush=True)
+                        print('[PARITY_CASE] '+json.dumps(dict(summary[-1],question=question,
+                            raw_full_text=row['text'],finish_reason=row['metadata']['finish_reason'],
+                            generated_tokens=len(row['ids']),seconds=row['seconds']),ensure_ascii=False),flush=True)
             status='PARITY_DIAGNOSTIC_COMPLETE';rc=0
     except BaseException as error:
         rc=130 if isinstance(error,KeyboardInterrupt) else 9;status='INTERRUPTED' if rc==130 else 'EXECUTION_ERROR'
