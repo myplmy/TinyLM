@@ -1,0 +1,20 @@
+{
+  "schema": "TINYLM_EXACT_LAUNCHER_EXTENSION_V3",
+  "authority": "current user1A/7/8; CPU downstream compatibility only",
+  "raw_log": "test_result/101_log_20261014_P106B_Stage4j0Wc_stream_downstream_cpu_100606.txt",
+  "raw_sha256": "06DC0E4F1F03536434FA405A8F924B1DB2DC47A66FA1C1008606C8AE64D113A0",
+  "returncode": 0,
+  "original_path": "run_P106B_Stage4j0Wc_stream_downstream_cpu.sh",
+  "done_path": "run_P106B_Stage4j0Wc_stream_downstream_cpu-done.sh",
+  "source_sha256": "74FAC342B1B89B39216BB22F594EB0988D2ADCEAA0AA3C316CDCFD0D9E141D0E",
+  "exact_source": "#!/usr/bin/env bash\n# CPU newstream-v5 downstream namespace and no-teacher dispatch fixture\n# Estimated 0.02h; no stdin/download/automatic cleanup or old overwrite.\n# Learning when applicable: micro8 accum16 seq1024 checkpointON compiledefault.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4j0Wc_stream_downstream_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage/tag.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4j0Wc_stream_downstream_cpu_\"$run_stamp\" --num 101 --note 'CPU newstream-v5 downstream namespace and no-teacher dispatch fixture. Observe prerequisite HOLD, final verdict, x/targets and raw quality separately. No protected source or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4j0Wc_stream_downstream_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_gemma_stream_fork scripts.test_p106b_memory_stream scripts.test_p106b_gemma_mtp_resume\n",
+  "expanded_commands": [
+    "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_gemma_stream_fork scripts.test_p106b_memory_stream scripts.test_p106b_gemma_mtp_resume"
+  ],
+  "models": 0,
+  "training": 0,
+  "old_HF_CPT_mutated": false,
+  "downstream_models": "NOT_RUN",
+  "regression_tests": 18,
+  "preflight": "exact new paths absent; registry only tag-target scope and padded calculation, historical runs NOT_RUN"
+}

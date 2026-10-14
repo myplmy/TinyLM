@@ -1923,3 +1923,17 @@ persistent2s의신선도/최대3조회시도·영구오류/lowfree/교사종료f
 Stage4r96첫답·4s 최초import오류/4sWb 새16·4t 두팔256업데이트와 개발72답을 [결과101 §99~§104](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 회수했다. Stage4tWc는 독립런처가 아니라 후행 비교회수이며4tWd는 기존24의 개발용 재측정이다. current5팔의 좁은코드개선은 범용지문/상식 개선이 아니고 native 보존 실패도 남았다.
 
 복구4s0Wb/4sWb는 기존16 원천·샘플링/예산을 유지한 새namespace v2이며 helper import/4인자/반환키 계약을 CPU18로 확인했다. v1 모델0/오류1은 보존한다. 다음 실제근거512~1024 확대·원문 replay/종료점·재귀/폭은3안 질문으로 우선순위 회수중이며 자동bulk 채택하지 않는다. baseline stream-v5 장기생산은 CPU/check-only까지만 통과했고4jWk/Wl은 미실행이다. 본75M×4·원배치·보호원천/기존CPT 경계는 불변이다.
+
+## 2026-10-14 Stage4j0Wc·4kWg/4k0Wg·4lWf/4mWf — stream-v5 후속 분리
+
+query만 수리한 새stream-v5는 옛v4용4kWf/4k0Wf/4lWe/4mWe와 연결하지 않는다. 같은 fork_scope 안에서 새 CORPUS/WIRE/STUDENT/EVALUATION/TAG로 finalize→wire2→train4pass→eval을 연결하며 학생단계에는 PersistentMemory/교사가 없다. 최초/재개/merge의 inputs는 exact source/code와 일치해야 하고, all train/val·task·language·source quota가 부족하면 merge/학생을 열지 않는다. 옛6미실행런처는 HOLD 계승이지 삭제/취소가 아니다.
+
+- Stage4j0Wc CPU: 새namespace/모델 없는 downstream dispatch·없는inputs 거부; 기존계보/reader회귀와 함께.
+- Stage4kWg: 누적 고유train75M와 모든quota 충족 뒤 새완료 corpus만 생성. 약0.5h 추정.
+- Stage4k0Wg: 교사내림·동일완료 corpus에서2업데이트의 실제x/마스크/shape 검증. 약0.5h 추정.
+- Stage4lWf: 같은부모·chat32/micro8accum16seq1024/ckptON·현재LR·4pass, 약300M 실제x. 약12h 보수추정/실측미정.
+- Stage4mWf: 같은새자식·native loss/72첫답·명시멀티턴, 약0.5h 추정.
+
+CPT에서의2배pool 권장은 본SFT의75M×4 노출 목표와 다른 설계다. step×131072는padding 상한이고 실제x/assistant targets는행별encode/분할로 기록한다. Tag는 새stream-v5/v6만 사용하고 원HF/runs/CPT/source를 고치지 않는다. 생산정답/지문공유는 baseline에서 계속미검증이며 source16개선 계약을 자동채택하지 않는다. 새모드의기술 CPU 통과는75M 완료·학생/교사품질·현재 E2E가 아니다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

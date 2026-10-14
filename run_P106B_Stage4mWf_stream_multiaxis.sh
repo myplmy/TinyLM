@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Same newstream-v5 student and log; actual72 first answers and native loss
+# Estimated 0.5h; no stdin/download/automatic cleanup or old overwrite.
+# Learning when applicable: micro8 accum16 seq1024 checkpointON compiledefault.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+run_stamp="$(date +%H%M%S)"
+log="test_result/101_log_$(date +%Y%m%d)_P106B_Stage4mWf_stream_multiaxis_${run_stamp}.txt"
+if [[ -e "$log" || -L "$log" ]]; then
+    printf '%s\n' '[STOP] Existing raw preserved; use a new stage/tag.' >&2
+    exit 8
+fi
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4mWf_stream_multiaxis_"$run_stamp" --num 101 --note 'Same newstream-v5 student and log; actual72 first answers and native loss. Observe prerequisite HOLD, final verdict, x/targets and raw quality separately. No protected source or old mutation.'
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4mWf_stream_multiaxis_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode eval --execute

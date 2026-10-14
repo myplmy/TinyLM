@@ -93,6 +93,21 @@ def dispatch(args,execute):
         destination=PATHS['OUTPUT'];safe_repo_path(destination)
         if args.mode=='start' and destination.exists():raise FileExistsError('new fork exists; explicit resume only')
         if args.mode=='resume' and not destination.is_dir():raise FileNotFoundError('new fork absent; start first')
+        if args.mode in ('finalize','wire','train','eval'):
+            # Downstream stages must consume this fork, never the old v4 tree.
+            # No memory monitor or teacher starts in corpus/student stages.
+            if args.mode=='finalize':
+                saved=json.loads(safe_repo_path(destination/'inputs.json').read_text())
+                if saved!=info:raise ValueError('fresh stream input controls changed')
+                if not execute:print('[CHECK_ONLY] '+json.dumps(info,ensure_ascii=False));return 0
+                from tokenizers import Tokenizer
+                if digest(producer.TOKENIZER)!=producer.TOK_SHA:raise ValueError('tokenizer changed')
+                report=producer.control.finalize(Tokenizer.from_file(str(producer.TOKENIZER)))
+                print('[FINAL_CORPUS] '+json.dumps(report,ensure_ascii=False));return 0
+            result=(producer.control.evaluate(execute=execute) if args.mode=='eval' else
+                producer.control.learner(args.mode=='wire',execute=execute))
+            if not execute:print('[CHECK_ONLY] '+json.dumps(result,ensure_ascii=False));return 0
+            return result
         if not execute:print('[CHECK_ONLY] '+json.dumps(info,ensure_ascii=False));return 0
         evidence=dict(expired=False)
         with PersistentMemory() as source:
@@ -105,7 +120,7 @@ def dispatch(args,execute):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--mode',choices=('start','resume'),required=True)
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--mode',choices=('start','resume','finalize','wire','train','eval'),required=True)
     p.add_argument('--max-wall-sec',type=int,default=3600)
     g=p.add_mutually_exclusive_group(required=True);g.add_argument('--execute',action='store_true');g.add_argument('--check-only',action='store_true')
     a=p.parse_args()
