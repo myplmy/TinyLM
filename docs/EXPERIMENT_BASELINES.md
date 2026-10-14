@@ -241,6 +241,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_s4_gemma_capability300m_chat32_mtponv4_s1337` | pinned OFF4 이후 ON batch4/5·75M 목표 | 교사257후보/15,231신규trainx 뒤조회9·합계29.283578M·학생0. old14SHA/커서보존 [101 §93](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_memory_query_v1_s1337` | 동일24교사요청·one-shot/persistent2s 두순서 | 실물완료0·timeout3대0·cadence/lifetime결합변경. 지속peak/원생산채택아님 [101 §95](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_context_clarify_v1_s1337_{ntp_hi,ntp_lo,mtp_hi}` | 별도209478x×4·parent동일·micro8accum16seq1024/ckptON·128updates | 코드48첫답25/17/26·native악화·free후행판독. 세계지능/75M대체/새recipe아님 [101 §96~§97](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p093b_cache_precision_v1_s1337` | 같은8prompt·parent/shared/r64·두precision·cache ON/OFF | 96답 실물완료·BF16 21/24·FP32/math24/24에도 반복남음 [103 §16](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md) |
+| `p106b_context_transfer_v1_s1337` / `p106b_context_transfer_broaddev_v2_s1337` | 최초 독립96답과 설계후 개발용72답 | 새 지문/상식 미회복과 과잉재질문·옛24는 development-only [101 §99/§102](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_visible_source16_v1_s1337` / `p106b_visible_source16_v2_s1337` | 공개16의 선택근거+QA; 최초 import오류후 새출력 복구 | 최초모델0·새16/16 구조/byte연결; 내용/권리·bulk 미승격 [101 §101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_context_broad_v2_s1337_{ntp_hi,ntp_mid}` | 같은8192×4·256update·1.891748M 실제x | 실제17/39·20/39·자유25별도/원문악화·개발새지문각1/8 [101 §102](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_s4_gemma_capability300m_chat32_mtpstreamv5_s1337` | oldOFF4/ON2 이후 새조회전용 batch6·baseline불변 | CPU/check-only만·생산/75M미실행; 근거공유bulk 아님 [101 §103](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
@@ -610,7 +615,7 @@ step0 은 **초기점**을 재고, 판정 대상은 **그 초기점에서 출발
 | ★**`gate_scale` ≈ `identity`** | 차 **0.0080** = 분해능의 1/3 → **서열 없음**. `prop` 만 +1.7270 뒤진다 | **041 §13** |
 | ★**학습시 재귀의 출발 대가** | R=2 − R=1 = **+0.1025 nats**(step0), **삼진 파라미터 불변**(54.85M) | **043** |
 | ~~★★**학습 시 재귀는 기각됐다**~~ | 🚫**철회.** `+0.2275` 는 **36회 통과로 학습하고 20회 통과로 평가**한 값이다(함정 39) | **043 §14** |
-| ★★★**`train_repeat` 은 평가에서 무시된다** | `visit_schedule()` 이 `self.training` 일 때만 본다. 평가 경로는 전부 `model.eval()`. **`--infer-repeat R --repeat-where front` 를 명시해야 학습 스케줄과 같아진다** | **043 §14** |
+| ★★★**과거 train/eval 재귀 스케줄 불일치와 현재 fallback을 구분한다** | 결과043의당시평가는TR을무시했다. 현재 `visit_schedule()`은eval/TR>1/IR=1에서학습스케줄을계승한다. `_eval_ignores_train_repeat=True`는옛재현용이며새실험은방문목록/명시IR·mode를기록한다. | **043 §14**·[현코드](../tinylm/model/transformer.py)·[2026-10-14 CPU topology 감사](../handoff/audit/WIP_20261014_RECURSION_FEASIBILITY.json) |
 | ★**`val − train_ce` 는 계측 게이트다** | 기준선 **−0.004** / 물리 36층 **+0.099** / **스케줄 불일치 +0.349**. **0.3 이 넘으면 계측을 먼저 의심** | **043 §14.2** |
 | ★★**깊이 36층은 좋아지지만 값을 못 한다** | `mC_d36` paired **−0.0250**(유의·분해능 초과)인데 fp32 상주 **+35.9%**. 사전 임계 −0.075 미달 → **축 종결** | **041 §14** |
 | ★★**볼록성은 더하는 방향에서도 성립한다** | **더할 때 0.00118** vs **뺄 때 0.00342~0.00443** nats/유니크삼진100만 = **1/2.9~1/3.8** | **041 §14.3** |

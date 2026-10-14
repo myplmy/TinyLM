@@ -80,3 +80,5 @@ ORPO/SFT·SimCTG후속은별도feedback-dev/normal-copy/유일답 보호·실제
 데이터/평가/노출규모가다르므로두연구의차이를LR단독이득으로빼지않는다.
 동일작은course의MTP는aux gradient가실제로흘렀지만한문항이득과더큰native대가를함께본다.
 SFT val최저시점·초기포함gradmax·clip1·실제x/assistant targets와padding을별도로공개한다.
+
+2026-10-14 후속 [101 §102](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 같은8192/4pass의 high/middle은39개 코드첫답과25개 자유재질문·12개 실제 대화턴을 별도 채점했다. high의 epoch4 val악화와 native CE 상승은 사전계획대로 수행한 결과로 보존한다. 개발24의 재측정과 새 독립평가를 구분하며, 본75M×4·원배치를 바꾸거나 MTP/재귀/폭을 한 팔에 섞지 않는다.

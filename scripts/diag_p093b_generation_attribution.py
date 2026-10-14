@@ -22,7 +22,10 @@ REPORT_SHA="4C8D5952F3803E98106A830CF0F446682AADC0F556CE1394C8D03033DC1C937F"
 # fresh CPU contracts and24 actual cache-off pairs still gate the new diagnosis.
 NATIVE_MTP_API_MIGRATION={"tinylm/infer/generate.py":(
     "E6DB3E2F1EFB164EBED126FC1F5F0AF96BF0D76BFF0EA569121B4194A0B5445D",
-    "774BFDE6324545B8E9295E1524FB438E2C6DDE6DB009D25DBF0CE1AC7A0C5B27")}
+    "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4")}
+# Previous observed current-contract hash774BFDE6 remains in the immutable
+# v2 report. The extra verification-mode keyword changes only opt-in MTP;
+# the archived default NTP body is still checked by the executable AST fixture.
 CODE=("scripts/diag_p093b_generation_attribution.py","scripts/p093b_generation_probe.py",
       "scripts/test_p093b_generation_probe.py","scripts/diag_p093b_native_repair.py",
       "scripts/p093b_native_repair.py","tinylm/infer/generate.py","tinylm/model/modules.py",

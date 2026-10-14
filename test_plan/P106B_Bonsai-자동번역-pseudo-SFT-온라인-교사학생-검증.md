@@ -1811,3 +1811,115 @@ GPT 직접 실행은 사용자7의당일17시한도 안에서만 한다.
 원75M×4/300M의부족45.716M을 이소형과제로대체하지 않는다.
 측정한 과제 개선을 일반지능·새구조/라우터채택·전량자료정답성으로승격하지 않는다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4r — 정보부족 힌트 없는 독립 질문
+
+Stage4q의64질문은8스키마이며일부건물질문에식별정보부재힌트가있다.
+같은동결자료를바꾸지않고학습에없는24질문을새로잠근다:
+bare정보부족8·완전지문이있는대응8·초등세계상식4·작은산수4.
+정확parent와새NTPhigh/low/MTPhigh를같은FP32/math native추론으로각24첫답96개에넣는다.
+상식/산수16대상은주어진지문/고정참조답계약을별도로채점하고free재질문은원답후행판독한다.
+사람/GPT전수승인이나문제문구리스트를온라인에넣지않는다.
+새test를교육에넣지않고future선택후에는또독립test가필요하다는한계를남긴다.
+source SHA/CPT SHA·prompt·actual답/token IDs·종료·새입력토큰/원답분모를20MBshards에보존한다.
+
+- Stage4r0W run_P106B_Stage4r0W_implicit_context_cpu.sh:case그룹/추론입력/참조답구조 CPU; 모델0.
+- Stage4rW run_P106B_Stage4rW_implicit_context_transfer.sh:4subject×24,학습/새CPT0.
+- tag p106b_context_transfer_v1_s1337,약3~8분추정/cap600초;GPT는user7의당일17시이전만.
+
+예측:구체적문맥필드를배워도bare질문은이해못하거나모든정상QA에도재질문할수있다.
+정보부족대응·정보충분시정답·일반상식/산수·초기부모의능력을구분한다.
+원75M×4·teacher원생산·student배치·기본precision은불변이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4s — 실제 원천의 선택 근거를 학생과 공유
+
+### 왜·질문·예측
+
+Stage4q/r에서색상·연구실패턴은배웠지만새지문값과일반QA는미회복했다.
+원생산의teacher-only문맥결손을새source-QA계약으로직접시험한다.
+현재원형6배치/14code/75M루프는변경하지않고새16공개원천을동결한다.
+기존batch5의건물10655·계통10652를포함한KO8과family64의EN8이다.
+
+교사는자료에서새QA와NOTE의SOURCE_IDS만선택한다. 코드는ID의범위/중복·원문slice·
+학생실제tokenbudget/역할·마스크를검사하고선택원문을student QUESTION앞에붙인다.
+이ID확인은참조byte연결이지의미적답근거·독립정답의증명이아니다.
+단지원문지시가question-generation인것을‘틀린답’으로버리지않고새목적을명시한다.
+불명SRC의목적을metadata의question-answering/template1만보고추정하지않는다.
+
+### 단계·판정·범위
+
+- Stage4s0W: SOURCE span/ID·제어header·budget·lossless근거·공유최대3구조시도 CPU.
+- Stage4sW: 같은GemmaMTPON/8K context/3072total/1024thinking/card sampler·새16원천.
+  최대3시도는첫요청포함이고문구오류/의미재시도는없다.
+- 새tag p106b_visible_source16_v1_s1337,CPU약1분·teacher약2~8분추정/cap900초.
+- 단독teacher·새원답/canonical/참조SHA·studentx/assistanttargets·thinking·거부/오류사유를20MBshards에보존.
+- LABELS/참조ID완결과실제답/의미·75M완성은분리판독한다.
+- 다중답/JSON/본300M에자동접속하지않으며bulk코드는새정책결정뒤다른namespace로연결한다.
+
+원형소급PASS·잘못된모든문구리스트·원TinyDataset접근·원HF/가중치수정·추가download는없다.
+GPT모델실행은user7의당일17시이전한정권한이며이후실행은사용자에게인계한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4t — 충분/부족 문맥의 같은 주제 대조
+
+### 왜·질문·예측·대안
+
+Stage4r의새지문값8개는세팔모두미회복이었다.
+과제유형과표현이다른곳에서building재질문을과잉복사해좁은템플릿학습을확인했다.
+이번에는동일주제/질문종류에서근거가충분한경우와부족·모호한경우를함께가르친다.
+
+| 안 | 내용 | 장점 | 단점·비용 |
+|---|---|---|---|
+| A 권장 | 부서/연설/도서관/책/물품/TRPG+bool/산수8유형의코드근거8192/val1024 | 정답/부족을코드로아는새표현·주제대조·짧은실행 | 합성지식/유형한계·약20분/팔추정 |
+| B | source16계약으로실제공개원천512~1024를교사로생성후학습 | 자연주제/언어폭넓음 | 교사추가시간과내용/권리후행검토,완성시간미실측 |
+| C | 자료를유지하고재귀/폭을동시에변경 | 구조효과탐색가능 | 현재자료편향을해결못하고KV/부모교락·구현비용 |
+
+현재7의한정주도실험에서는A의small course만별도실행하고Bbulk/C구조는자동채택하지않는다.
+world QA나75M을합성규칙반복으로대체하지않는다.
+새데이터/양/문장구성이바뀌므로4q와의차이를그중한축에단독귀속하지않는다.
+
+### 조건·단계·판정
+
+- 현재동일chat32 dense14 parent·micro8accum16seq1024·ckptON·compiledefault·4pass256updates.
+- NTP joint high1e-4/4e-4 대mid5e-5/2e-4. MTP는4q의효능/대가미확정으로이번추가팔에서off.
+- 같은broad자료/초기body/실제x/targets/update·순서를두팔에서고정한다.
+- 같은doc/초기조건/이름매핑root의split교차0·전체대화중복0,
+  실제x/assistant/horizon/행언어분모는tokenizer로계산한다.
+- 가상근거의값이있으면답하고,없거나여럿이면그주제의필요정보를묻는다.
+  free답은후행판독하며온라인틀린문구목록/의미재생성은없다.
+- 기존4r 질문/정답은train에넣지않고별도새wording/values val과실제대화를보존한다.
+  후속선택과동일평가반복의편향을명시하고새독립범용test가필요하다.
+
+Stage4t0W CPU계약→4t1W 실제tokenizer동결→4tWa/high·4tWb/mid→4tWc 비교회수.
+새tag p106b_context_broad_v2_s1337·새HF/sft_ready/weights/evidence만기록한다.
+예상각15~25분/hard cap1800초,권한은user7의당일17시이전뿐이다.
+기존생산14code/원HF/원CPT/보호TinyDataset·학습/추론기본은불변이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage4jWk — 조회 수리만 분리한 명시 계보 재개 준비
+
+원OFF4/ON2 batch와inputs/커서를모두SHA로잠그고새 stream-v5 namespace의batch000006부터잇는다.
+source render/샘플링/8K/3072/1024/원generation14code는불변이다.
+이는새근거공유QA계약을대량채택하는런처가아니며기존PSEUDO_UNVERIFIED baseline의
+조회고장만회복하는명시대안이다. source-visible 개선/새정책은별도새버전으로해야한다.
+persistent2s의신선도/최대3조회시도·영구오류/lowfree/교사종료fail-stop을적용한다.
+기존폴더에새batch를쓰거나원inputs를덮어쓰지않는다.
+
+- Stage4j0Wb run_P106B_Stage4j0Wb_stream_fork_cpu.sh:계보연속/원경로복원CPU.
+- Stage4jWk run_P106B_Stage4jWk_stream_mtp_fork_start.sh:새fork 최초제한창.
+- Stage4jWl run_P106B_Stage4jWl_stream_mtp_explicit_resume.sh:그새fork가있을때만명시resume.
+- TAG p106b_s4_gemma_capability300m_chat32_mtpstreamv5_s1337,
+  OUTPUT HF/sft_ready/p106b_gemma_deficit_mtpstream_v5.
+- 원4jWi/Wj 오류9·257후보는소급성공으로바꾸지않고new reader 근거와구분한다.
+- 기본창1h·hard cap≤6h/비교source재검산시간별도;이번GPT는CPU/check-only까지만먼저검증한다.
+- 본75M미완성일때학생기동/형식변경/불명괜찮음선언/보호원천추가접근은없다.
+
+새source계약이결정되면이baseline재개와의선택·폐기범위를별도로보고한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 실행 회수와 후속 경계
+
+Stage4r96첫답·4s 최초import오류/4sWb 새16·4t 두팔256업데이트와 개발72답을 [결과101 §99~§104](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 회수했다. Stage4tWc는 독립런처가 아니라 후행 비교회수이며4tWd는 기존24의 개발용 재측정이다. current5팔의 좁은코드개선은 범용지문/상식 개선이 아니고 native 보존 실패도 남았다.
+
+복구4s0Wb/4sWb는 기존16 원천·샘플링/예산을 유지한 새namespace v2이며 helper import/4인자/반환키 계약을 CPU18로 확인했다. v1 모델0/오류1은 보존한다. 다음 실제근거512~1024 확대·원문 replay/종료점·재귀/폭은3안 질문으로 우선순위 회수중이며 자동bulk 채택하지 않는다. baseline stream-v5 장기생산은 CPU/check-only까지만 통과했고4jWk/Wl은 미실행이다. 본75M×4·원배치·보호원천/기존CPT 경계는 불변이다.

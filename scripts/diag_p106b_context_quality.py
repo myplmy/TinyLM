@@ -127,7 +127,9 @@ def probe(base,cfg,tok,rows,target,label):
                 prefix=tok.decode(tok.encode(prompt).ids)
                 if not decoded.startswith(prefix):raise ValueError('rollout prompt extraction failed')
                 answer=decoded[len(prefix):];gold=data.text(row,turn+1)
-                rubric=row['meta']['rubric'] if turn+1==len(row['messages'])-1 else (
+                declared=row['meta'].get('turn_rubrics')
+                rubric=(declared[turn//2] if declared else row['meta']['rubric']
+                    if turn+1==len(row['messages'])-1 else
                     'CLARIFICATION_POSTHOC' if row['meta']['kind']=='clarify_followup' else 'EXACT_INTEGER')
                 judged=exact(answer,gold,rubric)
                 record=dict(label=label+'_actual_rollout',kind=row['meta']['kind'],
@@ -154,6 +156,7 @@ def train(args):
     from tinylm.train import mtp_sft as core
     idle_before_gpu();target.mkdir(parents=True,exist_ok=False);began=time.perf_counter()
     source_arm,lr=ARMS[args.arm]
+    epochs=info()['epochs'];expected=epochs*math.ceil(report['counts']['train']['rows']/128)
     with wall_limit(args.max_wall_sec):
         torch,base,cfg,tok,initial=training.load_runtime(source_arm)
         records={s:[core.encode_record(r,tok) for r in v] for s,v in rows.items()}
@@ -172,12 +175,12 @@ def train(args):
         for opt in (adam,muon):
             for group in opt.param_groups:group['lr']*=scale
         updates=processed=targets=0;grad_max=0.;history=[];head_updates=Counter();step_seconds=[]
-        for epoch in range(4):
+        for epoch in range(epochs):
             for groups in training.batches(records['train'],epoch):
                 tick=time.perf_counter();denominators=Counter()
                 for micro in groups:
                     for record in micro:denominators.update(core.count_record(record))
-                weights=core.coefficients(updates,128) if cfg.mtp_aux else {}
+                weights=core.coefficients(updates,expected) if cfg.mtp_aux else {}
                 active=tuple(h for h,v in weights.items() if v)
                 adam.zero_grad(set_to_none=True);muon.zero_grad(set_to_none=True)
                 for micro in groups:
@@ -200,7 +203,7 @@ def train(args):
                     actual_x=processed,targets=targets,last_sec=step_seconds[-1],grad_max=grad_max)),flush=True)
             val=training.evaluate(base,records['val'],pad)
             history.append(dict(epoch=epoch+1,updates=updates,val=val))
-        if updates!=128 or processed!=4*report['counts']['train']['actual_x_tokens']:
+        if updates!=expected or processed!=epochs*report['counts']['train']['actual_x_tokens']:
             raise ValueError('planned real exposure mismatch')
         after=probe(base,cfg,tok,rows['val'],target,'final')
         legacy_after=answers(PrecisionForward(base,'fp32_math'),cfg,tok,target,'final_legacy8')

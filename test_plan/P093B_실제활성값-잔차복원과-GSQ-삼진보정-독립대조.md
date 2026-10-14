@@ -271,3 +271,33 @@ BF16auto6불일치를재현하고BF16math5/6·FP32/math6/6이일치해수치/계
 새tag p093b_generation_v2_s1337; oldcalibration/원CPT/복원선/실제음성불변.
 알려지지않은hash변경은거부한다. CPU동등성이실물BF16이나전역KV무결성PASS는아니다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage8 — 같은 원답의 cache·precision 분리
+
+### 왜·질문·예측
+
+[103 §15](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md):
+192새생성은완료했고BF16 plaincache3/24쌍이달랐다. 원형/정밀도/실제질문을같게한 새대조다.
+FP32/math가현재24쌍의정합을회복할수있지만동일한틀린반복도그대로유지할수있다.
+정합회복을반복억제/정답성/전체cache증명으로승격하지않는다.
+
+| 단계 | 계약 | 비용/경계 |
+|---|---|---|
+| Stage8aW | cb9b335의defaultNTP본문 AST동등성·knownSHA이관·tinyCPU회귀 | GPU0 |
+| Stage8bW | 동일원parent/shared/r64·8질문×BF16/FP32×cacheON/OFF=96새원답 | 약3~8분추정/cap600초·학습/save0 |
+
+새tag p093b_cache_precision_v1_s1337, 원calibration report4C8D5952…·부모A402BF1D…·legacy32·r64인자는그대로읽는다.
+현재generate API의추가optional verification keyword는defaultNTP본문을바꾸지않는다.
+이추가정확SHA만인정하며다른원형source변경은거부한다.
+GPU는사용자7의2026-10-14 17시이전한정권한이고그이후SH는사용자실행용이다.
+모든token IDs/text/finish/count·실제K1·precision·querycache·원답SHA를20MBshards로보존한다.
+
+- run_P093B_Stage8aW_cache_precision_cpu.sh
+- run_P093B_Stage8bW_fp32_cache_pair.sh
+
+현재모델기본BF16/복원선·75M 목표는불변이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 Stage8 실행 회수
+
+Stage8aW CPU17 뒤8bW 실제96답에서 BF16 cache21/24·FP32/math24/24를 확인했다. [결과103 §16~§17](../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md): 정합회복에도 r64 질문나열이 남아 수치오차를 내용반복의 단독원인으로 판정하지 않는다. 새rank/압축/ORPO/SimCTG 학습은 미실행이며 같은원형/원조건·과거음성을 보존한다.
