@@ -1,0 +1,372 @@
+{
+  "schema": "TINYLM_DONE_LAUNCHER_RECOVERY_V1",
+  "wip": "handoff/WIP_20261015_작업원장.md",
+  "rows": [
+    {
+      "path": "run_P106B_Stage4u0W_source_course_cpu-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4u0W_source_course_cpu_123354.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "8818EE6D498453F5DE7F44B9E15DA94426B351D64672D8C32576836E42D6D78D",
+      "sha256": "AB061CC84DD984D1EB20D8118C41BF2D6D8770F8479F570CD981B9F7211B95B8",
+      "raw_sha256": "8818EE6D498453F5DE7F44B9E15DA94426B351D64672D8C32576836E42D6D78D",
+      "script": "#!/usr/bin/env bash\n# CPU reference-only views/global objective denominator/identity regression [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated 0.02h; no stdin/download/cleanup/old overwrite; independent raw timestamp.\n# Standard student: micro8 accum16 seq1024 checkpointON compiledefault.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4u0W_source_course_cpu_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u0W_source_course_cpu_\"$stamp\" --num 101 --note 'CPU reference-only views/global objective denominator/identity regression. Read measured versus not-run stages, scope and final verdict. Parsed fields/literal agreement are not semantic truth. Keep source raw/model/corpus local. No protected source or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u0W_source_course_cpu_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_source_course scripts.test_p106b_visible_source\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_source_course scripts.test_p106b_visible_source"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4u1Wb_saved_source_deck_readback-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4u1Wb_saved_source_deck_readback_131520.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "95D32EEFDF556CBAC5E765DD35BBB5F399C6F53D609B1F117B4863353B464358",
+      "sha256": "4C5089D5F4BBC63A9FAA7A27826855C2BBE1392A615C3CD0D80A6D112C43EC85",
+      "raw_sha256": "95D32EEFDF556CBAC5E765DD35BBB5F399C6F53D609B1F117B4863353B464358",
+      "script": "#!/usr/bin/env bash\n# CPU readback of already frozen source deck; no duplicate generation or model. [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated0.02h; original freeze ran through direct API, this verifies it.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4u1Wb_saved_source_deck_readback_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u1Wb_saved_source_deck_readback_\"$stamp\" --num 101 --note 'Existing frozen source deck identity/lane/document disjointness only. No source regeneration, model, truth verifier, download or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u1Wb_saved_source_deck_readback_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_deck_readback.py\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_deck_readback.py"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4u2W_visible_teacher_course-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4u2W_visible_teacher_course_123746.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "2911D1D901A6619852464C90698F0518760962872070310318BE2181465BD9A4",
+      "sha256": "C87B0157DF24AF90BEE35D60B724240580FF250446CE3F23A79BAAA01F55EBF0",
+      "raw_sha256": "2911D1D901A6619852464C90698F0518760962872070310318BE2181465BD9A4",
+      "script": "#!/usr/bin/env bash\n# Teacher-only Gemma MTP source512/val64; raw source/answers remain ignored HF [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated 2.5h; no stdin/download/cleanup/old overwrite; independent raw timestamp.\n# Standard student: micro8 accum16 seq1024 checkpointON compiledefault.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4u2W_visible_teacher_course_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u2W_visible_teacher_course_\"$stamp\" --num 101 --note 'Teacher-only Gemma MTP source512/val64; raw source/answers remain ignored HF. Read measured versus not-run stages, scope and final verdict. Parsed fields/literal agreement are not semantic truth. Keep source raw/model/corpus local. No protected source or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u2W_visible_teacher_course_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode generate --max-wall-sec 9000 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode generate --max-wall-sec 9000 --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4u3W_visible_course_corpus-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4u3W_visible_course_corpus_140129.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "233B9AE9DD97ADAF505865A19A206AF78DC0E8F71CA0A4A11A53F5860E0D81B8",
+      "sha256": "EB30878AE453EEF30B0FAF04A6CE336EAF203C6369CC2FF6367A6439FE9F5B5C",
+      "raw_sha256": "233B9AE9DD97ADAF505865A19A206AF78DC0E8F71CA0A4A11A53F5860E0D81B8",
+      "script": "#!/usr/bin/env bash\n# Only complete576 source groups; paired visible-reference/missing-input views [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated 0.03h; no stdin/download/cleanup/old overwrite; independent raw timestamp.\n# Standard student: micro8 accum16 seq1024 checkpointON compiledefault.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4u3W_visible_course_corpus_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u3W_visible_course_corpus_\"$stamp\" --num 101 --note 'Only complete576 source groups; paired visible-reference/missing-input views. Read measured versus not-run stages, scope and final verdict. Parsed fields/literal agreement are not semantic truth. Keep source raw/model/corpus local. No protected source or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4u3W_visible_course_corpus_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode corpus --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode corpus --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4vWa_source_sft_only-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4vWa_source_sft_only_140203.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "43CD160B49E6947D7F422FA194CE0A84FD30D433DAFB07E05696E407B403521C",
+      "sha256": "12391719C5A55D46D548C7F1B1E27FD4C13CD8A7E585A66A71C5E6AB0627963E",
+      "raw_sha256": "43CD160B49E6947D7F422FA194CE0A84FD30D433DAFB07E05696E407B403521C",
+      "script": "#!/usr/bin/env bash\n# Same originalparent micro8 accum16 ckptON LR5e-5 Muon2e-4 four passes; SFT-only [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated 0.25h; no stdin/download/cleanup/old overwrite; independent raw timestamp.\n# Standard student: micro8 accum16 seq1024 checkpointON compiledefault.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4vWa_source_sft_only_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4vWa_source_sft_only_\"$stamp\" --num 101 --note 'Same originalparent micro8 accum16 ckptON LR5e-5 Muon2e-4 four passes; SFT-only. Read measured versus not-run stages, scope and final verdict. Parsed fields/literal agreement are not semantic truth. Keep source raw/model/corpus local. No protected source or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4vWa_source_sft_only_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode train --arm sft_only --max-wall-sec 1200 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode train --arm sft_only --max-wall-sec 1200 --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4vWb_source_reference_lm-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4vWb_source_reference_lm_140605.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "196F593D2530CF7AB739F9361B6A6A243FA283D1F911281609F3A16F36A56B71",
+      "sha256": "AA5D10F67D7508F5C0ACE6219EFDD83DCDE204766FCFDB419843FFCBB7C9C172",
+      "raw_sha256": "196F593D2530CF7AB739F9361B6A6A243FA283D1F911281609F3A16F36A56B71",
+      "script": "#!/usr/bin/env bash\n# Same SFT rows/parent/LR/update; reference LM .1 extra targets, not extra input [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated 0.3h; no stdin/download/cleanup/old overwrite; independent raw timestamp.\n# Standard student: micro8 accum16 seq1024 checkpointON compiledefault.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4vWb_source_reference_lm_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4vWb_source_reference_lm_\"$stamp\" --num 101 --note 'Same SFT rows/parent/LR/update; reference LM .1 extra targets, not extra input. Read measured versus not-run stages, scope and final verdict. Parsed fields/literal agreement are not semantic truth. Keep source raw/model/corpus local. No protected source or old mutation.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4vWb_source_reference_lm_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode train --arm reference_lm --max-wall-sec 1200 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_course.py --mode train --arm reference_lm --max-wall-sec 1200 --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4vWc_source_objective_pair-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4vWc_source_objective_pair_141045.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "A7908B48A080214E916ED9355D998A6AFEC48E3272C9FAEE27320FAA5EF221E9",
+      "sha256": "6408EC6FF1DA8F133472A0445C5DE1256A20EFE303BED37FFFC65B41D8800723",
+      "raw_sha256": "A7908B48A080214E916ED9355D998A6AFEC48E3272C9FAEE27320FAA5EF221E9",
+      "script": "#!/usr/bin/env bash\n# CPU same-source/parent/update/objective target readback; quality is offline. [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated0.02h; no input/model/download/cleanup/old overwrite.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4vWc_source_objective_pair_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4vWc_source_objective_pair_\"$stamp\" --num 101 --note 'Compare same source/body/SFT exposure and reference target events, native CE and actual answers separately. Parsed/literal agreement is not semantic quality. Corpus/model/source raw stay local.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4vWc_source_objective_pair_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_compare.py --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_compare.py --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4wW_source_course_dev24-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4wW_source_course_dev24_141050.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "74DFE32002C887F72364177B5DEE5498259A8CAC3C69A14398F70F39EB7FE838",
+      "sha256": "82376EC0FEDDEBBDE5B46FBE7C07628AEAE1757A60266D7D085E95AAFDFCDD48",
+      "raw_sha256": "74DFE32002C887F72364177B5DEE5498259A8CAC3C69A14398F70F39EB7FE838",
+      "script": "#!/usr/bin/env bash\n# Same parent/A/B on previously used24 development questions; not independent test. [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated0.08h; no training/checkpoint write/input/download/cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4wW_source_course_dev24_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4wW_source_course_dev24_\"$stamp\" --num 101 --note 'Same original parent and completedsource students: old24 is development, not independent truth/quality. Preserve actual answers, stop reasons and fixed refs. No old modification or checkpoint save.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4wW_source_course_dev24_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_dev24.py --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_dev24.py --execute --max-wall-sec 600"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4x0W_format_mix_corpus-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4x0W_format_mix_corpus_142746.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "1BF3958FF67FE1A9087D842C0DAF3FB403B37062F5F4675FC4299800392860DF",
+      "sha256": "5B59F9EFED313786876FA1D74D5C14CB1C2F1A8FDCF1388CE7A619CD1CDA3443",
+      "raw_sha256": "1BF3958FF67FE1A9087D842C0DAF3FB403B37062F5F4675FC4299800392860DF",
+      "script": "#!/usr/bin/env bash\n# CPU4 format preservation and freeze same source/targets; no teacher or models [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated .03h; no stdin/download/cleanup; independent raw timestamp.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4x0W_format_mix_corpus_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4x0W_format_mix_corpus_\"$stamp\" --num 101 --note 'CPU4 format preservation and freeze same source/targets; no teacher or models. Read execution, actual token counts, raw answers and final verdict separately. Literal agreement is not semantic truth. Keep third party source raw local.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4x0W_format_mix_corpus_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_format_mix.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4x0W_format_mix_corpus_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_format_mix.py --mode corpus --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_source_format_mix.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_format_mix.py --mode corpus --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4xWa_format_mix_student-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4xWa_format_mix_student_142849.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "2639D59F7DA61D0DC829EF817A77FFFFFB7F49CB71DE9A6608C228964D9BF5FA",
+      "sha256": "2C178C058E6252A630E011A1714E07AD84B61BE0C4B461743830DE8EA8FB7D35",
+      "raw_sha256": "2639D59F7DA61D0DC829EF817A77FFFFFB7F49CB71DE9A6608C228964D9BF5FA",
+      "script": "#!/usr/bin/env bash\n# Same parent micro8 accum16 seq1024 ckptON LR5e-5 Muon2e-4 four passes32; prompt lengths intentionally differ [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated .25h; no stdin/download/cleanup; independent raw timestamp.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4xWa_format_mix_student_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4xWa_format_mix_student_\"$stamp\" --num 101 --note 'Same parent micro8 accum16 seq1024 ckptON LR5e-5 Muon2e-4 four passes32; prompt lengths intentionally differ. Read execution, actual token counts, raw answers and final verdict separately. Literal agreement is not semantic truth. Keep third party source raw local.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4xWa_format_mix_student_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_format_mix.py --mode train --execute --max-wall-sec 1200\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_format_mix.py --mode train --execute --max-wall-sec 1200"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4xWb_format_mix_dev24-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4xWb_format_mix_dev24_143354.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "20938DF146E6AA1C0CF347F2AA62D143C75F54C741B0F2C19DC504F0CA2E56E0",
+      "sha256": "4E8B44CE92EB04D9A1042E0C9A2BCB0737ED14D535CB5D26A6EC7C7E7A348105",
+      "raw_sha256": "20938DF146E6AA1C0CF347F2AA62D143C75F54C741B0F2C19DC504F0CA2E56E0",
+      "script": "#!/usr/bin/env bash\n# Read-only four endpoints same old24 development prompts; no training or new checkpoint; not independent [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# Estimated .08h; no stdin/download/cleanup; independent raw timestamp.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4xWb_format_mix_dev24_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4xWb_format_mix_dev24_\"$stamp\" --num 101 --note 'Read-only four endpoints same old24 development prompts; no training or new checkpoint; not independent. Read execution, actual token counts, raw answers and final verdict separately. Literal agreement is not semantic truth. Keep third party source raw local.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4xWb_format_mix_dev24_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_format_mix.py --mode dev --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_format_mix.py --mode dev --execute --max-wall-sec 600"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4yW_source_prompt_pair-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4yW_source_prompt_pair_143640.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "47790D4A4C06DF527CED1ED6443EABFD9D7B5F94BC63E1B380B60C619CB6BCAF",
+      "sha256": "ED7307B09D1D7FDBE3D5C140B4AE6487134F4BD06F3CD97A289D2304ECF35F2F",
+      "raw_sha256": "47790D4A4C06DF527CED1ED6443EABFD9D7B5F94BC63E1B380B60C619CB6BCAF",
+      "script": "#!/usr/bin/env bash\n# Same32 frozen sources, controlled versus natural prompts on parent and three endpoints. [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# No training/checkpoint save. Approx0.10h; FP32 math, cacheON, MTPoff, first answers only.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4yW_source_prompt_pair_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4yW_source_prompt_pair_\"$stamp\" --num 101 --note 'Common source32 x two prompt formats x four endpoints. First answers, no retry/train/weight save. Read literal agreement separately from semantics. Source raw local only; no independent world-test claim.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4yW_source_prompt_pair_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_prompt_pair.py --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_prompt_pair.py --execute --max-wall-sec 600"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4yWb_prompt_finish_readback_cpu-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4yWb_prompt_finish_readback_cpu_144112.txt",
+      "prior_archive": "WIP_20261014b_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "FDC0976011D63055E0C46A03403B7044B5E527A2C88E35CCB0D598AEF75168BC",
+      "sha256": "02C8072D7934445685FD4A2397AA466C1B068532E41AA6700A255916D0CAF752",
+      "raw_sha256": "FDC0976011D63055E0C46A03403B7044B5E527A2C88E35CCB0D598AEF75168BC",
+      "script": "#!/usr/bin/env bash\n# Preserve prior256 answers. CPU-only finish_reason counter recovery and four regressions. [Completed logical stage; archive in WIP_20261014b_LAUNCHER_ARCHIVE.json.]\n# No new model/generation/train. Approx0.02h. Original verdict and code preserved in cf3ee25.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4yWb_prompt_finish_readback_cpu_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4yWb_prompt_finish_readback_cpu_\"$stamp\" --num 101 --note 'CPU regression then recompute finish_reason counts from immutable256 answers. No model/generation/checkpoint write. Literal agreement/empty counts must not change; old wrong summary retained.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4yWb_prompt_finish_readback_cpu_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_prompt_pair.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4yWb_prompt_finish_readback_cpu_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_prompt_pair.py --readback\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_source_prompt_pair.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_prompt_pair.py --readback"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4zW_source_binding_factorial-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4zW_source_binding_factorial_154248.txt",
+      "prior_archive": "WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "1C14A03189EF587F3DB32495163BF3E9EE13DFA4718EEB3F0284911CBCE9AD0B",
+      "sha256": "B2D13BE25489761999B0BEB677C69A88D141E8A33D9260B5845FAA1C1E32EF85",
+      "raw_sha256": "1C14A03189EF587F3DB32495163BF3E9EE13DFA4718EEB3F0284911CBCE9AD0B",
+      "script": "#!/usr/bin/env bash\n# Same facts, target/order/value changes independently on four saved endpoints; no training/save. [Completed; command/SHA in WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.]\n# Code-known32 cases x four endpoints; FP32math/cacheON/nativeK1/greedy64. Approx0.1h/cap600s.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4zW_source_binding_factorial_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4zW_source_binding_factorial_\"$stamp\" --num 101 --note 'Code-known32 fictional lookup cases x parent/A/B/C. Same facts with target/order flips. No teacher/training/checkpoint save. First-value matching is descriptive, not proof of architectural cause or generic intelligence.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4zW_source_binding_factorial_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_binding.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4zW_source_binding_factorial_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_binding.py --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_source_binding.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_binding.py --execute --max-wall-sec 600"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4aa0W_binding_course_cpu-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4aa0W_binding_course_cpu_155429.txt",
+      "prior_archive": "WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "11D4FDFCFADFC28B05CDE3E96D2924A3102782422DA4B82421CE4AAEDD7869DF",
+      "sha256": "F1F018E00971C1002C4F6E6D83EFFE96B67BE19BA3FAE89C350AFC56E7BFFD4E",
+      "raw_sha256": "11D4FDFCFADFC28B05CDE3E96D2924A3102782422DA4B82421CE4AAEDD7869DF",
+      "script": "#!/usr/bin/env bash\n# Code-known root target/order balance CPU3 then freeze4096/512; no models [Completed; command/SHA in WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.]\n# Approx.03h. No stdin/download/cleanup/old mutation; first answers/real targets separate.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4aa0W_binding_course_cpu_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4aa0W_binding_course_cpu_\"$stamp\" --num 101 --note 'Code-known root target/order balance CPU3 then freeze4096/512; no models. Read native language preservation and actual target lookup separately. Finite fictional mappings are not world knowledge or75M. Original model/data preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4aa0W_binding_course_cpu_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_binding_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4aa0W_binding_course_cpu_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_course.py --mode corpus --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_binding_course.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_course.py --mode corpus --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4aaW_balanced_binding_student-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4aaW_balanced_binding_student_155525.txt",
+      "prior_archive": "WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "2FFF9DAE095C05C618120FF3ACF864AF99D083D39489981CA3D216CE25E3F4D4",
+      "sha256": "C92D0796896FDA79D7483E49B62BA2A9B616745E8BD66BA162A7A73C8911842F",
+      "raw_sha256": "2FFF9DAE095C05C618120FF3ACF864AF99D083D39489981CA3D216CE25E3F4D4",
+      "script": "#!/usr/bin/env bash\n# Same originalparent micro8 accum16 seq1024 ckptON Adam5e-5 Muon2e-4; code-known4096 x fourpass128updates [Completed; command/SHA in WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.]\n# Approx.20h. No stdin/download/cleanup/old mutation; first answers/real targets separate.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4aaW_balanced_binding_student_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4aaW_balanced_binding_student_\"$stamp\" --num 101 --note 'Same originalparent micro8 accum16 seq1024 ckptON Adam5e-5 Muon2e-4; code-known4096 x fourpass128updates. Read native language preservation and actual target lookup separately. Finite fictional mappings are not world knowledge or75M. Original model/data preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4aaW_balanced_binding_student_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_course.py --mode train --execute --max-wall-sec 1200\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_course.py --mode train --execute --max-wall-sec 1200"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4abW_binding_transfer_after_train-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4abW_binding_transfer_after_train_160642.txt",
+      "prior_archive": "WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "742C6E1037182A93F4F7891FE5A9FDC80BB4E6EA53D59522B63A0A053711A577",
+      "sha256": "756224E555BFD59B6D9A13236007C370D822F5D01BA72B1A0AA2F3B88D65A088",
+      "raw_sha256": "742C6E1037182A93F4F7891FE5A9FDC80BB4E6EA53D59522B63A0A053711A577",
+      "script": "#!/usr/bin/env bash\n# Saved new128-update endpoint on same32 development cases; old128 first answers inherited by SHA. [Completed; command/SHA in WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.]\n# No training/checkpoint write. Approx0.05h/cap600s; same FP32math/cache/nativeK1/greedy64.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4abW_binding_transfer_after_train_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4abW_binding_transfer_after_train_\"$stamp\" --num 101 --note 'Same32 authored lookup development cases, not independent general intelligence test. Actual newstudent answers; old128 prior report pinned by SHA. Diagnostic names never in train/val. No training/teacher/weight save.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4abW_binding_transfer_after_train_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_followup.py --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_followup.py --execute --max-wall-sec 600"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4acW_binding_full512-done.sh",
+      "raw": "test_result/101_log_20261014_P106B_Stage4acW_binding_full512_161145.txt",
+      "prior_archive": "WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.json",
+      "expected_raw_sha256": "2FD645C8349E60960CBC2896172A338F43DDE4E07CEAC2A1BD482C896CD5B3FC",
+      "sha256": "648FB35E9CA5DA9870290AB340D3C4B1B89C603B29B20921AE85F1C8AF2E7DAA",
+      "raw_sha256": "2FD645C8349E60960CBC2896172A338F43DDE4E07CEAC2A1BD482C896CD5B3FC",
+      "script": "#!/usr/bin/env bash\n# Entire frozen512 code-known validation, exact first-value heuristic and root-four consistency. [Completed; command/SHA in WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.]\n# Read-only saved student; no training/save. Approx0.05h/cap600s; same precision/cache/nativeK1.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4acW_binding_full512_${stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then printf '%s\\n' '[STOP] Existing raw preserved.' >&2; exit 8; fi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4acW_binding_full512_\"$stamp\" --num 101 --note 'Full512 same frozen validation. Newstudent exact answers and first-value code heuristic are separate; no random null, world intelligence or all-corpus claim. Root four-view consistency reported. No training/teacher/checkpoint save.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4acW_binding_full512_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_fullval.py --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_fullval.py --execute --max-wall-sec 600"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "b0afda4:current HEAD; exact file byte match",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4ad0W_retention_course_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ad0W_retention_course_cpu_050737.txt",
+      "sha256": "213DA033CAC0890FB316285BFB6728C9D063B3B7A239109E61C5F368D656F670",
+      "raw_sha256": "A1BEF8FA593758DAD5167B401A8D6C0B42B32383591490A4E6E0D050C15DC766",
+      "script": "#!/usr/bin/env bash\n# CPU contracts then fresh matched SFT/native corpus. About 0.03h, no GPU/model.\n# Stop on failed corpus prerequisite. No input, download, cleanup or old writes.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0W_retention_course_cpu_\"${stamp}\" --note 'Regression then corpus freeze. New5632 rows plus disjoint native train windows; no teacher/GPU. Code truth and public pseudo QA remain separate. Old data immutable.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0W_retention_course_cpu_\"${stamp}\" -- \"$python_bin\" -B -X utf8 scripts/test_p106b_retention_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0W_retention_course_cpu_\"${stamp}\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_retention_course.py --mode corpus --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_retention_course.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_retention_course.py --mode corpus --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "new untracked script: full body archived before deletion",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    },
+    {
+      "path": "run_P106B_Stage4ad0Wb_retention_corpus_recovery-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ad0Wb_retention_corpus_recovery_051057.txt",
+      "sha256": "767613DA7B51FB5EAC5E855FED5A5CC34CDC513D1774D830DDD26BB8610B406E",
+      "raw_sha256": "73D0C93E5785B819E39AD43DFB085EE40D0BA16FB071E442A8D600D12D66CFC9",
+      "script": "#!/usr/bin/env bash\n# v1 CPU/corpus done; direct-entry bootstrap now fixed, old v1 preserved. About0.03h CPU.\n# Newv2 only; model0. Same data/objective, no stdin/download/cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0Wb_retention_corpus_recovery_\"${stamp}\" --note 'v1 CPU/corpus preserved; bootstrap static repair uses freshv2. CPU7 and direct entry precede new freeze. No GPU/checkpoint, no semantic truth claims.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0Wb_retention_corpus_recovery_\"${stamp}\" -- \"$python_bin\" -B -X utf8 scripts/test_p106b_retention_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0Wb_retention_corpus_recovery_\"${stamp}\" -- \"$python_bin\" -B -X utf8 scripts/p106b_retention_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ad0Wb_retention_corpus_recovery_\"${stamp}\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_retention_course.py --mode corpus --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_retention_course.py",
+        "\"$python_bin\" -B -X utf8 scripts/p106b_retention_course.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_retention_course.py --mode corpus --execute"
+      ],
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "rerun_planned": false,
+      "recovery": "new untracked script: full body archived before deletion",
+      "delete_authority": "2026-10-15 user: completed launcher done, preserve commands then delete"
+    }
+  ],
+  "retained": [
+    {
+      "path": "run_P106B_Stage4u1W_public_source_deck-done.sh",
+      "reason": "SH wrapper NOT_RUN; direct stage completed; preserve execution distinction"
+    }
+  ],
+  "initial_cpu_source_recovery": {
+    "scripts/p106b_retention_course.py": {
+      "sha256": "F6FBE30BACBF269194A7970DD8941DC6794749573E09A9AB4CDCADAE8B6F75C6",
+      "source": "\"\"\"Project-authored conditional QA plus replay contracts; no model/data on import.\"\"\"\nfrom __future__ import annotations\n\nimport copy\nimport hashlib\nimport json\nimport random\nfrom collections import Counter\nfrom tinylm.chat.canonical import normalize, validate\nfrom scripts.p106b_context_quality import make, sha, text\n\nVERSION = 'P106B_CONTEXT_REPLAY_V1'\nNAMES = {\n    'ko': {\n        'train': ['민수','지수','진우','예린','태호','소희','하준','은서','도윤','유진','서준','수빈'],\n        'dev': ['지후','서연','현우','채원','정우','하린','시우','예나','수호','윤아','건우','소율'],\n        'test': ['예준','도하','유나','세아','재윤','이안','아린','나윤','수아','지안','태민','다온']},\n    'en': {\n        'train': ['Alice','Brian','Claire','Daniel','Eva','Frank','Grace','Henry','Iris','Jack','Kate','Leon'],\n        'dev': ['Lina','Theo','Rose','Owen','Ruby','Paul','Jade','Kyle','Tina','Ivan','Hugo','Emma'],\n        'test': ['Oscar','Piper','Quinn','Reed','Sara','Troy','Uma','Vera','Wade','Xena','Yuri','Zane']}}\nWEIGHTS = {'sft_only': 0., 'replay025': .25, 'replay100': 1.}\n\n\ndef binding_rows(split, per_family=None):\n    if split not in ('train', 'dev', 'test'):\n        raise ValueError('explicit split required')\n    take = per_family if per_family is not None else (256 if split == 'train' else 32)\n    result = []\n    for language in ('ko', 'en'):\n        names = NAMES[language][split]\n        for family in ('color', 'department'):\n            values = ({'ko': ['빨강','파랑','노랑','초록','보라','주황'],\n                       'en': ['red','blue','yellow','green','purple','orange']} if family == 'color' else\n                      {'ko': ['산수과','문법과','물리학과','역사학과','음악과','미술과'],\n                       'en': ['Physics','History','Music','Art','Math','Grammar']})[language]\n            combinations = [(a,b,x,y) for a in names for b in names if a < b\n                            for x in values for y in values if x != y]\n            random.Random(str((20261015, split, language, family))).shuffle(combinations)\n            if take > len(combinations):\n                raise ValueError('unique mapping supply exhausted')\n            for a,b,x,y in combinations[:take]:\n                mapping = {a:x, b:y}\n                root = sha(dict(task='binding', language=language, family=family, mapping=mapping))\n                for order in ((a,b), (b,a)):\n                    for asked in (a,b):\n                        if language == 'ko':\n                            facts = [f'{n}의 색상은 {mapping[n]}입니다.' if family == 'color' else\n                                     f'{n} 건물에는 {mapping[n]}가 있습니다.' for n in order]\n                            question = (f'{asked}의 색상' if family == 'color' else f'{asked} 건물의 학과')\n                            endings = [f'{question}만 답하세요.', f'{question}는 무엇인가요? 이름만 쓰세요.',\n                                       f'위 기록에서 {question}에 해당하는 값만 쓰세요.',\n                                       f'질문: {question}는? 다른 설명 없이 답하세요.']\n                        else:\n                            facts = [f'{n} is {mapping[n]}.' if family == 'color' else\n                                     f'The {n} building houses {mapping[n]}.' for n in order]\n                            question = f'the color of {asked}' if family == 'color' else f'the department in the {asked} building'\n                            endings = [f'Give only {question}.', f'What is {question}? Name only.',\n                                       f'According to the record, state only {question}.',\n                                       f'Question: what is {question}? Answer without explanation.']\n                        variant = int(sha([root, list(order), asked])[:8], 16) % 4\n                        user = (' '.join(facts) if variant % 2 else '\\n'.join(facts)) + '\\n' + endings[variant]\n                        result.append(validate(normalize(dict(messages=[dict(role='user', content=user),\n                            dict(role='assistant', content=mapping[asked])], meta=dict(\n                            source='PROJECT_AUTHORED_CODE', source_license='project_authored_fictional',\n                            language=language, kind='binding_'+family, rubric='EXACT_SCALAR',\n                            semantic_root_id=root, source_split=split, truth='PRODUCER_CODE_FACT_CONTRACT',\n                            requested_entity=asked, mapping=mapping, ordered_entities=list(order),\n                            target_is_first=asked == order[0], first_value=mapping[order[0]],\n                            course_version=VERSION)))))\n    return result\n\n\ndef code_rows():\n    output = {}; used = set(); bodies = set()\n    for split, count in (('train',1024), ('dev',128), ('test',128)):\n        rows = []; attempt = 0\n        while len(rows) < count:\n            language = ('ko','en')[len(rows) % 2]\n            kind = ('arithmetic','boolean','json','update')[(len(rows)//2) % 4]\n            seed = {'train': 7100000, 'dev': 8100000, 'test': 9100000}[split] + attempt\n            attempt += 1\n            if attempt > count*100:\n                raise ValueError('unique code supply exhausted')\n            row = make(kind, language, seed, novel=split != 'train')\n            root = row['meta']['semantic_root_id']; signature = sha(row['messages'])\n            if root in used or signature in bodies:\n                continue\n            used.add(root); bodies.add(signature)\n            row['meta'].update(source_split=split, course_version=VERSION,\n                               truth='PRODUCER_CODE_FACT_CONTRACT')\n            rows.append(row)\n        output[split] = binding_rows(split) + rows\n    return output\n\n\ndef add_public(output, original):\n    \"\"\"Old source QA is pseudo evidence, not code truth or a fresh world test.\"\"\"\n    for old_split, new_split in (('train','train'), ('val','dev')):\n        for row in original[old_split]:\n            if row['meta']['kind'] != 'source_qa':\n                continue\n            item = copy.deepcopy(row)\n            item['meta'].update(kind='public_qa', rubric='UNSCORED_PUBLIC_QA',\n                truth='PSEUDO_UNVERIFIED', source_split=new_split, course_version=VERSION,\n                eval_scope='PRIOR_PUBLIC_DEVELOPMENT_NOT_INDEPENDENT_WORLD_TEST')\n            output[new_split].append(item)\n    return output\n\n\ndef validate_splits(rows):\n    roots = {}; bodies = {}\n    for split, values in rows.items():\n        roots[split] = {r['meta']['semantic_root_id'] for r in values}\n        bodies[split] = {sha(r['messages']) for r in values}\n        if len(bodies[split]) != len(values):\n            raise ValueError('duplicate conversation within split')\n    for a,b in (('train','dev'), ('train','test'), ('dev','test')):\n        if roots[a] & roots[b] or bodies[a] & bodies[b]:\n            raise ValueError('source root/conversation leakage')\n    for language, splits in NAMES.items():\n        if any(set(splits[a]) & set(splits[b]) for a,b in\n               (('train','dev'), ('train','test'), ('dev','test'))):\n            raise ValueError('binding entity names leak')\n    return {split: dict(Counter(r['meta']['kind'] for r in values)) for split,values in rows.items()}\n\n\ndef native_offsets(token_count, count, width=1024):\n    if token_count < (width+1)*count or count < 1:\n        raise ValueError('not enough disjoint native train windows')\n    blocks = random.Random(20261015).sample(range(token_count//(width+1)), count)\n    return [i*(width+1) for i in blocks]\n\n\ndef exact(answer, gold, rubric):\n    if rubric == 'UNSCORED_PUBLIC_QA':\n        return None\n    answer = answer.strip()\n    if rubric == 'EXACT_JSON_OBJECT':\n        try:\n            return json.loads(answer) == json.loads(gold)\n        except (ValueError, TypeError):\n            return False\n    if rubric == 'EXACT_INTEGER':\n        import re\n        return bool(re.fullmatch(r'[+-]?\\d+', answer)) and int(answer) == int(gold)\n    if rubric not in ('EXACT_SCALAR', 'EXACT_BOOLEAN'):\n        raise ValueError('unknown output contract')\n    return answer.casefold() == gold.casefold()\n\n\ndef combined_loss(sft_sum, sft_denominator, native_sum, native_denominator, weight):\n    if min(sft_denominator, native_denominator) <= 0 or weight not in WEIGHTS.values():\n        raise ValueError('positive whole-update denominators and registered weight required')\n    return sft_sum/sft_denominator + weight*native_sum/native_denominator\n",
+      "scope": "recovered exact v1 CPU-only source; no GPU evidence"
+    },
+    "scripts/diag_p106b_retention_course.py": {
+      "sha256": "45D4FF34F0B952E59C7674DE5DE3F437E0BA3DED2CB2CE63309DEECC75A9C982",
+      "source": "#!/usr/bin/env python3\n\"\"\"Bounded same-parent SFT/native-replay experiment; explicit execute and fresh outputs.\"\"\"\nfrom __future__ import annotations\nfrom pathlib import Path\nimport sys\nROOT=Path(__file__).resolve().parents[1]\nsys.path.insert(0,str(ROOT))\nimport argparse\nfrom collections import Counter,defaultdict\nfrom dataclasses import asdict\nfrom datetime import datetime,timezone\nimport json\nimport math\nimport os\nimport tempfile\nimport time\nfrom scripts import p106b_retention_course as data\nfrom scripts import diag_p101a_sft_mtp as training\nfrom scripts.p106b_shards import ShardWriter,verify\n\nTAG='p106b_context_replay_v1_s1337'\nCORPUS=ROOT/'HF/sft_ready'/TAG/'corpus'\nEVIDENCE=ROOT/'test_result/evidence'/TAG\nLOCAL=ROOT/'test_result/evidence/local'/TAG\nNATIVE=ROOT/'data_cache/ko-en_601000000_chat32'\nDEADLINE=datetime(2026,10,15,8,0,tzinfo=timezone.utc)\nCODE=('scripts/p106b_retention_course.py','scripts/diag_p106b_retention_course.py',\n      'scripts/test_p106b_retention_course.py','scripts/diag_p106b_context_quality.py',\n      'scripts/diag_p101a_mtp_parity.py','scripts/p106b_education_followup.py',*training.CODE)\n\n\ndef info():\n    return dict(schema=data.VERSION,tag=TAG,parent_sha256=training.PARENT_SHA,\n        tokenizer_sha256=training.data.TOK_SHA,seed=1337,micro_bs=8,accum=16,seq=1024,\n        checkpoint_on=True,compile='default',epochs=4,lr=5e-5,muon_lr=2e-4,\n        mtp=False,teacher_calls=0,weights=data.WEIGHTS,replay_micro_bs=8,\n        native_replay='one additional8x1024 train-only CE batch per SFT optimizer update, even weight0',\n        code_sha256={p:training.data.digest(ROOT/p) for p in sorted(set(CODE))},\n        deadline_utc=DEADLINE.isoformat(),formal_train_ready=False,\n        general_intelligence='NOT_ESTABLISHED',scope='new experimental curriculum, not75M/300M')\n\n\ndef deadline():\n    if datetime.now(timezone.utc)>=DEADLINE:\n        raise TimeoutError('2026-10-15 17:00 KST execution authority expired')\n\n\ndef checkpoint(arm):\n    return ROOT/'runs/ckpt'/f'm100s10_ko-en_context_replay_dense_chat32_{TAG}_{arm}.pt'\n\n\ndef freeze():\n    deadline()\n    if CORPUS.parent.exists() or CORPUS.is_symlink() or EVIDENCE.exists():\n        raise FileExistsError('preserve old course; new namespace required')\n    from scripts import diag_p106b_source_course as source\n    from tokenizers import Tokenizer\n    from tinylm.train import mtp_sft as core\n    import numpy as np\n    if training.data.digest(training.data.TOKENIZER)!=training.data.TOK_SHA:\n        raise ValueError('tokenizer changed')\n    meta=json.loads((NATIVE/'meta.json').read_text())\n    if meta['tokenizer_sha256']!=training.data.TOK_SHA or meta['token_dtype']!='uint16':\n        raise ValueError('native replay tokenizer/dtype differs')\n    _,old=source.read_course()\n    rows=data.add_public(data.code_rows(),old);families=data.validate_splits(rows)\n    tok=Tokenizer.from_file(str(training.data.TOKENIZER));counts={}\n    for split,values in rows.items():\n        records=[core.encode_record(row,tok) for row in values]\n        counts[split]=dict(rows=len(values),actual_x_tokens=sum(r.x_tokens for r in records),\n            assistant_targets=sum(r.targets for r in records),kinds=families[split],\n            languages=dict(Counter(r['meta']['language'] for r in values)))\n    if counts['train']['rows']!=5632:\n        raise ValueError('expected code5120 plus public512')\n    expected=4*math.ceil(len(rows['train'])/128)\n    tokens=np.memmap(NATIVE/'train.bin',dtype=np.uint16,mode='r')\n    offsets=data.native_offsets(len(tokens),expected*8)\n    identities={name:training.data.digest(NATIVE/name) for name in ('meta.json','train.bin','val.bin')}\n    CORPUS.mkdir(parents=True,exist_ok=False);manifests={}\n    for split,values in rows.items():\n        writer=ShardWriter(CORPUS,split)\n        for row in values:writer.append(row)\n        manifests[split]=writer.close(lineage=info());verify(CORPUS,manifests[split])\n    with (CORPUS/'native_train.bin').open('xb') as stream:\n        for offset in offsets:stream.write(tokens[offset:offset+1025].tobytes())\n    report=dict(info(),status='COURSE_FROZEN',counts=counts,manifests=manifests,\n        expected_updates=expected,native_source_sha256=identities,native_train_offsets=offsets,\n        native_copy_sha256=training.data.digest(CORPUS/'native_train.bin'),\n        native_replay_targets_per_arm=expected*8*1024,\n        prior_public_source_report_sha256=training.data.digest(source.CORPUS/'report.json'),\n        root_and_conversation_overlap=0,binding_names_disjoint=True,\n        native_split_scope='train.bin for replay; val.bin for diagnostics; prior pretraining leakage not audited',\n        native_copy_scope='disjoint selected train windows, repeated across arms but not within an arm')\n    training.write(CORPUS/'report.json',report);training.write(EVIDENCE/'corpus_report.json',report)\n    print('[REPLAY_CORPUS] '+json.dumps(dict(counts=counts,updates=expected),ensure_ascii=False),flush=True)\n    return 0\n\n\ndef read_course():\n    report=json.loads((CORPUS/'report.json').read_text())\n    if report['status']!='COURSE_FROZEN' or report['code_sha256']!=info()['code_sha256']:\n        raise ValueError('frozen code differs; preserve old evidence and use new stage')\n    for manifest in report['manifests'].values():verify(CORPUS,manifest)\n    if training.data.digest(CORPUS/'native_train.bin')!=report['native_copy_sha256']:\n        raise ValueError('native copied train changed')\n    if training.data.digest(NATIVE/'val.bin')!=report['native_source_sha256']['val.bin']:\n        raise ValueError('native validation changed')\n    rows={s:list(training.data.stream_rows(CORPUS,m)) for s,m in report['manifests'].items()}\n    data.validate_splits(rows)\n    return report,rows\n\n\ndef dev_sample(rows):\n    groups=defaultdict(list);public=[]\n    for row in rows:\n        if row['meta']['kind']=='public_qa':public.append(row);continue\n        groups[(row['meta']['language'],row['meta']['kind'])].append(row)\n    result=[]\n    for key,values in sorted(groups.items()):\n        if key[1].startswith('binding_'):\n            roots=sorted({r['meta']['semantic_root_id'] for r in values})[:4]\n            result.extend(r for r in values if r['meta']['semantic_root_id'] in roots)\n        else:result.extend(values[:4])\n    return result+public[:16]\n\n\ndef generate(base,cfg,tok,rows,directory,label):\n    import torch\n    from scripts.diag_p101a_mtp_parity import PrecisionForward\n    from tinylm.chat.serialize import serialize\n    from tinylm.infer.generate import sample\n    base.eval();base.freeze_quant();wrapped=PrecisionForward(base,'fp32_math')\n    torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False\n    writer=ShardWriter(directory,'answers_'+label)\n    counts=defaultdict(Counter);roots=defaultdict(list);examples=[]\n    try:\n        with torch.no_grad():\n            for row in rows:\n                deadline();m=row['meta']\n                prompt=serialize(dict(messages=row['messages'][:-1]),'chatml',add_generation_prompt=True)\n                decoded,meta=sample(wrapped,cfg,tok,prompt,max_new=64,temperature=0.,top_k=1,\n                    device='cuda',logits_last_only=True,return_metadata=True,\n                    stop_token_sequences=[tok.encode('<|im_end|>').ids])\n                prefix=tok.decode(tok.encode(prompt).ids)\n                if not decoded.startswith(prefix):raise ValueError('prompt extraction failed')\n                answer=decoded[len(prefix):];gold=data.text(row,-1)\n                judged=data.exact(answer,gold,m['rubric'])\n                counter=counts[m['language']+':'+m['kind']]\n                counter.update(cases=1,scored=int(judged is not None),exact=int(judged is True),\n                    teacher_literal_agreement=int(answer.strip()==gold.strip()),empty=int(not answer.strip()),\n                    max_new=int(meta['finish_reason'] in ('MAX_NEW','MAX_NEW_EOS_DISABLED')))\n                if m['kind'].startswith('binding_'):\n                    roots[m['semantic_root_id']].append(judged is True)\n                    counter['first_value_baseline']+=int(gold==m['first_value'])\n                writer.append(dict(label=label,messages=row['messages'][:-1],answer=answer,gold=gold,\n                    meta=m,generation=meta,exact_code_contract=judged,\n                    prior_context='GOLD_HISTORY_FOR_MULTITURN; not actual student rollout'))\n                if len(examples)<12 and m['kind']!='public_qa':\n                    example=dict(question=data.text(row,-2),answer=answer,gold=gold,exact=judged)\n                    examples.append(example)\n    finally:\n        base.clear_quant();base.train()\n    manifest=writer.close(lineage=dict(label=label,precision='FP32_MATH_NO_TF32',cache=True,\n        mtp_tokens=1,temperature=0,max_new=64,semantic_judge=False))\n    verify(directory,manifest)\n    result=dict(counts={k:dict(v) for k,v in counts.items()},binding_roots=len(roots),\n        all4_exact_roots=sum(len(v)==4 and all(v) for v in roots.values()),\n        raw_directory=str(directory.relative_to(ROOT)),raw_manifest=manifest,\n        examples=examples,public_agreement_is_not_truth=True)\n    print('[REPLAY_ANSWERS] '+json.dumps(dict(label=label,counts=result['counts'],\n        binding_roots=len(roots),all4_exact_roots=result['all4_exact_roots']),ensure_ascii=False),flush=True)\n    return result\n\n\ndef train(args,cost=False):\n    deadline();report,rows=read_course();arm=args.arm;weight=data.WEIGHTS[arm]\n    target=EVIDENCE/(('cost_' if cost else '')+arm);local=LOCAL/(('cost_' if cost else '')+arm)\n    out=checkpoint(arm)\n    if target.exists() or local.exists() or (not cost and out.exists()):\n        raise FileExistsError('fresh arm only')\n    if not cost:\n        calibrated=json.loads((EVIDENCE/'cost_sft_only/report.json').read_text())\n        if calibrated['code_sha256']!=info()['code_sha256'] or calibrated['updates']!=8:\n            raise ValueError('same-code cost8 required')\n    from scripts.p106b_gate_runtime import idle_before_gpu,wall_limit\n    from tinylm.train import mtp_sft as core\n    import numpy as np\n    idle_before_gpu();target.mkdir(parents=True,exist_ok=False);began=time.perf_counter()\n    with wall_limit(args.max_wall_sec):\n        torch,base,cfg,tok,initial=training.load_runtime('parent_ntp')\n        records={s:[core.encode_record(r,tok) for r in values] for s,values in rows.items()}\n        native=np.memmap(CORPUS/'native_train.bin',dtype=np.uint16,mode='r').reshape(-1,1025)\n        os.environ['TORCHINDUCTOR_CACHE_DIR']=tempfile.mkdtemp(prefix='p106b_replay_')\n        base=base.cuda();base.train();pad=tok.token_to_id('<|pad|>')\n        if pad is None:pad=tok.token_to_id('<pad>')\n        if pad is None:raise ValueError('missing PAD')\n        torch.cuda.reset_peak_memory_stats()\n        before_native=None if cost else training.native_ce(base,NATIVE)\n        model=torch.compile(base,mode='default');adam,muon=training.optimizers(base)\n        for opt in (adam,muon):\n            for group in opt.param_groups:group['lr']*=.5\n        steps=processed=targets=native_x=native_y=0;grad_max=0.;seconds=[];history=[]\n        for epoch in range(4):\n            for groups in training.batches(records['train'],epoch):\n                deadline();tick=time.perf_counter()\n                denominator=sum(r.targets for micro in groups for r in micro)\n                adam.zero_grad(set_to_none=True);muon.zero_grad(set_to_none=True)\n                for micro in groups:\n                    x,y,seg=core.pad_records(micro,pad,'cuda',fixed_width=1024,batch_size=8)\n                    with torch.autocast('cuda',dtype=torch.bfloat16):\n                        hidden=model(x,return_hidden=True)\n                        sums,valid=core.components(base,hidden,y,seg,horizons=())\n                        loss=sums[1]/denominator\n                    if not torch.isfinite(loss):raise ValueError('nonfinite SFT loss')\n                    loss.backward();processed+=sum(r.x_tokens for r in micro);targets+=sum(r.targets for r in micro)\n                # Same native rows/CE calculation in every arm; weight is the only intervention.\n                selected=native[steps*8:(steps+1)*8]\n                native_records=[core.Record(r[:-1].astype('int64').tolist(),r[1:].astype('int64').tolist(),[1]*1024) for r in selected]\n                if len(native_records)!=8:raise ValueError('native schedule exhausted')\n                x,y,seg=core.pad_records(native_records,pad,'cuda',fixed_width=1024,batch_size=8)\n                with torch.autocast('cuda',dtype=torch.bfloat16):\n                    hidden=model(x,return_hidden=True)\n                    sums,valid=core.components(base,hidden,y,seg,horizons=())\n                    aux=weight*sums[1]/8192\n                if not torch.isfinite(aux):raise ValueError('nonfinite native loss')\n                aux.backward();native_x+=8192;native_y+=valid[1]\n                gradient=torch.nn.utils.clip_grad_norm_(base.parameters(),1.)\n                if not torch.isfinite(gradient):raise ValueError('nonfinite gradients')\n                grad_max=max(grad_max,float(gradient));adam.step();muon.step();steps+=1\n                torch.cuda.synchronize();seconds.append(time.perf_counter()-tick)\n                if steps==1 or steps%16==0:\n                    print('[REPLAY_UPDATE] '+json.dumps(dict(arm=arm,update=steps,sft_x=processed,\n                        assistant_targets=targets,native_x=native_x,last_sec=seconds[-1])),flush=True)\n                if cost and steps==8:break\n            if cost:break\n            val=training.evaluate(base,records['dev'],pad)\n            native_eval=training.native_ce(base,NATIVE)\n            generations=generate(base,cfg,tok,dev_sample(rows['dev']),local,f'dev_epoch{epoch+1}')\n            history.append(dict(epoch=epoch+1,updates=steps,val=val,native=native_eval,dev=generations))\n        if not cost and (steps!=report['expected_updates'] or processed!=4*report['counts']['train']['actual_x_tokens']):\n            raise ValueError('exposure differs')\n        result=dict(info(),arm=arm,weight=weight,status='COST_MEASURED' if cost else 'TRAINED_SEALED_TEST_PENDING',\n            initial_core_sha256=initial,corpus_sha256=training.data.digest(CORPUS/'report.json'),updates=steps,\n            sft_x_tokens=processed,assistant_targets=targets,native_x_tokens=native_x,native_targets=native_y,\n            effective_native_objective_targets=native_y if weight else 0,\n            grad_max=grad_max,gradient_measure='global preclip norm maximum including early updates; clip1',\n            peak_reserved_mib=torch.cuda.max_memory_reserved()/2**20,step_seconds=seconds,\n            native_before=before_native,history=history,whole_sec=time.perf_counter()-began,\n            actual_student_rollout='NOT_RUN',independent_world_truth='NOT_RUN')\n        if not cost:\n            with out.open('xb') as stream:\n                torch.save(dict(model=base.state_dict(),cfg=asdict(cfg),step=steps,tokenizer_lineage='chat32',\n                    tokenizer_sha256=training.data.TOK_SHA,retention_course=dict(tag=TAG,arm=arm,\n                    corpus_sha256=result['corpus_sha256'])),stream)\n            result.update(checkpoint=str(out.relative_to(ROOT)),checkpoint_sha256=training.data.digest(out),optimizer_saved=False)\n        training.write(target/'report.json',result)\n    print('[REPLAY_FINAL] '+json.dumps({k:result[k] for k in ('arm','status','updates','sft_x_tokens','native_x_tokens','whole_sec')}),flush=True)\n    return 0\n\n\ndef evaluate(args):\n    deadline();report,rows=read_course();target=EVIDENCE/'sealed_test'\n    if target.exists():raise FileExistsError('sealed test immutable')\n    arms={arm:json.loads((EVIDENCE/arm/'report.json').read_text()) for arm in data.WEIGHTS}\n    for arm,r in arms.items():\n        if (r['status']!='TRAINED_SEALED_TEST_PENDING' or r['code_sha256']!=info()['code_sha256'] or\n            training.data.digest(ROOT/r['checkpoint'])!=r['checkpoint_sha256']):\n            raise ValueError('completed same-code three arms required')\n    from scripts.p106b_gate_runtime import idle_before_gpu,wall_limit\n    from tinylm.infer.generate import _strip\n    import gc\n    idle_before_gpu();began=time.perf_counter();summaries={}\n    with wall_limit(args.max_wall_sec):\n        for arm in ('parent',*data.WEIGHTS):\n            deadline();torch,base,cfg,tok,initial=training.load_runtime('parent_ntp')\n            if arm!='parent':\n                state=torch.load(ROOT/arms[arm]['checkpoint'],map_location='cpu',weights_only=True)\n                base.load_state_dict(_strip(state['model']),strict=True);del state\n            base=base.cuda()\n            summaries[arm]=generate(base,cfg,tok,rows['test'],LOCAL/'sealed_test'/arm,'sealed')\n            summaries[arm]['native']=training.native_ce(base,NATIVE)\n            del base;gc.collect();torch.cuda.empty_cache()\n    result=dict(info(),status='SEALED_CODE_TEST_COLLECTED',arms=summaries,whole_sec=time.perf_counter()-began,\n        corpus_sha256=training.data.digest(CORPUS/'report.json'),cases_per_arm=len(rows['test']),\n        model_training=False,checkpoint_saved=False,first_test_use=True,actual_student_rollout='NOT_RUN',\n        interpretation='code-defined conditional task, not general intelligence/world knowledge; no sigma measured')\n    training.write(target/'report.json',result)\n    return 0\n\n\ndef main():\n    parser=argparse.ArgumentParser(description=__doc__)\n    parser.add_argument('--mode',choices=('corpus','cost','train','evaluate'),required=True)\n    parser.add_argument('--arm',choices=tuple(data.WEIGHTS),default='sft_only')\n    parser.add_argument('--max-wall-sec',type=int,default=3600)\n    group=parser.add_mutually_exclusive_group(required=True)\n    group.add_argument('--execute',action='store_true');group.add_argument('--check-only',action='store_true')\n    args=parser.parse_args()\n    if not 60<=args.max_wall_sec<=21600:parser.error('wall bound60..21600')\n    if args.check_only:\n        if args.mode!='corpus':read_course()\n        print('[CHECK_ONLY] '+json.dumps(info()));return 0\n    deadline()\n    if args.mode=='corpus':return freeze()\n    if args.mode in ('cost','train'):return train(args,cost=args.mode=='cost')\n    return evaluate(args)\n\n\nif __name__=='__main__':raise SystemExit(main())\n",
+      "scope": "recovered exact v1 CPU-only source; no GPU evidence"
+    }
+  },
+  "planned_delete_count": 20,
+  "deleted_count": 0,
+  "result_sha256": "ED72FEE707F424CB09E5AF4F55BFB7B10F9B66039EAD19133EE6398BAFE69D89",
+  "status": "PRE_DELETE_VALIDATED",
+  "bounds": "exact20 completed SH only; all raw/HF/CPT/private source retained"
+}

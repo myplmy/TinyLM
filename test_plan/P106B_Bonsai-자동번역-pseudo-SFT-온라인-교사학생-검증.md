@@ -2103,3 +2103,71 @@ Stage4ac는동결val512전체의실제첫답과같은두사실의두대상/두�
 실제whole512는독립범용벤치가아닌같은course validation이다. 새raw/namespace만쓴다.
 실제4ab는32답17정확(2.799초),4ac는전체512답315정확(21.693초)·한145/256/영170/256·4view완결27/128였다.
 범용/본75M은미완이며[결과101 §111~113](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에후행판독과5원형/명령을회수했다. 원형을소급성공으로바꾸지않았다.
+
+## 2026-10-15 Stage4ad~4af — 자연 문맥 QA와 기존 언어 보존의 동시 대조
+
+### 1. 왜
+기존 code4096/512 학생은 315/512로 첫값기준을 넘었으나 완결 root27/128·native+.2022가 남았다.
+source512 세 팔은 자연 질문과 질문대상 이해가 약했다. 자료를 무작정 더 생성하기 전에
+여러 표현의 정확한 문맥 대조를 학습하면서 기존 원문 예측을 함께 유지할 수 있는지 확인한다.
+사용자 2026-10-15의 당일17시까지 자율 실험/절차/로컬커밋 허가로 실행한다.
+
+### 2. 질문
+같은 SFT 입력/부모/업데이트에서 native train CE의 가중치만 0/.25/1로 바꾸면
+질문 대상 조회·형식/조건갱신과 원문 보존 사이에 더 나은 후보가 나오는가?
+
+### 3. 예측·대안
+replay가 원문 손실 악화를 줄일 수 있지만 SFT 학습을 늦추거나 QA 자체의 낮은 기반을 해결하지 못할 수 있다.
+한 seed·작은 과제의 양성은 범용 지능/본75M 성공이 아니다. 비교한 대안은 ORPO 답쌍(믿을 수 있는 쌍 선결),
+재귀/폭 변경(초기화/CLA/자료 교락)이며 가장 작은 현재 원인분리인 replay를 선택했다.
+
+### 4. 단계·구현
+- Stage4ad0W: CPU7 회귀와 새 코퍼스 동결. code binding4096 + 산수/논리/JSON/조건갱신1024 +
+  기존 source512의 지원 QA512 = train5632. code dev/test는 분리 이름/root이고 test640은 최종에만 생성한다.
+  이미 사용한 공개 val64는 개발용·교사 PSEUDO이며 의미 정답을 문자열로 판정하지 않는다.
+- Stage4ad1W: 같은 새코드·코퍼스로 8업데이트 비용 측정; 체크포인트/품질 판정 없음.
+- Stage4aeWa/Wb/Wc: 같은 원parent body/토크나이저/시드/행 순서·Adam5e-5/Muon2e-4·
+  micro8accum16seq1024/ckptON/compiledefault/MTPoff/4pass176업데이트. native CE weight0/.25/1만 다르다.
+  매 SFT128행 누적 뒤 별도 native8행의 동일 forward/CE를 모든 팔에서 계산한다.
+  SFT effective batch128은 불변이나 보조 계산/실제 native 입력이 추가되므로 그것을 별도 분모로 보고한다.
+- native는 기존 chat32 cache의 **train.bin**에서 1025토큰 단위로 서로 겹치지 않는1408개 창을 선택한다.
+  한 팔 내 중복 사용0, 세 팔은 같은 창과 순서. 원cache는 읽기 전용이며 val은 학습하지 않는다.
+- 매 epoch 같은 dev표본/CE/native첫32crop을 관측하며 최종 모델은 epoch4로 고정한다.
+- Stage4afW: 세 팔 완료 뒤 parent와 세 최종 학생의 동결 code test640 실제 첫답을 수집한다.
+  FP32math/cacheON/nativeK1/greedy64·재시도0. 공개 원천의 자유 답은 정답률과 분리하고 후행 판독한다.
+
+### 5. 사전 판정
+가중치0 대비 code 정확값·binding4view 일관성과 native CE 악화의 교환비를 보고한다.
+Pareto 후보 탐색이며 통계 sigma 미측정/단일seed이고 기본 recipe를 자동 바꾸지 않는다.
+숫자/JSON/유한 사실의 코드 정답만 채점하고 문자열 오조어 목록/온라인 의미 재시도는 사용하지 않는다.
+자유 QA의 교사 문자일치는 현실정답률이 아니다. 실제 학생 앞답 기반 rollout은 이번 첫 비교와 별도다.
+
+### 6. 비용·preflight
+구현/CPU 후 비용8 실측으로 갱신한다. 세 팔 각15~30분, test약5분 GPU 추정이며 상한은 각3600초다.
+실행 루프의 deadline은2026-10-15T08:00:00Z이고 그 뒤 추가 계산을 시작하지 않는다.
+176×8×16×1024=23,068,672는 **padding 위치 상한**; 실제 SFT x/assistant는 encode 후 회수한다.
+native 별도 입력/지도는 각1,441,792이고 weight0도 계산하지만 유효 native 학습 목적은0이다.
+일반 사전학습의 pool≥2×와 다른 명시4pass SFT 진단이며 고유량을 반복 노출로 부풀리지 않는다.
+태그 충돌/유사런은 check_run_registry로 확인했다. 기존source/binding실험에는 이 native train 보조 목적이 없었다.
+
+### 7. 실행
+run_P106B_Stage4ad0W_retention_course_cpu.sh → run_P106B_Stage4ad1W_retention_cost8.sh →
+run_P106B_Stage4aeWa_sft_no_replay.sh / run_P106B_Stage4aeWb_native_replay025.sh /
+run_P106B_Stage4aeWc_native_replay100.sh → run_P106B_Stage4afW_retention_sealed_test.sh.
+구현은 새 diag_p106b_retention_course·p106b_retention_course·test 코드이고 제품 기본은 불변이다.
+
+### 8. 한계
+검증 이름은 이번 SFT에서만 분리되며 옛 사전학습에 없음을 보장하지 않는다. code 골드는 유한 생성 과제이고
+공개 QA는 미확인 teacher/source 사실을 포함한다. train/val cache의 과거 누설 문제를 새로 감사한 것이 아니다.
+기존75M×4 목표·미완 생산/본교육은 별도다. 보호 TinyDataset·설치·다운로드·원산출물 변경은 없다.
+
+### 9. 실행 이력
+현재 CPU7 통과·check-only 모델0, corpus/cost/train/test 실제 수행은 단계별 원형과 결과101에 회수한다.
+최초4ad0의v1은CPU/동결만완료했다. 전수정적은 새module의직접진입bootstrap누락1건과
+시스템python의numpy/torch부재3건을GPU전에찾았다. bootstrap수리후기능코드는같아도SHA가바뀌므로
+원v1은보존하고새4ad0Wb에서v2를동결한다. 정적은정본tlm_torch Python으로다시검사한다.
+실제v2도5632/704/640행으로동결했다. 최신17시허가를제시했어도auto-review가이전읽기전용지시를현재로판정해
+GPUcost8을프로세스생성전두번거절했다. 모델/업데이트/CPT0, 세팔효과/test는NOT_RUN이며우회하지않는다.
+CPU실측과원형2개·권한차단은[결과101 §114](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에기록한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

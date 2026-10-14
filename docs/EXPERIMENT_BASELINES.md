@@ -250,6 +250,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_source_format_mix_v1_s1337_sft_only` | 같은source/답·지원QA절반만자연 본문+질문·원parent/배치/LR/32update | 실제32update·312992x/56932지도·native3.644305. 공통source32 자연형문자3/32 대A/B1/32이나 일반개발지문/상식/산수미회복·valCE직접순위금지 [101 §109~110](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_source_binding_v1_s1337` | 같은사실의질문대상/본문순서·값배정 대응,저장4endpoint·학습0 | 실제128답·47.971초·명시scalar0/32각팔. A/B/C 대상flip16쌍중7/8/9쌍문자불변·앞이름/고정값 편향관측;전체내용오답으로확대하지않음 |
 | `p106b_binding_course_v1_s1337_lookup_balanced` | 코드골드train4096/val512·원parent/micro8accum16/ckptON·LR5e-5/2e-4·4pass128 | 실제128회·1167528x/48592assistant·423.259s. 첫64부모0→35/64·전체315/512 대첫값256/512·4view완결27/128·native3.504322→3.706545. 좁은조회부분학습/범용미확정 [101 §112~113](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_context_replay_v1_s1337` | 최초 CPU7/코퍼스 동결만 | 시스템 python 의존성 미설치와 새 모듈 직접진입 bootstrap 정적 실패를 모델 전에 확인. 기존 corpus 원형 보존·GPU0, 새v2와 혼용 안 함 |
+| `p106b_context_replay_v2_s1337_{sft_only,replay025,replay100}` | 새train5632·동일원parent·micro8accum16/ckptON·LR5e-5/2e-4·4pass176·별도native8행/update | Stage4ad~4af 사전등록: native train CE weight0/.25/1만 변경·같은 native 계산/입력·code test640 최종수집. 실제 토큰/성능은 결과101 회수 전 NOT_RUN; 본75M 대체 아님 |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
