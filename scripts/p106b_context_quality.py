@@ -8,6 +8,10 @@ from __future__ import annotations
 import hashlib
 import json
 import random
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT))
 from tinylm.chat.canonical import normalize,validate
 KINDS=('lookup','missing_reference','missing_item','arithmetic','boolean','json','update','clarify_followup')
 NAMES={'ko':('민수','지현','지우','서준','하린','윤호','나래','서연','은우','도윤','유진','하늘'),

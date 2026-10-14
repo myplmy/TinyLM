@@ -6,6 +6,10 @@ Old courses and real-world teacher corpora are not mutated or claimed expanded.
 from __future__ import annotations
 import json
 import random
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT))
 from tinylm.chat.canonical import normalize,validate
 from scripts.p106b_context_quality import sha,text,teacher_payload
 VERSION='P106B_BROAD_MATCHED_CONTEXT_V2'

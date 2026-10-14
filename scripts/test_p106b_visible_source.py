@@ -1,5 +1,9 @@
 """CPU structural support-ID, exact-source, masks and shared budget fixtures."""
 import unittest
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT))
 from tinylm.chat.canonical import normalize
 from scripts import p106b_visible_source as contract
 

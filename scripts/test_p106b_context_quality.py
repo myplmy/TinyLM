@@ -2,6 +2,10 @@
 import json
 import unittest
 from collections import Counter
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT))
 from scripts import p106b_context_quality as data
 
 class CourseTests(unittest.TestCase):

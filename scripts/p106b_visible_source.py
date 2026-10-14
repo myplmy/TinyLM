@@ -7,6 +7,10 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT))
 from tinylm.chat.canonical import normalize,validate
 from scripts.p106b_context_quality import sha
 VERSION='P106B_VISIBLE_SOURCE_QA_V1'
