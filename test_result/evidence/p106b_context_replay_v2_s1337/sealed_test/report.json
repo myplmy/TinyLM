@@ -1,0 +1,910 @@
+{
+  "schema": "P106B_CONTEXT_REPLAY_V1",
+  "tag": "p106b_context_replay_v2_s1337",
+  "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+  "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+  "seed": 1337,
+  "micro_bs": 8,
+  "accum": 16,
+  "seq": 1024,
+  "checkpoint_on": true,
+  "compile": "default",
+  "epochs": 4,
+  "lr": 5e-05,
+  "muon_lr": 0.0002,
+  "mtp": false,
+  "teacher_calls": 0,
+  "weights": {
+    "sft_only": 0.0,
+    "replay025": 0.25,
+    "replay100": 1.0
+  },
+  "replay_micro_bs": 8,
+  "native_replay": "one additional8x1024 train-only CE batch per SFT optimizer update, even weight0",
+  "code_sha256": {
+    "scripts/diag_p101a_mtp_parity.py": "300B2C196B9378F76AFD6C9E363C2F4441BAD1594FD91B9C0DF53185A1056A6C",
+    "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+    "scripts/diag_p106b_context_quality.py": "ADE74DB6B09028A5238A321307B30990B6580E4F65FA36461388D9B078624D96",
+    "scripts/diag_p106b_retention_course.py": "B6B080598BFF646CEFF102C7C60B0D8E9E079E4E6DE71696B832BC821C25DE07",
+    "scripts/p101a_sft_mtp_data.py": "909B18179F6BDDAD59BA861FF76245DBA99B7912E26CBBBB5E7CBE8CDA2B1F1B",
+    "scripts/p101a_sft_mtp_infer.py": "022987FDBB7C7969ED760220BB26891D4B1401575CCAEC636C357EFDD1741B19",
+    "scripts/p106b_education_followup.py": "7DBD02831020F3AFBD7DEDC8B0C9755FB7469CF1B5C6E9EA98DEEE1D8746A962",
+    "scripts/p106b_retention_course.py": "A2FC37EFB9837CC08660CA440A262EDA2E101B05F566FA0EFDD3F37591ABAB54",
+    "scripts/test_p101a_sft_mtp.py": "11B5B143C1371A965DC9A7CE73C6E0597755516F481A1F49D49C4D1A130B0DA2",
+    "scripts/test_p101a_sft_mtp_data.py": "C5F0BB4BD13FC4A852E8C809F93D3125916F3FE8F839FB858A855096952D0A2A",
+    "scripts/test_p101a_sft_mtp_driver.py": "04B0F5C784DEA3A3F4EF4CD6313176BBF33036D13ECB262DA92B03D5AEB249DD",
+    "scripts/test_p106b_retention_course.py": "23CF31FA6CD658359744ADF218F8BEE9B79B762657B30977E1258F4944FEA364",
+    "tinylm/config.py": "3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF",
+    "tinylm/infer/generate.py": "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4",
+    "tinylm/infer/mtp.py": "833E7DD9BD40A2B67C5D7BE98D64047F089E800BA2FE7A4555E7EEFD6904F8AF",
+    "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+    "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+  },
+  "deadline_utc": "2026-10-15T08:00:00+00:00",
+  "formal_train_ready": false,
+  "general_intelligence": "NOT_ESTABLISHED",
+  "scope": "new experimental curriculum, not75M/300M",
+  "status": "SEALED_CODE_TEST_COLLECTED",
+  "arms": {
+    "parent": {
+      "counts": {
+        "ko:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 95,
+          "first_value_baseline": 64
+        },
+        "ko:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 127,
+          "first_value_baseline": 64
+        },
+        "en:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 128,
+          "first_value_baseline": 64
+        },
+        "en:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 128,
+          "first_value_baseline": 64
+        },
+        "ko:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 9
+        },
+        "en:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 16
+        },
+        "ko:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 6
+        },
+        "en:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 16
+        },
+        "ko:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 14
+        },
+        "en:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 16
+        },
+        "ko:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 16
+        },
+        "en:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 16
+        }
+      },
+      "binding_roots": 128,
+      "all4_exact_roots": 0,
+      "raw_directory": "test_result/evidence/local/p106b_context_replay_v2_s1337/sealed_test/parent",
+      "raw_manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 640,
+        "bytes": 878225,
+        "concat_sha256": "F9733DAC2E168501361D4ABEAB8789FE3E176CC968FCC2EBF486DE7B0D66CDBE",
+        "lineage": {
+          "label": "sealed",
+          "precision": "FP32_MATH_NO_TF32",
+          "cache": true,
+          "mtp_tokens": 1,
+          "temperature": 0,
+          "max_new": 64,
+          "semantic_judge": false
+        },
+        "shards": [
+          {
+            "path": "answers_sealed_000000.jsonl",
+            "bytes": 878225,
+            "rows": 640,
+            "sha256": "F9733DAC2E168501361D4ABEAB8789FE3E176CC968FCC2EBF486DE7B0D66CDBE"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "question": "도하의 색상은 초록입니다. 이안의 색상은 보라입니다.\n도하의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "\n같이 보기 \n 도하\n\n각주\n\n외부 링크 \n\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도하\n도",
+          "gold": "초록",
+          "exact": false
+        },
+        {
+          "question": "도하의 색상은 초록입니다.\n이안의 색상은 보라입니다.\n이안의 색상만 답하세요.",
+          "answer": "\n같이 보기 \n 초록\n\n각주\n\n외부 링크 \n\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n도하의 색상만 답하세요.",
+          "answer": "\n같이 보기 \n 초록\n\n각주\n\n외부 링크 \n\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초록\n초",
+          "gold": "초록",
+          "exact": false
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n위 기록에서 이안의 색상에 해당하는 값만 쓰세요.",
+          "answer": "\n같이 보기 \n 이안\n\n각주\n\n외부 링크 \n\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이안\n이",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n나윤의 색상만 답하세요.",
+          "answer": "\n각주\n\n외부 링크 \n\n대한민국의 음악 그룹\n대한민국의 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n유나의 색상만 답하세요.",
+          "answer": "\n각주\n\n외부 링크 \n\n대한민국의 음악 그룹\n대한민국의 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝",
+          "gold": "주황",
+          "exact": false
+        },
+        {
+          "question": "유나의 색상은 주황입니다.\n나윤의 색상은 파랑입니다.\n위 기록에서 나윤의 색상에 해당하는 값만 쓰세요.",
+          "answer": "\n각주\n\n외부 링크 \n\n대한민국의 노래\n한국어 노래\n한국어 노래\n한국어 노래\n한국어 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래\n대한민국의 노래",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "유나의 색상은 주황입니다. 나윤의 색상은 파랑입니다.\n유나의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "\n각주\n\n외부 링크 \n\n대한민국의 음악 그룹\n대한민국의 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝 음악 그룹\n대한민국의 걸 그룹\n대한민국의 팝",
+          "gold": "주황",
+          "exact": false
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "\n같이 보기 \n 추석\n\n각주\n\n외부 링크 \n\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의",
+          "gold": "주황",
+          "exact": false
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 재윤의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "\n같이 보기 \n 추석\n\n각주\n\n외부 링크 \n\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의",
+          "gold": "노랑",
+          "exact": false
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다. 수아의 색상은 주황입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "\n같이 보기 \n 수아\n\n각주\n\n외부 링크 \n\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의 법\n대한민국의",
+          "gold": "주황",
+          "exact": false
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다.\n수아의 색상은 주황입니다.\n재윤의 색상만 답하세요.",
+          "answer": "\n같이 보기 \n 노랑\n\n각주\n\n외부 링크 \n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n 노랑 공식 홈페이지\n",
+          "gold": "노랑",
+          "exact": false
+        }
+      ],
+      "public_agreement_is_not_truth": true,
+      "native": {
+        "ce": 3.5043222308158875,
+        "targets": 32768,
+        "crops": 32,
+        "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+        "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+      }
+    },
+    "sft_only": {
+      "counts": {
+        "ko:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 57,
+          "teacher_literal_agreement": 57,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "ko:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 60,
+          "teacher_literal_agreement": 60,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "en:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 56,
+          "teacher_literal_agreement": 56,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "en:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 65,
+          "teacher_literal_agreement": 65,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "ko:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 12,
+          "teacher_literal_agreement": 12,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 14,
+          "teacher_literal_agreement": 14,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 11,
+          "teacher_literal_agreement": 11,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 12,
+          "teacher_literal_agreement": 12,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "binding_roots": 128,
+      "all4_exact_roots": 1,
+      "raw_directory": "test_result/evidence/local/p106b_context_replay_v2_s1337/sealed_test/sft_only",
+      "raw_manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 640,
+        "bytes": 713773,
+        "concat_sha256": "976597CF01ED5563ADF92AF8C22CE5B4213A7E8EAC73861FF5F5810CB7D0822E",
+        "lineage": {
+          "label": "sealed",
+          "precision": "FP32_MATH_NO_TF32",
+          "cache": true,
+          "mtp_tokens": 1,
+          "temperature": 0,
+          "max_new": 64,
+          "semantic_judge": false
+        },
+        "shards": [
+          {
+            "path": "answers_sealed_000000.jsonl",
+            "bytes": 713773,
+            "rows": 640,
+            "sha256": "976597CF01ED5563ADF92AF8C22CE5B4213A7E8EAC73861FF5F5810CB7D0822E"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "question": "도하의 색상은 초록입니다. 이안의 색상은 보라입니다.\n도하의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "보라",
+          "gold": "초록",
+          "exact": false
+        },
+        {
+          "question": "도하의 색상은 초록입니다.\n이안의 색상은 보라입니다.\n이안의 색상만 답하세요.",
+          "answer": "초록",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n도하의 색상만 답하세요.",
+          "answer": "초록",
+          "gold": "초록",
+          "exact": true
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n위 기록에서 이안의 색상에 해당하는 값만 쓰세요.",
+          "answer": "초록",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n나윤의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n유나의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "유나의 색상은 주황입니다.\n나윤의 색상은 파랑입니다.\n위 기록에서 나윤의 색상에 해당하는 값만 쓰세요.",
+          "answer": "주황",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "유나의 색상은 주황입니다. 나윤의 색상은 파랑입니다.\n유나의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 재윤의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "노랑",
+          "exact": false
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다. 수아의 색상은 주황입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다.\n수아의 색상은 주황입니다.\n재윤의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "노랑",
+          "exact": false
+        }
+      ],
+      "public_agreement_is_not_truth": true,
+      "native": {
+        "ce": 3.859621286392212,
+        "targets": 32768,
+        "crops": 32,
+        "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+        "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+      }
+    },
+    "replay025": {
+      "counts": {
+        "ko:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 61,
+          "teacher_literal_agreement": 61,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "ko:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 56,
+          "teacher_literal_agreement": 56,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "en:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 53,
+          "teacher_literal_agreement": 53,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "en:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 67,
+          "teacher_literal_agreement": 67,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "ko:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 8,
+          "teacher_literal_agreement": 8,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 14,
+          "teacher_literal_agreement": 14,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 8,
+          "teacher_literal_agreement": 8,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 11,
+          "teacher_literal_agreement": 11,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "binding_roots": 128,
+      "all4_exact_roots": 0,
+      "raw_directory": "test_result/evidence/local/p106b_context_replay_v2_s1337/sealed_test/replay025",
+      "raw_manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 640,
+        "bytes": 713748,
+        "concat_sha256": "6D376D8E3A435D9E1B09E979796AD1C90A03654B886E19CE18B99A3003C1E3A1",
+        "lineage": {
+          "label": "sealed",
+          "precision": "FP32_MATH_NO_TF32",
+          "cache": true,
+          "mtp_tokens": 1,
+          "temperature": 0,
+          "max_new": 64,
+          "semantic_judge": false
+        },
+        "shards": [
+          {
+            "path": "answers_sealed_000000.jsonl",
+            "bytes": 713748,
+            "rows": 640,
+            "sha256": "6D376D8E3A435D9E1B09E979796AD1C90A03654B886E19CE18B99A3003C1E3A1"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "question": "도하의 색상은 초록입니다. 이안의 색상은 보라입니다.\n도하의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "보라",
+          "gold": "초록",
+          "exact": false
+        },
+        {
+          "question": "도하의 색상은 초록입니다.\n이안의 색상은 보라입니다.\n이안의 색상만 답하세요.",
+          "answer": "초록",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n도하의 색상만 답하세요.",
+          "answer": "초록",
+          "gold": "초록",
+          "exact": true
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n위 기록에서 이안의 색상에 해당하는 값만 쓰세요.",
+          "answer": "보라",
+          "gold": "보라",
+          "exact": true
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n나윤의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n유나의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "유나의 색상은 주황입니다.\n나윤의 색상은 파랑입니다.\n위 기록에서 나윤의 색상에 해당하는 값만 쓰세요.",
+          "answer": "주황",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "유나의 색상은 주황입니다. 나윤의 색상은 파랑입니다.\n유나의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 재윤의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "노랑",
+          "exact": false
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다. 수아의 색상은 주황입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다.\n수아의 색상은 주황입니다.\n재윤의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "노랑",
+          "exact": false
+        }
+      ],
+      "public_agreement_is_not_truth": true,
+      "native": {
+        "ce": 3.552834652364254,
+        "targets": 32768,
+        "crops": 32,
+        "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+        "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+      }
+    },
+    "replay100": {
+      "counts": {
+        "ko:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 58,
+          "teacher_literal_agreement": 58,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "ko:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 60,
+          "teacher_literal_agreement": 60,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "en:binding_color": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 57,
+          "teacher_literal_agreement": 57,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "en:binding_department": {
+          "cases": 128,
+          "scored": 128,
+          "exact": 60,
+          "teacher_literal_agreement": 60,
+          "empty": 0,
+          "max_new": 0,
+          "first_value_baseline": 64
+        },
+        "ko:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:arithmetic": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 10,
+          "teacher_literal_agreement": 10,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:boolean": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 14,
+          "teacher_literal_agreement": 14,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 8,
+          "teacher_literal_agreement": 8,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:json": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 11,
+          "teacher_literal_agreement": 11,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:update": {
+          "cases": 16,
+          "scored": 16,
+          "exact": 0,
+          "teacher_literal_agreement": 0,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "binding_roots": 128,
+      "all4_exact_roots": 0,
+      "raw_directory": "test_result/evidence/local/p106b_context_replay_v2_s1337/sealed_test/replay100",
+      "raw_manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 640,
+        "bytes": 713719,
+        "concat_sha256": "A9A89C665142443E96E69B80EE01DF4D8EA343CE03B698FF0035D00F3035AB70",
+        "lineage": {
+          "label": "sealed",
+          "precision": "FP32_MATH_NO_TF32",
+          "cache": true,
+          "mtp_tokens": 1,
+          "temperature": 0,
+          "max_new": 64,
+          "semantic_judge": false
+        },
+        "shards": [
+          {
+            "path": "answers_sealed_000000.jsonl",
+            "bytes": 713719,
+            "rows": 640,
+            "sha256": "A9A89C665142443E96E69B80EE01DF4D8EA343CE03B698FF0035D00F3035AB70"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "question": "도하의 색상은 초록입니다. 이안의 색상은 보라입니다.\n도하의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "초록",
+          "gold": "초록",
+          "exact": true
+        },
+        {
+          "question": "도하의 색상은 초록입니다.\n이안의 색상은 보라입니다.\n이안의 색상만 답하세요.",
+          "answer": "초록",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n도하의 색상만 답하세요.",
+          "answer": "초록",
+          "gold": "초록",
+          "exact": true
+        },
+        {
+          "question": "이안의 색상은 보라입니다.\n도하의 색상은 초록입니다.\n위 기록에서 이안의 색상에 해당하는 값만 쓰세요.",
+          "answer": "초록",
+          "gold": "보라",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n나윤의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "나윤의 색상은 파랑입니다.\n유나의 색상은 주황입니다.\n유나의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "유나의 색상은 주황입니다.\n나윤의 색상은 파랑입니다.\n위 기록에서 나윤의 색상에 해당하는 값만 쓰세요.",
+          "answer": "주황",
+          "gold": "파랑",
+          "exact": false
+        },
+        {
+          "question": "유나의 색상은 주황입니다. 나윤의 색상은 파랑입니다.\n유나의 색상는 무엇인가요? 이름만 쓰세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "수아의 색상은 주황입니다. 재윤의 색상은 노랑입니다.\n질문: 재윤의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "노랑",
+          "exact": false
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다. 수아의 색상은 주황입니다.\n질문: 수아의 색상는? 다른 설명 없이 답하세요.",
+          "answer": "주황",
+          "gold": "주황",
+          "exact": true
+        },
+        {
+          "question": "재윤의 색상은 노랑입니다.\n수아의 색상은 주황입니다.\n재윤의 색상만 답하세요.",
+          "answer": "주황",
+          "gold": "노랑",
+          "exact": false
+        }
+      ],
+      "public_agreement_is_not_truth": true,
+      "native": {
+        "ce": 3.5355001240968704,
+        "targets": 32768,
+        "crops": 32,
+        "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+        "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+      }
+    }
+  },
+  "whole_sec": 669.0881645949994,
+  "corpus_sha256": "E9E31A5B3DD92607517AA54AB9FD79529B7FAA06B01CC3D64A6EE9B67AC8A62C",
+  "cases_per_arm": 640,
+  "model_training": false,
+  "checkpoint_saved": false,
+  "first_test_use": true,
+  "actual_student_rollout": "NOT_RUN",
+  "interpretation": "code-defined conditional task, not general intelligence/world knowledge; no sigma measured"
+}

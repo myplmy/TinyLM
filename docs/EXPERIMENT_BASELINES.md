@@ -251,7 +251,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_source_binding_v1_s1337` | 같은사실의질문대상/본문순서·값배정 대응,저장4endpoint·학습0 | 실제128답·47.971초·명시scalar0/32각팔. A/B/C 대상flip16쌍중7/8/9쌍문자불변·앞이름/고정값 편향관측;전체내용오답으로확대하지않음 |
 | `p106b_binding_course_v1_s1337_lookup_balanced` | 코드골드train4096/val512·원parent/micro8accum16/ckptON·LR5e-5/2e-4·4pass128 | 실제128회·1167528x/48592assistant·423.259s. 첫64부모0→35/64·전체315/512 대첫값256/512·4view완결27/128·native3.504322→3.706545. 좁은조회부분학습/범용미확정 [101 §112~113](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_context_replay_v1_s1337` | 최초 CPU7/코퍼스 동결만 | 시스템 python 의존성 미설치와 새 모듈 직접진입 bootstrap 정적 실패를 모델 전에 확인. 기존 corpus 원형 보존·GPU0, 새v2와 혼용 안 함 |
-| `p106b_context_replay_v2_s1337_{sft_only,replay025,replay100}` | 새train5632·동일원parent·micro8accum16/ckptON·LR5e-5/2e-4·4pass176·별도native8행/update | Stage4ad~4af 사전등록: native train CE weight0/.25/1만 변경·같은 native 계산/입력·code test640 최종수집. 실제 토큰/성능은 결과101 회수 전 NOT_RUN; 본75M 대체 아님 |
+| `p106b_context_replay_v2_s1337_{sft_only,replay025,replay100}` | 같은train5632/원parent·micro8accum16/ckptON·LR5e-5/2e-4·각4pass176·추가native8행/update | 실제SFT각1088116x/108484assistant+native1441792x. native후3.859621/3.552835/3.535500, code640정확287/278/278·조회512는238/237/235로첫값256미달. 보존대가감소·대상이해미회복 [101 §116](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_context_orpo_v1_s1337_{pair_zero,pair010,pair030}` | 같은SFT/native/원부모·4pass176·추가16pairs/update의강도0/.1/.3 대조 | 조건부 준비·CPU8. 원문 hash가 맞는 code 단일값 질문에만 wrong-target/불필요반복 쌍을 생성. 공개/불명 문항의 오답 추정·온라인 재생성 없음; 실제 학습효과는 회수 전 NOT_RUN |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|

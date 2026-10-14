@@ -1,0 +1,20 @@
+# 2026-10-15 선별 staging 판단
+
+현재 작업 착수의 미추적 파일은 낡은 runtime capsule 한 개였다. 로컬 복구용으로 ignore했고 삭제하지 않았다.
+현재 변경은 이 작업의 코드·계획·실측·인계와 명령을 보존한 완료 SH 정리다.
+
+| 종류 | 판단 | 근거 |
+|---|---|---|
+| 독립 실험/CPU검산 코드·root SH | 선별추적 | 실제 동작 경로와 재현에 필요; 제품 기본과 분리 |
+| 결과101·계획/목록·기준표·방법론·COMPASS | 선별추적 | 조건·실측·미실행·한계를 같은 수준으로 유지 |
+| 작은 corpus/cost/train/test/CPU report | 선별추적 | 실제 입력/지도량·원형 SHA·실측분모의 근거 |
+| 완료된 자기소유 raw | 선별추적 | 종료코드와 실행명령의 원형; 진행 중 raw는 종료 전 commit 안 함 |
+| teacher 원형/사고·다량원문·학생원답 | 로컬제외 | 별도 HF/evidence/local 보존; 필요한 소형집계/제한판독만추적 |
+| 기존/새 CPT·native/캐시·feature tensors | 로컬제외 | 대량/사용자소유·재생성 산출물이며 코드와 SHA로 연결 |
+| 처음의정적실패·고유한flag/인계/날짜실패·freeze감사 | 보존 | 발견·수리와실제권한범위를구분하는증거 |
+| 중복한 operational READY 감사3개 | 정확경로ignore | 같은문제/중간PASS를반복해Git에쌓지않음;삭제하지않고고유실패와freeze감사유지 |
+| 외부2WIP·보호TinyDataset·환경설정 | 변경0 | 현재목표의범위가아님 |
+
+명시 경로만 staging한다. HF/runs/data_cache/보호데이터/개인캡슐은 포함하지 않는다.
+20MB를 넘는 Git blob은 허용하지 않으며 원문 JSONL도 ShardWriter의20MB 상한으로 분할한다.
+core.filemode=false라 새 실행SH의 인덱스실행비트는명시적으로확인한다. 설정을전역변경하지않는다.
