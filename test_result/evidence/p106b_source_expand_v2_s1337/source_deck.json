@@ -1,0 +1,627 @@
+{
+  "schema": "P106B_PUBLIC_REFERENCE_COURSE_V1",
+  "tag": "p106b_source_expand_v2_s1337",
+  "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+  "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+  "micro_bs": 8,
+  "accum": 16,
+  "seq": 1024,
+  "grad_checkpoint": true,
+  "compile": "default",
+  "seed": 1337,
+  "epochs": 4,
+  "expected_updates": null,
+  "train_rows": 512,
+  "val_rows": 64,
+  "lr": 5e-05,
+  "muon_lr": 0.0002,
+  "teacher_mtp": true,
+  "teacher_sampler": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 64,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "repeat_penalty": 1.0
+  },
+  "teacher_context": 8192,
+  "teacher_output": 3072,
+  "teacher_thinking": 1024,
+  "source_train": 512,
+  "source_val": 64,
+  "views_per_source": 1,
+  "reference_weight_options": [
+    0.0,
+    0.1
+  ],
+  "formal_train_ready": false,
+  "world_knowledge_claim": false,
+  "code_sha256": {
+    "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+    "scripts/diag_p106b_context_quality.py": "ADE74DB6B09028A5238A321307B30990B6580E4F65FA36461388D9B078624D96",
+    "scripts/diag_p106b_gemma_ac.py": "4BF1F28DB0C63C9064A3F5DA1E1D9A216B0C613546D9C1AB22B214CBB739EFD8",
+    "scripts/diag_p106b_source_course.py": "CBA4D4EA0461AE8A2CFBE038D1C73A7C443AC151BD4D55901476C70CFC662D56",
+    "scripts/diag_p106b_source_expand.py": "6AD5A98F844CF9DCFC1C73D18B6FB4EE22C0CB519408692A0B6BB2169C4E12F9",
+    "scripts/p106b_gemma_labels.py": "9FE6736644CC924BCDD00AB6745D578D52D0BA3753796C3C2429C2982E7AC2C9",
+    "scripts/p106b_gemma_teacher.py": "0E82FCEF3DD0ED46FD35728E4B43E8BBC2D4748F6229DFFBFED86E4A4070E8BC",
+    "scripts/p106b_memory_stream.py": "4BC771E89EEA2856125D304455A2873BF48D4A1338036BDB133C99A9E32C9559",
+    "scripts/p106b_source_course.py": "E9BCDF95E2ACA0CA713CACB180A2BF722160BEF1C3DCBE195C9EC28D74999256",
+    "scripts/p106b_visible_source.py": "A006367B76BA46658CD527F676D3FA0FFA21DF1E4DD03E4D4D91B706BDFB7DF3",
+    "scripts/test_p106b_source_course.py": "EF299F3E605842D088986F99CA69EAB432838CFB523577895B11939A06B9D8C5",
+    "scripts/test_p106b_source_expand.py": "6421096F10406E94D92B20FF62E3DB98B2E9C7ED82E685C7489007C4A3E7F3FC",
+    "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+  },
+  "student_training": "NOT_RUN",
+  "source_reference_policy": "FULL_BOUNDED_ORIGINAL_SOURCE_NOT_ONLY_TEACHER_SELECTION",
+  "reference_max_source_tokens": 512,
+  "source_exclusion": "old full736 deck roots and long-message identities",
+  "status": "SOURCE_DECK_FROZEN",
+  "identity": {
+    "public_sha256": "774E2CBA5DAD402C24F9A70555D0F5ACC1F660BF83BAFE793BC7E4BED9727814",
+    "source_manifests": {
+      "train": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 329082,
+        "bytes": 528195784,
+        "concat_sha256": "97DA45EA48AEF17A9EE773FF30A72B61A48B390FCD4029E9FC97C5BBC33AD63B",
+        "lineage": {
+          "sources": [
+            {
+              "family": "aya",
+              "path": "HF/sft_sources/aya/data/train-00000-of-00001.parquet",
+              "repo": "CohereLabs/aya_dataset",
+              "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2",
+              "license": "Apache-2.0",
+              "sha256": "51BAA85043B569BA117F41516B32D1B0E4E2647FB203A08933F98A556FB1FB06"
+            },
+            {
+              "family": "aya_collection",
+              "path": "HF/sft_sources/aya_collection_ko/korean/train-00000-of-00002.parquet",
+              "sha256": "0EED3F48935418B4B8C1FF55AD8DD8D2EDCDEA2BEFDB2A61A6953CC5403340F1",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card"
+            },
+            {
+              "family": "aya_collection",
+              "path": "HF/sft_sources/aya_collection_ko/korean/train-00001-of-00002.parquet",
+              "sha256": "42BD2F8956B74881F5FE02787388A984EA9C62A7115E98E49350F3EA963015E3",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card"
+            },
+            {
+              "family": "oasst1",
+              "path": "HF/sft_sources/oasst/2023-04-12_oasst_ready.trees.jsonl.gz",
+              "repo": "OpenAssistant/oasst1",
+              "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b",
+              "license": "Apache-2.0",
+              "sha256": "2A9A8FD343E9B28E04A895A669D3253F82D93E9C174D440199AE19D5FAFBDFF7"
+            },
+            {
+              "family": "oasst2",
+              "path": "HF/sft_sources/p090_oasst2_179dd21/2023-11-05_oasst2_ready.trees.jsonl.gz",
+              "repo": "OpenAssistant/oasst2",
+              "revision": "179dd21fc55192153d94adb0e0ce8f69e222bf75",
+              "license": "Apache-2.0",
+              "sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00000-of-00007.parquet",
+              "remote_file": "english/train-00000-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "E62C621D50DEB9EB38842D2B32C5875001DAF93E482A179463D2D8007288E603",
+              "bytes": 627179915
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00001-of-00007.parquet",
+              "remote_file": "english/train-00001-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "F4395CC222ACCC3DCA1B21958FC0AB96B9E77BA46CBCD2A8FA2F99A89252FD8F",
+              "bytes": 319443283
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00002-of-00007.parquet",
+              "remote_file": "english/train-00002-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "0859D39AD651158D7E4FF7C50F8A104FA65D201E00DE9A4C6346888EDE486AA5",
+              "bytes": 319371110
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00003-of-00007.parquet",
+              "remote_file": "english/train-00003-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "F378F421DFBCC32C602E043CF40F7804C613D85C37710994C8392CF2FEC69CF4",
+              "bytes": 1624259026
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00004-of-00007.parquet",
+              "remote_file": "english/train-00004-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "CFAC8220A3323B41941B3540D8DE4019804E98166E608CDDF8B9A6BC0375642B",
+              "bytes": 2008783413
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00005-of-00007.parquet",
+              "remote_file": "english/train-00005-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "21E8840B93F2785E9F2C826B2F6F4DB4C4C72A70512BB2EE5F753DD4380081A4",
+              "bytes": 868340093
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00006-of-00007.parquet",
+              "remote_file": "english/train-00006-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "2482CA4333623B6DF7DDEBD5D0536D9D41AA6F89644A7FA10C7B46D1D9A3FE99",
+              "bytes": 553821641
+            }
+          ],
+          "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+          "selection_version": "HASH_SOURCE_CAP_V2"
+        },
+        "shards": [
+          {
+            "path": "train_000000.jsonl",
+            "bytes": 19999811,
+            "rows": 12460,
+            "sha256": "53233A623E75450F223DDCD10C2D82E02CAB372635BA9CC253CDBBF3B0A8DE7E"
+          },
+          {
+            "path": "train_000001.jsonl",
+            "bytes": 19998861,
+            "rows": 12499,
+            "sha256": "8C73FD6B802A58B4135DC36CCF3B9B1BF4518EFAE45673133E8B8A1D216B2E93"
+          },
+          {
+            "path": "train_000002.jsonl",
+            "bytes": 19999930,
+            "rows": 12534,
+            "sha256": "A6B8499C98D4C56631E3B4A6F4E883132CCED27F043B038CAD91715866FB0A49"
+          },
+          {
+            "path": "train_000003.jsonl",
+            "bytes": 19998454,
+            "rows": 12514,
+            "sha256": "BA2F29B0153304E70F871CE5FEEB408DF519A843F3C12A92EB2CABF4D0B42232"
+          },
+          {
+            "path": "train_000004.jsonl",
+            "bytes": 19999155,
+            "rows": 12593,
+            "sha256": "6A3AFCB4D0D9C97064D7D03DB620782269FEFAB3F1EB801D65079CDE1DC1809F"
+          },
+          {
+            "path": "train_000005.jsonl",
+            "bytes": 19999127,
+            "rows": 12548,
+            "sha256": "63D15C26684C83C6029932840A12399932CD8733063C5E042305C32BD9933D03"
+          },
+          {
+            "path": "train_000006.jsonl",
+            "bytes": 19999173,
+            "rows": 12484,
+            "sha256": "3B0CCEAC6AA4F35DC9C6827D5205DFCB4757E8710BD53F176D12BFB0355C78D6"
+          },
+          {
+            "path": "train_000007.jsonl",
+            "bytes": 19998834,
+            "rows": 12560,
+            "sha256": "0D355F15B21AA03192504186330008421F3B1A7361DD68E84A8F53538FA49F72"
+          },
+          {
+            "path": "train_000008.jsonl",
+            "bytes": 19999923,
+            "rows": 12421,
+            "sha256": "8AF6882045C344BA309F8015AE89C2BDD99A742B0F980CE89F552A7D55ADC804"
+          },
+          {
+            "path": "train_000009.jsonl",
+            "bytes": 19999081,
+            "rows": 12491,
+            "sha256": "F1C01D768A056B2B0ABAEE0BC91FB4D5FB4DAC6194DEDA268980F9564953C8D5"
+          },
+          {
+            "path": "train_000010.jsonl",
+            "bytes": 19999539,
+            "rows": 12505,
+            "sha256": "35A313BFCB540A091F8A250E731230A9810082F684BEF824D54BED7BBD563893"
+          },
+          {
+            "path": "train_000011.jsonl",
+            "bytes": 19999216,
+            "rows": 12516,
+            "sha256": "C469D8CE477673C94B6F3A64B5EB19C4766DA36FA41DD7C636D240AB6E21A12B"
+          },
+          {
+            "path": "train_000012.jsonl",
+            "bytes": 19999838,
+            "rows": 12456,
+            "sha256": "9D5F534D3D7AE567DF2F078C92F8F3679757D5744A70AC46076AB773366A9E09"
+          },
+          {
+            "path": "train_000013.jsonl",
+            "bytes": 19999566,
+            "rows": 12489,
+            "sha256": "DF3C0A62363C0319F19E06FE328A44E3C51005F7885DA4B01FC152C6009B68AF"
+          },
+          {
+            "path": "train_000014.jsonl",
+            "bytes": 19999277,
+            "rows": 12471,
+            "sha256": "8D1EE5860E66B8C65DE41CE1AFF9776EE1AF6FB2E068DC8106016C668090B2F7"
+          },
+          {
+            "path": "train_000015.jsonl",
+            "bytes": 20000000,
+            "rows": 12456,
+            "sha256": "B60210E6C107E133B6B946A9B91DB4E6BEF9DEEFB6120B2E89CDA4DEF6AC3F4C"
+          },
+          {
+            "path": "train_000016.jsonl",
+            "bytes": 19996777,
+            "rows": 12492,
+            "sha256": "14A1E9299BBF407636B2F586DADD15E04AAAAD1E1DC6ACF9B69B3ED2DD013F61"
+          },
+          {
+            "path": "train_000017.jsonl",
+            "bytes": 19999044,
+            "rows": 12494,
+            "sha256": "6E766E23F8D265609DF44FE55BBB8D434C2CFC49FB59960816B9C91CCB2DCDE9"
+          },
+          {
+            "path": "train_000018.jsonl",
+            "bytes": 19999680,
+            "rows": 12490,
+            "sha256": "4DAC0745ECFB9A581836CEDF21C57B2B45216080FDEA8DA3EA4A46AD7D677760"
+          },
+          {
+            "path": "train_000019.jsonl",
+            "bytes": 19999650,
+            "rows": 12557,
+            "sha256": "20EB95DB4D1B6338F13DA0EBC77763F8736070AA13305254DDC64EEA4633C41B"
+          },
+          {
+            "path": "train_000020.jsonl",
+            "bytes": 19998382,
+            "rows": 12561,
+            "sha256": "4C65B9C718F8E28318C7C04BB0E7A75252FF66C41B2DA55D95CADF168EF54B53"
+          },
+          {
+            "path": "train_000021.jsonl",
+            "bytes": 19999314,
+            "rows": 12434,
+            "sha256": "35ACBFC8AB845A33357E8FB9A4E049D17A0DDB3217B767AF5532594EB83EA80D"
+          },
+          {
+            "path": "train_000022.jsonl",
+            "bytes": 19999682,
+            "rows": 12495,
+            "sha256": "5331A0ACDB3F3886C011C602087CA4FD7F71852DBF92EBA891254DFFF6430755"
+          },
+          {
+            "path": "train_000023.jsonl",
+            "bytes": 19999703,
+            "rows": 12472,
+            "sha256": "4AC33D4B97D8BC70E75A12C36A258EF9959602660632514549D78CFFE06C9450"
+          },
+          {
+            "path": "train_000024.jsonl",
+            "bytes": 19999703,
+            "rows": 12537,
+            "sha256": "B3E4954C5998C0000F584B14B5B3A98648AE656E6B2DB7BA058E19715BB66039"
+          },
+          {
+            "path": "train_000025.jsonl",
+            "bytes": 19998606,
+            "rows": 12130,
+            "sha256": "FE578080E24E58DF222E3A397CC67BBC51D51E030CC798B4C251FBB0ACFA1E6C"
+          },
+          {
+            "path": "train_000026.jsonl",
+            "bytes": 8215458,
+            "rows": 4423,
+            "sha256": "D79EBCFBD26E5A7FDBB499A8347607331D2AA762CA68DA99DA3E805EF65A3E26"
+          }
+        ]
+      },
+      "val": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 17140,
+        "bytes": 27546940,
+        "concat_sha256": "6FB5E315398B5F3C0865BB4D89CE36FA3720745AAE35AA5549CA9C169FC3D034",
+        "lineage": {
+          "sources": [
+            {
+              "family": "aya",
+              "path": "HF/sft_sources/aya/data/train-00000-of-00001.parquet",
+              "repo": "CohereLabs/aya_dataset",
+              "revision": "f9ea04583f02a8f86404ff6c58bf75fe637df8a2",
+              "license": "Apache-2.0",
+              "sha256": "51BAA85043B569BA117F41516B32D1B0E4E2647FB203A08933F98A556FB1FB06"
+            },
+            {
+              "family": "aya_collection",
+              "path": "HF/sft_sources/aya_collection_ko/korean/train-00000-of-00002.parquet",
+              "sha256": "0EED3F48935418B4B8C1FF55AD8DD8D2EDCDEA2BEFDB2A61A6953CC5403340F1",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card"
+            },
+            {
+              "family": "aya_collection",
+              "path": "HF/sft_sources/aya_collection_ko/korean/train-00001-of-00002.parquet",
+              "sha256": "42BD2F8956B74881F5FE02787388A984EA9C62A7115E98E49350F3EA963015E3",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card"
+            },
+            {
+              "family": "oasst1",
+              "path": "HF/sft_sources/oasst/2023-04-12_oasst_ready.trees.jsonl.gz",
+              "repo": "OpenAssistant/oasst1",
+              "revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b",
+              "license": "Apache-2.0",
+              "sha256": "2A9A8FD343E9B28E04A895A669D3253F82D93E9C174D440199AE19D5FAFBDFF7"
+            },
+            {
+              "family": "oasst2",
+              "path": "HF/sft_sources/p090_oasst2_179dd21/2023-11-05_oasst2_ready.trees.jsonl.gz",
+              "repo": "OpenAssistant/oasst2",
+              "revision": "179dd21fc55192153d94adb0e0ce8f69e222bf75",
+              "license": "Apache-2.0",
+              "sha256": "7A886A16CCFC1173C4F00A6897523E3C95B2785A86EE44A18A98F4F2807EE29B"
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00000-of-00007.parquet",
+              "remote_file": "english/train-00000-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "E62C621D50DEB9EB38842D2B32C5875001DAF93E482A179463D2D8007288E603",
+              "bytes": 627179915
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00001-of-00007.parquet",
+              "remote_file": "english/train-00001-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "F4395CC222ACCC3DCA1B21958FC0AB96B9E77BA46CBCD2A8FA2F99A89252FD8F",
+              "bytes": 319443283
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00002-of-00007.parquet",
+              "remote_file": "english/train-00002-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "0859D39AD651158D7E4FF7C50F8A104FA65D201E00DE9A4C6346888EDE486AA5",
+              "bytes": 319371110
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00003-of-00007.parquet",
+              "remote_file": "english/train-00003-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "F378F421DFBCC32C602E043CF40F7804C613D85C37710994C8392CF2FEC69CF4",
+              "bytes": 1624259026
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00004-of-00007.parquet",
+              "remote_file": "english/train-00004-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "CFAC8220A3323B41941B3540D8DE4019804E98166E608CDDF8B9A6BC0375642B",
+              "bytes": 2008783413
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00005-of-00007.parquet",
+              "remote_file": "english/train-00005-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "21E8840B93F2785E9F2C826B2F6F4DB4C4C72A70512BB2EE5F753DD4380081A4",
+              "bytes": 868340093
+            },
+            {
+              "family": "aya_collection_en",
+              "language": "en",
+              "path": "HF/sft_sources/p106b_aya_collection_en_a3af2fde/english/train-00006-of-00007.parquet",
+              "remote_file": "english/train-00006-of-00007.parquet",
+              "repo": "CohereLabs/aya_collection_language_split",
+              "revision": "a3af2fde4b4cb5b2775830b11244a1a20b5f004f",
+              "license": "Apache-2.0_card",
+              "source_rights": "CARD_ONLY_NOT_BLANKET_SUBSOURCE_CLEARANCE",
+              "original_split": "train",
+              "sha256": "2482CA4333623B6DF7DDEBD5D0536D9D41AA6F89644A7FA10C7B46D1D9A3FE99",
+              "bytes": 553821641
+            }
+          ],
+          "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+          "selection_version": "HASH_SOURCE_CAP_V2"
+        },
+        "shards": [
+          {
+            "path": "val_000000.jsonl",
+            "bytes": 19999735,
+            "rows": 12502,
+            "sha256": "7DC01522225416526443EFEFA8D2A3471F465DF0A803A613BB5646C022FEB135"
+          },
+          {
+            "path": "val_000001.jsonl",
+            "bytes": 7547205,
+            "rows": 4638,
+            "sha256": "6EAB0E3226BD1B9D2F758DE5F9F5BE10EE710223D9601F1ABEDCC4F702C468A4"
+          }
+        ]
+      }
+    },
+    "selected": "81C8736B0F166D7BDBC1C20C2A3A9257AC4F502FD07A2A9A2359F52FF57E5738",
+    "family_counts": {
+      "val:ko:NQ": 12,
+      "val:ko:COQA": 12,
+      "val:ko:ADVERSARIAL": 12,
+      "val:ko:AYA": 12,
+      "val:en:NQ": 12,
+      "val:en:COQA": 12,
+      "val:en:AYA": 12,
+      "val:en:OASST": 12,
+      "train:ko:NQ": 80,
+      "train:ko:COQA": 80,
+      "train:ko:ADVERSARIAL": 80,
+      "train:ko:AYA": 80,
+      "train:en:NQ": 80,
+      "train:en:COQA": 80,
+      "train:en:AYA": 80,
+      "train:en:OASST": 80
+    },
+    "rejections": {},
+    "source_cap": "one quarter of source groups per language; not claim of token balance",
+    "split_policy": "new original-concept SHA20percent val; preserve original source split; selected exact long-message keys also disjoint",
+    "past_pretraining_or_translation_overlap": "NOT_ESTABLISHED; only new SFT source-group disjointness verified"
+  },
+  "source_manifest": {
+    "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+    "limit_bytes": 20000000,
+    "rows": 736,
+    "bytes": 1771425,
+    "concat_sha256": "3C8D3F3B9979E482B4DA5BED638199A79571741CF99A9A0B1A0C59E18493F7E5",
+    "lineage": {
+      "schema": "P106B_PUBLIC_REFERENCE_COURSE_V1",
+      "tag": "p106b_source_expand_v2_s1337",
+      "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+      "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+      "micro_bs": 8,
+      "accum": 16,
+      "seq": 1024,
+      "grad_checkpoint": true,
+      "compile": "default",
+      "seed": 1337,
+      "epochs": 4,
+      "expected_updates": null,
+      "train_rows": 512,
+      "val_rows": 64,
+      "lr": 5e-05,
+      "muon_lr": 0.0002,
+      "teacher_mtp": true,
+      "teacher_sampler": {
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 64,
+        "min_p": 0.0,
+        "presence_penalty": 0.0,
+        "repeat_penalty": 1.0
+      },
+      "teacher_context": 8192,
+      "teacher_output": 3072,
+      "teacher_thinking": 1024,
+      "source_train": 512,
+      "source_val": 64,
+      "views_per_source": 1,
+      "reference_weight_options": [
+        0.0,
+        0.1
+      ],
+      "formal_train_ready": false,
+      "world_knowledge_claim": false,
+      "code_sha256": {
+        "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+        "scripts/diag_p106b_context_quality.py": "ADE74DB6B09028A5238A321307B30990B6580E4F65FA36461388D9B078624D96",
+        "scripts/diag_p106b_gemma_ac.py": "4BF1F28DB0C63C9064A3F5DA1E1D9A216B0C613546D9C1AB22B214CBB739EFD8",
+        "scripts/diag_p106b_source_course.py": "CBA4D4EA0461AE8A2CFBE038D1C73A7C443AC151BD4D55901476C70CFC662D56",
+        "scripts/diag_p106b_source_expand.py": "6AD5A98F844CF9DCFC1C73D18B6FB4EE22C0CB519408692A0B6BB2169C4E12F9",
+        "scripts/p106b_gemma_labels.py": "9FE6736644CC924BCDD00AB6745D578D52D0BA3753796C3C2429C2982E7AC2C9",
+        "scripts/p106b_gemma_teacher.py": "0E82FCEF3DD0ED46FD35728E4B43E8BBC2D4748F6229DFFBFED86E4A4070E8BC",
+        "scripts/p106b_memory_stream.py": "4BC771E89EEA2856125D304455A2873BF48D4A1338036BDB133C99A9E32C9559",
+        "scripts/p106b_source_course.py": "E9BCDF95E2ACA0CA713CACB180A2BF722160BEF1C3DCBE195C9EC28D74999256",
+        "scripts/p106b_visible_source.py": "A006367B76BA46658CD527F676D3FA0FFA21DF1E4DD03E4D4D91B706BDFB7DF3",
+        "scripts/test_p106b_source_course.py": "EF299F3E605842D088986F99CA69EAB432838CFB523577895B11939A06B9D8C5",
+        "scripts/test_p106b_source_expand.py": "6421096F10406E94D92B20FF62E3DB98B2E9C7ED82E685C7489007C4A3E7F3FC",
+        "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+      },
+      "student_training": "NOT_RUN",
+      "source_reference_policy": "FULL_BOUNDED_ORIGINAL_SOURCE_NOT_ONLY_TEACHER_SELECTION",
+      "reference_max_source_tokens": 512,
+      "source_exclusion": "old full736 deck roots and long-message identities"
+    },
+    "shards": [
+      {
+        "path": "sources_000000.jsonl",
+        "bytes": 1771425,
+        "rows": 736,
+        "sha256": "3C8D3F3B9979E482B4DA5BED638199A79571741CF99A9A0B1A0C59E18493F7E5"
+      }
+    ]
+  },
+  "raw_sources": "LOCAL_ONLY_IGNORED_HF"
+}

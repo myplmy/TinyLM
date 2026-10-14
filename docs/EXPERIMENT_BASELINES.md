@@ -252,7 +252,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_binding_course_v1_s1337_lookup_balanced` | 코드골드train4096/val512·원parent/micro8accum16/ckptON·LR5e-5/2e-4·4pass128 | 실제128회·1167528x/48592assistant·423.259s. 첫64부모0→35/64·전체315/512 대첫값256/512·4view완결27/128·native3.504322→3.706545. 좁은조회부분학습/범용미확정 [101 §112~113](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_context_replay_v1_s1337` | 최초 CPU7/코퍼스 동결만 | 시스템 python 의존성 미설치와 새 모듈 직접진입 bootstrap 정적 실패를 모델 전에 확인. 기존 corpus 원형 보존·GPU0, 새v2와 혼용 안 함 |
 | `p106b_context_replay_v2_s1337_{sft_only,replay025,replay100}` | 같은train5632/원parent·micro8accum16/ckptON·LR5e-5/2e-4·각4pass176·추가native8행/update | 실제SFT각1088116x/108484assistant+native1441792x. native후3.859621/3.552835/3.535500, code640정확287/278/278·조회512는238/237/235로첫값256미달. 보존대가감소·대상이해미회복 [101 §116](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
-| `p106b_context_orpo_v1_s1337_{pair_zero,pair010,pair030}` | 같은SFT/native/원부모·4pass176·추가16pairs/update의강도0/.1/.3 대조 | 조건부 준비·CPU8. 원문 hash가 맞는 code 단일값 질문에만 wrong-target/불필요반복 쌍을 생성. 공개/불명 문항의 오답 추정·온라인 재생성 없음; 실제 학습효과는 회수 전 NOT_RUN |
+| `p106b_context_orpo_v1_s1337_{pair_zero,pair010,pair030,positive030}` | 같은 수정 SFT/native/원부모·4pass176·대비0/.1/.3와 정답NLL.3 | 실제 새640 첫답은300/301/296/302, 대상조회260/260/254/262와 첫값기준256. 현재 대비 비채택·native3.535~3.536. CPU11/실제 원형·한계는 결과101§120 |
+| `p106b_source_expand_v1_s1337` | 새공개원천 공급 CPU3/736선택만 | 실제교사/학생0. 원순서 보존을 생성 전에 추가 점검해 새v2로 분리, 코드/원형은7d7957d·결과101§118 |
+| `p106b_source_expand_v2_s1337` | 이전736root/긴본문제외·새512train/64val/예비160·GemmaMTP단독 | teacher와student에원문message/offset순서보존·전체bounded본문전달. 새공급/교사/학생효과는회수전NOT_RUN, 보호사전/원본변경/자동75M승격없음 |
+| `p106b_prefix_probe_v1_s1337` | 진단 전용 GPU 배치 순서 오류 | CPU 캐시를 먼저 만든 뒤 GPU로 이동해 첫 forward exit1·특징0·optimizer0. 원형과 전체코드 별도 복구 JSON, 학생 품질 음성이 아님 |
+| `p106b_prefix_probe_v2_s1337` | GPU 이동 뒤 캐시 동결·실제 장치 검산, parent/replay100/pair030 표현 진단 | 본체 학습0·후보6값 판독·논리 층 관측. 실제 자유 생성·인과·범용 지능과 분리하며 새CPU7/수집 뒤 회수 |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|

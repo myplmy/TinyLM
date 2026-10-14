@@ -18,3 +18,11 @@
 명시 경로만 staging한다. HF/runs/data_cache/보호데이터/개인캡슐은 포함하지 않는다.
 20MB를 넘는 Git blob은 허용하지 않으며 원문 JSONL도 ShardWriter의20MB 상한으로 분할한다.
 core.filemode=false라 새 실행SH의 인덱스실행비트는명시적으로확인한다. 설정을전역변경하지않는다.
+
+## 07시대 추가 판단
+
+조건부 네 팔의 종료 원형/소형 report와 새 원천v2 inventory/deck는 추적한다.
+동결 표현의 진단 코드는 추적하지만 진행 중 GPU 원형은 종료 전 staging하지 않는다.
+첫 진단의 CPU-cache/CUDA 순서 오류는 원형·정확한 v1 전체코드 복구 JSON을 추적해 수리와 구분한다.
+CPU/정적 통과로 이 GPU 오류를 찾았다고 주장하지 않는다.
+원천 JSONL/사고·특징 NPY·CPT는 기존 HF/runs/local 제외 정책을 그대로 적용한다.

@@ -36,5 +36,16 @@ class Contracts(unittest.TestCase):
         self.assertEqual(len(result['meta']['source_reference_ids']),len(spans))
         self.assertEqual(code.source.support.text(result['messages'][-1]),'blue')
 
+    def test_original_message_order_is_preserved(self):
+        row=self.row();spans=code.source_spans(row)
+        self.assertEqual([s['source_message_index'] for s in spans],sorted(s['source_message_index'] for s in spans))
+        request=code.payload(list(reversed(spans)),'en',1337)
+        supplied=__import__('json').loads(request['messages'][1]['content'])['public_source_spans']
+        self.assertEqual(supplied[0]['source_role'],'user')
+        content=dict(user_text='Which color is A?',assistant_text='blue',correction_note='SOURCE_IDS:1')
+        result=code.full_wrap(content,list(reversed(spans)),row,'en',Tokenizer())
+        question=code.source.support.text(result['messages'][0])
+        self.assertLess(question.index('A is blue.'),question.index('\nblue'))
+
 
 if __name__=='__main__':unittest.main()

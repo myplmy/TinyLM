@@ -1,0 +1,34 @@
+Frozen last-prefix hidden768/projected256, actual batch1 cacheON FP32 math. Original states checked before/after. Supplied-label diagnostic, not free-answer improvement or causal proof.
+
+==============================================================================
+[runlog] 2026-10-15 07:25:02  name=P106B_Stage4ak1W_frozen_prefix_capture_072502
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_prefix_probe.py --mode capture --execute --max-wall-sec 900
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_prefix_probe.py", line 311, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_prefix_probe.py", line 308, in main
+    return capture(args) if args.mode=='capture' else fit(args)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_prefix_probe.py", line 158, in capture
+    logits,h,kv=wrapped(x,use_cache=True,logits_last_only=True,return_mtp_hidden=True)
+  File "/home/uranus/tinyLM/scripts/diag_p101a_mtp_parity.py", line 34, in __call__
+    return self.model(*args,**kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/transformer.py", line 874, in forward
+    k_new, v_new = layer.attn_mod.compute_kv(x, cos, sin)
+  File "/home/uranus/tinyLM/tinylm/model/modules.py", line 73, in compute_kv
+    k = self.k_proj(x).view(B, T, c.n_kv_heads, c.head_dim).transpose(1, 2)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/ternary.py", line 400, in forward
+    y = F.linear(x, wq)
+RuntimeError: Expected all tensors to be on the same device, but got mat2 is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA_mm)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-10-15 07:25:10)
+==============================================================================
