@@ -246,7 +246,8 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_visible_source16_v1_s1337` / `p106b_visible_source16_v2_s1337` | 공개16의 선택근거+QA; 최초 import오류후 새출력 복구 | 최초모델0·새16/16 구조/byte연결; 내용/권리·bulk 미승격 [101 §101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_context_broad_v2_s1337_{ntp_hi,ntp_mid}` | 같은8192×4·256update·1.891748M 실제x | 실제17/39·20/39·자유25별도/원문악화·개발새지문각1/8 [101 §102](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_s4_gemma_capability300m_chat32_mtpstreamv5_s1337` | oldOFF4/ON2 이후 새조회전용 batch6·baseline불변 | CPU/check-only만·생산/75M미실행; 근거공유bulk 아님 [101 §103](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
-| `p106b_source_course_v1_s1337_{sft_only,reference_lm}` | 새 source512/val64·동일parent/micro8accum16/ckptON·4pass32update | 후속위임·source deck736(reserve포함) 실제동결·teacher수집진행;학생/효과 NOT_RUN·근거본문NTP0/.1 비교. 새HF/local evidence만 |
+| `p106b_source_course_v1_s1337_{sft_only,reference_lm}` | 새 source512/val64·동일parent/micro8accum16/ckptON·4pass32update | 실제 A/B 각32update·340128x/56932assistant. native32crop 악화 +.13214/+.10060, 교사답 문자일치 각9/32·일반지문0/8; 정답성/범용지능 미확립. 새HF/local evidence만 |
+| `p106b_source_format_mix_v1_s1337_sft_only` | 같은source/답·지원QA절반만자연 본문+질문·원parent/배치/LR/32update | 새태그예약·CPU4 통과, 학생NOT_RUN. x길이와val prompt가 바뀌므로 기존valCE 직접순위금지·공통개발24/후행판독 |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
