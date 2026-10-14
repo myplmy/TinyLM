@@ -1937,3 +1937,67 @@ query만 수리한 새stream-v5는 옛v4용4kWf/4k0Wf/4lWe/4mWe와 연결하지 
 CPT에서의2배pool 권장은 본SFT의75M×4 노출 목표와 다른 설계다. step×131072는padding 상한이고 실제x/assistant targets는행별encode/분할로 기록한다. Tag는 새stream-v5/v6만 사용하고 원HF/runs/CPT/source를 고치지 않는다. 생산정답/지문공유는 baseline에서 계속미검증이며 source16개선 계약을 자동채택하지 않는다. 새모드의기술 CPU 통과는75M 완료·학생/교사품질·현재 E2E가 아니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-14 후속 Stage4u/4v — 실제원천512·64와 근거본문 보조목적
+
+### 1. 왜
+사용자가 세 우선순위 질문 모두 알아서 판단할 것을 회신했다. §101의source16은기술연결만확인했고
+넓은합성학생은새지문각1/8·망각이었다. 자연원문과학생의근거를연결하고 기존본문문법을잊는대가를가른다.
+8M subset의네번째KO가족이부족하고PUBLIC에는Adversarial이없으므로
+공개부모원형 전체와이미보유한OFF4/ON2 raw의원래Adversarial source만읽는다.
+교사과거답/생각을새근거로쓰지않고 원래source 메시지·출처를새deck에보존한다.
+
+### 2. 질문
+같은512원천의근거QA/자료필수누락대조를학생이새문장에도적용하는가?
+같은input·assistant target에selected reference의NTP손실.1을추가하면문맥/원문보존이개선되는가?
+
+### 3. 예측
+명시자료를보면읽어답하기·자료없을때요청하는단계를배울수있지만,
+generic자료요청을모든QA에오적용하거나원문스타일반복을보조목적으로강화할위험이있다.
+32업데이트/4pass는작은gate이고범용지능/75M완성을보장하지않는다.
+
+### 4. 단계
+- Stage4u0W: producer source-only계약·reference/assistant label분리·globaldenominator·scope복원 CPU.
+- Stage4u1W: 새source deck train512/val64에reserve128/32·한영행수50:50·네가족각25%로SHA순선별.
+  원parent_concept SHA로새20% val분할하고선택된긴본문byteSHA도교차0을검사한다.
+  원래split은별도보존하며과거pretrain/번역사실누설없음을보장하지않는다.
+- Stage4u2W: Gemma12B/MTP ON·ctx8192/total3072/thinking1024/카드샘플러 그대로.
+  그룹별최초포함3구조시도·seed변화·cache_promptFalse·teacher만상주.
+  entity/relation/조건/답 모두선택SOURCE_IDS에포함하라고요청한다.
+  ID/byte/1024예산만자동검사하고 의미blacklist/전수정답승인없음.
+- Stage4u3W: 완결512/64 source에서각supported/request-reference 두view로train1024/val128.
+  자료가없음을개인QA의의도분류로추정하지않고‘제시된자료만사용’하는생산자출력계약으로정한다.
+- Stage4vWa/vWb: 같은origchat32 dense14/parent SHA12E18658/seed1337·micro8accum16/seq1024/ckptON
+  compiledefault·4pass32업데이트·Adam5e-5/Muon2e-4. MTP OFF·같은row순서/실제inputx/assistanttargets.
+  A SFT-only. B 같은forward의ignored user-reference 위치에NTP.1을추가한다.
+  추가input0·추가reference target event/CE-head계산/시간은별도다.
+- Stage4vWc: 같은새val 원답/teacherliteral agreement·자료요청후행판독·native32crop/8legacy·원문CE·대가를회수한다.
+  교사pseudo답일치는독립정답/범용지능판정이아니다. 이전24는개발용만·새원천에없으면독립SFT val로구분한다.
+
+### 5. 판정
+source/family/언어/원본문그룹/예산과정확512/64가완결되지않으면학생은기동하지않는다.
+finite loss/clip전최대값·32update/4pass/x/targets/참조targetevents를검산한다.
+실제답은source와함께후행판독하고기술/표면일치/정답성을분리한다.
+Muon/이자료/작은seed조건의sigma는미측정이다. 보조목적의기본채택은하지않는다.
+
+### 6. 비용
+CPU선별/동결약1~3분추정,576교사응답은이전16의평균8.1초를기준으로약78분+실패/길이비용.
+hard cap9000초·당일17시전절대상한과정리시간으로더줄인다.
+학생각5~15분추정/cap1200초·대략2.6GiB+추가CE 비용은새실측으로확인한다.
+일반48h큐목표는오늘17시한정실측예산이아니고부족값을채우는quota도아니다.
+
+### 7. 실행
+새run_P106B_Stage4u0W_source_course_cpu.sh·4u1W_public_source_deck.sh·4u2W_visible_teacher_course.sh·
+4u3W_visible_course_corpus.sh·4vWa_source_sft_only.sh·4vWb_source_reference_lm.sh를만든다.
+태그p106b_source_course_v1_s1337와새HF/weights/evidence(local)만쓴다.
+
+### 8. 한계
+생각/NOTE/원답은sidecar이고학생target은ANSWER또는코드의자료요청문장만이다.
+자료요청은모든‘의도를모르는질문’의자동분류기가아니다. 자연정답·권리/PII·semantic source지지는후행검토다.
+원형6batch/기존자료/제품default·보호TinyDataset·다운로드·공용checker·추가삭제/외부게시 불변.
+기존75M×4의대체가아니다. 구조/재귀/폭/MTP효능을한팔에섞지않는다.
+
+### 9. 상태
+현재CODE/새test와별도namespace가준비중이며실물NOT_RUN. 실제회수뒤결과101에시간순갱신한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
