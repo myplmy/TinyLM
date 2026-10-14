@@ -1,0 +1,108 @@
+{
+  "schema": "P106B_MANUAL_SOURCE_RELATIVE_REVIEW_V1",
+  "evaluator": "GPT_OFFLINE_CURRENT_SESSION",
+  "review_scope": "same first32 supported source rows, A/B controlled; same exact reference/question read",
+  "scoring": "POSTHOC_UNBLINDED_INTERPRETIVE_CATEGORIES_NOT_A_BENCHMARK_OR_ADMISSION_GATE",
+  "world_truth": "NOT_VERIFIED; source/pseudo answer may be false, context may lack needed original conditions",
+  "sample_selection": "first64 val rows alternately supported/missing, four source families/each language; not random full population",
+  "raw_paths": {
+    "A": "test_result/evidence/local/p106b_source_course_v1_s1337/sft_only/answers_final_000000.jsonl",
+    "B": "test_result/evidence/local/p106b_source_course_v1_s1337/reference_lm/answers_final_000000.jsonl"
+  },
+  "row_index": "zero based actual JSONL row, even0..62 source_qa; odd missing-reference rows32/32 literal",
+  "categories": {
+    "A": {
+      "CORE_SOURCE_FAITHFUL": [
+        2,
+        6,
+        8,
+        10,
+        12,
+        26,
+        42,
+        44,
+        46,
+        50,
+        54,
+        58,
+        60,
+        62
+      ],
+      "CORE_WITH_LANGUAGE_OR_EXTRA_TOKEN_NOISE": [
+        34,
+        40,
+        56
+      ],
+      "PARTIAL_OR_MISSING_ESSENTIAL": [
+        14,
+        18,
+        30
+      ],
+      "WRONG_TARGET_UNSUPPORTED_ECHO_OR_REPEAT": [
+        0,
+        4,
+        16,
+        20,
+        22,
+        24,
+        28,
+        32,
+        36,
+        38,
+        48,
+        52
+      ]
+    },
+    "B": {
+      "CORE_SOURCE_FAITHFUL": [
+        2,
+        6,
+        10,
+        12,
+        16,
+        26,
+        42,
+        44,
+        46,
+        50,
+        54,
+        58,
+        60
+      ],
+      "CORE_WITH_LANGUAGE_OR_EXTRA_TOKEN_NOISE": [
+        40,
+        56
+      ],
+      "PARTIAL_OR_MISSING_ESSENTIAL": [
+        8,
+        14,
+        18,
+        62
+      ],
+      "WRONG_TARGET_UNSUPPORTED_ECHO_OR_REPEAT": [
+        0,
+        4,
+        20,
+        22,
+        24,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        48,
+        52
+      ]
+    }
+  },
+  "notes_ko": [
+    "내용판독은 source에 대한 충실도이며 현실 정답을 보증하지 않는다.",
+    "A는 주어진 나라·단위/조건·직업을 잘못 바꾸거나 자료요청을 잘못 섞었다. B도 같은근본문제가 남았다.",
+    "문자일치9/32를 전체정답9/32로 쓰지 않는다. 짧은값·문장형재표현·핵심식이 달라도 질문에 맞는 경우가 있다.",
+    "David/Jack/Mark 추론 질문은 실제명제들이 근거에 없고 D/한 결론만 있어 원자료 논리평가로 부적절하다.",
+    "의료·배우역할·range 설명은 원source/교사답을 따른 경우라도 독립정답 미검증이다.",
+    "빌 삼촌/퍼센트 뒤 숫자는 출처artifact 복사의 사례이며 모든 잘못된문구 리스트를 만들지 않는다."
+  ],
+  "online_effect": "NONE; no blacklist/retry/quarantine/train filtering or source mutation"
+}

@@ -29,13 +29,16 @@ def summarize(a,b,corpus):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--execute',action='store_true',required=True);p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--execute',action='store_true',required=True);a=p.parse_args()
+    if not a.execute:p.error('explicit report execution required')
     try:
+        out=gate.EVIDENCE/'pair_report.json'
+        if out.exists() or out.is_symlink():raise FileExistsError('existing pair report preserved; use a fresh namespace')
         corpus=json.loads((gate.CORPUS/'report.json').read_text());a=json.loads((gate.EVIDENCE/'sft_only_report.json').read_text());b=json.loads((gate.EVIDENCE/'reference_lm_report.json').read_text())
-        value=summarize(a,b,corpus);gate.training.write(gate.EVIDENCE/'pair_report.json',value)
+        value=summarize(a,b,corpus);gate.training.write(out,value)
         print('[SOURCE_PAIR] '+json.dumps(dict(controls_matched=value['controls_matched'],mismatch=value['mismatch'],
             native_deltas={k:v['native_delta'] for k,v in value['arms'].items()},semantic_truth=value['source_truth'])))
         return 0 if value['controls_matched'] else 8
-    except FileNotFoundError as exc:print('[HOLD] '+str(exc));return 8
+    except (FileNotFoundError,FileExistsError) as exc:print('[HOLD] '+str(exc));return 8
 
 if __name__=='__main__':raise SystemExit(main())

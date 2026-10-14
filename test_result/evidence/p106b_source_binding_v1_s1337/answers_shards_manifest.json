@@ -1,0 +1,55 @@
+{
+  "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+  "limit_bytes": 20000000,
+  "rows": 128,
+  "bytes": 151572,
+  "concat_sha256": "572B0571DB2FDD37C9D30D7D6CB57ED7AB4DABD4289AE8EC7EC84AA0155B08B8",
+  "lineage": {
+    "schema": "P106B_SOURCE_BINDING_V1",
+    "subjects": [
+      {
+        "id": "parent",
+        "path": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
+        "sha": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950"
+      },
+      {
+        "id": "sft_only",
+        "path": "runs/ckpt/m100s10_ko-en_context4pass_dense_chat32_p106b_source_course_v1_s1337_sft_only.pt",
+        "sha": "76AD54104D34DE2E7088D2F3CD7F715BBC77A654D9164D19FE6635EB166C3DA9"
+      },
+      {
+        "id": "reference_lm",
+        "path": "runs/ckpt/m100s10_ko-en_context4pass_dense_chat32_p106b_source_course_v1_s1337_reference_lm.pt",
+        "sha": "F9164D7EABD0788E952BC37A1A0B6631815D63CBA0BB5F39000E0130D7276C68"
+      },
+      {
+        "id": "format_mix",
+        "path": "runs/ckpt/m100s10_ko-en_context4pass_dense_chat32_p106b_source_format_mix_v1_s1337_sft_only.pt",
+        "sha": "6D09D629554368FB096A4CE153533CB59D5BD029AA0DBAF81EA5B8DDB5D67FC7"
+      }
+    ],
+    "case_sha256": "AB2AA4917DDD2422A628833DC8B30DFD5520874E802A52073381F8C38C4F0130",
+    "code_sha256": {
+      "scripts/diag_p106b_source_binding.py": "294A560CA8F17D453E3C6AE9D4E13592E6877401FAA54682A266BA855F81FDAB",
+      "scripts/diag_p106b_context_transfer.py": "8E15483209585ED3882AD05CABFFEED124D3F979B019AB886F63FB259540F3B3",
+      "tinylm/infer/generate.py": "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4"
+    },
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "precision": "FP32_MATH_NO_TF32",
+    "cache": true,
+    "mtp_tokens": 1,
+    "max_new": 64,
+    "training": "NOT_RUN",
+    "checkpoint_save": false,
+    "test_scope": "POSTHOC_CODE_KNOWN_LOOKUP_CAUSAL_FACTORIAL_NOT_GENERAL_BENCHMARK",
+    "paired_axes": "same facts; target entity and sentence order changed independently; assignment reversal"
+  },
+  "shards": [
+    {
+      "path": "answers_000000.jsonl",
+      "bytes": 151572,
+      "rows": 128,
+      "sha256": "572B0571DB2FDD37C9D30D7D6CB57ED7AB4DABD4289AE8EC7EC84AA0155B08B8"
+    }
+  ]
+}

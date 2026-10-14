@@ -188,3 +188,11 @@ queryworker가생성중겹쳐일하므로누락초를생성wall에서단순공�
 원답정합·유효자료x/s·completion/s·head/캐시/평가를포함한비용을각분모로보고한다.
 
 2026-10-14 후속 [101 §102~§103](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 각256업데이트는1.891748M 실제x·292096targets와33.554432M 패딩 계산자리를 구분한다. 새 query stream-v5는 계보/CPU/check-only 준비이며 장기 재개·정답성·75M 완성은 NOT_RUN이다. 다른 source16의 짧은130초를 과거 생산6x/s의 순수 속도 개선으로 계산하지 않는다.
+
+## 2026-10-14 후속 — 교사 completion과 학생자료/업데이트 비용의 분모
+
+[101 §108~§110](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): teacher usage completion에는 사고·라벨·폐기구조시도가 포함된다.
+student input에는 참조본문·질문·코드생성자료요청이 포함되므로 이를 독립지식/assistant 지도량으로 치환하지 않는다.
+세학생의 첫compile update·이후31평균·전체(로딩/초기·종료평가/저장)를 따로 집계했다.
+같은forward에 referenceCE.1을 더한 것은 추가input0이어도 CE-head 계산·target event가 추가된다.
+Persistent2s의 장기실측은 timeout3을2호출에서복구했지만공백을메웠다는 뜻이아니며 연속peak/OOM안전은 미확정이다.

@@ -1,0 +1,25 @@
+CPU regression then recompute finish_reason counts from immutable256 answers. No model/generation/checkpoint write. Literal agreement/empty counts must not change; old wrong summary retained.
+
+==============================================================================
+[runlog] 2026-10-14 14:41:13  name=P106B_Stage4yWb_prompt_finish_readback_cpu_144112
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_prompt_pair.py
+==============================================================================
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-14 14:41:14)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-14 14:41:14  name=P106B_Stage4yWb_prompt_finish_readback_cpu_144112
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_prompt_pair.py --readback
+==============================================================================
+[FINISH_COUNTER_READBACK] {"parent:CONTROLLED": {"cases": 32, "literal_agreement": 0, "empty": 0, "max_new": 32}, "parent:NATURAL": {"cases": 32, "literal_agreement": 0, "empty": 0, "max_new": 32}, "sft_only:CONTROLLED": {"cases": 32, "literal_agreement": 9, "empty": 0, "max_new": 2}, "sft_only:NATURAL": {"cases": 32, "literal_agreement": 1, "empty": 1, "max_new": 5}, "reference_lm:CONTROLLED": {"cases": 32, "literal_agreement": 9, "empty": 0, "max_new": 1}, "reference_lm:NATURAL": {"cases": 32, "literal_agreement": 1, "empty": 2, "max_new": 3}, "format_mix:CONTROLLED": {"cases": 32, "literal_agreement": 8, "empty": 0, "max_new": 4}, "format_mix:NATURAL": {"cases": 32, "literal_agreement": 3, "empty": 0, "max_new": 5}}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-14 14:41:16)
+==============================================================================

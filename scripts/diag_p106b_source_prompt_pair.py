@@ -57,28 +57,54 @@ def preflight():
         semantic_truth='PSEUDO_UNVERIFIED; offline source-faithfulness review only')
 
 
+def summarize(rows):
+    matrix=defaultdict(lambda:dict(cases=0,literal_agreement=0,empty=0,max_new=0))
+    for row in rows:
+        key=row['subject']+':'+row['group'];v=matrix[key];v['cases']+=1
+        v['literal_agreement']+=row['answer'].strip()==row['gold'].strip()
+        v['empty']+=not row['answer'].strip()
+        # Missing metadata must never silently become a zero count.
+        v['max_new']+=row['generation']['finish_reason'] in ('MAX_NEW','MAX_NEW_EOS_DISABLED')
+    return dict(matrix)
+
+
 def collect(args):
     with patch.object(engine,'TARGET',LOCAL),patch.object(engine,'preflight',preflight),patch.object(engine,'cases',cases):
         rc=engine.execute(args)
     report=json.loads((LOCAL/'report.json').read_text());verify(LOCAL,report['raw_manifest'])
-    matrix=defaultdict(lambda:dict(cases=0,literal_agreement=0,empty=0,max_new=0))
-    for row in course.public.stream_rows(LOCAL,report['raw_manifest']):
-        key=row['subject']+':'+row['group'];v=matrix[key];v['cases']+=1
-        v['literal_agreement']+=row['answer'].strip()==row['gold'].strip()
-        v['empty']+=not row['answer'].strip()
-        v['max_new']+=row['generation'].get('stop_reason')=='MAX_NEW'
+    matrix=summarize(course.public.stream_rows(LOCAL,report['raw_manifest']))
     report.update(descriptive_counts=dict(matrix),local_raw=str(LOCAL.relative_to(ROOT)),
                   literal_agreement_not_truth=True,model_adopted=False)
     course.training.write(EVIDENCE/'report.json',report)
     print('[COMMON_PROMPT_PAIR] '+json.dumps(dict(matrix)));return rc
 
 
+def readback():
+    out=EVIDENCE/'corrected_report.json'
+    if out.exists():raise FileExistsError('corrected evidence preserved')
+    original=LOCAL/'report.json';report=json.loads(original.read_text())
+    verify(LOCAL,report['raw_manifest'])
+    corrected=summarize(course.public.stream_rows(LOCAL,report['raw_manifest']))
+    prior=json.loads((EVIDENCE/'report.json').read_text())['descriptive_counts']
+    report.update(status='CPU_FINISH_COUNTER_READBACK_COMPLETE',descriptive_counts=corrected,
+        original_report_sha256=course.public.digest(original),original_summary_sha256=course.public.digest(EVIDENCE/'report.json'),
+        original_counter_error='max_new read stop_reason instead of actual finish_reason; original raw and report immutable',
+        executed_code_git='cf3ee25',corrected_code_sha256=course.public.digest(Path(__file__)),
+        changed_only='MAX_NEW_COUNTS; raw answers/literal agreement/empty counts unchanged',
+        old_counts=prior,training='NOT_RUN',models_loaded=0,local_raw=str(LOCAL.relative_to(ROOT)))
+    for key,value in corrected.items():
+        if any(value[k]!=prior[key][k] for k in ('cases','literal_agreement','empty')):
+            raise ValueError('unrelated count changed')
+    course.training.write(out,report);print('[FINISH_COUNTER_READBACK] '+json.dumps(corrected));return 0
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--max-wall-sec',type=int,default=600)
-    g=p.add_mutually_exclusive_group(required=True);g.add_argument('--execute',action='store_true');g.add_argument('--check-only',action='store_true')
+    g=p.add_mutually_exclusive_group(required=True);g.add_argument('--execute',action='store_true');g.add_argument('--check-only',action='store_true');g.add_argument('--readback',action='store_true')
     args=p.parse_args()
     if not 60<=args.max_wall_sec<=900:p.error('bounded60..900')
     if args.check_only:print('[CHECK_ONLY] '+json.dumps(preflight()[1]));return 0
+    if args.readback:return readback()
     return collect(args)
 
 if __name__=='__main__':raise SystemExit(main())
