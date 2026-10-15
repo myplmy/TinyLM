@@ -1,0 +1,70 @@
+{
+  "schema": "P106B_ORIGINAL_QA3_TRAIN_ONLY_TASK_OBSERVATIONS_V1",
+  "created_at": "2026-10-15 23:01:08 UTC",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "corpus_report_sha256": "77E82F6F934259A09AC1B4AD305EE5B9E2129A83544AF684A3FFDD73EBE8DA40",
+  "population": "original three-QA TRAIN2004 only; no DEV/TEST text or model answers reviewed",
+  "selection": "two lowest sha(['TRAIN_ONLY_TASK_INSPECTION',semantic_root_id]) per language",
+  "reviewer": "GPT source-context reading; not an independent world-fact verifier",
+  "substring_scope": "case-folded exact answer substring in preserved reference; descriptive only, not truth/filter/acceptance",
+  "counts": {
+    "ko": {
+      "roots": 995,
+      "answer_characters": [
+        6178,
+        7037,
+        6600
+      ],
+      "reference_substring_counts": [
+        995,
+        436,
+        452
+      ]
+    },
+    "en": {
+      "roots": 1009,
+      "answer_characters": [
+        16393,
+        15706,
+        14482
+      ],
+      "reference_substring_counts": [
+        1009,
+        806,
+        778
+      ]
+    }
+  },
+  "sample_observations": [
+    {
+      "language": "ko",
+      "root": "772FD13D513132E521367BFBB516C5BD94A50F554EB0A6D6C3041B4CF64A3D87",
+      "source_id": "train-00000-of-00002.parquet:5323",
+      "notes": "Hamilton source: first name answer and age13 align with the reference; follow-up phrasing is unnatural and general reference translation contains idiomatic mistranslations. Not full semantic certification."
+    },
+    {
+      "language": "ko",
+      "root": "851D0AEC0F5F3D67B4ED0DAC28CD6C9295D0DA8BC31DFC2C6E21330A8D970D0B",
+      "source_id": "train-00000-of-00002.parquet:285",
+      "notes": "Question1 asks when the story takes place but target is England, a location. This is a task/translation mismatch visible without world-fact lookup. No automatic filtering or relabeling performed."
+    },
+    {
+      "language": "en",
+      "root": "A56074626B097923AB814AD3BC410A1027FA099F78EF99B272E4B8526CFF10E4",
+      "source_id": "4046",
+      "notes": "Reference says a prosecutor accused police of interfering. The first source question asks who is accused but target names a prosecutor; the following question asks accused of what and target names interfering. Agent/patient alignment is questionable against the displayed reference. This is not a determination about the real event."
+    },
+    {
+      "language": "en",
+      "root": "14A832E74AF0FD14C22648026C4334138B71B6E45D358F4D0ED88D43AC6B2054",
+      "source_id": "2129",
+      "notes": "Eucharist, wine, and bread follow-up targets are supported by the displayed reference; wording/case/pronoun differences can make exact matching too strict. Source-context reading only."
+    }
+  ],
+  "limitations": [
+    "four selected TRAIN roots do not establish a population defect rate",
+    "substring misses can be valid paraphrases or Korean endings",
+    "no wrong-phrase blacklist, online semantic gate, regeneration, automatic exclusion, train change, teacher/model call",
+    "existing frozen corpus and current controlled training retained; target literal metrics are source fidelity, not truth certification"
+  ]
+}
