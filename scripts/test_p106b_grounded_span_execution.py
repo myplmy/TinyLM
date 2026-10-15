@@ -12,6 +12,12 @@ from scripts import test_p106b_grounded_span as original_tests
 
 
 class Strict(unittest.TestCase):
+    def test_no_silently_ignored_arm_in_other_phases(self):
+        for mode in ('freeze','evaluate'):
+            with self.assertRaises(ValueError):execution.validate_dispatch(mode,'span03')
+        for mode in ('cost','train'):
+            execution.validate_dispatch(mode,'span03')
+
     def test_prior_seed_side_effect_and_new_isolation(self):
         import torch
         with patch.object(torch.cuda,'manual_seed_all') as called:

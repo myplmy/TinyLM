@@ -13,5 +13,5 @@ if [[ -e "$log" || -L "$log" ]]; then
     printf '%s\n' '[STOP] Preserve old raw evidence; new stage required.' >&2
     exit 8
 fi
-"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWd_grounded_span_aux_strict_"$run_stamp" --num 101 --note 'Strict RNG execution v2 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWd_grounded_span_aux_strict_"$run_stamp" --num 101 --note 'Strict RNG execution v3 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWd_grounded_span_aux_strict_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode train --arm span03 --execute --max-wall-sec 7200

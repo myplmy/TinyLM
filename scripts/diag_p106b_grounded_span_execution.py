@@ -16,7 +16,7 @@ import json
 from unittest.mock import patch
 from scripts import diag_p106b_grounded_span as source
 from scripts.p106b_gate_runtime import GateNegative
-TAG='p106b_grounded_span_exec_v2_s1337'
+TAG='p106b_grounded_span_exec_v3_s1337'
 EVIDENCE=ROOT/'test_result/evidence'/TAG
 LOCAL=ROOT/'test_result/evidence/local'/TAG
 CODE=(*source.CODE,'scripts/diag_p106b_grounded_span_execution.py','scripts/test_p106b_grounded_span_execution.py',
@@ -70,12 +70,21 @@ def runtime(producer,rows,labels,run_info):
         yield
 
 
+def validate_dispatch(mode,arm):
+    if mode not in ('freeze','cost','train','evaluate') or arm not in source.method.ARMS:
+        raise ValueError('registered phase/arm required')
+    if mode in ('freeze','evaluate') and arm!='span0':
+        raise ValueError('--arm is only meaningful for cost/train; do not silently ignore it')
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--mode',choices=('freeze','cost','train','evaluate'),required=True)
     p.add_argument('--arm',choices=tuple(source.method.ARMS),default='span0');p.add_argument('--max-wall-sec',type=int,default=7200)
     group=p.add_mutually_exclusive_group(required=True);group.add_argument('--execute',action='store_true');group.add_argument('--check-only',action='store_true');a=p.parse_args()
     if not 60<=a.max_wall_sec<=21600:p.error('wall range60..21600')
     try:
+        validate_dispatch(a.mode,a.arm)
+        print('[STRICT_SPAN_DISPATCH] '+json.dumps(dict(mode=a.mode,arm=a.arm if a.mode in ('cost','train') else 'ALL_OR_SOURCE_ONLY')),flush=True)
         producer,rows,labels=source.read_course();run_info=metadata(producer)
         if a.check_only:print('[STRICT_SPAN_CHECK_ONLY] '+json.dumps(run_info));return 0
         source.deadline();a.max_wall_sec=min(a.max_wall_sec,int((source.DEADLINE-datetime.now(timezone.utc)).total_seconds())-(2700 if a.mode=='train' else 600))
