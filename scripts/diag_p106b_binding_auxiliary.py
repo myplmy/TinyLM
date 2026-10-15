@@ -11,6 +11,7 @@ from datetime import datetime,timezone
 import copy
 import json
 import os
+import resource
 import tempfile
 import time
 from scripts import p106b_binding_auxiliary as method
@@ -18,13 +19,14 @@ from scripts import diag_p106b_conditional_orpo as old
 from scripts import diag_p106b_verbatim_source as supplier
 from scripts.p106b_shards import ShardWriter,verify
 from scripts.p106b_gate_runtime import GateNegative
+from scripts.p106b_native_windows import reader as native_reader
 base=old.base
 TAG='p106b_binding_aux_v1_s1337'
 CORPUS=ROOT/'HF/sft_ready'/TAG/'corpus'
 EVIDENCE=ROOT/'test_result/evidence'/TAG
 LOCAL=ROOT/'test_result/evidence/local'/TAG
 CODE=('scripts/p106b_binding_auxiliary.py','scripts/diag_p106b_binding_auxiliary.py',
-      'scripts/test_p106b_binding_auxiliary.py','scripts/p106b_gate_runtime.py',*old.CODE,*supplier.CODE)
+      'scripts/test_p106b_binding_auxiliary.py','scripts/p106b_gate_runtime.py','scripts/p106b_native_windows.py',*old.CODE,*supplier.CODE)
 SOURCE_POLICY=supplier.STUDENT_POLICY
 
 
@@ -38,7 +40,7 @@ def info():
         dense_arm='auxdense100',all_arms_compute_same_suffix_logits=True,
         inference_uses_auxiliary_head=False,teacher_calls_this_stage=0,formal_train_ready=False,
         student_source_policy='SOURCE_IS_QUOTED_DATA_V1',
-        native_replay='same additional8x1024 train-only CE per update, weight1 in all five arms')
+        native_replay='same additional8x1024 train-only CE per update, weight1 in all selected arms')
     return r
 
 
@@ -147,7 +149,7 @@ def freeze(args):
         source_corpus_sha256=base.training.data.digest(supplier.CORPUS/'report.json'),
         native_copy_sha256=original['native_copy_sha256'],native_copy=str((base.CORPUS/'native_train.bin').relative_to(ROOT)),
         labels=bits,expected_updates=176,expected_head_position_events=4*sum(len(v['positions']) for v in bits.values()),
-        source_root_overlap=0,decision_note=args.decision_note,
+        source_root_overlap=0,decision_note=args.decision_note,required_cost_arms=['aux0','aux100','auxdense100'],
         prior_orpo_test_scope='development only; final code facts use new entity names and roots')
     base.training.write(CORPUS/'report.json',value)
     base.training.write(EVIDENCE/'corpus_report.json',{k:v for k,v in value.items() if k!='labels'})
@@ -173,11 +175,11 @@ def labels_for_rows(rows,contract,permuted=False):
     return output
 
 
-def auxiliary_dev(model,head,tok,values,pad):
+def auxiliary_dev(model,head,tok,values,pad,approved=None):
     import torch
     from tinylm.train import mtp_sft as core
     rows=[r for r in values if r['meta']['kind'].startswith('binding_')]
-    legal=method.approved_questions('dev');totals=Counter()
+    legal=method.approved_questions('dev') if approved is None else approved;totals=Counter()
     model.eval()
     with torch.no_grad():
         for start in range(0,len(rows),8):
@@ -198,7 +200,7 @@ def train(args,cost=False):
     target=EVIDENCE/(('cost_' if cost else '')+arm);local=LOCAL/(('cost_' if cost else '')+arm);out=checkpoint(arm)
     if target.exists() or local.exists() or (not cost and out.exists()):raise GateNegative('previous arm/output preserved')
     if not cost:
-        for required_arm in ('aux0','aux100','auxdense100'):
+        for required_arm in r.get('required_cost_arms',('aux0','aux100','auxdense100')):
             calibration=required_json(EVIDENCE/('cost_'+required_arm)/'report.json','actual zero/positive cost8')
             if calibration['code_sha256']!=info()['code_sha256'] or calibration['updates']!=8:
                 raise ValueError('same-code actual zero/positive cost8 required')
@@ -214,8 +216,8 @@ def train(args,cost=False):
         by_window={id(rec):r['labels'].get(method.prior.source.sha(row['messages']),{}).get('positions')
             for rec,row in zip(records,rows['train'])}
         dev_records=[core.encode_record(row,tok) for row in rows['dev']]
-        native=np.memmap(ROOT/r['native_copy'],dtype=np.uint16,mode='r').reshape(-1,1025)
-        if len(native)!=1408:raise ValueError('176x8 native windows required')
+        native=native_reader(ROOT,r)
+        if len(native)!=r['expected_updates']*8:raise ValueError('one native8 batch per planned update required')
         os.environ['TORCHINDUCTOR_CACHE_DIR']=tempfile.mkdtemp(prefix='p106b_binding_aux_')
         model=model.cuda();model.train();head=method.new_head(cfg.dim,'cuda')
         if base.training.state_fingerprint(model)!=initial:raise ValueError('auxiliary creation changed initial body')
@@ -229,7 +231,7 @@ def train(args,cost=False):
         head_opt=torch.optim.AdamW(head.parameters(),lr=.001,weight_decay=0)
         steps=sft_x=assistant=native_x=auxiliary_count=head_events=0
         seconds=[];history=[];grad_max=0.;aux_sum=0.;aux_correct=0
-        for epoch in range(4):
+        for epoch in range(r['epochs']):
             for groups in base.training.batches(records,epoch):
                 base.deadline();tick=time.perf_counter()
                 denominator=sum(rec.targets for micro in groups for rec in micro)
@@ -267,10 +269,18 @@ def train(args,cost=False):
                 if cost and steps==8:break
             if cost:break
             val=base.training.evaluate(model,dev_records,pad);native_eval=base.training.native_ce(model,base.NATIVE)
-            aux_dev=auxiliary_dev(model,head,tok,rows['dev'],pad)
+            aux_dev=auxiliary_dev(model,head,tok,rows['dev'],pad,r.get('dev_contracts'))
             generated=base.generate(model,cfg,tok,base.dev_sample(rows['dev']),local,f'dev_epoch{epoch+1}')
             history.append(dict(epoch=epoch+1,updates=steps,val=val,native=native_eval,auxiliary_dev=aux_dev,dev=generated))
-        if not cost and (steps!=176 or sft_x!=4*r['counts']['train']['actual_x_tokens'] or auxiliary_count!=16384
+            if r.get('save_epoch_checkpoints') and epoch+1<r['epochs']:
+                epoch_path=out.with_name(out.stem+f'_epoch{epoch+1}.pt')
+                with epoch_path.open('xb') as stream:torch.save(dict(model=model.state_dict(),cfg=asdict(cfg),step=steps,
+                    tokenizer_sha256=base.training.data.TOK_SHA,tokenizer_lineage='chat32',
+                    training_only_auxiliary=head.state_dict(),auxiliary_method=dict(tag=TAG,arm=arm,epoch=epoch+1),optimizer_saved=False),stream)
+                history[-1].update(checkpoint=str(epoch_path.relative_to(ROOT)),checkpoint_sha256=base.training.data.digest(epoch_path))
+        if not cost and (steps!=r['expected_updates'] or sft_x!=r['epochs']*r['counts']['train']['actual_x_tokens']
+                or native_x!=r['expected_updates']*8192
+                or auxiliary_count!=r['epochs']*len(r['labels'])
                 or head_events!=r['expected_head_position_events']):
             raise ValueError('planned actual exposures mismatch')
         head_norm=float(sum(p.detach().square().sum() for p in head.parameters()).sqrt())
@@ -287,6 +297,8 @@ def train(args,cost=False):
             auxiliary_head_parameter_l2=head_norm,
             grad_max=grad_max,gradient_clip=1.,clip_scope='body plus auxiliary, same policy in all arms',
             step_seconds=seconds,peak_reserved_mib=torch.cuda.max_memory_reserved()/2**20,whole_sec=time.perf_counter()-began,
+            peak_process_rss_mib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024,
+            rss_scope='Linux process high-water RSS; separate from torch reserved and whole-device peak',
             head_in_model_state=False,head_forward_in_free_generation=False,actual_student_rollout='NOT_RUN')
         if not cost:
             with out.open('xb') as stream:torch.save(dict(model=model.state_dict(),cfg=asdict(cfg),step=steps,
@@ -307,7 +319,7 @@ def evaluate(args):
     trained={arm:required_json(EVIDENCE/arm/'report.json','completed auxiliary arm '+arm) for arm in method.ARMS}
     for arm,report in trained.items():
         if report['status']!='TRAINED_FRESH_TEST_PENDING' or report['code_sha256']!=info()['code_sha256']:
-            raise ValueError('same-code completed five arms prerequisite')
+            raise ValueError('same-code completed selected arms prerequisite')
         if base.training.data.digest(ROOT/report['checkpoint'])!=report['checkpoint_sha256']:raise ValueError('checkpoint changed')
     idle_before_gpu();began=time.perf_counter();summaries={};public={};legacy={};live_dialogues={}
     with wall_limit(args.max_wall_sec):

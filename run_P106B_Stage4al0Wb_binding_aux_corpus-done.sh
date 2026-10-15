@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Completed new supported512/64 required; same code5120, source QA replacement and fresh final640.
-# Independent fresh outputs; stop on prerequisite/error. No stdin or implicit resume.
+# Completed2026-10-15 raw095115 exit0; same5632/704 and new640 test frozen.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 source scripts/shell/tinylm_env.sh

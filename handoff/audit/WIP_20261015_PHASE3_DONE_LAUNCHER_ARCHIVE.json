@@ -1,0 +1,204 @@
+{
+  "schema": "TINYLM_DONE_LAUNCHER_RECOVERY_V1",
+  "phase": 3,
+  "rows": [
+    {
+      "path": "run_P106B_Stage4aj2W_full_reference_teacher-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4aj2W_full_reference_teacher_073324.txt",
+      "sha256": "557BE743C0482EDFAEB80426C4C143735F758FED7F30DD9DEB8A68BF9CDDCDBD",
+      "raw_sha256": "42CC9F6FE6B6DBEDF357C88BB4A838BB4C5BE998963C3705A3E182486EED8552",
+      "script": "#!/usr/bin/env bash\n# Fresh deck required; Gemma12B/MTP ON alone. About2h GPU upper planning bound.\n# Same8192/3072/1024 sampler; every bounded original span reaches student, not only selected IDs.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4aj2W_full_reference_teacher_\"$stamp\" --note 'Teacher-only new512 train/64val source block. Full bounded original reference visible; raw/thinking local, ANSWER only target. Structural retry max3, no semantic word list. Record real supply/output/time and measurement gaps, not world truth.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4aj2W_full_reference_teacher_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_expand.py --mode generate --execute --max-wall-sec 7200\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_expand.py --mode generate --execute --max-wall-sec 7200"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4ak1Wb_device_order_capture-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ak1Wb_device_order_capture_072825.txt",
+      "sha256": "1D9AFB1FCE7CFE2D4643FCE78E2E6F68BCEE873C75AE4C0FC8C2FD0FF9636448",
+      "raw_sha256": "F6AE1446543FB8D1D6319F2D79CD5F8121864B2D8C8C6D314D5B38D488C381F2",
+      "script": "#!/usr/bin/env bash\n# New v2 only: move model to CUDA then freeze quant cache, actual device checks.\n# Up to0.25h GPU. Frozen three subjects, sparse layer observations; optimizer/CPT0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak1Wb_device_order_capture_\"$stamp\" --note 'Recover diagnostic-only CPU cache placement error in freshv2. Base states checked before/after; last-prefix/sparse-layer features are not free-answer improvement. Stop on any device/parity/integrity error.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak1Wb_device_order_capture_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_prefix_probe.py --mode capture --execute --max-wall-sec 900\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_prefix_probe.py --mode capture --execute --max-wall-sec 900"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4ak2W_cpu_readout_probe-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ak2W_cpu_readout_probe_073325.txt",
+      "sha256": "896A02CD954238E9D308B22645697C7C7904D01710309A21A4C48346D8124921",
+      "raw_sha256": "A563511E2FD317145FBE195A953AC2B86528325CC853489DF9F4B1F15D30C340",
+      "script": "#!/usr/bin/env bash\n# Frozen capture required; CPU linear/16-wide classifiers with shuffled control.\n# About0.08h, hard900sec. No TinyLM/teacher optimizer, no GPU, no product head.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak2W_cpu_readout_probe_\"$stamp\" --note 'Train-only normalization and dev-selected classifier; new-name code test, first-value/constant/shuffled labels controls. Classifier label accuracy is NOT TinyLM free generation or intelligence.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak2W_cpu_readout_probe_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_prefix_probe.py --mode fit --execute --max-wall-sec 900\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_prefix_probe.py --mode fit --execute --max-wall-sec 900"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4ak3W_offline_binding_factors-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ak3W_offline_binding_factors_074005.txt",
+      "sha256": "134D183DDEA04CE145EC90B905A791801443FC0CD1BAEE295497488941615704",
+      "raw_sha256": "6BCD77D5E742D0C010B3AB8CB46A911D750E68074F6299B8F3494D7333879408",
+      "script": "#!/usr/bin/env bash\n# CPU3 then frozen feature factors. No TinyLM/Gemma forward, GPU or checkpoints.\n# About0.05h, hard600sec. Do not interpret label probes as free answer/causal proof.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak3W_offline_binding_factors_\"$stamp\" --note 'Offline only: requested value, first value, last value and asked-is-first classifiers with producer/SHA joins. Same fixed features; no online quality filter or base-model update.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak3W_offline_binding_factors_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/test_p106b_binding_factor_probe.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ak3W_offline_binding_factors_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_factor_probe.py --execute --max-wall-sec 600\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_binding_factor_probe.py",
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_binding_factor_probe.py --execute --max-wall-sec 600"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4al0Wa_binding_aux_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4al0Wa_binding_aux_cpu_075429.txt",
+      "sha256": "846CCBF487D6F711A24D027F3EA7FBB8B37523168735CFE4329B860E7872485D",
+      "raw_sha256": "0449BD27C644F3882F1477E34457C34A31C4D0064A048B7BB8693819648C07D2",
+      "script": "#!/usr/bin/env bash\n# CPU10 proven labels, prefix causality, global denominator, RNG/zero loss and consumer1024 budget.\n# Independent fresh outputs; stop on prerequisite/error. No stdin or implicit resume.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0Wa_binding_aux_cpu_\"$stamp\" --note 'CPU10 proven labels, prefix causality, global denominator, RNG/zero loss and consumer1024 budget.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0Wa_binding_aux_cpu_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/test_p106b_binding_auxiliary.py\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_binding_auxiliary.py"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4al0Wc_binding_aux_final_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4al0Wc_binding_aux_final_cpu_080454.txt",
+      "sha256": "E79F85DD8D81F6F930346141D316FE43EC23114D9B54902754998E2A34026591",
+      "raw_sha256": "3F8B445CA255550966CE73A54B97AFAF448D8FB4DDAD2082AC2C2D25ADA2324C",
+      "script": "#!/usr/bin/env bash\n# CPU13: trusted metadata, prefix causality, gradient, consumer budget/public panel.\n# About0.02h CPU, no target checkpoint, teacher, GPU or existing data mutation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0Wc_binding_aux_final_cpu_\"$stamp\" --note 'CPU13 final contracts. Public source wrapper is software-owned, original answer unchanged; fixed stratified16 and disclosed generation cap. Does not establish CUDA/learning quality.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0Wc_binding_aux_final_cpu_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/test_p106b_binding_auxiliary.py\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/test_p106b_binding_auxiliary.py"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4al0Wd_auxiliary_cli_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4al0Wd_auxiliary_cli_cpu_081609.txt",
+      "sha256": "81384BA3D567B78DA31ACA4F8D012DD2377D63F6CD3AB4B88C12F3865B04DA05",
+      "raw_sha256": "7D7B1E1A55D318F8E54C25D929DA0B3BEA5EA7181117AA7C292AEBE8E8B1E405",
+      "script": "#!/usr/bin/env bash\n# CPU16: auxiliary14 plus offline factor CLI2, no target models/cache/GPU.\n# Expected parser/HOLD negatives are captured by tests, not mistaken exit0 errors.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0Wd_auxiliary_cli_cpu_\"$stamp\" --note 'CPU16 final auxiliary/CLI contracts. Expected missing-input fixtures cannot load a model and are captured locally. No old numerical report rerun or overwrite.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0Wd_auxiliary_cli_cpu_\"$stamp\" -- \"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_binding_auxiliary scripts.test_p106b_binding_factor_cli\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_binding_auxiliary scripts.test_p106b_binding_factor_cli"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4al0We_causal_suffix_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4al0We_causal_suffix_cpu_082719.txt",
+      "sha256": "72E30A1ADE9E01A25E9AF978B61743A71BACAFCBC1FE735ED3AFAEC21966EBA5",
+      "raw_sha256": "3A3F88BB31C19B7B60FB5303113D342546522829ED9BB265F37D0B8D2F6A0C7A",
+      "script": "#!/usr/bin/env bash\n# CPU19: after-complete-entity windows, no future answer states, row-normalized auxiliary loss.\n# Independent fresh outputs; no stdin/implicit resume. Prerequisite HOLD is explicit.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0We_causal_suffix_cpu_\"$stamp\" --note 'CPU19: after-complete-entity windows, no future answer states, row-normalized auxiliary loss.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4al0We_causal_suffix_cpu_\"$stamp\" -- \"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_binding_auxiliary scripts.test_p106b_binding_factor_cli\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_binding_auxiliary scripts.test_p106b_binding_factor_cli"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4ao0Wa_verbatim_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ao0Wa_verbatim_cpu_085146.txt",
+      "sha256": "8BA4483090309BB63D1682A7DFBEE105B6E21D0C81A9409892AD60E6078DA9A3",
+      "raw_sha256": "D9FCBD20C9387FFBD7B0857747FD8E61437FEE75E7ABBD8F69F4AD445CE6C862",
+      "script": "#!/usr/bin/env bash\n# CPU27 verifies lossless original-message/role transport, CLI budget binding, auxiliary causal masks and accounting.\n# Fresh namespace, no stdin/implicit resume/old mutation; fail closed on prerequisite.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ao0Wa_verbatim_cpu_\"$stamp\" --note 'CPU27 verifies lossless original-message/role transport, CLI budget binding, auxiliary causal masks and accounting.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ao0Wa_verbatim_cpu_\"$stamp\" -- \"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_verbatim_source scripts.test_p106b_binding_auxiliary scripts.test_p106b_binding_factor_cli\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_verbatim_source scripts.test_p106b_binding_auxiliary scripts.test_p106b_binding_factor_cli"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4ao0Wb_verbatim_deck-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ao0Wb_verbatim_deck_085704.txt",
+      "sha256": "3DC964D1202846DA27DC285396939BCC9FA0F20B8CB2CE0431EB1CFB0FF76107",
+      "raw_sha256": "F31D508DB3A67299CB9A419DE1563801CB67F3E33B2A16EBBA5881B6A3A1AAFD",
+      "script": "#!/usr/bin/env bash\n# Reference the same original736 deck by SHA; no teacher or new unique world-source claim.\n# Fresh namespace, no stdin/implicit resume/old mutation; fail closed on prerequisite.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ao0Wb_verbatim_deck_\"$stamp\" --note 'Reference the same original736 deck by SHA; no teacher or new unique world-source claim.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ao0Wb_verbatim_deck_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_verbatim_source.py --mode freeze --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_verbatim_source.py --mode freeze --execute"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    },
+    {
+      "path": "run_P106B_Stage4ao1W_lossless_budget_panel-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ao1W_lossless_budget_panel_085807.txt",
+      "sha256": "3CA18CCBDDE4CBCD05D8E306DF7BC9654503959392035CF0A166FF498A5AFB2C",
+      "raw_sha256": "301E522FA517C1C777046EE0F0B2E91D904C872A335054DC8C6E5A1377B5F54F",
+      "script": "#!/usr/bin/env bash\n# Teacher-only MTP ON: same8 original sources, cap256/1024 in both orders. Actual fields unverified, no student/data admission.\n# Fresh namespace, no stdin/implicit resume/old mutation; fail closed on prerequisite.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ao1W_lossless_budget_panel_\"$stamp\" --note 'Teacher-only MTP ON: same8 original sources, cap256/1024 in both orders. Actual fields unverified, no student/data admission.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ao1W_lossless_budget_panel_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_verbatim_source.py --mode pilot --execute --max-wall-sec 1200\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_verbatim_source.py --mode pilot --execute --max-wall-sec 1200"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "rerun_planned": false,
+      "recovery_commit": "ab6b17421f2f1bd40d833813e2ddf2b98189bfbb",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true,
+      "permission_mode": "0o755"
+    }
+  ],
+  "planned_delete_count": 11,
+  "status": "PRE_DELETE_VALIDATED",
+  "authority": "2026-10-15 user completed SH preservation and deletion",
+  "retained": [
+    {
+      "path": "run_P106B_Stage4u1W_public_source_deck-done.sh",
+      "reason": "wrapper not executed; direct freeze differs"
+    }
+  ],
+  "bounds": "exact11 terminal SH only; raw/source/corpus/checkpoints/live scripts untouched"
+}

@@ -2573,3 +2573,94 @@ CPU 수분, 교사 소형 비교 약5~15분, 새576 생성은 기존 약1~2시�
 08:31 저장 표본에서 결함을 확인했다. 기존 실행은 보존 중이며 이 새 복구/학생 학습은 아직 미실행이다.
 [Gemma 공식 카드](https://huggingface.co/google/gemma-4-12B-it)의 sampler와 thinking 제어를 다시 확인했다.
 temperature1/top_p.95/top_k64 및 system 시작 think 토큰을 사용하며, cap256/1024는 프로젝트의 비교 조건이다.
+
+## 2026-10-15 Stage4aq~4as — 더 넓은 이름/사실 조합의 4pass 대조(비용 조건부)
+
+### 1. 왜
+기존12개 학습 이름·작은 사실집합의176회에서 형식/종료는 배워도 새 이름의 대상조회는 약50%였다.
+같은 소수를 더 반복하는 것만으로 추상적인 이름-값 연결이 생긴다고 가정하지 않는다.
+먼저 실행할 보조5팔의 개발 결과를 회수하고, 더 넓은 **코드 정답 과제**에서 같은 방법의 효과를 확인한다.
+
+### 2. 질문
+이름/사실 조합을 늘린 같은 새 데이터·같은 부모·같은4epoch에서 보조0과 선택한 연결보조를 비교하면,
+새 이름/양순서/양대상의 자유 답과 실제 대화가 개선되는가? 일반 언어 보존의 대가는 얼마인가?
+
+### 3. 세 대안
+| 안 | 내용 | 장점 | 위험/비용 |
+|---|---|---|---|
+| A | 기존 작은 자료의 epoch만 늘림 | 구현/생성비가 작음 | 이미 본 조합을 더 외울 수 있고 승인한 정상4epoch와 구분해야 함 |
+| B·이번 조건부 선택 | 고유 조합을 늘리고4epoch 유지 | 범위/추상 연결을 더 엄격히 확인 | 자료와 학습량이 함께 바뀌므로 작은 실험과 순수 스케일 효과라고 말하지 못함 |
+| C | rank 보정/폭/재귀를 동시에 변경 | 구조적 병목 가능성을 봄 | 데이터·구조 교락과 구현 비용이 커짐 |
+
+B의 새 두 팔끼리만 보조 목적 효과를 비교한다. 앞176회와 비교할 때는 이름/자료/업데이트 변화가 있는 기술통계다.
+
+### 4. 데이터와 단계
+- train의 언어별 이름96개는 기존 코드의12개 given-name과8개 성/last-name을 조합한 **가상 식별자**다.
+  dev/test는 다른 given-name과 성 집합을 써 전체 이름이 겹치지 않게 한다. 실제 인물 사실을 만들지 않는다.
+- binding은 가족별/언어별4096개의 서로 다른2인2값 매핑×양순서/양대상4view =65536행이다.
+  코드로 정답을 계산하는 기존 다른 절차1024와 새 lossless QA512를 더해 train67072행이다.
+- dev는 별도 이름/매핑의 binding1024+절차128+QA64=1216, 새 code final640과 공개 dev16/고정8/실제update4는 별도다.
+  실제 x/assistant를 tokenizer로 다시 encode해 동결한다. 행수 균형과 token50:50은 다르다.
+- Stage4aq0W: 새 생성·동적 분모/reader/모델-independent 계약 CPU 회귀.
+- Stage4aq1W: 완성 lossless512/64를 읽어 새67072/1216/640과 보조 라벨을20MB JSONL로 동결한다.
+  새 세계지식을67072개 발견한 것이 아니며 code4view/언어/epoch 반복은 별도다.
+- native replay는 같은597995000-token **train.bin**의 서로 겹치지 않는16768개1025-token 창을 index로 참조한다.
+  원cache는 읽기만 하며34MB 복사bin을 추가하지 않는다. 두 팔은 같은offset/순서다.
+  총 native 입력/지도는2096×8192=17170432이며 val은 학습하지 않는다.
+- Stage4aq2W: 보조5팔의 **마지막 epoch 개발 결과만** 읽어 후보를 고정한다.
+  정확라벨.3/1/suffix1 중 code binding의4view-all-root 수, 정확값 수, 낮은 native CE 순으로 선택하고
+  완전 동률은 낮은 계수.3→1→suffix1 순으로 정한다.
+  아무 후보도 aux0보다 개발의 root/정확값을 개선하지 않으면 suffix1을 **미확인 가설**로만 지정한다.
+  작은 실험의 final640을 이 선택에 쓰지 않는다. 후보 지정은 효용/기본값 채택이 아니다.
+- Stage4ar0Wa/Wb: 새 dataset의 보조0/선택후보 각8업데이트 비용·양수 gradient·RAM/VRAM을 실측한다.
+- Stage4ar0Wc: 비용의 첫 compile을 뺀7 step의 nearest-rank p95로 두 전체 팔을 예측한다.
+  각팔의 추가 적재/dev/저장 여유600초, 최종평가1800초, 정리2700초를 더해 **17시 이전**에 들어갈 때만 연다.
+  두 번째 팔 직전에도 실제 남은시간/완료 팔을 반영해 재검산한다. 예측은 완료 보장이 아니다.
+- Stage4arWa/Wb: 같은 원parent·micro8×accum16·seq1024·checkpoint ON·compile default·Adam5e-5/Muon2e-4·NTP·native1,
+  4pass×(67072/128)=2096업데이트. 보조0과 고정 후보만 다르다.
+  추론에 쓰지 않는 head는 똑같고, 같은 causal suffix 로짓/행별 정규화와 source 계약을 적용한다.
+- epoch1~3은 평가/원인추적용 새 CPT도 보존하고 epoch4는 최종파일이다.
+  optimizer는 저장하지 않으므로 완전한 중단재개 증거/훈련상태라고 부르지 않는다.
+- Stage4asW: parent와 두 최종 학생에 새 code640/공개개발16/기존8·실제update4/native를 같은 경로로 수집한다.
+  같은 사실의 첫값 기준256/512·4view 일관성과 공개 원답을 분리한다.
+
+### 5. 판정
+더 넓은 과제에서도 실제 자유 생성의 대상조회가 첫값 기준을 넘는지, 한영별 변화와 원문 손실을 함께 본다.
+단일 seed와 현재 생산 과제이며 세계지식·일반 지능·아키텍처 우열로 승격하지 않는다.
+보조 점수/마스크/전송 성공만으로 학생이 똑똑해졌다고 하지 않는다. raw/native/sample 원형을 보존한다.
+
+### 6. 비용
+CPU 준비는 수분 추정·비용8 전에는 전체 GPU시간 미확정이다.
+기존 약2.1초/정상update를 단순 적용하면 한 팔 약73분+적재/dev/저장, 두 팔 약2.5~3시간이지만 실측으로 다시 정한다.
+새 JSONL/보조 metadata는20MB 이하 샤드이며 HF/private/가중치는 Git에 넣지 않는다.
+native index와 CPU corpus를 사용해도 전체 process RSS와 GPU peak를 별도 보고한다.
+
+### 7. 구현 영향과 선결
+현재 미실행인 독립 binding_aux runner에서 literal176/1408 대신 **동결 계약의 실제 count**를 읽도록 좁게 일반화한다.
+기존 작은5팔의 값은176/1408/4pass로 그대로다. 새 indexed-native reader와 선택적 epoch snapshot 분기는 기존에 비활성이다.
+현재 **실행 중인 lossless producer의 CODE 목록에 이 trainer/test가 없음을 확인**했으므로 producer는 수정하지 않는다.
+제품 transformer/기존 frozen실험/환경/검사기·보호 원천·원cache/CPT는 변경하지 않는다.
+새 scale module/CPU test/SH·원형·계획/결과/기준표·COMPASS/WIP/인계만 추가한다.
+
+### 8. 실행 후보
+run_P106B_Stage4aq0W_large_binding_cpu.sh → run_P106B_Stage4aq1W_large_binding_corpus.sh →
+run_P106B_Stage4aq2W_large_binding_choice.sh → run_P106B_Stage4ar0Wa_large_zero_cost8.sh /
+run_P106B_Stage4ar0Wb_large_candidate_cost8.sh → run_P106B_Stage4ar0Wc_large_budget.sh →
+run_P106B_Stage4arWa_large_zero4.sh / run_P106B_Stage4arWb_large_candidate4.sh → run_P106B_Stage4asW_large_binding_readback.sh.
+여기에 적은 파일은 구현/회귀/등록을 완료한 뒤에만 실제 실행 권장으로 올린다.
+
+### 9. preflight·한계
+tag p106b_binding_scale_v1_s1337은 레지스트리 충돌을 확인한다.
+2096×8×16×1024=274726912는 **padding 위치**이지 실제300M SFT 토큰이 아니다.
+본75M 고유 train×4/300M의 대체 실험이 아니며, 교사가 기존 public 원천을 재생성한 자료는 개념 중복 합산하지 않는다.
+새 학습량/동결 풀/정확한 cache·tokenizer/최종 질문을 조건 서명으로 기록한다.
+현 데이터 크기의 실제 품질과 총시간은 실행 전에는 미확인이다.
+
+### 10. 09:55 준비/회수 갱신
+Stage4aq0W CPU24는 완료했다. 같은 시험의 로컬 fixture 이름을 고유하게 분리하고 TSV등록을 추가한
+Stage4aq0Wb와 최종 동적분모/RSS 포함 Stage4aq0Wc CPU37도 완료했다. 공용검사기는 변경하지 않았다.
+새 source576는 완결했고 Stage4ap0W512/64와 Stage4ap1W 전량 transport readback에서
+문자/공백/들여쓰기 누락0·모든576 실제학생range 일치를 확인했다. 의미정답 판독은 아니다.
+큰Stage4aq1W는 실제train67072/x3470276/지도215485·dev1216·test640으로 CPU동결을 완료했다.
+code65536view는16384매핑이며4epoch실제x13881104/지도861940이다.
+작은5팔학습/후속DEV선택·큰비용8/전체학습은 아직 순차 선결대로 진행한다.

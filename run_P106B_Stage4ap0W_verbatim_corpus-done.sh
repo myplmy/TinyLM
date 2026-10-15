@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Only complete576 verbatim teacher records: exact originals/roles/ranges/input1024 then freeze512/64, pseudo truth.
-# Fresh namespace, no stdin/implicit resume/old mutation; fail closed on prerequisite.
+# Completed2026-10-15 raw095058 exit0;512/64 strict lossless messages and token budget.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 source scripts/shell/tinylm_env.sh

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed2026-10-15 raw095323 exit0; active head updated, checkpoint0.
 # Same new course, positive auxiliary1 cost8; finite gradient and active head.
 # About0.05h GPU, no checkpoints. Both zero/positive cost gates before full arms.
 set -euo pipefail

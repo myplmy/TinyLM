@@ -260,6 +260,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_binding_factor_probe_v1_s1337` | 같은 동결 특징의 requested/first/last 값과 asked-first 2값 CPU 분리 판독 | 모델 forward/GPU/본체 학습0. 새 6값 판독을 학생 실제 답변으로 합산하지 않음 |
 | `p106b_binding_aux_v1_s1337_{aux0,aux03,aux100,auxperm100,auxdense100}` | 같은 새 QA512+code5120·native1·4pass176·학습 전용1538개 연결 보조 head | 보조0/.3/1·root뒤집음1·인과 suffix1의5팔. 같은 suffix 로짓을 계산하고 손실 위치만 선언대로 다름. 실제 자유 생성에서 head는 사용하지 않음. 새source/CPU/세 비용8 선결, 효과 회수 전 NOT_RUN |
 | `p106b_verbatim_source_v1_s1337` | 같은736 원천에서 원문 메시지·role·공백 보존, cap256/1024 MTP panel 뒤 새512/64 | v2의 trim에 의한 실제 YAML 들여쓰기 소실을 복구하는 새 입력 계약. 원형/새버전 분리, 새 고유 개념으로 중복 합산하지 않음; 정답성은PSEUDO |
+| `p106b_binding_scale_v1_s1337` | 가상 이름·매핑을 늘린67072train/1216dev/새640·동일부모/m8a16/4pass2096 예정 | 실제CPU동결3470276x/215485지도,4pass13.88Mx로 padding274.7M과 다름. 작은5팔DEV 후보/비용8·17시 예산 선결; 큰학생효과 NOT_RUN [101 §124](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|

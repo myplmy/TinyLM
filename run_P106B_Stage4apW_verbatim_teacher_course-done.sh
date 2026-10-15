@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Teacher-only selected cap256, original messages/indentation intact. Same512/64 cohort regenerated, not new unique concepts.
-# Fresh namespace, no stdin/implicit resume/old mutation; fail closed on prerequisite.
+# Completed2026-10-15 raw090609 exit0;576 original-message sources, thinking256.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 source scripts/shell/tinylm_env.sh

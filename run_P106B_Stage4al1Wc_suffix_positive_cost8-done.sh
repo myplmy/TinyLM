@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed2026-10-15 raw095506 exit0; causal suffix active, checkpoint0.
 # Positive suffix1 cost8 with identical input/head logits; stop on gradient or integrity error, checkpoint0.
 # Independent fresh outputs; no stdin/implicit resume. Prerequisite HOLD is explicit.
 set -euo pipefail

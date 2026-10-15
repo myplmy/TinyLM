@@ -174,5 +174,21 @@ class Contracts(unittest.TestCase):
             for i in (0,1))
         self.assertTrue(torch.allclose(loss/n,separate))
 
+    def test_native_index_reader_keeps_order_and_no_overlap(self):
+        import numpy as np
+        from scripts.p106b_native_windows import IndexedNativeWindows
+        tokens=np.arange(4*1025,dtype=np.uint16);reader=IndexedNativeWindows(tokens,[2050,0])
+        self.assertEqual(len(reader),2)
+        self.assertEqual([int(a[0]) for a in reader[:2]],[2050,0])
+        self.assertTrue(all(len(a)==1025 for a in reader[:2]))
+        self.assertTrue(np.shares_memory(tokens,reader[0]))
+
+    def test_native_index_overlap_or_partial_window_is_rejected(self):
+        import numpy as np
+        from scripts.p106b_native_windows import IndexedNativeWindows
+        tokens=np.arange(4*1025,dtype=np.uint16)
+        with self.assertRaises(ValueError):IndexedNativeWindows(tokens,[0,1024])
+        with self.assertRaises(ValueError):IndexedNativeWindows(tokens,[len(tokens)-1024])
+
 
 if __name__=='__main__':unittest.main()

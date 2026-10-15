@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Same new course and original parent. Actual8 updates with zero auxiliary coefficient, no checkpoint.
-# Independent fresh outputs; stop on prerequisite/error. No stdin or implicit resume.
+# Completed2026-10-15 raw095148 exit0; actual8 cost, no checkpoint or quality claim.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 source scripts/shell/tinylm_env.sh
