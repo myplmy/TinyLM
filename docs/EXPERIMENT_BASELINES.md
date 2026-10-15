@@ -234,6 +234,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
+| `p106b_grounded_span_v1_s1337` | 공개 첫 QA2048+코드1024·한영균형·4pass96 설계 | CPU12/동결만 완료. CPU fork 내 manual_seed의 CUDA seed 호출을 GPU 전에 확인해 실행판 수리 대기; 학생0·본75M/300M 아님 [101 §151](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 동일8M·parentNTP1epoch/824updates·joint scale1/.1 | 실제완료·native악화high+0.623144/low+0.127744·첫답1/0대8·[092 §12](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32 query/rebuild/KV | 원수집48×2완료0·상위K4집계결함을profile.k로대조·원형보존 [092 §13](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v3_s1337` | 실제K/세검증방식·두precision·같은8질문 | GPT실물112×2완료·serial BF16/native8/8두학생·병렬은조건부. 학습/save0·의미/가속미채택 [092 §14](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
