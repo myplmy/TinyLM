@@ -28,13 +28,20 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-1	P106B	run_P106B_Stage4bl0W_grounded_span_cpu.sh	C	0.05	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
-2	P106B	run_P106B_Stage4bl1W_grounded_span_corpus.sh	C	0.05	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
-3	P106B	run_P106B_Stage4bl2Wa_grounded_span_zero_cost.sh	G	0.15	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
-4	P106B	run_P106B_Stage4bl2Wb_grounded_span_aux_cost.sh	G	0.15	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
-5	P106B	run_P106B_Stage4bmWa_grounded_span_zero.sh	G	0.5	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
-6	P106B	run_P106B_Stage4bmWb_grounded_span_aux.sh	G	0.5	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
-7	P106B	run_P106B_Stage4bnW_grounded_span_answers.sh	G	0.6	Y	N	새자연QA 위치보조 대조; 선결·실제비용8·내일17시·원형보존	8
+1	P106B	run_P106B_Stage4bl0Wb_grounded_span_strict_cpu.sh	C	.05	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+2	P106B	run_P106B_Stage4bl1Wb_grounded_span_source_contract.sh	C	.05	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+3	P106B	run_P106B_Stage4bl2Wc_grounded_span_zero_strict_cost.sh	G	.15	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+4	P106B	run_P106B_Stage4bl2Wd_grounded_span_aux_strict_cost.sh	G	.15	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+5	P106B	run_P106B_Stage4bmWc_grounded_span_zero_strict.sh	G	.5	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+6	P106B	run_P106B_Stage4bmWd_grounded_span_aux_strict.sh	G	.5	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+7	P106B	run_P106B_Stage4bnWb_grounded_span_strict_answers.sh	G	.6	Y	N	동일 QA 원천의 엄격 RNG 새 실행판; source SHA·비용8·두 팔·기한 선결	8
+1	P106B	run_P106B_Stage4bl0W_grounded_span_cpu-done.sh	C	0.05	Y	N	CPU 실제완료; 명령/원형·a15b826 복구점 보존 뒤 정리	8
+2	P106B	run_P106B_Stage4bl1W_grounded_span_corpus-done.sh	C	0.05	Y	N	CPU 실제완료; 명령/원형·a15b826 복구점 보존 뒤 정리	8
+# HOLD v1 initialization: 3	P106B	run_P106B_Stage4bl2Wa_grounded_span_zero_cost-hold.sh	G	0.15	Y	N	GPU0; CUDA seed 부수효과 때문에 새 strict 실행판으로 분리; 원형 보존	8
+# HOLD v1 initialization: 4	P106B	run_P106B_Stage4bl2Wb_grounded_span_aux_cost-hold.sh	G	0.15	Y	N	GPU0; CUDA seed 부수효과 때문에 새 strict 실행판으로 분리; 원형 보존	8
+# HOLD v1 initialization: 5	P106B	run_P106B_Stage4bmWa_grounded_span_zero-hold.sh	G	0.5	Y	N	GPU0; CUDA seed 부수효과 때문에 새 strict 실행판으로 분리; 원형 보존	8
+# HOLD v1 initialization: 6	P106B	run_P106B_Stage4bmWb_grounded_span_aux-hold.sh	G	0.5	Y	N	GPU0; CUDA seed 부수효과 때문에 새 strict 실행판으로 분리; 원형 보존	8
+# HOLD v1 initialization: 7	P106B	run_P106B_Stage4bnW_grounded_span_answers-hold.sh	G	0.6	Y	N	GPU0; CUDA seed 부수효과 때문에 새 strict 실행판으로 분리; 원형 보존	8
 0	-	run_smoke_check.bat	D	0.1	N	N	코드 정합성. ★실패하면 큐 전체 중단. paired_eval·cleanup_ckpt 를 고쳤다
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWh_online5_public_low-hold.sh. 사용자 요청대로 미실행 low5를 보존하되 현재 우선순위·큐에서 제외; 재활성화는 새 지시/새 단계가 필요하다.
 # HOLD 2026-09-30 P106B: run_P106B_Stage2iWf_online5_public_medium-hold.sh. 기존 medium 자원·품질 미판정 보류를 유지하고 큐/직접 실험 시작을 차단한다.

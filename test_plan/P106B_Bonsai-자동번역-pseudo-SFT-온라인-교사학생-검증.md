@@ -3072,3 +3072,12 @@ CPU 선별 예상1~3분, 비용8 두 팔 각각수분, 전체 두 팔·평가 �
 21:14 갱신: CPU12/12와 새 동결이 완료됐다. 중복/옛 원천 제외 뒤 EN2608/KO1540 중 한영각
 train1024/dev128/test128을 선택했다. 코드1024를 더한 train3072의 실제951337x/14866지도,
 4pass96회의3805348x/59464지도+native786432를 각각 기록한다. 새7SH 작성·등록, GPU는 아직0이다.
+
+### Stage4bl0Wb~4bnWb 실행판 수리
+
+GPU 전에 CPU mock으로 `torch.manual_seed`의 CUDA seed 호출1을 발견했다. v1 코드/자료/두 CPU 원형은
+첫 커밋a15b826으로 보존하고 v1 비용/학생/평가5SH는 실행하지 않고 hold로 둔다.
+독립 실행 adapter `diag_p106b_grounded_span_execution.py`는 같은 v1 source SHA/CODE를 먼저 검증한 뒤
+새 `p106b_grounded_span_exec_v2_s1337` 보고·가중치만 쓴다. source JSON을 새 코드로 위장하지 않는다.
+head 초기화는 CPU default_generator만 fork 안에서 초기화하고 CPU/활성 CUDA 상태를 전후 assert한다.
+그 외 자료/배치/학습률/보조목적/96회는 같다. 새 CPU16→source계약→비용8 두팔→전체 두팔→평가 순이다.
