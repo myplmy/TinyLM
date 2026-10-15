@@ -1,0 +1,121 @@
+{
+  "schema": "P106B_SOURCE_TEMPLATE_OFFLINE_OBSERVATIONS_V1",
+  "review_snapshot_at": "2026-10-16T06:21:27+09:00",
+  "packet_report": "test_result/evidence/p106b_source_template_packet_v1_s1337/report.json",
+  "reviewer": "Codex GPT, source-task observation only, not an independent factual verifier",
+  "review_scope": {
+    "hotpot_and_nq_question_answer_pairs_read": 80,
+    "other_packet_cases_not_reviewed_here": 32,
+    "world_fact_verification": "NOT_RUN",
+    "population_defect_rate": "NOT_ESTIMATED"
+  },
+  "examples": [
+    {
+      "group": "ko:HotpotQA:template=1",
+      "raw_id": 1323213,
+      "observation_type": "MISSING_REFERENT",
+      "note": "비교할 도시 후보가 주어지지 않아 어떤 집합의 최대인지를 질문만으로 특정할 수 없다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:HotpotQA:template=2",
+      "raw_id": 1452286,
+      "observation_type": "REQUEST_LOSS",
+      "note": "인물의 가족관계를 서술하다 끝나며 무엇을 답하라는 요청이 빠져 있다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:HotpotQA:template=2",
+      "raw_id": 1472520,
+      "observation_type": "REQUEST_LOSS",
+      "note": "자동차의 영화 등장 사실만 제시되어 요구하는 항목이 명확하지 않다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:HotpotQA:template=3",
+      "raw_id": 1188502,
+      "observation_type": "INCOMPLETE_RELATION",
+      "note": "인물·영화·배역 관계를 잇는 질문이 불완전해 목표 관계를 확정하기 어렵다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:NQ-Open:template=1",
+      "raw_id": 1791221,
+      "observation_type": "ENTITY_TITLE_TRANSLATION_RISK",
+      "note": "음악의 곡명·밴드명이 일반명사처럼 직역되어 요청 맥락을 알아보기 어렵다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:NQ-Open:template=1",
+      "raw_id": 1817419,
+      "observation_type": "WORD_SENSE_AMBIGUITY",
+      "note": "컴퓨터 입력도구와 동물의 뜻 구별이 번역에서 사라진 것으로 보인다. 영문 짝은 아직 확인하지 않았다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:NQ-Open:template=2",
+      "raw_id": 1702240,
+      "observation_type": "TIME_AND_CATEGORY_AMBIGUITY",
+      "note": "순위의 시점과 목록 종류가 없어 현재 질문의 범위를 특정하기 어렵다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "en:NQ-Open:template=1",
+      "raw_id": 2006310,
+      "observation_type": "SEARCH_FRAGMENT",
+      "note": "서술형 검색어여서 사건의 어떤 정보를 묻는지 완전한 지시문으로 표현되지 않았다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "en:NQ-Open:template=2",
+      "raw_id": 1934682,
+      "observation_type": "MISSING_DOMAIN_DETAIL",
+      "note": "대회의 종목·형식이 없고 연도와 최우수선수만 제시되어 원자료 맥락이 필요하다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "en:HotpotQA:template=3",
+      "raw_id": 1512464,
+      "observation_type": "FACT_LABEL_REVIEW_NEEDED",
+      "note": "출생 시기 비교의 원자료 라벨은 별도 사실 확인이 필요해 보인다. 여기서는 정답을 교체하거나 오답 확정하지 않았다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "ko:NQ-Open:template=1",
+      "raw_id": 1811265,
+      "observation_type": "UNSPECIFIED_AS_OF_DATE",
+      "note": "현재 직책을 묻지만 기준 시점이 없다. 원래 라벨을 현시점 정답으로 취급하지 않는다.",
+      "training_admission": "NOT_DECIDED"
+    },
+    {
+      "group": "en:NQ-Open:template=1",
+      "raw_id": 2009691,
+      "observation_type": "UNSPECIFIED_AS_OF_DATE",
+      "note": "가장 최근 사건의 시점이 고정되지 않아 역사적 라벨과 현재 질문을 구별해야 한다.",
+      "training_admission": "NOT_DECIDED"
+    }
+  ],
+  "raw_id_cross_language_counterexamples": [
+    {
+      "raw_id": 1157859,
+      "en_task": "문장 확장 요청",
+      "ko_task": "요청이 불완전한 영화 QA",
+      "meaning_pair_equal": false
+    },
+    {
+      "raw_id": 1486593,
+      "en_task": "인물의 친족·혼인 관계 QA",
+      "ko_task": "축구팀 승격 QA",
+      "meaning_pair_equal": false
+    }
+  ],
+  "conclusions": [
+    "같은 Collection 숫자 id만으로 한영 번역쌍을 결합하지 않는다.",
+    "명확한 요청 표면이 있어도 세계 정답성·맥락 충족을 보증하지 않는다.",
+    "표본 관찰을 전체 원천·template의 결함률이나 일괄 불량 판정으로 쓰지 않는다."
+  ],
+  "online_filtering": false,
+  "automatic_training_exclusion": false,
+  "bad_phrase_dictionary_created": false,
+  "automatic_policy_consumers": []
+}

@@ -1,0 +1,11 @@
+CPU real provider -> native reader after proof. No model/optimizer/GPU init or cache writes; v1 corpus immutable.
+
+==============================================================================
+[runlog] 2026-10-16 06:31:21  name=P106B_Stage4cb0Wb_actual_native_provider_063121
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c from scripts import diag_p106b_relation_interleaved_runtime_v2 as c;from scripts.p106b_native_windows import reader;import torch,json;r,rows,labels=c.read_course();native=reader(c.ROOT,r);assert r["native_access"]=="INDEXED_TRAIN_ONLY" and len(native)==5504;assert all(len(rows["train"+str(v)])==22016 for v in range(4));assert not native.tokens.flags.writeable;assert not torch.cuda.is_initialized();print(json.dumps(dict(status="CPU_PROVIDER_NATIVE_WIRED",native_access=r["native_access"],native_windows=len(native),train_rows_each=22016,labels=len(labels),cuda_initialized=torch.cuda.is_initialized(),new_checkpoints=0,model_loading="NOT_RUN")))
+==============================================================================
+{"status": "CPU_PROVIDER_NATIVE_WIRED", "native_access": "INDEXED_TRAIN_ONLY", "native_windows": 5504, "train_rows_each": 22016, "labels": 3072, "cuda_initialized": false, "new_checkpoints": 0, "model_loading": "NOT_RUN"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-10-16 06:31:41)
+==============================================================================

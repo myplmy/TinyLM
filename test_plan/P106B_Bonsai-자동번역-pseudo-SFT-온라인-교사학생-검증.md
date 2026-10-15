@@ -3501,3 +3501,81 @@ bzWb의전체비골드(실제3072+제공오답512)root CI를실제자기이력�
 전체와세부그룹의CI는root를뽑되합계정답차/합계문항수로계산한다. 세부그룹마다root당문항수가다를수있기때문이다.
 값은고정가상표본의대응차이일뿐다중비교보정된발견/학습seed일반화/자동채택문턱이아니다.
 새모델실행/데이터교정/TEST최고checkpoint선택은없고원답과counts의일치만확인한다.
+
+## Stage4ca1W — 공개 QA의 원천 템플릿별 오프라인 검토 패킷(CPU)
+
+보유HotpotQA는한영각355476행이지만표본은근거없는지식QA였고,한국어template3의일부는질문이아닌서술문으로번역돼있었다.
+SODA표본도실제role대화가아니라대본/서술문작성과제다. 이름만보고QA/멀티턴으로자동승격하지않는다.
+이것은표본관찰이며모든template3/원천이불량이라는모집단판정은아니다.
+
+| 안 | 방법 | 장점 | 비용/한계 |
+|---|---|---|---|
+| A·선택 | 보유9개Collection원형에서NQ-Open/HotpotQA/Dolly/CoQA만열메타데이터로찾아언어·원천·template별최저해시8개를보존한다. 원문과답을오프라인으로읽는다. | 새다운로드/교사비0·파일앞부분편향감소·질문손실을출처계약별로조사 | CPU1~10분추정/최대30분,표본은전수품질보증이아님 |
+| B | 원천이름만으로기존QA를즉시8M코퍼스로합친다. | 준비가빠르고교사비0 | 질문누락/불명질의/서술문을그대로가르칠수있어지금채택하지않음 |
+| C | 전원천을교사가다시쓴다. | 표현/질문형태를개선할가능성 | 대량교사호출/내용변화/오답전파가있으며원형직접활용가능량부터확인하는편이낫다 |
+
+A는현재17시위임범위의CPU재고다. source_family/template_id/raw id/원문/target/revision/SHA를보존하며
+보호원천/모델/교사/신규다운로드/학습코퍼스생성0이다. 기존물리원본/현재relation CODE도수정하지않는다.
+전체선택원천의원형SHA를검사하고PyArrow열필터로대상가족만읽는다. 표본만새HF격리위치에20MB미만샤드로저장하며
+Git에는메타데이터/카운터/원형해시만넣는다. 권리는기존CARD_ONLY·정답/번역은NOT_REVIEWED그대로다.
+template별질문결함의판독은생성/학습중전수필터가아닌후행자료검토다. 잘못된문구목록/의미자동재생성/정답자동채택은없다.
+이후8M한영QA소형교육또는75M부족분확대로연결하려면실제가용token·중복/원천split·과제/권리계약과별도자료동결을먼저확인한다.
+
+## Stage4cb~4ce — 같은 정보의 epoch내 유형 혼합 대조(실행 전)
+
+### 관측·선택·비용
+
+[101 §173~174](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서fact1은실제1876/3072로개선됐지만
+같은질문에서첫정답→둘째오답45/512가남았다. gold첫답을주면둘째정확281이실제이력309보다작았다.
+같은exact prefix의출력불일치는0이므로당장명백한gold포장/캐시불일치를찾지는못했다.
+마지막epoch전부가‘첫답은틀렸으니고치기’라는수업인점이정상반복간섭을만들었는지는아직가설이다.
+
+| 안 | 구체적 방법 | 장점 | 비용/한계 |
+|---|---|---|---|
+| A·선택 | 저장blocked fact1은그대로두고같은B148부모/손실/688회/네view를root별로회전시켜매epoch내각유형1/4로섞는fact1 한팔을추가한다. | 새교사/내용추가0·동일정보노출에서수업순서효과를직접겨냥 | CPU동결2~4분/cost8약5분/full약23분/두endpoint약15분추정,실측뒤예산재확인 |
+| B | 먼저epoch3와4의저장답만추가평가한다. | 새학습0/약5~10분으로마지막수업영향을관찰 | 수업유형과학습량이함께달라순서인과를직접분리하지못함 |
+| C | 원문2004대화를첫QA만/원래3QA로교육하는새대조를먼저한다. | 자연지문전이를직접겨냥·교사비0 | 정보/지도량/표현도달라수업순서설명과혼합됨,별도비교/미열람TEST필요 |
+
+A를먼저하고C용원천TEST는아직읽지않은채따로예약한다. C는75M/300M대체가아닌후속소형교육이며별도계획/CPU/비용후실행한다.
+후보head를참조정답검증기로사용하거나틀린문구목록을만들지않는다. normal같은답/반복은계속보호한다.
+
+### 권한·동결·비교
+
+- 오늘17시위임범위의새scripts/SH/HF namespace/CPT/소형근거만쓴다. 기존동결CODE/원본/HF/데이터/CPT/환경/tinylm기본/공용검사기/타WIP는수정하지않는다.
+- 새tag는 `p106b_relation_interleaved_v1_s1337`이다. old `p106b_relation_fields_v1_s1337`의train을참조하고복구가능한순서manifest를새로만든다.
+- 네source-root패스에서가상root index i의epoch e view는 `(i+e)%4`다. 같은root의한영자식은같은view로묶는다.
+  매epoch각view4096행·root별네view각1회이며원래blocked의전체canonical row multiset/SFTx/지도/fact질의가같음을검사한다.
+- 기존teacher/code재생5632행/epoch의순서계획은변경하지않는다. 같은train22016행/epoch·4root패스688회·SFT22070078/지도604482/native5636096을맞춘다.
+- 공통초기부모B14847...·m8×accum16/ckptON·Adam5e-5/Muon2e-4/native1/binary1/fact1·같은기존native5504창을그대로쓴다.
+  새각기다른내용을더가르치거나더많이학습한대조가아니다. padding실행량/시간은따로보고한다.
+- 수학/학습함수는기존trainer와AST로대조하고course연결·출력namespace·등록코드목록만바꾼다.
+  CPU multiset/패스/마스크/출처참조·체크포인트독립성을확인한뒤cost8→남은예산→full688을연다.
+- 저장blocked fact1의최종SHA219EAA...과새최종4epoch를비교한다. 다음연구에서살펴본현재TEST는개발근거이며새TEST라고재명명하지않는다.
+- 새가상TEST는기존root0~255와다른test index8192~8447·동일정본generator/한영256씩/네view다.
+  같은source bytes중복을검사하고새세계지식/무한템플릿일반화를주장하지않는다.
+- 새자연TEST는이전모든source/현재128/원천검토패킷CoQA의정확24word를제외한16지문씩32개다.
+  남은엄격3QA후보에서한영각최대32(최소24)개를별도미열람reserved TEST로격리한다. 부족시학습을시작하지않고가용량을보고한다.
+  raw숫자id만으로한영번역쌍을추정하지않는다. 의미/번역/사전학습누설은NOT_AUDITED다.
+- actual3072/제공오답512/gold1536·이력별/필드별·첫prefix불변을새root에서도검산하고자연32·기존code/legacy8/native32crop를분리한다.
+  CI는고정root표본대응기술량이지세계정답/seed일반화/자동채택문턱이아니다.
+- 16:15이후새GPU를시작하지않고최소45분마감여유를남긴다. 이번에도전체smoke/정식TRAIN_READY는NOT_RUN이다.
+
+### 단계
+
+Stage4cb0W CPU15계약→Stage4cb1W source순서/새TEST동결→Stage4cb2W fact1 cost8(CPT0)→Stage4ccW 한팔688→Stage4cdW 저장blocked/newinterleaved실제답→Stage4ceW 원답paired검산순이다.
+
+### Stage4cb0Wb / Stage4cb2Wb / Stage4ccWb / Stage4cdWb / Stage4ceWb — native reader 계약 복구
+
+06:22:05의cb2W는첫update전KeyError/native_copy·종료9였다. 데이터동결v1이native_train_file/offsets/hash를복사했지만
+실제reader가요구하는native_access 표지를전달하지않아복제캐시경로로잘못분기했다. 학습/optimizer/CPT0·OOM아니다.
+CPU15는수학함수/순서/마스크를검사했으나실제새dict를native_reader에전달하지않았다. 전수정적도동적JSON계약을검사하지못했다.
+
+- v1 CODE/자료/실패raw/빈cost출력을불변보존한다. 성공으로고쳐쓰거나같은namespace로다시실행하지않는다.
+- 별도runtime_v2 어댑터가원래source의INDEXED_TRAIN_ONLY 값을정확히복사하고file/5504offsets/두hash가동일한지먼저검사한다.
+  새모델출력tag/EVI/CPT는 `p106b_relation_interleaved_v2_s1337`,자료는유효한v1불변순서manifest를그대로참조한다.
+- 기존native_reader/공용검사기/tinylm/환경은수정하지않는다. 원형dict/데이터파일을수정하거나캐시를복사하지않는다.
+- cb0Wb CPU8은누락표지의실패를주입/재현하고실제read-only캐시의첫8/마지막8윈도우를원래reader와대조한다.
+  동일code/원형SHA의실제reader증거없이는새trainer가실행을거부한다. 모델/optimizer0이다.
+- 새trainer도모든함수AST를기존과대조한다. native의동일한값전달외수학/자료량/부모/순서/손실은그대로다.
+- cb2Wb 새cost8→ccWb 688→cdWb 신규TEST→ceWb원답검산을준비한다. 비용/예산선결과16:15/17시경계도동일하다.
+- v1 미실행ccW/cdW/ceW는hold로보존하고완료시도로끝난cb2W는실패9로done처리한다.
