@@ -1,0 +1,240 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-15T13:06:23.621653+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "authority": "2026-10-15 user: completed launchers done, preserve commands, delete when safe",
+  "git_recovery_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+  "files": [
+    {
+      "path": "run_P106B_Stage4bl0W_grounded_span_cpu-done.sh",
+      "bytes": 1460,
+      "sha256": "65079096F21AD0B9B5DA7630EA7CD915CB35BCA182B3DE81B4AEF70C5571CD31",
+      "script": "#!/usr/bin/env bash\n# New Oct16 study: source-only alignment, ordinary vocabulary-head answers.\n# Plan P106B Stage4bl-bn; prior artifacts read-only; explicit deadline and fresh paths.\n# CPU contract then corpus then two cost8 then paired training then answers.\n# Training micro8 accum16 ckptON; no stdin, teacher, download, global smoke or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl0W_grounded_span_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0W_grounded_span_cpu_\"$run_stamp\" --num 101 --note 'P106B grounded source study. Read actual unpadded/assistant/native counts, source truth UNVERIFIED, span head never used in generation. Cost8 is not quality; output and finish reason decide reported scope. Deadline Oct16 17:00 KST; originals preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0W_grounded_span_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_grounded_span.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0W_grounded_span_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span.py --mode freeze --check-only\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl0W_grounded_span_cpu-done.sh",
+      "git_blob": "c2aef21399e1535aa9be59e4e66ebc313c213a15",
+      "runtime_reference_commit": "a15b826",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl0W_grounded_span_cpu_211301.txt",
+      "raw_sha256": "F5DCBA52E10C43CAEB14BD6D5EFE2C857A352563A96AE98B35B7FAE8B6B96718",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_grounded_span.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span.py --mode freeze --check-only"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl1W_grounded_span_corpus-done.sh",
+      "bytes": 1313,
+      "sha256": "E1AE6E7E930E2E0BF64CF78060C2F51D63CD630A3C929E5EDF176F24760BCD7E",
+      "script": "#!/usr/bin/env bash\n# New Oct16 study: source-only alignment, ordinary vocabulary-head answers.\n# Plan P106B Stage4bl-bn; prior artifacts read-only; explicit deadline and fresh paths.\n# CPU contract then corpus then two cost8 then paired training then answers.\n# Training micro8 accum16 ckptON; no stdin, teacher, download, global smoke or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl1W_grounded_span_corpus_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl1W_grounded_span_corpus_\"$run_stamp\" --num 101 --note 'P106B grounded source study. Read actual unpadded/assistant/native counts, source truth UNVERIFIED, span head never used in generation. Cost8 is not quality; output and finish reason decide reported scope. Deadline Oct16 17:00 KST; originals preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl1W_grounded_span_corpus_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span.py --mode freeze --execute --max-wall-sec 600\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl1W_grounded_span_corpus-done.sh",
+      "git_blob": "97434f4f9cf64302f62d3c01283e0730acfd7224",
+      "runtime_reference_commit": "a15b826",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl1W_grounded_span_corpus_211317.txt",
+      "raw_sha256": "30D8303E5B1353E5FF274DD9030974767FB3D3653435ADE58F52EE0DE9A502E0",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span.py --mode freeze --execute --max-wall-sec 600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl0Wb_grounded_span_strict_cpu-done.sh",
+      "bytes": 1340,
+      "sha256": "6F9154DEB4B176C4C9E2AF797DEEBB6AA9E007F9A22F47F8AA55E4ABAAD0F144",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl0Wb_grounded_span_strict_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0Wb_grounded_span_strict_cpu_\"$run_stamp\" --num 101 --note 'Strict RNG execution v2 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0Wb_grounded_span_strict_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_grounded_span_execution.py\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl0Wb_grounded_span_strict_cpu-done.sh",
+      "git_blob": "cab94953aa24bf31b29bf0d1021fcb4395aa631f",
+      "runtime_reference_commit": "cd1c8a2",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl0Wb_grounded_span_strict_cpu_212453.txt",
+      "raw_sha256": "91E8A61C92E782A473D4B49DEF3AB220619F3B82094D5B43E1E760AB17563ACB",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_grounded_span_execution.py"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl1Wb_grounded_span_source_contract-done.sh",
+      "bytes": 1398,
+      "sha256": "7E7B7E2B037E0EA18AF869D5A416DC30F5527594B399AAB28B331BC2F1349139",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl1Wb_grounded_span_source_contract_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl1Wb_grounded_span_source_contract_\"$run_stamp\" --num 101 --note 'Strict RNG execution v2 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl1Wb_grounded_span_source_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode freeze --execute --max-wall-sec 600\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl1Wb_grounded_span_source_contract-done.sh",
+      "git_blob": "05a1d0221b5e68b5b32baa8dd602de5caf08380b",
+      "runtime_reference_commit": "cd1c8a2",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl1Wb_grounded_span_source_contract_212455.txt",
+      "raw_sha256": "CAF405661DDF5656D7B6FD9BF96780B84D07402F17B0FE4FF82BE9D90E2ED09D",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode freeze --execute --max-wall-sec 600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl0Wc_grounded_span_dispatch_cpu-done.sh",
+      "bytes": 1199,
+      "sha256": "F75F3072AC93A00C20B8FE3A79AE94CF774E87067FE50557508ED0A364F8DE04",
+      "script": "#!/usr/bin/env bash\n# New pre-GPU phase: strict RNG plus explicit phase/arm dispatch validation.\n# Reuses immutable v1 data; v2 CPU-only contract preserved, actual student tag v3.\n# No stdin, downloads, old writes, queue, cleanup, smoke or publication.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl0Wc_grounded_span_dispatch_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0Wc_grounded_span_dispatch_cpu_\"$run_stamp\" --num 101 --note 'New strict RNG/explicit dispatch contract v3. Source v1 unchanged; v2 had CPU-only execution and AST delegation ambiguity, not failed model learning. Read actual source/assistant/native counts and free answers separately. Authority until Oct16 17:00 KST.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl0Wc_grounded_span_dispatch_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_grounded_span_execution.py\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl0Wc_grounded_span_dispatch_cpu-done.sh",
+      "git_blob": "e75c7497d170dce9e526cc5e990d1bd8a406c1fa",
+      "runtime_reference_commit": "9a175d6",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl0Wc_grounded_span_dispatch_cpu_212913.txt",
+      "raw_sha256": "1ACDCD390D1BA90F0204C4801990E3CF7A6B5559895CCCB167643E457468E80C",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_grounded_span_execution.py"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl1Wc_grounded_span_strict_source-done.sh",
+      "bytes": 1245,
+      "sha256": "4F9F614AEB4E6705AF74472121697163CF1501637509195754D763A552B682FE",
+      "script": "#!/usr/bin/env bash\n# New pre-GPU phase: strict RNG plus explicit phase/arm dispatch validation.\n# Reuses immutable v1 data; v2 CPU-only contract preserved, actual student tag v3.\n# No stdin, downloads, old writes, queue, cleanup, smoke or publication.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl1Wc_grounded_span_strict_source_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl1Wc_grounded_span_strict_source_\"$run_stamp\" --num 101 --note 'New strict RNG/explicit dispatch contract v3. Source v1 unchanged; v2 had CPU-only execution and AST delegation ambiguity, not failed model learning. Read actual source/assistant/native counts and free answers separately. Authority until Oct16 17:00 KST.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl1Wc_grounded_span_strict_source_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode freeze --execute --max-wall-sec 600\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl1Wc_grounded_span_strict_source-done.sh",
+      "git_blob": "ca4ddadec5401768bd51aa48c139b66572e1eea8",
+      "runtime_reference_commit": "9a175d6",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl1Wc_grounded_span_strict_source_213012.txt",
+      "raw_sha256": "2E33A5C500578DD6292AA157645B47AE9CE57CCB88B3033EEAD2696AFEBD21FD",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode freeze --execute --max-wall-sec 600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl2Wc_grounded_span_zero_strict_cost-done.sh",
+      "bytes": 1412,
+      "sha256": "4A4107683179BE30601066150382E51D16DFA17F900FEDE854BDA155560E5F6D",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl2Wc_grounded_span_zero_strict_cost_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl2Wc_grounded_span_zero_strict_cost_\"$run_stamp\" --num 101 --note 'Strict RNG execution v2 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl2Wc_grounded_span_zero_strict_cost_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode cost --arm span0 --execute --max-wall-sec 1800\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl2Wc_grounded_span_zero_strict_cost-done.sh",
+      "git_blob": "eb7bc81cbe21309cab18759a4b5ec1025bf7edb7",
+      "runtime_reference_commit": "9a175d6",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl2Wc_grounded_span_zero_strict_cost_213038.txt",
+      "raw_sha256": "75FAEBC245A99A0B0E3B9EE1AD62D3D972C53AFCE8055AC22EF63F9BC651BB62",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode cost --arm span0 --execute --max-wall-sec 1800"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bl2Wd_grounded_span_aux_strict_cost-done.sh",
+      "bytes": 1410,
+      "sha256": "981F48DFAA12949BFA18827CF1BA46E991709C265F971E009F8F0C3B99B9E953",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bl2Wd_grounded_span_aux_strict_cost_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl2Wd_grounded_span_aux_strict_cost_\"$run_stamp\" --num 101 --note 'Strict RNG execution v2 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bl2Wd_grounded_span_aux_strict_cost_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode cost --arm span03 --execute --max-wall-sec 1800\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bl2Wd_grounded_span_aux_strict_cost-done.sh",
+      "git_blob": "54ce02b6da2e1b925e055420989beecc2e713754",
+      "runtime_reference_commit": "9a175d6",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bl2Wd_grounded_span_aux_strict_cost_213339.txt",
+      "raw_sha256": "1AE0D2E18A7389DC158E90A14CF3CF2D28ADDD826D3E9C657773678E2D21C887",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode cost --arm span03 --execute --max-wall-sec 1800"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bmWc_grounded_span_zero_strict-done.sh",
+      "bytes": 1395,
+      "sha256": "AFEE5CDF69AB49040AB311A71BEF837E9A214712191AB0C0A4DA9BC8331E5286",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bmWc_grounded_span_zero_strict_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWc_grounded_span_zero_strict_\"$run_stamp\" --num 101 --note 'Strict RNG execution v3 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWc_grounded_span_zero_strict_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode train --arm span0 --execute --max-wall-sec 7200\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bmWc_grounded_span_zero_strict-done.sh",
+      "git_blob": "83d4a2ca475970bec2e35f2660d1456ea7426abf",
+      "runtime_reference_commit": "9a175d6",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bmWc_grounded_span_zero_strict_213736.txt",
+      "raw_sha256": "410CCFD04799677FA9F3930C0CB89D515FB44CB36BD498AC97211B3CCE47360E",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode train --arm span0 --execute --max-wall-sec 7200"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    },
+    {
+      "path": "run_P106B_Stage4bmWd_grounded_span_aux_strict-done.sh",
+      "bytes": 1393,
+      "sha256": "8098F6F0F291357536DBA8B0376BB38DAF5F1F9669B3EC1127972CDD4E4BE822",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bmWd_grounded_span_aux_strict_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWd_grounded_span_aux_strict_\"$run_stamp\" --num 101 --note 'Strict RNG execution v3 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bmWd_grounded_span_aux_strict_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode train --arm span03 --execute --max-wall-sec 7200\n",
+      "git_commit": "9a175d68c390c763d74f329c5f835c06c8c27f48",
+      "git_path": "run_P106B_Stage4bmWd_grounded_span_aux_strict-done.sh",
+      "git_blob": "8057041bdfe3003a763d669746a8fc6bf46f7862",
+      "runtime_reference_commit": "9a175d6",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bmWd_grounded_span_aux_strict_214427.txt",
+      "raw_sha256": "63E91BF2ADF5DB68665DBDA2C7FA8046BC1CD709150E118731F88E27ADB0AA88",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode train --arm span03 --execute --max-wall-sec 7200"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "same named original executable; old stages remain historical, not a rerun instruction"
+    }
+  ],
+  "count": 10,
+  "working_tree_bytes": 13565,
+  "retained_old_done": {
+    "path": "run_P106B_Stage4u1W_public_source_deck-done.sh",
+    "reason": "previous direct API only; actual wrapper execution not established"
+  },
+  "old_sources_and_checkpoints_deleted": 0,
+  "active_evaluation_excluded": true,
+  "restore_scope": "Git show/body restores audit bytes; new execution needs new authority/stage/namespace, not silent old rerun"
+}
