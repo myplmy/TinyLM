@@ -1,0 +1,255 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-15T15:59:19.130289+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "authority": "current user: preserve completed launcher commands, then exact deletion",
+  "git_recovery_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+  "files": [
+    {
+      "path": "run_P106B_Stage4bnWb_grounded_span_strict_answers-done.sh",
+      "bytes": 1395,
+      "sha256": "5434655CD8B7E58865BE288ACD2AADD1911469C4A185CBC803F128BA35285497",
+      "script": "#!/usr/bin/env bash\n# Strict CPU-only head seeding fixes v1 CUDA RNG side effect before GPU training.\n# Plan P106B Stage4bl-bn recovery: unchanged verified source, distinct execution tag.\n# CPU then source contract then both cost8 then two96-update arms then raw answers.\n# Micro8 accum16 ckptON, native1; no stdin/download/old writes/global queue/smoke.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bnWb_grounded_span_strict_answers_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bnWb_grounded_span_strict_answers_\"$run_stamp\" --num 101 --note 'Strict RNG execution v3 on immutable public source v1. Report unpadded/assistant/native counts separately; positions are not truth. Ordinary vocabulary-head answers, auxiliary absent from inference. Deadline Oct16 17:00 KST. Cost is not quality; previous source and weights preserved.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bnWb_grounded_span_strict_answers_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode evaluate --execute --max-wall-sec 5400\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bnWb_grounded_span_strict_answers-done.sh",
+      "git_blob": "2014890eebda612de385987332019459c970bd70",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bnWb_grounded_span_strict_answers_215225.txt",
+      "raw_sha256": "2BABBD04A0C5EB46C744AB7581A41CF058501ACCE06691C1F9A54A2536958913",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_grounded_span_execution.py --mode evaluate --execute --max-wall-sec 5400"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bnWc_grounded_span_paired_readback-done.sh",
+      "bytes": 1278,
+      "sha256": "F1EE261B8BA8637D23F603C077A54E85CDE573A2964C92528575AB80BC82D76D",
+      "script": "#!/usr/bin/env bash\n# CPU only: exact source/prompt matching, literal metrics and fixed-model root CI.\n# Model/teacher/GPU0; semantic review and automatic selection NOT_RUN.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bnWc_grounded_span_paired_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bnWc_grounded_span_paired_readback_\"$run_stamp\" --num 101 --note 'CPU readback of sealed same-question three-endpoint test256. Literal/F1 is not semantic truth. Root CI is not training-seed variance. Fixed8 review packet is local only; no automatic rejection or model selection.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bnWc_grounded_span_paired_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_summarize_p106b_grounded_span.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bnWc_grounded_span_paired_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/summarize_p106b_grounded_span.py --execute\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bnWc_grounded_span_paired_readback-done.sh",
+      "git_blob": "36dd80373fc6967831b4a4ce88347895a11ee6e8",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bnWc_grounded_span_paired_readback_221508.txt",
+      "raw_sha256": "7325F90804DD310C118930C9AEEA7143BD4127831B464DC779EBCB6527040EFE",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_summarize_p106b_grounded_span.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/summarize_p106b_grounded_span.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4boW_existing_student_reading_dev64-done.sh",
+      "bytes": 1457,
+      "sha256": "1A0BFC289DB00C0FE0BBB6BFA634E89001AF85665CDCA7265BCFDEAC5C4D55D4",
+      "script": "#!/usr/bin/env bash\n# Existing trained students on same source DEV64. No training/checkpoint writes.\n# Previous test is explicitly development now; cached parent/span0 are reused.\n# CPU fixture precedes actual GPU; no stdin/download/source or weight mutations.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4boW_existing_student_reading_dev64_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4boW_existing_student_reading_dev64_\"$run_stamp\" --num 101 --note 'CPU fixture then existing three students actual DEV64, while parent/span0 identical outputs are reused. New training/weights0. Source literal/F1 and actual source reading are distinct. Different training histories permit descriptive initializer comparisons only. Deadline Oct16 17:00 KST.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4boW_existing_student_reading_dev64_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_foundation_panel.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4boW_existing_student_reading_dev64_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_foundation_panel.py --execute --max-wall-sec 1800\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4boW_existing_student_reading_dev64-done.sh",
+      "git_blob": "404c87c2661b6049a3977d7515f9343dabaa87f4",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4boW_existing_student_reading_dev64_223420.txt",
+      "raw_sha256": "425F10971E46D70223615FCFF126038E6BEBDA9E8097E9F92B292E48D08D2F95",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_foundation_panel.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_foundation_panel.py --execute --max-wall-sec 1800"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bp0W_dualqa_teacher_cpu-done.sh",
+      "bytes": 1285,
+      "sha256": "D56479A118D0778F7947860586D216F36A048B3B2444FA00F8B06EDB1DC492F2",
+      "script": "#!/usr/bin/env bash\n# Same8 reference sources,1/2QA in both orders. Teacher MTP ON; no student training.\n# Content labels only, code-owned wrapping; shared3 structural attempts, no word blacklist.\n# Source/reasoning/final preserved separately, no stdin/download/original mutation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bp0W_dualqa_teacher_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bp0W_dualqa_teacher_cpu_\"$run_stamp\" --num 101 --note 'Same-source1QA/2QA measurement, not an effort or semantic-truth comparison. Gemma MTP2, thinking256 at server/request, ctx8192/output3072, same sampler/seed policy. Code owns canonical/ChatML. Raw32 plus bounded retries, candidate conversations may contain1/2 assistant turns. Pilot repeated sources are not training data. Deadline Oct16 17:00 KST.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bp0W_dualqa_teacher_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_teacher.py\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bp0W_dualqa_teacher_cpu-done.sh",
+      "git_blob": "fbba4ed520b21893bcc4ee34ea3651b31fd4d3a2",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bp0W_dualqa_teacher_cpu_230038.txt",
+      "raw_sha256": "94A2924D753DF5D3BCFCDF24780550374EEB1E7117F9C1C70EE99145CB0E49D2",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_teacher.py"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bpW_dualqa_teacher_pair-done.sh",
+      "bytes": 1315,
+      "sha256": "D299E2FF0DCC9CE60AE059D142CFDE4C70F3DF058832D2F54C674DE0E78E4DB8",
+      "script": "#!/usr/bin/env bash\n# Same8 reference sources,1/2QA in both orders. Teacher MTP ON; no student training.\n# Content labels only, code-owned wrapping; shared3 structural attempts, no word blacklist.\n# Source/reasoning/final preserved separately, no stdin/download/original mutation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bpW_dualqa_teacher_pair_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bpW_dualqa_teacher_pair_\"$run_stamp\" --num 101 --note 'Same-source1QA/2QA measurement, not an effort or semantic-truth comparison. Gemma MTP2, thinking256 at server/request, ctx8192/output3072, same sampler/seed policy. Code owns canonical/ChatML. Raw32 plus bounded retries, candidate conversations may contain1/2 assistant turns. Pilot repeated sources are not training data. Deadline Oct16 17:00 KST.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bpW_dualqa_teacher_pair_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dualqa_teacher.py --execute --max-wall-sec 3600\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bpW_dualqa_teacher_pair-done.sh",
+      "git_blob": "e97748b675c38df9f056d034c503ff1ebcaa690e",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bpW_dualqa_teacher_pair_230614.txt",
+      "raw_sha256": "4ABD4A6DDEDA633D90FF71D4E41CCCC9BAD53AD259D82C72929BFE4DD109DFC3",
+      "raw_exit_codes": [
+        8
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_dualqa_teacher.py --execute --max-wall-sec 3600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": true,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bp0Wb_dualqa_optional_note_cpu-done.sh",
+      "bytes": 1476,
+      "sha256": "C7EE62D11E092EFED463144198D55EB8EBD34D9F8EB1E206504F8C6B0723AAEA",
+      "script": "#!/usr/bin/env bash\n# v2 fixes optional empty metadata; never strips leading reasoning or relaxes QA.\n# Same8 source and v1 root/attempt seeds, same Gemma MTP/thinking/sampler/budgets.\n# Saved reparse is not new GPU evidence; actual v2 comparison has separate output.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bp0Wb_dualqa_optional_note_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bp0Wb_dualqa_optional_note_cpu_\"$run_stamp\" --num 101 --note 'Mandatory Q/A only, optional empty NOTE filled by code. Preface/reasoning and missing required answers still rejected. Shared3 attempts and typed insufficiency protection retained. Original v1 response/verdict immutable. Reparse and fresh GPU evidence must not be merged; source-relative truth remains unverified.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bp0Wb_dualqa_optional_note_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_optional_note.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bp0Wb_dualqa_optional_note_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dualqa_optional_note.py --mode reparse --execute\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bp0Wb_dualqa_optional_note_cpu-done.sh",
+      "git_blob": "3c38ff5858b47b13d1a342dd2f5ffcb1232f382a",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bp0Wb_dualqa_optional_note_cpu_232830.txt",
+      "raw_sha256": "5DFFF58F066F65B34F2CE181DCF544EB7A8EB9E4ABE226CFF7318B6BBE243714",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_optional_note.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_dualqa_optional_note.py --mode reparse --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bpWb_dualqa_optional_note_pair-done.sh",
+      "bytes": 1307,
+      "sha256": "326E14438EBFD5F4B9DCBBBEE5D4F5580A26088558E7EB5D8BEEFAA957A8F4C6",
+      "script": "#!/usr/bin/env bash\n# v2 fixes optional empty metadata; never strips leading reasoning or relaxes QA.\n# Same8 source and v1 root/attempt seeds, same Gemma MTP/thinking/sampler/budgets.\n# Saved reparse is not new GPU evidence; actual v2 comparison has separate output.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bpWb_dualqa_optional_note_pair_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve previous raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bpWb_dualqa_optional_note_pair_\"$run_stamp\" --num 101 --note 'Mandatory Q/A only, optional empty NOTE filled by code. Preface/reasoning and missing required answers still rejected. Shared3 attempts and typed insufficiency protection retained. Original v1 response/verdict immutable. Reparse and fresh GPU evidence must not be merged; source-relative truth remains unverified.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bpWb_dualqa_optional_note_pair_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dualqa_optional_note.py --mode pilot --execute --max-wall-sec 3600\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bpWb_dualqa_optional_note_pair-done.sh",
+      "git_blob": "f6086072f4ec28d4849f399a8148aae439c19049",
+      "raw_path": "test_result/101_log_20261015_P106B_Stage4bpWb_dualqa_optional_note_pair_233058.txt",
+      "raw_sha256": "B2D186AB8704500A5CCFBC8EAC2D84BAB3BD58D87CFB2EC7917759BBF2CBEC50",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_dualqa_optional_note.py --mode pilot --execute --max-wall-sec 3600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bq0W_dualqa_source_cpu-done.sh",
+      "bytes": 1534,
+      "sha256": "AA27ECD63AC1BBEBC239E7B8623FD0638F42FB00BBD0D986212C3EC473D90D6D",
+      "script": "#!/usr/bin/env bash\n# Full reference/lineage source jobs, explicit source-only two-turn curriculum.\n# Teacher generation is sealed32-context batches; processed roots never restart.\n# Q1-repeat control intentional duplicates allowed; no online semantic word list.\n# No protected data/download/old writes/student training; deadline Oct16 17:00 KST.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bq0W_dualqa_source_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bq0W_dualqa_source_cpu_\"$run_stamp\" --num 101 --note 'Teacher source corpus only, not75M completion or student quality. Source bytes/code/seed/attempts preserved; same parent later for repeat-Q1 vs distinct-Q2 two-turn education. Fresh test content hidden until evaluation. Soft budget pause8 is not a scientific quality failure; original sources/checkpoints immutable. Full source provenance and20MB shards retained.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bq0W_dualqa_source_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_sources.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bq0W_dualqa_source_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_production.py\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bq0W_dualqa_source_cpu-done.sh",
+      "git_blob": "3496a9bcdd6c38bc3670cdb8d24723b18f49d812",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bq0W_dualqa_source_cpu_000018.txt",
+      "raw_sha256": "ED9519B47742F8424CFBF53FA730745F20C5AA61EE8912A4B69AC965B4875C75",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_sources.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_production.py"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bq1W_dualqa_source_deck-done.sh",
+      "bytes": 1409,
+      "sha256": "BB43AD70DF3E0121A34DDF67FA5636AC009B2E3B9E3111F00B8644A1666AEE9C",
+      "script": "#!/usr/bin/env bash\n# Full reference/lineage source jobs, explicit source-only two-turn curriculum.\n# Teacher generation is sealed32-context batches; processed roots never restart.\n# Q1-repeat control intentional duplicates allowed; no online semantic word list.\n# No protected data/download/old writes/student training; deadline Oct16 17:00 KST.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bq1W_dualqa_source_deck_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bq1W_dualqa_source_deck_\"$run_stamp\" --num 101 --note 'Teacher source corpus only, not75M completion or student quality. Source bytes/code/seed/attempts preserved; same parent later for repeat-Q1 vs distinct-Q2 two-turn education. Fresh test content hidden until evaluation. Soft budget pause8 is not a scientific quality failure; original sources/checkpoints immutable. Full source provenance and20MB shards retained.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bq1W_dualqa_source_deck_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dualqa_production.py --mode freeze --execute --max-wall-sec 14400\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bq1W_dualqa_source_deck-done.sh",
+      "git_blob": "b796aacf0d4eb37f0eb22ca41c5836463189b3dd",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bq1W_dualqa_source_deck_000049.txt",
+      "raw_sha256": "F9FBD571FF09B3E9F7E4CC1644F0EC6EAB7770A6E6717038D4D73F26A72543BD",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_dualqa_production.py --mode freeze --execute --max-wall-sec 14400"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    },
+    {
+      "path": "run_P106B_Stage4bs0W_dualqa_course_cpu-done.sh",
+      "bytes": 1834,
+      "sha256": "FB6A07508971BE060E2D68667631FEF546994B2D121C20972291E01F0A2FDB20",
+      "script": "#!/usr/bin/env bash\n# Completed CPU17 plus two nonloading check-only calls; raw005142 preserved.\n# Deadline Oct16 17:00 KST,45minute closing margin. No stdin or global queue.\n# No protected data/download/old overwrite. Teacher reasoning excluded from student.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bs0W_dualqa_course_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bs0W_dualqa_course_cpu_\"$run_stamp\" --num 101 --note 'CPU17 checks only; whole-update gradient/mask and actual-history paths; no GPU. Fresh namespace only; first attempts and actual history retained. Whole smoke is user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bs0W_dualqa_course_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bs0W_dualqa_course_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_curriculum.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bs0W_dualqa_course_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_dualqa_eval.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bs0W_dualqa_course_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dualqa_curriculum.py --mode cost --check-only\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bs0W_dualqa_course_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dualqa_eval.py --check-only\n",
+      "git_commit": "669bad17575c2883d42733573dd6c30d3f582e7c",
+      "git_path": "run_P106B_Stage4bs0W_dualqa_course_cpu-done.sh",
+      "git_blob": "e0e1eb0e77ba8baceeb1233190b655dc83e03b96",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bs0W_dualqa_course_cpu_005142.txt",
+      "raw_sha256": "204DF6A0B0FE5D2F47D6318AB44A08D27F5D350408D46BE488428A029C835B04",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_curriculum.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_dualqa_eval.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_dualqa_curriculum.py --mode cost --check-only",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_dualqa_eval.py --check-only"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "negative_preserved": false,
+      "source_checkpoint_original_deletion": false
+    }
+  ],
+  "files_count": 10,
+  "total_launcher_bytes": 14290,
+  "originals_changed": 0,
+  "keep": [
+    "run_P106B_Stage4u1W_public_source_deck-done.sh",
+    "active production and unrun resume",
+    "all unrun hold launchers"
+  ],
+  "validator_note": "First read-only check used run_ filename instead of name= label and stopped before any write; exact runlog name mapping corrected.",
+  "limit": "worktree launcher bytes only; Git archive retained; no material checkpoint disk reclaimed"
+}
