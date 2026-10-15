@@ -1,0 +1,108 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-15T19:43:10.646658+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "git_recovery_commit": "0a7067e83b4532571642c93c18ee963382fa28c7",
+  "files": [
+    {
+      "path": "run_P106B_Stage4bx0W_relation_cpu_contract-done.sh",
+      "original_path": "run_P106B_Stage4bx0W_relation_cpu_contract.sh",
+      "bytes": 2007,
+      "sha256": "CE7326920C3E892EB90CFB931EB13FBDD3BEDA7B7A7198268AD9D7C5A011A672",
+      "script": "#!/usr/bin/env bash\n# Fictional relation fields and masked correction, plan P106B Stage4bx-bz.\n# Deadline Oct16 17:00 KST,45minute margin. No stdin, original writes or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bx0W_relation_cpu_contract_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 --note 'CPU27 plus no-loading check-only; old wrong answer is context, not target. Current corpus is not75M/300M. Real-world/source quality and exact fictional oracle are separate. Full smoke is user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_relation_fields.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_relation_auxiliary.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_relation_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_relation_train.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_course.py --check-only\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx0W_relation_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_train.py --mode cost --arm fact1 --check-only\n",
+      "git_commit": "0a7067e83b4532571642c93c18ee963382fa28c7",
+      "git_path": "run_P106B_Stage4bx0W_relation_cpu_contract.sh",
+      "git_blob": "3ef72458cb9072920c3ba49ce90c4477a4fd8777",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bx0W_relation_cpu_contract_042013.txt",
+      "raw_sha256": "1785CB4520BCE6F3813DBF391887018518F3A0F032DDAFE78410368C6ABE6243",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_relation_fields.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_relation_auxiliary.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_relation_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_relation_train.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_course.py --check-only",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_train.py --mode cost --arm fact1 --check-only"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "historical command only; exact runtime/fresh namespace/current authority required"
+    },
+    {
+      "path": "run_P106B_Stage4bx1W_relation_corpus-done.sh",
+      "original_path": "run_P106B_Stage4bx1W_relation_corpus.sh",
+      "bytes": 1073,
+      "sha256": "B042FB5DBFA2114EDFAD1F151582494F41388262CCD3215A391910D359FD2857",
+      "script": "#!/usr/bin/env bash\n# Fictional relation fields and masked correction, plan P106B Stage4bx-bz.\n# Deadline Oct16 17:00 KST,45minute margin. No stdin, original writes or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bx1W_relation_corpus_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx1W_relation_corpus_\"$run_stamp\" --num 101 --note 'Corpus freeze only; fictional producer truth, old pseudo teacher replay, fresh public128. Current corpus is not75M/300M. Real-world/source quality and exact fictional oracle are separate. Full smoke is user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx1W_relation_corpus_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_course.py --execute\n",
+      "git_commit": "0a7067e83b4532571642c93c18ee963382fa28c7",
+      "git_path": "run_P106B_Stage4bx1W_relation_corpus.sh",
+      "git_blob": "73e499d7f8aceec48972e4e1f7ae1577c2b6d61d",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bx1W_relation_corpus_042104.txt",
+      "raw_sha256": "774AE7F86800CA9C5DF3A2D7AD9BF2D5A081E7AC4E8ADFE26CB97EA10A7D6AF0",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_course.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "historical command only; exact runtime/fresh namespace/current authority required"
+    },
+    {
+      "path": "run_P106B_Stage4bx2Wa_relation_zero_cost8-done.sh",
+      "original_path": "run_P106B_Stage4bx2Wa_relation_zero_cost8.sh",
+      "bytes": 1122,
+      "sha256": "64C6D8AF179804D78B3527D8EDB4AA1C6E069D554DE1725FACF93E8DBE41F30B",
+      "script": "#!/usr/bin/env bash\n# Fictional relation fields and masked correction, plan P106B Stage4bx-bz.\n# Deadline Oct16 17:00 KST,45minute margin. No stdin, original writes or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bx2Wa_relation_zero_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx2Wa_relation_zero_cost8_\"$run_stamp\" --num 101 --note 'Fact0 actual cost8, same parent/micro8 accum16/ckptON. Checkpoint0, not full688. Current corpus is not75M/300M. Real-world/source quality and exact fictional oracle are separate. Full smoke is user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx2Wa_relation_zero_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_train.py --mode cost --arm fact0 --execute --max-wall-sec 3600\n",
+      "git_commit": "0a7067e83b4532571642c93c18ee963382fa28c7",
+      "git_path": "run_P106B_Stage4bx2Wa_relation_zero_cost8.sh",
+      "git_blob": "1a96249e1f994137e03bd7560b9ea016be80fd19",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bx2Wa_relation_zero_cost8_042622.txt",
+      "raw_sha256": "44BBD502A7AB4CCD8451995314B93E0E15DAD570A0D48CEEB87943CEE5B7B4F5",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_train.py --mode cost --arm fact0 --execute --max-wall-sec 3600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "historical command only; exact runtime/fresh namespace/current authority required"
+    },
+    {
+      "path": "run_P106B_Stage4bx2Wb_relation_fact_cost8-done.sh",
+      "original_path": "run_P106B_Stage4bx2Wb_relation_fact_cost8.sh",
+      "bytes": 1134,
+      "sha256": "D36A69902B8F0606A8408CA6A02B3FB5A96CF3F51A748865F06576D5125822D7",
+      "script": "#!/usr/bin/env bash\n# Fictional relation fields and masked correction, plan P106B Stage4bx-bz.\n# Deadline Oct16 17:00 KST,45minute margin. No stdin, original writes or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4bx2Wb_relation_fact_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx2Wb_relation_fact_cost8_\"$run_stamp\" --num 101 --note 'Fact1 actual cost8, same parent/data. Fact selection is training-only, not a truth verifier. Current corpus is not75M/300M. Real-world/source quality and exact fictional oracle are separate. Full smoke is user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4bx2Wb_relation_fact_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_train.py --mode cost --arm fact1 --execute --max-wall-sec 3600\n",
+      "git_commit": "0a7067e83b4532571642c93c18ee963382fa28c7",
+      "git_path": "run_P106B_Stage4bx2Wb_relation_fact_cost8.sh",
+      "git_blob": "6ede001dca5ec44f449854d27a1a97186d8674b7",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4bx2Wb_relation_fact_cost8_043152.txt",
+      "raw_sha256": "B59F0F69ED682AC494823CD59DD4BC3CEF5B2B6656EFFF69A227E34B81583003",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_train.py --mode cost --arm fact1 --execute --max-wall-sec 3600"
+      ],
+      "actual_wrapper_executed": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "scope": "historical command only; exact runtime/fresh namespace/current authority required"
+    }
+  ],
+  "raw_logs_preserved": true,
+  "checkpoint_or_data_deletions": 0
+}
