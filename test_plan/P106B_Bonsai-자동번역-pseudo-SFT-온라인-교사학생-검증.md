@@ -3593,6 +3593,20 @@ CPU15는수학함수/순서/마스크를검사했으나실제새dict를native_re
 | C | 코드가아는가상사실의문장구성을먼저다양화한다. | 정답/숫자조건을보장하기쉬움 | 실제세계원문으로전이하는지는다시남음 |
 
 A를후속으로준비하되현재순서대조의원답회수/검산을먼저끝낸다. 새교사생성/다운로드/보호데이터접근은없다.
+
+#### 구현 착수 영향도·권한(2026-10-16 07:30)
+
+| 파일·경로 | 예정 동작 | 현재 권한 | 제외 |
+|---|---|---|---|
+| scripts/diag_p106b_original_qa3_*.py 및 독립test·SH | 새코드/회귀/런처 | 사용자17시까지주도실험·선결구현위임 | 기존동결CODE/공용검사기/제품코드수정0 |
+| HF/sft_ready/p106b_original_qa3_v1_s1337·새CPT | 독립동결·교육출력 | 같은새namespace 실험권한 | 원본/HF기존데이터/CPT덮어쓰기0 |
+| 작은EVI/계획/결과/COMPASS/현재WIP/인계/Git | 검산·동기화·명시stage/한국어commit | 사용자주기기록지시 | private원답/가중치/보호데이터Git제외 |
+
+코드는기존original-QA parser·masked encoder·binary 보조·Mu RMS4·indexed reader를재사용하고새course/trainer/evaluator만추가한다.
+기존함수시그니처/저장데이터마이그레이션은없다. 새서명/자료량/언어분포/부모/eval기준을명시한다.
+CPU회귀는첫쌍동일/3turn지도·부분마지막batch·실제native reader·누락marker오류주입을포함한다.
+문서영향은기준표·방법론·실험/계획목록·COMPASS·배치표다. 다른아키텍처연구는현재대조에섞지않는다.
+GPU권한·소유권·비교유효성·증거수준·정본연쇄5도메인축을따로확인한다. 일반언어/가상보존과새자연문항을혼동하지않는다.
 현재혼합최종4epoch의SHA687EBCC5E30EA674EF4742BFC2BA6B98BCAB937541BD5498F567A9084387E831을두팔공통부모로고정한다.
 신규TEST성적의최대모델을고른것이아니라계획한교육순서의다음부모이며프로젝트기본승자채택도아니다.
 
@@ -3620,3 +3634,21 @@ A를후속으로준비하되현재순서대조의원답회수/검산을먼저끝
 - Stage4cf0W CPU계약,Stage4cf1W 자료동결,Stage4cf2Wa/Stage4cf2Wb 두cost8,Stage4cgWa/Stage4cgWb 두full200,
   Stage4chW 실제3턴/보존평가,Stage4ciW root/이력별검산순이다. SH는구현/회귀후작성하며현단계는DESIGNED다.
 - 16:15새GPU중단/17시종료·보호원천/타원장/원본/외부게시/전체smoke경계와정식TRAIN_READY 미판정은동일하다.
+
+### Stage4cf0Wb / cf2Wc·Wd / cgWc·Wd / chWb / ciWb — 원래 코드 생산자 계약 복구
+
+07:38:33 첫cost8은DEV640의보조정답목록구성에서종료9, update0/CPT0이었다. OOM/학습실패가아니다.
+DEV640은이전binding_aux_test 생산물을개발평가로재사용한것인데,trainer가다른binding_rows(dev)목록으로검증했다.
+기존CPU10은loss/마스크/native만검사해이실제DEV소비경로를놓쳤다. 동적실물fixture누락이며정적AST만으로는발견하지못했다.
+
+- 동결V1 course/원형데이터/CODE/실패raw/빈cost폴더는불변보존한다. 실행안한V1후속은hold이력으로남긴다.
+- 새runtime `p106b_original_qa3_v2_s1337`은V1자료를읽되,원래 `binding.fresh_test(retention_course.code_rows())`를재생성한다.
+  640문항의순서/대화바이트서명과512binding의mapping/order/대상/root/정답/causal position을정확대조한다.
+  모든분할허용목록을합치거나기존검증을제거하지않는다. 이640은새독립TEST가아니라개발용보존평가다.
+- 실제TRAIN3072보조라벨·DEV246/640/1024의전체인코딩·native1600창/앞뒤16조각을CUDA이전에검사한다.
+  실제소비검사중공백없는JSON서명과원래공백있는생산자서명을혼용한두번째결함도발견했다. V1은update0이라보조누락학습은없었다.
+  V2는학습/DEV모두원래생산자서명함수를쓰고,양팔각epoch3072개가실제lookup되는지CPU에서확인한다.
+  틀린DEV목록/질문변조/메타데이터변조/학습라벨변조가실패하는CPU회귀와동일CODE/자료SHA의CPU증거를선결로둔다.
+- 학습수학/부모/자료순서/200update/손실/배치는V1설계그대로다. 모델/CPT/EVI만새V2이며기존파일덮어쓰기0이다.
+- cf0Wb 실제CPU소비계약→cf2Wc first cost8→cf2Wd three cost8→cgWc/cgWd full200→chWb 예약64실제3턴→ciWb 원답검산순이다.
+  비용둘을재고남은예산판정후교육을열며16:15/17시경계는같다. 새CPU/GPU실행은현재주도실험권한안이다.

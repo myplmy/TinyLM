@@ -1,0 +1,21 @@
+Original first QA only, actual cost8. Fixed parent687EBC, m8a16 ckptON, CPT0. No world-truth certification. Full smoke remains user-owned NOT_RUN.
+
+==============================================================================
+[runlog] 2026-10-16 07:38:02  name=P106B_Stage4cf2Wa_original_first_cost8_073802
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_train.py --mode cost --arm first --execute --max-wall-sec 3600
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_original_qa3_train.py", line 171, in main
+    return run(a,cost=a.mode=='cost')
+  File "/home/uranus/tinyLM/scripts/diag_p106b_original_qa3_train.py", line 116, in run
+    dev_known=course.prior.data.known_contract(rows['dev_code'],tok,course.prior.data.binding.approved_questions('dev'))
+  File "/home/uranus/tinyLM/scripts/p106b_dualqa_course.py", line 83, in known_contract
+    bit=binding.binding_bit(row,approved)
+  File "/home/uranus/tinyLM/scripts/p106b_binding_auxiliary.py", line 33, in binding_bit
+    raise ValueError('binding label requires exact approved producer conversation')
+ValueError: binding label requires exact approved producer conversation
+[ORIGINAL_QA3_TRAIN_ERROR] binding label requires exact approved producer conversation
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.5분  (2026-10-16 07:38:33)
+==============================================================================

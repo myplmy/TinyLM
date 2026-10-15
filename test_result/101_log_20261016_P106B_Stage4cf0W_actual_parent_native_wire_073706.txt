@@ -1,0 +1,11 @@
+Actual CPU parent/data/native/binary-state wire before GPU. No forward/backward/optimizer/CPT, original caches read-only, source TEST not evaluated.
+
+==============================================================================
+[runlog] 2026-10-16 07:37:06  name=P106B_Stage4cf0W_actual_parent_native_wire_073706
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c from scripts import diag_p106b_original_qa3_train as t;from scripts.p106b_native_windows import reader;import json;r,rows,labels=t.course.read_course();torch,model,cfg,tok,initial,head=t.load_parent();state=torch.random.get_rng_state().clone();binary=t.course.prior.data.binding.new_head(cfg.dim,"cpu");binary.load_state_dict(head,strict=True);assert torch.equal(state,torch.random.get_rng_state());assert t.training.state_fingerprint(model)==initial;native=reader(t.ROOT,r);assert len(native)==1600 and not native.tokens.flags.writeable;assert all(len(rows[a+"_train"+str(e)])==6356 for a in t.course.ARMS for e in range(4));assert not torch.cuda.is_initialized();print(json.dumps(dict(status="QA3_CPU_PARENT_NATIVE_WIRED",initial_core_sha256=initial,native_windows=len(native),binary_labels=len(labels),native_access=r["native_access"],head_body_rng_unchanged=True,cuda_initialized=False,new_checkpoints=0)))
+==============================================================================
+{"status": "QA3_CPU_PARENT_NATIVE_WIRED", "initial_core_sha256": "33E738C3EC40F27AA8B5F3C5715770056F11D819C586364B42BFD63A655BCF97", "native_windows": 1600, "binary_labels": 3072, "native_access": "INDEXED_TRAIN_ONLY", "head_body_rng_unchanged": true, "cuda_initialized": false, "new_checkpoints": 0}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-10-16 07:37:14)
+==============================================================================
