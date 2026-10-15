@@ -245,6 +245,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_dualqa_parent_wire_v1_s1337` | 같은실제Source0부모/전체code4096의CPU배선 | 2.515초·본체SHA불변·검증라벨3072/0·1각1536·인과suffix41437. CUDA/forward/학습/CPT0·학생품질아님 [101 §159.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p070b_cla_route_contract_v1_s1337` | 10층/d32공유toy/CLA2의원자방문·cache/인과CPU | 12회귀/0.934초·기본101gradient tensor bit일치·cache차이≤7.36e-8. shuffle1337은identity/별도보완; 실제CPT/언어품질/학습0 [105 §1~3](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md) |
 | `p070b_cla_route_nonidentity_v2_s1337` | 같은toy·사전고정seed0비순차shuffle·구CODE/보고불변 | CPU5/0.702초·18방문/9KV·cache차이4.45e-8/101gradient차이0/인과0. 실제CPT/학습/GPU품질0 [105 §6](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md) |
+| `p070b_cla_route_bootstrap_v3_s1337` | 구CODE eea62c0·process ROOT4줄만보완한새실행 | 직접import0·CPU17/0.945초·bootstrap제거본문byte일치·구보고불변. 비identity cache/gradient/인과재현·실제CPT/GPU/학습0 [105 §8](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md) |
 | `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 동일8M·parentNTP1epoch/824updates·joint scale1/.1 | 실제완료·native악화high+0.623144/low+0.127744·첫답1/0대8·[092 §12](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32 query/rebuild/KV | 원수집48×2완료0·상위K4집계결함을profile.k로대조·원형보존 [092 §13](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v3_s1337` | 실제K/세검증방식·두precision·같은8질문 | GPT실물112×2완료·serial BF16/native8/8두학생·병렬은조건부. 학습/save0·의미/가속미채택 [092 §14](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |

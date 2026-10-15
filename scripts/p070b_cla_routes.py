@@ -1,4 +1,8 @@
 """Experimental, fixed CLA-atomic visit routes; product model stays unchanged."""
+from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
 from collections import Counter,defaultdict
 from collections.abc import Mapping
 from dataclasses import dataclass

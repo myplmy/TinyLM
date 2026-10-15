@@ -44,3 +44,5 @@ CLA owner/consumer전체묶음을원자적으로옮기고경계에걸친조각�
 seed1337이3개묶음에서identity였으므로shuffle이름만으로별도경로검증을주장하지않고비identity를별도확인한다.
 후속[105 §6](../../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의고정seed0은실제다른순서에서
 cache4.45e-8/101gradient차이0/인과0을확인했다. toy 외경로학습·공용loader/session guard와언어품질은미실행이다.
+공용검사기가발견한helper직접경로누락은구Git eea62c0을보존한process-local bootstrap으로수리했고
+새v3 CPU17에서같은수치기능을재확인했다([105 §8](../../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)).

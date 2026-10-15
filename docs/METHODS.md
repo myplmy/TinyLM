@@ -286,3 +286,4 @@ CPU7/코퍼스5632 동결까지만완료했고GPU는권한검토단계에서미�
 shuffle seed1337이작은toy에서identity인한계를보존하고비순차고정seed의별도기능검사를준비한다.
 후속[105 §6](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의seed0은실제다른순서에서CPU5를통과했다.
 이로써toy기능coverage만보완하며동적route학습/실제부모품질/배포용세션guard는미완이다.
+후속정적진입점누락은구CODE eea62c0보존뒤process-local bootstrap만수리했고[105 §8](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의새v3에서직접import/CPU17을재확인했다.
