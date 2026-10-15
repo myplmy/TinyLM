@@ -2759,3 +2759,106 @@ teacher/gold 이력을 준 마지막 답과 실제 이전 학생답을 문맥으
 새tag p106b_state_update_aux_v1_s1337·독립 코드/CPU/SH/작은 요약·계획/결과/나침반/원장/인계만 갱신한다.
 실험선결/권한, 데이터 소유, 비교조건, 지표 수준, 문서연쇄의5영향축을 모두 위 계약으로 제한한다.
 이 단계는 아직 설계이며 구현/CPU/모델 실행 완료로 주장하지 않는다.
+
+## 2026-10-15 Stage4ay0W·Stage4ayW — 보유 Dolly 문맥/정확 span CPU 재고(학습 아님)
+
+### 1. 목적과 세 대안
+자연QA가개선되지않아 기존원천의활용가능성을확인한다.
+A는QA가족별선별범위를즉시넓히기, B는명시문맥/문자정렬의실제량부터재기, C는규칙학습만계속하기다.
+B를선택한다. 가족이름/원카드의대분류만으로원천을자동수락하지않고GPU/기존원형/75M정책을바꾸지않는다.
+현재캐시에는Dolly가언어별14808개이나row의task_type은전부generation·subdataset '-'·template1이다.
+원Dolly의세부 category가이필드에그대로남아있는것은아니다.
+
+### 2. 데이터/기술 계약
+기존inventory report에기록된 EN train00003/KO train00001의두공개parquet만읽는다.
+원파일SHA를stream으로재확인하고Dolly-v2/(T)행만Arrowfilter로읽으며원문·공백을수정하지않는다.
+원래user/assistant를그대로직렬화한실제x/assistant총량,1024이내량을계산한다. 새Followup을붙인75M가용량이아니다.
+알려진제작형식의단일줄바꿈 Context: 구분자와그이전질문/이후문맥이있는경우만별도계측한다.
+target이그문맥에정확히한번존재하면문자범위/토큰끝위치를매핑한다.
+이는추출형보조라벨을만들기위한**기술정렬**이지의미정답/자료품질검사나틀린표현목록이아니다.
+불일치/여러번일치/너무긴자료는불량이라고부르지않고이방법의라벨을만들수없음으로기록한다.
+질문이문맥보다먼저나오는지,마지막답body가들어가지않은prefix의source토큰범위인지검산한다.
+
+### 3. 출력/권리
+모델/교사/GPU/새다운로드0,기존자료변경0이며census완료는TRAIN_READY가아니다.
+재고/정확span후보는새 ignored HF의Dolly별도namespace/20MB이하조각으로보존하고기존main loader에연결하지않는다.
+정렬후보가0이어도유효재고결과0이며임의반복으로양을채우지않는다.
+현재[Collection 카드](https://huggingface.co/datasets/CohereLabs/aya_collection_language_split)는Apache2.0,
+[원Dolly 카드](https://huggingface.co/datasets/databricks/databricks-dolly-15k)는CC BY-SA3.0이다.
+상위label만으로하위권리상태를일괄확정하지않고별도보존/귀속을남긴다. 법률판단/모델license승격/원문공개는하지않는다.
+Git에는코드·명령·집계/원천SHA만넣으며실제질문/답/문맥은넣지않는다.
+
+### 4. 비용·판정
+CPU두파일filter/원SHA/약3만행tokenization의수분추정이며실제시간을기록한다.
+전체tokens/행·고유문자질문hash·문맥hash/knowndelimiter/unique-exact-span의분모를구분한다.
+다른언어번역의원개념대응ID는없으므로한영semantic split/고유세계지식량은미확인이다.
+대량main편입이나추가학생/보조모델구조는실측후별도계획으로만연다.
+
+### Stage4ay0Wd·Stage4ayWb 길이통계 복구
+v1은9번째행의1272 serialized tokens에서학생용encode_record(context1024)를먼저불러실패했다.
+부분통계8행/원형/코드는보존하고v2별도namespace·파일을쓴다.
+v2는encode_conversation/sft_targets로전체길이를자르지않고계산하며,
+1024이내정렬후보에만학생용strict인코더를재대조한다.
+긴행/짧은행통계와위치매핑회귀5를먼저검증한다. 행이길다는것은자료불량/학습전체불가판정이아니다.
+
+## 2026-10-15 Stage4az~4bb — 상태학습을 고정한 덧셈 자리/올림 보조(시간 조건부)
+
+### 1. 목적과 선택
+새조회는개선됐으나실제새산수는여전히낮다. A는추가조건부데이터확대,
+B는정답을코드로확정하는덧셈의구조감독, C는같은과제의새seed재현이다.
+시간안에수행할다음범위는B로준비한다. 새덤핑/추정오답이나teacher호출없이고정된숫자계산부터확인한다.
+기존큰2팔/상태2팔을먼저수행하고, 실측예산과17시마감여유가있을때만연다.
+제품/기존frozen코드/메인75M×4·batch·tokenizer는바꾸지않는다.
+
+### 2. 데이터와초기화
+모든새모델의부모는DEV로먼저고정한small suffix1 B57F863685A5다.
+앞상태학생을이어학습하지않고같은초기본체/새optimizer에서시작해누적노출을분명히한다.
+기존state13312에덧셈8192를더해train21504·dev2624(state1600+add1024)·test2048(state1024+add1024)로구성한다.
+정수0..99의 unordered operand pair를구성하고부모작은코퍼스의알려진덧셈/계산변경pair와2+3은제외한다.
+train2048/dev256/test256개의서로다른pair를먼저분리한뒤한영·순서/서술4view를만든다.
+같은숫자의순서변경/번역을독립새개념이나서로다른split으로세지않는다.
+정답은Python합과십진자리/올림재구성이서로일치해야한다.
+예:43+28→71,일의자리1·십의자리7·일의자리올림1. 답에는정수71만쓴다.
+덧셈만이며뺄셈/임의수학능력을보장하지않는다. state데이터와publicdev는원형참조/복사만하고고치지않는다.
+
+### 3. 목적과비교
+same m8×accum16/seq1024/ckptON/compiledefault/Adam5e-5·Muon2e-4/NTP/native1/4epoch672회다.
+학습전용Linear(768,34)는state2class+decimal32(ones10,tens20,carry2)이며26146 FP32계수다.
+양팔이같은head계산을하고state보조는고정,decimal계수만0/1로바꾼다.
+known-row전체분모에서state CE에2,decimal의3 CE평균에2β를곱한다.
+두종류의알려진행수가8192씩이므로태스크별기대비중을맞추는정책이며매update의task별별도정규화라고부르지않는다.
+기본조회/공개QA에임의자리라벨을추측하지않는다. 마지막assistant predictor만사용하고미래답body는읽지않는다.
+head는생성에서쓰지않는다. control의decimal행파라미터0유지·positive의실제양수업데이트를비용/본학습후별도검산한다.
+state고정손실은양팔모두켜져있으므로control head전체가0이어야한다고잘못검사하지않는다.
+
+### 4. 단계와비용
+Stage4az0W:독립자리검증/부모pair제외/split/마스크/0decimalgradient·state고정CPU.
+Stage4az1W:새21504/2624/2048을20MB미만샤드로동결·실제x/target분모회수.
+Stage4ba0Wa/Wb:각8cost/CPT0·state/decimal학습후조건.
+Stage4ba0Wc:정상7step p95×672+팔별300초·평가900초·마감정리2700초를더해남은시간과대조.
+Stage4baWa/Wb:두full672회팔·같은native창5376개/5505024x를index로읽으며부모추가replay1408창을제외한다.
+Stage4bbW:원부모/두학생의같은2048첫답·산수carry별/언어별·state512/basic512·native/공개dev16/기존8을분리한다.
+유효토큰은실제동결후계산한다.672×131072는padding위치이지300M실제학습량이아니다.
+현재2초/정상step의단순외삽은두팔45~55분+평가이며8cost전완료시간은보장하지않는다.
+
+### 5. 판정과한계
+새operand pair의정수첫답과state보존을함께본다. 자리head정확도/낮은CE를학생답인증으로쓰지않는다.
+이전상태단독과는자료/업데이트가달라순수한math보조비교가아니며새두팔끼리만β효과를비교한다.
+숫자범위0..99/템플릿/한seed이고출처사실성·일반QA·일반수학/지능/본300M으로승격하지않는다.
+원데이터/기존CPT/보호경로/환경/타WIP/외부상태불변이며새tag p106b_joint_decimal_v1_s1337만쓴다.
+
+### Stage4bc0W·Stage4axWb/4bbWb 후행 CPU 비교
+새state/joint의같은실제질문raw를hash로맞추고엄격코드정답/하위과제/native를재집계한다.
+bootstrap은같은task와root의관측language집합으로층화하며한root의한영view를분리샘플하지않는다.
+단위가다른state8view/기본4view/덧셈한영4view의실제군집을그대로묶는다.
+고정모델/제작과제에대한조건부구간이며새seed σ나범용지능의신뢰구간이아니다.
+GPU/새학습/원형수정0이고부모·두학생의collection완료뒤에만읽는다.
+
+### Stage4bd0W·Stage4bdWa/Wb — 실제 개발검증 비용 보충(학습0)
+
+8회 비용 측정은 학습 스텝만 재고 epoch마다 반복하는 SFT dev/native32/보조 dev/실제 생성 비용을 제외한다.
+동결 state/joint의 동일 선택 부모를 읽어 네 경로를 CUDA 동기화 전후로 각각 측정하고 본체 SHA 불변·optimizer0·CPT0을 확인한다.
+새 코드만 사용하며 동결 학습기·원자료·이전 비용값을 수정하지 않는다. 실제 원답은 ignored local에만 저장한다.
+후속 예산은 정상 step p95×업데이트+4×관측 검증초×1.5+팔별300초로 보충하고 최종평가·마감정리 여유를 따로 둔다.
+1.5는 운영 여유이지 통계적 신뢰상한이 아니며 부모 한 번의 생성시간이 학습 후 시간을 보장하지 않는다.
+시간 부족이면 두 대조 중 완료 가능한 쌍을 우선하고 나머지는 NOT_RUN으로 보존하며 한 팔 결과를 쌍 비교로 승격하지 않는다.

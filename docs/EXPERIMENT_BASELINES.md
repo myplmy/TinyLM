@@ -262,6 +262,9 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_verbatim_source_v1_s1337` | 같은736 원천에서 원문 메시지·role·공백 보존, cap256/1024 MTP panel 뒤 새512/64 | v2의 trim에 의한 실제 YAML 들여쓰기 소실을 복구하는 새 입력 계약. 원형/새버전 분리, 새 고유 개념으로 중복 합산하지 않음; 정답성은PSEUDO |
 | `p106b_binding_scale_v1_s1337` | 가상 이름·매핑을 늘린67072train/1216dev/새640·동일부모/m8a16/4pass2096 예정 | 실제CPU동결3470276x/215485지도,4pass13.88Mx로 padding274.7M과 다름. 작은5팔DEV 후보/비용8·17시 예산 선결; 큰학생효과 NOT_RUN [101 §124](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_state_update_aux_v1_s1337` | DEV고정small suffix1에서 새13312행·두turn C1/C3·m8a16/4pass416 계획 | 실제CPU32/동결1001858x/100498지도, public train 재노출0·부모추가native창제외3328. 새head는마지막답직전 updated-target bit이며GPU비용/학습/효과NOT_RUN [101 §130](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_joint_decimal_v1_s1337` | 같은 DEV고정 부모·state고정/자리감독0·1·새21504행·4pass672 준비 | 실제CPU14/동결1276878x/119518지도; 학습전용26146계수는생성미사용. 비용/학습NOT_RUN·canonical task-active count구분 [101 §131](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_validation_cost_v1_s1337` | state/joint dev 네경로의 선택부모 시간계측 준비 | 학습0/CPT0·후속예산보충, 관측전/품질시험아님 [101 §131.4](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_dolly_context_census_v2_s1337` | 고정 공개2parquet·CPU재고/길이후문자연결 | v1 긴행계측오류보존·v2 29616행/5894604x, 후보1015행/279602x. 권리/의미/본75M편입미판정·학생학습금지 [101 §131.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
