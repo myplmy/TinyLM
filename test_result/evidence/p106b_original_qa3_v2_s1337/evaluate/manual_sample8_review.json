@@ -1,0 +1,73 @@
+{
+  "schema": "P106B_ORIGINAL_QA3_MANUAL_SAMPLE8_SOURCE_READING_V1",
+  "created_at": "2026-10-15 23:37:50 UTC",
+  "selection_manifest": "test_result/evidence/p106b_original_qa3_v2_s1337/manual_sample_selection.json",
+  "selection_rule": "four lowest sha([QA3_FIXED_REVIEW8_V1,root]) per language",
+  "evaluation_report_sha256": "009124B8174ACCB78A99010D1F29AE517AE83B5C741D04D343E5858F4416F7C0",
+  "reviewer": "GPT unblinded source-context reading; not an independent world-fact verifier",
+  "scope": "8 fixed source roots, 24 actual answers per endpoint plus16 gold-history diagnostics; 120 traces read across3 endpoints",
+  "actual_literal_subset": {
+    "parent": 1,
+    "first": 1,
+    "three": 4,
+    "denominator_each": 24
+  },
+  "world_truth": "NOT_RUN",
+  "reviewed": [
+    {
+      "root": "CC7F0B3985B3B061E9104EA60928D2FC2AA16BDAA860A9359CC314CB16C1115E",
+      "language": "ko",
+      "source_id": "2220",
+      "observation": "All models keep the city/topic instead of selecting region/poet/profession. The source has unknown-token artifacts; displayed requested values are recoverable from the text. No architecture cause proven."
+    },
+    {
+      "root": "31DD027E0286C2C3D593E8D619B424AE92078A519994353B26EA738A61A5FE7F",
+      "language": "ko",
+      "source_id": "1157",
+      "observation": "Three-QA recovers the protagonist name where parent/first fail. It guesses a count and denies respect despite the displayed source. The name-count source question/UNKNOWN label is itself unclear."
+    },
+    {
+      "root": "8BA8CB2C55C576D609960CAD8026CA32E963A7F3060FB0C58D375D0FB7C017B2",
+      "language": "ko",
+      "source_id": "63",
+      "observation": "Source describes area30627km2 and share5percent, but targets add a year unit and use an item-count suffix. A GOLD-history literal match to that suffix is not content correctness. Models also answer wrong quantities/topics."
+    },
+    {
+      "root": "9A0647184174B0C58F00F9406F685BFED79415478B393F8FBFF1C03EF6DCE48D",
+      "language": "ko",
+      "source_id": "437",
+      "observation": "Three-QA extracts the stated cause but produces year2014 instead of source2013 and age88 instead of87. These are answer selection/copy errors against the supplied reference, not evidence of an arithmetic or floating-point implementation bug."
+    },
+    {
+      "root": "35A30DB81536D8E908AD42209997596F06D4A46131BA4F62168B3675CECE3941",
+      "language": "en",
+      "source_id": "262",
+      "observation": "Parent/first repeat the topic rather than settlers or historical event. Three-QA changes the answer but invents unsupported event/wording. The final target requires computing a duration, which is a different capability from copying a name."
+    },
+    {
+      "root": "66A3208E915C711CD9C3472C4DD0C1A8DA260F925E55F4BDE963679208DA800E",
+      "language": "en",
+      "source_id": "1308",
+      "observation": "Three-QA gets the negative follow-up but answers end-of-day against morning and fails lake-shore destination. Other models repeat the drum sentence rather than the requested time."
+    },
+    {
+      "root": "2C0BC583506DEF4EAC3ECFE53A70BA15A21D2D9FF785C30CB66C998A7DA99412",
+      "language": "en",
+      "source_id": "4812",
+      "observation": "Parent first answer is semantically supported despite literal0 because it includes a full sentence. First-QA retrieves age11; three-QA retrieves April but chooses the girl's age12 for the boy and a number for a grade. Subject/attribute selection remains weak."
+    },
+    {
+      "root": "8672967341887743D3EF4448AC37AB353CBFA2B8E370CFCD3DB43FA02872B0C8",
+      "language": "en",
+      "source_id": "5489",
+      "observation": "Boy/girl names are confused and weather negated against the reference. Jessica versus Jessica. is a punctuation-only target mismatch in some second-turn answers; do not count every literal0 as a content error."
+    }
+  ],
+  "limitations": [
+    "not a population defect rate or unbiased semantic accuracy estimate",
+    "literal scores remain unchanged; both valid paraphrases and bad source targets were observed",
+    "provided source facts are not independently externally verified",
+    "no blacklist, semantic regeneration, automated exclusion or TEST-to-TRAIN feedback",
+    "all original source/model output traces remain in the frozen private manifests"
+  ]
+}
