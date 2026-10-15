@@ -34,5 +34,33 @@ class Readback(unittest.TestCase):
         a[0]['exact_code_contract']=None
         with self.assertRaises(ValueError):code.summarize(a)
 
+    def test_exact_quadruples_change_by_query_and_keep_by_order(self):
+        from scripts.p106b_retention_course import binding_rows
+        rows=[]
+        for r in binding_rows('test',1):
+            gold=r['messages'][-1]['content'][0]['text']
+            rows.append(dict(meta=r['meta'],gold=gold,answer=gold,exact_code_contract=True))
+        result=code.binding_view_relations(rows)['counts']
+        self.assertEqual(result['roots'],4)
+        self.assertEqual(result['same_order_query_pairs'],8)
+        self.assertEqual(result['query_pair_answer_changed'],8)
+        self.assertEqual(result['query_pair_both_exact'],8)
+        self.assertEqual(result['order_pair_same_literal'],8)
+        self.assertEqual(result['all4_same_literal'],0)
+
+    def test_stable_literal_does_not_mean_correct_target(self):
+        from scripts.p106b_retention_course import binding_rows
+        rows=[]
+        for r in binding_rows('test',1):
+            gold=r['messages'][-1]['content'][0]['text'];prediction=next(iter(r['meta']['mapping'].values()))
+            rows.append(dict(meta=r['meta'],gold=gold,answer=prediction,exact_code_contract=prediction==gold))
+        result=code.binding_view_relations(rows)['counts']
+        self.assertEqual(result['all4_same_literal'],4)
+        self.assertEqual(result['order_pair_same_literal'],8)
+        self.assertEqual(result['query_pair_both_exact'],0)
+        self.assertEqual(result['order_pair_both_exact'],4)
+        rows[0]['gold']='forged'
+        with self.assertRaises(ValueError):code.binding_view_relations(rows)
+
 
 if __name__=='__main__':unittest.main()
