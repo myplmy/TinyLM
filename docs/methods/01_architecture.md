@@ -35,3 +35,12 @@ P093 R1의 shared parent + rank-`r` 근사는 `r=0/4/8/16`에서 output NRMS가
 ## 2026-09-27 P076 attention-only 부모 집약 — 배선 PASS, 단일시드 후보 비승격
 
 [결과064 §10~§13](../../test_result/064_20260831_P076-도구가-두-팔-다-죽었다-build_config-위치인자.md)의 Stage2bW에서 기존 mean과 명시 mean의 MLP/attention SHA는 같고 attention-only norm_mean은 MLP SHA를 보존한 채 attention SHA만 바꿨다. 새 ag2 300M 두 팔도 같은 부모·풀·seed·MLP mean으로 skip0 완주했다. 옛 Stage2eW는 잘못된 체크포인트 guard로 평가0건이었지만 Stage2eWb 사용자 paired는 같은 600M val 2,929 crop에서 mean **3.6005797753** 대 attnorm **3.6017860009**, 후보 **+0.0012062256**을 확인했다. 이 한 시드의 attention-only norm_mean은 기본값으로 승격하지 않고 mean을 유지한다. 기존 ag1 MLP 전체 norm_mean +0.0030 열세와 합산하지 않으며, 다중 seed 일반화·실제 배포 상주/속도·한국어 SFT는 여전히 미판정이다. 같은 상주 회계와 서로 다른 날짜의 ms/step만으로 아키텍처 기본값을 바꾸지 않는다.
+
+## 2026-10-16 P070B 독립 방문 계약 — 기능과 학습효과 분리
+
+[105 §1~3](../../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의새실험wrapper는
+CLA owner/consumer전체묶음을원자적으로옮기고경계에걸친조각을고정한다. 제품모델·기존가중치는변경하지않는다.
+10층/d32/공유MLP toy의기본logit/gradient·역순묶음cache/인과검사는통과했지만실제언어·재귀학습·라우터는미실행이다.
+seed1337이3개묶음에서identity였으므로shuffle이름만으로별도경로검증을주장하지않고비identity를별도확인한다.
+후속[105 §6](../../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의고정seed0은실제다른순서에서
+cache4.45e-8/101gradient차이0/인과0을확인했다. toy 외경로학습·공용loader/session guard와언어품질은미실행이다.

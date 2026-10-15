@@ -1,0 +1,28 @@
+CPU toy functionality only. Same visit multiset, CLA atomic ownership, cache route lock, causal mask and uniform logits/gradient. Maximum-visit random draw is not random-depth training or learned routing. Actual checkpoint/GPU/optimizer0; product defaults and P106B frozen code unchanged.
+
+==============================================================================
+[runlog] 2026-10-16 01:22:35  name=P070B_Stage0Wa_cla_atomic_route_contract_012235
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p070b_cla_routes.py --execute
+==============================================================================
+test_all_fixed_routes_prefill_decode_cache_parity (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_atomic_modes_keep_multiset_and_boundary_fragments (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_cache_rejects_route_change (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_changed_future_tokens_do_not_change_prefix (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_fixed_shuffle_preserves_global_rng_and_is_reproducible (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_interleaved_group_and_unpinned_fragments_rejected (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_no_extra_weights_or_silent_optional_features (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_random_maximum_draw_not_an_unimplemented_router_claim (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_repeat_cfg_cannot_silently_claim_a_different_function (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_uniform_logits_and_gradients_match_product_on_toy (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_uniform_matches_existing_schedule (scripts.test_p070b_cla_routes.RouteContract) ... ok
+test_unsafe_layer_reverse_rejected (scripts.test_p070b_cla_routes.RouteContract) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.933s
+
+OK
+[CLA_ROUTE_CONTRACT] {"schema": "P070B_CLA_ATOMIC_ROUTE_CONTRACT_V1", "tag": "p070b_cla_route_contract_v1_s1337", "status": "CPU_TOY_CONTRACT_PASS", "tests": 12, "failures": 0, "errors": 0, "observations": {"cache_cases": [{"repeats": 1, "mode": "uniform", "visits": 10, "kv_entries": 5, "max_abs": 7.12461769580841e-08, "route_sha256": "ADED85CDA7608B7E93388DB5B82B13B4F58BFEAC33571B1A7A596A61CE78F5B1"}, {"repeats": 2, "mode": "uniform", "visits": 18, "kv_entries": 9, "max_abs": 6.32135197520256e-08, "route_sha256": "A9EA55FC626B96F377DFC8DAA1A1D61E2BD49081976E2FE1ABFA376A62169C94"}, {"repeats": 3, "mode": "uniform", "visits": 26, "kv_entries": 13, "max_abs": 6.76955096423626e-08, "route_sha256": "C563470DB6713182A8CA3189D206F2F6D17AA11F96ACD2FDA5F767AB4775F0F2"}, {"repeats": 2, "mode": "reverse", "visits": 18, "kv_entries": 9, "max_abs": 7.35744833946228e-08, "route_sha256": "371CDC67CD283AA5FB2C32C910DD23FD5F98A638C988F6FBBF2E9D8D501368C8"}, {"repeats": 2, "mode": "shuffle", "visits": 18, "kv_entries": 9, "max_abs": 6.32135197520256e-08, "route_sha256": "A9EA55FC626B96F377DFC8DAA1A1D61E2BD49081976E2FE1ABFA376A62169C94"}], "future_prefix_max_abs": 0.0, "uniform_gradient_parameter_tensors": 101}, "tolerances": {"atol": 1e-05, "rtol": 0.0001}, "actual_shape": {"layers": 10, "dim": 32, "ffn": 64, "cla_group": 2, "tie_mlp": true}, "code_sha256": {"scripts/p070b_cla_routes.py": "F0DF0DBB6B7E9FCAE7DC346CF9A02A4B2B41A0DDBC786B39039E0E8DD8EC6C6A", "scripts/test_p070b_cla_routes.py": "9753A62585C087DBA8103602917EC0A0B6D72D0968B042E7575C20B06B3F2056", "scripts/diag_p070b_cla_routes.py": "55936853D1F4C0AFFBE1EBBB0A3C77983BF02D7E30691CC91DF1E4698813FEB9", "tinylm/config.py": "3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF", "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A"}, "cuda_initialized": false, "optimizer_updates": 0, "real_checkpoints_loaded": 0, "new_checkpoints": 0, "actual_language_quality": "NOT_RUN", "dynamic_training": "NOT_RUN", "learned_router": "NOT_IMPLEMENTED", "serialized_real_checkpoint_loader": "NOT_IMPLEMENTED", "models_modified": 0, "whole_sec": 0.9339822600013576, "scope": "tiny CPU functionality, not real architecture quality, stochastic route training or deployment"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-16 01:22:38)
+==============================================================================

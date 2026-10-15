@@ -280,3 +280,9 @@ CPU7/코퍼스5632 동결까지만완료했고GPU는권한검토단계에서미�
 새source2112덱과최대1920지문의생산을시작했으며교사생각/원문은Git제외계보로남긴다.
 학생두팔은Q1Q1/Q2Q2와Q1Q2/Q2Q1을교대해각QA의네epoch노출/위치를맞추며생산완료뒤만교육한다.
 전체배치대micro누적gradient·미래답없는보조·실제첫답이력을CPU로검사했고새actual1024답을gold둘째512와분리한다.
+
+[105 §1~3](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의P070B는제품코드변경없이
+실험wrapper에서CLA owner묶음/고정양끝/route-bound cache를검사했다. CPUtoy12와기본gradient불변은실제언어학습증거가아니다.
+shuffle seed1337이작은toy에서identity인한계를보존하고비순차고정seed의별도기능검사를준비한다.
+후속[105 §6](../test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md)의seed0은실제다른순서에서CPU5를통과했다.
+이로써toy기능coverage만보완하며동적route학습/실제부모품질/배포용세션guard는미완이다.
