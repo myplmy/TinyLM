@@ -237,7 +237,11 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_grounded_span_v1_s1337` | 공개 첫 QA2048+코드1024·한영균형·4pass96 설계 | CPU12/동결만 완료. CPU fork 내 manual_seed의 CUDA seed 호출을 GPU 전에 확인해 실행판 수리 대기; 학생0·본75M/300M 아님 [101 §151](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_grounded_span_exec_v2_s1337` | 같은 v1 QA를 참조하는 엄격 초기화 실행판 | CPU16·source계약만; GPU0. 인자 위임의 정적 오탐을 명시 분기로 보완한 v3와 원형 구분 |
 | `p106b_grounded_span_exec_v3_s1337` | 동일 v1 자료·부모/96회·위치 보조0/.3 | 실제source문자0/12/13of256·상한255/4/6·보조추가차이구간0포함으로미승격. 별칭정답/관계오답수동8관찰·native3.53992/3.54202·clip96회. 세계지능미확립 [101 §152~154](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
-| `p106b_foundation_reading_dev64_v1_s1337` | 기존강한학생3개의R1/dense14 자연QA 개발비교 | CPU4/전수68·0뒤추론준비. 과거test재사용DEV64·학습/CPT0·DESCRIPTIVE_ONLY·부모자동선택0 |
+| `p106b_foundation_reading_dev64_v1_s1337` | 기존강한학생3개의R1/dense14 자연QA 개발비교 | 실제새3학생각0/64·현재source0은4/64·모델불변/CPT0. 현재reader유지의개발근거이며다른학습이력의인과비교/범용승자아님 [101 §155](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_dualqa_teacher_pilot_v1_s1337` | 동일8지문·두순서·1QA/2QA·GemmaMTP | 94요청/4수락·종료8. NOTE필수80건과다거절/필수부족2·사고서문8을분리보존 [101 §156](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_dualqa_teacher_pilot_v2_s1337` | 같은8지문/원seed/상한·선택NOTE·source범위 | 새34요청32대화48QA·109.13초. 두순서QA공급약2.1배/실제대화x약1.1배; decoding2배/의미동등/세계지능아님 [101 §157](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_dualqa_corpus_v1_s1337` | 불변원문2112작업·목표train1536/dev128/freshTEST256·MTP2/사고요청256 | CPU8/전수68·0·source덱동결뒤생산중; 미봉인batch는상태HOLD로보호·학생0 [101 §158](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_dualqa_curriculum_v1_s1337` | source0부모·m8a16/4epoch176·repeat/contrast의Q/A노출동일·native1/knownquery1 | CPU17/두check-only만완료·실제course/cost/full미실행. 실제이력1024답과골드둘째512를분리하며본75M/300M아님 [101 §159](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 동일8M·parentNTP1epoch/824updates·joint scale1/.1 | 실제완료·native악화high+0.623144/low+0.127744·첫답1/0대8·[092 §12](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32 query/rebuild/KV | 원수집48×2완료0·상위K4집계결함을profile.k로대조·원형보존 [092 §13](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v3_s1337` | 실제K/세검증방식·두precision·같은8질문 | GPT실물112×2완료·serial BF16/native8/8두학생·병렬은조건부. 학습/save0·의미/가속미채택 [092 §14](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
