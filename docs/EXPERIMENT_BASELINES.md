@@ -257,6 +257,9 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_source_expand_v2_s1337` | 이전736root/긴본문제외·새512train/64val/예비160·GemmaMTP단독 | teacher와student에원문message/offset순서보존·전체bounded본문전달. 새공급/교사/학생효과는회수전NOT_RUN, 보호사전/원본변경/자동75M승격없음 |
 | `p106b_prefix_probe_v1_s1337` | 진단 전용 GPU 배치 순서 오류 | CPU 캐시를 먼저 만든 뒤 GPU로 이동해 첫 forward exit1·특징0·optimizer0. 원형과 전체코드 별도 복구 JSON, 학생 품질 음성이 아님 |
 | `p106b_prefix_probe_v2_s1337` | GPU 이동 뒤 캐시 동결·실제 장치 검산, parent/replay100/pair030 표현 진단 | 본체 학습0·후보6값 판독·논리 층 관측. 실제 자유 생성·인과·범용 지능과 분리하며 새CPU7/수집 뒤 회수 |
+| `p106b_binding_factor_probe_v1_s1337` | 같은 동결 특징의 requested/first/last 값과 asked-first 2값 CPU 분리 판독 | 모델 forward/GPU/본체 학습0. 새 6값 판독을 학생 실제 답변으로 합산하지 않음 |
+| `p106b_binding_aux_v1_s1337_{aux0,aux03,aux100,auxperm100,auxdense100}` | 같은 새 QA512+code5120·native1·4pass176·학습 전용1538개 연결 보조 head | 보조0/.3/1·root뒤집음1·인과 suffix1의5팔. 같은 suffix 로짓을 계산하고 손실 위치만 선언대로 다름. 실제 자유 생성에서 head는 사용하지 않음. 새source/CPU/세 비용8 선결, 효과 회수 전 NOT_RUN |
+| `p106b_verbatim_source_v1_s1337` | 같은736 원천에서 원문 메시지·role·공백 보존, cap256/1024 MTP panel 뒤 새512/64 | v2의 trim에 의한 실제 YAML 들여쓰기 소실을 복구하는 새 입력 계약. 원형/새버전 분리, 새 고유 개념으로 중복 합산하지 않음; 정답성은PSEUDO |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|

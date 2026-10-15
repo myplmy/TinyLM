@@ -26,3 +26,11 @@ core.filemode=false라 새 실행SH의 인덱스실행비트는명시적으로�
 첫 진단의 CPU-cache/CUDA 순서 오류는 원형·정확한 v1 전체코드 복구 JSON을 추적해 수리와 구분한다.
 CPU/정적 통과로 이 GPU 오류를 찾았다고 주장하지 않는다.
 원천 JSONL/사고·특징 NPY·CPT는 기존 HF/runs/local 제외 정책을 그대로 적용한다.
+
+## 09시대 추가 판단
+
+동결 특징/요인 판독의 작은 report·layout 전량 감사·새 lossless deck/pilot 요약과 종료 raw를 선별한다.
+cap panel console은 실제 source 파생 Q/A를 출력하므로 정확한 패턴만 ignore하고 원형은 로컬 보존한다.
+HF 원문/교사답/사고/특징·학습가중치를 추적하지 않는다. 진행 중090609 로그도 아직 staging하지 않는다.
+새 --thinking의 exp1행은 신규 실험 CLI 등급 metadata이며 검사기/환경 동작을 수리한 것이 아니다.
+phase2 완료18SH의 복구/삭제명세와 원형SHA 검산도 추적한다. 이번 삭제는 SH만이며 CPT/데이터 삭제0이다.

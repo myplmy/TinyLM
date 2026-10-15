@@ -689,6 +689,25 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   1	P093B	run_P093B_Stage6aW_generation_contract.sh	N	0.02	Y	Y	CPU nucleus/prefix/current entry contracts only; no checkpoint/tokenizer/GPU.	8
 #   25	P093B	run_P093B_Stage6bW_parent_shared_r64_decode.sh	Y	0.25	Y	Y	User GPU no-training sameparent/shared/r64 prompt x greedy/nucleus p.95 t1. Reuse old24 greedyplain; new192 answers including24 cache-off pairs. C learning remains conditional after actual A.	8
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   1	P106B	run_P106B_Stage4ad1W_retention_cost8.sh	Y	0.05	-	-	Same-code corpus cost8 no checkpoint; 20261015 17KST bound
+#   1	P106B	run_P106B_Stage4aeWa_sft_no_replay.sh	Y	0.25	-	-	Same parent176 updates native weight0 baseline; real tokens separate
+#   1	P106B	run_P106B_Stage4aeWb_native_replay025.sh	Y	0.25	-	-	Same SFT/native inputs; native CE weight0.25 only intervention
+#   1	P106B	run_P106B_Stage4aeWc_native_replay100.sh	Y	0.25	-	-	Same SFT/native inputs; native CE weight1.0 only intervention
+#   1	P106B	run_P106B_Stage4afW_retention_sealed_test.sh	Y	0.12	-	-	All three completed arms then parent and students code test640; no learning
+#   2	P106B	run_P106B_Stage4ag0W_conditional_pair_contract.sh	N	0.03	-	-	After replay3/test: CPU contracts then code-proven pairs and fresh640
+#   2	P106B	run_P106B_Stage4ag1W_conditional_pair_cost8.sh	Y	0.05	-	-	Fresh pairs cost8 no checkpoint; same negative/native compute
+#   2	P106B	run_P106B_Stage4ahWa_conditional_pair_zero.sh	Y	0.25	-	-	Pair beta0 control, same176 SFT/native updates and extra pair forward
+#   2	P106B	run_P106B_Stage4ahWb_conditional_pair010.sh	Y	0.25	-	-	Pair beta0.1, known code one-value tasks only; no semantic blacklist
+#   2	P106B	run_P106B_Stage4ahWc_conditional_pair030.sh	Y	0.25	-	-	Pair beta0.3, same inputs/parent/replay, report preservation separately
+#   2	P106B	run_P106B_Stage4ahWd_chosen_only030.sh	Y	0.25	-	-	Chosen-only NLL0.3 control; same negative compute but no rejected gradient
+#   2	P106B	run_P106B_Stage4aiW_conditional_fresh_test.sh	Y	0.25	-	-	After four pair arms: fresh640 free first answers and native loss
+#   3	P106B	run_P106B_Stage4aj0Wb_ordered_source_inventory.sh	N	0.08	-	-	Newv2 CPU4/source order and supply; oldv1 CPU inventory preserved
+#   3	P106B	run_P106B_Stage4aj1W_source_expand_deck.sh	N	0.08	-	-	Same-code/source inventory prerequisite, fresh736 deck only
+#   3	P106B	run_P106B_Stage4ak0W_prefix_probe_contract.sh	N	0.02	-	-	CPU5 prefix/no-gold, label, four-view, moments and tiny decode hidden parity
+#   3	P106B	run_P106B_Stage4ak0Wd_prefix_device_order_cpu.sh	N	0.02	-	-	CPU7 device migration before non-buffer quant cache, producer/prefix/layer parity
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -883,24 +902,28 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # Completed run_P106B_Stage4acW_binding_full512.sh; run_P106B_Stage4acW_binding_full512-done.sh preserved, no deletion; original cmd/SHA/raw in WIP_20261014b_LOOKUP_LAUNCHER_ARCHIVE.
 # Completed run_P106B_Stage4ad0Wb_retention_corpus_recovery.sh; 20261015 approved deletion after exact commands/full SH/raw SHA preserved in WIP_20261015_DONE_LAUNCHER_ARCHIVE.
 # 2026-10-15 update: prior18 completed SH plus CPU2 deleted with recovery manifest; old preservation comments above are historical. The direct-freeze unexecuted SH remains.
-1	P106B	run_P106B_Stage4ad1W_retention_cost8.sh	Y	0.05	-	-	Same-code corpus cost8 no checkpoint; 20261015 17KST bound
-1	P106B	run_P106B_Stage4aeWa_sft_no_replay.sh	Y	0.25	-	-	Same parent176 updates native weight0 baseline; real tokens separate
-1	P106B	run_P106B_Stage4aeWb_native_replay025.sh	Y	0.25	-	-	Same SFT/native inputs; native CE weight0.25 only intervention
-1	P106B	run_P106B_Stage4aeWc_native_replay100.sh	Y	0.25	-	-	Same SFT/native inputs; native CE weight1.0 only intervention
-1	P106B	run_P106B_Stage4afW_retention_sealed_test.sh	Y	0.12	-	-	All three completed arms then parent and students code test640; no learning
-2	P106B	run_P106B_Stage4ag0W_conditional_pair_contract.sh	N	0.03	-	-	After replay3/test: CPU contracts then code-proven pairs and fresh640
-2	P106B	run_P106B_Stage4ag1W_conditional_pair_cost8.sh	Y	0.05	-	-	Fresh pairs cost8 no checkpoint; same negative/native compute
-2	P106B	run_P106B_Stage4ahWa_conditional_pair_zero.sh	Y	0.25	-	-	Pair beta0 control, same176 SFT/native updates and extra pair forward
-2	P106B	run_P106B_Stage4ahWb_conditional_pair010.sh	Y	0.25	-	-	Pair beta0.1, known code one-value tasks only; no semantic blacklist
-2	P106B	run_P106B_Stage4ahWc_conditional_pair030.sh	Y	0.25	-	-	Pair beta0.3, same inputs/parent/replay, report preservation separately
-2	P106B	run_P106B_Stage4ahWd_chosen_only030.sh	Y	0.25	-	-	Chosen-only NLL0.3 control; same negative compute but no rejected gradient
-2	P106B	run_P106B_Stage4aiW_conditional_fresh_test.sh	Y	0.25	-	-	After four pair arms: fresh640 free first answers and native loss
-3	P106B	run_P106B_Stage4aj0Wb_ordered_source_inventory.sh	N	0.08	-	-	Newv2 CPU4/source order and supply; oldv1 CPU inventory preserved
-3	P106B	run_P106B_Stage4aj1W_source_expand_deck.sh	N	0.08	-	-	Same-code/source inventory prerequisite, fresh736 deck only
 3	P106B	run_P106B_Stage4aj2W_full_reference_teacher.sh	Y	2.00	-	-	Gemma12B/MTP ON alone; new512 train/64val, entire bounded original source visible
 3	P106B	run_P106B_Stage4aj3W_supported_source_corpus.sh	N	0.03	-	-	Complete576 teacher records then supported-only512/64; no missing-reference half
-3	P106B	run_P106B_Stage4ak0W_prefix_probe_contract.sh	N	0.02	-	-	CPU5 prefix/no-gold, label, four-view, moments and tiny decode hidden parity
 3	P106B	run_P106B_Stage4ak1Wb_device_order_capture.sh	D	0.25	Y	N	Freshv2 after CPU cache-placement error; frozen3 last-prefix/sparse-layer features, no optimizer
-3	P106B	run_P106B_Stage4ak0Wd_prefix_device_order_cpu.sh	N	0.02	-	-	CPU7 device migration before non-buffer quant cache, producer/prefix/layer parity
 # DONE 2026-10-15 P106B Stage4ak1W: actual wrapper exit1 CPU cache/CUDA mismatch before feature0; newv2 Stage4ak1Wb; result101 latest and exact failure-source archive preserve origin.
 3	P106B	run_P106B_Stage4ak2W_cpu_readout_probe.sh	N	0.08	-	-	CPU supplied6-label linear/MLP16 and shuffled controls; not free-answer score
+3	P106B	run_P106B_Stage4ak3W_offline_binding_factors.sh	N	0.05	-	-	CPU3 and frozen feature factors: requested/first/last value, asked-first bit; base forward0
+3	P106B	run_P106B_Stage4al0Wa_binding_aux_cpu.sh	N	0.02	-	-	CPU10 proven label/prefix/RNG/denominator/zero gradient and strict consumer token budget
+3	P106B	run_P106B_Stage4al0Wc_binding_aux_final_cpu.sh	N	0.02	-	-	Final CPU13 trusted metadata/source policy/public panel and generation budget
+3	P106B	run_P106B_Stage4al0Wd_auxiliary_cli_cpu.sh	N	0.02	-	-	CPU16 auxiliary14/factorCLI2, missing prerequisite HOLD before any target model
+3	P106B	run_P106B_Stage4al0Wb_binding_aux_corpus.sh	N	0.05	-	-	New source512/64 complete first; code5120 and strict1024 budget, fresh final640	8
+3	P106B	run_P106B_Stage4al1W_binding_aux_cost8.sh	Y	0.05	Y	N	Zero coefficient actual8 cost; new course required, no checkpoint	8
+3	P106B	run_P106B_Stage4al1Wb_binding_aux_positive_cost8.sh	Y	0.05	Y	N	Positive coefficient actual8 cost and active head update; no checkpoint	8
+3	P106B	run_P106B_Stage4amWa_binding_aux_zero.sh	Y	0.30	Y	N	Same176 SFT/native control, auxiliary coefficient0, both cost gates required	8
+3	P106B	run_P106B_Stage4amWb_binding_aux_correct03.sh	Y	0.30	Y	N	Same176 updates, producer-correct asked-first auxiliary0.3, inference head absent	8
+3	P106B	run_P106B_Stage4amWc_binding_aux_correct100.sh	Y	0.30	Y	N	Same176 updates, producer-correct asked-first auxiliary1, inference head absent	8
+3	P106B	run_P106B_Stage4amWd_binding_aux_permuted100.sh	Y	0.30	Y	N	Same176 updates, root-permuted auxiliary1 control only; SFT answer labels unchanged	8
+3	P106B	run_P106B_Stage4anW_binding_aux_fresh_test.sh	D	0.35	Y	N	After all5, parent+students code640/fixed pseudoQA16 without auxiliary head; native CE separately	8
+3	P106B	run_P106B_Stage4al0We_causal_suffix_cpu.sh	N	0.02	-	-	CPU19 including causal subword window/full answer exclusion and per-row mean
+3	P106B	run_P106B_Stage4al1Wc_suffix_positive_cost8.sh	Y	0.05	Y	N	Actual causal suffix coefficient1 cost8; no checkpoint, all three costs before study	8
+3	P106B	run_P106B_Stage4amWe_binding_aux_causal_suffix.sh	Y	0.30	Y	N	Same176/inputs, auxiliary1 after full queried entity until answer prefix, no inference head	8
+3	P106B	run_P106B_Stage4ao0Wa_verbatim_cpu.sh	N	.02	-	-	CPU27 verifies lossless original-message/role transport, CLI budget binding, auxiliary causal masks and accounting.
+3	P106B	run_P106B_Stage4ao0Wb_verbatim_deck.sh	N	.03	-	-	Reference the same original736 deck by SHA; no teacher or new unique world-source claim.	8
+3	P106B	run_P106B_Stage4ao1W_lossless_budget_panel.sh	D	.25	Y	N	Teacher-only MTP ON: same8 original sources, cap256/1024 in both orders. Actual fields unverified, no student/data admission.	8
+3	P106B	run_P106B_Stage4apW_verbatim_teacher_course.sh	D	2.00	Y	N	Teacher-only selected cap1024, original messages/indentation intact. Same512/64 cohort regenerated, not new unique concepts.	8
+3	P106B	run_P106B_Stage4ap0W_verbatim_corpus.sh	N	.03	-	-	Only complete576 verbatim teacher records: exact originals/roles/ranges/input1024 then freeze512/64, pseudo truth.	8

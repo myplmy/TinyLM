@@ -11,7 +11,8 @@ import random
 from scripts.p106b_shards import verify
 SPECS={
  'p106b_context_replay_v2_s1337':('sealed_test','SEALED_CODE_TEST_COLLECTED','sft_only'),
- 'p106b_context_orpo_v1_s1337':('fresh_test','FRESH_CODE_TEST_COLLECTED','pair_zero')}
+ 'p106b_context_orpo_v1_s1337':('fresh_test','FRESH_CODE_TEST_COLLECTED','pair_zero'),
+ 'p106b_binding_aux_v1_s1337':('fresh_test','AUXILIARY_FRESH_TEST_COLLECTED','aux0')}
 
 
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest().upper()

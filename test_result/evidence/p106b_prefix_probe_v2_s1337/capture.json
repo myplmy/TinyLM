@@ -1,0 +1,862 @@
+{
+  "tag": "p106b_prefix_probe_v2_s1337",
+  "code_sha256": {
+    "scripts/diag_p106b_prefix_probe.py": "31168AE02E1C2159A74809D431F92D3F42BD69376573FBC55D4EC30BDF9D1C33",
+    "scripts/test_p106b_prefix_probe.py": "644A135CB4F5157B0F7868215DC16DE40A8BCB0D421E9A02998C619AC6215BC1"
+  },
+  "base_code_sha256": {
+    "scripts/diag_p101a_mtp_parity.py": "300B2C196B9378F76AFD6C9E363C2F4441BAD1594FD91B9C0DF53185A1056A6C",
+    "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+    "scripts/diag_p106b_conditional_orpo.py": "F365F85DF95C9904992F7C152EBC62E6CE8041CF93A8558E29F846C932AA4EDB",
+    "scripts/diag_p106b_context_quality.py": "ADE74DB6B09028A5238A321307B30990B6580E4F65FA36461388D9B078624D96",
+    "scripts/diag_p106b_retention_course.py": "B6B080598BFF646CEFF102C7C60B0D8E9E079E4E6DE71696B832BC821C25DE07",
+    "scripts/p101a_sft_mtp_data.py": "909B18179F6BDDAD59BA861FF76245DBA99B7912E26CBBBB5E7CBE8CDA2B1F1B",
+    "scripts/p101a_sft_mtp_infer.py": "022987FDBB7C7969ED760220BB26891D4B1401575CCAEC636C357EFDD1741B19",
+    "scripts/p106b_conditional_orpo.py": "24B3FA3AF29C6FA7D163956C472513B2C82E8156FC1925292F75001301158143",
+    "scripts/p106b_education_followup.py": "7DBD02831020F3AFBD7DEDC8B0C9755FB7469CF1B5C6E9EA98DEEE1D8746A962",
+    "scripts/p106b_retention_course.py": "A2FC37EFB9837CC08660CA440A262EDA2E101B05F566FA0EFDD3F37591ABAB54",
+    "scripts/test_p101a_sft_mtp.py": "11B5B143C1371A965DC9A7CE73C6E0597755516F481A1F49D49C4D1A130B0DA2",
+    "scripts/test_p101a_sft_mtp_data.py": "C5F0BB4BD13FC4A852E8C809F93D3125916F3FE8F839FB858A855096952D0A2A",
+    "scripts/test_p101a_sft_mtp_driver.py": "04B0F5C784DEA3A3F4EF4CD6313176BBF33036D13ECB262DA92B03D5AEB249DD",
+    "scripts/test_p106b_conditional_orpo.py": "4D11FF63511116C73E749C1A15EBB7ABE7F428DF37AAE76B0AFB5714E2530FF9",
+    "scripts/test_p106b_retention_course.py": "23CF31FA6CD658359744ADF218F8BEE9B79B762657B30977E1258F4944FEA364",
+    "tinylm/config.py": "3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF",
+    "tinylm/infer/generate.py": "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4",
+    "tinylm/infer/mtp.py": "833E7DD9BD40A2B67C5D7BE98D64047F089E800BA2FE7A4555E7EEFD6904F8AF",
+    "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+    "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+  },
+  "source_tag": "p106b_context_orpo_v1_s1337",
+  "precision": "FP32_MATH_NO_TF32",
+  "cache": true,
+  "batch_size": 1,
+  "teacher_requests": 0,
+  "intermediate_logical_layers": [
+    0,
+    3,
+    7,
+    10,
+    13
+  ],
+  "intermediate_scope": "last prefix position after full layer; observational not causal",
+  "backbone_training": false,
+  "checkpoint_saved": false,
+  "scope": "SUPPLIED_SIX_LABEL_PROBE_NOT_FREE_GENERATION",
+  "status": "FROZEN_PREFIX_CAPTURED",
+  "subjects": {
+    "parent": {
+      "checkpoint": {
+        "path": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
+        "sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950"
+      },
+      "state_before": "E854AB4EC2E505DDC581CE08C94F9C8B4A8081E456AFBA193DF28A877E34A193",
+      "state_after": "E854AB4EC2E505DDC581CE08C94F9C8B4A8081E456AFBA193DF28A877E34A193",
+      "files": {
+        "train_hidden768": {
+          "path": "parent/train_hidden768.npy",
+          "sha256": "6CB56D5FD9D9748E227BB82D920B238EA69BA7D50C4D9BB118FD061581407921",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_projected256": {
+          "path": "parent/train_projected256.npy",
+          "sha256": "090F4C9D931A42F8CF840C5F447CA8ED4E503CFF19DBDEE42D2A1624DD910658",
+          "shape": [
+            4096,
+            256
+          ],
+          "bytes": 4194432
+        },
+        "train_layer00": {
+          "path": "parent/train_layer00.npy",
+          "sha256": "0392E2C33447D1B6407138BF046F31D10D7F946A0379C8AD7BC7C1A06AE4657F",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer03": {
+          "path": "parent/train_layer03.npy",
+          "sha256": "A56562C0258905DFC8D31F42D8E84A1B25CA649695F258C151758C8B57D8FF49",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer07": {
+          "path": "parent/train_layer07.npy",
+          "sha256": "58C7960A534D497969258C70CEB4972974E936EABA16374244F8D613C73B5A87",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer10": {
+          "path": "parent/train_layer10.npy",
+          "sha256": "EFBC86275878ED0DAF1AE34D010AD0E2F0CC4958345413AC2DC41726F5E472F2",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer13": {
+          "path": "parent/train_layer13.npy",
+          "sha256": "AA87CC0BAF0AE8984E9486F0B6343C02F28BDC7ADA8BBC01DA3BCA4B51E678E9",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_index": {
+          "path": "parent/train_index.json",
+          "sha256": "0F557B4E941B8843BBC824E9D7AE50F0018BE337AA08500A2AAB44182C2B263D",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 43,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        },
+        "dev_hidden768": {
+          "path": "parent/dev_hidden768.npy",
+          "sha256": "963AE184C07D31F9CF0364F3B98F76FDDAD2B7A678990422E23964EAAF9DD4DF",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_projected256": {
+          "path": "parent/dev_projected256.npy",
+          "sha256": "6B5C194CC49361AC5096212A7FC30D13EC90CD9491C42FCFB550B980CF34D958",
+          "shape": [
+            512,
+            256
+          ],
+          "bytes": 524416
+        },
+        "dev_layer00": {
+          "path": "parent/dev_layer00.npy",
+          "sha256": "574D0FEF608F314B310AC33132C34D6EC66F23EEC151247AFD70F1280AC8F55E",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer03": {
+          "path": "parent/dev_layer03.npy",
+          "sha256": "47E0D7BFAB121F5BCBF7C78FFC8FDD9C7FB556C4873378343FE6D91955F4406D",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer07": {
+          "path": "parent/dev_layer07.npy",
+          "sha256": "902B18AD9FC448FD02FD207F36A14AB5B44B9D919174E554F393099BDA18562D",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer10": {
+          "path": "parent/dev_layer10.npy",
+          "sha256": "864EAE7632551412029AF1B80B6C825887F221E649152F5989357B2A6D9D0971",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer13": {
+          "path": "parent/dev_layer13.npy",
+          "sha256": "33DEC867E35A8FCE821016D13F5E9B71E988B83BE3138274570675996FD8A7A2",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_index": {
+          "path": "parent/dev_index.json",
+          "sha256": "AF24F7C24E0BA43F0E315BB1A336B34C5759B189089E23AFDFEA2F671608858D",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 40,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        },
+        "test_hidden768": {
+          "path": "parent/test_hidden768.npy",
+          "sha256": "80C43A54962E32D0A51744A1A9A2F034B0AF94B9E4AF1761FB44B3AFCC5194AC",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_projected256": {
+          "path": "parent/test_projected256.npy",
+          "sha256": "99C37B4E2E13B8F4E653808BCD60CCE4557876429899E6EDECD16E3200FD90E5",
+          "shape": [
+            512,
+            256
+          ],
+          "bytes": 524416
+        },
+        "test_layer00": {
+          "path": "parent/test_layer00.npy",
+          "sha256": "A3C60E5390039D9924AB0366D9BDC145CDAC513ED0120A02C72FABC9320C3588",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer03": {
+          "path": "parent/test_layer03.npy",
+          "sha256": "88DBFF0C4DCD4AEA2797D074074FEAFD484CCC00390440F2788F39539C6C3DF3",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer07": {
+          "path": "parent/test_layer07.npy",
+          "sha256": "9DC8CAA841339770AD3AC9B599E8FD42BE8B80E5B03291E21A82761B5F270232",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer10": {
+          "path": "parent/test_layer10.npy",
+          "sha256": "B34D571F39BF55B2686E70FC68301F39E7E143F8D6DBB88DFF51D2C360C0FCC6",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer13": {
+          "path": "parent/test_layer13.npy",
+          "sha256": "B4A809192909AFD9F90F4C316406A2FDDB0D8A7B0E62B1E55C6741EC205D2726",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_index": {
+          "path": "parent/test_index.json",
+          "sha256": "489179A37C85BE8E1232DB53BE5195D72D3A0242EB2E03D61BF556477A5FDE39",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 38,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        }
+      },
+      "whole_sec": 68.66098630499619,
+      "model_optimizer_steps": 0,
+      "logical_schedule": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "kv_owners": [
+        0,
+        0,
+        2,
+        2,
+        4,
+        4,
+        6,
+        6,
+        8,
+        8,
+        10,
+        10,
+        12,
+        12
+      ]
+    },
+    "replay100": {
+      "checkpoint": {
+        "path": "runs/ckpt/m100s10_ko-en_context_replay_dense_chat32_p106b_context_replay_v2_s1337_replay100.pt",
+        "sha256": "0ABF84B00176F7D5905D48879A3F535DF9E1432BB49BFB13DA6E054C7B8AEB92"
+      },
+      "state_before": "794907E42802F340B0CB542D2DD71909792259D3DEC0FD87B57C1743149ADA0E",
+      "state_after": "794907E42802F340B0CB542D2DD71909792259D3DEC0FD87B57C1743149ADA0E",
+      "files": {
+        "train_hidden768": {
+          "path": "replay100/train_hidden768.npy",
+          "sha256": "97E147123190B7D36CAC3503145F931061B8E8269FA8574BC664E3F1E77F0826",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_projected256": {
+          "path": "replay100/train_projected256.npy",
+          "sha256": "0EFDD7072C94201C13E55A0BEA91E14D03F3931DC1C85C5D2FD7CAC87AB29297",
+          "shape": [
+            4096,
+            256
+          ],
+          "bytes": 4194432
+        },
+        "train_layer00": {
+          "path": "replay100/train_layer00.npy",
+          "sha256": "8993C98098F8D7803573A07F4BB13B3D8571577A2D2D7091FBC8981D5FF7E614",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer03": {
+          "path": "replay100/train_layer03.npy",
+          "sha256": "52568D60FA8DCDD82DDBB935C06371976D0C62E0A548AEF644119684A9C025F0",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer07": {
+          "path": "replay100/train_layer07.npy",
+          "sha256": "65D226C50BDBA523EC0294A0D024FB00EDD0476DC7F8F16E58E2C2701FD5A818",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer10": {
+          "path": "replay100/train_layer10.npy",
+          "sha256": "A9622D4402633CCF9DC3A041E7C7CD9649BC349A15CA423FF62473C29E0E1A24",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer13": {
+          "path": "replay100/train_layer13.npy",
+          "sha256": "0A8E3EE0E903823AFA254B9DBB9105FDCBDCC875EA55FBE94E9E11B006CA134E",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_index": {
+          "path": "replay100/train_index.json",
+          "sha256": "0F557B4E941B8843BBC824E9D7AE50F0018BE337AA08500A2AAB44182C2B263D",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 43,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        },
+        "dev_hidden768": {
+          "path": "replay100/dev_hidden768.npy",
+          "sha256": "19DF43E7C4672B34997B1AA5AA7E742A1262100983AEB7C7195C8E929A50D053",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_projected256": {
+          "path": "replay100/dev_projected256.npy",
+          "sha256": "2D3A91E90792F150A806FCF7C579C23AA64CEE751834374B341F0D2337ADA21E",
+          "shape": [
+            512,
+            256
+          ],
+          "bytes": 524416
+        },
+        "dev_layer00": {
+          "path": "replay100/dev_layer00.npy",
+          "sha256": "02BD73DB47EC0DB3896346C48EDD1F6D82D8A751EBFF78465B518C14C0C665F8",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer03": {
+          "path": "replay100/dev_layer03.npy",
+          "sha256": "0B8E769BD2380112C5EA6BEA25B85B1FD005C82995AADE2E3052E1DF63911D8F",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer07": {
+          "path": "replay100/dev_layer07.npy",
+          "sha256": "F4937349F398C8F593198EABD1737B268531706FD94CB05323F0C88634B0F690",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer10": {
+          "path": "replay100/dev_layer10.npy",
+          "sha256": "83CB0332023EBC033CB9B7EF7F231F72A65B7AEB9E043F69B27C7DAA1C102D22",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer13": {
+          "path": "replay100/dev_layer13.npy",
+          "sha256": "167A93A30984EF34EA72D6D961C63CB74F50210AC4CC679F6C6C5379661AAF6D",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_index": {
+          "path": "replay100/dev_index.json",
+          "sha256": "AF24F7C24E0BA43F0E315BB1A336B34C5759B189089E23AFDFEA2F671608858D",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 40,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        },
+        "test_hidden768": {
+          "path": "replay100/test_hidden768.npy",
+          "sha256": "EC0C5A4572D523541DC13294E70B9F963A46CEA621FA7E3FE234DA7E2E8922E5",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_projected256": {
+          "path": "replay100/test_projected256.npy",
+          "sha256": "0BE456882AF73C200DA0F62FD5C107FC7C7DA49FF3FBFDD1CD341514A52B4C57",
+          "shape": [
+            512,
+            256
+          ],
+          "bytes": 524416
+        },
+        "test_layer00": {
+          "path": "replay100/test_layer00.npy",
+          "sha256": "DA1201D2E24AA80150CDA7512919897ADBFD939B9D490CF226E39AE1716BF142",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer03": {
+          "path": "replay100/test_layer03.npy",
+          "sha256": "5C0397E3E3CDEAC12EDA27A4482ECCAC5A93146D2416BE980161C6DC2F4F1240",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer07": {
+          "path": "replay100/test_layer07.npy",
+          "sha256": "768F82A30717DB7F5B55CC0861411B16A336BBB3C9CB725BB8C53C8E77C2B28D",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer10": {
+          "path": "replay100/test_layer10.npy",
+          "sha256": "7A752B6FEECEB7212197E597000850B40100EC7BCA0CE61E3F718652C0A664CF",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer13": {
+          "path": "replay100/test_layer13.npy",
+          "sha256": "146AEB7A2181E2215C0A462F63385F45D1F74060C926CC91EFDFDE2E65F3689E",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_index": {
+          "path": "replay100/test_index.json",
+          "sha256": "489179A37C85BE8E1232DB53BE5195D72D3A0242EB2E03D61BF556477A5FDE39",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 38,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        }
+      },
+      "whole_sec": 74.77186653300305,
+      "model_optimizer_steps": 0,
+      "logical_schedule": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "kv_owners": [
+        0,
+        0,
+        2,
+        2,
+        4,
+        4,
+        6,
+        6,
+        8,
+        8,
+        10,
+        10,
+        12,
+        12
+      ]
+    },
+    "pair030": {
+      "checkpoint": {
+        "path": "runs/ckpt/m100s10_ko-en_context_orpo_dense_chat32_p106b_context_orpo_v1_s1337_pair030.pt",
+        "sha256": "CD494229CB5DD0518A386451FF06DEF90C3DDEEDC5CE4CCA973326EB23A06E88"
+      },
+      "state_before": "3ADF1EF0DF4B933736A7012A60511EEF012CD1DC846298D5C3A758DA3DD65503",
+      "state_after": "3ADF1EF0DF4B933736A7012A60511EEF012CD1DC846298D5C3A758DA3DD65503",
+      "files": {
+        "train_hidden768": {
+          "path": "pair030/train_hidden768.npy",
+          "sha256": "8A6FC69CAA739F72ED8B99BDCD46224F36F54DE30053AC5767AED9DC001F0B26",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_projected256": {
+          "path": "pair030/train_projected256.npy",
+          "sha256": "9A4EE705A39ABB21D5E0A464B237023886A64A526358E551807A2C4499FAAF24",
+          "shape": [
+            4096,
+            256
+          ],
+          "bytes": 4194432
+        },
+        "train_layer00": {
+          "path": "pair030/train_layer00.npy",
+          "sha256": "2894AA2008856F00F92828210221D5BD53DB7214D71E71DBE494DDC29692B8C9",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer03": {
+          "path": "pair030/train_layer03.npy",
+          "sha256": "8F94CD8701AA3E2C0BBAB2C0F8992D86975A850D95C34DBF6810A0C52D991BFA",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer07": {
+          "path": "pair030/train_layer07.npy",
+          "sha256": "8B548AD502CBA6E4BAE3396D3955AEC05CA651BBDDE5E17E489F89BAC33125E2",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer10": {
+          "path": "pair030/train_layer10.npy",
+          "sha256": "CE8044E8BDC88AA829BCB7B7F91C2B0CA764FB403F2586DBABBD3D4D03C188AB",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_layer13": {
+          "path": "pair030/train_layer13.npy",
+          "sha256": "4D0533C785C730F4F0A561655D9393BF7FAD1D2EBD3EF26F563D90E0E505CA5D",
+          "shape": [
+            4096,
+            768
+          ],
+          "bytes": 12583040
+        },
+        "train_index": {
+          "path": "pair030/train_index.json",
+          "sha256": "0F557B4E941B8843BBC824E9D7AE50F0018BE337AA08500A2AAB44182C2B263D",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 43,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        },
+        "dev_hidden768": {
+          "path": "pair030/dev_hidden768.npy",
+          "sha256": "FDAA486A654B6FFBD82BACB1E65F4C18CC62BA0F12AC544E2D50ECC15A144954",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_projected256": {
+          "path": "pair030/dev_projected256.npy",
+          "sha256": "252FBCBED665BD63E16ECC69E2BF068C5B91B09920835C3998CD457863F21E21",
+          "shape": [
+            512,
+            256
+          ],
+          "bytes": 524416
+        },
+        "dev_layer00": {
+          "path": "pair030/dev_layer00.npy",
+          "sha256": "A58A03E7FFFF092C9EEAD3B1F09AEDA643D4258C53B49D023650E2C8321ABFBA",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer03": {
+          "path": "pair030/dev_layer03.npy",
+          "sha256": "3C3DCE620D51338BC99D569BB0307135ED858680F6390987BBA1DAA7AE863FF4",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer07": {
+          "path": "pair030/dev_layer07.npy",
+          "sha256": "5FABC7DFFCCE19EF94FF4DF83311058C162A16747819DDDCA04CBCC8CD8B034C",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer10": {
+          "path": "pair030/dev_layer10.npy",
+          "sha256": "71B4C4A0ACC1F809F301874D90F04B99F7DC2FC2F454B78B01B40493FAE8AF3F",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_layer13": {
+          "path": "pair030/dev_layer13.npy",
+          "sha256": "6561A8E05E9102AC8B014275E5DCEB4F911E78D6F71A2CECA2217D5EE93C6733",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "dev_index": {
+          "path": "pair030/dev_index.json",
+          "sha256": "AF24F7C24E0BA43F0E315BB1A336B34C5759B189089E23AFDFEA2F671608858D",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 40,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        },
+        "test_hidden768": {
+          "path": "pair030/test_hidden768.npy",
+          "sha256": "D7148C416299DAF9F725855C32CEC147B060F8E540DADD3469BE231CC25A2B2E",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_projected256": {
+          "path": "pair030/test_projected256.npy",
+          "sha256": "C67FEE5FAF0C53D348E4A6327F97DBA06903218F8C4F6CE7EB1FE56E19567F73",
+          "shape": [
+            512,
+            256
+          ],
+          "bytes": 524416
+        },
+        "test_layer00": {
+          "path": "pair030/test_layer00.npy",
+          "sha256": "0FE0B1622031EC9C1244920270CD431E9D0444F583A3B49C8336F2477994A0CF",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer03": {
+          "path": "pair030/test_layer03.npy",
+          "sha256": "0FD0D9BF3F117C750CFED6EAF3BD3B85E220F4AB3F5328D3DEA74E20692248DF",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer07": {
+          "path": "pair030/test_layer07.npy",
+          "sha256": "2000A5D3F1BFFC779F3A0A5EE3AB6EFB9DE88F5D2EAA5C7B2741D7CCE77D0C25",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer10": {
+          "path": "pair030/test_layer10.npy",
+          "sha256": "C580E1EC6A771D7CBEAAF4139F83E33DBDC252A98B1A864A5DBD6111F914AD35",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_layer13": {
+          "path": "pair030/test_layer13.npy",
+          "sha256": "3DBB35E0655F281C62CA9DF7842A3FA54E52E00914DA9EDD4B00932D86B0B65F",
+          "shape": [
+            512,
+            768
+          ],
+          "bytes": 1572992
+        },
+        "test_index": {
+          "path": "pair030/test_index.json",
+          "sha256": "489179A37C85BE8E1232DB53BE5195D72D3A0242EB2E03D61BF556477A5FDE39",
+          "parity": [
+            {
+              "first_logits_bit_equal": true,
+              "token_count": 38,
+              "gold_answer_body_appended": false,
+              "source_facts_visible": true
+            }
+          ]
+        }
+      },
+      "whole_sec": 70.12851082900306,
+      "model_optimizer_steps": 0,
+      "logical_schedule": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "kv_owners": [
+        0,
+        0,
+        2,
+        2,
+        4,
+        4,
+        6,
+        6,
+        8,
+        8,
+        10,
+        10,
+        12,
+        12
+      ]
+    }
+  },
+  "counts": {
+    "train": 4096,
+    "dev": 512,
+    "test": 512
+  },
+  "prior_answer_report_sha256": "9E4A9DB685B67261989DEDA2304ABBA9D66AD4BB6A2B8A4DE24DA1FBA561F22A",
+  "whole_sec": 220.31420019799407
+}
