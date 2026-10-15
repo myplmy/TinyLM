@@ -21,8 +21,16 @@
 # 미참조 70개 개별 판정: 신규 delete9(6.7874GiB)·keep54·hold7. exact proof와 손실 범위는 handoff/audit/WIP_20261011_CHECKPOINT_REVIEW.md 참조.
 #
 verdict	file	mb	why
-keep	m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span0.pt	356.6	2026-10-15 새 자연QA 대조96회0팔; P106B Stage4bnWb 실제원답평가가현재참조. source4C770344/부모12E18658; 결과101§153. 가중치삭제/변환없음.
-keep	m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span03.pt	356.6	2026-10-15 새 자연QA 대조96회.3팔; P106B Stage4bnWb 실제원답평가가현재참조. source4C770344/부모12E18658; 결과101§153. 가중치삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat_epoch1.pt	355.9	373140289B·2026-10-16 P106B 중간epoch1·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat_epoch2.pt	355.9	373140289B·2026-10-16 P106B 현재TEST전 DEV최저epoch2 후속 입력; raw/history/SHA 보존. 삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat_epoch3.pt	355.9	373140289B·2026-10-16 P106B 중간epoch3·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat.pt	355.9	373140289B·2026-10-16 P106B 현재primary/정상반복 최종4epoch 입력; raw/history/SHA 보존. 삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast_epoch1.pt	355.9	373140289B·2026-10-16 P106B 중간epoch1·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast_epoch2.pt	355.9	373140289B·2026-10-16 P106B 현재TEST전 DEV최저epoch2 후속 입력; raw/history/SHA 보존. 삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast_epoch3.pt	355.9	373140289B·2026-10-16 P106B 중간epoch3·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast.pt	355.9	373140289B·2026-10-16 P106B 현재primary/정상반복 최종4epoch 입력; raw/history/SHA 보존. 삭제/변환없음.
+keep	m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span0.pt	356.6	2026-10-16 현재P106B dualqa공통부모/추론비교점; producer.PARENT/course.load_parent가정확SHA180104를참조. 결과101§153/163~167·삭제/변환없음.
+keep	m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span03.pt	356.6	2026-10-16 역사96회위치.3 ablation앵커·현재새교육부모아님. 결과101§153~154 paired재현보존정책이며모든keep이현재실행필수라는뜻아님. 삭제/변환없음.
 keep	m100R1c_ko-en_300M_mC_ct.pt	726.9	압축 교사(037). REVIEW2 가 KD 를 유지하면 표준 교사 후보
 keep	m100R1c_ko-en_300M_mC_e128svd.pt	677.8	임베딩 에너지-대가 법칙의 두 점 중 하나(030 §10.3.1)
 hold	m100R1c_ko-en_300M_mC_e192svd.pt	702.4	2026-10-11 A 개별 재감사 — P046 E192 KD/SVD의 역사 비교점. 기존 why의 int8 후속 미종결 여부와 새 압축 연구의 비교 입력 필요가 불명확하여 영구 keep 대신 hold. E192 무KD와 동일 모델이 아님; 원결과030 §10 보존.

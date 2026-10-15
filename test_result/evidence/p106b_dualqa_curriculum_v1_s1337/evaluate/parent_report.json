@@ -1,0 +1,331 @@
+{
+  "schema": "P106B_DUAL_QA_FRESH_ACTUAL_HISTORY_V1",
+  "tag": "p106b_dualqa_curriculum_v1_s1337",
+  "code_sha256": {
+    "scripts/diag_p106b_dualqa_eval.py": "59976F4166F0299A5DF52FFFA11AA2A72B90A0AB60C82CD262AF437DE8C2A26B",
+    "scripts/test_p106b_dualqa_eval.py": "1322FE98F31DD4BF657E5E4EDA317A9D89B72988D891E4962A655546805A0165"
+  },
+  "endpoints": [
+    "parent",
+    "repeat",
+    "contrast"
+  ],
+  "precision": "FP32_MATH",
+  "temperature": 0.0,
+  "top_k": 1,
+  "source_contexts": 256,
+  "orders_per_context": 2,
+  "turns_per_order": 2,
+  "actual_answers_per_endpoint": 1024,
+  "gold_history_second_answers_per_endpoint": 512,
+  "student_mtp": false,
+  "auxiliary_used_in_inference": false,
+  "semantic_truth": "NOT_RUN",
+  "source_target": "TEACHER_PSEUDO_UNVERIFIED",
+  "bootstrap_unit": "whole document root",
+  "checkpoint_policy": "final4epoch primary; no test-selected checkpoint",
+  "arm": "parent",
+  "checkpoint": "runs/ckpt/m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span0.pt",
+  "checkpoint_sha256": "180104A965CAA84379802D9862A74B59895537EB8B8905DA6E0AA84293E91337",
+  "core_before_after_sha256": "59A799E03B1C852F6BB0EA138016EB981F17BEF243974246FD842E01C08093E5",
+  "metrics": {
+    "source": {
+      "counts": {
+        "ACTUAL_MODEL:en:turn1": {
+          "cases": 256,
+          "literal": 1,
+          "lexical_f1": 27.018206442628465,
+          "empty": 0,
+          "max_new": 13,
+          "context_exhausted": 0
+        },
+        "ACTUAL_MODEL:en:turn2": {
+          "cases": 256,
+          "literal": 0,
+          "lexical_f1": 24.162832727506743,
+          "empty": 0,
+          "max_new": 11,
+          "context_exhausted": 0
+        },
+        "GOLD_REFERENCE:en:turn2": {
+          "cases": 256,
+          "literal": 0,
+          "lexical_f1": 32.99139208366031,
+          "empty": 0,
+          "max_new": 18,
+          "context_exhausted": 0
+        },
+        "ACTUAL_MODEL:ko:turn1": {
+          "cases": 256,
+          "literal": 0,
+          "lexical_f1": 10.016206621577467,
+          "empty": 0,
+          "max_new": 1,
+          "context_exhausted": 0
+        },
+        "ACTUAL_MODEL:ko:turn2": {
+          "cases": 256,
+          "literal": 0,
+          "lexical_f1": 5.552870985223928,
+          "empty": 0,
+          "max_new": 0,
+          "context_exhausted": 0
+        },
+        "GOLD_REFERENCE:ko:turn2": {
+          "cases": 256,
+          "literal": 0,
+          "lexical_f1": 9.245840773453416,
+          "empty": 0,
+          "max_new": 4,
+          "context_exhausted": 0
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 1536,
+        "bytes": 4599679,
+        "concat_sha256": "D5DCA3496B5E4BCC531CA45A116D040950F64C77B85B16E94D2539197661BBE2",
+        "lineage": {
+          "schema": "P106B_DUAL_QA_FRESH_ACTUAL_HISTORY_V1",
+          "tag": "p106b_dualqa_curriculum_v1_s1337",
+          "code_sha256": {
+            "scripts/diag_p106b_dualqa_eval.py": "59976F4166F0299A5DF52FFFA11AA2A72B90A0AB60C82CD262AF437DE8C2A26B",
+            "scripts/test_p106b_dualqa_eval.py": "1322FE98F31DD4BF657E5E4EDA317A9D89B72988D891E4962A655546805A0165"
+          },
+          "endpoints": [
+            "parent",
+            "repeat",
+            "contrast"
+          ],
+          "precision": "FP32_MATH",
+          "temperature": 0.0,
+          "top_k": 1,
+          "source_contexts": 256,
+          "orders_per_context": 2,
+          "turns_per_order": 2,
+          "actual_answers_per_endpoint": 1024,
+          "gold_history_second_answers_per_endpoint": 512,
+          "student_mtp": false,
+          "auxiliary_used_in_inference": false,
+          "semantic_truth": "NOT_RUN",
+          "source_target": "TEACHER_PSEUDO_UNVERIFIED",
+          "bootstrap_unit": "whole document root",
+          "checkpoint_policy": "final4epoch primary; no test-selected checkpoint"
+        },
+        "shards": [
+          {
+            "path": "source_actual_and_gold_000000.jsonl",
+            "bytes": 4599679,
+            "rows": 1536,
+            "sha256": "D5DCA3496B5E4BCC531CA45A116D040950F64C77B85B16E94D2539197661BBE2"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/parent",
+      "actual_answers": 1024,
+      "gold_second_answers": 512,
+      "semantic_truth": "NOT_RUN",
+      "scope": "literal pseudo-target fidelity, not fact truth or official QA benchmark"
+    },
+    "public_bridge": {
+      "counts": {
+        "en:public_qa": {
+          "cases": 128,
+          "literal": 9,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 20.90590243090243,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:public_qa": {
+          "cases": 128,
+          "literal": 8,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 12.413492063492065,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 256,
+        "bytes": 1124201,
+        "concat_sha256": "9E60A76FC7262C998CF43E146A059643176E94A16D975FE50B11BB51F30354F4",
+        "lineage": {
+          "precision": "FP32_MATH",
+          "temperature": 0,
+          "top_k": 1,
+          "max_new": 64,
+          "auxiliary_used": false,
+          "student_mtp": false
+        },
+        "shards": [
+          {
+            "path": "answers_original_public_bridge256_000000.jsonl",
+            "bytes": 1124201,
+            "rows": 256,
+            "sha256": "9E60A76FC7262C998CF43E146A059643176E94A16D975FE50B11BB51F30354F4"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/parent",
+      "scope": "literal source target + lexical F1, not a semantic judge"
+    },
+    "known_code_development": {
+      "counts": {
+        "ko:binding_color": {
+          "cases": 128,
+          "literal": 65,
+          "code_exact": 65,
+          "code_scored": 128,
+          "token_f1": 65.5,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:binding_department": {
+          "cases": 128,
+          "literal": 69,
+          "code_exact": 69,
+          "code_scored": 128,
+          "token_f1": 69.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:binding_color": {
+          "cases": 128,
+          "literal": 51,
+          "code_exact": 51,
+          "code_scored": 128,
+          "token_f1": 51.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:binding_department": {
+          "cases": 128,
+          "literal": 62,
+          "code_exact": 62,
+          "code_scored": 128,
+          "token_f1": 62.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:arithmetic": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:arithmetic": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:boolean": {
+          "cases": 16,
+          "literal": 11,
+          "code_exact": 11,
+          "code_scored": 16,
+          "token_f1": 11.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:boolean": {
+          "cases": 16,
+          "literal": 11,
+          "code_exact": 11,
+          "code_scored": 16,
+          "token_f1": 11.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:json": {
+          "cases": 16,
+          "literal": 10,
+          "code_exact": 10,
+          "code_scored": 16,
+          "token_f1": 15.333333333333334,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:json": {
+          "cases": 16,
+          "literal": 1,
+          "code_exact": 1,
+          "code_scored": 16,
+          "token_f1": 3.3777777777777778,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:update": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:update": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 640,
+        "bytes": 771827,
+        "concat_sha256": "BAFD395F670660B14B236CBA116EDF4F4BC381A7727BE385E197C9F4CA7BF6A2",
+        "lineage": {
+          "precision": "FP32_MATH",
+          "temperature": 0,
+          "top_k": 1,
+          "max_new": 64,
+          "auxiliary_used": false,
+          "student_mtp": false
+        },
+        "shards": [
+          {
+            "path": "answers_known_code_dev640_000000.jsonl",
+            "bytes": 771827,
+            "rows": 640,
+            "sha256": "BAFD395F670660B14B236CBA116EDF4F4BC381A7727BE385E197C9F4CA7BF6A2"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/parent",
+      "scope": "literal source target + lexical F1, not a semantic judge"
+    },
+    "native": {
+      "ce": 3.539919450879097,
+      "targets": 32768,
+      "crops": 32,
+      "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+      "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+    },
+    "legacy8": {
+      "first_attempt_pass": 1,
+      "pass_within_three": 1,
+      "questions": 8,
+      "actual_attempts": 22,
+      "raw_concat_sha256": "65AC68AD14997DF6663B16ED8A6B43B099C347D065BBD2F0707CE8FC66AB8F0B",
+      "limit": "narrow rubric and conditional retry upper bound; human semantics separately reviewed"
+    }
+  }
+}

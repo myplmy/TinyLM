@@ -1,0 +1,356 @@
+{
+  "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+  "tag": "p106b_dualqa_curriculum_v1_s1337",
+  "code_sha256": {
+    "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+    "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+    "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+  },
+  "primary_final4epoch_unchanged": true,
+  "selection_rule": "prelocked source DEV only",
+  "precision": "FP32_MATH",
+  "temperature": 0,
+  "top_k": 1,
+  "max_new": 64,
+  "actual_answers_per_pattern_endpoint": 1024,
+  "gold_second_answers_per_pattern_endpoint": 512,
+  "teacher_calls": 0,
+  "optimizer_updates": 0,
+  "new_checkpoints": 0,
+  "auxiliary_in_inference": false,
+  "semantic_truth": "NOT_RUN",
+  "normal_repeat_answers_allowed": true,
+  "status": "DUALQA_FOLLOWUP_EVALUATED",
+  "mode": "repeat",
+  "endpoints": {
+    "parent": {
+      "checkpoint": "runs/ckpt/m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span0.pt",
+      "checkpoint_sha256": "180104A965CAA84379802D9862A74B59895537EB8B8905DA6E0AA84293E91337",
+      "arm": "parent",
+      "epoch": 0,
+      "metrics": {
+        "source_repeat": {
+          "counts": {
+            "ACTUAL_MODEL:en:turn1": {
+              "cases": 256,
+              "literal": 1,
+              "lexical_f1": 27.018206442628465,
+              "empty": 0,
+              "max_new": 13,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:en:turn2": {
+              "cases": 256,
+              "literal": 1,
+              "lexical_f1": 29.838564824219148,
+              "empty": 0,
+              "max_new": 13,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE:en:turn2": {
+              "cases": 256,
+              "literal": 23,
+              "lexical_f1": 106.38194300821101,
+              "empty": 0,
+              "max_new": 9,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:ko:turn1": {
+              "cases": 256,
+              "literal": 0,
+              "lexical_f1": 10.016206621577467,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:ko:turn2": {
+              "cases": 256,
+              "literal": 0,
+              "lexical_f1": 9.263348368719212,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE:ko:turn2": {
+              "cases": 256,
+              "literal": 17,
+              "lexical_f1": 60.56203972623166,
+              "empty": 0,
+              "max_new": 7,
+              "context_exhausted": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 1536,
+            "bytes": 4639430,
+            "concat_sha256": "4103ED6F09DD414B3A7E8221034677C37AADDBA6A6067AE2FA7AD24329D09B3F",
+            "lineage": {
+              "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+              "tag": "p106b_dualqa_curriculum_v1_s1337",
+              "code_sha256": {
+                "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+                "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+                "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+              },
+              "primary_final4epoch_unchanged": true,
+              "selection_rule": "prelocked source DEV only",
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "actual_answers_per_pattern_endpoint": 1024,
+              "gold_second_answers_per_pattern_endpoint": 512,
+              "teacher_calls": 0,
+              "optimizer_updates": 0,
+              "new_checkpoints": 0,
+              "auxiliary_in_inference": false,
+              "semantic_truth": "NOT_RUN",
+              "normal_repeat_answers_allowed": true,
+              "test_pattern": "repeat"
+            },
+            "shards": [
+              {
+                "path": "source_repeat_000000.jsonl",
+                "bytes": 4639430,
+                "rows": 1536,
+                "sha256": "4103ED6F09DD414B3A7E8221034677C37AADDBA6A6067AE2FA7AD24329D09B3F"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/followup/repeat/parent",
+          "actual_answers": 1024,
+          "gold_second_answers": 512,
+          "test_pattern": "repeat",
+          "semantic_truth": "NOT_RUN",
+          "scope": "pseudo-target literal fidelity only; same-answer copying is descriptive, not grading or regeneration"
+        }
+      },
+      "core_before_after_sha256": "59A799E03B1C852F6BB0EA138016EB981F17BEF243974246FD842E01C08093E5",
+      "reused_primary_final": false,
+      "new_model_loaded": true
+    },
+    "repeat": {
+      "checkpoint": "runs/ckpt/m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat.pt",
+      "checkpoint_sha256": "E5341D4F7D8091DB0674B4FE93DDA25FE54C67F6BC8257C7611673D7997FCD5F",
+      "arm": "repeat",
+      "epoch": 4,
+      "metrics": {
+        "source_repeat": {
+          "counts": {
+            "ACTUAL_MODEL:en:turn1": {
+              "cases": 256,
+              "literal": 9,
+              "lexical_f1": 101.06035494875196,
+              "empty": 0,
+              "max_new": 14,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:en:turn2": {
+              "cases": 256,
+              "literal": 9,
+              "lexical_f1": 100.69401113716684,
+              "empty": 0,
+              "max_new": 15,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE:en:turn2": {
+              "cases": 256,
+              "literal": 233,
+              "lexical_f1": 250.22897314121107,
+              "empty": 0,
+              "max_new": 2,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:ko:turn1": {
+              "cases": 256,
+              "literal": 3,
+              "lexical_f1": 75.1139988480374,
+              "empty": 0,
+              "max_new": 19,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:ko:turn2": {
+              "cases": 256,
+              "literal": 3,
+              "lexical_f1": 74.78498989402844,
+              "empty": 0,
+              "max_new": 19,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE:ko:turn2": {
+              "cases": 256,
+              "literal": 232,
+              "lexical_f1": 249.85789288061318,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 1536,
+            "bytes": 4727974,
+            "concat_sha256": "1DFBAE727A8957F6DF84D4CFE5D38F1F65F8D467D95B395C7CE05596F499BBF5",
+            "lineage": {
+              "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+              "tag": "p106b_dualqa_curriculum_v1_s1337",
+              "code_sha256": {
+                "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+                "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+                "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+              },
+              "primary_final4epoch_unchanged": true,
+              "selection_rule": "prelocked source DEV only",
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "actual_answers_per_pattern_endpoint": 1024,
+              "gold_second_answers_per_pattern_endpoint": 512,
+              "teacher_calls": 0,
+              "optimizer_updates": 0,
+              "new_checkpoints": 0,
+              "auxiliary_in_inference": false,
+              "semantic_truth": "NOT_RUN",
+              "normal_repeat_answers_allowed": true,
+              "test_pattern": "repeat"
+            },
+            "shards": [
+              {
+                "path": "source_repeat_000000.jsonl",
+                "bytes": 4727974,
+                "rows": 1536,
+                "sha256": "1DFBAE727A8957F6DF84D4CFE5D38F1F65F8D467D95B395C7CE05596F499BBF5"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/followup/repeat/repeat",
+          "actual_answers": 1024,
+          "gold_second_answers": 512,
+          "test_pattern": "repeat",
+          "semantic_truth": "NOT_RUN",
+          "scope": "pseudo-target literal fidelity only; same-answer copying is descriptive, not grading or regeneration"
+        }
+      },
+      "core_before_after_sha256": "6826796F8C4D580768CD4EAFC2ED3FE7C12E3721362183921248F99FA8C47B22",
+      "reused_primary_final": false,
+      "new_model_loaded": true
+    },
+    "contrast": {
+      "checkpoint": "runs/ckpt/m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast.pt",
+      "checkpoint_sha256": "30277A77D5EDD00E91BDA61C1E31EEA87B7D74C7470DDBF5F2A33C80C4E78F8F",
+      "arm": "contrast",
+      "epoch": 4,
+      "metrics": {
+        "source_repeat": {
+          "counts": {
+            "ACTUAL_MODEL:en:turn1": {
+              "cases": 256,
+              "literal": 9,
+              "lexical_f1": 99.12360698040975,
+              "empty": 0,
+              "max_new": 8,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:en:turn2": {
+              "cases": 256,
+              "literal": 8,
+              "lexical_f1": 96.75232637037169,
+              "empty": 0,
+              "max_new": 7,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE:en:turn2": {
+              "cases": 256,
+              "literal": 29,
+              "lexical_f1": 124.93039725209981,
+              "empty": 0,
+              "max_new": 3,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:ko:turn1": {
+              "cases": 256,
+              "literal": 1,
+              "lexical_f1": 67.57394456493414,
+              "empty": 0,
+              "max_new": 21,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL:ko:turn2": {
+              "cases": 256,
+              "literal": 1,
+              "lexical_f1": 66.4988666059453,
+              "empty": 0,
+              "max_new": 20,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE:ko:turn2": {
+              "cases": 256,
+              "literal": 5,
+              "lexical_f1": 79.56566183897058,
+              "empty": 0,
+              "max_new": 16,
+              "context_exhausted": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 1536,
+            "bytes": 4735337,
+            "concat_sha256": "70403F7736F08D5B5431CD78F947A573879B671E24CFC770B801C302115AF2D3",
+            "lineage": {
+              "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+              "tag": "p106b_dualqa_curriculum_v1_s1337",
+              "code_sha256": {
+                "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+                "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+                "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+              },
+              "primary_final4epoch_unchanged": true,
+              "selection_rule": "prelocked source DEV only",
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "actual_answers_per_pattern_endpoint": 1024,
+              "gold_second_answers_per_pattern_endpoint": 512,
+              "teacher_calls": 0,
+              "optimizer_updates": 0,
+              "new_checkpoints": 0,
+              "auxiliary_in_inference": false,
+              "semantic_truth": "NOT_RUN",
+              "normal_repeat_answers_allowed": true,
+              "test_pattern": "repeat"
+            },
+            "shards": [
+              {
+                "path": "source_repeat_000000.jsonl",
+                "bytes": 4735337,
+                "rows": 1536,
+                "sha256": "70403F7736F08D5B5431CD78F947A573879B671E24CFC770B801C302115AF2D3"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/followup/repeat/contrast",
+          "actual_answers": 1024,
+          "gold_second_answers": 512,
+          "test_pattern": "repeat",
+          "semantic_truth": "NOT_RUN",
+          "scope": "pseudo-target literal fidelity only; same-answer copying is descriptive, not grading or regeneration"
+        }
+      },
+      "core_before_after_sha256": "25A2C54188FD52FDC1681A580CD4DC468581AC78111CBF52491F9120C482063C",
+      "reused_primary_final": false,
+      "new_model_loaded": true
+    }
+  },
+  "loaded_models": 3,
+  "selection_sha256": "CE10B9CF41A1A2FA33CC895D3696DBB6F740F698ABF6CACAE6EBD7611D8BC31D",
+  "primary_report_sha256": "424001BA9BC881B2294CA430A284975873B127C918A6E72F3F4DAEEC400B6E30",
+  "whole_sec": 924.619299131009,
+  "checkpoint_selection_not_changed": true
+}

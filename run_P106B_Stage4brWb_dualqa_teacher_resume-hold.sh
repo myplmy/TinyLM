@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD: same source quotas completed in brW; no resume/repeated generation needed.
 # Full reference/lineage source jobs, explicit source-only two-turn curriculum.
 # Teacher generation is sealed32-context batches; processed roots never restart.
 # Q1-repeat control intentional duplicates allowed; no online semantic word list.

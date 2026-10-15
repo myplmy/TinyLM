@@ -1,0 +1,1125 @@
+{
+  "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+  "tag": "p106b_dualqa_curriculum_v1_s1337",
+  "code_sha256": {
+    "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+    "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+    "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+  },
+  "primary_final4epoch_unchanged": true,
+  "selection_rule": "prelocked source DEV only",
+  "precision": "FP32_MATH",
+  "temperature": 0,
+  "top_k": 1,
+  "max_new": 64,
+  "actual_answers_per_pattern_endpoint": 1024,
+  "gold_second_answers_per_pattern_endpoint": 512,
+  "teacher_calls": 0,
+  "optimizer_updates": 0,
+  "new_checkpoints": 0,
+  "auxiliary_in_inference": false,
+  "semantic_truth": "NOT_RUN",
+  "normal_repeat_answers_allowed": true,
+  "status": "RAW_DOCUMENTS_RECHECKED",
+  "models": [
+    "parent",
+    "repeat",
+    "contrast",
+    "repeat_devbest",
+    "contrast_devbest"
+  ],
+  "behaviour": {
+    "parent": {
+      "conversations": 512,
+      "first_output_same": 512,
+      "mixed_first_literal": 1,
+      "repeat_first_literal": 1,
+      "mixed_second_literal": 0,
+      "repeat_second_literal": 1,
+      "mixed_both_literal": 0,
+      "repeat_both_literal": 1,
+      "mixed_copy_first": 431,
+      "repeat_copy_first": 459,
+      "repeat_first_wrong_second_literal": 0,
+      "repeat_first_literal_second_wrong": 0,
+      "first_output_disagreements": 0,
+      "automatic_quality_pass": false,
+      "scope": "same first input across patterns; copying a wrong first answer is not a desired success, aliases require reading"
+    },
+    "repeat": {
+      "conversations": 512,
+      "first_output_same": 512,
+      "mixed_first_literal": 12,
+      "repeat_first_literal": 12,
+      "mixed_second_literal": 1,
+      "repeat_second_literal": 12,
+      "mixed_both_literal": 0,
+      "repeat_both_literal": 12,
+      "mixed_copy_first": 495,
+      "repeat_copy_first": 495,
+      "repeat_first_wrong_second_literal": 0,
+      "repeat_first_literal_second_wrong": 0,
+      "first_output_disagreements": 0,
+      "automatic_quality_pass": false,
+      "scope": "same first input across patterns; copying a wrong first answer is not a desired success, aliases require reading"
+    },
+    "contrast": {
+      "conversations": 512,
+      "first_output_same": 512,
+      "mixed_first_literal": 10,
+      "repeat_first_literal": 10,
+      "mixed_second_literal": 12,
+      "repeat_second_literal": 9,
+      "mixed_both_literal": 0,
+      "repeat_both_literal": 9,
+      "mixed_copy_first": 87,
+      "repeat_copy_first": 395,
+      "repeat_first_wrong_second_literal": 0,
+      "repeat_first_literal_second_wrong": 1,
+      "first_output_disagreements": 0,
+      "automatic_quality_pass": false,
+      "scope": "same first input across patterns; copying a wrong first answer is not a desired success, aliases require reading"
+    },
+    "repeat_devbest": {
+      "conversations": 512,
+      "first_output_same": 512,
+      "mixed_first_literal": 11,
+      "repeat_first_literal": 11,
+      "mixed_second_literal": 0,
+      "repeat_second_literal": 11,
+      "mixed_both_literal": 0,
+      "repeat_both_literal": 11,
+      "mixed_copy_first": 483,
+      "repeat_copy_first": 495,
+      "repeat_first_wrong_second_literal": 0,
+      "repeat_first_literal_second_wrong": 0,
+      "first_output_disagreements": 0,
+      "automatic_quality_pass": false,
+      "scope": "same first input across patterns; copying a wrong first answer is not a desired success, aliases require reading"
+    },
+    "contrast_devbest": {
+      "conversations": 512,
+      "first_output_same": 512,
+      "mixed_first_literal": 12,
+      "repeat_first_literal": 12,
+      "mixed_second_literal": 9,
+      "repeat_second_literal": 12,
+      "mixed_both_literal": 0,
+      "repeat_both_literal": 12,
+      "mixed_copy_first": 121,
+      "repeat_copy_first": 426,
+      "repeat_first_wrong_second_literal": 0,
+      "repeat_first_literal_second_wrong": 0,
+      "first_output_disagreements": 0,
+      "automatic_quality_pass": false,
+      "scope": "same first input across patterns; copying a wrong first answer is not a desired success, aliases require reading"
+    }
+  },
+  "comparisons": {
+    "parent_to_repeat": {
+      "contrast": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.01171875,
+              "bootstrap95": [
+                0.00390625,
+                0.01953125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.20812788297790677,
+              "bootstrap95": [
+                0.19149712207428427,
+                0.2249453498460029
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0078125,
+              "bootstrap95": [
+                0.0,
+                0.017578125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.2130328813812588,
+              "bootstrap95": [
+                0.19217051173942107,
+                0.23390074700620142
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.015625,
+              "bootstrap95": [
+                0.00390625,
+                0.029296875
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.2032228845745549,
+              "bootstrap95": [
+                0.1766101727457189,
+                0.22909491150673494
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      },
+      "repeat": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.021484375,
+              "bootstrap95": [
+                0.0078125,
+                0.03515625
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.2690595982137111,
+              "bootstrap95": [
+                0.24448341483748806,
+                0.29164507193009015
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.01171875,
+              "bootstrap95": [
+                0.0,
+                0.02734375
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.25511608154642407,
+              "bootstrap95": [
+                0.2274443352236553,
+                0.2833472668475854
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.03125,
+              "bootstrap95": [
+                0.0078125,
+                0.05859375
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.28300311488099855,
+              "bootstrap95": [
+                0.24332195425294736,
+                0.3199742027266065
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      }
+    },
+    "parent_to_contrast": {
+      "contrast": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0205078125,
+              "bootstrap95": [
+                0.0087890625,
+                0.0322265625
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.25361623439842557,
+              "bootstrap95": [
+                0.2329861758109287,
+                0.2745355598335817
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.005859375,
+              "bootstrap95": [
+                0.0,
+                0.015625
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.2283502516874997,
+              "bootstrap95": [
+                0.20257502676322664,
+                0.25511448770379613
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.03515625,
+              "bootstrap95": [
+                0.015625,
+                0.05859375
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.2788822171093515,
+              "bootstrap95": [
+                0.24623911961355907,
+                0.31145974128113796
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      },
+      "repeat": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0166015625,
+              "bootstrap95": [
+                0.0048828125,
+                0.0283203125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.24786368971144201,
+              "bootstrap95": [
+                0.2246186234440238,
+                0.26983608105266965
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.00390625,
+              "bootstrap95": [
+                0.0,
+                0.01171875
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.22420557847770084,
+              "bootstrap95": [
+                0.19674240475061122,
+                0.2508152305351804
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.029296875,
+              "bootstrap95": [
+                0.0078125,
+                0.0546875
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.2715218009451831,
+              "bootstrap95": [
+                0.23679265300743577,
+                0.30758923985768555
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      }
+    },
+    "repeat_to_contrast": {
+      "contrast": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0087890625,
+              "bootstrap95": [
+                0.0,
+                0.017578125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.04548835142051874,
+              "bootstrap95": [
+                0.03057683416397119,
+                0.061210743041963986
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.009765625,
+                0.00390625
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.015317370306240925,
+              "bootstrap95": [
+                -0.0040872702664935595,
+                0.035938523630887016
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.01953125,
+              "bootstrap95": [
+                0.005859375,
+                0.037109375
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.07565933253479652,
+              "bootstrap95": [
+                0.053979222936188356,
+                0.09916224273820866
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      },
+      "repeat": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.0048828125,
+              "bootstrap95": [
+                -0.0146484375,
+                0.00390625
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.02119590850226926,
+              "bootstrap95": [
+                -0.039738238329726304,
+                -0.0023256645241143486
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.0078125,
+              "bootstrap95": [
+                -0.01953125,
+                0.0
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.030910503068723245,
+              "bootstrap95": [
+                -0.05541645684471871,
+                -0.0064547902388304695
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.01953125,
+                0.013671875
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.011481313935815307,
+              "bootstrap95": [
+                -0.03893369110948657,
+                0.015642472828464336
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      }
+    },
+    "repeat_to_repeat_devbest": {
+      "contrast": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.0087890625,
+                0.0048828125
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.019507452275128817,
+              "bootstrap95": [
+                -0.030876023897481175,
+                -0.007403277713956573
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.01171875,
+                0.0078125
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.036424561037585595,
+              "bootstrap95": [
+                -0.05329955131504874,
+                -0.021664215152214606
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.009765625,
+                0.005859375
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.0025903435126720486,
+              "bootstrap95": [
+                -0.018480118034528824,
+                0.012588090362134418
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      },
+      "repeat": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.013671875,
+                0.009765625
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.03189343384950494,
+              "bootstrap95": [
+                -0.04941042279131079,
+                -0.01242739277759326
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0,
+              "bootstrap95": [
+                -0.015625,
+                0.015625
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.04528859538224317,
+              "bootstrap95": [
+                -0.07083925117675403,
+                -0.022545989114491804
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.00390625,
+              "bootstrap95": [
+                -0.01953125,
+                0.01171875
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.018498272316766717,
+              "bootstrap95": [
+                -0.04728965219785086,
+                0.008354703447456953
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      }
+    },
+    "contrast_to_contrast_devbest": {
+      "contrast": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.0009765625,
+              "bootstrap95": [
+                -0.0087890625,
+                0.0078125
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.007132044852974885,
+              "bootstrap95": [
+                -0.022271882450959356,
+                0.0074654754583749665
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.0078125,
+                0.00390625
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.016904881997449408,
+              "bootstrap95": [
+                -0.037999055983370916,
+                0.0043161469168403336
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0,
+              "bootstrap95": [
+                -0.015625,
+                0.017578125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.002640792291499642,
+              "bootstrap95": [
+                -0.017652610963257834,
+                0.024226543660793045
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      },
+      "repeat": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.0048828125,
+              "bootstrap95": [
+                -0.00390625,
+                0.0146484375
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.004329373787280626,
+              "bootstrap95": [
+                -0.012506654314841992,
+                0.020557489829305494
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.00390625,
+              "bootstrap95": [
+                -0.01171875,
+                0.0
+              ]
+            },
+            "lexical_f1": {
+              "delta": -0.005254756157907867,
+              "bootstrap95": [
+                -0.028358241970704266,
+                0.018751371826323176
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.013671875,
+              "bootstrap95": [
+                -0.001953125,
+                0.03125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.013913503732469102,
+              "bootstrap95": [
+                -0.009825556400521815,
+                0.038887726815843356
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      }
+    },
+    "repeat_devbest_to_contrast_devbest": {
+      "contrast": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.009765625,
+              "bootstrap95": [
+                0.0029296875,
+                0.017578125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.057863758842672655,
+              "bootstrap95": [
+                0.042860673948801165,
+                0.07278883142180206
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.001953125,
+              "bootstrap95": [
+                -0.009765625,
+                0.00390625
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.03483704934637713,
+              "bootstrap95": [
+                0.01691507282289034,
+                0.054063869965710866
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.021484375,
+              "bootstrap95": [
+                0.009765625,
+                0.03515625
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.08089046833896821,
+              "bootstrap95": [
+                0.058968264972789605,
+                0.10421561735568625
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      },
+      "repeat": {
+        "all": {
+          "documents": 256,
+          "events": 1024,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": null,
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.001953125,
+              "bootstrap95": [
+                -0.0078125,
+                0.01171875
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.015026899134516297,
+              "bootstrap95": [
+                -0.004746650748222668,
+                0.03401384022260032
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "ko": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "ko",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": -0.01171875,
+              "bootstrap95": [
+                -0.02734375,
+                0.0
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.009123336155612075,
+              "bootstrap95": [
+                -0.017310159605109152,
+                0.03625616051368389
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        },
+        "en": {
+          "documents": 128,
+          "events": 512,
+          "history": "ACTUAL_MODEL",
+          "turn": null,
+          "language": "en",
+          "seed": 20261016,
+          "repetitions": 2000,
+          "metrics": {
+            "literal": {
+              "delta": 0.015625,
+              "bootstrap95": [
+                0.00390625,
+                0.03125
+              ]
+            },
+            "lexical_f1": {
+              "delta": 0.020930462113420527,
+              "bootstrap95": [
+                -0.005306324793501148,
+                0.04811016295916342
+              ]
+            }
+          },
+          "scope": "whole fixed document roots; not training-seed uncertainty, semantic truth or independent views"
+        }
+      }
+    }
+  },
+  "selected_epochs": {
+    "repeat": 2,
+    "contrast": 2
+  },
+  "same_selected_epoch_exposure": true,
+  "secondary_is_not_test_best_selection": true,
+  "sample8_manifest": {
+    "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+    "limit_bytes": 20000000,
+    "rows": 8,
+    "bytes": 36443,
+    "concat_sha256": "79FAD9EA2DA0DFA0E87D64D326BC52BA44EEBFEF12947DCD8B54FB5E7E16AC41",
+    "lineage": {
+      "selection": "same locked primary sample8 roots and order0; independent of correctness"
+    },
+    "shards": [
+      {
+        "path": "review_000000.jsonl",
+        "bytes": 36443,
+        "rows": 8,
+        "sha256": "79FAD9EA2DA0DFA0E87D64D326BC52BA44EEBFEF12947DCD8B54FB5E7E16AC41"
+      }
+    ]
+  },
+  "sample8_directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/followup/fixed_sample8",
+  "input_sha256": {
+    "primary": "424001BA9BC881B2294CA430A284975873B127C918A6E72F3F4DAEEC400B6E30",
+    "repeat": "4B424D7D28A5BCC0D19E81C17819F2A01BB0FCF83151996ECC77FE2AA4ADDA11",
+    "devbest": "92A4017FF0BEAE070F1604666B0551B01599624E72FB070AAEFEAB39F2471BBB",
+    "selection": "CE10B9CF41A1A2FA33CC895D3696DBB6F740F698ABF6CACAE6EBD7611D8BC31D"
+  },
+  "scope": "document-root conditional model comparisons; not training-seed variance, world truth or blanket anti-repetition",
+  "models_loaded": 0
+}

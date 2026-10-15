@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Exposure-matched two-QA curriculum; plan P106B Stage4bs-bu.
+# Completed176 updates/4epochs, raw021159 exit0; actual exposure checked/CPT4.
 # Deadline Oct16 17:00 KST,45minute closing margin. No stdin or global queue.
 # No protected data/download/old overwrite. Teacher reasoning excluded from student.
 set -euo pipefail

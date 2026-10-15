@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Exposure-matched two-QA curriculum; plan P106B Stage4bs-bu.
+# Completed matched course, raw015838 exit0;4epoch exact marginal proof preserved.
 # Deadline Oct16 17:00 KST,45minute closing margin. No stdin or global queue.
 # No protected data/download/old overwrite. Teacher reasoning excluded from student.
 set -euo pipefail

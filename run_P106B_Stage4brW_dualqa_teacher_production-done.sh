@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full reference/lineage source jobs, explicit source-only two-turn curriculum.
+# Completed1920 sources/3840QA, raw000516 exit0; source/code lineage preserved.
 # Teacher generation is sealed32-context batches; processed roots never restart.
 # Q1-repeat control intentional duplicates allowed; no online semantic word list.
 # No protected data/download/old writes/student training; deadline Oct16 17:00 KST.

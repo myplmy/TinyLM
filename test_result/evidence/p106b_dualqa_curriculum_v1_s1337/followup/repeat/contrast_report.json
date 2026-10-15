@@ -1,0 +1,132 @@
+{
+  "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+  "tag": "p106b_dualqa_curriculum_v1_s1337",
+  "code_sha256": {
+    "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+    "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+    "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+  },
+  "primary_final4epoch_unchanged": true,
+  "selection_rule": "prelocked source DEV only",
+  "precision": "FP32_MATH",
+  "temperature": 0,
+  "top_k": 1,
+  "max_new": 64,
+  "actual_answers_per_pattern_endpoint": 1024,
+  "gold_second_answers_per_pattern_endpoint": 512,
+  "teacher_calls": 0,
+  "optimizer_updates": 0,
+  "new_checkpoints": 0,
+  "auxiliary_in_inference": false,
+  "semantic_truth": "NOT_RUN",
+  "normal_repeat_answers_allowed": true,
+  "mode": "repeat",
+  "endpoint": {
+    "checkpoint": "runs/ckpt/m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast.pt",
+    "checkpoint_sha256": "30277A77D5EDD00E91BDA61C1E31EEA87B7D74C7470DDBF5F2A33C80C4E78F8F",
+    "arm": "contrast",
+    "epoch": 4,
+    "metrics": {
+      "source_repeat": {
+        "counts": {
+          "ACTUAL_MODEL:en:turn1": {
+            "cases": 256,
+            "literal": 9,
+            "lexical_f1": 99.12360698040975,
+            "empty": 0,
+            "max_new": 8,
+            "context_exhausted": 0
+          },
+          "ACTUAL_MODEL:en:turn2": {
+            "cases": 256,
+            "literal": 8,
+            "lexical_f1": 96.75232637037169,
+            "empty": 0,
+            "max_new": 7,
+            "context_exhausted": 0
+          },
+          "GOLD_REFERENCE:en:turn2": {
+            "cases": 256,
+            "literal": 29,
+            "lexical_f1": 124.93039725209981,
+            "empty": 0,
+            "max_new": 3,
+            "context_exhausted": 0
+          },
+          "ACTUAL_MODEL:ko:turn1": {
+            "cases": 256,
+            "literal": 1,
+            "lexical_f1": 67.57394456493414,
+            "empty": 0,
+            "max_new": 21,
+            "context_exhausted": 0
+          },
+          "ACTUAL_MODEL:ko:turn2": {
+            "cases": 256,
+            "literal": 1,
+            "lexical_f1": 66.4988666059453,
+            "empty": 0,
+            "max_new": 20,
+            "context_exhausted": 0
+          },
+          "GOLD_REFERENCE:ko:turn2": {
+            "cases": 256,
+            "literal": 5,
+            "lexical_f1": 79.56566183897058,
+            "empty": 0,
+            "max_new": 16,
+            "context_exhausted": 0
+          }
+        },
+        "manifest": {
+          "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+          "limit_bytes": 20000000,
+          "rows": 1536,
+          "bytes": 4735337,
+          "concat_sha256": "70403F7736F08D5B5431CD78F947A573879B671E24CFC770B801C302115AF2D3",
+          "lineage": {
+            "schema": "P106B_DUALQA_FROZEN_FOLLOWUP_V1",
+            "tag": "p106b_dualqa_curriculum_v1_s1337",
+            "code_sha256": {
+              "scripts/p106b_dualqa_dialogue_controls.py": "908E11A890AF4705E764B44CFC5CDE6153FBD4F6CB6040A2A1997EC12C40BFD9",
+              "scripts/test_p106b_dualqa_dialogue_controls.py": "99333AF69EE7DC2178B21D2E6A6C610511898069F55520102CB4843C9D2BBFBF",
+              "scripts/diag_p106b_dualqa_followup.py": "7AEFC397C75719D1EC13CBC7E8539FE1A6D0943DD2CF96843B5FE8053B9395C3"
+            },
+            "primary_final4epoch_unchanged": true,
+            "selection_rule": "prelocked source DEV only",
+            "precision": "FP32_MATH",
+            "temperature": 0,
+            "top_k": 1,
+            "max_new": 64,
+            "actual_answers_per_pattern_endpoint": 1024,
+            "gold_second_answers_per_pattern_endpoint": 512,
+            "teacher_calls": 0,
+            "optimizer_updates": 0,
+            "new_checkpoints": 0,
+            "auxiliary_in_inference": false,
+            "semantic_truth": "NOT_RUN",
+            "normal_repeat_answers_allowed": true,
+            "test_pattern": "repeat"
+          },
+          "shards": [
+            {
+              "path": "source_repeat_000000.jsonl",
+              "bytes": 4735337,
+              "rows": 1536,
+              "sha256": "70403F7736F08D5B5431CD78F947A573879B671E24CFC770B801C302115AF2D3"
+            }
+          ]
+        },
+        "directory": "test_result/evidence/local/p106b_dualqa_curriculum_v1_s1337/evaluate/followup/repeat/contrast",
+        "actual_answers": 1024,
+        "gold_second_answers": 512,
+        "test_pattern": "repeat",
+        "semantic_truth": "NOT_RUN",
+        "scope": "pseudo-target literal fidelity only; same-answer copying is descriptive, not grading or regeneration"
+      }
+    },
+    "core_before_after_sha256": "25A2C54188FD52FDC1681A580CD4DC468581AC78111CBF52491F9120C482063C",
+    "reused_primary_final": false,
+    "new_model_loaded": true
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CPU-only after actual1024/gold512 replies at all three endpoints.
+# Completed CPU4/raw recheck, raw025847 exit0; fixed8source sample preserved.
 # Whole-document paired resampling, fixed source sample; no semantic grading.
 set -euo pipefail
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
