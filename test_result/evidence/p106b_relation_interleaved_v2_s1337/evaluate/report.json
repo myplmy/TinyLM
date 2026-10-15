@@ -1,0 +1,1225 @@
+{
+  "schema": "P106B_RELATION_INTERLEAVED_ACTUAL_V2",
+  "tag": "p106b_relation_interleaved_v2_s1337",
+  "code_sha256": {
+    "scripts/diag_p106b_relation_interleaved_evaluate_v2.py": "278F60B29FFE2C94829FD416F5E0728EB54159AF91D2E3B2E7DA09B715E3D099",
+    "scripts/test_p106b_relation_interleaved_evaluate_v2.py": "FBE8048C9A67739228F57A850032A393536BC9E46401376AFA23F7DBCFC83439"
+  },
+  "endpoints": {
+    "blocked_fact1": {
+      "checkpoint": "runs/ckpt/m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact1.pt",
+      "checkpoint_sha256": "219EAA7468173F0F6FEE26EDFE7EAD1190A3A4B1F768FF8B03260E9B11D84506",
+      "core_before_after_sha256": "5935E29E2109F265A27D3D8B08C54422D71D9BDFD8BC9C1C0730B7DA1F99AAA0",
+      "metrics": {
+        "fiction": {
+          "directory": "test_result/evidence/local/p106b_relation_interleaved_v2_s1337/evaluate/blocked_fact1",
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 5120,
+            "bytes": 12240762,
+            "concat_sha256": "72F5CC2EFBE362BD60281C5A1FD9BE2DE077D45AD9CFC47E180D5A661FB98803",
+            "lineage": {
+              "schema": "P106B_RELATION_INTERLEAVED_ACTUAL_V2",
+              "tag": "p106b_relation_interleaved_v2_s1337",
+              "code_sha256": {
+                "scripts/diag_p106b_relation_interleaved_evaluate_v2.py": "278F60B29FFE2C94829FD416F5E0728EB54159AF91D2E3B2E7DA09B715E3D099",
+                "scripts/test_p106b_relation_interleaved_evaluate_v2.py": "FBE8048C9A67739228F57A850032A393536BC9E46401376AFA23F7DBCFC83439"
+              },
+              "endpoints": [
+                "blocked_fact1",
+                "interleaved_fact1"
+              ],
+              "precision": "FP32_MATH",
+              "temperature": 0.0,
+              "top_k": 1,
+              "max_new": 64,
+              "fictional_neutral_roots": 256,
+              "actual_self_history_answers": 3072,
+              "supplied_error_answers": 512,
+              "gold_second_answers": 1536,
+              "natural_source_cases": 32,
+              "auxiliary_used_in_generation": false,
+              "checkpoint_policy": "fixed final4rootpasses",
+              "old_TEST_used_as_development": true,
+              "future_reserved_role_test_evaluated": false,
+              "world_truth": "NOT_RUN"
+            },
+            "shards": [
+              {
+                "path": "new_fiction_actual_and_reference_000000.jsonl",
+                "bytes": 12240762,
+                "rows": 5120,
+                "sha256": "72F5CC2EFBE362BD60281C5A1FD9BE2DE077D45AD9CFC47E180D5A661FB98803"
+              }
+            ]
+          },
+          "counts": {
+            "ACTUAL_MODEL/all": {
+              "cases": 3072,
+              "literal": 2027,
+              "lexical_f1": 2027.0,
+              "exact_other_field": 805,
+              "empty": 0,
+              "max_new": 11,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=birth_year": {
+              "cases": 608,
+              "literal": 426,
+              "lexical_f1": 426.0,
+              "exact_other_field": 173,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=book_title": {
+              "cases": 474,
+              "literal": 319,
+              "lexical_f1": 319.0,
+              "exact_other_field": 107,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=death_year": {
+              "cases": 588,
+              "literal": 440,
+              "lexical_f1": 440.0,
+              "exact_other_field": 112,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=pen_name": {
+              "cases": 416,
+              "literal": 183,
+              "lexical_f1": 183.0,
+              "exact_other_field": 110,
+              "empty": 0,
+              "max_new": 11,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=publication_year": {
+              "cases": 568,
+              "literal": 422,
+              "lexical_f1": 422.0,
+              "exact_other_field": 140,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=real_name": {
+              "cases": 418,
+              "literal": 237,
+              "lexical_f1": 237.0,
+              "exact_other_field": 163,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/language=en": {
+              "cases": 1536,
+              "literal": 1073,
+              "lexical_f1": 1073.0,
+              "exact_other_field": 372,
+              "empty": 0,
+              "max_new": 11,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/language=ko": {
+              "cases": 1536,
+              "literal": 954,
+              "lexical_f1": 954.0,
+              "exact_other_field": 433,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/scenario=paraphrase": {
+              "cases": 1024,
+              "literal": 669,
+              "lexical_f1": 669.0,
+              "exact_other_field": 269,
+              "empty": 0,
+              "max_new": 4,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/scenario=repeat": {
+              "cases": 1024,
+              "literal": 680,
+              "lexical_f1": 680.0,
+              "exact_other_field": 261,
+              "empty": 0,
+              "max_new": 4,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/scenario=switch": {
+              "cases": 1024,
+              "literal": 678,
+              "lexical_f1": 678.0,
+              "exact_other_field": 275,
+              "empty": 0,
+              "max_new": 3,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/turn=1": {
+              "cases": 1536,
+              "literal": 1044,
+              "lexical_f1": 1044.0,
+              "exact_other_field": 363,
+              "empty": 0,
+              "max_new": 6,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/turn=2": {
+              "cases": 1536,
+              "literal": 983,
+              "lexical_f1": 983.0,
+              "exact_other_field": 442,
+              "empty": 0,
+              "max_new": 5,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/all": {
+              "cases": 1536,
+              "literal": 931,
+              "lexical_f1": 931.0,
+              "exact_other_field": 490,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=birth_year": {
+              "cases": 296,
+              "literal": 194,
+              "lexical_f1": 194.0,
+              "exact_other_field": 97,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=book_title": {
+              "cases": 234,
+              "literal": 135,
+              "lexical_f1": 135.0,
+              "exact_other_field": 72,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=death_year": {
+              "cases": 300,
+              "literal": 209,
+              "lexical_f1": 209.0,
+              "exact_other_field": 75,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=pen_name": {
+              "cases": 206,
+              "literal": 90,
+              "lexical_f1": 90.0,
+              "exact_other_field": 61,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=publication_year": {
+              "cases": 286,
+              "literal": 189,
+              "lexical_f1": 189.0,
+              "exact_other_field": 93,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=real_name": {
+              "cases": 214,
+              "literal": 114,
+              "lexical_f1": 114.0,
+              "exact_other_field": 92,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/language=en": {
+              "cases": 768,
+              "literal": 495,
+              "lexical_f1": 495.0,
+              "exact_other_field": 233,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/language=ko": {
+              "cases": 768,
+              "literal": 436,
+              "lexical_f1": 436.0,
+              "exact_other_field": 257,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/scenario=paraphrase": {
+              "cases": 512,
+              "literal": 291,
+              "lexical_f1": 291.0,
+              "exact_other_field": 176,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/scenario=repeat": {
+              "cases": 512,
+              "literal": 306,
+              "lexical_f1": 306.0,
+              "exact_other_field": 165,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/scenario=switch": {
+              "cases": 512,
+              "literal": 334,
+              "lexical_f1": 334.0,
+              "exact_other_field": 149,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/turn=2": {
+              "cases": 1536,
+              "literal": 931,
+              "lexical_f1": 931.0,
+              "exact_other_field": 490,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/all": {
+              "cases": 512,
+              "literal": 356,
+              "lexical_f1": 356.0,
+              "exact_other_field": 116,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=birth_year": {
+              "cases": 104,
+              "literal": 77,
+              "lexical_f1": 77.0,
+              "exact_other_field": 26,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=book_title": {
+              "cases": 80,
+              "literal": 50,
+              "lexical_f1": 50.0,
+              "exact_other_field": 19,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=death_year": {
+              "cases": 96,
+              "literal": 79,
+              "lexical_f1": 79.0,
+              "exact_other_field": 13,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=pen_name": {
+              "cases": 70,
+              "literal": 29,
+              "lexical_f1": 29.0,
+              "exact_other_field": 19,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=publication_year": {
+              "cases": 94,
+              "literal": 78,
+              "lexical_f1": 78.0,
+              "exact_other_field": 15,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=real_name": {
+              "cases": 68,
+              "literal": 43,
+              "lexical_f1": 43.0,
+              "exact_other_field": 24,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/language=en": {
+              "cases": 256,
+              "literal": 189,
+              "lexical_f1": 189.0,
+              "exact_other_field": 55,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/language=ko": {
+              "cases": 256,
+              "literal": 167,
+              "lexical_f1": 167.0,
+              "exact_other_field": 61,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/scenario=correct": {
+              "cases": 512,
+              "literal": 356,
+              "lexical_f1": 356.0,
+              "exact_other_field": 116,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/turn=2": {
+              "cases": 512,
+              "literal": 356,
+              "lexical_f1": 356.0,
+              "exact_other_field": 116,
+              "empty": 0,
+              "max_new": 1,
+              "context_exhausted": 0
+            }
+          },
+          "coverage": {
+            "ACTUAL_MODEL": 3072,
+            "GOLD_REFERENCE": 1536,
+            "PROVIDED_WRONG_HISTORY": 512
+          }
+        },
+        "natural32": {
+          "counts": {
+            "ko:natural_first_qa": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 0,
+              "token_f1": 0.2222222222222222,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:natural_first_qa": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 0,
+              "token_f1": 1.8199693237618937,
+              "empty": 0,
+              "max_new": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 32,
+            "bytes": 186827,
+            "concat_sha256": "B07D9F016693244F95A725B79DF476E016189467A6D12B19A0D6FB62A719F70C",
+            "lineage": {
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "auxiliary_used": false,
+              "student_mtp": false
+            },
+            "shards": [
+              {
+                "path": "answers_new_natural32_000000.jsonl",
+                "bytes": 186827,
+                "rows": 32,
+                "sha256": "B07D9F016693244F95A725B79DF476E016189467A6D12B19A0D6FB62A719F70C"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_relation_interleaved_v2_s1337/evaluate/blocked_fact1",
+          "scope": "literal source target + lexical F1, not a semantic judge"
+        },
+        "known_code_dev640": {
+          "counts": {
+            "ko:binding_color": {
+              "cases": 128,
+              "literal": 126,
+              "code_exact": 126,
+              "code_scored": 128,
+              "token_f1": 126.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:binding_department": {
+              "cases": 128,
+              "literal": 127,
+              "code_exact": 127,
+              "code_scored": 128,
+              "token_f1": 127.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:binding_color": {
+              "cases": 128,
+              "literal": 118,
+              "code_exact": 118,
+              "code_scored": 128,
+              "token_f1": 118.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:binding_department": {
+              "cases": 128,
+              "literal": 124,
+              "code_exact": 124,
+              "code_scored": 128,
+              "token_f1": 124.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:arithmetic": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 16,
+              "token_f1": 0.9,
+              "empty": 0,
+              "max_new": 1
+            },
+            "en:arithmetic": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 16,
+              "token_f1": 0.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:boolean": {
+              "cases": 16,
+              "literal": 13,
+              "code_exact": 13,
+              "code_scored": 16,
+              "token_f1": 13.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:boolean": {
+              "cases": 16,
+              "literal": 12,
+              "code_exact": 12,
+              "code_scored": 16,
+              "token_f1": 12.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:json": {
+              "cases": 16,
+              "literal": 11,
+              "code_exact": 11,
+              "code_scored": 16,
+              "token_f1": 15.444444444444446,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:json": {
+              "cases": 16,
+              "literal": 7,
+              "code_exact": 7,
+              "code_scored": 16,
+              "token_f1": 13.222222222222223,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:update": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 16,
+              "token_f1": 0.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:update": {
+              "cases": 16,
+              "literal": 1,
+              "code_exact": 1,
+              "code_scored": 16,
+              "token_f1": 1.0,
+              "empty": 0,
+              "max_new": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 640,
+            "bytes": 771613,
+            "concat_sha256": "FF883996808274CBC2755FB64F6A683B2ECCFF75C0EB8092972F4E2661D7163B",
+            "lineage": {
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "auxiliary_used": false,
+              "student_mtp": false
+            },
+            "shards": [
+              {
+                "path": "answers_known_code_dev640_000000.jsonl",
+                "bytes": 771613,
+                "rows": 640,
+                "sha256": "FF883996808274CBC2755FB64F6A683B2ECCFF75C0EB8092972F4E2661D7163B"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_relation_interleaved_v2_s1337/evaluate/blocked_fact1",
+          "scope": "literal source target + lexical F1, not a semantic judge"
+        },
+        "native32crop": {
+          "ce": 3.558417536318302,
+          "targets": 32768,
+          "crops": 32,
+          "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+          "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+        },
+        "legacy8": {
+          "first_attempt_pass": 3,
+          "pass_within_three": 3,
+          "questions": 8,
+          "actual_attempts": 18,
+          "raw_concat_sha256": "D353F0ED62E0FD4EAC994DA43566293ABFD1A4C6B843E49FE22FD8829D1EC970",
+          "limit": "narrow rubric and conditional retry upper bound; human semantics separately reviewed"
+        }
+      }
+    },
+    "interleaved_fact1": {
+      "checkpoint": "runs/ckpt/m100s10_ko-en_relation_dense_chat32_p106b_relation_interleaved_v2_s1337_fact1.pt",
+      "checkpoint_sha256": "687EBCC5E30EA674EF4742BFC2BA6B98BCAB937541BD5498F567A9084387E831",
+      "core_before_after_sha256": "33E738C3EC40F27AA8B5F3C5715770056F11D819C586364B42BFD63A655BCF97",
+      "metrics": {
+        "fiction": {
+          "directory": "test_result/evidence/local/p106b_relation_interleaved_v2_s1337/evaluate/interleaved_fact1",
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 5120,
+            "bytes": 12235184,
+            "concat_sha256": "B5FD4BC4149F99E35058079A4953AA763BDAD16631D940AD96ACDDF187377093",
+            "lineage": {
+              "schema": "P106B_RELATION_INTERLEAVED_ACTUAL_V2",
+              "tag": "p106b_relation_interleaved_v2_s1337",
+              "code_sha256": {
+                "scripts/diag_p106b_relation_interleaved_evaluate_v2.py": "278F60B29FFE2C94829FD416F5E0728EB54159AF91D2E3B2E7DA09B715E3D099",
+                "scripts/test_p106b_relation_interleaved_evaluate_v2.py": "FBE8048C9A67739228F57A850032A393536BC9E46401376AFA23F7DBCFC83439"
+              },
+              "endpoints": [
+                "blocked_fact1",
+                "interleaved_fact1"
+              ],
+              "precision": "FP32_MATH",
+              "temperature": 0.0,
+              "top_k": 1,
+              "max_new": 64,
+              "fictional_neutral_roots": 256,
+              "actual_self_history_answers": 3072,
+              "supplied_error_answers": 512,
+              "gold_second_answers": 1536,
+              "natural_source_cases": 32,
+              "auxiliary_used_in_generation": false,
+              "checkpoint_policy": "fixed final4rootpasses",
+              "old_TEST_used_as_development": true,
+              "future_reserved_role_test_evaluated": false,
+              "world_truth": "NOT_RUN"
+            },
+            "shards": [
+              {
+                "path": "new_fiction_actual_and_reference_000000.jsonl",
+                "bytes": 12235184,
+                "rows": 5120,
+                "sha256": "B5FD4BC4149F99E35058079A4953AA763BDAD16631D940AD96ACDDF187377093"
+              }
+            ]
+          },
+          "counts": {
+            "ACTUAL_MODEL/all": {
+              "cases": 3072,
+              "literal": 2084,
+              "lexical_f1": 2084.0,
+              "exact_other_field": 816,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=birth_year": {
+              "cases": 608,
+              "literal": 492,
+              "lexical_f1": 492.0,
+              "exact_other_field": 116,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=book_title": {
+              "cases": 474,
+              "literal": 308,
+              "lexical_f1": 308.0,
+              "exact_other_field": 114,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=death_year": {
+              "cases": 588,
+              "literal": 389,
+              "lexical_f1": 389.0,
+              "exact_other_field": 187,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=pen_name": {
+              "cases": 416,
+              "literal": 178,
+              "lexical_f1": 178.0,
+              "exact_other_field": 140,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=publication_year": {
+              "cases": 568,
+              "literal": 477,
+              "lexical_f1": 477.0,
+              "exact_other_field": 91,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/field=real_name": {
+              "cases": 418,
+              "literal": 240,
+              "lexical_f1": 240.0,
+              "exact_other_field": 168,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/language=en": {
+              "cases": 1536,
+              "literal": 1054,
+              "lexical_f1": 1054.0,
+              "exact_other_field": 412,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/language=ko": {
+              "cases": 1536,
+              "literal": 1030,
+              "lexical_f1": 1030.0,
+              "exact_other_field": 404,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/scenario=paraphrase": {
+              "cases": 1024,
+              "literal": 704,
+              "lexical_f1": 704.0,
+              "exact_other_field": 259,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/scenario=repeat": {
+              "cases": 1024,
+              "literal": 703,
+              "lexical_f1": 703.0,
+              "exact_other_field": 263,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/scenario=switch": {
+              "cases": 1024,
+              "literal": 677,
+              "lexical_f1": 677.0,
+              "exact_other_field": 294,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/turn=1": {
+              "cases": 1536,
+              "literal": 1053,
+              "lexical_f1": 1053.0,
+              "exact_other_field": 396,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "ACTUAL_MODEL/turn=2": {
+              "cases": 1536,
+              "literal": 1031,
+              "lexical_f1": 1031.0,
+              "exact_other_field": 420,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/all": {
+              "cases": 1536,
+              "literal": 1178,
+              "lexical_f1": 1178.0,
+              "exact_other_field": 286,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=birth_year": {
+              "cases": 296,
+              "literal": 259,
+              "lexical_f1": 259.0,
+              "exact_other_field": 37,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=book_title": {
+              "cases": 234,
+              "literal": 171,
+              "lexical_f1": 171.0,
+              "exact_other_field": 44,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=death_year": {
+              "cases": 300,
+              "literal": 250,
+              "lexical_f1": 250.0,
+              "exact_other_field": 48,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=pen_name": {
+              "cases": 206,
+              "literal": 105,
+              "lexical_f1": 105.0,
+              "exact_other_field": 56,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=publication_year": {
+              "cases": 286,
+              "literal": 246,
+              "lexical_f1": 246.0,
+              "exact_other_field": 40,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/field=real_name": {
+              "cases": 214,
+              "literal": 147,
+              "lexical_f1": 147.0,
+              "exact_other_field": 61,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/language=en": {
+              "cases": 768,
+              "literal": 593,
+              "lexical_f1": 593.0,
+              "exact_other_field": 146,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/language=ko": {
+              "cases": 768,
+              "literal": 585,
+              "lexical_f1": 585.0,
+              "exact_other_field": 140,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/scenario=paraphrase": {
+              "cases": 512,
+              "literal": 386,
+              "lexical_f1": 386.0,
+              "exact_other_field": 96,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/scenario=repeat": {
+              "cases": 512,
+              "literal": 466,
+              "lexical_f1": 466.0,
+              "exact_other_field": 28,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/scenario=switch": {
+              "cases": 512,
+              "literal": 326,
+              "lexical_f1": 326.0,
+              "exact_other_field": 162,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "GOLD_REFERENCE/turn=2": {
+              "cases": 1536,
+              "literal": 1178,
+              "lexical_f1": 1178.0,
+              "exact_other_field": 286,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/all": {
+              "cases": 512,
+              "literal": 330,
+              "lexical_f1": 330.2,
+              "exact_other_field": 153,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=birth_year": {
+              "cases": 104,
+              "literal": 73,
+              "lexical_f1": 73.0,
+              "exact_other_field": 31,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=book_title": {
+              "cases": 80,
+              "literal": 44,
+              "lexical_f1": 44.2,
+              "exact_other_field": 27,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=death_year": {
+              "cases": 96,
+              "literal": 61,
+              "lexical_f1": 61.0,
+              "exact_other_field": 33,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=pen_name": {
+              "cases": 70,
+              "literal": 33,
+              "lexical_f1": 33.0,
+              "exact_other_field": 22,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=publication_year": {
+              "cases": 94,
+              "literal": 79,
+              "lexical_f1": 79.0,
+              "exact_other_field": 13,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/field=real_name": {
+              "cases": 68,
+              "literal": 40,
+              "lexical_f1": 40.0,
+              "exact_other_field": 27,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/language=en": {
+              "cases": 256,
+              "literal": 173,
+              "lexical_f1": 173.0,
+              "exact_other_field": 72,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/language=ko": {
+              "cases": 256,
+              "literal": 157,
+              "lexical_f1": 157.2,
+              "exact_other_field": 81,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/scenario=correct": {
+              "cases": 512,
+              "literal": 330,
+              "lexical_f1": 330.2,
+              "exact_other_field": 153,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            },
+            "PROVIDED_WRONG_HISTORY/turn=2": {
+              "cases": 512,
+              "literal": 330,
+              "lexical_f1": 330.2,
+              "exact_other_field": 153,
+              "empty": 0,
+              "max_new": 0,
+              "context_exhausted": 0
+            }
+          },
+          "coverage": {
+            "ACTUAL_MODEL": 3072,
+            "GOLD_REFERENCE": 1536,
+            "PROVIDED_WRONG_HISTORY": 512
+          }
+        },
+        "natural32": {
+          "counts": {
+            "ko:natural_first_qa": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 0,
+              "token_f1": 0.05714285714285714,
+              "empty": 0,
+              "max_new": 1
+            },
+            "en:natural_first_qa": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 0,
+              "token_f1": 2.2397186147186146,
+              "empty": 0,
+              "max_new": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 32,
+            "bytes": 187128,
+            "concat_sha256": "9940F6D5F3F73C56FBA737C91053BA04B78ECEC1A4B646FABB9C6A12A4095E84",
+            "lineage": {
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "auxiliary_used": false,
+              "student_mtp": false
+            },
+            "shards": [
+              {
+                "path": "answers_new_natural32_000000.jsonl",
+                "bytes": 187128,
+                "rows": 32,
+                "sha256": "9940F6D5F3F73C56FBA737C91053BA04B78ECEC1A4B646FABB9C6A12A4095E84"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_relation_interleaved_v2_s1337/evaluate/interleaved_fact1",
+          "scope": "literal source target + lexical F1, not a semantic judge"
+        },
+        "known_code_dev640": {
+          "counts": {
+            "ko:binding_color": {
+              "cases": 128,
+              "literal": 119,
+              "code_exact": 119,
+              "code_scored": 128,
+              "token_f1": 119.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:binding_department": {
+              "cases": 128,
+              "literal": 126,
+              "code_exact": 126,
+              "code_scored": 128,
+              "token_f1": 126.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:binding_color": {
+              "cases": 128,
+              "literal": 116,
+              "code_exact": 116,
+              "code_scored": 128,
+              "token_f1": 116.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:binding_department": {
+              "cases": 128,
+              "literal": 124,
+              "code_exact": 124,
+              "code_scored": 128,
+              "token_f1": 124.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:arithmetic": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 16,
+              "token_f1": 0.8333333333333333,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:arithmetic": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 16,
+              "token_f1": 0.8333333333333333,
+              "empty": 0,
+              "max_new": 1
+            },
+            "ko:boolean": {
+              "cases": 16,
+              "literal": 13,
+              "code_exact": 13,
+              "code_scored": 16,
+              "token_f1": 13.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:boolean": {
+              "cases": 16,
+              "literal": 13,
+              "code_exact": 13,
+              "code_scored": 16,
+              "token_f1": 13.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:json": {
+              "cases": 16,
+              "literal": 10,
+              "code_exact": 10,
+              "code_scored": 16,
+              "token_f1": 15.333333333333336,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:json": {
+              "cases": 16,
+              "literal": 9,
+              "code_exact": 9,
+              "code_scored": 16,
+              "token_f1": 15.222222222222223,
+              "empty": 0,
+              "max_new": 0
+            },
+            "ko:update": {
+              "cases": 16,
+              "literal": 0,
+              "code_exact": 0,
+              "code_scored": 16,
+              "token_f1": 0.0,
+              "empty": 0,
+              "max_new": 0
+            },
+            "en:update": {
+              "cases": 16,
+              "literal": 1,
+              "code_exact": 1,
+              "code_scored": 16,
+              "token_f1": 1.0,
+              "empty": 0,
+              "max_new": 0
+            }
+          },
+          "manifest": {
+            "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+            "limit_bytes": 20000000,
+            "rows": 640,
+            "bytes": 771687,
+            "concat_sha256": "92B3E381F94DCAB7291218AAEF4A00C7F6C06183C323A13151BD4D39FBD59BC3",
+            "lineage": {
+              "precision": "FP32_MATH",
+              "temperature": 0,
+              "top_k": 1,
+              "max_new": 64,
+              "auxiliary_used": false,
+              "student_mtp": false
+            },
+            "shards": [
+              {
+                "path": "answers_known_code_dev640_000000.jsonl",
+                "bytes": 771687,
+                "rows": 640,
+                "sha256": "92B3E381F94DCAB7291218AAEF4A00C7F6C06183C323A13151BD4D39FBD59BC3"
+              }
+            ]
+          },
+          "directory": "test_result/evidence/local/p106b_relation_interleaved_v2_s1337/evaluate/interleaved_fact1",
+          "scope": "literal source target + lexical F1, not a semantic judge"
+        },
+        "native32crop": {
+          "ce": 3.5586245730519295,
+          "targets": 32768,
+          "crops": 32,
+          "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+          "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+        },
+        "legacy8": {
+          "first_attempt_pass": 2,
+          "pass_within_three": 2,
+          "questions": 8,
+          "actual_attempts": 20,
+          "raw_concat_sha256": "D4A47B55BC0ABE7DC67E491D82449B2D85E49C9CBF211524021699790253B07E",
+          "limit": "narrow rubric and conditional retry upper bound; human semantics separately reviewed"
+        }
+      }
+    }
+  },
+  "precision": "FP32_MATH",
+  "temperature": 0.0,
+  "top_k": 1,
+  "max_new": 64,
+  "fictional_neutral_roots": 256,
+  "actual_self_history_answers": 3072,
+  "supplied_error_answers": 512,
+  "gold_second_answers": 1536,
+  "natural_source_cases": 32,
+  "auxiliary_used_in_generation": false,
+  "checkpoint_policy": "fixed final4rootpasses",
+  "old_TEST_used_as_development": true,
+  "future_reserved_role_test_evaluated": false,
+  "world_truth": "NOT_RUN",
+  "status": "INTERLEAVED_NEW_ROOTS_EVALUATED",
+  "whole_sec": 622.927134204001,
+  "corpus_report_sha256": "C65A23494178FB3C86409F3A2D25F9766C8977C4E1D72C63E5C9885A643108B8"
+}
