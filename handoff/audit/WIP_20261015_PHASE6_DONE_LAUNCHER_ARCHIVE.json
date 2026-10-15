@@ -1,0 +1,81 @@
+{
+  "schema": "TINYLM_DONE_LAUNCHER_RECOVERY_V1",
+  "phase": 6,
+  "status": "PRE_DELETE_VALIDATED",
+  "rows": [
+    {
+      "path": "run_P106B_Stage4ayW_cached_dolly_context_census-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ayW_cached_dolly_context_census_114520.txt",
+      "sha256": "3ABF1921B9898BD54F94A5B556E11DAF20ECE15C854331C9650EAD892539603B",
+      "raw_sha256": "224362023F71854336E395D9104A1E71F7741E5B364B596BB5C8A7CFE1FF89A6",
+      "script": "#!/usr/bin/env bash\n# Executed2026-10-15 raw114520 exit9: v1 census used strict student encoder before long-row count. Source/report preserved.\n# CPU only: two cached Dolly files, source SHA, full serialization counts and exact-span candidates.\n# Not a semantic validator or training admission. Raw candidates remain separate ignored local/HF.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ayW_cached_dolly_context_census_\"$stamp\" --note 'CPU raw counts/technical exact alignment only. Models/GPU/download0. Original public sources read-only. Dolly-derived candidates isolated and not admitted to main training.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ayW_cached_dolly_context_census_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dolly_context_census.py --execute --max-wall-sec 1200\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_dolly_context_census.py --execute --max-wall-sec 1200"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 9,
+      "scientific_status": "CENSUS_IMPLEMENTATION_ERROR_NOT_SOURCE_NEGATIVE",
+      "rerun_planned": false,
+      "recovery_commit": "8badd3e52acfdb659580d0dea5f9178a730b7e14",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true
+    },
+    {
+      "path": "run_P106B_Stage4ayWb_full_length_dolly_census-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4ayWb_full_length_dolly_census_115319.txt",
+      "sha256": "9EEBBD036EA9B0026DC23EBAEB9EC70C543CD99BBEB8BE9E168C3A9985301F40",
+      "raw_sha256": "E7235EA9E43F8432981904FF8451FB3C3F9BE93208BAF07B092447BFEDBB38DD",
+      "script": "#!/usr/bin/env bash\n# CPU only: separatev2 census counts untruncated rows, then validates <=1024 technical span candidates.\n# V1 partial source/log/report preserved. No training, semantic judge, model/GPU/download or main admission.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ayWb_full_length_dolly_census_\"$stamp\" --note 'V2 untruncated counts plus bounded exact alignment only; Dolly source/candidates isolated. Student/GPU0. V1 failure is a census implementation error, not bad source proof.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ayWb_full_length_dolly_census_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_dolly_context_census_v2.py --execute --max-wall-sec 1200\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_dolly_context_census_v2.py --execute --max-wall-sec 1200"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "scientific_status": "SEE_RESULT_131",
+      "rerun_planned": false,
+      "recovery_commit": "8badd3e52acfdb659580d0dea5f9178a730b7e14",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true
+    },
+    {
+      "path": "run_P106B_Stage4az0Wc_joint_final_cpu-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4az0Wc_joint_final_cpu_121009.txt",
+      "sha256": "DCE877F93ABC31064AB8F2A50C25DFB2573CA284465A98F735A4765FDD908C58",
+      "raw_sha256": "F731F4A291A279838CF1C8252FC8A013DA64AFD9218FF290BFF960B88EE0D2AB",
+      "script": "#!/usr/bin/env bash\n# CPU decimal/state contracts, callback restoration, zero digit gradient and deadline arithmetic.\n# Independent outputs. No stdin, implicit resume, source overwrite or inference answer selection.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4az0Wc_joint_final_cpu_\"$stamp\" --note 'CPU decimal/state contracts, callback restoration, zero digit gradient and deadline arithmetic.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4az0Wc_joint_final_cpu_\"$stamp\" -- \"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_joint_decimal scripts.test_p106b_joint_decimal_driver scripts.test_p106b_state_update_aux scripts.test_p106b_state_update_driver\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_joint_decimal scripts.test_p106b_joint_decimal_driver scripts.test_p106b_state_update_aux scripts.test_p106b_state_update_driver"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "scientific_status": "SEE_RESULT_131",
+      "rerun_planned": false,
+      "recovery_commit": "8badd3e52acfdb659580d0dea5f9178a730b7e14",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true
+    },
+    {
+      "path": "run_P106B_Stage4az1W_joint_decimal_corpus-done.sh",
+      "raw": "test_result/101_log_20261015_P106B_Stage4az1W_joint_decimal_corpus_121010.txt",
+      "sha256": "135A432C835D2BF5F34B1F2CDEED13B79EACA88A7C518DE12DA29626D9431778",
+      "raw_sha256": "95109E54089579AC364EF8A8EB69AC362129A9947730C856AE0A7D14FD9BEA33",
+      "script": "#!/usr/bin/env bash\n# CPU frozen state13312 plus new addition8192, shared parent selected by earlier DEV only.\n# Independent outputs. No stdin, implicit resume, source overwrite or inference answer selection.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4az1W_joint_decimal_corpus_\"$stamp\" --note 'CPU frozen state13312 plus new addition8192, shared parent selected by earlier DEV only.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4az1W_joint_decimal_corpus_\"$stamp\" -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_joint_decimal.py --mode freeze --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_joint_decimal.py --mode freeze --execute"
+      ],
+      "wrapper_executed": true,
+      "exit_code": 0,
+      "scientific_status": "SEE_RESULT_131",
+      "rerun_planned": false,
+      "recovery_commit": "8badd3e52acfdb659580d0dea5f9178a730b7e14",
+      "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+      "commands_preserved": true
+    }
+  ],
+  "planned_delete_count": 4,
+  "authority": "current user through17: preserve exact completed launcher commands and recovery before delete",
+  "bounds": "exact4 SH only; raw/data/model/CPT never deleted",
+  "retained": [
+    "run_P106B_Stage4u1W_public_source_deck-done.sh: wrapper never executed"
+  ]
+}

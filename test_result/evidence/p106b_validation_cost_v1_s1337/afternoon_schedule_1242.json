@@ -1,0 +1,99 @@
+{
+  "schema": "P106B_VALIDATION_INCLUSIVE_SCHEDULE_V1",
+  "created_at": "2026-10-15T03:42:53.840534+00:00",
+  "authority_deadline_utc": "2026-10-15T08:00:00+00:00",
+  "remaining_sec": 15426.159466,
+  "large_candidate_estimate_sec": 5346,
+  "large_estimate_scope": "observed completed wrapper81.0min times operational1.10; not guaranteed",
+  "large_eval_margin_sec": 1800,
+  "closure_margin_sec": 2700,
+  "validation_projections": {
+    "state": {
+      "arms": {
+        "aux0": {
+          "step_p95": 2.0980999220046215,
+          "updates": 416,
+          "validation_sec": 29.88222026499716,
+          "epochs": 4,
+          "estimated_train_sec": 1352.1028891439055,
+          "validation_buffer": 1.5,
+          "scope": "parent-path single observation plus operational buffer; not a statistical p95 guarantee"
+        },
+        "aux100": {
+          "step_p95": 2.0308173520024866,
+          "updates": 416,
+          "validation_sec": 29.88222026499716,
+          "epochs": 4,
+          "estimated_train_sec": 1324.1133400230174,
+          "validation_buffer": 1.5,
+          "scope": "parent-path single observation plus operational buffer; not a statistical p95 guarantee"
+        }
+      },
+      "pair_training_estimate_sec": 2676.216229166923,
+      "evaluation_margin_sec": 900
+    },
+    "joint": {
+      "arms": {
+        "digits0": {
+          "step_p95": 2.1101028510020114,
+          "updates": 672,
+          "validation_sec": 46.414695063002,
+          "epochs": 4,
+          "estimated_train_sec": 1996.4772862513637,
+          "validation_buffer": 1.5,
+          "scope": "parent-path single observation plus operational buffer; not a statistical p95 guarantee"
+        },
+        "digits1": {
+          "step_p95": 2.070489664998604,
+          "updates": 672,
+          "validation_sec": 46.414695063002,
+          "epochs": 4,
+          "estimated_train_sec": 1969.8572252570739,
+          "validation_buffer": 1.5,
+          "scope": "parent-path single observation plus operational buffer; not a statistical p95 guarantee"
+        }
+      },
+      "pair_training_estimate_sec": 3966.3345115084376,
+      "evaluation_margin_sec": 900
+    }
+  },
+  "options": {
+    "LARGE_THEN_JOINT": {
+      "needed_sec": 14712.334511508438,
+      "fits": true,
+      "variants": [
+        "joint"
+      ]
+    },
+    "LARGE_THEN_STATE": {
+      "needed_sec": 13422.216229166923,
+      "fits": true,
+      "variants": [
+        "state"
+      ]
+    },
+    "LARGE_THEN_BOTH": {
+      "needed_sec": 18288.55074067536,
+      "fits": false,
+      "variants": [
+        "state",
+        "joint"
+      ]
+    }
+  },
+  "selected": "LARGE_THEN_JOINT",
+  "state_pair": "CONDITIONAL_ONLY_RECHECK_AFTER_COMPLETED_PHASES",
+  "decision": "same joint pair covers state learning and arithmetic contrast; all-four promise disallowed by current conservative estimate",
+  "source_sha256": {
+    "test_result/evidence/p106b_validation_cost_v1_s1337/state/report.json": "FEE7959E004931819AB14222146AEB69B3050586F2531090C716675C302E5815",
+    "test_result/evidence/p106b_state_update_aux_v1_s1337/cost_aux0/report.json": "663F0FF5C55230FFA34E0164AD9AB216583DB1864B6E8511135A7DE7D38839EA",
+    "test_result/evidence/p106b_state_update_aux_v1_s1337/cost_aux100/report.json": "AA8C75BDA123E0FA7D07C1010390D23FEFA93CB8D5095BF49CF2DE7FD6E6BC19",
+    "test_result/evidence/p106b_validation_cost_v1_s1337/joint/report.json": "CDE2BB3CDEB46B76522A2338C66A5B727861DC18FC2826F14BEFD4875A4679B8",
+    "test_result/evidence/p106b_joint_decimal_v1_s1337/cost_digits0/joint_report.json": "A6A42EC6CF4542F2B6F9A3DB694873F9B63FBA7866440FF2F676C8FF58EE4725",
+    "test_result/evidence/p106b_joint_decimal_v1_s1337/cost_digits1/joint_report.json": "74C01591FCD9649ED6104BF32EE05728D34BE602B6032A2F51673DB54B80C5A0",
+    "test_result/evidence/p106b_binding_scale_v1_s1337/aux0/report.json": "3DEF9232939BB492A44D1F8473FE16B2EF8B3D2BE0714AA8FA39191D94836593"
+  },
+  "model_loaded": false,
+  "optimizer_updates": 0,
+  "setup_recovery": "Initial system-python import lacked numpy; reissued with existing tlm_torch interpreter. No install, GPU0 on that failed calculation."
+}
