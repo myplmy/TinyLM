@@ -1,0 +1,218 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-15T22:56:28.627332+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "git_recovery_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+  "files": [
+    {
+      "path": "run_P106B_Stage4ccWb_interleave_relation4_recovery-done.sh",
+      "bytes": 1025,
+      "sha256": "81C780891101FEB7B2A581BEC93067596704F08F8EC5D353BA3D1E1434F9B971",
+      "script": "#!/usr/bin/env bash\n# V2 native runtime recovery, v1 data/CODE/raw immutable, no stdin.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ccWb_interleave_relation4_recovery_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ccWb_interleave_relation4_recovery_\"$run_stamp\" --num 101 --note 'V2 after CPU real-reader proof, actual cost8 and budget; same-data fact1 interleaved688. Not75M/300M or world intelligence. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ccWb_interleave_relation4_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_interleaved_train_v2.py --mode train --arm fact1 --execute --max-wall-sec 10800\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4ccWb_interleave_relation4_recovery-done.sh",
+      "git_blob": "2bbe17f7c7f3f1766636308d70a5a6f75bd6cf4c",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4ccWb_interleave_relation4_recovery_064053.txt",
+      "raw_sha256": "0061321CE87124D70C7F9A25C4C73251F4E4844ABA92885AD83C1D0027CD5148",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_interleaved_train_v2.py --mode train --arm fact1 --execute --max-wall-sec 10800"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4cdWb_interleave_actual_fresh_recovery-done.sh",
+      "bytes": 1233,
+      "sha256": "C2A3229D988AD87E050CBA3E52C8D9C5E6483BF6B2CA720905EAA3AF78BDC54C",
+      "script": "#!/usr/bin/env bash\n# V2 native runtime recovery, v1 data/CODE/raw immutable, no stdin.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cdWb_interleave_actual_fresh_recovery_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cdWb_interleave_actual_fresh_recovery_\"$run_stamp\" --num 101 --note 'Saved blocked versus V2 interleaved; fresh roots/source32, future role TEST unexamined. Not75M/300M or world intelligence. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cdWb_interleave_actual_fresh_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_relation_interleaved_evaluate_v2.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cdWb_interleave_actual_fresh_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_interleaved_evaluate_v2.py --mode evaluate --execute --max-wall-sec 10800\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4cdWb_interleave_actual_fresh_recovery-done.sh",
+      "git_blob": "a46bb2af5c31742695fc857a3af2584c347d7ec5",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cdWb_interleave_actual_fresh_recovery_070637.txt",
+      "raw_sha256": "3642C3B1D01B132AC04FC03DBE78522B017437FC4F23ED51D6A38640F9188845",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_relation_interleaved_evaluate_v2.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_interleaved_evaluate_v2.py --mode evaluate --execute --max-wall-sec 10800"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4ceWb_interleave_root_readback_recovery-done.sh",
+      "bytes": 1217,
+      "sha256": "6F69D412296789DC558F9AABD34C0634BA0A08490A56CCE8077E7F5CE0F2F2F3",
+      "script": "#!/usr/bin/env bash\n# V2 native runtime recovery, v1 data/CODE/raw immutable, no stdin.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ceWb_interleave_root_readback_recovery_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ceWb_interleave_root_readback_recovery_\"$run_stamp\" --num 101 --note 'CPU raw paired recount by history/field, same-first-prefix, no model or truth promotion. Not75M/300M or world intelligence. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ceWb_interleave_root_readback_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_relation_interleaved_evaluate_v2.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ceWb_interleave_root_readback_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_relation_interleaved_evaluate_v2.py --mode readback --execute\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4ceWb_interleave_root_readback_recovery-done.sh",
+      "git_blob": "7b5c715e7a95e613f49e65c07d4690b82c8ba053",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4ceWb_interleave_root_readback_recovery_071807.txt",
+      "raw_sha256": "4FE5047A518C946A772478279F722D8828DA1DB246D55C36D178B9848D80A590",
+      "raw_exit_codes": [
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_relation_interleaved_evaluate_v2.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_relation_interleaved_evaluate_v2.py --mode readback --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4cf0W_original_qa3_cpu_contract-done.sh",
+      "bytes": 1623,
+      "sha256": "161F9620A3D10E0CA8B99447327F29AFD770D8C1EF03D4381AE72FB30B74AE32",
+      "script": "#!/usr/bin/env bash\n# Original-QA curriculum, immutable input/new outputs, no stdin or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cf0W_original_qa3_cpu_contract_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0W_original_qa3_cpu_contract_\"$run_stamp\" --num 101 --note 'CPU10: first pair identical, original three roles/masks, partial last batch, real native reader and missing marker rejection, same gradient accumulation. No world-truth certification. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0W_original_qa3_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_original_qa3_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0W_original_qa3_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_original_qa3_train.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0W_original_qa3_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_original_qa3_course.py --check-only\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0W_original_qa3_cpu_contract_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_original_qa3_train.py --mode cost --arm three --check-only\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4cf0W_original_qa3_cpu_contract-done.sh",
+      "git_blob": "435c233db9fe0af2f80e49aa3b1a9e1e222877a8",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cf0W_original_qa3_cpu_contract_073424.txt",
+      "raw_sha256": "36B8D707C4E07BBA0754920B713745CB286C4F72CFD2F0F526D66E94026B4429",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_original_qa3_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_original_qa3_train.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_course.py --check-only",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_train.py --mode cost --arm three --check-only"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4cf1W_original_role_matched_corpus-done.sh",
+      "bytes": 1050,
+      "sha256": "FC7DDAB002B5F2A8FDDC34F19B44D2E2C1DD8478FFD353F1A85A5E724F896101",
+      "script": "#!/usr/bin/env bash\n# Original-QA curriculum, immutable input/new outputs, no stdin or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cf1W_original_role_matched_corpus_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf1W_original_role_matched_corpus_\"$run_stamp\" --num 101 --note 'Original2004 source TRAIN, same code4096/fiction256 replay, first versus three QA. Reserved64 remains evaluation-only. New1600 indexed native windows; no cache copies. No world-truth certification. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf1W_original_role_matched_corpus_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_original_qa3_course.py --execute\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4cf1W_original_role_matched_corpus-done.sh",
+      "git_blob": "0ec701dcc9ce6fd6eaa3aa070419ee78647e149e",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cf1W_original_role_matched_corpus_073451.txt",
+      "raw_sha256": "FC8571E54FA18FB7D3F73BB7F1164C3152E72D90A510CB58C0086087B5EDAE0D",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_course.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4cf2Wa_original_first_cost8-done.sh",
+      "bytes": 982,
+      "sha256": "11555B1E5F4D5B9881247ADF2439FF220AB93B2341101F080ECE3DDEF643F6A2",
+      "script": "#!/usr/bin/env bash\n# Original-QA curriculum, immutable input/new outputs, no stdin or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cf2Wa_original_first_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf2Wa_original_first_cost8_\"$run_stamp\" --num 101 --note 'Original first QA only, actual cost8. Fixed parent687EBC, m8a16 ckptON, CPT0. No world-truth certification. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf2Wa_original_first_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_original_qa3_train.py --mode cost --arm first --execute --max-wall-sec 3600\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4cf2Wa_original_first_cost8-done.sh",
+      "git_blob": "47dc309a79ab8c0625e7963ddf83e6adb119a5a9",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cf2Wa_original_first_cost8_073802.txt",
+      "raw_sha256": "D7DD175091D1581ABB2EFAE2015CF0918FEBA84A0CF2496DE97425B17BC781F8",
+      "raw_exit_codes": [
+        9
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_train.py --mode cost --arm first --execute --max-wall-sec 3600"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "IMPLEMENTATION_ERROR9_BEFORE_UPDATE0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4cf0Wb_original_qa3_consumer_recovery-done.sh",
+      "bytes": 1533,
+      "sha256": "7E2BEAEA621A07340FA7CB3300468DEFCB2466C06651AA7099D3702670F20223",
+      "script": "#!/usr/bin/env bash\n# Preserved V1 data; exact original producer validation; independent V2 outputs.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cf0Wb_original_qa3_consumer_recovery_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0Wb_original_qa3_consumer_recovery_\"$run_stamp\" --num 101 --note 'CPU actual train/development/native consumers; CUDA0, optimizer0, checkpoint0. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0Wb_original_qa3_consumer_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_original_qa3_runtime_v2.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0Wb_original_qa3_consumer_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_original_qa3_train_v2.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0Wb_original_qa3_consumer_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_original_qa3_evaluation.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf0Wb_original_qa3_consumer_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_original_qa3_runtime_v2.py --execute\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4cf0Wb_original_qa3_consumer_recovery-done.sh",
+      "git_blob": "87c0232e9ff043578a40902886857769cdced301",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cf0Wb_original_qa3_consumer_recovery_074905.txt",
+      "raw_sha256": "DBB834421C26B8F7F397A27EA45E5CB846680F49207134FE2E1354B55264C83A",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_original_qa3_runtime_v2.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_original_qa3_train_v2.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_original_qa3_evaluation.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_runtime_v2.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    },
+    {
+      "path": "run_P106B_Stage4cf2Wc_original_first_cost_recovery-done.sh",
+      "bytes": 960,
+      "sha256": "82110C39FCB7547B75EDF34BE0C8E0C9FF3DD966762017F52A3ED2AE51F133BF",
+      "script": "#!/usr/bin/env bash\n# Preserved V1 data; exact original producer validation; independent V2 outputs.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cf2Wc_original_first_cost_recovery_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; new stage required.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf2Wc_original_first_cost_recovery_\"$run_stamp\" --num 101 --note 'Preserved original first QA course; cost8; checkpoint0. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cf2Wc_original_first_cost_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_original_qa3_train_v2.py --mode cost --arm first --execute --max-wall-sec 3600\n",
+      "git_commit": "e9fea6d0e1053cd6b25211bd6263d54be193abdf",
+      "git_path": "run_P106B_Stage4cf2Wc_original_first_cost_recovery-done.sh",
+      "git_blob": "c086ad2c859814f9f0170af7b029a24121e6646d",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cf2Wc_original_first_cost_recovery_074957.txt",
+      "raw_sha256": "B2C58EDB2BEF5A1837A2F77BEF15A69489F58D87EBC940AA04453EE87F5E6349",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_original_qa3_train_v2.py --mode cost --arm first --execute --max-wall-sec 3600"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "historical launcher only; all code/data/raw/checkpoints retained; future replay needs fresh output and authority"
+    }
+  ],
+  "total_worktree_bytes": 9623,
+  "scope": "phase7 exact8 owned completed wrappers, includes one error9 attempt; no scientific promotion"
+}
