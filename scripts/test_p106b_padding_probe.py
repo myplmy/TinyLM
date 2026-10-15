@@ -53,5 +53,14 @@ class Padding(unittest.TestCase):
             for name,value in before.items():self.assertTrue(torch.equal(value,model.state_dict()[name]),name)
         finally:torch.set_num_threads(threads)
 
+    def test_full_gradient_statistics_reject_nonfinite_values(self):
+        import torch
+        from scripts.diag_p106b_padding_probe import gradient_comparison
+        model=torch.nn.Linear(2,1);model(torch.ones(1,2)).sum().backward()
+        reference={name:p.grad.clone() for name,p in model.named_parameters()}
+        self.assertAlmostEqual(gradient_comparison(model,reference)['cosine'],1.)
+        model.weight.grad[0,0]=float('nan')
+        with self.assertRaises(ValueError):gradient_comparison(model,reference)
+
 
 if __name__=='__main__':unittest.main()

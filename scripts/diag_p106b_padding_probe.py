@@ -40,6 +40,8 @@ def gradient_comparison(model,reference):
         norm+=float(old.square().sum());other_norm+=float(now.square().sum())
         diff+=float(delta.square().sum());dot+=float((old*now).sum());maximum=max(maximum,float(delta.abs().max()))
         count+=now.numel()
+    if not all(math.isfinite(v) for v in (norm,other_norm,diff,dot,maximum)):
+        raise ValueError('finite whole-body gradient statistics required')
     if not norm or not other_norm:raise ValueError('nonzero whole-body gradients required')
     return dict(relative_l2=math.sqrt(diff/norm),cosine=dot/math.sqrt(norm*other_norm),
         maximum_abs=maximum,reference_l2=math.sqrt(norm),compared_parameters=count,gradient_presence_equal=True)
@@ -92,6 +94,7 @@ def main():
             x,y,seg=core.pad_records(native_records,pad,'cuda',fixed_width=1024,batch_size=8)
             with torch.autocast('cuda',dtype=torch.bfloat16) if bf16 else nullcontext():
                 hidden=forward(x,return_hidden=True);sums,valid=core.components(model,hidden,y,seg,horizons=());native_loss=sums[1]/8192
+            if not torch.isfinite(native_loss):raise ValueError('nonfinite native loss')
             native_loss.backward();torch.cuda.synchronize()
             if targets!=denominator or valid[1]!=8192:raise ValueError('actual targets changed by padding')
             return dict(sec=time.perf_counter()-tick,sft_ce=sft_loss,native_ce=float(native_loss.detach()),

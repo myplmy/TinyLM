@@ -259,13 +259,14 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_prefix_probe_v2_s1337` | GPU 이동 뒤 캐시 동결·실제 장치 검산, parent/replay100/pair030 표현 진단 | 본체 학습0·후보6값 판독·논리 층 관측. 실제 자유 생성·인과·범용 지능과 분리하며 새CPU7/수집 뒤 회수 |
 | `p106b_binding_factor_probe_v1_s1337` | 같은 동결 특징의 requested/first/last 값과 asked-first 2값 CPU 분리 판독 | 모델 forward/GPU/본체 학습0. 새 6값 판독을 학생 실제 답변으로 합산하지 않음 |
 | `p106b_binding_aux_v1_s1337_{aux0,aux03,aux100,auxperm100,auxdense100}` | 같은 새 QA512+code5120·native1·4pass176·학습전용1538계수,5팔실제완료 | 새조회243/264/490/249/497 of512, 전체286/308/536/294/541 of640. head는생성에서미사용·공개QA literal4/16/기존8은1/8로범용미승격. DEV고정suffix1·동일512진단은 [101 §128~129](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
-| `p106b_verbatim_source_v1_s1337` | 같은736 원천에서 원문 메시지·role·공백 보존, cap256/1024 MTP panel 뒤 새512/64 | v2의 trim에 의한 실제 YAML 들여쓰기 소실을 복구하는 새 입력 계약. 원형/새버전 분리, 새 고유 개념으로 중복 합산하지 않음; 정답성은PSEUDO |
-| `p106b_binding_scale_v1_s1337` | 가상 이름·매핑67072train/1216dev/새640·동일부모/m8a16/4pass2096 | 큰aux0실제2096회/13.88Mx·wrapper81.0분. DEV조회61/64/native3.547426이나산수/갱신0/8; 후보/최종640미완료 [101 §132](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_verbatim_source_v1_s1337` | 같은736 원천·선택canonical메시지/role/공백보존·새512/64 | 새576전량누락0. 66미수락요청의시간34.47%; completion124.95/s와train지도6.584/s구분. 사고256은요청값·채널별실제token수미기록; 품질PSEUDO [101 §136](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_binding_scale_v1_s1337` | 가상 이름·매핑67072train/1216dev/새640·동일부모/m8a16/4pass2096 두팔완료 | 실제13.88Mx·wrapper81/78분, DEV첫39/63→마지막61/63 of64. 새640진행·자연QA지도비중7.47%/범용효과미확정 [101 §138](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_state_update_aux_v1_s1337` | DEV고정small suffix1·새13312행·두turn C1/C3·m8a16/4pass416 준비 | 같은8cost 두팔실제완료·p95 2.0981/2.0308초, CPT0. 마지막updated-target bit만감독. full학습/효과미실행·시간재검산조건부 [101 §133](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_joint_decimal_v1_s1337` | 같은 DEV고정 부모·state고정/자리감독0·1·새21504행·4pass672 준비 | 두8cost/실제state양팔활성·자리0/양수/CPT0확인. 26146학습전용계수·상위몫20이며한자리십의자리분류가아님. full효과미실행 [101 §133](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_validation_cost_v1_s1337` | 같은선택부모의실제state/joint dev 네경로계측완료 | optimizer0/CPT0/본체SHA불변·각29.8822/46.4147초. 검증포함예산은큰대조→joint우선/state조건부이며완료보증아님 [101 §133](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_dolly_context_census_v2_s1337` | 고정 공개2parquet·CPU재고/길이후문자연결 | v1 긴행계측오류보존·v2 29616행/5894604x, 후보1015행/279602x. 권리/의미/본75M편입미판정·학생학습금지 [101 §131.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
-| `p106b_padding_probe_v1_s1337` | 같은첫128+native8의오른쪽빈칸만축소하는독립무업데이트진단준비 | CPU4/tiny손실·gradient가까움·동결joint최장120. 실제부모GPU/compile/속도/전체recipe정합은미실행·기존학습불변 [101 §134](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_padding_probe_v1_s1337` | 같은첫128+native8의오른쪽빈칸만축소하는독립무업데이트진단준비 | CPU5/tiny손실·gradient근접/NaN거절·동결joint최장120. 실제GPU/compile/속도/전체recipe정합미실행·기존학습불변 [101 §134](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_reference_views_v1_s1337` | 같은DEV선택학생/16질문/전체·교사선택완전메시지·빈근거의무학습진단준비 | CPU3/실제48encode/같은target·선택변경4/동일대조12. 실제GPU미실행·literal은의미정답아님·eval행train반출금지 [101 §135](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
