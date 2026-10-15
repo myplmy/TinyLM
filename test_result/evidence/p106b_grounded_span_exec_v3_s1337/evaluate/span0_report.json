@@ -1,0 +1,383 @@
+{
+  "schema": "P106B_GROUNDED_SPAN_V1",
+  "tag": "p106b_grounded_span_exec_v3_s1337",
+  "code_sha256": {
+    "scripts/diag_p101a_mtp_parity.py": "300B2C196B9378F76AFD6C9E363C2F4441BAD1594FD91B9C0DF53185A1056A6C",
+    "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+    "scripts/diag_p106b_grounded_span.py": "0FFFAF44588F63893E35BB6293DAA22C585161AA8154A26DECA344F585FB4E4F",
+    "scripts/diag_p106b_grounded_span_execution.py": "CA370B6A6034460C11A5805A85834256745E70CF19D08476DFF57D8C9D4DA506",
+    "scripts/p101a_sft_mtp_data.py": "909B18179F6BDDAD59BA861FF76245DBA99B7912E26CBBBB5E7CBE8CDA2B1F1B",
+    "scripts/p101a_sft_mtp_infer.py": "022987FDBB7C7969ED760220BB26891D4B1401575CCAEC636C357EFDD1741B19",
+    "scripts/p106b_education_followup.py": "7DBD02831020F3AFBD7DEDC8B0C9755FB7469CF1B5C6E9EA98DEEE1D8746A962",
+    "scripts/p106b_grounded_span.py": "C0B1BA75F4469DFA6DF9D382CADC184F7F27519F4257826319F254ACAF31B3A1",
+    "scripts/p106b_native_windows.py": "92964880E8843888C121036E70F82C9F799531AA5F168D78B6C1CDD428155F38",
+    "scripts/p106b_padding_probe.py": "2457825B2F72DE1DEAFDA49AA40994AA8D18BB9599EC1AF1DDABB908AEBADB30",
+    "scripts/p106b_retention_course.py": "A2FC37EFB9837CC08660CA440A262EDA2E101B05F566FA0EFDD3F37591ABAB54",
+    "scripts/p106b_shards.py": "30CBD7D6B5BE09D4C8B8983CDD607EF07BA379CC3892067C41D3A06DF22E1DA4",
+    "scripts/test_p101a_sft_mtp.py": "11B5B143C1371A965DC9A7CE73C6E0597755516F481A1F49D49C4D1A130B0DA2",
+    "scripts/test_p101a_sft_mtp_data.py": "C5F0BB4BD13FC4A852E8C809F93D3125916F3FE8F839FB858A855096952D0A2A",
+    "scripts/test_p101a_sft_mtp_driver.py": "04B0F5C784DEA3A3F4EF4CD6313176BBF33036D13ECB262DA92B03D5AEB249DD",
+    "scripts/test_p106b_grounded_span.py": "E0F3EE5EEFB5ACF5FBF62984F4A66D7D68140CD412D3A79D499D466886CDF7F7",
+    "scripts/test_p106b_grounded_span_execution.py": "1C192EBEDB90460F6251AC16FFBCFA4F2BF2FE405DF8329F5C478282B90DC80D",
+    "tinylm/chat/canonical.py": "8A514B69CC6C12519166DEFC059C74BF685DEFC85F20461A0E7CB52D092156BC",
+    "tinylm/chat/serialize.py": "F67F8DB7760BE9C1BAE9102692C819E2444C8780A2906179C4C468451926D4C8",
+    "tinylm/config.py": "3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF",
+    "tinylm/data/sft.py": "44327B6D27998BFA8BE160A99B65D530083E18CF640AFE62CA459CF16A276A33",
+    "tinylm/infer/generate.py": "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4",
+    "tinylm/infer/mtp.py": "833E7DD9BD40A2B67C5D7BE98D64047F089E800BA2FE7A4555E7EEFD6904F8AF",
+    "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+    "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657",
+    "tinylm/train/muon.py": "F2D81EF9903DC4BD2F9298BD65D3B210B1DE21141D22361A85A46F1DDE5F4676",
+    "tinylm/train/optimizer_audit.py": "E7B60AC5D023F797A674A9B625D4DAB6F4BB3A9C2AC35180A1B4FA734DD9B427"
+  },
+  "parent": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
+  "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+  "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+  "seed": 1337,
+  "micro_bs": 8,
+  "accum": 16,
+  "seq": 1024,
+  "checkpoint_on": true,
+  "compile": "default",
+  "epochs": 4,
+  "lr": 5e-05,
+  "muon_lr": 0.0002,
+  "matrix_weight_decay": 0,
+  "native_weight": 1.0,
+  "gradient_clip": 1.0,
+  "arms": {
+    "span0": 0.0,
+    "span03": 0.3
+  },
+  "auxiliary_rank": 64,
+  "auxiliary_in_free_generation": false,
+  "student_mtp": false,
+  "execution_padding": "RIGHT_ALIGN128_MAX1024; native fixed1024",
+  "deadline_utc": "2026-10-16T08:00:00+00:00",
+  "teacher_calls": 0,
+  "formal_train_ready": false,
+  "semantic_truth": "PUBLIC_SOURCE_UNVERIFIED",
+  "scope": "natural source QA learning study, not75M/300M or general intelligence",
+  "source_producer_tag": "p106b_grounded_span_v1_s1337",
+  "source_producer_report": "HF/sft_ready/p106b_grounded_span_v1_s1337/corpus/report.json",
+  "source_producer_report_sha256": "4C77034473A4D83004932D9818CE3C50057302529241F7BB272F5682639B600A",
+  "source_producer_code_sha256": {
+    "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+    "scripts/diag_p106b_grounded_span.py": "0FFFAF44588F63893E35BB6293DAA22C585161AA8154A26DECA344F585FB4E4F",
+    "scripts/p101a_sft_mtp_data.py": "909B18179F6BDDAD59BA861FF76245DBA99B7912E26CBBBB5E7CBE8CDA2B1F1B",
+    "scripts/p101a_sft_mtp_infer.py": "022987FDBB7C7969ED760220BB26891D4B1401575CCAEC636C357EFDD1741B19",
+    "scripts/p106b_grounded_span.py": "C0B1BA75F4469DFA6DF9D382CADC184F7F27519F4257826319F254ACAF31B3A1",
+    "scripts/p106b_native_windows.py": "92964880E8843888C121036E70F82C9F799531AA5F168D78B6C1CDD428155F38",
+    "scripts/p106b_padding_probe.py": "2457825B2F72DE1DEAFDA49AA40994AA8D18BB9599EC1AF1DDABB908AEBADB30",
+    "scripts/p106b_retention_course.py": "A2FC37EFB9837CC08660CA440A262EDA2E101B05F566FA0EFDD3F37591ABAB54",
+    "scripts/p106b_shards.py": "30CBD7D6B5BE09D4C8B8983CDD607EF07BA379CC3892067C41D3A06DF22E1DA4",
+    "scripts/test_p101a_sft_mtp.py": "11B5B143C1371A965DC9A7CE73C6E0597755516F481A1F49D49C4D1A130B0DA2",
+    "scripts/test_p101a_sft_mtp_data.py": "C5F0BB4BD13FC4A852E8C809F93D3125916F3FE8F839FB858A855096952D0A2A",
+    "scripts/test_p101a_sft_mtp_driver.py": "04B0F5C784DEA3A3F4EF4CD6313176BBF33036D13ECB262DA92B03D5AEB249DD",
+    "scripts/test_p106b_grounded_span.py": "E0F3EE5EEFB5ACF5FBF62984F4A66D7D68140CD412D3A79D499D466886CDF7F7",
+    "tinylm/config.py": "3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF",
+    "tinylm/infer/generate.py": "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4",
+    "tinylm/infer/mtp.py": "833E7DD9BD40A2B67C5D7BE98D64047F089E800BA2FE7A4555E7EEFD6904F8AF",
+    "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+    "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+  },
+  "source_data_changed": false,
+  "seed_preservation": "CPU_GENERATOR_FORK_AND_ACTIVE_CUDA_STATE_ASSERTED",
+  "source_and_execution_contracts_separate": true,
+  "arm": "span0",
+  "metrics": {
+    "test": {
+      "counts": {
+        "ko:natural_first_qa": {
+          "cases": 128,
+          "literal": 6,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 11.776190476190477,
+          "empty": 0,
+          "max_new": 2
+        },
+        "en:natural_first_qa": {
+          "cases": 128,
+          "literal": 6,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 16.63047108465501,
+          "empty": 0,
+          "max_new": 2
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 256,
+        "bytes": 1609475,
+        "concat_sha256": "75C0EF902F5F8D2F6375772BFC5F40F6F949C1DE6A0DF400FBE23A6BBC8E078E",
+        "lineage": {
+          "precision": "FP32_MATH",
+          "temperature": 0,
+          "top_k": 1,
+          "max_new": 64,
+          "auxiliary_used": false,
+          "student_mtp": false
+        },
+        "shards": [
+          {
+            "path": "answers_test_000000.jsonl",
+            "bytes": 1609475,
+            "rows": 256,
+            "sha256": "75C0EF902F5F8D2F6375772BFC5F40F6F949C1DE6A0DF400FBE23A6BBC8E078E"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_grounded_span_exec_v3_s1337/evaluate/span0",
+      "scope": "literal source target + lexical F1, not a semantic judge"
+    },
+    "train_diagnostic": {
+      "counts": {
+        "ko:natural_first_qa": {
+          "cases": 16,
+          "literal": 10,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 10.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:natural_first_qa": {
+          "cases": 16,
+          "literal": 6,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 7.4,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 32,
+        "bytes": 197911,
+        "concat_sha256": "8D42CBA8A2FE9FB0BBDC476D8729CD9E11C80596415E929E9A707DD4190B0C78",
+        "lineage": {
+          "precision": "FP32_MATH",
+          "temperature": 0,
+          "top_k": 1,
+          "max_new": 64,
+          "auxiliary_used": false,
+          "student_mtp": false
+        },
+        "shards": [
+          {
+            "path": "answers_train32_000000.jsonl",
+            "bytes": 197911,
+            "rows": 32,
+            "sha256": "8D42CBA8A2FE9FB0BBDC476D8729CD9E11C80596415E929E9A707DD4190B0C78"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_grounded_span_exec_v3_s1337/evaluate/span0",
+      "scope": "literal source target + lexical F1, not a semantic judge"
+    },
+    "native": {
+      "ce": 3.539919450879097,
+      "targets": 32768,
+      "crops": 32,
+      "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+      "scope": "same fixed first32 1024-token crops; not whole-pool native CE"
+    },
+    "public_dev16": {
+      "counts": {
+        "en:public_qa": {
+          "cases": 8,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 0.3141425649227587,
+          "empty": 0,
+          "max_new": 2
+        },
+        "ko:public_qa": {
+          "cases": 8,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 0,
+          "token_f1": 0.8400921658986176,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 16,
+        "bytes": 94823,
+        "concat_sha256": "6751E58BB2F6BA8D14550234946CCB53514E3C43174563AE755B4CB109041B59",
+        "lineage": {
+          "precision": "FP32_MATH",
+          "temperature": 0,
+          "top_k": 1,
+          "max_new": 256,
+          "auxiliary_used": false,
+          "student_mtp": false
+        },
+        "shards": [
+          {
+            "path": "answers_old_public_dev16_000000.jsonl",
+            "bytes": 94823,
+            "rows": 16,
+            "sha256": "6751E58BB2F6BA8D14550234946CCB53514E3C43174563AE755B4CB109041B59"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_grounded_span_exec_v3_s1337/evaluate/span0",
+      "scope": "literal source target + lexical F1, not a semantic judge"
+    },
+    "old_code640": {
+      "counts": {
+        "ko:binding_color": {
+          "cases": 128,
+          "literal": 65,
+          "code_exact": 65,
+          "code_scored": 128,
+          "token_f1": 65.5,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:binding_department": {
+          "cases": 128,
+          "literal": 69,
+          "code_exact": 69,
+          "code_scored": 128,
+          "token_f1": 69.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:binding_color": {
+          "cases": 128,
+          "literal": 51,
+          "code_exact": 51,
+          "code_scored": 128,
+          "token_f1": 51.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:binding_department": {
+          "cases": 128,
+          "literal": 62,
+          "code_exact": 62,
+          "code_scored": 128,
+          "token_f1": 62.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:arithmetic": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:arithmetic": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:boolean": {
+          "cases": 16,
+          "literal": 11,
+          "code_exact": 11,
+          "code_scored": 16,
+          "token_f1": 11.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:boolean": {
+          "cases": 16,
+          "literal": 11,
+          "code_exact": 11,
+          "code_scored": 16,
+          "token_f1": 11.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:json": {
+          "cases": 16,
+          "literal": 10,
+          "code_exact": 10,
+          "code_scored": 16,
+          "token_f1": 15.333333333333334,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:json": {
+          "cases": 16,
+          "literal": 1,
+          "code_exact": 1,
+          "code_scored": 16,
+          "token_f1": 3.3777777777777778,
+          "empty": 0,
+          "max_new": 0
+        },
+        "ko:update": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        },
+        "en:update": {
+          "cases": 16,
+          "literal": 0,
+          "code_exact": 0,
+          "code_scored": 16,
+          "token_f1": 0.0,
+          "empty": 0,
+          "max_new": 0
+        }
+      },
+      "manifest": {
+        "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+        "limit_bytes": 20000000,
+        "rows": 640,
+        "bytes": 771827,
+        "concat_sha256": "BAFD395F670660B14B236CBA116EDF4F4BC381A7727BE385E197C9F4CA7BF6A2",
+        "lineage": {
+          "precision": "FP32_MATH",
+          "temperature": 0,
+          "top_k": 1,
+          "max_new": 64,
+          "auxiliary_used": false,
+          "student_mtp": false
+        },
+        "shards": [
+          {
+            "path": "answers_old_code640_000000.jsonl",
+            "bytes": 771827,
+            "rows": 640,
+            "sha256": "BAFD395F670660B14B236CBA116EDF4F4BC381A7727BE385E197C9F4CA7BF6A2"
+          }
+        ]
+      },
+      "directory": "test_result/evidence/local/p106b_grounded_span_exec_v3_s1337/evaluate/span0",
+      "scope": "literal source target + lexical F1, not a semantic judge"
+    },
+    "legacy8": {
+      "first_attempt_pass": 1,
+      "pass_within_three": 1,
+      "questions": 8,
+      "actual_attempts": 22,
+      "raw_concat_sha256": "65AC68AD14997DF6663B16ED8A6B43B099C347D065BBD2F0707CE8FC66AB8F0B",
+      "limit": "narrow rubric and conditional retry upper bound; human semantics separately reviewed"
+    }
+  }
+}
