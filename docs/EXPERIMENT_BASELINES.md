@@ -242,6 +242,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | `p106b_dualqa_teacher_pilot_v2_s1337` | 같은8지문/원seed/상한·선택NOTE·source범위 | 새34요청32대화48QA·109.13초. 두순서QA공급약2.1배/실제대화x약1.1배; decoding2배/의미동등/세계지능아님 [101 §157](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_dualqa_corpus_v1_s1337` | 불변원문2112작업·목표train1536/dev128/freshTEST256·MTP2/사고요청256 | CPU8/전수68·0·source덱동결뒤생산중; 미봉인batch는상태HOLD로보호·학생0 [101 §158](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_dualqa_curriculum_v1_s1337` | source0부모·m8a16/4epoch176·repeat/contrast의Q/A노출동일·native1/knownquery1 | CPU17/두check-only만완료·실제course/cost/full미실행. 실제이력1024답과골드둘째512를분리하며본75M/300M아님 [101 §159](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| `p106b_dualqa_parent_wire_v1_s1337` | 같은실제Source0부모/전체code4096의CPU배선 | 2.515초·본체SHA불변·검증라벨3072/0·1각1536·인과suffix41437. CUDA/forward/학습/CPT0·학생품질아님 [101 §159.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p101a_sft_mtp_lrhi_v2_s1337` / `p101a_sft_mtp_lrlo_v2_s1337` | 동일8M·parentNTP1epoch/824updates·joint scale1/.1 | 실제완료·native악화high+0.623144/low+0.127744·첫답1/0대8·[092 §12](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v2_s1337` | 두savedMTP 학생·BF16/FP32 query/rebuild/KV | 원수집48×2완료0·상위K4집계결함을profile.k로대조·원형보존 [092 §13](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |
 | `p101a_mtp_parity_v3_s1337` | 실제K/세검증방식·두precision·같은8질문 | GPT실물112×2완료·serial BF16/native8/8두학생·병렬은조건부. 학습/save0·의미/가속미채택 [092 §14](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md) |

@@ -3316,3 +3316,18 @@ buW는3endpoint의새지문256×양순서×2턴=1024실제답과골드이력둘�
 부모·교사·토크나이저·encoder·공용함수의CODE와원천/라벨/SHA를동결에포함한다.
 실제x/assistant/native노출·학습전용queryhead의인과위치·전역update분모의gradient일치를CPU로검사한다.
 등록조회에나오는176×8×16×1024=23.07M은패딩상한이지실제처리토큰이아니다.
+
+### buWb 후행 원답 검산(실행 전)
+
+3endpoint의실제1024답/골드둘째512를원답에서다시집계하고문서root별로네실제답을묶어paired bootstrap한다.
+둘째턴의학생첫답은모델마다달라지는처치결과이므로user/source/gold일치를검사하되assistant이력을억지로같게만들지않는다.
+각언어128문서에서고정정렬위치0/32/64/96의8지문을후행판독패킷으로보존한다(순서0의두실제답,3모델48답).
+이는새문항정답성을자동심사/격리하는기능이아니고의미정답/세계지식미검증표시를유지한다.
+CPUsummarizer/test와새buWb SH만추가하며모델0/훈련0이다. 학생/교사동결CODE는변경하지않는다.
+
+### bs0Wb 실제 부모·코드 계약의 CPU 배선 선결
+
+교사생산중에도GPU를함께쓰지않고선택Source0CPT를CPU에만읽어실제cfg/본체fingerprint를확인한다.
+이전code자료에서정확3072binding+1024rule을선택하고검증된3072label의인과위치를실제encoder로검산한다.
+새부모CPUwire namespace에작은해시보고만남기며모델forward/optimizer/CPT/GPU0이다.
+고정fixture만으로실제부모형상·원천메타데이터연결을대체하지않기위한짧은추가검증이다.
