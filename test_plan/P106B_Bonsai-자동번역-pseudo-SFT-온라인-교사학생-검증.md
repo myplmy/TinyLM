@@ -2922,3 +2922,39 @@ full재실행16이전답일치·전체/선택/빈근거의실제답·종료·토
 사후개발진단이며고정표본의추론표시변경이지새학습/범용개선이아니다. 실제GPU는최대600초/마감여유내에서만수행한다.
 최초16render선결에서는선택전후실제입력이바뀌는것이4개(index6/7/10/12)뿐이었다.
 나머지12개는동일프롬프트음성대조이며16개모두처치가달라졌다고부풀리지않는다. 학습target토큰동일성도GPU전에검사한다.
+
+## Stage4bj0W·Stage4bj1W·Stage4bjWa/Wb·Stage4bkW — 별도 right-trim joint 두 팔
+
+### 선택/범위
+
+고정1024 유지(A)는기존준비그대로지만두팔비용이커state단독비교가시간밖일수있다.
+별도축소실험(B)은같은부모/데이터/실제token/목적을유지하고오른쪽빈칸만128배수로줄인다.
+packing(C)은대화/attention경계까지바뀌므로진행하지않는다.
+무업데이트probe의2.97배관측과FP32word/native gradient상대차1.1e-6을근거로B를별도namespace로준비한다.
+이것은전체보조/optimizer/학습품질의동등성확정이나기본값변경이아니다. 새두팔의실측8cost와실제학습/새2048로검증한다.
+기존fixed state/joint 코드·데이터·원형은바꾸지않고unrun대안으로보존한다. 14:40까지선결이열리지않으면기존fixed joint를우선한다.
+
+### 방법과보존
+
+원래동결joint21504/2624/2048을원본코드SHA/manifest/native SHA로먼저검증하고읽기전용참조한다.
+새p106b_joint_decimal_trim_v1_s1337/source_contract는source_report SHA/producer CODE와새실행 CODE를따로기록한다.
+runtime의core.pad_records 인수만바꾸며fixed_width1024 요청에서실제max길이를128배수로올린다.
+최장120인train은128, native1024는그대로다. maxcontext1024·row/target/turn/마스크·라벨·부모·4pass672·LR/native1·state고정/자리0·1은유지한다.
+eval의실제생성은원래FP32 MATH/cache 경로이며표시/자료내용을바꾸지않는다. 모델core/공용학습기파일은수정하지않는다.
+CPU는같은valid hidden의보조손실/gradient·패딩target/범위·컨텍스트복원을검사한다.
+source_contract 동결후같은코드8cost 두팔/CPT0·head활성후조건을확인한다. 실측p95×672+4×기존검증46.415초×1.5+팔별300초·평가900·마감2700초로예산을다시잡는다.
+train/evalreport는새태그로분리하고source corpus SHA는원래동결파일을가리킨다고명시한다. schema/labels는원래정확생산자계약을재사용하며원본metadata를덮어쓰지않는다.
+전체학습속도/새2048답/native/실제대화로효과와한계를보고하고구형fixed 결과가있는것처럼쓰기/새default자동승격을금지한다.
+
+정확단계: Stage4bj0W CPU, Stage4bj1W source계약동결, Stage4bj2Wa·Stage4bj2Wb 각8cost,
+Stage4bj2Wc 검증포함예산, Stage4bjWa·Stage4bjWb 각672학습, Stage4bkW 실제2048수집, Stage4bkWb CPUpaired다.
+구형고정캔버스의Stage4baWa/Stage4baWb는취소/삭제하지않고예비대조로보존한다.
+
+### 14:46까지 실제 이력/예측 대조
+
+큰두팔2096회와새640/CPUpaired/같은512/원답보기는완료했다. 최종조회500대506/512·전체544대563/640이나산수는둘다0/32다.
+padding은실제무업데이트113.5초·FP32gradient근접/2.97배warm관측이었고BF16 CE는비트동일하지않았다.
+ref16 full재현16/16/동일대조12개출력동일,4변경입력도literal4→4였으며요청충족이회복됐다는근거는없었다.
+새trim source계약·CPU6/정적68·0·6·두8cost/CPT0·보조후조건을완료했고14:35부터새기준672학습중이다.
+최대context/원데이터/유효token/목적/부모를유지하면서실행캔버스만분리했다. 원래fixed실험의결과로계승하거나default로자동채택하지않는다.
+다음은새trim자리1과새2048/실제대화평가이며state고정416두팔은그뒤실제마감예산으로판단한다.

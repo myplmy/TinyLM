@@ -11,7 +11,8 @@ import json
 import random
 from scripts.p106b_shards import verify
 SPECS={'p106b_state_update_aux_v1_s1337':('STATE_AUX_FRESH_TEST_COLLECTED','aux0'),
-       'p106b_joint_decimal_v1_s1337':('JOINT_DECIMAL_FRESH_TEST_COLLECTED','digits0')}
+       'p106b_joint_decimal_v1_s1337':('JOINT_DECIMAL_FRESH_TEST_COLLECTED','digits0'),
+       'p106b_joint_decimal_trim_v1_s1337':('JOINT_DECIMAL_FRESH_TEST_COLLECTED','digits0')}
 
 
 def signature(row):return hashlib.sha256(json.dumps(row['messages'],ensure_ascii=False,sort_keys=True).encode()).hexdigest()

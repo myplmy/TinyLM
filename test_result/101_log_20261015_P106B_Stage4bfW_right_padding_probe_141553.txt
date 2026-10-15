@@ -1,0 +1,12 @@
+First128 same word/native targets, FP32 gradient then BF16 compiled order pairs. Optimizer/CPT0; state/decimal objectives excluded. Existing frozen studies and defaults unchanged.
+
+==============================================================================
+[runlog] 2026-10-15 14:15:53  name=P106B_Stage4bfW_right_padding_probe_141553
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_padding_probe.py --execute --max-wall-sec 600
+==============================================================================
+W1015 14:16:33.334000 382746 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[PADDING_OBSERVATION] {"status": "RIGHT_PADDING_DIAGNOSTIC_COMPLETE", "census": {"rows": 21504, "actual_x_tokens": 1276878, "fixed_positions": 22020096, "maximum": 120, "rowwise_aligned_positions": 2752512, "note": "rowwise ideal is not real batched width; public QA is not added to this course"}, "widths": [128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128], "fp32_close": true, "gradient": {"relative_l2": 1.093192682268535e-06, "cosine": 0.9999999999994907, "maximum_abs": 8.463859558105469e-06, "reference_l2": 14.5018240751908, "compared_parameters": 93268764, "gradient_presence_equal": true}, "speed_ratios": [2.968030435605555, 2.965035762580711], "whole_sec": 113.48336605299846, "updates": 0, "default_adopted": false}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.2분  (2026-10-15 14:18:05)
+==============================================================================
