@@ -1,0 +1,33 @@
+CPU26 synthetic regression and source-only TRAIN32k/TEST512 exact-context question-bundle census. Raw context SHA separates normalized identity variants. Character-distinct candidates are not semantic negatives/training data. No model/GPU/source answer-based selection.
+
+==============================================================================
+[runlog] 2026-10-17 07:07:10  name=P106B_Stage4eh0W_question_bundles_cpu_070710
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest -b scripts.test_p106b_night_question_bundles scripts.test_p106b_night_question_bundles_runtime
+==============================================================================
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.092s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-17 07:07:12)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-17 07:07:12  name=P106B_Stage4eh0W_question_bundles_cpu_070710
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_night_question_bundles.py --mode freeze --execute
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_night_question_bundles.py", line 141, in main
+    try:return prepare() if a.mode=='freeze' else readback()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_night_question_bundles.py", line 89, in prepare
+    for name,value in censuses.items(): qa.write(FROZEN / (name + '_census.json'), value)
+  File "/home/uranus/tinyLM/scripts/p106b_night_course.py", line 40, in write
+    raise ValueError('20MB evidence limit')
+ValueError: 20MB evidence limit
+[QUESTION_BUNDLE_ERROR] 20MB evidence limit
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.3분  (2026-10-17 07:07:33)
+==============================================================================

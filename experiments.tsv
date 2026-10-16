@@ -1,5 +1,4 @@
 # TinyLM 실험 실행파일 메타데이터 (Windows BAT / Linux·WSL SH 공통 진실 원천)
-5	P106B	run_P106B_Stage4dzWc_night_unique_scope_final_eval.sh	D	.25	Y	Y	Same frozen full512/eight-lane final640 read-only FP32
 5	P106B	run_P106B_Stage4dzWd_night_unique_scope_dev_eval.sh	D	.25	Y	Y	Same full evaluation separate DEV representative, never TEST selection
 5	P106B	run_P106B_Stage4eaWb_night_unique_scope_readback.sh	N	.05	N	Y	Strict new two-endpoint and old matched baseline final/DEV raw/body/source receipt proof
 4	P106B	run_P106B_Stage4dqWg_original_parent_panel.sh	D	.5	Y	Y	Separate balanced64 bare-parent diagnostic; trained full512 unchanged, old six-model gate never credited
@@ -34,12 +33,16 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-6	P106B	run_P106B_Stage4duWa_night_prompt0_final_eval.sh	D	.25	Y	Y	Same original cohort/FP32 MATH, prompt0 final4 primary, complete eight lanes and per-lane body proof
+7	P106B	run_P106B_Stage4eh0W_question_bundles_cpu.sh	N	.10	N	Y	Source-only TRAIN32k TEST512 exact-context question bundles CPU26; aliases are not semantic negatives
+# 7	P106B	run_P106B_Stage4ehW_question_bundles_readback-hold.sh	N	.10	N	Y	HOLD V1 freeze20MB before writes; separate shardedV2 is not this failed stage completion
+7	P106B	run_P106B_Stage4eh0Wb_question_bundles_shards_cpu.sh	N	.10	N	Y	Source-only shard recovery CPU31, no model/GPU, every file <=20MB and exact reconstruction
+7	P106B	run_P106B_Stage4ehWb_question_bundles_shards_readback.sh	N	.10	N	Y	Closed9 metadata key collision before answer reading; distinct lifecycleV3 recovery
+7	P106B	run_P106B_Stage4eh0Wc_question_bundles_lifecycle_cpu.sh	N	.10	N	Y	CPU34 including prepare/read_inputs synthetic lifecycle; separateV3 source census and <=20MB shards
+7	P106B	run_P106B_Stage4ehWc_question_bundles_lifecycle_readback.sh	N	.10	N	Y	All ten full512 source/body/checkpoint raw proofs, source bundle counts only, no models or training
 6	P106B	run_P106B_Stage4duWb_night_prompt01_final_eval.sh	D	.25	Y	Y	Same source and evaluator, prompt.1 final4 primary, full actual answers/public/native
 6	P106B	run_P106B_Stage4duWc_night_prompt0_dev_eval.sh	D	.25	Y	Y	Prompt0 separate DEV-minimum representative, not new learning seed or TEST-selected winner
 6	P106B	run_P106B_Stage4duWd_night_prompt01_dev_eval.sh	D	.25	Y	Y	Prompt.1 separate DEV-minimum representative, same original CASE/whole denominators
 6	P106B	run_P106B_Stage4dvW_night_prompt_paired_readback.sh	N	.05	N	Y	All four source/gold/history/receipt/checkpoint proofs and article paired comparison
-6	P106B	run_P106B_Stage4dtWb_night_prompt01_repeat4.sh	Y	1.0	Y	Y	Same original P090B/course640 and input-head path, beta.1 only; final4/DEV representative separate
 # 4	P106B	run_P106B_Stage4dqWb_foundation_native_parent_eval-hold.sh	D	.25	Y	Y	HOLD: original six-full-endpoint source audit incomplete; new64 panel is not a substitute. Completed native2281 endpoint, exact source/init and actual counts required; same frozen complete evaluation
 # 4	P106B	run_P106B_Stage4drW_foundation_raw_pair_readback-hold.sh	N	.05	N	Y	HOLD: original six-full-endpoint source audit incomplete; new64 panel is not a substitute. Six complete endpoints raw/receipt/original source recount and paired article intervals; one learning seed only
 # DONE run_P106B_Stage4dk0W_night_grounded_cpu-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
@@ -964,6 +967,13 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   6	P106B	run_P106B_Stage4dtWa_night_prompt0_repeat4.sh	Y	1.0	Y	Y	Conditional matched beta0/640 only if both own costs plus all old/new evaluations fit before09:00
 #   8	P106B	run_P106B_Stage4ee0W_order_probe_cpu.sh	N	.05	N	Y	Separate CPU29 and same frozenTEST64 view1/3 actual tokenizer/source binding; no model forward or legacy gate credit
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   5	P106B	run_P106B_Stage4dzWc_night_unique_scope_final_eval.sh	D	.25	Y	Y	Same frozen full512/eight-lane final640 read-only FP32
+#   6	P106B	run_P106B_Stage4duWa_night_prompt0_final_eval.sh	D	.25	Y	Y	Same original cohort/FP32 MATH, prompt0 final4 primary, complete eight lanes and per-lane body proof
+#   6	P106B	run_P106B_Stage4dtWb_night_prompt01_repeat4.sh	Y	1.0	Y	Y	Same original P090B/course640 and input-head path, beta.1 only; final4/DEV representative separate
+#   9	P106B	run_P106B_Stage4eg0W_reference_extension_cpu.sh	N	.05	N	Y	Fixed four additional endpoint labels/source/CODE only, no model calls; old17 scope preserved
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -1198,7 +1208,6 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE run_P106B_Stage4bkW_trim_joint_readback-done.sh; raw150313 exit0, addition42/423 of1024; actual rollout en8dialogue views16turns only.
 # DONE run_P106B_Stage4bkWb_trim_joint_pair-done.sh; raw151142 exit0, whole2048 paired difference.16406; not math-only interval.
 # Local offline Falcon reference; implemented/preflight before any model execution.
-9	P106B	run_P106B_Stage4eg0W_reference_extension_cpu.sh	N	.05	N	Y	Fixed four additional endpoint labels/source/CODE only, no model calls; old17 scope preserved
 9	P106B	run_P106B_Stage4egW_reference_extension_readback.sh	N	.10	N	Y	After original17 reader and unique2/parent64two actual readbacks; commonEnglishMC768/source/body/CP checked, no natural64/512 comparison or old gate credit
 8	P106B	run_P106B_Stage4eeWa_baseqa_order_probe.sh	D	.25	Y	Y	Conditional after all primary six full evals; fixed baseQA final same64 view1/3 FP32 no learning; independent35min reserve before09
 8	P106B	run_P106B_Stage4eeWb_unique32k_order_probe.sh	D	.25	Y	Y	Conditional after all primary six full evals; fixed unique32k final same64 view1/3 no weights writes; no order-training gate completion
@@ -1248,3 +1257,7 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE 1137c66 run_P106B_Stage4dyWc_night_unique_scope_cost8-done.sh; actual8 events/no checkpoint and exact source/commands preserved.
 # DONE 1137c66 run_P106B_Stage4dyWd_night_unique_scope_train640-done.sh; actual640/32k once, final and DEV4 same checkpoint; exact source/commands preserved.
 # DONE 1137c66 run_P106B_Stage4ee0W_order_probe_cpu-done.sh; CPU29/real64 source proof, not GPU quality; exact source/commands preserved.
+# DONE 2e2b895 run_P106B_Stage4dtWb_night_prompt01_repeat4-done.sh; actual640/final/DEV2, exact commands/source preserved before deletion.
+# DONE 2e2b895 run_P106B_Stage4duWa_night_prompt0_final_eval-done.sh; actual full8lane/body/checkpoint receipts and commands preserved.
+# DONE 2e2b895 run_P106B_Stage4dzWc_night_unique_scope_final_eval-done.sh; actual full8lane/body/checkpoint receipts and commands preserved.
+# DONE 2e2b895 run_P106B_Stage4eg0W_reference_extension_cpu-done.sh; CPU24/source proof and exact commands preserved.

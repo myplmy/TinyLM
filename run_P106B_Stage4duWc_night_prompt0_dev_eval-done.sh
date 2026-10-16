@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed DEV1 eight-lane read-only evaluation, not another learning seed.
 # Same scientific cohort, repeated development evaluation; no stdin/training.
 # Final4 and separate DEV-min representative, never TEST-selected.
 # One-time authority2026-10-17 10:00KST, GPU ends09:00; original raw preserved.

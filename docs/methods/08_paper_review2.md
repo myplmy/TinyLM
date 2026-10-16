@@ -775,3 +775,47 @@ native r64 FP32 인자만8.25MiB, FP16 저장은4.125MiB이며 실제 half 계�
 
 단일마지막위치의output-equivalent 영공간반사로cosine을약1→음수로내려도전체next-token logits가유지됐다. raw/global cosine이좋거나나쁘다는것만으로학습처방을정하는근거는부족하다. 이TinyLM의factorizedhead(768→256)에서head-visible 정보/출력분포와cosine을함께봐야한다는방법상경고이지embedding factorization이반복의원인이라는결론은아니다.
 SimCTG의원목적함수효용을자동기각하지않고정답/종료SFT 양성대조·head-visible/전체출력분포 보존·normal-copy 보호와새학습대조가필요하다. 이번에는어떤손실도추가하지않았다. FP32/math에서6cache차이가사라진결과도현재반복의유일원인이나모든입력구현PASS로승격하지않는다.
+
+## 11. 야간 QA 실측 이후 — 질문 구별, 실제 복사 분포, 근거 과제의 구분
+
+검토일 2026-10-17. [P106B 결과101 §244~258](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 원문 재노출·같은 QA, 입력본문 LM, 고유32k의 실제 답안과 아래 원문을 대조했다. 논문 아이디어는 TinyLM에서 이미 효과가 난 방법이라는 뜻이 아니다. 새로운 학습/추론 기능은 아직 구현하지 않았으며 기존 보류를 완료로 올리지 않는다.
+
+### 11.1 기존 span 보조가 질문을 못 보고 있었다는 가설은 코드와 맞지 않음
+
+현재 `scripts/p106b_grounded_span.py`의 `locations/new_head/auxiliary_sum`과 `diag_p106b_grounded_span.py`의 실제 train/generate를 직접 읽었다. 시작/끝 점수의 query는 **질문을 모두 읽은 뒤 assistant 답 직전 hidden**이다. 본문 위치의 key는 causal hidden이라 뒤의 질문을 보지 않지만, 질문 query와 결합하며 보조 손실의 gradient도 본체로 흐른다. 따라서 ‘질문 없는 head’나 ‘detach 때문에 본체를 못 가르침’이라는 결함은 발견하지 못했다.
+
+다만 기존 보조 head는 학습에만 쓰이고 자유 생성은 보통 어휘 head를 쓴다. 이 경로에서 span을 잘 찾는 것과 실제 답의 문자를 정확히 복사하는 것은 다르다. 기존 첫 QA 중심의 span 보조 실험에서 약한 자유답 변화가 난 사실도 함께 보존한다. 새로운 copy decoder는 단순히 query를 붙이는 수정이 아니라 **추론 확률분포에 source 복사 경로를 연결하는 새 구조**여야 한다.
+
+### 11.2 후보1 — 같은 답을 어느 질문에 대응시킬지 직접 학습
+
+[Learning with Instance Bundles, EMNLP 2021](https://aclanthology.org/2021.emnlp-main.584.pdf)은 관련 QA 묶음의 질문/답 조합 점수를 대조한다. 원문은 fine-tuned T5-large에서 MLE와 대조 목표를 함께 사용했으며, 대조만 쓰는 것은 약했다. 같은 본문의 임의 질문들을 묶으면 답의 종류만으로 맞추는 지름길이 생길 수 있다는 한계도 명시한다. 저자 저장소의 실행 검증은 하지 않았다.
+
+TinyLM 응용 후보는 같은 본문 c의 질문 q1/q2와 정답 a1/a2를 쓰되, 같은 정답 a1의 점수 s(c,q1,a1)를 s(c,q2,a1)보다 높이는 질문조건부 대조를 정상 CE에 낮은 가중치로 더하는 것이다. 동일 답을 두 질문에서 비교하면 답 길이는 같지만, 이 자체가 모든 길이/난도 교락을 제거하지는 않는다. 예시 보조항은 두 방향의 `softplus(s_other_question - s_correct_question)` 평균이다. 이는 연구용 후보식이며 현재 학습 기본값이 아니다.
+
+이미 TRAIN32k에 문자상 구별 후보12,854묶음이 있어 **두 질문을 추가했다는 것만으로 새 기여를 주장할 수 없다**. 먼저 TRAIN의 코드로 정답을 계산하는 과제 또는 별도로 후행 확인한 자연 QA 묶음에서 교차답이 실제로 부적절한지 확인한다. 다른 문자열/겹침 없음만으로 negative를 만들지 않는다. 기존 CE만 한 팔에도 같은 두 질문·자료/업데이트를 제공하고 CE+대조와 비교해야 한다. TEST/최종평가 오답은 여기에 쓰지 않는다.
+
+### 11.3 후보2 — 어휘 생성과 source 복사를 실제 추론에서 혼합
+
+[Pointer-generator, ACL 2017](https://aclanthology.org/P17-1099.pdf)과 [저자 구현의 최종분포](https://github.com/abisee/pointer-generator/blob/master/model.py)는 어휘 생성 확률과 입력 token 복사 확률을 합친다. 원래 요약 연구이며 TinyLM QA 성공 증거는 아니다. [Pointer Sentinel, 2016](https://arxiv.org/pdf/1609.07843)은 작은 LSTM 언어모델에서 pointer와 어휘 분포를 혼합한 선례지만, QA의 질문대상 구별을 입증하지 않는다.
+
+우리 응용 후보는 질문을 본 decoder query와 **명시적으로 제공된 본문 위치만** copy bank로 쓰고, 질문/관리지시/옛 오답/정답 history는 copy bank에서 제외하는 것이다. 저장된 gold span을 추론에 주지 않는다. 현재 factorized vocabulary head를 유지하면서 source token ID에 복사 질량을 더하며, 학습뿐 아니라 generate/cache 경로에서도 같은 분포를 사용해야 한다.
+
+bias 없는 768→64 query/key 두 투영과 sentinel64라면 새 파라미터는 `2*768*64+64=98,368`, FP32 저장 약0.375MiB다. 본문1024위치의64차원 FP32 key bank는 **한 시퀀스당**0.25MiB,배치8이면2MiB이며 optimizer·역전파·기존 KV는 별도다. 이는 설계식 계산이지 실측 상주량/속도다. BPE 조각의 어긋남이나 다른 연도/사람을 복사하는 오류는 여전히 가능하므로 copy 비율/문자 보존/실제 대상 정답을 분리한다.
+
+### 11.4 후보3 — 짧은 근거 인용을 답과 분리된 과제로 지도
+
+[Distilling step-by-step, ACL Findings 2023 §4.4](https://aclanthology.org/2023.findings-acl.507.pdf)은 pretrained T5의 label/rationale 과제를 분리했고, 단순히 rationale+label을 이어 출력하는 방식이 항상 이롭지는 않았다. 220M 이상의 T5와 큰 교사의 결과를 현재93M causal 삼진 모델에 그대로 이전할 수 없다. [RAFT](https://arxiv.org/pdf/2403.10131)는 근거 문서/방해 문서와 인용을 활용했지만 7B 모델·교사 작성 근거를 쓴 다른 조건이다.
+
+TinyLM에서는 답만 하는 과제를 유지하고, TRAIN의 알려진 정답 span을 포함한 짧은 원문 근거를 별도 요청에 답하는 보조 과제를 고려할 수 있다. 코드로 자른 문장은 논리 풀이/검증된 thinking이 아니며, 추론 때 gold sentence·answer_start·정답 주변 crop을 제공하면 oracle 누설이다. ‘근거 먼저→답’ 방식을 평가한다면 근거도 학생이 직접 찾아 생성한 것을 써야 한다. 긴 thinking을 무조건 늘리는 처방과 구별한다.
+
+### 11.5 현재 우선순위와 해석 경계
+
+| 후보 | 직접 겨냥하는 문제 | 선결·비용/위험 | 권장 |
+|---|---|---|---|
+| 질문조건부 CE 대조 | 같은 본문에서도 묻는 대상 대신 같은 답을 선택하는 현상 | TRAIN 묶음의 의미 확인·정상 CE 기준팔·추가 조합 forward 비용8 계측 필요. 새 파라미터는 불필요하지만 negative 오류 위험 | **현재 1순위 설계 후보.** 기존 구조를 유지하며 source 재고와 연결 |
+| 실제 copy 혼합 | 정확한 이름/숫자/용어 복사 실패 | 새 학습/추론/KV·확률합·복수출현 token 누적·마스크 회귀가 필요. 대상 선택 실패까지 자동 해결하지 않음 | 2순위 독립 구조 대조 |
+| 분리된 근거 과제 | 본문 중 답의 근거를 선택하고 쓰는 연결 | source 기반 지도·답만 하는 팔의 노출량 유지·추론 oracle 방지 필요. 생성 길이와 자료 구성이 바뀜 | 3순위 데이터/목표 대조 |
+
+구현 시간과 GPU 시간은 아직 해당 코드/비용8을 수행하지 않아 미측정이다. 세 방법을 한 팔에 한꺼번에 넣지 않고 같은 부모/분할/실제 입력·지도토큰/종료/보존을 기록한다. 원문 CE가 낮아졌다는 사실, DEV가 낮아졌다는 사실, 실제 질문을 맞혔다는 사실은 서로 대체하지 않는다. 이번 결과만으로 셋 중 하나를 검증된 최적안으로 선언하지 않는다.
+
+참고로 [Lost in the Middle §5.2](https://arxiv.org/html/2307.03172v1)는 질문을 본문 전후에 두는 방식이 합성 key-value 검색에는 크게 도움됐지만 다문서 QA에는 일반적 개선이 아니었다. [ReReading, EMNLP 2024](https://aclanthology.org/2024.emnlp-main.871.pdf)의 질문 재읽기도 더 큰 모델에서 검증한 다른 개입이다. 현재 지시 고정1/3 필드순서 진단은 질문 중복이 없으므로 이를 재읽기 실험이라고 부르지 않는다. 후속 Q→C→Q는 별도 길이/반복/위치가 함께 바뀌는 설계이며 아직 구현·실행하지 않았다.

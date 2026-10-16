@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Original17 reader complete:11 actual and6 NOT_COMPLETE, not17 model passes.
 # One-time authorized overnight study; old source/models/raw read-only.
 # No stdin/downloads/default changes;09:00 GPU stop/10:00 authority end.
 set -euo pipefail
