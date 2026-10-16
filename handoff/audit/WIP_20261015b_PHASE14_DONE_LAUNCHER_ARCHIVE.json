@@ -1,0 +1,432 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-16T06:37:24.141709+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "git_recovery_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+  "files": [
+    {
+      "path": "run_P106B_Stage4da0W_evidence_preference_cpu-done.sh",
+      "bytes": 1722,
+      "sha256": "39EEE9DA4CEC958977D4A3644BFB76335637D1AD35109723ACC499EEEF0EA7A9",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da0W_evidence_preference_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0W_evidence_preference_cpu_\"$run_stamp\" --num 101 --note 'CPU20 known evidence preferences, actual masks, zero-beta math, loader ownership. No CUDA/forward. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0W_evidence_preference_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0W_evidence_preference_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0W_evidence_preference_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_train.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0W_evidence_preference_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_evaluation.py\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da0W_evidence_preference_cpu-done.sh",
+      "git_blob": "42fd16128bf28fd993ecc65c145a6a2e9d944388",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da0W_evidence_preference_cpu_141059.txt",
+      "raw_sha256": "986A3085775E8586B654046402B2EEB9A2B4ACF78EA0EB5477AB55819B08DECB",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_train.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_evaluation.py"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da1W_evidence_preference_course-done.sh",
+      "bytes": 1197,
+      "sha256": "A5A5C48756CA2C54B732328F016E1652B0A64F1D024D9ADC5AAE738E9B46659B",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da1W_evidence_preference_course_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da1W_evidence_preference_course_\"$run_stamp\" --num 101 --note 'Freeze8192 matched positives/replay and4096 pairs. New128 visible-fact test excludes both old128 cohorts, style3. No model. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da1W_evidence_preference_course_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_course.py --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da1W_evidence_preference_course-done.sh",
+      "git_blob": "d6c60ca1ce2bc2c258b21e3d9d0e54c185b6387d",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da1W_evidence_preference_course_141155.txt",
+      "raw_sha256": "1BCA18543A010218367028464EAF6908D85FD5485CB9E208966AEE98704ACFF8",
+      "raw_exit_codes": [
+        9
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_course.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_IMPLEMENTATION_ERROR",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da0Wb_evidence_preference_recovery_cpu-done.sh",
+      "bytes": 1805,
+      "sha256": "DA42CB02532203869F141627A31B335C249882EE6571848A66A2410B672B4374",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da0Wb_evidence_preference_recovery_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wb_evidence_preference_recovery_cpu_\"$run_stamp\" --num 101 --note 'CPU21 known evidence preferences, visible input aliases, actual masks, zero-beta math, loader ownership. No CUDA/forward. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wb_evidence_preference_recovery_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wb_evidence_preference_recovery_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wb_evidence_preference_recovery_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_train.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wb_evidence_preference_recovery_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_evaluation.py\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da0Wb_evidence_preference_recovery_cpu-done.sh",
+      "git_blob": "f86fa8b7eb9cc0a58052245d79b6d51f66db93cd",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da0Wb_evidence_preference_recovery_cpu_141700.txt",
+      "raw_sha256": "456199F9106BCCC42CC23ED747C673AC76C68E8444F2169BEFE9D91D3AA98F24",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_train.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_evaluation.py"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da1Wb_evidence_preference_identity_course-done.sh",
+      "bytes": 1265,
+      "sha256": "1D9446183CAC2F9006956D24791D0292DD8751975AC9814F7F694DF1CE769B5F",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da1Wb_evidence_preference_identity_course_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da1Wb_evidence_preference_identity_course_\"$run_stamp\" --num 101 --note 'Freeze corrected full-pair identity8192 matched positives/replay and4096 pairs. New128 visible-fact test excludes both old128 cohorts, style3. No model. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da1Wb_evidence_preference_identity_course_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_identity_course.py --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da1Wb_evidence_preference_identity_course-done.sh",
+      "git_blob": "bf076f7f00e54a68c54c1df1931e19cecb5b24e2",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da1Wb_evidence_preference_identity_course_141700.txt",
+      "raw_sha256": "F6FF91BA6AE8ACF9D8EC934126D72E57657E20306963AE5D8EE0EE3981788310",
+      "raw_exit_codes": [
+        2
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_identity_course.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_IMPLEMENTATION_ERROR",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da1Wc_full_pair_identity_course-done.sh",
+      "bytes": 1226,
+      "sha256": "18C2755D0FABA61BA79A2B12B9142283BF4E40B4F242BA3F1A44B11120FC7641",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da1Wc_full_pair_identity_course_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da1Wc_full_pair_identity_course_\"$run_stamp\" --num 101 --note 'Freeze corrected full-pair identity8192 matched positives/replay and4096 pairs. New128 visible-fact test excludes both old128 cohorts, style3. No model. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da1Wc_full_pair_identity_course_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_course.py --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da1Wc_full_pair_identity_course-done.sh",
+      "git_blob": "fe96637ef1b8a4b4949c699e01fac1fd60fb7425",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da1Wc_full_pair_identity_course_141732.txt",
+      "raw_sha256": "A47173D4841F7DE042B04273B72D43732093123E9FC8CFEA03B5CCEB728096E9",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_course.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da2W_evidence_preference_actual_cpu-done.sh",
+      "bytes": 1190,
+      "sha256": "0E34888AE0F7A86CC5D564249148F4777C9D2428E0D05ECB4A8CBF7D30160D95",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da2W_evidence_preference_actual_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da2W_evidence_preference_actual_cpu_\"$run_stamp\" --num 101 --note 'Actual E970 CPU parent/body/RNG and full64/mask/signature/native/binary consumers before GPU. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da2W_evidence_preference_actual_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode wire --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da2W_evidence_preference_actual_cpu-done.sh",
+      "git_blob": "c6af2ab4e3392112a29be1ae82b166bdda952051",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da2W_evidence_preference_actual_cpu_141832.txt",
+      "raw_sha256": "6BF933AF860B6F7A64D8DCCDD875A810DCECDA2F1A33B386B9A31FFED5C32E6A",
+      "raw_exit_codes": [
+        9
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode wire --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_IMPLEMENTATION_ERROR",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da0Wc_evidence_preference_mask_cpu-done.sh",
+      "bytes": 1786,
+      "sha256": "53858479B69AC2FF56C08CDC119319AFAF4E55DF1B521D8654F9E31C67B53227",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da0Wc_evidence_preference_mask_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wc_evidence_preference_mask_cpu_\"$run_stamp\" --num 101 --note 'CPU22 known evidence preferences, visible aliases and old-wrong-turn masks, zero-beta math, loader ownership. No CUDA/forward. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wc_evidence_preference_mask_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wc_evidence_preference_mask_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wc_evidence_preference_mask_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_train.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da0Wc_evidence_preference_mask_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_preference_evaluation.py\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da0Wc_evidence_preference_mask_cpu-done.sh",
+      "git_blob": "6b487c051d660750bf2ef0a7ed5a682b8edba4b2",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da0Wc_evidence_preference_mask_cpu_142249.txt",
+      "raw_sha256": "ECC33F6E3E6F3484B0A1AD70C45F25B79E8D638482CEAE4B997D241F088415F4",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_train.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_preference_evaluation.py"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4da2Wb_evidence_preference_mask_wire-done.sh",
+      "bytes": 1221,
+      "sha256": "53A34BD3DA7C2FA5FDB837B96B3C5F11293A4493B8CC8DDCCB0F49E29CEE608B",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4da2Wb_evidence_preference_mask_wire_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da2Wb_evidence_preference_mask_wire_\"$run_stamp\" --num 101 --note 'Correct task-specific encoder, actual E970 CPU parent/body/RNG and full64/mask/signature/native/binary consumers before GPU. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4da2Wb_evidence_preference_mask_wire_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode wire --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4da2Wb_evidence_preference_mask_wire-done.sh",
+      "git_blob": "091592a40156572a4a16ef8a7fa61685906f27e8",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4da2Wb_evidence_preference_mask_wire_142249.txt",
+      "raw_sha256": "3BE06DCB6F171BB63F6FAA446F1CF871AFE15A20C34905EA9D694A339AFE37BF",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode wire --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4dbWa_sft_preference_cost8-done.sh",
+      "bytes": 1183,
+      "sha256": "CA0FC2444F4BC30A714A9C895C10C6AC0D263069F16EF078425D66F85CEAEDF1",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4dbWa_sft_preference_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dbWa_sft_preference_cost8_\"$run_stamp\" --num 101 --note 'Measured cost8 beta0, same16pair compute and native/binary replay. No checkpoint. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dbWa_sft_preference_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode cost --arm sft_only --max-wall-sec 1800 --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4dbWa_sft_preference_cost8-done.sh",
+      "git_blob": "db652c4f76a6a5477e2324bdda35672a31e1caa0",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4dbWa_sft_preference_cost8_142519.txt",
+      "raw_sha256": "840860A85F867C46D2DF4836EAEBF7FFD8E0B798349A95E541F6B1B0C12C087A",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode cost --arm sft_only --max-wall-sec 1800 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4dbWb_orpo_preference_cost8-done.sh",
+      "bytes": 1172,
+      "sha256": "428E47096F79070BB3BDDD2867C565E50420F82DB4AE4E41E18DFD9845051A27",
+      "script": "#!/usr/bin/env bash\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4dbWb_orpo_preference_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dbWb_orpo_preference_cost8_\"$run_stamp\" --num 101 --note 'Measured cost8 beta0.1, same model/data/pair compute. No checkpoint. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dbWb_orpo_preference_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode cost --arm orpo010 --max-wall-sec 1800 --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4dbWb_orpo_preference_cost8-done.sh",
+      "git_blob": "903ad30a76d03abf8f878725ef1cc3ec46e371f9",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4dbWb_orpo_preference_cost8_142953.txt",
+      "raw_sha256": "D6B2E9F098C9DA6D0838541EE577C217E6A0C30BC4CC4794A056C1DD2EAFB46A",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode cost --arm orpo010 --max-wall-sec 1800 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4dcWa_sft_preference_full64-done.sh",
+      "bytes": 1279,
+      "sha256": "36618EA21F8A9E9533CC61483B46CF96216915D3CD3B5058FF2C4BE7B0E3DCE0",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 14:39:56 KST, raw143434 exit0; final64 only.\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4dcWa_sft_preference_full64_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dcWa_sft_preference_full64_\"$run_stamp\" --num 101 --note 'Both costs and whole deadline forecast required. Fixed64,8192 rows, micro8 accum16 cp-on. One final only. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dcWa_sft_preference_full64_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode train --arm sft_only --max-wall-sec 1800 --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4dcWa_sft_preference_full64-done.sh",
+      "git_blob": "b792be51c121c053acfb866f1830f67f1df392fa",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4dcWa_sft_preference_full64_143434.txt",
+      "raw_sha256": "B9D6AEBBAD9650FB990131D2F7ADF7390370A2AF6ABFF2A1588CA8793AC4EE46",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode train --arm sft_only --max-wall-sec 1800 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4dcWb_orpo_preference_full64-done.sh",
+      "bytes": 1263,
+      "sha256": "95388AF0CDD4AE5C0D43017F7FAA03D415BE5E03CCB38DD590C23832B6A420CF",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 14:45:34 KST, raw144043 exit0; final64 only.\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4dcWb_orpo_preference_full64_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dcWb_orpo_preference_full64_\"$run_stamp\" --num 101 --note 'Same E970 and64/input as baseline. Only beta0.1 changes. Fixed final64, no test choice. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dcWb_orpo_preference_full64_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode train --arm orpo010 --max-wall-sec 1800 --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4dcWb_orpo_preference_full64-done.sh",
+      "git_blob": "b0b2a3273f5b1e837e2e4322be71a494e46de66d",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4dcWb_orpo_preference_full64_144043.txt",
+      "raw_sha256": "3CAFA75D87CD31F1FC9EBC8A0561ACC3F5595B6D55FB5E7633EC45135E291069",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode train --arm orpo010 --max-wall-sec 1800 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4ddW_evidence_preference_actual-done.sh",
+      "bytes": 1312,
+      "sha256": "0B0458E8E435EC439BFC2D4CC3D1323A02574D93B264C848A5BF45843618CB2B",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 15:20:07 KST; raw144619 exit0, all3 fixed endpoints.\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ddW_evidence_preference_actual_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ddW_evidence_preference_actual_\"$run_stamp\" --num 101 --note 'Parent/two final64 on new1024 style3 conversations and retention, FP32 greedy64. Parent old2880 replay must match. No training. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ddW_evidence_preference_actual_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_evaluate.py --mode evaluate --max-wall-sec 2700 --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4ddW_evidence_preference_actual-done.sh",
+      "git_blob": "f5b20345ef1981c4ad3be49cd69281a4c37f61bc",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4ddW_evidence_preference_actual_144619.txt",
+      "raw_sha256": "F337F1C5382697EE7282A5367E5358EBF43484BD2B4B19494D121D832AFB07C7",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_evaluate.py --mode evaluate --max-wall-sec 2700 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4deW_evidence_preference_readback-done.sh",
+      "bytes": 1296,
+      "sha256": "04D0C8A2123570AB5272F2A15493AC47A077C39AEDED446B649A39CB13B0B28F",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 15:20:50 KST; raw152045 exit0, all raw/pairs recounted.\n# Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.\n# CPU seconds or measured GPU minutes; model operations bounded explicitly.\n# Failed prerequisites stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4deW_evidence_preference_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4deW_evidence_preference_readback_\"$run_stamp\" --num 101 --note 'All evidence/role/source/fiction raw counts and same-neutral pairs recounted. Free clarification proxy not semantic truth. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4deW_evidence_preference_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_preference_evaluate.py --mode readback --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4deW_evidence_preference_readback-done.sh",
+      "git_blob": "ead7311217e9edfb1f41f096e215b4276192ba8f",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4deW_evidence_preference_readback_152045.txt",
+      "raw_sha256": "A593ED725E615202C2094BA3FA670389FD3DCFCBC4280DFA611C6D8E0DB551E0",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_evaluate.py --mode readback --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4df0W_evidence_style_cpu-done.sh",
+      "bytes": 1553,
+      "sha256": "EDE92543BAD96661BD1DC1D6B284752F0E664E38DEF278C434FE7873968A4ED8",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 15:10:20 KST; raw151013 exits0, CPU5 and64 inputs.\n# Same-fact question wording control; not new training or a memory feature.\n# CPU seconds or bounded600 GPU seconds, one model at a time.\n# Only this stage's prerequisites fail closed. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4df0W_evidence_style_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a fresh stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4df0W_evidence_style_cpu_\"$run_stamp\" --num 101 --note 'CPU5/frozen32 two wordings, no forward/CUDA. Same known facts and whole64 output budget; posthoc not new TEST. Raw/weights private below20MB shards. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4df0W_evidence_style_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_evidence_style.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4df0W_evidence_style_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_style.py --mode freeze --execute\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4df0W_evidence_style_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_style.py --mode evaluate --check-only\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4df0W_evidence_style_cpu-done.sh",
+      "git_blob": "1291194240c616738cb42661d4fd9574dfa28f31",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4df0W_evidence_style_cpu_151013.txt",
+      "raw_sha256": "C567D573605EDDACBA9568BCDBCA55025865310DE35CF59B66ABE36167FA15A0",
+      "raw_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_evidence_style.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_style.py --mode freeze --execute",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_style.py --mode evaluate --check-only"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    },
+    {
+      "path": "run_P106B_Stage4dfW_evidence_style_actual-done.sh",
+      "bytes": 1312,
+      "sha256": "6728E1198072AC57143EBF2C107A28A9C6B1E2F8B873EBA1613AC20C15BFBC03",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 15:21:46 KST; raw152101 exit0,192 first answers and96 anchors.\n# Same-fact question wording control; not new training or a memory feature.\n# CPU seconds or bounded600 GPU seconds, one model at a time.\n# Only this stage's prerequisites fail closed. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4dfW_evidence_style_actual_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a fresh stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dfW_evidence_style_actual_\"$run_stamp\" --num 101 --note 'Same3 checkpoints,32 conditions by2 question wordings,192 first answers. Prior actual/recount must finish. Style3 exact96 replay, no training/teacher/CPT. Posthoc development only, not semantic quality PASS. Raw/weights private below20MB shards. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4dfW_evidence_style_actual_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_style.py --mode evaluate --max-wall-sec 600 --execute\n",
+      "git_commit": "560725fe5f051aa83b88d3423ef3c1c0f8de029a",
+      "git_path": "run_P106B_Stage4dfW_evidence_style_actual-done.sh",
+      "git_blob": "5a35937c81832fc97da296ca7574eaf65492fe49",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4dfW_evidence_style_actual_152101.txt",
+      "raw_sha256": "269880C8130D182A54971C0A8E3F2D1E341C8008E9AE19A63483F2FBB606E23F",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_style.py --mode evaluate --max-wall-sec 600 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact14 preference plus2 wording completed wrappers only; all raw/HF/weights/CODE/HOLD preserved, no active model"
+    }
+  ],
+  "total_worktree_bytes": 21782,
+  "deletion_authority": "User requested completed launcher command/body preservation then exact deletion; no other files"
+}
