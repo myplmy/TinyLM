@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD: V1 padding prerequisite invalid; replaced by explicitly named V2 stage.
 # Same E970 natural two-view CE plus balanced replay/native, four passes640 updates; cost pair required.
 # Estimated 1.7h, one GPU only when applicable; actual cost gate controls full trials.
 # Matched micro8 accum16 seq1024 checkpointON compiledefault; no stdin or downloads.
@@ -15,4 +16,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4dlWa_night_grounded_ce4_"$run_stamp" --num 101 --note 'Same E970 natural two-view CE plus balanced replay/native, four passes640 updates; cost pair required. Read source/mask/actual target counts, completion and free-answer quality separately. Cost/static PASS is not intelligence. Old originals preserved; no protected source or external publication.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4dlWa_night_grounded_ce4_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_night_train.py --mode train --arm ce --max-wall-sec 14400 --execute
-

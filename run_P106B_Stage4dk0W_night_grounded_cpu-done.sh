@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Attempt completed; original V1 raw logs preserved; not a quality PASS.
 # Freeze explicit natural QA and balanced replay, then verify actual CPU parent/masks and consumers; not quality.
 # Estimated .08h, one GPU only when applicable; actual cost gate controls full trials.
 # Matched micro8 accum16 seq1024 checkpointON compiledefault; no stdin or downloads.

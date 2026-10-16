@@ -13,10 +13,10 @@ from scripts import p106b_night_qa_data as data
 from scripts import p106b_night_learning as learning
 from scripts.p106b_shards import ShardWriter, verify
 
-TAG = data.TAG
-CORPUS = data.CORPUS
-EVIDENCE = data.EVIDENCE
-SCHEMA = 'P106B_NIGHT_GROUNDED_COURSE_V1'
+TAG = 'p106b_night_grounded_v2_s1337'
+CORPUS = ROOT / 'HF/sft_ready' / TAG / 'corpus'
+EVIDENCE = ROOT / 'test_result/evidence' / TAG
+SCHEMA = 'P106B_NIGHT_GROUNDED_COURSE_V2'
 ARMS = ('ce', 'consistent')
 WEIGHTS = dict(ce=0., consistent=.05)
 PARENT = ROOT / 'runs/ckpt/m100s10_ko-en_evidencerecovery_dense_chat32_p106b_evidence_recovery_v1_s1337_evidence_recovery.pt'

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Attempt complete; actual CPU contract is not a GPU or quality PASS.
+# Actual original P090B, locked QA and native TRAIN bounds/hash/offsets CPU wire; not model quality.
+# Estimate .08h; actual cost must fit all remaining QA/evaluation before09:00.
+# Native CPT is not300M SFT; no old asset changes/downloads/interactive input.
+# One-time user authority ends2026-10-17 10:00KST; micro8 accum16 seq1024 ckptON.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+run_stamp="$(date +%H%M%S)"
+log="test_result/101_log_$(date +%Y%m%d)_P106B_Stage4do0W_foundation_cpu_contract_${run_stamp}.txt"
+if [[ -e "$log" || -L "$log" ]]; then
+    printf '%s\n' '[STOP] Existing raw log preserved; use a new stage/tag.' >&2
+    exit 8
+fi
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4do0W_foundation_cpu_contract_"$run_stamp" --num 101 --note 'Actual original P090B, locked QA and native TRAIN bounds/hash/offsets CPU wire; not model quality. Read exact processed/native/assistant denominators, DEV vs TEST and actual answers separately. Additional native data may overlap prior parent exposure. No original checkpoint overwrite, downloads, protected data or automatic truth certification.'
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4do0W_foundation_cpu_contract_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_night_foundation_data scripts.test_p106b_night_foundation
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4do0W_foundation_cpu_contract_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_night_foundation.py --mode freeze --max-wall-sec 14400 --execute

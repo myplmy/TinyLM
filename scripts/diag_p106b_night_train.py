@@ -69,12 +69,35 @@ def denominators(group, natural, replay):
     return words, content
 
 
+def special_ids(tok):
+    """The pinned chat32 uses <pad>; accept only registered real token IDs."""
+    name = '<|pad|>'
+    pad = tok.token_to_id(name)
+    if pad is None:
+        name = '<pad>'; pad = tok.token_to_id(name)
+    eot = tok.token_to_id('<|im_end|>')
+    if (type(pad) is not int or type(eot) is not int or pad == eot
+            or not 0 <= pad < tok.get_vocab_size() or not 0 <= eot < tok.get_vocab_size()):
+        raise ValueError('real distinct chat32 pad/EOT IDs required')
+    return pad, eot, name
+
+
 def actual_wire():
     import torch
     target = c.EVIDENCE / 'actual_cpu_wire.json'
     if target.exists(): raise FileExistsError('old CPU wire preserved')
     r, rows = c.read_night_course(); torch, base, cfg, tok, initial = load_parent()
     natural, replay = c.records(rows['train'], rows['replay'], tok)
+    pad, eot, pad_name = special_ids(tok)
+    from tinylm.train import mtp_sft as core
+    sample = natural[0] + replay[:6]
+    px, py, ps = core.pad_records(sample, pad, 'cpu', fixed_width=1024, batch_size=8)
+    if px.shape != (8, 1024): raise ValueError('actual CPU padding shape differs')
+    for i, rec in enumerate(sample):
+        if (not bool(px[i, len(rec.x):].eq(pad).all())
+                or not bool(py[i, len(rec.y):].eq(-100).all())
+                or not bool(ps[i, len(rec.segments):].eq(0).all())):
+            raise ValueError('actual padded input/loss/segment tail differs')
     observation = c.counts(rows['train'], rows['replay'], tok)
     if observation != r['exposure']: raise ValueError('actual consumers differ from frozen contract')
     schedules = []
@@ -99,7 +122,8 @@ def actual_wire():
     result = dict(schema=c.SCHEMA, status='ACTUAL_CPU_WIRE_VERIFIED', code_sha256=c.info()['code_sha256'],
         corpus_sha256=c.data.digest(c.CORPUS / 'report.json'), parent_sha256=c.PARENT_SHA,
         initial_core_sha256=initial, schedules=schedules, exposure=observation,
-        pad=tok.token_to_id('<|pad|>'), eot=tok.token_to_id('<|im_end|>'),
+        pad=pad, eot=eot, pad_token=pad_name, actual_padding_verified=True,
+        actual_padded_shape=list(px.shape),
         cuda_initialized=False, model_forward=False, optimizer_updates=0,
         checkpoint_written=False, model_loaded_cpu=True)
     c.write(target, result)
@@ -177,8 +201,9 @@ def run(arm, cost=False, max_wall_sec=7200):
             if initial != proof['initial_core_sha256']: raise ValueError('initial body differs from CPU wire')
             natural, replay = c.records(rows['train'], rows['replay'], tok)
             native = native_reader(ROOT, r)
-            pad = tok.token_to_id('<|pad|>'); eot = tok.token_to_id('<|im_end|>')
-            if pad is None or eot is None: raise ValueError('chat32 pad/EOT required')
+            pad, eot, pad_name = special_ids(tok)
+            if (not proof.get('actual_padding_verified') or proof['pad'] != pad or proof['eot'] != eot):
+                raise ValueError('actual CPU pad/EOT proof differs')
             base = base.cuda(); torch.cuda.reset_peak_memory_stats()
             before = None if cost else runtime.native_ce(base, c.NATIVE)
             before_dev = None if cost else dev_loss(base, rows['dev'], tok, pad, eot)

@@ -4491,3 +4491,138 @@ wrapper만 바뀌는 불변성에 더해 한영 각4개 새 코드 사실의 wra
 10/16 야간 착수: 문헌·정·반을 필요시 각1회 호출해 source 방향·역할 replay 누락·first-turn 전용 선호·KL 붕괴 반증을 독립 대조했다.
 현재는 설계/구현 착수 단계이며 새 학습·품질 결과는 NOT_RUN이다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 10. 패딩 실제 소비 복구 — 동일 과학 설계, 새 실행 버전
+
+[101 §221](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 V1은 자료/마스크/순서 검산을 보존하되,
+패딩 `null`을 검증 성공으로 둔 누락 때문에 비용 팔이 GPU 이동 전에9로 거부됐다. 학습/방법론/OOM 음성이 아니다.
+기존 코드의 `<pad>` 호환과 None/동일EOT 거부를 추가하고 실제 CPU8×1024 패딩 tensor/input/target/segment를 검산한다.
+자료 원형·선택 SHA·640회·손실/배치 조건은 그대로이며 새 namespace `p106b_night_grounded_v2_s1337`과 아래 정확한 단계만 재검증한다.
+
+| 단계 | SH | 선결/상태 |
+|---|---|---|
+| Stage4dk0Wb | `run_P106B_Stage4dk0Wb_night_grounded_padding_cpu.sh` | CPU45·새 동결·actual padding/encoder |
+| Stage4dkWc | `run_P106B_Stage4dkWc_night_ce_padding_cost8.sh` | 실제 CE8회·저장0 |
+| Stage4dkWd | `run_P106B_Stage4dkWd_night_consistency_padding_cost8.sh` | 실제 KL8회·저장0 |
+| Stage4dlWc | `run_P106B_Stage4dlWc_night_grounded_ce4_padding.sh` | 동일 cost 두팔 후640회 CE |
+| Stage4dlWd | `run_P106B_Stage4dlWd_night_grounded_consistency4_padding.sh` | 동일 cost 두팔 후640회 CE+KL |
+
+V1 미실행3런처는 원본 소급 실행을 막기 위해 hold로 두며, 수행한 CPU/실패 cost SH만 done으로 분류한다.
+V1 코드/원형/원로그는 로컬 커밋 `160d587`에 보존했다. 새 PASS로 옛 실패를 바꾸지 않는다.
+
+### 11. 고정 평가 준비 — 실제 답/동일오답/보존을 함께 회수
+
+Stage4dk0Wb는 CPU45/실제 패딩·소비 완료, Stage4dkWc/Stage4dkWd는 각8회/저장0으로 완료됐다([101 §222](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
+CE640회는 진행 중이며 아래 입력을 답안 생성 전에 동결한다. TEST로 checkpoint·epoch·계수를 고르지 않고 마지막4pass만 비교한다.
+
+| 정확 단계 | SH | 내용·선결 |
+|---|---|---|
+| Stage4dm0W | `run_P106B_Stage4dm0W_night_eval_frozen_inputs.sh` | 순수 평가24CPU·TEST512QA/3뷰·cube64·보존·같은 공개1920·추가 native256 동결 |
+| Stage4dmWa | `run_P106B_Stage4dmWa_night_parent_actual_answers.sh` | E970 부모·동일 FP32 MATH/greedy/cache·새 학습0 |
+| Stage4dmWb | `run_P106B_Stage4dmWb_night_ce_actual_answers.sh` | 완주 CE640의 실제 답·보존/공개 벤치 |
+| Stage4dmWc | `run_P106B_Stage4dmWc_night_consistency_actual_answers.sh` | 완주 KL640의 같은 입력/분모/정밀도 |
+| Stage4dnW | `run_P106B_Stage4dnW_night_paired_raw_readback.sh` | 세 endpoint 전량·기사 단위 CI·동일오답/빈답 구별·코드 source/gold 재구성 |
+
+역할16개/정보복구8개 neutral root의 모든 언어·지시/조건 자식을 함께 골라 원형 실제 이력과 gold 이력을 분리한다.
+코드 보존은 kind/언어 균형96행으로 확인한다. 원문 role/정보복구의 한 문장 일치가 자유 재질문의 의미 품질을 전부 판정하지 않는다.
+기존 공개1920은 학습 전에도 본 개발/비교 코호트이며 새 독립 벤치라고 하지 않는다. 원형 질문·후보/정답·예상 길이 skip을 CPU에서 잠근다.
+새 TEST는 본 실험 article 기준으로 봉인했지만 사전학습 의미 누설 전수 감사는 없다. native32의 종전 정밀도와 추가256의 FP32 MATH를 별도로 기록한다.
+실제 prompt/공백포함 답안과 SHA·종료·case집합·6원답 lane/2native lane을 모두 요구한다. 빠진 lane/빈 manifest/틀린 skip을 완료로 승격하지 않는다.
+평가 raw는 private20MB 이하 조각, 검산·수치·SHA는 작은 evidence로 보존한다. 수동 판독은 예시의 실제 문맥/질문/답·오류 유형을 함께 남기고 전수 정확도로 부풀리지 않는다.
+
+## 2026-10-16 야간 추가 준비 — 원부모·원문 계속학습과 같은 QA의 대응
+
+### 1. 왜
+
+현재 E970→명시 QA의 중간 SFT 이력과 기초 언어학습량을 혼동하지 않기 위해 별도 원부모 대조를 준비한다.
+현재 CE/KL의 최종4pass/TEST는 그대로 회수하고, 그 결과로 기존 음성을 소급 바꾸지 않는다.
+세 후보는 원 P090B→동일 QA, 원 P090B→원문 약299M 추가→동일 QA, 새 증강/선호이다.
+원인 분리가 쉬운 앞의 두 경로를 우선 준비하며 새 증강/선호는 이 비교에 섞지 않는다.
+이는10/17 10시까지의 현재 자율 실험 승인 범위이며 설치/다운로드·보호 원천·원본 덮어쓰기·push를 포함하지 않는다.
+
+### 2. 질문
+
+추가 원문 최적화 후 같은 SFT를 받으면, 원문 손실뿐 아니라 실제 지문 QA/역할/갱신과 공개 선택·자유답이 개선되는가?
+SFT 이력이 누적된 E970과 원 P090B의 차이는 ‘이력 패키지’의 기술 비교로만 남긴다.
+핵심 추가학습 대조는 공통 P090B를 조부모로 한 native0 대 native약299M이다.
+
+### 3. 예측과 원문 근거
+
+추가 자연어 예측이 기초 표현을 개선할 수 있지만 QA 정답률 향상을 보장하지 않는다.
+[Midtraining 원문 §3~5](https://arxiv.org/html/2510.14865v2)은70M~1B를128B토큰 학습한 결과이며 범용 지시 혼합의 효과가 작고 목표 분포 정렬이 중요했다.
+혼합/전문단독 대조는 도입 시점도 달랐으므로 혼합비 하나의 인과로 옮기지 않는다.
+우리의 추가0.299B 효용을 직접 보장하는 문헌은 아니며 실물 비용·답안으로 반증한다.
+
+### 4. 통제·구현 범위
+
+새 `p106b_night_foundation_v1_s1337`만 사용한다. 원부모는 P090B SHA `12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950`다.
+같은 dense14/chat32/seed1337·micro8×accum16/seq1024/ckptON/compiledefault·MTPoff를 유지한다.
+추가 원문은 기존 비보호 `ko-en_601000000_chat32/train.bin`만 읽고 VAL은 학습하지 않는다.
+새 토큰·원문 복사/다운로드/토크나이저 확장은 없다. 기존 cache의 이전 부모 노출 중복을 전수 감사하지 않았으므로 ‘새 고유299M’이라고 하지 않는다.
+CPT는 새 Adam/Muon 모멘트, 고정 Adam1e-4/Muon4e-4/WD0/clip1, 삼진 anneal1을 유지하며 재어닐링하지 않는다.
+두 QA 팔은 같은 V2 자료·같은 두뷰 CE/역할·정보복구·코드 replay/native5.24M, Adam5e-5/Muon2e-4·새 모멘트·640회/4pass/계수0을 사용한다.
+CPT 후 QA의 RNG를 다시1337로 초기화해 QA 순서와 optimizer 초기화가 다르게 이어지지 않게 한다.
+
+### 5. 실제량·선결
+
+현재 train은597,995,000token이고 VAL3,005,000token이다. 같은 풀을 쓴다는 이름만으로 크기를601M이라고 하지 않는다.
+새 CPT는2281×8×16×1024=`298,975,232`target이며 실제 TRAIN/처리 비는`2.000148962`다.
+1025stride 창을 seed1337로 섞고 새 CPT 내부에서는 복원 없이 추출해 창/다음 target이 서로 겹치지 않게 한다.
+QA는 이미 동결한V2 source SHA·마스크·순서·실제 토큰을 재사용하고, 원문 CPT와 assistant-only SFT의 분모를 별도로 기록한다.
+
+| 준비 단계 | 내용 | 실행 선결 |
+|---|---|---|
+| Stage4do0W | 원부모/원문 창·실제 QA 소비 CPU | 새 독립 namespace·원본SHA/소유 경계 |
+| Stage4doWa | 원부모 QA8 비용 | 실제 CPU 패딩·init/source 대응 |
+| Stage4doWb | 원문 CPT8 비용 | 동일 geometry·full-target gradient/peak·fresh parent |
+| Stage4doWc | 원문 CPT2281 | 같은 CODE 비용8·모든 잔여 QA/평가/09시 정리 예산 충족 |
+| Stage4doWd | CPT 후 QA8 비용 | CPT strict/SHA·QA source/초기화 소비 동일 |
+| Stage4dpWa | 원 P090B→QA640 | QA8 및 두 팔 전체/평가 예산 |
+| Stage4dpWb | CPT→QA640 | CPT와 QA8·같은640 순서/노출 |
+| Stage4dqW | 부모별 실제 QA/보존/공개 비교 | 별도 evaluator·새 raw/동일 고정 입력·원형 보존 |
+
+SH는 실제 구현/CPU가 완료된 단계만 등록하며 존재하지 않는 파일을 실행 권고하지 않는다.
+CPU/정적은 모델 품질이 아니고 cost8은 기간/자원 선결만 확인한다.
+
+### 6. 판정과 모델 보존
+
+추가 native 직후와 QA 후의 원문 손실을 구분하고, 최종 QA/양뷰 모두정답/같은오답/갱신/역할/공개 벤치를 회수한다.
+현재 TEST를 보고 epoch/LR/계수를 고르지 않는다. 후속 QA는 마지막4pass와 DEV CE 최소 대표를 따로 보존할 수 있으나 DEV 선택임을 표시한다.
+원문 CPT1개와 두 QA 최종/DEV대표 최대4개를 약1.9GB의 추가 weight-only 예산으로 잡고 optimizer·매step 모델은 저장하지 않는다.
+native CE만 개선되면 언어모델링 개선이며 QA/일반 지능 개선이라고 하지 않는다.
+부정 결과도 큰 사전학습량 부족 가설 전체의 기각이 아니며 단일 학습 seed·다중비교·이력 교락을 보고한다.
+
+### 7. 비용·기한
+
+기존 원부모300M 실측 약81분은 참고값일 뿐 이번 계속학습의 증거가 아니다.
+새 full-target 비용8로2281회와 QA 두640/평가/마지막60분을 다시 예산 검산한다.
+현재 E970 두640 대조를 먼저 완료한다. 새 비교가09시 이전에 들어가지 않으면 자동 축소·무단 연장하지 않고 정확한 미실행 이유를 남긴다.
+기존16GB GPU는 단독 소유로 순차 실행하며 활성 모델 간 resource 경쟁을 만들지 않는다.
+
+### 8. 영향도·한계
+
+제품 아키텍처/default/토크나이저·다른계획/WIP·공용검사기의 의미는 바꾸지 않는다.
+새 course/driver/CPU회귀·런처·새 HF/EVI/CPT와 계획/결과 정본만 추가한다.
+독립변수는 추가 원문 최적화 패키지이며 optimizer 재초기화/계수·기초 SFT 이력 차이를 지운 단순 ‘토큰만의 법칙’으로 해석하지 않는다.
+본75M×4epoch SFT 목표와 별도이고, 원문299M을 요청한300M SFT 완료라고 바꿔 부르지 않는다.
+
+### 9. 현재 상태
+
+추가 문헌/반증 검토와 코드 계약 준비 단계다. CPT/추가 QA/효과는 NOT_RUN이다.
+전수 정적·원천/실물 CPU·비용·최종 답안의 순서를 지키고 실제 끝난 단계만 결과문서에 누적한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+구현 후 정확한 SH는 다음과 같다. 아직 실물 완료를 뜻하지 않는다.
+- Stage4do0W: `run_P106B_Stage4do0W_foundation_cpu_contract.sh`.
+- Stage4doWa: `run_P106B_Stage4doWa_foundation_baseqa_cost8.sh`.
+- Stage4doWb: `run_P106B_Stage4doWb_foundation_native_cost8.sh`.
+- Stage4doWc: `run_P106B_Stage4doWc_foundation_native_299m.sh`.
+- Stage4doWd: `run_P106B_Stage4doWd_foundation_cptqa_cost8.sh`.
+- Stage4dpWa: `run_P106B_Stage4dpWa_foundation_baseqa_repeat4.sh`.
+- Stage4dpWb: `run_P106B_Stage4dpWb_foundation_cptqa_repeat4.sh`.
+
+새 QA reader는 원형 data SHA/CODE·tokenizer/shard를 검증하되 데이터를 재사용하기 위해 E970 물리 가중치까지 요구하지 않는다.
+원 P090B의 실제 CPU strict/body·native TRAIN 전체 ID 최대값·실제 단일창/패딩·실제 encoder를 별도로 확인한다.
+
+Stage4do0W는23:50:48에 CPU16과 실제 parent/cache/encoder를 검산해 완료했다([101 §225](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
+CPT/추가 QA·새 비용과 평가 효과는 NOT_RUN이며 현재 E970 CE/KL 대조를 우선 회수한다.

@@ -14,6 +14,24 @@ def record(length, targets):
 
 
 class TrainContract(unittest.TestCase):
+    def test_legacy_pad_name_is_real_zero_not_none(self):
+        class Tok:
+            def token_to_id(self, name): return {'<pad>': 0, '<|im_end|>': 4}.get(name)
+            def get_vocab_size(self): return 32768
+        self.assertEqual(d.special_ids(Tok()), (0, 4, '<pad>'))
+
+    def test_missing_pad_fails_before_success_receipt(self):
+        class Tok:
+            def token_to_id(self, name): return 4 if name == '<|im_end|>' else None
+            def get_vocab_size(self): return 32768
+        with self.assertRaises(ValueError): d.special_ids(Tok())
+
+    def test_identical_pad_eot_refused(self):
+        class Tok:
+            def token_to_id(self, name): return 4
+            def get_vocab_size(self): return 32768
+        with self.assertRaises(ValueError): d.special_ids(Tok())
+
     def test_interleaved_pair_flatten(self):
         natural = [[record(5, 2), record(6, 2)], [record(7, 3), record(8, 3)]]
         rows = d.micro_records(Micro('natural', (1, 0)), natural, [])
