@@ -1,0 +1,18 @@
+Same E970 and64/input as baseline. Only beta0.1 changes. Fixed final64, no test choice. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.
+
+==============================================================================
+[runlog] 2026-10-16 14:40:43  name=P106B_Stage4dcWb_orpo_preference_full64_144043
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode train --arm orpo010 --max-wall-sec 1800 --execute
+==============================================================================
+[EVIDENCE_PREFERENCE_BUDGET] {"estimates_sec": {"sft_only": 630.3791371788684, "orpo010": 667.24202518331}, "completed": ["sft_only"], "needed_sec": 6067.24202518331, "remaining_sec": 8354.108115, "fits": true, "scope": "forecast: warmed64 plus first-update1.5 and300seconds, evaluation45min based on previous24.4min, closure45min; not guaranteed upper bound"}
+W1016 14:41:10.086000 749367 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "orpo010", "updates": 1, "x": 16188, "targets": 989, "native": 8192, "pairs": 16, "last_sec": 151.57907654499286}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "orpo010", "updates": 16, "x": 262074, "targets": 15338, "native": 131072, "pairs": 256, "last_sec": 1.6236996100051329}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "orpo010", "updates": 32, "x": 532825, "targets": 30911, "native": 262144, "pairs": 512, "last_sec": 1.6156027749821078}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "orpo010", "updates": 48, "x": 800751, "targets": 46417, "native": 393216, "pairs": 768, "last_sec": 1.5552673150086775}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "orpo010", "updates": 64, "x": 1066751, "targets": 62065, "native": 524288, "pairs": 1024, "last_sec": 1.5724287519988138}
+[EVIDENCE_PREFERENCE_FINAL] {"arm": "orpo010", "status": "EVIDENCE_PREFERENCE_TRAINED_TEST_PENDING", "updates": 64, "whole_sec": 284.53326863600523}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 4.9분  (2026-10-16 14:45:34)
+==============================================================================

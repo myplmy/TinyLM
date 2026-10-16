@@ -1,0 +1,18 @@
+Both costs and whole deadline forecast required. Fixed64,8192 rows, micro8 accum16 cp-on. One final only. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.
+
+==============================================================================
+[runlog] 2026-10-16 14:34:35  name=P106B_Stage4dcWa_sft_preference_full64_143434
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode train --arm sft_only --max-wall-sec 1800 --execute
+==============================================================================
+[EVIDENCE_PREFERENCE_BUDGET] {"estimates_sec": {"sft_only": 630.3791371788684, "orpo010": 667.24202518331}, "completed": [], "needed_sec": 6697.621162362178, "remaining_sec": 8722.108946, "fits": true, "scope": "forecast: warmed64 plus first-update1.5 and300seconds, evaluation45min based on previous24.4min, closure45min; not guaranteed upper bound"}
+W1016 14:35:02.399000 745266 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "sft_only", "updates": 1, "x": 16188, "targets": 989, "native": 8192, "pairs": 16, "last_sec": 170.7221322270052}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "sft_only", "updates": 16, "x": 262074, "targets": 15338, "native": 131072, "pairs": 256, "last_sec": 1.6756594800099265}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "sft_only", "updates": 32, "x": 532825, "targets": 30911, "native": 262144, "pairs": 512, "last_sec": 1.5515233619953506}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "sft_only", "updates": 48, "x": 800751, "targets": 46417, "native": 393216, "pairs": 768, "last_sec": 1.6116309780045412}
+[EVIDENCE_PREFERENCE_UPDATE] {"arm": "sft_only", "updates": 64, "x": 1066751, "targets": 62065, "native": 524288, "pairs": 1024, "last_sec": 2.4327180790132843}
+[EVIDENCE_PREFERENCE_FINAL] {"arm": "sft_only", "status": "EVIDENCE_PREFERENCE_TRAINED_TEST_PENDING", "updates": 64, "whole_sec": 309.89213655597996}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 5.4분  (2026-10-16 14:39:56)
+==============================================================================

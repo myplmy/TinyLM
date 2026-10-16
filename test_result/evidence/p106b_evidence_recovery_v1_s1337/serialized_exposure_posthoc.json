@@ -1,0 +1,55 @@
+{
+  "schema": "P106B_EVIDENCE_RECOVERY_SERIALIZED_EXPOSURE_POSTHOC_V1",
+  "arms": {
+    "complete_replay": {
+      "total_draws": {
+        "rows": 27648,
+        "x_tokens": 4331253,
+        "assistant_targets": 164311
+      },
+      "distinct_serialized_conversations": {
+        "serialized_conversations": 13824,
+        "serialized_x_tokens": 3043392
+      },
+      "language_draws": {
+        "ko": {
+          "rows": 13824,
+          "x_tokens": 2259404,
+          "assistant_targets": 80686
+        },
+        "en": {
+          "rows": 13824,
+          "x_tokens": 2071849,
+          "assistant_targets": 83625
+        }
+      }
+    },
+    "evidence_recovery": {
+      "total_draws": {
+        "rows": 27648,
+        "x_tokens": 4328439,
+        "assistant_targets": 225905
+      },
+      "distinct_serialized_conversations": {
+        "serialized_conversations": 13824,
+        "serialized_x_tokens": 3040578
+      },
+      "language_draws": {
+        "ko": {
+          "rows": 13824,
+          "x_tokens": 2261553,
+          "assistant_targets": 115883
+        },
+        "en": {
+          "rows": 13824,
+          "x_tokens": 2066886,
+          "assistant_targets": 110022
+        }
+      }
+    }
+  },
+  "course_sha256": "8A5C334DA7BAB76A189CF36D50920E07BBAEF455439ED93982AC7FCB21F31DFE",
+  "scope": "Frozen conversations and real student encoder, actual complete report counts matched. Distinct text not new world facts; language counts are frozen producer recount, not GPU sampling. No model/forward/optimizer/CUDA.",
+  "calculation_source": "import json\nfrom collections import Counter\nfrom scripts import diag_p106b_evidence_recovery_course as c\nfrom tinylm.train.mtp_sft import encode_record\nconversation_signature=c.conversation_signature\nr=c.producer.required(c.CORPUS/\"report.json\");tok=c.old._tokenizer();arms={}\nfor arm in c.ARMS:\n unique={};draw=Counter();langs={}\n for epoch in range(4):\n  key=arm+\"_train\"+str(epoch);summary=r[\"counts\"][key]\n  draw.update({k:summary[k] for k in (\"rows\",\"x_tokens\",\"assistant_targets\")})\n  for lang,v in summary[\"languages\"].items():langs.setdefault(lang,Counter()).update(v)\n  for row in c.training.data.stream_rows(c.CORPUS,r[\"manifests\"][key]):\n   sig=conversation_signature(row[\"messages\"])\n   if sig not in unique:unique[sig]=encode_record(row,tok).x_tokens\n actual=c.producer.required(c.EVIDENCE/arm/\"report.json\")\n assert (draw[\"x_tokens\"],draw[\"assistant_targets\"])==(actual[\"sft_x_tokens\"],actual[\"assistant_targets\"])\n arms[arm]=dict(total_draws=dict(draw),distinct_serialized_conversations=dict(serialized_conversations=len(unique),serialized_x_tokens=sum(unique.values())),language_draws={k:dict(v) for k,v in langs.items()})\nprint(json.dumps(dict(schema=\"P106B_EVIDENCE_RECOVERY_SERIALIZED_EXPOSURE_POSTHOC_V1\",arms=arms,course_sha256=c.training.data.digest(c.CORPUS/\"report.json\"),scope=\"Frozen conversations and real student encoder, actual complete report counts matched. Distinct text not new world facts; language counts are frozen producer recount, not GPU sampling. No model/forward/optimizer/CUDA.\")))\n",
+  "development_note": "First2 ad-hoc CPU import attempts used wrong signature module and exited before data/metadata writes; final uses the actual frozen-course owner alias."
+}

@@ -1,0 +1,17 @@
+Actual E970 CPU parent/body/RNG and full64/mask/signature/native/binary consumers before GPU. Fresh namespace only, old raw/weights unchanged. Private shards below20MB. Full smoke remains user-owned NOT_RUN.
+
+==============================================================================
+[runlog] 2026-10-16 14:18:32  name=P106B_Stage4da2W_evidence_preference_actual_cpu_141832
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_preference_train.py --mode wire --execute
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_evidence_preference_train.py", line 185, in main
+    return wire() if a.mode=='wire' else run(a,cost=a.mode=='cost')
+  File "/home/uranus/tinyLM/scripts/diag_p106b_evidence_preference_train.py", line 65, in wire
+    if (sum(x.x_tokens for x in records),sum(x.targets for x in records))!=(r['counts']['x_tokens'],r['counts']['assistant_targets']):raise ValueError('actual full encoder count mismatch')
+ValueError: actual full encoder count mismatch
+[EVIDENCE_PREFERENCE_ERROR] actual full encoder count mismatch
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.2분  (2026-10-16 14:18:45)
+==============================================================================

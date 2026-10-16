@@ -1,0 +1,40 @@
+{
+  "schema": "P106B_EVIDENCE_RECOVERY_FIXED_MANUAL4_V1",
+  "tag": "p106b_evidence_recovery_v1_s1337",
+  "selection": "13:45 posthoc analysis rule before reading individual outputs: SHA(TAG,MANUAL_EVIDENCE,neutral_root), first1/family; all language/four-condition children",
+  "pre_training_preregistration": false,
+  "unblinded": true,
+  "aggregate_results_already_observed": true,
+  "neutral_groups": 4,
+  "conversations": 32,
+  "actual_answers_read": 288,
+  "reviewer": "GPT",
+  "scope": "Read full supplied references/questions and actual three-turn chains for all3 endpoints; no population semantic error rate or online rejection/regeneration.",
+  "rows": [
+    {
+      "family": "people",
+      "neutral_root": "ABF8595CE3A3F6C29AD7040C206E1566AEE4E6E311C8BF9C6A26A1F0C1AD5F53",
+      "children": 8,
+      "observation": "나이가 없으면 구체적으로 묻고 한국어 보충9를 읽은 사례가 있다. 그러나 소녀나이11이 명시돼도 없다고 묻고, 영어 보충9를 학년10으로 오독했다. 갱신+1을11로 답하는 오류도 남았다."
+    },
+    {
+      "family": "units",
+      "neutral_root": "64C6096ADB3BFDD5B79BC724E1F7C8DCE378FE557AFA990A15D18F91466A953E",
+      "children": 8,
+      "observation": "면적 누락때 재질문하고 보충16483을 읽는 성공이 있다. 충분한 한국어 면적에도 없다고 묻거나, 지정연도가 없는데 영어로 면적을 물었다. +2 갱신은17%/18484 등 다른필드·잘못된값으로 흘렀다."
+    },
+    {
+      "family": "transfer",
+      "neutral_root": "CD1F71E20DEC6305FEBAC2BF2D69572D0E91978A8403834A0C288AEAA8A336B9",
+      "children": 8,
+      "observation": "한국어 보충저녁/공원과 새수신자우주를 읽었다. 그러나 빠진시간대 대신 이미있는물품을 되묻고, 장소가 없는데시간대를 물었다. 영어로 이미있는시간대/장소도 없다고 하고 갱신뒤morning/park를 복사했다."
+    },
+    {
+      "family": "years",
+      "neutral_root": "B86ECE254179CCD0C50A7193887A75D6660F3DBFDB3608AB1F668514C7DFDAD8",
+      "children": 8,
+      "observation": "종료연도누락과 구역이름누락은 되물었다. 하지만 두연도가 있거나구역이름Parker가있는데도 없다고했고, 보충후에도되묻기를반복했다. 1934-1910=24와 종료+3뒤27은모두틀린표본이다."
+    }
+  ],
+  "calculation_source": "import json,sys,hashlib\nfrom pathlib import Path\ntag=\"p106b_evidence_recovery_v1_s1337\";p=Path(\"HF/sft_ready\")/tag/\"corpus\";r=json.loads((p/\"report.json\").read_text());rows=[]\nfor s in r[\"manifests\"][\"test_evidence\"][\"shards\"]:rows.extend(json.loads(v) for v in (p/s[\"path\"]).read_text().splitlines())\ndef sha(v):return hashlib.sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(\",\",\":\")).encode()).hexdigest().upper()\nfamily=sys.argv[1];roots={x[\"meta\"][\"neutral_root\"] for x in rows if x[\"meta\"][\"family\"]==family};chosen=min(roots,key=lambda k:sha([tag,\"MANUAL_EVIDENCE\",k]));events={}\nfor arm in (\"parent\",\"complete_replay\",\"evidence_recovery\"):\n q=Path(\"test_result/evidence/local\")/tag/\"evaluate\"/arm\n events[arm]=[json.loads(v) for v in (q/\"evidence_test_000000.jsonl\").read_text().splitlines()]\ndef text(m):return \"\".join(b[\"text\"] for b in m[\"content\"])\nout=[]\nfor row in rows:\n m=row[\"meta\"]\n if m[\"neutral_root\"]!=chosen:continue\n v=dict(lang=m[\"language\"],condition=m[\"condition\"],enough=m[\"query_sufficient\"],omitted=m[\"omitted_key\"],fields=m[\"requested_fields\"],questions=[text(row[\"messages\"][i]) for i in (0,2,4)],gold=[text(row[\"messages\"][i]) for i in (1,3,5)],actual={})\n for arm,ee in events.items():\n  selected=sorted([x for x in ee if x[\"root\"]==m[\"semantic_root_id\"] and x[\"history\"]==\"ACTUAL_MODEL\"],key=lambda x:x[\"turn\"])\n  assert len(selected)==3\n  v[\"actual\"][arm]=[x[\"answer\"] for x in selected]\n out.append(v)\nprint(json.dumps(dict(family=family,neutral=chosen,cases=out),ensure_ascii=False))\n"
+}
