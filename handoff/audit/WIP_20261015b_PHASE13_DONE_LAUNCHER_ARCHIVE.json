@@ -1,0 +1,235 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-16T05:53:09.344080+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "git_recovery_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+  "files": [
+    {
+      "path": "run_P106B_Stage4cuWb_evidence_recovery_full216-done.sh",
+      "bytes": 1252,
+      "sha256": "5D729526CCB49D995A8B4BA22EFBA8F02920A2E06C6234D41B17D089D2B9A698",
+      "script": "#!/usr/bin/env bash\n# Independent producer-owned evidence sufficiency/recovery; existing frozen work unchanged.\n# CPU stages seconds/minutes; cost/train/evaluation bounds are explicit below.\n# Only this stage's dependencies fail closed. No stdin, queue, installs or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cuWb_evidence_recovery_full216_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cuWb_evidence_recovery_full216_\"$run_stamp\" --num 101 --note 'Two measured costs and whole deadline budget required. Query-specific missing facts and recovery,216updates. One final checkpoint. All shards below20MB, raw/weights private. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cuWb_evidence_recovery_full216_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_recovery_train.py --mode train --arm evidence_recovery --max-wall-sec 5400 --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cuWb_evidence_recovery_full216-done.sh",
+      "git_blob": "af3a407566fd00bcd1cf0b2e853b9c3b85d880d7",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cuWb_evidence_recovery_full216_131646.txt",
+      "raw_sha256": "B8AE6D4B75BCEB02388E2B75D24126BD5CB8550FDACBB31BD5DDBD2F0215F7F2",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_recovery_train.py --mode train --arm evidence_recovery --max-wall-sec 5400 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cvW_evidence_recovery_actual-done.sh",
+      "bytes": 1262,
+      "sha256": "9AA4C49D7B0491AD24ACDCB995817C66EE2CB566B27306FA5B9D64DDF85BB1C8",
+      "script": "#!/usr/bin/env bash\n# Independent producer-owned evidence sufficiency/recovery; existing frozen work unchanged.\n# CPU stages seconds/minutes; cost/train/evaluation bounds are explicit below.\n# Only this stage's dependencies fail closed. No stdin, queue, installs or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cvW_evidence_recovery_actual_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cvW_evidence_recovery_actual_\"$run_stamp\" --num 101 --note 'Fixed parent and2finals,1024new counterfactual conversations plus retention. FP32 greedy64,actual/gold separate; free clarification semantic review remains offline. All shards below20MB, raw/weights private. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cvW_evidence_recovery_actual_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_recovery_evaluate.py --mode evaluate --max-wall-sec 3600 --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cvW_evidence_recovery_actual-done.sh",
+      "git_blob": "edf9305339abc8f10afcff40c807cec1c7e53d0a",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cvW_evidence_recovery_actual_132540.txt",
+      "raw_sha256": "0F6DC813E7E75FB36C0F93DE6EC2F5E0D867B26B6B90ACC3B2F2199C42E9A822",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_recovery_evaluate.py --mode evaluate --max-wall-sec 3600 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cwW_evidence_recovery_readback-done.sh",
+      "bytes": 1205,
+      "sha256": "E1BAAD0B9644B2BEAA2CC1AA501970A4746A7AE97D344C81A8140B8D290E6231",
+      "script": "#!/usr/bin/env bash\n# Independent producer-owned evidence sufficiency/recovery; existing frozen work unchanged.\n# CPU stages seconds/minutes; cost/train/evaluation bounds are explicit below.\n# Only this stage's dependencies fail closed. No stdin, queue, installs or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cwW_evidence_recovery_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cwW_evidence_recovery_readback_\"$run_stamp\" --num 101 --note 'All sealed raw recounted, same-neutral languages/cells clustered. Clarification exact phrase is not semantic correctness. All shards below20MB, raw/weights private. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cwW_evidence_recovery_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_evidence_recovery_evaluate.py --mode readback --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cwW_evidence_recovery_readback-done.sh",
+      "git_blob": "c18bf4cc3a001b63efadd043fc1c506c7d2c4b5c",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cwW_evidence_recovery_readback_135026.txt",
+      "raw_sha256": "9FC616FCE58C9AF3C82ACCD1418A2CED7A236480817465D8727E19F1BA3ED6E4",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_evidence_recovery_evaluate.py --mode readback --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cx0W_original_task_contract_cpu-done.sh",
+      "bytes": 1153,
+      "sha256": "7820EEFD64206DF3C758C0B09F61327C59E6647425757AFBAC7B46954554499D",
+      "script": "#!/usr/bin/env bash\n# Original task direction: preserve unknown contracts, explicitly derive new QA.\n# Independent bounded diagnostic; CPU seconds, teacher at most10 minutes.\n# Stop only this stage on failed prerequisites. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cx0W_original_task_contract_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx0W_original_task_contract_cpu_\"$run_stamp\" --num 101 --note 'CPU10 original pair byte preservation and explicit role ownership. No model forward or CUDA. Original data/weights unchanged. Full raw/thinking private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx0W_original_task_contract_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_task_contract.py\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cx0W_original_task_contract_cpu-done.sh",
+      "git_blob": "5ce88e9e68fb92718834760bc815c3647fd50fa2",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cx0W_original_task_contract_cpu_133449.txt",
+      "raw_sha256": "530C872CF62CA8B3A0FDF70057BEEFF1569BC79881B4D34CB166CE81FEB177C0",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_task_contract.py"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cx1W_original_task_packet-done.sh",
+      "bytes": 1187,
+      "sha256": "078CF0583C585A988B74366374007EA2AB3DFFA3FDE4BF40762A06DC368C25FE",
+      "script": "#!/usr/bin/env bash\n# Original task direction: preserve unknown contracts, explicitly derive new QA.\n# Independent bounded diagnostic; CPU seconds, teacher at most10 minutes.\n# Stop only this stage on failed prerequisites. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cx1W_original_task_packet_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx1W_original_task_packet_\"$run_stamp\" --num 101 --note 'Recover same posthoc8 by original file SHA and ID/reference. Preserve original pairs, no numbering-based role inference. Original data/weights unchanged. Full raw/thinking private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx1W_original_task_packet_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode freeze --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cx1W_original_task_packet-done.sh",
+      "git_blob": "5ac39da41fbb12b0aa02af9182ea7a56c9483a4d",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cx1W_original_task_packet_133459.txt",
+      "raw_sha256": "6373803C5C4D433E48BEEEE09860BD15F4B7B0B0B50B769AF00FB24B914869F0",
+      "raw_exit_codes": [
+        9
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode freeze --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_IMPLEMENTATION_ERROR",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cx0Wb_original_task_contract_recovery_cpu-done.sh",
+      "bytes": 1123,
+      "sha256": "A34C97F45BEC8064CE452E0144B271FFD3D3CC7400A0A54A0848AB51C983B0B4",
+      "script": "#!/usr/bin/env bash\n# Original task direction recovery; previous CPU/raw error remain immutable.\n# CPU seconds/minutes, no teacher/model GPU in this stage.\n# Failed dependencies stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cx0Wb_original_task_contract_recovery_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx0Wb_original_task_contract_recovery_cpu_\"$run_stamp\" --num 101 --note 'CPU13 including actual renderer metadata fixture. No model forward/CUDA; old10 and failed freeze preserved. Original data/weights unchanged; full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx0Wb_original_task_contract_recovery_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_task_contract.py\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cx0Wb_original_task_contract_recovery_cpu-done.sh",
+      "git_blob": "badcd22facd7b953ec3540e0b71622b951dbafea",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cx0Wb_original_task_contract_recovery_cpu_133644.txt",
+      "raw_sha256": "1F320BCD03E4C2EB5A10FFC666714F9178F0FAFBC4A398829C521A96393ACA0F",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_task_contract.py"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cx1Wb_original_task_packet_recovery-done.sh",
+      "bytes": 1142,
+      "sha256": "512E333DDC10817340E59B326E78C34D51211C47F18F08ADA54849705B2369DB",
+      "script": "#!/usr/bin/env bash\n# Original task direction recovery; previous CPU/raw error remain immutable.\n# CPU seconds/minutes, no teacher/model GPU in this stage.\n# Failed dependencies stop only this stage. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cx1Wb_original_task_packet_recovery_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx1Wb_original_task_packet_recovery_\"$run_stamp\" --num 101 --note 'Correct actual renderer reference metadata. Freeze only previously absent namespace, exact8 sources preserved. No model. Original data/weights unchanged; full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cx1Wb_original_task_packet_recovery_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode freeze --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cx1Wb_original_task_packet_recovery-done.sh",
+      "git_blob": "82a6911bb3d0b9111c44f06fbc74300aaf5e6645",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cx1Wb_original_task_packet_recovery_133645.txt",
+      "raw_sha256": "4BAF36BB0D3640D71E9D92AE593CAB9331E0DF19712E36586651C65C5504F296",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode freeze --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cyW_teacher_task_contract_pair-done.sh",
+      "bytes": 1251,
+      "sha256": "308EB4B9C3E3857C140C92E9C13ADB717723D58D2EA0986A5F19317855038555",
+      "script": "#!/usr/bin/env bash\n# Original task direction: preserve unknown contracts, explicitly derive new QA.\n# Independent bounded diagnostic; CPU seconds, teacher at most10 minutes.\n# Stop only this stage on failed prerequisites. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cyW_teacher_task_contract_pair_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cyW_teacher_task_contract_pair_\"$run_stamp\" --num 101 --note 'After current student evaluation only. Same8 roots, old repair versus explicit new grounded QA16 requests. Gemma MTP2 thinking256. Structure not truth. Original data/weights unchanged. Full raw/thinking private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cyW_teacher_task_contract_pair_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode pilot --max-wall-sec 600 --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4cyW_teacher_task_contract_pair-done.sh",
+      "git_blob": "872944db18bc7ddc987840d684a0d98e040b1c7a",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cyW_teacher_task_contract_pair_135025.txt",
+      "raw_sha256": "1F8F690901641CD1C2A200F6A50FD97BE89AE987A36F93F5CB028433AC498857",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode pilot --max-wall-sec 600 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    },
+    {
+      "path": "run_P106B_Stage4czW_task_contract_readback-done.sh",
+      "bytes": 1174,
+      "sha256": "398100C980CDE0119B7DAA6B8815E47656347EB395428E007FA3754342E3C6C3",
+      "script": "#!/usr/bin/env bash\n# Original task direction: preserve unknown contracts, explicitly derive new QA.\n# Independent bounded diagnostic; CPU seconds, teacher at most10 minutes.\n# Stop only this stage on failed prerequisites. No stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4czW_task_contract_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4czW_task_contract_readback_\"$run_stamp\" --num 101 --note 'Recount all16 raw/canonical/channel/seed/token events. Posthoc DEV only, no automatic corpus adoption. Original data/weights unchanged. Full raw/thinking private shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4czW_task_contract_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode readback --execute\n",
+      "git_commit": "4baef4090e6324c6173b8bb3ff1c732ddac11b15",
+      "git_path": "run_P106B_Stage4czW_task_contract_readback-done.sh",
+      "git_blob": "9ce364f61329b8b48c564a122182556356b11c03",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4czW_task_contract_readback_135302.txt",
+      "raw_sha256": "20EC73633BA718A330BC6BD6F5079900A1978B94BF13E70D18883194F72CB2D1",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_task_contract.py --mode readback --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact9 completed recovery/source wrappers; preference and live144619/raw/HF/weights/CODE preserved"
+    }
+  ],
+  "total_worktree_bytes": 10749,
+  "deletion_authority": "User requested completed launcher command/body preservation then exact deletion; no other files"
+}
