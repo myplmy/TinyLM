@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed once; immutable commands are archived before cleanup.
 # Immutable original inputs; row-occurrence keys repair aggregation only.
 # CPU only, about .05h; no training/checkpoint writes or stdin.
 # Authority ends2026-10-17 10:00KST;09:00 GPU stop; original raw preserved.

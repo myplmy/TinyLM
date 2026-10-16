@@ -1,0 +1,5359 @@
+{
+  "schema": "P106B_NIGHT_PROMPT_SEPARATE_MEAN_V1",
+  "tag": "p106b_night_prompt_v1_s1337",
+  "code_sha256": {
+    "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+    "scripts/diag_p106b_evidence_recovery_course.py": "261FDB81A91D8B865A58ADC6EB0813D1D0E2CE146DACD6A7957CB238C6287622",
+    "scripts/diag_p106b_night_foundation.py": "9A5B183CB062972193580E1A68B2D24F5AE2F4369B5EE9A8099D3D8CF4195D59",
+    "scripts/diag_p106b_night_prompt.py": "1C80AA74112EE611AC2B4072DDEEE50A4A852AF59CE04A69D3FCE6BBA0A22BAD",
+    "scripts/diag_p106b_night_train.py": "BF47194FC71EB4F799B4CF83DAB611ACCF9CB9858D2A7F12DECB9EA0EC82FAF4",
+    "scripts/p106b_native_windows.py": "92964880E8843888C121036E70F82C9F799531AA5F168D78B6C1CDD428155F38",
+    "scripts/p106b_night_course.py": "A8299DF82100B84C96C0685C71C90C8B01DF5E800F29B2325EC91BA3387CE283",
+    "scripts/p106b_night_foundation_data.py": "A4497F28E0C4DCB0CB40EDE9F806A00B9C081C200A81CCB2EDB424BDE966F284",
+    "scripts/p106b_night_learning.py": "8B7D151793CE74914BBFD2EE20FA01028E2BB334D2B8C2A1FCDD52B7622B44A6",
+    "scripts/p106b_night_prompt_loss.py": "E70EB106A3D0E68DC7A9F92CF8DA554259199C8C971FBD25F7389BED90EDFBDB",
+    "scripts/p106b_night_qa_data.py": "3E301D05BEC1613708A4FAEBD5D4937D2084C94B08A81657A2B2E4E9069D546A",
+    "scripts/p106b_relation_fields.py": "8112A9DE5F2C2BB9ED5DC4FD9DC30F37B80D378D5B088310F070BEFCE7AFCB67",
+    "scripts/test_p106b_night_course.py": "34EE9D86B59EB8B7A487B8AA3B836806E034BA821D4AEFB6723F30493152984A",
+    "scripts/test_p106b_night_foundation.py": "57DFB92EAAB96920AD1FA315B15098CC025A708BEFA069C37D673DD361635C78",
+    "scripts/test_p106b_night_foundation_data.py": "5689041B125202F3EDE23A8DEAFFF087B5EBF79E4850AB982DE302F4AB3B33FE",
+    "scripts/test_p106b_night_learning.py": "1AE788A5BDBE0D135B45A09E046374463A43554A31C9B92F4EC83D6389CDD8FE",
+    "scripts/test_p106b_night_prompt.py": "9011E431582E2F9C7D124AF0420EE41501E3DBE339EEC7642CD9AE53C45F5A9F",
+    "scripts/test_p106b_night_prompt_loss.py": "D3860A389250C93053E9EF8ADE10135165316F60D017614160A7F647244B50D9",
+    "scripts/test_p106b_night_qa_data.py": "5E981867B2BC0D0349FCBBD57908F05DB73AA2468587517653C46612D5482093",
+    "scripts/test_p106b_night_train.py": "3BE06EE847005C4E5F5011B7BA714A82D33EEA6383E77C0B2479E81D05DAFC19",
+    "tinylm/chat/serialize.py": "F67F8DB7760BE9C1BAE9102692C819E2444C8780A2906179C4C468451926D4C8",
+    "tinylm/data/sft.py": "44327B6D27998BFA8BE160A99B65D530083E18CF640AFE62CA459CF16A276A33",
+    "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+    "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+  },
+  "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+  "source_qa_sha256": "E340BCE35E0B5FA6CC0EE2F08694E584A711231BC6443C5D599D55F95D5D122B",
+  "betas": {
+    "prompt0": 0.0,
+    "prompt01": 0.1
+  },
+  "seed": 1337,
+  "micro_bs": 8,
+  "accum": 16,
+  "seq": 1024,
+  "grad_checkpoint": true,
+  "compile": "default",
+  "epochs": 4,
+  "updates_planned": 640,
+  "adam_lr": 5e-05,
+  "muon_lr": 0.0002,
+  "weight_decay": 0.0,
+  "clip": 1.0,
+  "anneal": 1.0,
+  "scheduler": "CONSTANT",
+  "fresh_moments": true,
+  "mtp": false,
+  "binary_aux": false,
+  "fact_aux": false,
+  "consistency_weight": 0.0,
+  "objective": "original assistant mean + native mean + beta * natural input-body mean",
+  "prompt_target_scope": "original context/question only; no static wrappers, roles, PAD or assistant",
+  "source_qa_body_gradient_already_exists": true,
+  "query_conditioned_retrieval_direct_supervision": false,
+  "paper_replication": false,
+  "teacher_calls": 0,
+  "protected_source": false,
+  "deadline_utc": "2026-10-17T01:00:00+00:00",
+  "gpu_stop_utc": "2026-10-17T00:00:00+00:00",
+  "status": "ACTUAL_PROMPT_CPU_FROZEN",
+  "mask_manifest": {
+    "schema": "P106B_WRITE_ONCE_SHARDS_V1",
+    "limit_bytes": 20000000,
+    "rows": 16384,
+    "bytes": 18583155,
+    "concat_sha256": "E746765D646CCCEAE4C86E71D878BCEA93F557F6C964BBC9BFDC87C637E7BD28",
+    "lineage": {
+      "schema": "P106B_NIGHT_PROMPT_SEPARATE_MEAN_V1",
+      "tag": "p106b_night_prompt_v1_s1337",
+      "code_sha256": {
+        "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+        "scripts/diag_p106b_evidence_recovery_course.py": "261FDB81A91D8B865A58ADC6EB0813D1D0E2CE146DACD6A7957CB238C6287622",
+        "scripts/diag_p106b_night_foundation.py": "9A5B183CB062972193580E1A68B2D24F5AE2F4369B5EE9A8099D3D8CF4195D59",
+        "scripts/diag_p106b_night_prompt.py": "1C80AA74112EE611AC2B4072DDEEE50A4A852AF59CE04A69D3FCE6BBA0A22BAD",
+        "scripts/diag_p106b_night_train.py": "BF47194FC71EB4F799B4CF83DAB611ACCF9CB9858D2A7F12DECB9EA0EC82FAF4",
+        "scripts/p106b_native_windows.py": "92964880E8843888C121036E70F82C9F799531AA5F168D78B6C1CDD428155F38",
+        "scripts/p106b_night_course.py": "A8299DF82100B84C96C0685C71C90C8B01DF5E800F29B2325EC91BA3387CE283",
+        "scripts/p106b_night_foundation_data.py": "A4497F28E0C4DCB0CB40EDE9F806A00B9C081C200A81CCB2EDB424BDE966F284",
+        "scripts/p106b_night_learning.py": "8B7D151793CE74914BBFD2EE20FA01028E2BB334D2B8C2A1FCDD52B7622B44A6",
+        "scripts/p106b_night_prompt_loss.py": "E70EB106A3D0E68DC7A9F92CF8DA554259199C8C971FBD25F7389BED90EDFBDB",
+        "scripts/p106b_night_qa_data.py": "3E301D05BEC1613708A4FAEBD5D4937D2084C94B08A81657A2B2E4E9069D546A",
+        "scripts/p106b_relation_fields.py": "8112A9DE5F2C2BB9ED5DC4FD9DC30F37B80D378D5B088310F070BEFCE7AFCB67",
+        "scripts/test_p106b_night_course.py": "34EE9D86B59EB8B7A487B8AA3B836806E034BA821D4AEFB6723F30493152984A",
+        "scripts/test_p106b_night_foundation.py": "57DFB92EAAB96920AD1FA315B15098CC025A708BEFA069C37D673DD361635C78",
+        "scripts/test_p106b_night_foundation_data.py": "5689041B125202F3EDE23A8DEAFFF087B5EBF79E4850AB982DE302F4AB3B33FE",
+        "scripts/test_p106b_night_learning.py": "1AE788A5BDBE0D135B45A09E046374463A43554A31C9B92F4EC83D6389CDD8FE",
+        "scripts/test_p106b_night_prompt.py": "9011E431582E2F9C7D124AF0420EE41501E3DBE339EEC7642CD9AE53C45F5A9F",
+        "scripts/test_p106b_night_prompt_loss.py": "D3860A389250C93053E9EF8ADE10135165316F60D017614160A7F647244B50D9",
+        "scripts/test_p106b_night_qa_data.py": "5E981867B2BC0D0349FCBBD57908F05DB73AA2468587517653C46612D5482093",
+        "scripts/test_p106b_night_train.py": "3BE06EE847005C4E5F5011B7BA714A82D33EEA6383E77C0B2479E81D05DAFC19",
+        "tinylm/chat/serialize.py": "F67F8DB7760BE9C1BAE9102692C819E2444C8780A2906179C4C468451926D4C8",
+        "tinylm/data/sft.py": "44327B6D27998BFA8BE160A99B65D530083E18CF640AFE62CA459CF16A276A33",
+        "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+        "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657"
+      },
+      "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+      "source_qa_sha256": "E340BCE35E0B5FA6CC0EE2F08694E584A711231BC6443C5D599D55F95D5D122B",
+      "betas": {
+        "prompt0": 0.0,
+        "prompt01": 0.1
+      },
+      "seed": 1337,
+      "micro_bs": 8,
+      "accum": 16,
+      "seq": 1024,
+      "grad_checkpoint": true,
+      "compile": "default",
+      "epochs": 4,
+      "updates_planned": 640,
+      "adam_lr": 5e-05,
+      "muon_lr": 0.0002,
+      "weight_decay": 0.0,
+      "clip": 1.0,
+      "anneal": 1.0,
+      "scheduler": "CONSTANT",
+      "fresh_moments": true,
+      "mtp": false,
+      "binary_aux": false,
+      "fact_aux": false,
+      "consistency_weight": 0.0,
+      "objective": "original assistant mean + native mean + beta * natural input-body mean",
+      "prompt_target_scope": "original context/question only; no static wrappers, roles, PAD or assistant",
+      "source_qa_body_gradient_already_exists": true,
+      "query_conditioned_retrieval_direct_supervision": false,
+      "paper_replication": false,
+      "teacher_calls": 0,
+      "protected_source": false,
+      "deadline_utc": "2026-10-17T01:00:00+00:00",
+      "gpu_stop_utc": "2026-10-17T00:00:00+00:00"
+    },
+    "shards": [
+      {
+        "path": "mask_proofs_000000.jsonl",
+        "bytes": 18583155,
+        "rows": 16384,
+        "sha256": "E746765D646CCCEAE4C86E71D878BCEA93F557F6C964BBC9BFDC87C637E7BD28"
+      }
+    ]
+  },
+  "mask_proofs_sha256": "7C74AD6576AFA52B61564CF2883680DD009A35BD357A4AA30938328A9CA1CFEA",
+  "prompt_targets_per_pass": 3522074,
+  "prompt_targets_four_pass": 14088296,
+  "prompt_targets_per_update": [
+    22222,
+    22534,
+    25940,
+    23558,
+    19530,
+    24806,
+    20606,
+    21286,
+    17924,
+    22462,
+    21062,
+    20132,
+    20702,
+    21474,
+    22264,
+    21872,
+    20454,
+    24208,
+    24282,
+    15918,
+    23012,
+    21368,
+    20456,
+    24186,
+    19926,
+    20964,
+    20636,
+    21556,
+    21224,
+    19486,
+    21684,
+    24934,
+    24338,
+    22168,
+    19928,
+    21102,
+    24654,
+    18276,
+    24642,
+    20916,
+    21138,
+    24124,
+    26396,
+    20078,
+    18538,
+    22186,
+    22290,
+    24560,
+    24292,
+    25912,
+    20680,
+    20774,
+    16882,
+    21850,
+    20358,
+    19082,
+    21662,
+    26968,
+    24134,
+    16886,
+    22974,
+    24258,
+    21472,
+    25264,
+    18286,
+    17802,
+    20746,
+    19980,
+    20862,
+    21030,
+    22806,
+    25294,
+    20424,
+    19536,
+    28046,
+    21380,
+    20548,
+    20872,
+    21212,
+    23506,
+    16426,
+    24910,
+    22444,
+    21252,
+    18966,
+    18964,
+    19614,
+    20236,
+    21270,
+    24214,
+    22950,
+    18986,
+    27486,
+    23414,
+    20468,
+    25440,
+    24934,
+    24382,
+    29118,
+    18568,
+    22500,
+    19320,
+    26070,
+    20202,
+    24850,
+    20734,
+    20028,
+    25128,
+    26148,
+    22546,
+    22246,
+    23586,
+    27142,
+    20384,
+    17914,
+    23886,
+    24686,
+    17028,
+    21800,
+    24588,
+    22506,
+    18836,
+    23882,
+    21492,
+    22080,
+    23708,
+    24884,
+    19038,
+    20376,
+    21930,
+    24576,
+    22734,
+    14988,
+    21472,
+    27164,
+    20900,
+    17134,
+    15514,
+    19042,
+    21880,
+    24802,
+    20674,
+    25612,
+    22332,
+    21236,
+    24698,
+    25034,
+    25014,
+    21328,
+    22526,
+    21086,
+    21632,
+    22952,
+    21720,
+    22300,
+    15928,
+    28336,
+    27064,
+    22100,
+    22956,
+    24094,
+    24628,
+    18942,
+    16494,
+    21570,
+    22554,
+    19378,
+    22790,
+    20204,
+    26150,
+    20040,
+    20434,
+    21492,
+    20246,
+    25492,
+    22702,
+    23850,
+    22788,
+    23490,
+    24520,
+    20362,
+    19520,
+    21608,
+    18544,
+    22280,
+    19368,
+    24416,
+    19362,
+    23106,
+    21424,
+    16388,
+    25168,
+    25938,
+    23618,
+    20762,
+    23668,
+    21498,
+    19164,
+    17706,
+    23746,
+    20476,
+    21860,
+    24142,
+    23214,
+    23268,
+    20562,
+    19842,
+    22382,
+    20372,
+    23734,
+    15894,
+    24056,
+    26440,
+    21042,
+    17896,
+    21450,
+    22018,
+    22348,
+    20508,
+    22176,
+    23286,
+    23980,
+    23828,
+    22948,
+    11844,
+    20850,
+    21620,
+    26904,
+    22234,
+    17198,
+    28198,
+    17656,
+    26866,
+    23042,
+    22792,
+    27556,
+    19614,
+    21426,
+    23638,
+    16540,
+    20488,
+    24410,
+    19570,
+    25238,
+    24944,
+    21124,
+    22076,
+    24170,
+    13002,
+    15024,
+    20518,
+    18922,
+    18466,
+    23652,
+    23560,
+    23166,
+    24680,
+    21102,
+    22404,
+    21642,
+    24658,
+    20492,
+    23782,
+    21544,
+    23058,
+    26780,
+    21906,
+    27556,
+    16802,
+    22890,
+    20558,
+    19288,
+    24458,
+    20038,
+    19792,
+    23350,
+    22548,
+    24614,
+    20630,
+    25590,
+    24296,
+    25270,
+    23344,
+    17070,
+    22688,
+    21562,
+    21240,
+    22860,
+    29750,
+    24428,
+    22262,
+    25244,
+    23238,
+    19792,
+    19696,
+    25996,
+    15794,
+    20506,
+    26636,
+    26336,
+    22156,
+    27504,
+    20912,
+    27518,
+    22630,
+    21948,
+    19928,
+    22098,
+    28294,
+    18972,
+    22080,
+    23642,
+    23384,
+    19000,
+    24842,
+    19346,
+    15698,
+    18390,
+    19298,
+    22730,
+    21108,
+    24410,
+    25600,
+    19420,
+    22074,
+    20522,
+    23444,
+    22590,
+    19140,
+    20880,
+    18116,
+    26490,
+    18080,
+    25818,
+    24302,
+    20214,
+    24072,
+    19990,
+    22522,
+    23510,
+    19174,
+    22262,
+    25530,
+    24774,
+    24846,
+    20372,
+    24610,
+    20738,
+    23070,
+    22520,
+    24560,
+    18038,
+    16926,
+    21084,
+    26738,
+    24518,
+    19774,
+    24654,
+    17840,
+    22720,
+    22062,
+    20390,
+    21932,
+    22826,
+    27172,
+    20344,
+    22140,
+    28170,
+    24998,
+    23782,
+    27118,
+    22600,
+    23938,
+    24022,
+    17738,
+    21040,
+    21636,
+    24846,
+    20792,
+    27406,
+    24400,
+    24504,
+    22274,
+    22788,
+    15976,
+    24064,
+    22542,
+    20476,
+    19572,
+    20436,
+    24076,
+    26212,
+    21638,
+    16512,
+    20568,
+    24072,
+    23938,
+    22292,
+    21226,
+    22558,
+    20536,
+    20888,
+    23500,
+    23654,
+    17314,
+    24776,
+    21510,
+    19252,
+    22586,
+    23068,
+    18368,
+    24002,
+    19330,
+    25002,
+    22606,
+    19094,
+    22664,
+    17400,
+    23458,
+    16142,
+    20426,
+    15724,
+    23016,
+    26874,
+    18832,
+    27294,
+    18956,
+    24684,
+    24248,
+    25534,
+    20984,
+    20570,
+    23004,
+    17758,
+    15854,
+    17396,
+    20698,
+    21574,
+    21030,
+    16584,
+    27840,
+    26034,
+    20870,
+    22296,
+    21948,
+    21236,
+    20596,
+    21014,
+    24040,
+    21426,
+    25682,
+    21330,
+    24178,
+    23302,
+    18118,
+    14384,
+    23734,
+    23962,
+    21700,
+    22842,
+    23318,
+    24592,
+    21380,
+    20050,
+    25118,
+    14638,
+    20442,
+    23398,
+    21966,
+    18362,
+    20066,
+    24082,
+    19372,
+    26092,
+    19298,
+    26262,
+    18174,
+    21624,
+    27374,
+    21618,
+    19292,
+    23644,
+    17042,
+    19490,
+    20680,
+    14818,
+    22650,
+    22562,
+    18498,
+    15904,
+    20440,
+    25266,
+    21804,
+    22294,
+    19094,
+    29478,
+    17794,
+    27054,
+    24232,
+    18716,
+    22226,
+    21146,
+    23644,
+    28636,
+    27052,
+    23770,
+    23442,
+    23810,
+    20126,
+    21966,
+    22252,
+    20846,
+    22014,
+    26018,
+    19836,
+    18210,
+    21680,
+    26434,
+    19880,
+    20866,
+    23934,
+    23218,
+    24716,
+    20386,
+    23438,
+    27232,
+    25848,
+    16450,
+    24646,
+    23012,
+    23492,
+    23444,
+    23632,
+    21042,
+    26064,
+    22192,
+    24936,
+    10970,
+    16668,
+    25484,
+    22748,
+    22776,
+    17488,
+    23930,
+    22756,
+    19404,
+    20374,
+    26840,
+    25878,
+    25366,
+    20542,
+    24532,
+    26816,
+    19698,
+    20078,
+    20344,
+    19158,
+    22444,
+    20272,
+    22070,
+    21220,
+    19518,
+    24204,
+    16908,
+    23042,
+    18262,
+    25358,
+    18662,
+    22224,
+    22734,
+    19230,
+    24410,
+    18704,
+    19212,
+    15238,
+    23470,
+    25224,
+    22664,
+    22712,
+    21364,
+    23762,
+    20474,
+    22214,
+    20862,
+    12806,
+    20958,
+    27440,
+    18256,
+    25984,
+    20070,
+    22676,
+    24516,
+    20370,
+    20038,
+    26060,
+    14832,
+    19262,
+    24500,
+    19062,
+    27556,
+    22712,
+    21672,
+    24150,
+    20942,
+    21732,
+    23406,
+    24436,
+    21242,
+    18282,
+    24136,
+    19892,
+    20574,
+    23678,
+    23646,
+    21136,
+    19874,
+    21320,
+    24188,
+    25914,
+    24472,
+    21420,
+    25410,
+    18338,
+    26622,
+    22398,
+    9746,
+    25898,
+    25776,
+    17614,
+    28720,
+    26206,
+    23752,
+    22560,
+    22350,
+    18526,
+    21346,
+    26482,
+    21962,
+    22216,
+    22346
+  ],
+  "update_exposure": [
+    {
+      "x": 30607,
+      "assistant_targets": 756,
+      "prompt_targets": 22222,
+      "content_targets": 226,
+      "rows": 128
+    },
+    {
+      "x": 30936,
+      "assistant_targets": 750,
+      "prompt_targets": 22534,
+      "content_targets": 195,
+      "rows": 128
+    },
+    {
+      "x": 31989,
+      "assistant_targets": 714,
+      "prompt_targets": 25940,
+      "content_targets": 262,
+      "rows": 128
+    },
+    {
+      "x": 31933,
+      "assistant_targets": 734,
+      "prompt_targets": 23558,
+      "content_targets": 198,
+      "rows": 128
+    },
+    {
+      "x": 29023,
+      "assistant_targets": 957,
+      "prompt_targets": 19530,
+      "content_targets": 259,
+      "rows": 128
+    },
+    {
+      "x": 30404,
+      "assistant_targets": 764,
+      "prompt_targets": 24806,
+      "content_targets": 295,
+      "rows": 128
+    },
+    {
+      "x": 28668,
+      "assistant_targets": 747,
+      "prompt_targets": 20606,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 30473,
+      "assistant_targets": 787,
+      "prompt_targets": 21286,
+      "content_targets": 209,
+      "rows": 128
+    },
+    {
+      "x": 28212,
+      "assistant_targets": 879,
+      "prompt_targets": 17924,
+      "content_targets": 231,
+      "rows": 128
+    },
+    {
+      "x": 30893,
+      "assistant_targets": 817,
+      "prompt_targets": 22462,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 28833,
+      "assistant_targets": 772,
+      "prompt_targets": 21062,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 27557,
+      "assistant_targets": 725,
+      "prompt_targets": 20132,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 31278,
+      "assistant_targets": 848,
+      "prompt_targets": 20702,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 29452,
+      "assistant_targets": 716,
+      "prompt_targets": 21474,
+      "content_targets": 206,
+      "rows": 128
+    },
+    {
+      "x": 29110,
+      "assistant_targets": 892,
+      "prompt_targets": 22264,
+      "content_targets": 322,
+      "rows": 128
+    },
+    {
+      "x": 31133,
+      "assistant_targets": 825,
+      "prompt_targets": 21872,
+      "content_targets": 225,
+      "rows": 128
+    },
+    {
+      "x": 30947,
+      "assistant_targets": 975,
+      "prompt_targets": 20454,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 31064,
+      "assistant_targets": 770,
+      "prompt_targets": 24208,
+      "content_targets": 270,
+      "rows": 128
+    },
+    {
+      "x": 32890,
+      "assistant_targets": 753,
+      "prompt_targets": 24282,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 27921,
+      "assistant_targets": 962,
+      "prompt_targets": 15918,
+      "content_targets": 194,
+      "rows": 128
+    },
+    {
+      "x": 30959,
+      "assistant_targets": 880,
+      "prompt_targets": 23012,
+      "content_targets": 282,
+      "rows": 128
+    },
+    {
+      "x": 30971,
+      "assistant_targets": 780,
+      "prompt_targets": 21368,
+      "content_targets": 179,
+      "rows": 128
+    },
+    {
+      "x": 29323,
+      "assistant_targets": 786,
+      "prompt_targets": 20456,
+      "content_targets": 195,
+      "rows": 128
+    },
+    {
+      "x": 32851,
+      "assistant_targets": 823,
+      "prompt_targets": 24186,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 29726,
+      "assistant_targets": 894,
+      "prompt_targets": 19926,
+      "content_targets": 218,
+      "rows": 128
+    },
+    {
+      "x": 30825,
+      "assistant_targets": 877,
+      "prompt_targets": 20964,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 30324,
+      "assistant_targets": 906,
+      "prompt_targets": 20636,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 30583,
+      "assistant_targets": 823,
+      "prompt_targets": 21556,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 30884,
+      "assistant_targets": 720,
+      "prompt_targets": 21224,
+      "content_targets": 176,
+      "rows": 128
+    },
+    {
+      "x": 29739,
+      "assistant_targets": 699,
+      "prompt_targets": 19486,
+      "content_targets": 141,
+      "rows": 128
+    },
+    {
+      "x": 29864,
+      "assistant_targets": 723,
+      "prompt_targets": 21684,
+      "content_targets": 207,
+      "rows": 128
+    },
+    {
+      "x": 30142,
+      "assistant_targets": 686,
+      "prompt_targets": 24934,
+      "content_targets": 261,
+      "rows": 128
+    },
+    {
+      "x": 31828,
+      "assistant_targets": 830,
+      "prompt_targets": 24338,
+      "content_targets": 275,
+      "rows": 128
+    },
+    {
+      "x": 31820,
+      "assistant_targets": 851,
+      "prompt_targets": 22168,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 29607,
+      "assistant_targets": 748,
+      "prompt_targets": 19928,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 30537,
+      "assistant_targets": 772,
+      "prompt_targets": 21102,
+      "content_targets": 213,
+      "rows": 128
+    },
+    {
+      "x": 30811,
+      "assistant_targets": 766,
+      "prompt_targets": 24654,
+      "content_targets": 281,
+      "rows": 128
+    },
+    {
+      "x": 29517,
+      "assistant_targets": 812,
+      "prompt_targets": 18276,
+      "content_targets": 172,
+      "rows": 128
+    },
+    {
+      "x": 30639,
+      "assistant_targets": 750,
+      "prompt_targets": 24642,
+      "content_targets": 280,
+      "rows": 128
+    },
+    {
+      "x": 28425,
+      "assistant_targets": 764,
+      "prompt_targets": 20916,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 29515,
+      "assistant_targets": 802,
+      "prompt_targets": 21138,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 30716,
+      "assistant_targets": 660,
+      "prompt_targets": 24124,
+      "content_targets": 210,
+      "rows": 128
+    },
+    {
+      "x": 32150,
+      "assistant_targets": 832,
+      "prompt_targets": 26396,
+      "content_targets": 326,
+      "rows": 128
+    },
+    {
+      "x": 29565,
+      "assistant_targets": 785,
+      "prompt_targets": 20078,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 28949,
+      "assistant_targets": 804,
+      "prompt_targets": 18538,
+      "content_targets": 187,
+      "rows": 128
+    },
+    {
+      "x": 30650,
+      "assistant_targets": 870,
+      "prompt_targets": 22186,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 30246,
+      "assistant_targets": 723,
+      "prompt_targets": 22290,
+      "content_targets": 189,
+      "rows": 128
+    },
+    {
+      "x": 31894,
+      "assistant_targets": 843,
+      "prompt_targets": 24560,
+      "content_targets": 292,
+      "rows": 128
+    },
+    {
+      "x": 32857,
+      "assistant_targets": 846,
+      "prompt_targets": 24292,
+      "content_targets": 231,
+      "rows": 128
+    },
+    {
+      "x": 32905,
+      "assistant_targets": 782,
+      "prompt_targets": 25912,
+      "content_targets": 266,
+      "rows": 128
+    },
+    {
+      "x": 29904,
+      "assistant_targets": 846,
+      "prompt_targets": 20680,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 30703,
+      "assistant_targets": 839,
+      "prompt_targets": 20774,
+      "content_targets": 234,
+      "rows": 128
+    },
+    {
+      "x": 28213,
+      "assistant_targets": 895,
+      "prompt_targets": 16882,
+      "content_targets": 195,
+      "rows": 128
+    },
+    {
+      "x": 29034,
+      "assistant_targets": 794,
+      "prompt_targets": 21850,
+      "content_targets": 272,
+      "rows": 128
+    },
+    {
+      "x": 30520,
+      "assistant_targets": 854,
+      "prompt_targets": 20358,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 29968,
+      "assistant_targets": 795,
+      "prompt_targets": 19082,
+      "content_targets": 168,
+      "rows": 128
+    },
+    {
+      "x": 30631,
+      "assistant_targets": 740,
+      "prompt_targets": 21662,
+      "content_targets": 191,
+      "rows": 128
+    },
+    {
+      "x": 34194,
+      "assistant_targets": 755,
+      "prompt_targets": 26968,
+      "content_targets": 257,
+      "rows": 128
+    },
+    {
+      "x": 32898,
+      "assistant_targets": 800,
+      "prompt_targets": 24134,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 29196,
+      "assistant_targets": 839,
+      "prompt_targets": 16886,
+      "content_targets": 184,
+      "rows": 128
+    },
+    {
+      "x": 31047,
+      "assistant_targets": 800,
+      "prompt_targets": 22974,
+      "content_targets": 250,
+      "rows": 128
+    },
+    {
+      "x": 30576,
+      "assistant_targets": 728,
+      "prompt_targets": 24258,
+      "content_targets": 268,
+      "rows": 128
+    },
+    {
+      "x": 32567,
+      "assistant_targets": 888,
+      "prompt_targets": 21472,
+      "content_targets": 213,
+      "rows": 128
+    },
+    {
+      "x": 31921,
+      "assistant_targets": 750,
+      "prompt_targets": 25264,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 28705,
+      "assistant_targets": 877,
+      "prompt_targets": 18286,
+      "content_targets": 199,
+      "rows": 128
+    },
+    {
+      "x": 28196,
+      "assistant_targets": 1040,
+      "prompt_targets": 17802,
+      "content_targets": 277,
+      "rows": 128
+    },
+    {
+      "x": 31154,
+      "assistant_targets": 967,
+      "prompt_targets": 20746,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 29518,
+      "assistant_targets": 794,
+      "prompt_targets": 19980,
+      "content_targets": 183,
+      "rows": 128
+    },
+    {
+      "x": 29875,
+      "assistant_targets": 824,
+      "prompt_targets": 20862,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 31075,
+      "assistant_targets": 809,
+      "prompt_targets": 21030,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 30329,
+      "assistant_targets": 733,
+      "prompt_targets": 22806,
+      "content_targets": 225,
+      "rows": 128
+    },
+    {
+      "x": 32562,
+      "assistant_targets": 853,
+      "prompt_targets": 25294,
+      "content_targets": 292,
+      "rows": 128
+    },
+    {
+      "x": 28836,
+      "assistant_targets": 704,
+      "prompt_targets": 20424,
+      "content_targets": 200,
+      "rows": 128
+    },
+    {
+      "x": 29425,
+      "assistant_targets": 850,
+      "prompt_targets": 19536,
+      "content_targets": 231,
+      "rows": 128
+    },
+    {
+      "x": 34352,
+      "assistant_targets": 740,
+      "prompt_targets": 28046,
+      "content_targets": 259,
+      "rows": 128
+    },
+    {
+      "x": 30898,
+      "assistant_targets": 768,
+      "prompt_targets": 21380,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 30616,
+      "assistant_targets": 911,
+      "prompt_targets": 20548,
+      "content_targets": 263,
+      "rows": 128
+    },
+    {
+      "x": 31105,
+      "assistant_targets": 947,
+      "prompt_targets": 20872,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 30970,
+      "assistant_targets": 914,
+      "prompt_targets": 21212,
+      "content_targets": 258,
+      "rows": 128
+    },
+    {
+      "x": 32071,
+      "assistant_targets": 906,
+      "prompt_targets": 23506,
+      "content_targets": 266,
+      "rows": 128
+    },
+    {
+      "x": 28120,
+      "assistant_targets": 878,
+      "prompt_targets": 16426,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 30934,
+      "assistant_targets": 857,
+      "prompt_targets": 24910,
+      "content_targets": 323,
+      "rows": 128
+    },
+    {
+      "x": 30406,
+      "assistant_targets": 751,
+      "prompt_targets": 22444,
+      "content_targets": 218,
+      "rows": 128
+    },
+    {
+      "x": 31699,
+      "assistant_targets": 903,
+      "prompt_targets": 21252,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 29913,
+      "assistant_targets": 819,
+      "prompt_targets": 18966,
+      "content_targets": 202,
+      "rows": 128
+    },
+    {
+      "x": 28767,
+      "assistant_targets": 816,
+      "prompt_targets": 18964,
+      "content_targets": 202,
+      "rows": 128
+    },
+    {
+      "x": 29161,
+      "assistant_targets": 877,
+      "prompt_targets": 19614,
+      "content_targets": 253,
+      "rows": 128
+    },
+    {
+      "x": 30263,
+      "assistant_targets": 726,
+      "prompt_targets": 20236,
+      "content_targets": 169,
+      "rows": 128
+    },
+    {
+      "x": 31213,
+      "assistant_targets": 785,
+      "prompt_targets": 21270,
+      "content_targets": 165,
+      "rows": 128
+    },
+    {
+      "x": 29685,
+      "assistant_targets": 677,
+      "prompt_targets": 24214,
+      "content_targets": 240,
+      "rows": 128
+    },
+    {
+      "x": 29897,
+      "assistant_targets": 794,
+      "prompt_targets": 22950,
+      "content_targets": 272,
+      "rows": 128
+    },
+    {
+      "x": 30302,
+      "assistant_targets": 919,
+      "prompt_targets": 18986,
+      "content_targets": 199,
+      "rows": 128
+    },
+    {
+      "x": 32242,
+      "assistant_targets": 832,
+      "prompt_targets": 27486,
+      "content_targets": 352,
+      "rows": 128
+    },
+    {
+      "x": 32020,
+      "assistant_targets": 749,
+      "prompt_targets": 23414,
+      "content_targets": 207,
+      "rows": 128
+    },
+    {
+      "x": 29251,
+      "assistant_targets": 812,
+      "prompt_targets": 20468,
+      "content_targets": 226,
+      "rows": 128
+    },
+    {
+      "x": 31127,
+      "assistant_targets": 663,
+      "prompt_targets": 25440,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 31605,
+      "assistant_targets": 680,
+      "prompt_targets": 24934,
+      "content_targets": 228,
+      "rows": 128
+    },
+    {
+      "x": 31494,
+      "assistant_targets": 646,
+      "prompt_targets": 24382,
+      "content_targets": 198,
+      "rows": 128
+    },
+    {
+      "x": 33794,
+      "assistant_targets": 784,
+      "prompt_targets": 29118,
+      "content_targets": 328,
+      "rows": 128
+    },
+    {
+      "x": 29317,
+      "assistant_targets": 788,
+      "prompt_targets": 18568,
+      "content_targets": 160,
+      "rows": 128
+    },
+    {
+      "x": 30484,
+      "assistant_targets": 656,
+      "prompt_targets": 22500,
+      "content_targets": 184,
+      "rows": 128
+    },
+    {
+      "x": 29614,
+      "assistant_targets": 784,
+      "prompt_targets": 19320,
+      "content_targets": 176,
+      "rows": 128
+    },
+    {
+      "x": 32008,
+      "assistant_targets": 724,
+      "prompt_targets": 26070,
+      "content_targets": 271,
+      "rows": 128
+    },
+    {
+      "x": 30122,
+      "assistant_targets": 848,
+      "prompt_targets": 20202,
+      "content_targets": 183,
+      "rows": 128
+    },
+    {
+      "x": 32125,
+      "assistant_targets": 655,
+      "prompt_targets": 24850,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 29604,
+      "assistant_targets": 765,
+      "prompt_targets": 20734,
+      "content_targets": 201,
+      "rows": 128
+    },
+    {
+      "x": 29548,
+      "assistant_targets": 913,
+      "prompt_targets": 20028,
+      "content_targets": 279,
+      "rows": 128
+    },
+    {
+      "x": 32152,
+      "assistant_targets": 709,
+      "prompt_targets": 25128,
+      "content_targets": 233,
+      "rows": 128
+    },
+    {
+      "x": 31985,
+      "assistant_targets": 811,
+      "prompt_targets": 26148,
+      "content_targets": 302,
+      "rows": 128
+    },
+    {
+      "x": 29029,
+      "assistant_targets": 724,
+      "prompt_targets": 22546,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 29854,
+      "assistant_targets": 755,
+      "prompt_targets": 22246,
+      "content_targets": 234,
+      "rows": 128
+    },
+    {
+      "x": 32849,
+      "assistant_targets": 872,
+      "prompt_targets": 23586,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 33399,
+      "assistant_targets": 731,
+      "prompt_targets": 27142,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 30143,
+      "assistant_targets": 942,
+      "prompt_targets": 20384,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 29904,
+      "assistant_targets": 860,
+      "prompt_targets": 17914,
+      "content_targets": 154,
+      "rows": 128
+    },
+    {
+      "x": 30769,
+      "assistant_targets": 769,
+      "prompt_targets": 23886,
+      "content_targets": 261,
+      "rows": 128
+    },
+    {
+      "x": 31702,
+      "assistant_targets": 786,
+      "prompt_targets": 24686,
+      "content_targets": 272,
+      "rows": 128
+    },
+    {
+      "x": 27226,
+      "assistant_targets": 924,
+      "prompt_targets": 17028,
+      "content_targets": 263,
+      "rows": 128
+    },
+    {
+      "x": 30503,
+      "assistant_targets": 763,
+      "prompt_targets": 21800,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 30938,
+      "assistant_targets": 859,
+      "prompt_targets": 24588,
+      "content_targets": 328,
+      "rows": 128
+    },
+    {
+      "x": 30559,
+      "assistant_targets": 795,
+      "prompt_targets": 22506,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 29800,
+      "assistant_targets": 847,
+      "prompt_targets": 18836,
+      "content_targets": 178,
+      "rows": 128
+    },
+    {
+      "x": 29784,
+      "assistant_targets": 790,
+      "prompt_targets": 23882,
+      "content_targets": 295,
+      "rows": 128
+    },
+    {
+      "x": 29586,
+      "assistant_targets": 768,
+      "prompt_targets": 21492,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 30157,
+      "assistant_targets": 761,
+      "prompt_targets": 22080,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 31596,
+      "assistant_targets": 714,
+      "prompt_targets": 23708,
+      "content_targets": 184,
+      "rows": 128
+    },
+    {
+      "x": 30616,
+      "assistant_targets": 723,
+      "prompt_targets": 24884,
+      "content_targets": 264,
+      "rows": 128
+    },
+    {
+      "x": 29193,
+      "assistant_targets": 875,
+      "prompt_targets": 19038,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 29425,
+      "assistant_targets": 816,
+      "prompt_targets": 20376,
+      "content_targets": 212,
+      "rows": 128
+    },
+    {
+      "x": 31611,
+      "assistant_targets": 836,
+      "prompt_targets": 21930,
+      "content_targets": 221,
+      "rows": 128
+    },
+    {
+      "x": 32046,
+      "assistant_targets": 908,
+      "prompt_targets": 24576,
+      "content_targets": 315,
+      "rows": 128
+    },
+    {
+      "x": 30862,
+      "assistant_targets": 782,
+      "prompt_targets": 22734,
+      "content_targets": 240,
+      "rows": 128
+    },
+    {
+      "x": 29012,
+      "assistant_targets": 859,
+      "prompt_targets": 14988,
+      "content_targets": 114,
+      "rows": 128
+    },
+    {
+      "x": 30160,
+      "assistant_targets": 817,
+      "prompt_targets": 21472,
+      "content_targets": 229,
+      "rows": 128
+    },
+    {
+      "x": 32897,
+      "assistant_targets": 675,
+      "prompt_targets": 27164,
+      "content_targets": 234,
+      "rows": 128
+    },
+    {
+      "x": 29199,
+      "assistant_targets": 917,
+      "prompt_targets": 20900,
+      "content_targets": 275,
+      "rows": 128
+    },
+    {
+      "x": 27144,
+      "assistant_targets": 942,
+      "prompt_targets": 17134,
+      "content_targets": 222,
+      "rows": 128
+    },
+    {
+      "x": 27341,
+      "assistant_targets": 872,
+      "prompt_targets": 15514,
+      "content_targets": 193,
+      "rows": 128
+    },
+    {
+      "x": 31151,
+      "assistant_targets": 838,
+      "prompt_targets": 19042,
+      "content_targets": 159,
+      "rows": 128
+    },
+    {
+      "x": 30968,
+      "assistant_targets": 813,
+      "prompt_targets": 21880,
+      "content_targets": 221,
+      "rows": 128
+    },
+    {
+      "x": 31985,
+      "assistant_targets": 756,
+      "prompt_targets": 24802,
+      "content_targets": 257,
+      "rows": 128
+    },
+    {
+      "x": 30047,
+      "assistant_targets": 859,
+      "prompt_targets": 20674,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 31358,
+      "assistant_targets": 721,
+      "prompt_targets": 25612,
+      "content_targets": 269,
+      "rows": 128
+    },
+    {
+      "x": 30891,
+      "assistant_targets": 836,
+      "prompt_targets": 22332,
+      "content_targets": 246,
+      "rows": 128
+    },
+    {
+      "x": 28802,
+      "assistant_targets": 760,
+      "prompt_targets": 21236,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 32363,
+      "assistant_targets": 806,
+      "prompt_targets": 24698,
+      "content_targets": 259,
+      "rows": 128
+    },
+    {
+      "x": 32514,
+      "assistant_targets": 813,
+      "prompt_targets": 25034,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 30568,
+      "assistant_targets": 687,
+      "prompt_targets": 25014,
+      "content_targets": 244,
+      "rows": 128
+    },
+    {
+      "x": 31037,
+      "assistant_targets": 815,
+      "prompt_targets": 21328,
+      "content_targets": 216,
+      "rows": 128
+    },
+    {
+      "x": 29932,
+      "assistant_targets": 759,
+      "prompt_targets": 22526,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 29502,
+      "assistant_targets": 845,
+      "prompt_targets": 21086,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 29305,
+      "assistant_targets": 729,
+      "prompt_targets": 21632,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 31691,
+      "assistant_targets": 785,
+      "prompt_targets": 22952,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 31699,
+      "assistant_targets": 886,
+      "prompt_targets": 21720,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 30725,
+      "assistant_targets": 758,
+      "prompt_targets": 22300,
+      "content_targets": 218,
+      "rows": 128
+    },
+    {
+      "x": 29326,
+      "assistant_targets": 915,
+      "prompt_targets": 15928,
+      "content_targets": 165,
+      "rows": 128
+    },
+    {
+      "x": 34485,
+      "assistant_targets": 827,
+      "prompt_targets": 28336,
+      "content_targets": 305,
+      "rows": 128
+    },
+    {
+      "x": 31656,
+      "assistant_targets": 696,
+      "prompt_targets": 27064,
+      "content_targets": 284,
+      "rows": 128
+    },
+    {
+      "x": 29446,
+      "assistant_targets": 843,
+      "prompt_targets": 22100,
+      "content_targets": 286,
+      "rows": 128
+    },
+    {
+      "x": 31178,
+      "assistant_targets": 668,
+      "prompt_targets": 22956,
+      "content_targets": 196,
+      "rows": 128
+    },
+    {
+      "x": 31180,
+      "assistant_targets": 815,
+      "prompt_targets": 24094,
+      "content_targets": 275,
+      "rows": 128
+    },
+    {
+      "x": 32536,
+      "assistant_targets": 820,
+      "prompt_targets": 24628,
+      "content_targets": 263,
+      "rows": 128
+    },
+    {
+      "x": 29391,
+      "assistant_targets": 834,
+      "prompt_targets": 18942,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 27847,
+      "assistant_targets": 886,
+      "prompt_targets": 16494,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 30354,
+      "assistant_targets": 762,
+      "prompt_targets": 21570,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 31487,
+      "assistant_targets": 772,
+      "prompt_targets": 22554,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 30083,
+      "assistant_targets": 832,
+      "prompt_targets": 19378,
+      "content_targets": 178,
+      "rows": 128
+    },
+    {
+      "x": 31678,
+      "assistant_targets": 854,
+      "prompt_targets": 22790,
+      "content_targets": 262,
+      "rows": 128
+    },
+    {
+      "x": 29958,
+      "assistant_targets": 802,
+      "prompt_targets": 20204,
+      "content_targets": 189,
+      "rows": 128
+    },
+    {
+      "x": 32073,
+      "assistant_targets": 758,
+      "prompt_targets": 26150,
+      "content_targets": 284,
+      "rows": 128
+    },
+    {
+      "x": 29758,
+      "assistant_targets": 976,
+      "prompt_targets": 20040,
+      "content_targets": 277,
+      "rows": 128
+    },
+    {
+      "x": 28448,
+      "assistant_targets": 851,
+      "prompt_targets": 20434,
+      "content_targets": 263,
+      "rows": 128
+    },
+    {
+      "x": 31744,
+      "assistant_targets": 773,
+      "prompt_targets": 21492,
+      "content_targets": 175,
+      "rows": 128
+    },
+    {
+      "x": 31040,
+      "assistant_targets": 781,
+      "prompt_targets": 20246,
+      "content_targets": 163,
+      "rows": 128
+    },
+    {
+      "x": 31383,
+      "assistant_targets": 660,
+      "prompt_targets": 25492,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 29742,
+      "assistant_targets": 752,
+      "prompt_targets": 22702,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 31269,
+      "assistant_targets": 732,
+      "prompt_targets": 23850,
+      "content_targets": 234,
+      "rows": 128
+    },
+    {
+      "x": 30921,
+      "assistant_targets": 802,
+      "prompt_targets": 22788,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 31073,
+      "assistant_targets": 753,
+      "prompt_targets": 23490,
+      "content_targets": 223,
+      "rows": 128
+    },
+    {
+      "x": 33113,
+      "assistant_targets": 872,
+      "prompt_targets": 24520,
+      "content_targets": 261,
+      "rows": 128
+    },
+    {
+      "x": 29705,
+      "assistant_targets": 770,
+      "prompt_targets": 20362,
+      "content_targets": 196,
+      "rows": 128
+    },
+    {
+      "x": 28485,
+      "assistant_targets": 926,
+      "prompt_targets": 19520,
+      "content_targets": 284,
+      "rows": 128
+    },
+    {
+      "x": 29583,
+      "assistant_targets": 753,
+      "prompt_targets": 21608,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 28931,
+      "assistant_targets": 775,
+      "prompt_targets": 18544,
+      "content_targets": 170,
+      "rows": 128
+    },
+    {
+      "x": 29307,
+      "assistant_targets": 723,
+      "prompt_targets": 22280,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 28314,
+      "assistant_targets": 852,
+      "prompt_targets": 19368,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 33410,
+      "assistant_targets": 863,
+      "prompt_targets": 24416,
+      "content_targets": 264,
+      "rows": 128
+    },
+    {
+      "x": 28628,
+      "assistant_targets": 783,
+      "prompt_targets": 19362,
+      "content_targets": 189,
+      "rows": 128
+    },
+    {
+      "x": 30537,
+      "assistant_targets": 781,
+      "prompt_targets": 23106,
+      "content_targets": 266,
+      "rows": 128
+    },
+    {
+      "x": 30902,
+      "assistant_targets": 840,
+      "prompt_targets": 21424,
+      "content_targets": 223,
+      "rows": 128
+    },
+    {
+      "x": 27930,
+      "assistant_targets": 945,
+      "prompt_targets": 16388,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 31147,
+      "assistant_targets": 705,
+      "prompt_targets": 25168,
+      "content_targets": 245,
+      "rows": 128
+    },
+    {
+      "x": 31733,
+      "assistant_targets": 683,
+      "prompt_targets": 25938,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 30402,
+      "assistant_targets": 798,
+      "prompt_targets": 23618,
+      "content_targets": 280,
+      "rows": 128
+    },
+    {
+      "x": 30128,
+      "assistant_targets": 910,
+      "prompt_targets": 20762,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 30531,
+      "assistant_targets": 704,
+      "prompt_targets": 23668,
+      "content_targets": 248,
+      "rows": 128
+    },
+    {
+      "x": 30401,
+      "assistant_targets": 871,
+      "prompt_targets": 21498,
+      "content_targets": 276,
+      "rows": 128
+    },
+    {
+      "x": 28249,
+      "assistant_targets": 750,
+      "prompt_targets": 19164,
+      "content_targets": 182,
+      "rows": 128
+    },
+    {
+      "x": 28607,
+      "assistant_targets": 908,
+      "prompt_targets": 17706,
+      "content_targets": 235,
+      "rows": 128
+    },
+    {
+      "x": 31340,
+      "assistant_targets": 851,
+      "prompt_targets": 23746,
+      "content_targets": 282,
+      "rows": 128
+    },
+    {
+      "x": 29309,
+      "assistant_targets": 731,
+      "prompt_targets": 20476,
+      "content_targets": 191,
+      "rows": 128
+    },
+    {
+      "x": 30033,
+      "assistant_targets": 940,
+      "prompt_targets": 21860,
+      "content_targets": 316,
+      "rows": 128
+    },
+    {
+      "x": 30750,
+      "assistant_targets": 738,
+      "prompt_targets": 24142,
+      "content_targets": 240,
+      "rows": 128
+    },
+    {
+      "x": 31497,
+      "assistant_targets": 797,
+      "prompt_targets": 23214,
+      "content_targets": 228,
+      "rows": 128
+    },
+    {
+      "x": 31609,
+      "assistant_targets": 812,
+      "prompt_targets": 23268,
+      "content_targets": 233,
+      "rows": 128
+    },
+    {
+      "x": 32079,
+      "assistant_targets": 988,
+      "prompt_targets": 20562,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 29191,
+      "assistant_targets": 775,
+      "prompt_targets": 19842,
+      "content_targets": 179,
+      "rows": 128
+    },
+    {
+      "x": 30932,
+      "assistant_targets": 800,
+      "prompt_targets": 22382,
+      "content_targets": 235,
+      "rows": 128
+    },
+    {
+      "x": 30236,
+      "assistant_targets": 787,
+      "prompt_targets": 20372,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 30507,
+      "assistant_targets": 723,
+      "prompt_targets": 23734,
+      "content_targets": 253,
+      "rows": 128
+    },
+    {
+      "x": 27780,
+      "assistant_targets": 860,
+      "prompt_targets": 15894,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 31284,
+      "assistant_targets": 780,
+      "prompt_targets": 24056,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 32732,
+      "assistant_targets": 762,
+      "prompt_targets": 26440,
+      "content_targets": 273,
+      "rows": 128
+    },
+    {
+      "x": 28911,
+      "assistant_targets": 761,
+      "prompt_targets": 21042,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 29016,
+      "assistant_targets": 849,
+      "prompt_targets": 17896,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 31620,
+      "assistant_targets": 944,
+      "prompt_targets": 21450,
+      "content_targets": 256,
+      "rows": 128
+    },
+    {
+      "x": 32044,
+      "assistant_targets": 786,
+      "prompt_targets": 22018,
+      "content_targets": 199,
+      "rows": 128
+    },
+    {
+      "x": 30587,
+      "assistant_targets": 735,
+      "prompt_targets": 22348,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 30777,
+      "assistant_targets": 885,
+      "prompt_targets": 20508,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 31065,
+      "assistant_targets": 879,
+      "prompt_targets": 22176,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 30396,
+      "assistant_targets": 885,
+      "prompt_targets": 23286,
+      "content_targets": 316,
+      "rows": 128
+    },
+    {
+      "x": 31192,
+      "assistant_targets": 904,
+      "prompt_targets": 23980,
+      "content_targets": 309,
+      "rows": 128
+    },
+    {
+      "x": 31123,
+      "assistant_targets": 720,
+      "prompt_targets": 23828,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 32677,
+      "assistant_targets": 893,
+      "prompt_targets": 22948,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 26351,
+      "assistant_targets": 999,
+      "prompt_targets": 11844,
+      "content_targets": 132,
+      "rows": 128
+    },
+    {
+      "x": 30154,
+      "assistant_targets": 815,
+      "prompt_targets": 20850,
+      "content_targets": 221,
+      "rows": 128
+    },
+    {
+      "x": 30655,
+      "assistant_targets": 946,
+      "prompt_targets": 21620,
+      "content_targets": 279,
+      "rows": 128
+    },
+    {
+      "x": 34371,
+      "assistant_targets": 791,
+      "prompt_targets": 26904,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 31867,
+      "assistant_targets": 874,
+      "prompt_targets": 22234,
+      "content_targets": 233,
+      "rows": 128
+    },
+    {
+      "x": 29710,
+      "assistant_targets": 883,
+      "prompt_targets": 17198,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 32882,
+      "assistant_targets": 764,
+      "prompt_targets": 28198,
+      "content_targets": 318,
+      "rows": 128
+    },
+    {
+      "x": 27839,
+      "assistant_targets": 788,
+      "prompt_targets": 17656,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 33006,
+      "assistant_targets": 797,
+      "prompt_targets": 26866,
+      "content_targets": 308,
+      "rows": 128
+    },
+    {
+      "x": 31191,
+      "assistant_targets": 647,
+      "prompt_targets": 23042,
+      "content_targets": 168,
+      "rows": 128
+    },
+    {
+      "x": 32200,
+      "assistant_targets": 763,
+      "prompt_targets": 22792,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 32200,
+      "assistant_targets": 740,
+      "prompt_targets": 27556,
+      "content_targets": 306,
+      "rows": 128
+    },
+    {
+      "x": 27771,
+      "assistant_targets": 891,
+      "prompt_targets": 19614,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 31080,
+      "assistant_targets": 878,
+      "prompt_targets": 21426,
+      "content_targets": 229,
+      "rows": 128
+    },
+    {
+      "x": 30284,
+      "assistant_targets": 790,
+      "prompt_targets": 23638,
+      "content_targets": 281,
+      "rows": 128
+    },
+    {
+      "x": 27956,
+      "assistant_targets": 834,
+      "prompt_targets": 16540,
+      "content_targets": 171,
+      "rows": 128
+    },
+    {
+      "x": 29521,
+      "assistant_targets": 880,
+      "prompt_targets": 20488,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 31312,
+      "assistant_targets": 688,
+      "prompt_targets": 24410,
+      "content_targets": 226,
+      "rows": 128
+    },
+    {
+      "x": 29091,
+      "assistant_targets": 802,
+      "prompt_targets": 19570,
+      "content_targets": 213,
+      "rows": 128
+    },
+    {
+      "x": 31711,
+      "assistant_targets": 713,
+      "prompt_targets": 25238,
+      "content_targets": 244,
+      "rows": 128
+    },
+    {
+      "x": 33574,
+      "assistant_targets": 885,
+      "prompt_targets": 24944,
+      "content_targets": 291,
+      "rows": 128
+    },
+    {
+      "x": 29395,
+      "assistant_targets": 885,
+      "prompt_targets": 21124,
+      "content_targets": 295,
+      "rows": 128
+    },
+    {
+      "x": 31677,
+      "assistant_targets": 847,
+      "prompt_targets": 22076,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 31429,
+      "assistant_targets": 732,
+      "prompt_targets": 24170,
+      "content_targets": 239,
+      "rows": 128
+    },
+    {
+      "x": 26759,
+      "assistant_targets": 925,
+      "prompt_targets": 13002,
+      "content_targets": 156,
+      "rows": 128
+    },
+    {
+      "x": 28100,
+      "assistant_targets": 927,
+      "prompt_targets": 15024,
+      "content_targets": 153,
+      "rows": 128
+    },
+    {
+      "x": 30184,
+      "assistant_targets": 760,
+      "prompt_targets": 20518,
+      "content_targets": 184,
+      "rows": 128
+    },
+    {
+      "x": 28977,
+      "assistant_targets": 767,
+      "prompt_targets": 18922,
+      "content_targets": 172,
+      "rows": 128
+    },
+    {
+      "x": 29422,
+      "assistant_targets": 823,
+      "prompt_targets": 18466,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 31959,
+      "assistant_targets": 828,
+      "prompt_targets": 23652,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 31077,
+      "assistant_targets": 891,
+      "prompt_targets": 23560,
+      "content_targets": 317,
+      "rows": 128
+    },
+    {
+      "x": 29121,
+      "assistant_targets": 762,
+      "prompt_targets": 23166,
+      "content_targets": 279,
+      "rows": 128
+    },
+    {
+      "x": 31750,
+      "assistant_targets": 796,
+      "prompt_targets": 24680,
+      "content_targets": 260,
+      "rows": 128
+    },
+    {
+      "x": 29112,
+      "assistant_targets": 828,
+      "prompt_targets": 21102,
+      "content_targets": 244,
+      "rows": 128
+    },
+    {
+      "x": 29527,
+      "assistant_targets": 831,
+      "prompt_targets": 22404,
+      "content_targets": 284,
+      "rows": 128
+    },
+    {
+      "x": 31780,
+      "assistant_targets": 960,
+      "prompt_targets": 21642,
+      "content_targets": 285,
+      "rows": 128
+    },
+    {
+      "x": 30896,
+      "assistant_targets": 675,
+      "prompt_targets": 24658,
+      "content_targets": 231,
+      "rows": 128
+    },
+    {
+      "x": 29445,
+      "assistant_targets": 864,
+      "prompt_targets": 20492,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 30383,
+      "assistant_targets": 786,
+      "prompt_targets": 23782,
+      "content_targets": 276,
+      "rows": 128
+    },
+    {
+      "x": 29548,
+      "assistant_targets": 821,
+      "prompt_targets": 21544,
+      "content_targets": 250,
+      "rows": 128
+    },
+    {
+      "x": 29689,
+      "assistant_targets": 694,
+      "prompt_targets": 23058,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 33142,
+      "assistant_targets": 885,
+      "prompt_targets": 26780,
+      "content_targets": 313,
+      "rows": 128
+    },
+    {
+      "x": 29759,
+      "assistant_targets": 723,
+      "prompt_targets": 21906,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 32186,
+      "assistant_targets": 710,
+      "prompt_targets": 27556,
+      "content_targets": 291,
+      "rows": 128
+    },
+    {
+      "x": 28394,
+      "assistant_targets": 749,
+      "prompt_targets": 16802,
+      "content_targets": 159,
+      "rows": 128
+    },
+    {
+      "x": 30206,
+      "assistant_targets": 752,
+      "prompt_targets": 22890,
+      "content_targets": 246,
+      "rows": 128
+    },
+    {
+      "x": 30143,
+      "assistant_targets": 819,
+      "prompt_targets": 20558,
+      "content_targets": 207,
+      "rows": 128
+    },
+    {
+      "x": 30073,
+      "assistant_targets": 928,
+      "prompt_targets": 19288,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 31562,
+      "assistant_targets": 793,
+      "prompt_targets": 24458,
+      "content_targets": 272,
+      "rows": 128
+    },
+    {
+      "x": 29606,
+      "assistant_targets": 818,
+      "prompt_targets": 20038,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 30882,
+      "assistant_targets": 846,
+      "prompt_targets": 19792,
+      "content_targets": 175,
+      "rows": 128
+    },
+    {
+      "x": 30297,
+      "assistant_targets": 770,
+      "prompt_targets": 23350,
+      "content_targets": 257,
+      "rows": 128
+    },
+    {
+      "x": 30961,
+      "assistant_targets": 730,
+      "prompt_targets": 22548,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 31810,
+      "assistant_targets": 713,
+      "prompt_targets": 24614,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 30065,
+      "assistant_targets": 727,
+      "prompt_targets": 20630,
+      "content_targets": 177,
+      "rows": 128
+    },
+    {
+      "x": 31398,
+      "assistant_targets": 764,
+      "prompt_targets": 25590,
+      "content_targets": 294,
+      "rows": 128
+    },
+    {
+      "x": 30124,
+      "assistant_targets": 650,
+      "prompt_targets": 24296,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 31916,
+      "assistant_targets": 866,
+      "prompt_targets": 25270,
+      "content_targets": 310,
+      "rows": 128
+    },
+    {
+      "x": 30608,
+      "assistant_targets": 774,
+      "prompt_targets": 23344,
+      "content_targets": 263,
+      "rows": 128
+    },
+    {
+      "x": 28900,
+      "assistant_targets": 875,
+      "prompt_targets": 17070,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 31428,
+      "assistant_targets": 910,
+      "prompt_targets": 22688,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 31294,
+      "assistant_targets": 789,
+      "prompt_targets": 21562,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 29997,
+      "assistant_targets": 978,
+      "prompt_targets": 21240,
+      "content_targets": 291,
+      "rows": 128
+    },
+    {
+      "x": 29841,
+      "assistant_targets": 857,
+      "prompt_targets": 22860,
+      "content_targets": 314,
+      "rows": 128
+    },
+    {
+      "x": 34262,
+      "assistant_targets": 632,
+      "prompt_targets": 29750,
+      "content_targets": 252,
+      "rows": 128
+    },
+    {
+      "x": 32971,
+      "assistant_targets": 698,
+      "prompt_targets": 24428,
+      "content_targets": 187,
+      "rows": 128
+    },
+    {
+      "x": 30475,
+      "assistant_targets": 743,
+      "prompt_targets": 22262,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 30918,
+      "assistant_targets": 673,
+      "prompt_targets": 25244,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 32402,
+      "assistant_targets": 846,
+      "prompt_targets": 23238,
+      "content_targets": 225,
+      "rows": 128
+    },
+    {
+      "x": 29350,
+      "assistant_targets": 835,
+      "prompt_targets": 19792,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 29437,
+      "assistant_targets": 861,
+      "prompt_targets": 19696,
+      "content_targets": 257,
+      "rows": 128
+    },
+    {
+      "x": 30534,
+      "assistant_targets": 670,
+      "prompt_targets": 25996,
+      "content_targets": 271,
+      "rows": 128
+    },
+    {
+      "x": 27965,
+      "assistant_targets": 838,
+      "prompt_targets": 15794,
+      "content_targets": 154,
+      "rows": 128
+    },
+    {
+      "x": 30302,
+      "assistant_targets": 802,
+      "prompt_targets": 20506,
+      "content_targets": 176,
+      "rows": 128
+    },
+    {
+      "x": 32299,
+      "assistant_targets": 765,
+      "prompt_targets": 26636,
+      "content_targets": 287,
+      "rows": 128
+    },
+    {
+      "x": 32964,
+      "assistant_targets": 706,
+      "prompt_targets": 26336,
+      "content_targets": 234,
+      "rows": 128
+    },
+    {
+      "x": 31670,
+      "assistant_targets": 802,
+      "prompt_targets": 22156,
+      "content_targets": 222,
+      "rows": 128
+    },
+    {
+      "x": 34448,
+      "assistant_targets": 690,
+      "prompt_targets": 27504,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 29312,
+      "assistant_targets": 811,
+      "prompt_targets": 20912,
+      "content_targets": 233,
+      "rows": 128
+    },
+    {
+      "x": 32084,
+      "assistant_targets": 666,
+      "prompt_targets": 27518,
+      "content_targets": 269,
+      "rows": 128
+    },
+    {
+      "x": 29436,
+      "assistant_targets": 725,
+      "prompt_targets": 22630,
+      "content_targets": 219,
+      "rows": 128
+    },
+    {
+      "x": 30115,
+      "assistant_targets": 776,
+      "prompt_targets": 21948,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 30723,
+      "assistant_targets": 730,
+      "prompt_targets": 19928,
+      "content_targets": 163,
+      "rows": 128
+    },
+    {
+      "x": 29530,
+      "assistant_targets": 816,
+      "prompt_targets": 22098,
+      "content_targets": 275,
+      "rows": 128
+    },
+    {
+      "x": 34313,
+      "assistant_targets": 681,
+      "prompt_targets": 28294,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 30415,
+      "assistant_targets": 821,
+      "prompt_targets": 18972,
+      "content_targets": 146,
+      "rows": 128
+    },
+    {
+      "x": 30645,
+      "assistant_targets": 874,
+      "prompt_targets": 22080,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 33760,
+      "assistant_targets": 830,
+      "prompt_targets": 23642,
+      "content_targets": 204,
+      "rows": 128
+    },
+    {
+      "x": 31282,
+      "assistant_targets": 724,
+      "prompt_targets": 23384,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 28428,
+      "assistant_targets": 788,
+      "prompt_targets": 19000,
+      "content_targets": 233,
+      "rows": 128
+    },
+    {
+      "x": 32067,
+      "assistant_targets": 798,
+      "prompt_targets": 24842,
+      "content_targets": 244,
+      "rows": 128
+    },
+    {
+      "x": 29808,
+      "assistant_targets": 721,
+      "prompt_targets": 19346,
+      "content_targets": 151,
+      "rows": 128
+    },
+    {
+      "x": 29053,
+      "assistant_targets": 875,
+      "prompt_targets": 15698,
+      "content_targets": 172,
+      "rows": 128
+    },
+    {
+      "x": 28677,
+      "assistant_targets": 878,
+      "prompt_targets": 18390,
+      "content_targets": 221,
+      "rows": 128
+    },
+    {
+      "x": 29204,
+      "assistant_targets": 803,
+      "prompt_targets": 19298,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 30897,
+      "assistant_targets": 772,
+      "prompt_targets": 22730,
+      "content_targets": 206,
+      "rows": 128
+    },
+    {
+      "x": 29119,
+      "assistant_targets": 767,
+      "prompt_targets": 21108,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 32107,
+      "assistant_targets": 848,
+      "prompt_targets": 24410,
+      "content_targets": 277,
+      "rows": 128
+    },
+    {
+      "x": 32573,
+      "assistant_targets": 787,
+      "prompt_targets": 25600,
+      "content_targets": 258,
+      "rows": 128
+    },
+    {
+      "x": 28995,
+      "assistant_targets": 796,
+      "prompt_targets": 19420,
+      "content_targets": 208,
+      "rows": 128
+    },
+    {
+      "x": 30482,
+      "assistant_targets": 899,
+      "prompt_targets": 22074,
+      "content_targets": 276,
+      "rows": 128
+    },
+    {
+      "x": 30029,
+      "assistant_targets": 895,
+      "prompt_targets": 20522,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 31483,
+      "assistant_targets": 791,
+      "prompt_targets": 23444,
+      "content_targets": 216,
+      "rows": 128
+    },
+    {
+      "x": 32486,
+      "assistant_targets": 877,
+      "prompt_targets": 22590,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 30406,
+      "assistant_targets": 910,
+      "prompt_targets": 19140,
+      "content_targets": 219,
+      "rows": 128
+    },
+    {
+      "x": 29029,
+      "assistant_targets": 783,
+      "prompt_targets": 20880,
+      "content_targets": 252,
+      "rows": 128
+    },
+    {
+      "x": 28233,
+      "assistant_targets": 823,
+      "prompt_targets": 18116,
+      "content_targets": 212,
+      "rows": 128
+    },
+    {
+      "x": 32512,
+      "assistant_targets": 822,
+      "prompt_targets": 26490,
+      "content_targets": 303,
+      "rows": 128
+    },
+    {
+      "x": 29003,
+      "assistant_targets": 833,
+      "prompt_targets": 18080,
+      "content_targets": 187,
+      "rows": 128
+    },
+    {
+      "x": 31878,
+      "assistant_targets": 789,
+      "prompt_targets": 25818,
+      "content_targets": 288,
+      "rows": 128
+    },
+    {
+      "x": 31130,
+      "assistant_targets": 758,
+      "prompt_targets": 24302,
+      "content_targets": 245,
+      "rows": 128
+    },
+    {
+      "x": 30006,
+      "assistant_targets": 831,
+      "prompt_targets": 20214,
+      "content_targets": 212,
+      "rows": 128
+    },
+    {
+      "x": 30213,
+      "assistant_targets": 699,
+      "prompt_targets": 24072,
+      "content_targets": 254,
+      "rows": 128
+    },
+    {
+      "x": 29243,
+      "assistant_targets": 834,
+      "prompt_targets": 19990,
+      "content_targets": 244,
+      "rows": 128
+    },
+    {
+      "x": 31639,
+      "assistant_targets": 928,
+      "prompt_targets": 22522,
+      "content_targets": 282,
+      "rows": 128
+    },
+    {
+      "x": 31190,
+      "assistant_targets": 756,
+      "prompt_targets": 23510,
+      "content_targets": 254,
+      "rows": 128
+    },
+    {
+      "x": 30624,
+      "assistant_targets": 920,
+      "prompt_targets": 19174,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 30171,
+      "assistant_targets": 717,
+      "prompt_targets": 22262,
+      "content_targets": 202,
+      "rows": 128
+    },
+    {
+      "x": 32642,
+      "assistant_targets": 859,
+      "prompt_targets": 25530,
+      "content_targets": 313,
+      "rows": 128
+    },
+    {
+      "x": 30652,
+      "assistant_targets": 690,
+      "prompt_targets": 24774,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 32794,
+      "assistant_targets": 773,
+      "prompt_targets": 24846,
+      "content_targets": 228,
+      "rows": 128
+    },
+    {
+      "x": 30190,
+      "assistant_targets": 884,
+      "prompt_targets": 20372,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 31610,
+      "assistant_targets": 783,
+      "prompt_targets": 24610,
+      "content_targets": 256,
+      "rows": 128
+    },
+    {
+      "x": 27994,
+      "assistant_targets": 721,
+      "prompt_targets": 20738,
+      "content_targets": 219,
+      "rows": 128
+    },
+    {
+      "x": 30576,
+      "assistant_targets": 784,
+      "prompt_targets": 23070,
+      "content_targets": 253,
+      "rows": 128
+    },
+    {
+      "x": 29888,
+      "assistant_targets": 698,
+      "prompt_targets": 22520,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 33302,
+      "assistant_targets": 846,
+      "prompt_targets": 24560,
+      "content_targets": 250,
+      "rows": 128
+    },
+    {
+      "x": 28943,
+      "assistant_targets": 840,
+      "prompt_targets": 18038,
+      "content_targets": 182,
+      "rows": 128
+    },
+    {
+      "x": 27508,
+      "assistant_targets": 897,
+      "prompt_targets": 16926,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 29940,
+      "assistant_targets": 845,
+      "prompt_targets": 21084,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 31330,
+      "assistant_targets": 692,
+      "prompt_targets": 26738,
+      "content_targets": 282,
+      "rows": 128
+    },
+    {
+      "x": 30504,
+      "assistant_targets": 848,
+      "prompt_targets": 24518,
+      "content_targets": 328,
+      "rows": 128
+    },
+    {
+      "x": 27885,
+      "assistant_targets": 730,
+      "prompt_targets": 19774,
+      "content_targets": 201,
+      "rows": 128
+    },
+    {
+      "x": 32715,
+      "assistant_targets": 766,
+      "prompt_targets": 24654,
+      "content_targets": 216,
+      "rows": 128
+    },
+    {
+      "x": 29122,
+      "assistant_targets": 857,
+      "prompt_targets": 17840,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 33067,
+      "assistant_targets": 823,
+      "prompt_targets": 22720,
+      "content_targets": 209,
+      "rows": 128
+    },
+    {
+      "x": 30576,
+      "assistant_targets": 799,
+      "prompt_targets": 22062,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 31572,
+      "assistant_targets": 863,
+      "prompt_targets": 20390,
+      "content_targets": 181,
+      "rows": 128
+    },
+    {
+      "x": 30772,
+      "assistant_targets": 698,
+      "prompt_targets": 21932,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 30716,
+      "assistant_targets": 715,
+      "prompt_targets": 22826,
+      "content_targets": 204,
+      "rows": 128
+    },
+    {
+      "x": 31868,
+      "assistant_targets": 808,
+      "prompt_targets": 27172,
+      "content_targets": 340,
+      "rows": 128
+    },
+    {
+      "x": 30307,
+      "assistant_targets": 745,
+      "prompt_targets": 20344,
+      "content_targets": 180,
+      "rows": 128
+    },
+    {
+      "x": 30694,
+      "assistant_targets": 897,
+      "prompt_targets": 22140,
+      "content_targets": 297,
+      "rows": 128
+    },
+    {
+      "x": 34008,
+      "assistant_targets": 649,
+      "prompt_targets": 28170,
+      "content_targets": 229,
+      "rows": 128
+    },
+    {
+      "x": 30797,
+      "assistant_targets": 774,
+      "prompt_targets": 24998,
+      "content_targets": 289,
+      "rows": 128
+    },
+    {
+      "x": 30723,
+      "assistant_targets": 814,
+      "prompt_targets": 23782,
+      "content_targets": 274,
+      "rows": 128
+    },
+    {
+      "x": 32777,
+      "assistant_targets": 750,
+      "prompt_targets": 27118,
+      "content_targets": 276,
+      "rows": 128
+    },
+    {
+      "x": 30828,
+      "assistant_targets": 753,
+      "prompt_targets": 22600,
+      "content_targets": 210,
+      "rows": 128
+    },
+    {
+      "x": 31313,
+      "assistant_targets": 740,
+      "prompt_targets": 23938,
+      "content_targets": 226,
+      "rows": 128
+    },
+    {
+      "x": 33228,
+      "assistant_targets": 759,
+      "prompt_targets": 24022,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 29712,
+      "assistant_targets": 852,
+      "prompt_targets": 17738,
+      "content_targets": 156,
+      "rows": 128
+    },
+    {
+      "x": 30564,
+      "assistant_targets": 901,
+      "prompt_targets": 21040,
+      "content_targets": 270,
+      "rows": 128
+    },
+    {
+      "x": 30958,
+      "assistant_targets": 759,
+      "prompt_targets": 21636,
+      "content_targets": 181,
+      "rows": 128
+    },
+    {
+      "x": 30399,
+      "assistant_targets": 740,
+      "prompt_targets": 24846,
+      "content_targets": 279,
+      "rows": 128
+    },
+    {
+      "x": 30294,
+      "assistant_targets": 791,
+      "prompt_targets": 20792,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 32042,
+      "assistant_targets": 744,
+      "prompt_targets": 27406,
+      "content_targets": 308,
+      "rows": 128
+    },
+    {
+      "x": 31233,
+      "assistant_targets": 730,
+      "prompt_targets": 24400,
+      "content_targets": 248,
+      "rows": 128
+    },
+    {
+      "x": 31409,
+      "assistant_targets": 739,
+      "prompt_targets": 24504,
+      "content_targets": 254,
+      "rows": 128
+    },
+    {
+      "x": 31493,
+      "assistant_targets": 895,
+      "prompt_targets": 22274,
+      "content_targets": 267,
+      "rows": 128
+    },
+    {
+      "x": 30872,
+      "assistant_targets": 796,
+      "prompt_targets": 22788,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 28970,
+      "assistant_targets": 870,
+      "prompt_targets": 15976,
+      "content_targets": 169,
+      "rows": 128
+    },
+    {
+      "x": 31558,
+      "assistant_targets": 816,
+      "prompt_targets": 24064,
+      "content_targets": 263,
+      "rows": 128
+    },
+    {
+      "x": 29416,
+      "assistant_targets": 743,
+      "prompt_targets": 22542,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 28288,
+      "assistant_targets": 653,
+      "prompt_targets": 20476,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 30067,
+      "assistant_targets": 856,
+      "prompt_targets": 19572,
+      "content_targets": 208,
+      "rows": 128
+    },
+    {
+      "x": 29028,
+      "assistant_targets": 784,
+      "prompt_targets": 20436,
+      "content_targets": 218,
+      "rows": 128
+    },
+    {
+      "x": 31664,
+      "assistant_targets": 799,
+      "prompt_targets": 24076,
+      "content_targets": 235,
+      "rows": 128
+    },
+    {
+      "x": 33160,
+      "assistant_targets": 624,
+      "prompt_targets": 26212,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 29881,
+      "assistant_targets": 771,
+      "prompt_targets": 21638,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 26904,
+      "assistant_targets": 903,
+      "prompt_targets": 16512,
+      "content_targets": 219,
+      "rows": 128
+    },
+    {
+      "x": 29216,
+      "assistant_targets": 738,
+      "prompt_targets": 20568,
+      "content_targets": 183,
+      "rows": 128
+    },
+    {
+      "x": 30869,
+      "assistant_targets": 666,
+      "prompt_targets": 24072,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 31307,
+      "assistant_targets": 794,
+      "prompt_targets": 23938,
+      "content_targets": 248,
+      "rows": 128
+    },
+    {
+      "x": 30969,
+      "assistant_targets": 827,
+      "prompt_targets": 22292,
+      "content_targets": 234,
+      "rows": 128
+    },
+    {
+      "x": 32194,
+      "assistant_targets": 891,
+      "prompt_targets": 21226,
+      "content_targets": 189,
+      "rows": 128
+    },
+    {
+      "x": 30491,
+      "assistant_targets": 782,
+      "prompt_targets": 22558,
+      "content_targets": 239,
+      "rows": 128
+    },
+    {
+      "x": 31534,
+      "assistant_targets": 913,
+      "prompt_targets": 20536,
+      "content_targets": 225,
+      "rows": 128
+    },
+    {
+      "x": 28807,
+      "assistant_targets": 734,
+      "prompt_targets": 20888,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 31884,
+      "assistant_targets": 799,
+      "prompt_targets": 23500,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 32002,
+      "assistant_targets": 758,
+      "prompt_targets": 23654,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 27240,
+      "assistant_targets": 825,
+      "prompt_targets": 17314,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 32246,
+      "assistant_targets": 792,
+      "prompt_targets": 24776,
+      "content_targets": 245,
+      "rows": 128
+    },
+    {
+      "x": 29870,
+      "assistant_targets": 745,
+      "prompt_targets": 21510,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 28734,
+      "assistant_targets": 843,
+      "prompt_targets": 19252,
+      "content_targets": 228,
+      "rows": 128
+    },
+    {
+      "x": 31383,
+      "assistant_targets": 868,
+      "prompt_targets": 22586,
+      "content_targets": 249,
+      "rows": 128
+    },
+    {
+      "x": 31726,
+      "assistant_targets": 746,
+      "prompt_targets": 23068,
+      "content_targets": 207,
+      "rows": 128
+    },
+    {
+      "x": 29127,
+      "assistant_targets": 884,
+      "prompt_targets": 18368,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 31046,
+      "assistant_targets": 714,
+      "prompt_targets": 24002,
+      "content_targets": 235,
+      "rows": 128
+    },
+    {
+      "x": 29310,
+      "assistant_targets": 806,
+      "prompt_targets": 19330,
+      "content_targets": 206,
+      "rows": 128
+    },
+    {
+      "x": 32417,
+      "assistant_targets": 802,
+      "prompt_targets": 25002,
+      "content_targets": 277,
+      "rows": 128
+    },
+    {
+      "x": 30075,
+      "assistant_targets": 895,
+      "prompt_targets": 22606,
+      "content_targets": 298,
+      "rows": 128
+    },
+    {
+      "x": 29830,
+      "assistant_targets": 876,
+      "prompt_targets": 19094,
+      "content_targets": 219,
+      "rows": 128
+    },
+    {
+      "x": 28981,
+      "assistant_targets": 739,
+      "prompt_targets": 22664,
+      "content_targets": 250,
+      "rows": 128
+    },
+    {
+      "x": 29402,
+      "assistant_targets": 887,
+      "prompt_targets": 17400,
+      "content_targets": 191,
+      "rows": 128
+    },
+    {
+      "x": 31091,
+      "assistant_targets": 687,
+      "prompt_targets": 23458,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 29323,
+      "assistant_targets": 865,
+      "prompt_targets": 16142,
+      "content_targets": 159,
+      "rows": 128
+    },
+    {
+      "x": 29856,
+      "assistant_targets": 793,
+      "prompt_targets": 20426,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 27926,
+      "assistant_targets": 922,
+      "prompt_targets": 15724,
+      "content_targets": 158,
+      "rows": 128
+    },
+    {
+      "x": 30639,
+      "assistant_targets": 756,
+      "prompt_targets": 23016,
+      "content_targets": 223,
+      "rows": 128
+    },
+    {
+      "x": 33214,
+      "assistant_targets": 879,
+      "prompt_targets": 26874,
+      "content_targets": 326,
+      "rows": 128
+    },
+    {
+      "x": 28564,
+      "assistant_targets": 863,
+      "prompt_targets": 18832,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 33362,
+      "assistant_targets": 816,
+      "prompt_targets": 27294,
+      "content_targets": 316,
+      "rows": 128
+    },
+    {
+      "x": 29876,
+      "assistant_targets": 923,
+      "prompt_targets": 18956,
+      "content_targets": 216,
+      "rows": 128
+    },
+    {
+      "x": 31849,
+      "assistant_targets": 861,
+      "prompt_targets": 24684,
+      "content_targets": 289,
+      "rows": 128
+    },
+    {
+      "x": 31770,
+      "assistant_targets": 741,
+      "prompt_targets": 24248,
+      "content_targets": 229,
+      "rows": 128
+    },
+    {
+      "x": 32923,
+      "assistant_targets": 722,
+      "prompt_targets": 25534,
+      "content_targets": 231,
+      "rows": 128
+    },
+    {
+      "x": 30200,
+      "assistant_targets": 759,
+      "prompt_targets": 20984,
+      "content_targets": 191,
+      "rows": 128
+    },
+    {
+      "x": 30960,
+      "assistant_targets": 831,
+      "prompt_targets": 20570,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 30041,
+      "assistant_targets": 699,
+      "prompt_targets": 23004,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 28973,
+      "assistant_targets": 853,
+      "prompt_targets": 17758,
+      "content_targets": 199,
+      "rows": 128
+    },
+    {
+      "x": 27965,
+      "assistant_targets": 942,
+      "prompt_targets": 15854,
+      "content_targets": 191,
+      "rows": 128
+    },
+    {
+      "x": 28638,
+      "assistant_targets": 926,
+      "prompt_targets": 17396,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 29147,
+      "assistant_targets": 709,
+      "prompt_targets": 20698,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 30407,
+      "assistant_targets": 816,
+      "prompt_targets": 21574,
+      "content_targets": 223,
+      "rows": 128
+    },
+    {
+      "x": 30612,
+      "assistant_targets": 759,
+      "prompt_targets": 21030,
+      "content_targets": 188,
+      "rows": 128
+    },
+    {
+      "x": 28700,
+      "assistant_targets": 935,
+      "prompt_targets": 16584,
+      "content_targets": 201,
+      "rows": 128
+    },
+    {
+      "x": 33906,
+      "assistant_targets": 790,
+      "prompt_targets": 27840,
+      "content_targets": 305,
+      "rows": 128
+    },
+    {
+      "x": 32972,
+      "assistant_targets": 760,
+      "prompt_targets": 26034,
+      "content_targets": 264,
+      "rows": 128
+    },
+    {
+      "x": 32544,
+      "assistant_targets": 840,
+      "prompt_targets": 20870,
+      "content_targets": 190,
+      "rows": 128
+    },
+    {
+      "x": 30454,
+      "assistant_targets": 770,
+      "prompt_targets": 22296,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 29555,
+      "assistant_targets": 887,
+      "prompt_targets": 21948,
+      "content_targets": 315,
+      "rows": 128
+    },
+    {
+      "x": 30930,
+      "assistant_targets": 907,
+      "prompt_targets": 21236,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 30360,
+      "assistant_targets": 923,
+      "prompt_targets": 20596,
+      "content_targets": 279,
+      "rows": 128
+    },
+    {
+      "x": 29121,
+      "assistant_targets": 866,
+      "prompt_targets": 21014,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 33254,
+      "assistant_targets": 1008,
+      "prompt_targets": 24040,
+      "content_targets": 302,
+      "rows": 128
+    },
+    {
+      "x": 29168,
+      "assistant_targets": 672,
+      "prompt_targets": 21426,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 31449,
+      "assistant_targets": 804,
+      "prompt_targets": 25682,
+      "content_targets": 317,
+      "rows": 128
+    },
+    {
+      "x": 29286,
+      "assistant_targets": 894,
+      "prompt_targets": 21330,
+      "content_targets": 298,
+      "rows": 128
+    },
+    {
+      "x": 31335,
+      "assistant_targets": 769,
+      "prompt_targets": 24178,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 30049,
+      "assistant_targets": 593,
+      "prompt_targets": 23302,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 28889,
+      "assistant_targets": 845,
+      "prompt_targets": 18118,
+      "content_targets": 196,
+      "rows": 128
+    },
+    {
+      "x": 28678,
+      "assistant_targets": 888,
+      "prompt_targets": 14384,
+      "content_targets": 134,
+      "rows": 128
+    },
+    {
+      "x": 32222,
+      "assistant_targets": 819,
+      "prompt_targets": 23734,
+      "content_targets": 250,
+      "rows": 128
+    },
+    {
+      "x": 29962,
+      "assistant_targets": 751,
+      "prompt_targets": 23962,
+      "content_targets": 282,
+      "rows": 128
+    },
+    {
+      "x": 29719,
+      "assistant_targets": 816,
+      "prompt_targets": 21700,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 32806,
+      "assistant_targets": 895,
+      "prompt_targets": 22842,
+      "content_targets": 248,
+      "rows": 128
+    },
+    {
+      "x": 30961,
+      "assistant_targets": 738,
+      "prompt_targets": 23318,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 32033,
+      "assistant_targets": 826,
+      "prompt_targets": 24592,
+      "content_targets": 281,
+      "rows": 128
+    },
+    {
+      "x": 29862,
+      "assistant_targets": 755,
+      "prompt_targets": 21380,
+      "content_targets": 230,
+      "rows": 128
+    },
+    {
+      "x": 28738,
+      "assistant_targets": 879,
+      "prompt_targets": 20050,
+      "content_targets": 252,
+      "rows": 128
+    },
+    {
+      "x": 30777,
+      "assistant_targets": 685,
+      "prompt_targets": 25118,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 28107,
+      "assistant_targets": 942,
+      "prompt_targets": 14638,
+      "content_targets": 154,
+      "rows": 128
+    },
+    {
+      "x": 29082,
+      "assistant_targets": 806,
+      "prompt_targets": 20442,
+      "content_targets": 213,
+      "rows": 128
+    },
+    {
+      "x": 31472,
+      "assistant_targets": 785,
+      "prompt_targets": 23398,
+      "content_targets": 228,
+      "rows": 128
+    },
+    {
+      "x": 31166,
+      "assistant_targets": 768,
+      "prompt_targets": 21966,
+      "content_targets": 187,
+      "rows": 128
+    },
+    {
+      "x": 28225,
+      "assistant_targets": 826,
+      "prompt_targets": 18362,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 29129,
+      "assistant_targets": 786,
+      "prompt_targets": 20066,
+      "content_targets": 222,
+      "rows": 128
+    },
+    {
+      "x": 29761,
+      "assistant_targets": 759,
+      "prompt_targets": 24082,
+      "content_targets": 283,
+      "rows": 128
+    },
+    {
+      "x": 30309,
+      "assistant_targets": 874,
+      "prompt_targets": 19372,
+      "content_targets": 181,
+      "rows": 128
+    },
+    {
+      "x": 30686,
+      "assistant_targets": 686,
+      "prompt_targets": 26092,
+      "content_targets": 279,
+      "rows": 128
+    },
+    {
+      "x": 29792,
+      "assistant_targets": 931,
+      "prompt_targets": 19298,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 34615,
+      "assistant_targets": 857,
+      "prompt_targets": 26262,
+      "content_targets": 259,
+      "rows": 128
+    },
+    {
+      "x": 28083,
+      "assistant_targets": 711,
+      "prompt_targets": 18174,
+      "content_targets": 161,
+      "rows": 128
+    },
+    {
+      "x": 28896,
+      "assistant_targets": 729,
+      "prompt_targets": 21624,
+      "content_targets": 240,
+      "rows": 128
+    },
+    {
+      "x": 33687,
+      "assistant_targets": 737,
+      "prompt_targets": 27374,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 29949,
+      "assistant_targets": 771,
+      "prompt_targets": 21618,
+      "content_targets": 213,
+      "rows": 128
+    },
+    {
+      "x": 28605,
+      "assistant_targets": 783,
+      "prompt_targets": 19292,
+      "content_targets": 198,
+      "rows": 128
+    },
+    {
+      "x": 29722,
+      "assistant_targets": 733,
+      "prompt_targets": 23644,
+      "content_targets": 277,
+      "rows": 128
+    },
+    {
+      "x": 29395,
+      "assistant_targets": 912,
+      "prompt_targets": 17042,
+      "content_targets": 178,
+      "rows": 128
+    },
+    {
+      "x": 29390,
+      "assistant_targets": 897,
+      "prompt_targets": 19490,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 29550,
+      "assistant_targets": 754,
+      "prompt_targets": 20680,
+      "content_targets": 190,
+      "rows": 128
+    },
+    {
+      "x": 28822,
+      "assistant_targets": 1021,
+      "prompt_targets": 14818,
+      "content_targets": 194,
+      "rows": 128
+    },
+    {
+      "x": 30904,
+      "assistant_targets": 763,
+      "prompt_targets": 22650,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 30856,
+      "assistant_targets": 806,
+      "prompt_targets": 22562,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 28465,
+      "assistant_targets": 759,
+      "prompt_targets": 18498,
+      "content_targets": 159,
+      "rows": 128
+    },
+    {
+      "x": 27530,
+      "assistant_targets": 908,
+      "prompt_targets": 15904,
+      "content_targets": 187,
+      "rows": 128
+    },
+    {
+      "x": 30506,
+      "assistant_targets": 909,
+      "prompt_targets": 20440,
+      "content_targets": 205,
+      "rows": 128
+    },
+    {
+      "x": 32921,
+      "assistant_targets": 712,
+      "prompt_targets": 25266,
+      "content_targets": 222,
+      "rows": 128
+    },
+    {
+      "x": 30094,
+      "assistant_targets": 941,
+      "prompt_targets": 21804,
+      "content_targets": 308,
+      "rows": 128
+    },
+    {
+      "x": 30451,
+      "assistant_targets": 750,
+      "prompt_targets": 22294,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 29925,
+      "assistant_targets": 836,
+      "prompt_targets": 19094,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 35364,
+      "assistant_targets": 791,
+      "prompt_targets": 29478,
+      "content_targets": 304,
+      "rows": 128
+    },
+    {
+      "x": 28515,
+      "assistant_targets": 765,
+      "prompt_targets": 17794,
+      "content_targets": 156,
+      "rows": 128
+    },
+    {
+      "x": 32899,
+      "assistant_targets": 644,
+      "prompt_targets": 27054,
+      "content_targets": 232,
+      "rows": 128
+    },
+    {
+      "x": 30095,
+      "assistant_targets": 703,
+      "prompt_targets": 24232,
+      "content_targets": 257,
+      "rows": 128
+    },
+    {
+      "x": 30159,
+      "assistant_targets": 859,
+      "prompt_targets": 18716,
+      "content_targets": 183,
+      "rows": 128
+    },
+    {
+      "x": 30588,
+      "assistant_targets": 897,
+      "prompt_targets": 22226,
+      "content_targets": 283,
+      "rows": 128
+    },
+    {
+      "x": 30571,
+      "assistant_targets": 814,
+      "prompt_targets": 21146,
+      "content_targets": 176,
+      "rows": 128
+    },
+    {
+      "x": 30816,
+      "assistant_targets": 777,
+      "prompt_targets": 23644,
+      "content_targets": 249,
+      "rows": 128
+    },
+    {
+      "x": 34752,
+      "assistant_targets": 729,
+      "prompt_targets": 28636,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 31736,
+      "assistant_targets": 776,
+      "prompt_targets": 27052,
+      "content_targets": 324,
+      "rows": 128
+    },
+    {
+      "x": 30632,
+      "assistant_targets": 734,
+      "prompt_targets": 23770,
+      "content_targets": 237,
+      "rows": 128
+    },
+    {
+      "x": 30581,
+      "assistant_targets": 694,
+      "prompt_targets": 23442,
+      "content_targets": 223,
+      "rows": 128
+    },
+    {
+      "x": 31241,
+      "assistant_targets": 832,
+      "prompt_targets": 23810,
+      "content_targets": 276,
+      "rows": 128
+    },
+    {
+      "x": 28939,
+      "assistant_targets": 794,
+      "prompt_targets": 20126,
+      "content_targets": 222,
+      "rows": 128
+    },
+    {
+      "x": 29957,
+      "assistant_targets": 760,
+      "prompt_targets": 21966,
+      "content_targets": 204,
+      "rows": 128
+    },
+    {
+      "x": 28910,
+      "assistant_targets": 753,
+      "prompt_targets": 22252,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 30082,
+      "assistant_targets": 779,
+      "prompt_targets": 20846,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 30498,
+      "assistant_targets": 808,
+      "prompt_targets": 22014,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 31926,
+      "assistant_targets": 718,
+      "prompt_targets": 26018,
+      "content_targets": 264,
+      "rows": 128
+    },
+    {
+      "x": 29049,
+      "assistant_targets": 862,
+      "prompt_targets": 19836,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 28549,
+      "assistant_targets": 798,
+      "prompt_targets": 18210,
+      "content_targets": 173,
+      "rows": 128
+    },
+    {
+      "x": 30192,
+      "assistant_targets": 777,
+      "prompt_targets": 21680,
+      "content_targets": 210,
+      "rows": 128
+    },
+    {
+      "x": 31827,
+      "assistant_targets": 803,
+      "prompt_targets": 26434,
+      "content_targets": 313,
+      "rows": 128
+    },
+    {
+      "x": 30694,
+      "assistant_targets": 839,
+      "prompt_targets": 19880,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 30754,
+      "assistant_targets": 829,
+      "prompt_targets": 20866,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 32508,
+      "assistant_targets": 779,
+      "prompt_targets": 23934,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 31714,
+      "assistant_targets": 808,
+      "prompt_targets": 23218,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 32150,
+      "assistant_targets": 886,
+      "prompt_targets": 24716,
+      "content_targets": 293,
+      "rows": 128
+    },
+    {
+      "x": 31662,
+      "assistant_targets": 972,
+      "prompt_targets": 20386,
+      "content_targets": 203,
+      "rows": 128
+    },
+    {
+      "x": 32234,
+      "assistant_targets": 846,
+      "prompt_targets": 23438,
+      "content_targets": 256,
+      "rows": 128
+    },
+    {
+      "x": 33027,
+      "assistant_targets": 738,
+      "prompt_targets": 27232,
+      "content_targets": 273,
+      "rows": 128
+    },
+    {
+      "x": 31711,
+      "assistant_targets": 756,
+      "prompt_targets": 25848,
+      "content_targets": 276,
+      "rows": 128
+    },
+    {
+      "x": 28692,
+      "assistant_targets": 912,
+      "prompt_targets": 16450,
+      "content_targets": 217,
+      "rows": 128
+    },
+    {
+      "x": 31880,
+      "assistant_targets": 798,
+      "prompt_targets": 24646,
+      "content_targets": 260,
+      "rows": 128
+    },
+    {
+      "x": 29708,
+      "assistant_targets": 824,
+      "prompt_targets": 23012,
+      "content_targets": 296,
+      "rows": 128
+    },
+    {
+      "x": 30619,
+      "assistant_targets": 765,
+      "prompt_targets": 23492,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 29424,
+      "assistant_targets": 748,
+      "prompt_targets": 23444,
+      "content_targets": 271,
+      "rows": 128
+    },
+    {
+      "x": 30497,
+      "assistant_targets": 835,
+      "prompt_targets": 23632,
+      "content_targets": 297,
+      "rows": 128
+    },
+    {
+      "x": 30005,
+      "assistant_targets": 811,
+      "prompt_targets": 21042,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 31462,
+      "assistant_targets": 745,
+      "prompt_targets": 26064,
+      "content_targets": 283,
+      "rows": 128
+    },
+    {
+      "x": 30677,
+      "assistant_targets": 866,
+      "prompt_targets": 22192,
+      "content_targets": 262,
+      "rows": 128
+    },
+    {
+      "x": 30621,
+      "assistant_targets": 815,
+      "prompt_targets": 24936,
+      "content_targets": 322,
+      "rows": 128
+    },
+    {
+      "x": 26731,
+      "assistant_targets": 945,
+      "prompt_targets": 10970,
+      "content_targets": 114,
+      "rows": 128
+    },
+    {
+      "x": 30009,
+      "assistant_targets": 893,
+      "prompt_targets": 16668,
+      "content_targets": 165,
+      "rows": 128
+    },
+    {
+      "x": 32976,
+      "assistant_targets": 737,
+      "prompt_targets": 25484,
+      "content_targets": 240,
+      "rows": 128
+    },
+    {
+      "x": 32150,
+      "assistant_targets": 750,
+      "prompt_targets": 22748,
+      "content_targets": 196,
+      "rows": 128
+    },
+    {
+      "x": 30356,
+      "assistant_targets": 718,
+      "prompt_targets": 22776,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 29629,
+      "assistant_targets": 918,
+      "prompt_targets": 17488,
+      "content_targets": 182,
+      "rows": 128
+    },
+    {
+      "x": 30906,
+      "assistant_targets": 740,
+      "prompt_targets": 23930,
+      "content_targets": 223,
+      "rows": 128
+    },
+    {
+      "x": 30560,
+      "assistant_targets": 709,
+      "prompt_targets": 22756,
+      "content_targets": 194,
+      "rows": 128
+    },
+    {
+      "x": 29842,
+      "assistant_targets": 790,
+      "prompt_targets": 19404,
+      "content_targets": 169,
+      "rows": 128
+    },
+    {
+      "x": 29656,
+      "assistant_targets": 781,
+      "prompt_targets": 20374,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 31562,
+      "assistant_targets": 830,
+      "prompt_targets": 26840,
+      "content_targets": 351,
+      "rows": 128
+    },
+    {
+      "x": 31643,
+      "assistant_targets": 778,
+      "prompt_targets": 25878,
+      "content_targets": 293,
+      "rows": 128
+    },
+    {
+      "x": 31221,
+      "assistant_targets": 778,
+      "prompt_targets": 25366,
+      "content_targets": 292,
+      "rows": 128
+    },
+    {
+      "x": 30779,
+      "assistant_targets": 752,
+      "prompt_targets": 20542,
+      "content_targets": 197,
+      "rows": 128
+    },
+    {
+      "x": 30786,
+      "assistant_targets": 759,
+      "prompt_targets": 24532,
+      "content_targets": 271,
+      "rows": 128
+    },
+    {
+      "x": 32645,
+      "assistant_targets": 749,
+      "prompt_targets": 26816,
+      "content_targets": 273,
+      "rows": 128
+    },
+    {
+      "x": 30229,
+      "assistant_targets": 890,
+      "prompt_targets": 19698,
+      "content_targets": 236,
+      "rows": 128
+    },
+    {
+      "x": 29868,
+      "assistant_targets": 867,
+      "prompt_targets": 20078,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 30721,
+      "assistant_targets": 822,
+      "prompt_targets": 20344,
+      "content_targets": 201,
+      "rows": 128
+    },
+    {
+      "x": 29186,
+      "assistant_targets": 768,
+      "prompt_targets": 19158,
+      "content_targets": 186,
+      "rows": 128
+    },
+    {
+      "x": 32338,
+      "assistant_targets": 822,
+      "prompt_targets": 22444,
+      "content_targets": 229,
+      "rows": 128
+    },
+    {
+      "x": 28989,
+      "assistant_targets": 773,
+      "prompt_targets": 20272,
+      "content_targets": 210,
+      "rows": 128
+    },
+    {
+      "x": 30225,
+      "assistant_targets": 748,
+      "prompt_targets": 22070,
+      "content_targets": 202,
+      "rows": 128
+    },
+    {
+      "x": 29555,
+      "assistant_targets": 838,
+      "prompt_targets": 21220,
+      "content_targets": 264,
+      "rows": 128
+    },
+    {
+      "x": 30274,
+      "assistant_targets": 766,
+      "prompt_targets": 19518,
+      "content_targets": 169,
+      "rows": 128
+    },
+    {
+      "x": 30774,
+      "assistant_targets": 730,
+      "prompt_targets": 24204,
+      "content_targets": 243,
+      "rows": 128
+    },
+    {
+      "x": 29709,
+      "assistant_targets": 913,
+      "prompt_targets": 16908,
+      "content_targets": 140,
+      "rows": 128
+    },
+    {
+      "x": 30671,
+      "assistant_targets": 859,
+      "prompt_targets": 23042,
+      "content_targets": 280,
+      "rows": 128
+    },
+    {
+      "x": 28667,
+      "assistant_targets": 879,
+      "prompt_targets": 18262,
+      "content_targets": 212,
+      "rows": 128
+    },
+    {
+      "x": 32448,
+      "assistant_targets": 778,
+      "prompt_targets": 25358,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 29876,
+      "assistant_targets": 837,
+      "prompt_targets": 18662,
+      "content_targets": 172,
+      "rows": 128
+    },
+    {
+      "x": 30809,
+      "assistant_targets": 803,
+      "prompt_targets": 22224,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 30928,
+      "assistant_targets": 711,
+      "prompt_targets": 22734,
+      "content_targets": 204,
+      "rows": 128
+    },
+    {
+      "x": 27972,
+      "assistant_targets": 922,
+      "prompt_targets": 19230,
+      "content_targets": 297,
+      "rows": 128
+    },
+    {
+      "x": 30812,
+      "assistant_targets": 927,
+      "prompt_targets": 24410,
+      "content_targets": 367,
+      "rows": 128
+    },
+    {
+      "x": 29002,
+      "assistant_targets": 873,
+      "prompt_targets": 18704,
+      "content_targets": 229,
+      "rows": 128
+    },
+    {
+      "x": 30251,
+      "assistant_targets": 738,
+      "prompt_targets": 19212,
+      "content_targets": 163,
+      "rows": 128
+    },
+    {
+      "x": 26804,
+      "assistant_targets": 881,
+      "prompt_targets": 15238,
+      "content_targets": 190,
+      "rows": 128
+    },
+    {
+      "x": 30814,
+      "assistant_targets": 750,
+      "prompt_targets": 23470,
+      "content_targets": 241,
+      "rows": 128
+    },
+    {
+      "x": 30654,
+      "assistant_targets": 812,
+      "prompt_targets": 25224,
+      "content_targets": 319,
+      "rows": 128
+    },
+    {
+      "x": 30740,
+      "assistant_targets": 831,
+      "prompt_targets": 22664,
+      "content_targets": 251,
+      "rows": 128
+    },
+    {
+      "x": 31349,
+      "assistant_targets": 930,
+      "prompt_targets": 22712,
+      "content_targets": 285,
+      "rows": 128
+    },
+    {
+      "x": 29770,
+      "assistant_targets": 838,
+      "prompt_targets": 21364,
+      "content_targets": 239,
+      "rows": 128
+    },
+    {
+      "x": 30893,
+      "assistant_targets": 672,
+      "prompt_targets": 23762,
+      "content_targets": 206,
+      "rows": 128
+    },
+    {
+      "x": 30657,
+      "assistant_targets": 853,
+      "prompt_targets": 20474,
+      "content_targets": 231,
+      "rows": 128
+    },
+    {
+      "x": 30898,
+      "assistant_targets": 814,
+      "prompt_targets": 22214,
+      "content_targets": 242,
+      "rows": 128
+    },
+    {
+      "x": 29890,
+      "assistant_targets": 761,
+      "prompt_targets": 20862,
+      "content_targets": 201,
+      "rows": 128
+    },
+    {
+      "x": 28051,
+      "assistant_targets": 992,
+      "prompt_targets": 12806,
+      "content_targets": 150,
+      "rows": 128
+    },
+    {
+      "x": 32401,
+      "assistant_targets": 939,
+      "prompt_targets": 20958,
+      "content_targets": 250,
+      "rows": 128
+    },
+    {
+      "x": 32074,
+      "assistant_targets": 722,
+      "prompt_targets": 27440,
+      "content_targets": 297,
+      "rows": 128
+    },
+    {
+      "x": 30308,
+      "assistant_targets": 808,
+      "prompt_targets": 18256,
+      "content_targets": 158,
+      "rows": 128
+    },
+    {
+      "x": 31746,
+      "assistant_targets": 739,
+      "prompt_targets": 25984,
+      "content_targets": 273,
+      "rows": 128
+    },
+    {
+      "x": 29685,
+      "assistant_targets": 825,
+      "prompt_targets": 20070,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 30705,
+      "assistant_targets": 714,
+      "prompt_targets": 22676,
+      "content_targets": 198,
+      "rows": 128
+    },
+    {
+      "x": 30747,
+      "assistant_targets": 665,
+      "prompt_targets": 24516,
+      "content_targets": 220,
+      "rows": 128
+    },
+    {
+      "x": 28939,
+      "assistant_targets": 812,
+      "prompt_targets": 20370,
+      "content_targets": 247,
+      "rows": 128
+    },
+    {
+      "x": 29365,
+      "assistant_targets": 918,
+      "prompt_targets": 20038,
+      "content_targets": 288,
+      "rows": 128
+    },
+    {
+      "x": 33152,
+      "assistant_targets": 703,
+      "prompt_targets": 26060,
+      "content_targets": 224,
+      "rows": 128
+    },
+    {
+      "x": 27726,
+      "assistant_targets": 920,
+      "prompt_targets": 14832,
+      "content_targets": 158,
+      "rows": 128
+    },
+    {
+      "x": 30401,
+      "assistant_targets": 760,
+      "prompt_targets": 19262,
+      "content_targets": 158,
+      "rows": 128
+    },
+    {
+      "x": 30404,
+      "assistant_targets": 808,
+      "prompt_targets": 24500,
+      "content_targets": 302,
+      "rows": 128
+    },
+    {
+      "x": 28306,
+      "assistant_targets": 713,
+      "prompt_targets": 19062,
+      "content_targets": 192,
+      "rows": 128
+    },
+    {
+      "x": 33304,
+      "assistant_targets": 729,
+      "prompt_targets": 27556,
+      "content_targets": 264,
+      "rows": 128
+    },
+    {
+      "x": 31287,
+      "assistant_targets": 783,
+      "prompt_targets": 22712,
+      "content_targets": 238,
+      "rows": 128
+    },
+    {
+      "x": 29630,
+      "assistant_targets": 770,
+      "prompt_targets": 21672,
+      "content_targets": 226,
+      "rows": 128
+    },
+    {
+      "x": 30113,
+      "assistant_targets": 767,
+      "prompt_targets": 24150,
+      "content_targets": 285,
+      "rows": 128
+    },
+    {
+      "x": 30251,
+      "assistant_targets": 825,
+      "prompt_targets": 20942,
+      "content_targets": 219,
+      "rows": 128
+    },
+    {
+      "x": 31299,
+      "assistant_targets": 817,
+      "prompt_targets": 21732,
+      "content_targets": 211,
+      "rows": 128
+    },
+    {
+      "x": 30937,
+      "assistant_targets": 833,
+      "prompt_targets": 23406,
+      "content_targets": 273,
+      "rows": 128
+    },
+    {
+      "x": 29927,
+      "assistant_targets": 701,
+      "prompt_targets": 24436,
+      "content_targets": 259,
+      "rows": 128
+    },
+    {
+      "x": 30645,
+      "assistant_targets": 734,
+      "prompt_targets": 21242,
+      "content_targets": 195,
+      "rows": 128
+    },
+    {
+      "x": 28869,
+      "assistant_targets": 945,
+      "prompt_targets": 18282,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 29911,
+      "assistant_targets": 737,
+      "prompt_targets": 24136,
+      "content_targets": 272,
+      "rows": 128
+    },
+    {
+      "x": 30606,
+      "assistant_targets": 807,
+      "prompt_targets": 19892,
+      "content_targets": 174,
+      "rows": 128
+    },
+    {
+      "x": 30164,
+      "assistant_targets": 743,
+      "prompt_targets": 20574,
+      "content_targets": 201,
+      "rows": 128
+    },
+    {
+      "x": 30997,
+      "assistant_targets": 909,
+      "prompt_targets": 23678,
+      "content_targets": 299,
+      "rows": 128
+    },
+    {
+      "x": 31951,
+      "assistant_targets": 652,
+      "prompt_targets": 23646,
+      "content_targets": 166,
+      "rows": 128
+    },
+    {
+      "x": 31012,
+      "assistant_targets": 774,
+      "prompt_targets": 21136,
+      "content_targets": 214,
+      "rows": 128
+    },
+    {
+      "x": 30270,
+      "assistant_targets": 910,
+      "prompt_targets": 19874,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 29365,
+      "assistant_targets": 768,
+      "prompt_targets": 21320,
+      "content_targets": 220,
+      "rows": 128
+    },
+    {
+      "x": 32411,
+      "assistant_targets": 800,
+      "prompt_targets": 24188,
+      "content_targets": 228,
+      "rows": 128
+    },
+    {
+      "x": 31700,
+      "assistant_targets": 641,
+      "prompt_targets": 25914,
+      "content_targets": 235,
+      "rows": 128
+    },
+    {
+      "x": 30473,
+      "assistant_targets": 914,
+      "prompt_targets": 24472,
+      "content_targets": 349,
+      "rows": 128
+    },
+    {
+      "x": 29990,
+      "assistant_targets": 903,
+      "prompt_targets": 21420,
+      "content_targets": 256,
+      "rows": 128
+    },
+    {
+      "x": 30997,
+      "assistant_targets": 849,
+      "prompt_targets": 25410,
+      "content_targets": 343,
+      "rows": 128
+    },
+    {
+      "x": 28853,
+      "assistant_targets": 913,
+      "prompt_targets": 18338,
+      "content_targets": 215,
+      "rows": 128
+    },
+    {
+      "x": 31232,
+      "assistant_targets": 690,
+      "prompt_targets": 26622,
+      "content_targets": 281,
+      "rows": 128
+    },
+    {
+      "x": 30074,
+      "assistant_targets": 668,
+      "prompt_targets": 22398,
+      "content_targets": 185,
+      "rows": 128
+    },
+    {
+      "x": 26900,
+      "assistant_targets": 1077,
+      "prompt_targets": 9746,
+      "content_targets": 130,
+      "rows": 128
+    },
+    {
+      "x": 31814,
+      "assistant_targets": 689,
+      "prompt_targets": 25898,
+      "content_targets": 246,
+      "rows": 128
+    },
+    {
+      "x": 32617,
+      "assistant_targets": 801,
+      "prompt_targets": 25776,
+      "content_targets": 265,
+      "rows": 128
+    },
+    {
+      "x": 30307,
+      "assistant_targets": 940,
+      "prompt_targets": 17614,
+      "content_targets": 173,
+      "rows": 128
+    },
+    {
+      "x": 34357,
+      "assistant_targets": 698,
+      "prompt_targets": 28720,
+      "content_targets": 256,
+      "rows": 128
+    },
+    {
+      "x": 32198,
+      "assistant_targets": 765,
+      "prompt_targets": 26206,
+      "content_targets": 277,
+      "rows": 128
+    },
+    {
+      "x": 32216,
+      "assistant_targets": 746,
+      "prompt_targets": 23752,
+      "content_targets": 227,
+      "rows": 128
+    },
+    {
+      "x": 28814,
+      "assistant_targets": 708,
+      "prompt_targets": 22560,
+      "content_targets": 246,
+      "rows": 128
+    },
+    {
+      "x": 30907,
+      "assistant_targets": 809,
+      "prompt_targets": 22350,
+      "content_targets": 255,
+      "rows": 128
+    },
+    {
+      "x": 31187,
+      "assistant_targets": 962,
+      "prompt_targets": 18526,
+      "content_targets": 221,
+      "rows": 128
+    },
+    {
+      "x": 29865,
+      "assistant_targets": 634,
+      "prompt_targets": 21346,
+      "content_targets": 168,
+      "rows": 128
+    },
+    {
+      "x": 32541,
+      "assistant_targets": 787,
+      "prompt_targets": 26482,
+      "content_targets": 278,
+      "rows": 128
+    },
+    {
+      "x": 30586,
+      "assistant_targets": 780,
+      "prompt_targets": 21962,
+      "content_targets": 226,
+      "rows": 128
+    },
+    {
+      "x": 30816,
+      "assistant_targets": 812,
+      "prompt_targets": 22216,
+      "content_targets": 257,
+      "rows": 128
+    },
+    {
+      "x": 32309,
+      "assistant_targets": 874,
+      "prompt_targets": 22346,
+      "content_targets": 205,
+      "rows": 128
+    }
+  ],
+  "schedule_sha256": [
+    "C3EDE658DDB034CB23B21E045F85DA829CA57B2A355D139504EEF1D153AE089B",
+    "168EFA7A3137DA358EB057888C1DBF62E17AD266CEE4AFE6A7A23D6CD4EF0188",
+    "EAFD8AF49A44BDBC232AA08E3897BB6A10A46EB58A70213015AC96B3E12EB281",
+    "628129ECF5EACFD12BCC0FEFA9BCB7C193A2B6631714765F8762B44FC4D77256"
+  ],
+  "actual_qa_exposure": {
+    "lanes": {
+      "natural": {
+        "rows": 16384,
+        "x_tokens": 4112674,
+        "assistant_targets": 90888
+      },
+      "role_bridge": {
+        "rows": 2048,
+        "x_tokens": 384544,
+        "assistant_targets": 16472
+      },
+      "evidence_recovery": {
+        "rows": 1024,
+        "x_tokens": 287484,
+        "assistant_targets": 16210
+      },
+      "arithmetic": {
+        "rows": 128,
+        "x_tokens": 3240,
+        "assistant_targets": 296
+      },
+      "binding_color": {
+        "rows": 128,
+        "x_tokens": 4945,
+        "assistant_targets": 360
+      },
+      "binding_department": {
+        "rows": 128,
+        "x_tokens": 5635,
+        "assistant_targets": 398
+      },
+      "boolean": {
+        "rows": 128,
+        "x_tokens": 5325,
+        "assistant_targets": 384
+      },
+      "json": {
+        "rows": 128,
+        "x_tokens": 7909,
+        "assistant_targets": 1514
+      },
+      "update": {
+        "rows": 128,
+        "x_tokens": 7154,
+        "assistant_targets": 626
+      },
+      "fictional_relation_fields": {
+        "rows": 256,
+        "x_tokens": 71079,
+        "assistant_targets": 1510
+      }
+    },
+    "per_pass": {
+      "rows": 20480,
+      "x_tokens": 4889989,
+      "assistant_targets": 128658
+    },
+    "natural_content_targets": 37252,
+    "expected_four_pass": {
+      "rows": 81920,
+      "x_tokens": 19559956,
+      "assistant_targets": 514632
+    },
+    "native_targets_four_pass": 5242880,
+    "padded_sft_slots_four_pass": 83886080
+  },
+  "initial_core_sha256": "E854AB4EC2E505DDC581CE08C94F9C8B4A8081E456AFBA193DF28A877E34A193",
+  "actual_pad_id": 0,
+  "actual_eot_id": 4,
+  "actual_pad_name": "<pad>",
+  "actual_padded_shape": [
+    8,
+    1024
+  ],
+  "source_foundation_cpu_sha256": "57A3D98D982CEB32CCBFEB4D34C3DB230B182FB06B146E176296BAF90A2563F9",
+  "actual_parent_cpu_loaded": true,
+  "cuda_initialized": false,
+  "model_forward": false,
+  "optimizer_updates": 0,
+  "original_assistant_masks_unchanged": true,
+  "additional_prompt_targets_are_not_new_input_tokens": true
+}

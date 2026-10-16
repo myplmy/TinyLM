@@ -4657,3 +4657,184 @@ CPU에서 실제 role/recovery/code 전수 원형을 모의 emitter로 통과시
 09시 GPU 중단·10시 승인 종료, teacher/학습/가중치 저장0, 원본/보호 데이터/다운로드/push 금지 경계는 유지한다.
 현재 1개 학습 seed의 사례 CI는 학습 재현성 분산이 아니다. 기존 음성을 PASS로 바꾸지 않는다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-17 원부모·원문 계속학습의 같은 평가 연결
+
+Stage4dm0Wb의 실제 source wire/계보 이관은 완료됐다. 원 P090B의 QA 기준 팔은 진행 중이며 CPT후QA는 아직 미실행이다.
+계속학습의 효과를 native CE 하나로 판단하지 않도록 이미 봉인한 원형512QA/3뷰·cube64·역할/정보복구/코드·공개1920·native32/256을 그대로 사용한다.
+세 후보는 전체 같은 평가, 손실만 집계, 성적 좋은 문항만 별도 선택이다. 선택 편향과 다른 분모를 피하는 첫 경로를 채택한다.
+source/CODE/질문/gold·FP32 MATH/greedy/cache/길이 예산은 고정하고 새 endpoint 폴더에만 쓴다.
+새 evaluator는 foundation arm/2281·640회/실제 x·target/원형SHA/초기화SHA/DEV 선택을 엄격히 대조하며, model strict 로딩·각 lane body불변·원답/SHA 독립검산을 요구한다.
+TEST로 epoch/LR을 고르지 않는다. QA최종4가 사전 주대조이고 DEV CE 최소 대표는 별도 선택 지표로 표시한다.
+같은 가중치가 DEV대표와 최종에 함께 선택되면 두 endpoint를 별도 학습 seed나 독립 성공으로 세지 않는다.
+
+| 단계 | SH | 정확 endpoint/선결 |
+|---|---|---|
+| Stage4dqWa | `run_P106B_Stage4dqWa_foundation_original_parent_eval.sh` | 불변 P090B, 학습0 |
+| Stage4dqWb | `run_P106B_Stage4dqWb_foundation_native_parent_eval.sh` | 새 native2281 완료·strict source/lineage |
+| Stage4dqWc | `run_P106B_Stage4dqWc_foundation_baseqa_final_eval.sh` | 원 P090B→QA640 최종4 |
+| Stage4dqWd | `run_P106B_Stage4dqWd_foundation_baseqa_dev_eval.sh` | 같은 교육의 DEV CE 최소 대표, TEST 선택 아님 |
+| Stage4dqWe | `run_P106B_Stage4dqWe_foundation_cptqa_final_eval.sh` | native2281→동일 QA640 최종4 |
+| Stage4dqWf | `run_P106B_Stage4dqWf_foundation_cptqa_dev_eval.sh` | 같은 CPT후QA의 DEV CE 최소 대표 |
+| Stage4drW | `run_P106B_Stage4drW_foundation_raw_pair_readback.sh` | 여섯 endpoint 모든 lane·실제 원형·대응 기사 CI 재검산 |
+
+기존 E970세팔 평가는 이력 패키지 기술 대조이며, 위 원P090B±native→동일QA의 주대조와 분리한다.
+평가당 약15분/여섯 개90분을 우선 예산으로 두되 실제 생성 길이에 따라 달라진다. GPU는 한 모델만 단독 실행한다.
+09시 GPU중단·10시 보고/마감, 체크포인트쓰기/학습/교사호출0·보호 원천/원본변경/설치/다운로드/push0을 유지한다.
+정적/CPU 선결 통과는 실제 평가·정답성·Falcon 수준 도달의 증거가 아니다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-17 조건부 입력 본문 LM 보조 — 기존 답 학습의 강도는 유지
+
+### 1. 세 후보와 선택
+
+원부모의 추가 native298.975M은 기초 언어학습량을, 같은 자연 QA의 입력 본문 예측 보조는 목표분포 적응/과적합을,
+같은 문맥의 서로 다른 질문·답 조합 대비는 질문별 답 구분을 겨냥한다.
+첫 경로는 이미 준비한 대응을 유지하고, 둘째를 새 별도 연구로 준비한다. 셋째는 TRAIN 교차 정답이 의미상 오답이라는 묶음 계약이 없으므로 이번 자동 본런에는 넣지 않는다.
+단순 문자열이 다른 답을 무조건 오답으로 정하거나 옛 위치 헤드 실패를 같은 방법으로 재실행하지 않는다.
+
+### 2. 1차 문헌과 적용 한계
+
+[IM §3~4](https://arxiv.org/html/2405.14394v2)는 긴 입력/짧은 답과 적은 예제에서 입력 손실의 효용을 보고했지만6.7~13B 연구다.
+[WIT §2~3](https://arxiv.org/html/2507.07817v2)는1~8B이며, 입력·답 가중치와 전체 분모까지 달라진다. 그 최적값/효과 크기를90M에 복사하지 않는다.
+현재 설계는 논문 재현이 아니라 **답 CE의 기존 분모/기여를 보존한 입력 LM 목적 추가**라는 독립 응용이다.
+원래 assistant-only 학습도 답 손실을 통해 입력 표현에 gradient를 흘린다. 새 방법을 ‘이제 입력을 읽게 함’이라고 설명하지 않는다.
+문맥이 질문 앞에 있는 입력의 문맥 예측은 질문을 조건으로 하지 않으므로 query-conditioned retrieval을 직접 지도한다는 주장도 하지 않는다.
+[질문 대비 원문 §2·5.2](https://aclanthology.org/2021.emnlp-main.584.pdf)은 MLE와 대비를 결합한 T5-large770M 연구이며 좋은 묶음이 없으면 이득이 없었다. 향후 별도 축이다.
+
+### 3. 사전고정 실험
+
+초기화는 불변 원 P090B SHA12E18658로 고정한다. 새 CE/KL 학생의 TEST 결과를 보고 부모/계수를 고르지 않는다.
+새 namespace `p106b_night_prompt_v1_s1337`에서 두 팔 `prompt0`/`prompt01`을 같은 seed1337·새 optimizer로 시작한다.
+기존 동결V2 자연8192/양뷰0·1/보존4096/native5.24M, 같은 순서·배치·micro8×accum16/seq1024/ckptON/compiledefault·4pass640을 유지한다.
+Adam5e-5/Muon2e-4/WD0/clip1·anneal1·MTP/이진/사실 보조off·원래 양뷰 손실 계산 경로의 일관성 계수0도 유지한다.
+
+`L = 기존 assistant CE(whole-update 평균) + 기존 native CE(별도 평균) + β×자연 QA 입력본문 CE(별도 whole-update 평균)`.
+β만0/0.1로 바꾸며 양팔 모두 같은 입력 head 경로를 계산한다. 전체 input+answer 평균으로 바꿔 답 gradient를 문맥 길이만큼 희석하지 않는다.
+추가 지도는 context/question의 실제 토큰에만 준다. ChatML·고정 지시 wrapper·PAD·assistant/EOT·replay의 과거 오답에는 추가 손실을 주지 않는다.
+원본 canonical encoder의 ids/shifted assistant labels를 그대로 쓰고 offsets의 완전 포함으로 별도 shifted prompt labels를 만든다.
+경계를 가로지르는 토큰은 제외 수를 공개하고, 무조건 첫 substring을 찾아 정답이나 질문이 반복된 위치를 오인하지 않도록 producer 위치를 재구성한다.
+논문과 달리 위 정규화로 계수의 의미를 고정하며0.1은 이번 선등록값이지 최적값이 아니다.
+
+### 4. GPU 전 검산과 조건부 개방
+
+실제 동결 TRAIN8192×2뷰의 ids/assistant mask/추가 prompt 위치·분모·패딩·source/CODE/부모 SHA를 CPU로 전수 검산한다.
+한영 Unicode/경계/shift/과거 assistant 보호·chunked FP32 CE값과 gradient·β0의 기존 답 gradient 일치 회귀를 요구한다.
+작은 head만 checkpoint/chunk로 계산하고 fixed-width PAD를 학습하지 않는다. 두 팔 비용8은 체크포인트0으로 독립 실측한다.
+그 비용과 아직 남은 CPT/동일QA/전량 평가·원답 판독을 모두 합쳐09시 전에 들어갈 때만 본640을 연다.
+불충족이면 기존 실행을 줄이거나 승인 기한을 늘리지 않고 새 팔을 미실행으로 보존한다.
+아직 구현하지 않은 SH를 현재 실행 가능한 이름으로 권고하지 않는다. 정확한 단계/SH는 구현 뒤 아래에 추가한다.
+
+### 5. 판정·영향도
+
+같은 봉인 기사512QA/3뷰·양뷰 모두정답/동일오답·cube 값 갱신·역할/정보복구/코드·공개1920/native32·256을 평가한다.
+최종4pass를 주대조로 유지하고 DEV CE 최소 대표는 따로 보존한다. TEST는 epoch/계수 선택에 쓰지 않는다.
+입력/native 손실만 낮아지고 실제 QA가 늘지 않으면 독해 개선은 미확인이다. 질문 재진술/문맥 복사·보존 손실이 늘면 그 교환비와 음성을 기록한다.
+한 학습 seed의 사례 CI가 학습 재현성 분산이나 Falcon급 도달의 증거는 아니다. 기존 관측 문항은 이후 개발 코호트로 취급하며 새 독립 평가가 필요하다.
+새 helper/driver/CPU회귀·정확SH/TSV·새HF/EVI/weight-only 최종·DEV대표 최대4개만 추가한다. 제품/default·옛동결CODE·원본·타WIP·09·보호 데이터·다운로드/push는 변경하지 않는다.
+추가 약1.5GB weight 예산이며 실제 footprint를 기록한다. 09시 GPU중단·10시 승인 종료/정리 조건은 유지한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+준비한 정확한 단계는 다음과 같다. 각 본런은 두 비용·원래 파이프라인 잔여·평가까지09시 전 예산을 다시 검산한다.
+
+| 단계 | SH | 범위 |
+|---|---|---|
+| Stage4ds0W | `run_P106B_Stage4ds0W_night_prompt_cpu.sh` | CPU17·실제 TRAIN8192/2뷰 mask·shift/기존 y 유지·분모·패딩·원부모 검산 |
+| Stage4dsWa | `run_P106B_Stage4dsWa_night_prompt0_cost8.sh` | β0·동일 추가 head 경로8회·저장0 |
+| Stage4dsWb | `run_P106B_Stage4dsWb_night_prompt01_cost8.sh` | β0.1·같은8회·저장0 |
+| Stage4dtWa | `run_P106B_Stage4dtWa_night_prompt0_repeat4.sh` | 동일 원P090B·같은QA640·β0 기준선 |
+| Stage4dtWb | `run_P106B_Stage4dtWb_night_prompt01_repeat4.sh` | 동일 조건640·β0.1·마지막4/DEV 대표 분리 |
+
+개발 CPU17과 독립 반증검토를 통과했지만 실제 자료 mask/GPU/품질은 아직 미실행이다.
+최종17시는 과거 승인이고 이번 hard stop은10/17 09시 GPU·10시 보고/마감이다.
+전체 gradient clip1의 재척도 효과는 손실 혼합의 일부이므로 답 CE 분모 보존만으로 최종 답 gradient norm까지 같다고 주장하지 않는다.
+보고서 파일 존재만으로 예산에서 완료를 차감하지 않으며 status/CODE/source/640·2281/실제 노출/CP SHA/모든 lane 원답·receipt 검산 뒤만 차감한다.
+
+평가 adapter는 기존 학습 코드를 변경하지 않고 같은 입력을 참조한다. 이미 관찰된 이 코호트는 반복 개발 비교이며 새로운 독립 벤치로 부르지 않는다.
+
+| 단계 | SH | 정확 endpoint/선결 |
+|---|---|---|
+| Stage4du0W | `run_P106B_Stage4du0W_night_prompt_eval_cpu.sh` | 같은 원형/CASE·학습CPU source를 새 evaluator에 CPU 연결 |
+| Stage4duWa | `run_P106B_Stage4duWa_night_prompt0_final_eval.sh` | β0 최종4·8lane·모델불변 |
+| Stage4duWb | `run_P106B_Stage4duWb_night_prompt01_final_eval.sh` | β0.1 최종4·같은 source/정밀도 |
+| Stage4duWc | `run_P106B_Stage4duWc_night_prompt0_dev_eval.sh` | β0 DEV최소 대표·TEST선택 아님 |
+| Stage4duWd | `run_P106B_Stage4duWd_night_prompt01_dev_eval.sh` | β0.1 DEV최소 대표 |
+| Stage4dvW | `run_P106B_Stage4dvW_night_prompt_paired_readback.sh` | 네 endpoint 모두 원답/원형/이력/receipt/모델SHA 독립검산 |
+
+실제 답·후행 판독·보존과 분리된 CPU21을 먼저 검산했으며 GPU/최종 품질은 아직 NOT_RUN이다.
+
+## 2026-10-17 조건부 고유 QA 다양성 대조 — 같은640회에서8k반복 대신32k한번
+
+### 1. 질문·후보
+
+DEV가 이른 시점 뒤 악화하고 같은 오답이 늘어, 추가 업데이트만 늘리기 전에 고유 QA 범위를 분리한다.
+세 후보는 기존8,192QA×4반복,16,384QA×2,32,768QA×1이다. 메모리 재고에서 마지막의 공급을 확인했으므로32k×1을 준비한다.
+이것은 새 기사 도메인이나 새 세계지식의 확보가 아니라 같은 기사 집합 안 질문·문맥 범위 확대다.
+부족분을 행 복제로 채우지 않는다. 새 모델 품질을 보고 규모를 골라 바꾸지 않는다.
+
+### 2. 공급 선결과 고정 평가
+
+기존 collector의 article90/5/5·공식DEV/중복/near-overlap/common_bpb제외·문맥당2QA·완전문맥+출력128/ctx1024를 유지한다.
+train_limit만 언어당4,096→16,384로 바꾸는 메모리 검토에서32,768QA를 확보했다. 한국어8,405문맥/1,263기사, 영어10,502문맥/412기사다.
+원4,096/언어는 새 선택의 전체 내용 기준 정확한 언어별 prefix다. DEV/TEST 각512의 전체 원형·순서·root SHA는 그대로다.
+이 검토는 읽기전용/파일0/모델0/GPU0이며, 새 실제 원형/인코더·학습 선결은 별도 CPU 동결이 필요하다.
+
+### 3. 대응 조건
+
+불변 원 P090B SHA12E18658·새 optimizer/seed1337·micro8×accum16/seq1024/ckptON/compiledefault·Adam5e-5/Muon2e-4/WD0/clip1/anneal1을 유지한다.
+두 wrapper0/1 CE·일관성계수0·MTP/이진/사실/입력본문 보조off·기존 replay4096×4와native5.24M은 바꾸지 않는다.
+새 자연 QA를 언어별4,096씩 네 구간으로 나눠 네 논리 구간마다 서로 다른8,192QA를 한 번씩 읽는다.
+첫 구간 전체8192는 기존 기준선의 첫 순회와 같아야 한다. 기존 seed+구간의 순서/배치·replay·native offsets도 같게 검산한다.
+자연 CE는 양쪽 모두65,536행, 전체SFT81,920행/640회·padded slots83,886,080이다. 새 자료의 자연 epoch는1이며 ‘32k를4epoch’라고 부르지 않는다.
+
+| 실제 노출 | 기존8k×4 | 새32k×1 |
+|---|---:|---:|
+| 자연 x | 16,450,696 | 16,650,200 |
+| 자연 assistant target | 363,552 | 362,614 |
+| 보존 포함 총SFT x | 19,559,956 | 19,759,460 |
+| 보존 포함 assistant target | 514,632 | 513,694 |
+
+행/업데이트는 같지만 실제 x/지도토큰은 정확히 같지 않다. 새 질문 내용·길이·노출빈도와 함께 바뀌는 자료 다양성 패키지 대조이며 순수한 토큰수 하나의 인과로 주장하지 않는다.
+직접 이미 완료한 원 P090B→같은QA640을 기준으로 삼되 새 코드 경로/마스크·단계1소비를 먼저 대조한다. 모델을 반복 로드해 기준선을 재학습시키지 않는다.
+
+### 4. 실행 조건·판정
+
+새 namespace `p106b_night_diversity_v1_s1337`에20MB 이하 원형 조각·SHA/전수CPU·새 비용8/저장0을 먼저 준비한다.
+구현된 단계만 정확SH로 등록하고, 비용과 남은 원래foundation/평가·조건부 보조·외부준거까지09시 전 예산을 확인한 뒤만 본640을 연다.
+GPU는한모델단독·새최종/DEV최소대표 weight-only만 저장하며 원본/기존 CODE·캐시·보호자료/다운로드/push를 바꾸지 않는다.
+고정 기사QA3형식·양뷰 모두정답/동일오답·조건갱신/보존·공개같은표본/native를 비교한다. 이미 본 코호트는 반복 개발 평가이며 TEST로 checkpoint/epoch를 고르지 않는다.
+첫 구간과 같은 자료인지, 새 나머지 구간이 고유인지·평가로 섞이지 않는지를 source/ID/실제인코더로 검산한다.
+계산 비용이 비슷해도 지능이 늘었다는 보장은 없다. 형식내 QA만 늘고 다른입력순서/보존이 실패하면 그 한계를 그대로 남긴다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-17 조건부 외부 준거 — 로컬 Falcon-H1-Tiny-90M-Base 오프라인 비교
+
+### 1. 목적과 세 후보
+
+목표 모델의 논문 점수를 TinyLM의 로컬 수치와 섞지 않기 위해 같은 고정 영어 선택 문항을 실제 비교한다.
+후보는①기존 HF캐시/Transformers의 torch fallback으로 로컬 실측,②필수 커널을 새 설치해 최적 속도로 측정,③공식 수치만 인용이다.
+현재 다운로드/설치 권한은 없으므로①만 비용 게이트로 준비한다. fallback이 불능·지나치게 느리면 정확한 이유와 NOT_RUN을 보존하고②를 우회 실행하지 않는다.
+
+### 2. 자산·범위·공정성
+
+자산은 기존 `HF/models--tiiuae--Falcon-H1-Tiny-90M-Base/snapshots/7994372e93b62822ae25f8bfb19f653649cea3a3/`만 읽는다.
+새 namespace `p106b_night_falcon_v1_s1337`에 실제 CPU strict-load/전체 자산·원형·토크나이저SHA를 검산한다. 환경/라이브러리를 수정하거나 가중치를 쓰지 않는다.
+프로세스 한정 `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`, `HF_DATASETS_OFFLINE=1`, `USE_HUB_KERNELS=0`으로 네트워크/Hub kernel 취득을 막는다.
+설치된 Transformers의 내장 falcon_h1과 torch fallback만 사용하며 trust_remote_code는False다. CPU검사 뒤 GPU비용8을 먼저 잰다.
+
+주비교는 기존 고정 PIQA/HellaSwag/ARC-easy 각256의 같은 원문·선택지·라벨·seq1024, 합CE 선택 및 문자길이 정규화다.
+어휘가 달라 CE값은 모델간 비교하지 않고 정답수·같은 eligible ID·선택지 편향과 불확실성을 비교한다.
+tokenizer가 임의 BOS를 붙이지 않도록 add_special_tokens=False의 실제 ids를 기록한다. config의 bos1은 >>ABSTRACT<<이며 이것만으로 자동 삽입 근거가 되지 않는다.
+공식 lm-eval 전수/shot/BOS 규약 재현은 미확정이므로 ‘공식 점수 재현’이라 부르지 않는다.
+추가 GSM8K64는 기존 ChatML과 같은 질문의 일반 `Question/Answer` 형식을 별도 보존해 Base모델의 형식 민감도를 확인한다. 서로 다른 프롬프트를 같은 수치로 섞지 않는다.
+greedy/출력128·캐시ON·FP32 MATH로 실제 원답/종료사유·입력길이와 no-truncate를 보존한다. 영어 Base이므로 이번 주비교를 영어로 한정하며 한국어 능력 확인으로 승격하지 않는다.
+
+### 3. 실제 비용·개방·판정
+
+CPU가 각 MC가족의 중간/최장길이2개와 GSM 중간/최장2개를 결과 보기 전에 고른다. 비용8은 모델불변·저장0이며15분 상한이다.
+측정한 가족별 보수 시간과 아직 남은 원래foundation·학생 보조·고유QA·전량평가를 함께 검토해09시 전 예산일 때만 전량을 연다.
+전체 기준 예산45분을 넘으면 주대조를 축소해 성공으로 부르지 않고 NOT_RUN/부분만 기록한다. 원형·부분 raw는 보존한다.
+Falcon은800B급 기초학습·다른 구조·실수 가중치/토크나이저를 가진 패키지다. Tiny의 삼진/자료량/아키텍처 하나의 인과 효과를 이 대조에서 식별하지 않는다.
+Falcon과 선택지 우도가 비슷해도 자유 QA·한국어·배포40MiB·일반 지능 동등을 주장하지 않는다.
+정확 SH/CPU회귀/계보·독립 원답 재집계는 구현 뒤 아래에 추가한다. 현재 모델 로딩/GPU/전량 결과는 모두 NOT_RUN이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
