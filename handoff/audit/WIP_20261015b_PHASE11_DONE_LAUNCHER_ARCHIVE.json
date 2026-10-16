@@ -1,0 +1,108 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-16T03:09:59.842429+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "git_recovery_commit": "035c987a11c960572d4c6c710f0c2197b107e684",
+  "files": [
+    {
+      "path": "run_P106B_Stage4cpWa_raw_repeat_full216-done.sh",
+      "bytes": 1308,
+      "sha256": "3A5C4E19A1C077E3C04524762817C06D569FAF778ADA2EAD1EE2AA79038FE08D",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 11:28:25 KST; raw111940 exit0, exact216 and one final checkpoint.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cpWa_raw_repeat_full216_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWa_raw_repeat_full216_\"$run_stamp\" --num 101 --note 'Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWa_raw_repeat_full216_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm raw_repeat --max-wall-sec 5400 --execute\n",
+      "git_commit": "035c987a11c960572d4c6c710f0c2197b107e684",
+      "git_path": "run_P106B_Stage4cpWa_raw_repeat_full216-done.sh",
+      "git_blob": "7566aa1442a193e5e686726591b22e96bae50d6e",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cpWa_raw_repeat_full216_111940.txt",
+      "raw_sha256": "40622624970BA5F54E12E7254D80AB2F0E5758672F0C06F93FECA44D92DB449C",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm raw_repeat --max-wall-sec 5400 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact four completed216 wrappers only; activeevaluation/CODE/raw/HF/CPT preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cpWb_repair_repeat_full216-done.sh",
+      "bytes": 1320,
+      "sha256": "1151AC3B75671FADD980BA25E4A5C6F964CB4AFEE88797EDE2E96F4022513B84",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 11:37:03 KST; raw112844 exit0/exact216; final checkpoint08932F20.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cpWb_repair_repeat_full216_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWb_repair_repeat_full216_\"$run_stamp\" --num 101 --note 'Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWb_repair_repeat_full216_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm repair_repeat --max-wall-sec 5400 --execute\n",
+      "git_commit": "035c987a11c960572d4c6c710f0c2197b107e684",
+      "git_path": "run_P106B_Stage4cpWb_repair_repeat_full216-done.sh",
+      "git_blob": "51214635814e274422017ccecff8010da285ae04",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cpWb_repair_repeat_full216_112844.txt",
+      "raw_sha256": "07B80B71B5E846E6AFE3B3FE3140273752AE0CF399959EBAD1E5E06B11EE8917",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm repair_repeat --max-wall-sec 5400 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact four completed216 wrappers only; activeevaluation/CODE/raw/HF/CPT preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cpWc_raw_role_full216-done.sh",
+      "bytes": 1289,
+      "sha256": "82F496B3A74E1B7AA089C7B2F45B82E7C7FDC40BDEF1EA1DF5D4752472BAC61F",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 11:45:48 KST; raw113806 exit0/exact216; final7E584E9F.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cpWc_raw_role_full216_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWc_raw_role_full216_\"$run_stamp\" --num 101 --note 'Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWc_raw_role_full216_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm raw_role --max-wall-sec 5400 --execute\n",
+      "git_commit": "035c987a11c960572d4c6c710f0c2197b107e684",
+      "git_path": "run_P106B_Stage4cpWc_raw_role_full216-done.sh",
+      "git_blob": "175d916c60f0bdd7f77d49585183b663ab2f2701",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cpWc_raw_role_full216_113806.txt",
+      "raw_sha256": "84075190AA615E4A461D75837B0ED8B144719F2DC08E49934811D74B68299427",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm raw_role --max-wall-sec 5400 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact four completed216 wrappers only; activeevaluation/CODE/raw/HF/CPT preserved"
+    },
+    {
+      "path": "run_P106B_Stage4cpWd_repair_role_full216-done.sh",
+      "bytes": 1301,
+      "sha256": "5E73120A085C00196749D6B2D9CE5ACB90A1F97A3A5ACCB487EE6B5FD5DD0E4C",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 11:54:56 KST; raw114707 exit0/exact216; final0210E99E.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cpWd_repair_role_full216_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWd_repair_role_full216_\"$run_stamp\" --num 101 --note 'Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cpWd_repair_role_full216_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm repair_role --max-wall-sec 5400 --execute\n",
+      "git_commit": "035c987a11c960572d4c6c710f0c2197b107e684",
+      "git_path": "run_P106B_Stage4cpWd_repair_role_full216-done.sh",
+      "git_blob": "43492ee5e7e26a890d43715440ed10cc87284d41",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cpWd_repair_role_full216_114707.txt",
+      "raw_sha256": "4DCEFF3CCA37A767A0015186C6731CC1A4E9BDAE76CA6F5398B2C5980C28FB59",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode train --arm repair_role --max-wall-sec 5400 --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Exact four completed216 wrappers only; activeevaluation/CODE/raw/HF/CPT preserved"
+    }
+  ]
+}
