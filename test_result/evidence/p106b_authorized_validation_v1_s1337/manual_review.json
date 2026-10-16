@@ -1,0 +1,84 @@
+{
+  "schema": "P106B_PUBLIC_BENCHMARK_MANUAL_REVIEW_V1",
+  "selection_ref": "manual_review_selection.json",
+  "records_read": 34,
+  "unique_source_questions": 8,
+  "scope": "Six fixed source-order cases times5 models, plus all4 automatically exact Korean match events. Supplemental positives are outcome-selected; no representative semantic accuracy is claimed.",
+  "examples": [
+    {
+      "id": "6507779-1-2",
+      "gold": "3인",
+      "model": "orpo010",
+      "answer": "3",
+      "assessment": "Semantically correct count in the supplied paragraph, despite whitespace/NFKC exact0 against the Korean gold with a people-unit suffix. Primary score remains unchanged."
+    },
+    {
+      "id": "6260132-9-0",
+      "gold": "guide",
+      "models": [
+        "raw_role",
+        "recovery",
+        "sft_only",
+        "orpo010"
+      ],
+      "answer": "Richard (Korean rendering)",
+      "assessment": "Wrong entity. All four use the same unrelated name; source states a guide."
+    },
+    {
+      "id": "6577693-0-2",
+      "gold": "three floors",
+      "answers": {
+        "raw_role": "1932 year",
+        "recovery": "1935 year",
+        "sft_only": "1935 year",
+        "orpo010": "1935 year"
+      },
+      "assessment": "Wrong requested field: year instead of floor count; source distinguishes1930 three-floor and1935 four-floor buildings."
+    },
+    {
+      "id": "gsm8k#10",
+      "gold": "366",
+      "answers": {
+        "raw_role": "no",
+        "recovery": "number",
+        "sft_only": "number",
+        "orpo010": "number"
+      },
+      "assessment": "60+180+126=366; outputs are unrelated rather than merely missing a numeric delimiter."
+    },
+    {
+      "id": "gsm8k#45",
+      "gold": "104",
+      "assessment": "Gold follows5/7/14 articles times4hours; fixed outputs are unrelated or2. No claim that all source wordings are unambiguous."
+    },
+    {
+      "id": "gsm8k#81",
+      "gold": "17",
+      "answers": {
+        "raw_role": "six",
+        "recovery": "summer",
+        "sft_only": "summer",
+        "orpo010": "summer"
+      },
+      "assessment": "10+21+23-9-28=17; fixed responses fail."
+    }
+  ],
+  "exact_positive_contexts_checked": [
+    {
+      "id": "6568930-2-0",
+      "events": 3,
+      "assessment": "Supplied text explicitly names the harp-like instrument; three exact extraction answers are supported."
+    },
+    {
+      "id": "6480874-3-0",
+      "events": 1,
+      "assessment": "Supplied text explicitly gives the named candidate course; exact answer is supported."
+    }
+  ],
+  "generation_observation": "Original parent often continues encyclopedia headings/categories or repeats until128token cap. Later models usually learn turn termination but can stop after an irrelevant word.",
+  "posthoc_numeric_scan": "Last-digit-string comparison across all320 GSM outputs found0 gold-matching candidates. Not a semantic judge and not a replacement metric.",
+  "full_semantic_adjudication_315_korean_answers": "NOT_RUN",
+  "training_from_test": false,
+  "online_bad_phrase_rules": false,
+  "primary_scores_modified": false
+}

@@ -39,7 +39,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -50,6 +53,11 @@ LOGDIR = ROOT / "smoketest_logs"
 
 RE_CMD = re.compile(r"^\[runlog\] cmd=(.+?)\s*$")
 RE_END = re.compile(r"^\[runlog\] 종료코드 (\d+)\s")
+CODEX_HANDOFF = ".agents/skills/session-handoff/scripts/check_handoff_codex.py"
+ISOLATED_CHECKER = "scripts/diag_p106b_authorized_smoke.py"
+AUTHORIZED_TAG = "p106b_authorized_validation_v1_s1337"
+CODEX_ITEMS = ("CHECK handoff/", "PASS static structure and local links",
+               "SUMMARY files=1 errors=0")
 
 
 def load_tsv():
@@ -92,9 +100,9 @@ def newest_log(explicit=None):
     return c[-1] if c else None
 
 
-def log_blocks(path):
-    """로그를 `[runlog] cmd=` 단위로 쪼개 {스크립트명: (본문, 종료코드)} 로 준다."""
-    blocks, cur, body = {}, None, []
+def log_records(path):
+    """Keep the real command identity; aliases must never rewrite raw logs."""
+    records, cur, body = [], None, []
     for ln in path.read_text(encoding="utf-8", errors="replace").splitlines():
         m = RE_CMD.match(ln)
         if m:
@@ -102,14 +110,126 @@ def log_blocks(path):
             continue
         e = RE_END.match(ln)
         if e and cur is not None:
-            k = re.search(r"scripts[\\/]([A-Za-z0-9_]+\.py)", cur)
-            if k and "run100m.py" not in cur:
-                blocks[k.group(1)] = ("\n".join(body), int(e.group(1)))
+            records.append((cur, "\n".join(body), int(e.group(1))))
             cur, body = None, []
             continue
         if cur is not None:
             body.append(ln)
+    return records
+
+
+def log_blocks(path):
+    """Legacy basename view, retained for canonical logs and existing callers."""
+    blocks = {}
+    for command, body, code in log_records(path):
+        key = re.search(r"scripts[\\/]([A-Za-z0-9_]+\.py)", command)
+        if key and "run100m.py" not in command:
+            blocks[key.group(1)] = (body, code)
     return blocks
+
+
+def authorized_aliases(log):
+    """Validate the versioned Codex adaptation receipt without executing it.
+
+    This is not a generic basename whitelist. The canonical source, driver,
+    entire child command order, substitutions, exit receipts and log bytes must
+    agree. A changed/missing receipt fails closed, including for stale logs.
+    The independent document check has its own markers, not legacy markers.
+    """
+    records = log_records(log)
+    if not any(CODEX_HANDOFF in cmd.replace("\\", "/") or
+               ISOLATED_CHECKER in cmd.replace("\\", "/") for cmd, _, _ in records):
+        return {}, []
+    try:
+        from smoke_module import parse_smoke_module
+
+        def regular(path):
+            path = Path(path)
+            if not path.is_file() or path.is_symlink():
+                raise ValueError(f"regular file required: {path.name}")
+            return path
+
+        def sha(path):
+            return hashlib.sha256(regular(path).read_bytes()).hexdigest().upper()
+
+        receipt = ROOT / "test_result/evidence" / AUTHORIZED_TAG / "smoke_report.json"
+        data = json.loads(regular(receipt).read_text(encoding="utf-8"))
+        regular(ROOT / CODEX_HANDOFF)
+        if not isinstance(data, dict) or data.get("schema") != "P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_V1":
+            raise ValueError("unsupported adaptation receipt schema")
+        if (data.get("source") != "scripts/batch/tool_smoke.bat" or
+                data.get("runtime") != f"runs/validation/{AUTHORIZED_TAG}" or
+                (ROOT / data["log"]).resolve() != regular(log).resolve()):
+            raise ValueError("source/runtime/log identity mismatch")
+        for key, path in (("source_sha256", BATCH),
+                          ("driver_sha256", ROOT / ISOLATED_CHECKER),
+                          ("log_sha256", log)):
+            if data.get(key) != sha(path):
+                raise ValueError(f"{key} mismatch")
+        actions = parse_smoke_module(BATCH, log_name="smoke_codex_20261016_v1")
+        calls = [a for a in actions if a.kind == "run"]
+        children = [a for a in calls if "--" in a.argv]
+        if (data.get("action_count") != len(actions) or
+                data.get("child_count") != len(children) or
+                data.get("training_count") != sum("run100m.py" in a.argv for a in children)):
+            raise ValueError("canonical action counts mismatch")
+        expected_receipts = [dict(line=a.line, returncode=0, child="--" in a.argv) for a in calls]
+        if (data.get("receipts") != expected_receipts or data.get("failed_calls") != 0 or
+                data.get("summary_returncode") != 0 or
+                data.get("original_synthetic_unchanged") is not True or
+                data.get("protected_originals_modified") is not False):
+            raise ValueError("incomplete or failed execution receipt")
+        substitutions = data.get("substitutions", [])
+        if not isinstance(substitutions, list) or not all(isinstance(s, dict) for s in substitutions):
+            raise ValueError("malformed substitution records")
+        required = {"scripts/check_handoff.py":
+                    ("codex_document_checker", ["-I", "-B", CODEX_HANDOFF]),
+                    "scripts/check_smoke.py":
+                    ("isolated_field_log_path", [ISOLATED_CHECKER, "--mode", "contract"])}
+        expected_edits, expected_commands, matched = [], [], {}
+        for action in children:
+            before = list(action.argv)
+            after = list(before)
+            for legacy, (kind, replacement) in required.items():
+                if legacy in before:
+                    i = before.index(legacy)
+                    after[i:i+1] = replacement
+                    # Interpreter paths can differ between machines, not within a receipt.
+                    observed = next((s for s in substitutions if s.get("line") == action.line), None)
+                    if observed is None:
+                        raise ValueError("missing substitution")
+                    for expected, actual in ((before, observed.get("before", [])),
+                                             (after, observed.get("after", []))):
+                        if len(expected) != len(actual) or any(x != y for j, (x, y) in
+                                enumerate(zip(expected, actual)) if j not in (0, 5)):
+                            raise ValueError("substitution command mismatch")
+                    before, after = observed["before"], observed["after"]
+                    if before[0] != before[5] or after[0] != before[0] or after[5] != before[5]:
+                        raise ValueError("substitution interpreter mismatch")
+                    expected_edits.append(dict(line=action.line, kind=kind, before=before, after=after))
+                    matched[legacy.rsplit("/", 1)[1]] = len(expected_commands)
+            expected_commands.append(after[after.index("--") + 1:])
+        if substitutions != expected_edits or len(matched) != 2:
+            raise ValueError("unexpected substitution set")
+        interpreter = expected_edits[0]["before"][0].replace("\\", "/")
+        if any(edit["before"][0].replace("\\", "/") != interpreter for edit in expected_edits):
+            raise ValueError("receipt interpreters differ")
+        if len(records) != len(children) + 1:
+            raise ValueError("missing/duplicate child or summary blocks")
+        for expected, (command, _, code) in zip(expected_commands, records):
+            actual = shlex.split(command.replace("\\", "/"))
+            if actual != [interpreter, *expected[1:]] or code != 0:
+                raise ValueError("actual child command/order/exit mismatch")
+        summary_command, summary_body, summary_code = records[-1]
+        summary_args = shlex.split(summary_command.replace("\\", "/"))
+        if (summary_args != [interpreter, "scripts/summarize_smoke.py", "--log", str(log.resolve())] or
+                summary_code != 0 or not all(marker in summary_body for marker in
+                    ("스모크 종료코드 요약", "실패 0개", "총 에러 0건"))):
+            raise ValueError("summary command/exit mismatch")
+        return {name: (records[i][1], records[i][2], CODEX_ITEMS if name == "check_handoff.py" else None)
+                for name, i in matched.items()}, []
+    except (OSError, ValueError, KeyError, TypeError, StopIteration, IndexError) as exc:
+        return {}, [f"Codex 대체 실행 증거 불일치: {exc}"]
 
 
 def handoff_input_stale(script, body, log):
@@ -222,8 +342,12 @@ def main():
         #   게이트**이고, 그것은 게이트가 아니다(2026-09-06 `check_heldout_defects` 교훈).
         #   낡았으면 *"고친 뒤 아직 안 돌렸다"* 라고 말하고 경고로 둔다.
         blocks = log_blocks(log)
+        aliases, alias_errors = authorized_aliases(log)
+        fails.extend(alias_errors)
         watched = [ROOT / "scripts" / r["script"] for r in rows]
         watched += [ROOT / "tinylm" / "model" / "lut.py", BATCH]
+        if aliases:
+            watched += [ROOT / CODEX_HANDOFF, ROOT / ISOLATED_CHECKER]
         newest_code = max((p.stat().st_mtime for p in watched if p.exists()), default=0)
         stale = log.stat().st_mtime < newest_code
         sink = warns if stale else fails
@@ -232,17 +356,24 @@ def main():
             print("         아래 실패는 **그때의 코드**에 대한 것이라 경고로 둔다.")
         for r in rows:
             s = r["script"]
-            if s not in blocks:
+            if s not in blocks and s not in aliases:
                 sink.append(f"{s}: 이 로그에 그 팔의 블록이 없다 — 팔이 안 돌았다")
                 print(f"      🚫 {s}: 블록이 없다(안 돌았다)")
                 continue
-            body, code = blocks[s]
+            items = r["items"]
+            if s in aliases:
+                body, code, alias_items = aliases[s]
+                items = alias_items or items
+                actual_name = CODEX_HANDOFF if s == "check_handoff.py" else ISOLATED_CHECKER + " --mode contract"
+                print(f"      [ADAPTED] {s} => {actual_name} (원본 명령·SHA·전체 실행 영수증 확인)")
+            else:
+                body, code = blocks[s]
             input_stale = handoff_input_stale(s, body, log)
             arm_sink = warns if stale or input_stale else fails
             if input_stale:
                 print("      [NOT_RUN] check_handoff.py: selected handoff input changed; "
                       "recorded exit remains historical; new smoke required")
-            gone = [it for it in r["items"] if it not in body]
+            gone = [it for it in items if it not in body]
             mark = "🚫" if (gone or code) else "✅"
             print(f"      {mark} {s:<26} exit {code}"
                   + (f"  · 안 찍힌 항목 {gone}" if gone else ""))
