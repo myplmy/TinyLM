@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed 2026-10-16 15:20:50 KST; raw152045 exit0, all raw/pairs recounted.
 # Known sufficiency preference: beta0 versus0.1, same replay and16 pairs/update.
 # CPU seconds or measured GPU minutes; model operations bounded explicitly.
 # Failed prerequisites stop only this stage. No stdin, queue or cleanup.

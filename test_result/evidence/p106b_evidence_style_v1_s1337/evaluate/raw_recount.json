@@ -1,0 +1,174 @@
+{
+  "schema": "P106B_WORDING_RAW_RECOUNT_V1",
+  "tag": "p106b_evidence_style_v1_s1337",
+  "status": "ALL192_RAW_RECOUNTED_AND96_ANCHORS_VERIFIED",
+  "whole_sec": 42.99302321401774,
+  "summaries": {
+    "parent": {
+      "counts": {
+        "0/all": {
+          "cases": 32,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 30,
+          "literal": 30,
+          "max_new": 0
+        },
+        "0/ANSWER": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 14,
+          "literal": 14,
+          "max_new": 0
+        },
+        "0/ASK_PROXY": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 16,
+          "literal": 16,
+          "max_new": 0
+        },
+        "3/all": {
+          "cases": 32,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 21.692307692307693,
+          "literal": 20,
+          "max_new": 0
+        },
+        "3/ANSWER": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 7,
+          "literal": 7,
+          "max_new": 0
+        },
+        "3/ASK_PROXY": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 14.692307692307693,
+          "literal": 13,
+          "max_new": 0
+        }
+      },
+      "exact_anchor_replays": 32,
+      "peak_reserved_mib": 1036
+    },
+    "sft_only": {
+      "counts": {
+        "0/all": {
+          "cases": 32,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 30,
+          "literal": 30,
+          "max_new": 0
+        },
+        "0/ANSWER": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 14,
+          "literal": 14,
+          "max_new": 0
+        },
+        "0/ASK_PROXY": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 16,
+          "literal": 16,
+          "max_new": 0
+        },
+        "3/all": {
+          "cases": 32,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 23.692307692307693,
+          "literal": 22,
+          "max_new": 0
+        },
+        "3/ANSWER": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 9,
+          "literal": 9,
+          "max_new": 0
+        },
+        "3/ASK_PROXY": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 14.692307692307693,
+          "literal": 13,
+          "max_new": 0
+        }
+      },
+      "exact_anchor_replays": 32,
+      "peak_reserved_mib": 1378
+    },
+    "orpo010": {
+      "counts": {
+        "0/all": {
+          "cases": 32,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 30,
+          "literal": 30,
+          "max_new": 0
+        },
+        "0/ANSWER": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 14,
+          "literal": 14,
+          "max_new": 0
+        },
+        "0/ASK_PROXY": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 16,
+          "literal": 16,
+          "max_new": 0
+        },
+        "3/all": {
+          "cases": 32,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 23.692307692307693,
+          "literal": 22,
+          "max_new": 0
+        },
+        "3/ANSWER": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 9,
+          "literal": 9,
+          "max_new": 0
+        },
+        "3/ASK_PROXY": {
+          "cases": 16,
+          "context_exhausted": 0,
+          "empty": 0,
+          "lexical_f1": 14.692307692307693,
+          "literal": 13,
+          "max_new": 0
+        }
+      },
+      "exact_anchor_replays": 32,
+      "peak_reserved_mib": 1398
+    }
+  },
+  "source": "test_result/evidence/p106b_evidence_style_v1_s1337/evaluate/report.json",
+  "manual_actual_answers_read": 192,
+  "manual_scope": "fixed4 neutral groups,32 posthoc development cases, unblinded; no population accuracy or online filtering",
+  "calculation_source": "import json,hashlib\nfrom pathlib import Path\nfrom scripts import diag_p106b_evidence_style as gate\nr=gate.course.producer.required(gate.EVIDENCE/'evaluate/report.json');inputs=gate.course.producer.required(gate.OUTPUT/'report.json')\ngate.verify(gate.OUTPUT,inputs['manifest'])\ncases=list(gate.course.training.data.stream_rows(gate.OUTPUT,inputs['manifest']))\ndata={};summaries={}\nfor arm,spec in r['endpoints'].items():\n directory=gate.ROOT/spec['directory'];gate.verify(directory,spec['manifest'])\n values=list(gate.course.training.data.stream_rows(directory,spec['manifest']))\n assert len(values)==64\n indexed={(v['root'],v['style']):v for v in values};assert len(indexed)==64\n counts=gate.summarize(values);assert counts==spec['counts']\n old=gate.course.producer.required(gate.prior.EVIDENCE/(arm+'_report.json'));ee=gate.prior.read_values(old['metrics']['evidence_test'])\n anchors={e['root']:e for e in ee if e['history']=='ACTUAL_MODEL' and e['turn']==1}\n for case in cases:gate.anchor_check(indexed[case['root'],3],anchors[case['root']])\n data[arm]=indexed;summaries[arm]=dict(counts=counts,exact_anchor_replays=32,peak_reserved_mib=spec['peak_reserved_mib'])\nout=[]\nfor c in cases:\n out.append(dict(family=c['family'],lang=c['language'],condition=c['condition'],sufficient=c['sufficient'],gold=c['gold'],\n   replies={a:[v[c['root'],s]['answer'] for s in (0,3)] for a,v in data.items()}))\nprint(json.dumps(dict(whole_sec=r['whole_sec'],summaries=summaries,cases=out),ensure_ascii=False))\n"
+}

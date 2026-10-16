@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed 2026-10-16 15:21:46 KST; raw152101 exit0,192 first answers and96 anchors.
 # Same-fact question wording control; not new training or a memory feature.
 # CPU seconds or bounded600 GPU seconds, one model at a time.
 # Only this stage's prerequisites fail closed. No stdin, queue or cleanup.

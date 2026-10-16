@@ -1,0 +1,33 @@
+{
+  "schema": "P106B_PREFERENCE_FIXED4_MANUAL_REVIEW_V1",
+  "tag": "p106b_evidence_preference_v1_s1337",
+  "selection_record": "test_result/evidence/p106b_evidence_preference_v1_s1337/manual_selection_before_answers.json",
+  "unblinded": true,
+  "pre_training_preregistration": false,
+  "neutral_groups": 4,
+  "conversations": 32,
+  "actual_answers_read": 288,
+  "reviewer": "GPT",
+  "scope": "Full given references/questions and actual3-turn chains of all3 endpoints read; fixed posthoc explanation, no population semantic rate, no automatic regeneration/filter or evaluation-to-train transfer.",
+  "observations": [
+    {
+      "family": "people",
+      "observation": "한국어 이름/학년/나이 갱신은 세팔에서 맞은 사례가 있다. 영어 Avery가 기록에 있어도 세팔이 없다고 되묻고, 소녀 학년1을 소년 학년6으로 답했다. ORPO는 실제 학년 누락 조건의 질문/보충1을 회복했으나 충분 조건의 오독은 남았다."
+    },
+    {
+      "family": "transfer",
+      "observation": "KO 도서관 조회는 추가SFT/ORPO가 회복했다. 그러나 새 수신자 우주를 장소처럼 해석해 우주에서 받은 사람을 되묻거나 지안을 복사했다. EN library가 있어도 morning/ball을 답했고, 제공된 Quinn 갱신을 놓쳤다. 부모의 우주로 바꾸었습니다는 내용값을 포함하므로 literal0을 전부 의미오답으로 보지 않는다."
+    },
+    {
+      "family": "units",
+      "observation": "50%와12671 직접조회는 많이 맞았고 영어 면적의 과잉질문 일부도 회복됐다. 반면12671+3=12674 갱신은12671/1366/15% 등 다른값·다른단위로 흘렀다. 정보 보충을 읽는 것과 갱신 계산은 별개다."
+    },
+    {
+      "family": "years",
+      "observation": "1902~1944의 기간42와 종료+2뒤44를 세팔이 모두 안정적으로 계산하지 못했다. ORPO가 충분 조건에서 되묻기 대신24/14를 답해도 정답 회복은 아니다. 영어 Quinn 보충은 ORPO가 회복한 사례가 있지만 한국어 구역 이름은 있어도 다시 물었다."
+    }
+  ],
+  "calculation_source": "import json,sys\nfrom pathlib import Path\ntag='p106b_evidence_preference_v1_s1337';family=sys.argv[1];base=Path('test_result/evidence')/tag\nselected=json.loads((base/'manual_selection_before_answers.json').read_text())['selected'][family]\nrows=[json.loads(v) for v in (Path('HF/sft_ready')/tag/'corpus/test_evidence_000000.jsonl').read_text().splitlines()]\nevents={}\nfor arm in ('parent','sft_only','orpo010'):\n q=Path('test_result/evidence/local')/tag/'evaluate'/arm\n events[arm]=[json.loads(v) for v in (q/'evidence_test_000000.jsonl').read_text().splitlines()]\ndef text(m):return ''.join(b['text'] for b in m['content'])\nout=[]\nfor row in rows:\n m=row['meta']\n if m['neutral_root']!=selected:continue\n answers={}\n for arm,values in events.items():\n  a=sorted([x for x in values if x['root']==m['semantic_root_id'] and x['history']=='ACTUAL_MODEL'],key=lambda x:x['turn'])\n  assert len(a)==3\n  answers[arm]=[e['answer'] for e in a]\n out.append(dict(lang=m['language'],condition=m['condition'],sufficient=m['query_sufficient'],omitted=m['omitted_key'],fields=m['requested_fields'],gold=[text(row['messages'][i]) for i in (1,3,5)],actual=answers))\nprint(json.dumps(dict(family=family,neutral=selected,cases=out),ensure_ascii=False))\n",
+  "wrong_answers_preserved": true,
+  "new_actual_error_training_dataset": false
+}
