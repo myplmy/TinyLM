@@ -1,4 +1,9 @@
 # TinyLM 실험 실행파일 메타데이터 (Windows BAT / Linux·WSL SH 공통 진실 원천)
+4	P106B	run_P106B_Stage4dq0Wb_parent_panel_cpu.sh	N	.03	N	Y	Separate balanced64 bare-parent diagnostic; trained full512 unchanged, old six-model gate never credited
+4	P106B	run_P106B_Stage4dqWg_original_parent_panel.sh	D	.5	Y	Y	Separate balanced64 bare-parent diagnostic; trained full512 unchanged, old six-model gate never credited
+4	P106B	run_P106B_Stage4dqWh_native_parent_panel.sh	D	.5	Y	Y	Separate balanced64 bare-parent diagnostic; trained full512 unchanged, old six-model gate never credited
+4	P106B	run_P106B_Stage4drWb_trained_foundation_readback.sh	N	.05	N	Y	Separate balanced64 bare-parent diagnostic; trained full512 unchanged, old six-model gate never credited
+4	P106B	run_P106B_Stage4drWc_parent_panel_readback.sh	N	.05	N	Y	Separate balanced64 bare-parent diagnostic; trained full512 unchanged, old six-model gate never credited
 #
 # ★규약 (ai_dev_tool/03 §6.2)
 #   1. 새 실험 배치를 만들면 **여기 한 줄 추가**한다. run_queue.bat 은 고치지 않는다.
@@ -54,8 +59,6 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE run_P106B_Stage4do0W_foundation_cpu_contract-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
 # DONE run_P106B_Stage4doWa_foundation_baseqa_cost8-done.sh; result101 section228 and machine-extracted command; source1d5ddb6; exact authorized deletion, raw/weights preserved.
 # DONE run_P106B_Stage4doWb_foundation_native_cost8-done.sh; result101 section228 and machine-extracted command; source1d5ddb6; exact authorized deletion, raw/weights preserved.
-4	P106B	run_P106B_Stage4doWc_foundation_native_299m.sh	Y	2.2	Y	Y	Conditional original P090B plus298975232 native targets; both cost gates and full budget required; 09:00 stop/10:00 authority end, not original75M SFT completion	
-2	P106B	run_P106B_Stage4doWd_foundation_cptqa_cost8.sh	Y	.05	Y	Y	Completed native parent QA8 cost, new moments and same QA consumers; no checkpoint; 09:00 stop/10:00 authority end, not original75M SFT completion	
 4	P106B	run_P106B_Stage4dpWb_foundation_cptqa_repeat4.sh	Y	.5	Y	Y	Native-continued P090B sameQA640 final4 and DEV representative; constant same QA recipe; 09:00 stop/10:00 authority end, not original75M SFT completion	
 # DONE run_P106B_Stage4dmWa_night_parent_actual_answers-done.sh; historical error9/raw five lanes preserved; result101 section227/repro; source1d5ddb6; exact authorized deletion.
 # HOLD run_P106B_Stage4dmWb_night_ce_actual_answers-hold.sh; NOT_RUN; old aggregate key invalid, replaced by new recovery case-ID evaluator.
@@ -928,6 +931,18 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   3	P106B	run_P106B_Stage4dmWf_night_consistency_metrics_recovery.sh	D	.5	Y	Y	Same fixed640 KL; complete eight-lane case-ID evaluation; 09:00 stop10:00 authority end
 #   3	P106B	run_P106B_Stage4dnWb_night_recovery_paired_readback.sh	N	.05	N	Y	Exact original-case/raw/receipt SHA recount for all three endpoints and paired article intervals
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   4	P106B	run_P106B_Stage4doWc_foundation_native_299m.sh	Y	2.2	Y	Y	Conditional original P090B plus298975232 native targets; both cost gates and full budget required; 09:00 stop/10:00 authority end, not original75M SFT completion
+#   2	P106B	run_P106B_Stage4doWd_foundation_cptqa_cost8.sh	Y	.05	Y	Y	Completed native parent QA8 cost, new moments and same QA consumers; no checkpoint; 09:00 stop/10:00 authority end, not original75M SFT completion
+#   7	P106B	run_P106B_Stage4eb0W_night_order_cpu.sh	N	.1	N	Y	CPU12 and actual32k field-order-only/target/no-held2/parent proof, no model forward
+#   7	P106B	run_P106B_Stage4ec0W_night_order_eval_cpu.sh	N	.05	N	Y	CPU4 same original three-format/retention/public cases binding, no model load
+#   7	P106B	run_P106B_Stage4dx0W_night_reference_reader_cpu.sh	N	.05	N	Y	CPU19 fixed source896/17Tiny endpoint scope and prospective manual GSM selection; no weights/logits
+#   6	P106B	run_P106B_Stage4dz0W_night_unique_eval_cpu.sh	N	.05	N	Y	CPU4 and same original scientific cases bound to unique32k final and DEV; no model load
+#   2	P106B	run_P106B_Stage4dy0W_night_diversity_cpu.sh	N	.08	N	Y	CPU18 plus actual32k source/quarter0 exact encoder and unchanged DEVTEST; no forward/GPU
+#   2	P106B	run_P106B_Stage4dw0Wb_night_falcon_cpu_json.sh	N	.08	N	Y	CPU12 actual local Falcon strict-load and set-to-list JSON proof; new v2, old raw/partial source preserved
+#   2	P106B	run_P106B_Stage4dw0W_night_falcon_cpu.sh	N	.08	N	Y	CPU9 and actual strictly loaded local Falcon asset/tokenization/frozen896; offline no model forward
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -1162,24 +1177,17 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE run_P106B_Stage4bkW_trim_joint_readback-done.sh; raw150313 exit0, addition42/423 of1024; actual rollout en8dialogue views16turns only.
 # DONE run_P106B_Stage4bkWb_trim_joint_pair-done.sh; raw151142 exit0, whole2048 paired difference.16406; not math-only interval.
 # Local offline Falcon reference; implemented/preflight before any model execution.
-7	P106B	run_P106B_Stage4eb0W_night_order_cpu.sh	N	.1	N	Y	CPU12 and actual32k field-order-only/target/no-held2/parent proof, no model forward
 7	P106B	run_P106B_Stage4ebWa_night_order_cost8.sh	Y	.06	Y	Y	Same originalP090B eight updates, new0/3 input field order only; no checkpoints
 7	P106B	run_P106B_Stage4ebWb_night_order_train640.sh	Y	.7	Y	Y	Only after all original raw readbacks and90min reserve; same32k640, training0/3 notheld2
-7	P106B	run_P106B_Stage4ec0W_night_order_eval_cpu.sh	N	.05	N	Y	CPU4 same original three-format/retention/public cases binding, no model load
 7	P106B	run_P106B_Stage4ecWa_night_order_final_eval.sh	D	.25	Y	Y	New field-order-only final640 complete8lane FP32 MATH actual answers; original TEST unchanged
 7	P106B	run_P106B_Stage4ecWb_night_order_dev_eval.sh	D	.25	Y	Y	Separate same oldDEV-CE selected representative; no TEST choice or extra learning seed
 7	P106B	run_P106B_Stage4edW_night_order_paired_readback.sh	N	.05	N	Y	Full source/body/raw/receipt recount and paired same32k0/1 versus0/3
-7	P106B	run_P106B_Stage4dx0W_night_reference_reader_cpu.sh	N	.05	N	Y	CPU19 fixed source896/17Tiny endpoint scope and prospective manual GSM selection; no weights/logits
 7	P106B	run_P106B_Stage4dxW_night_reference_common_readback.sh	N	.08	N	Y	Independent896raw/8cost recount and same eligible English MC intersections; missing Tiny endpoints NOT_COMPLETE
-6	P106B	run_P106B_Stage4dz0W_night_unique_eval_cpu.sh	N	.05	N	Y	CPU4 and same original scientific cases bound to unique32k final and DEV; no model load
 6	P106B	run_P106B_Stage4dzWa_night_unique32k_final_eval.sh	D	.25	Y	Y	Unique32k final640 actual eight-lane evaluation, same source/FP32; no weights changed
 6	P106B	run_P106B_Stage4dzWb_night_unique32k_dev_eval.sh	D	.25	Y	Y	Unique32k separate DEV-selected representative, not TEST-selected or independent learning seed
 6	P106B	run_P106B_Stage4eaW_night_unique32k_paired_readback.sh	N	.05	N	Y	Raw original/history/body/receipt recount and paired8kfourpass versus32konce comparison
-2	P106B	run_P106B_Stage4dy0W_night_diversity_cpu.sh	N	.08	N	Y	CPU18 plus actual32k source/quarter0 exact encoder and unchanged DEVTEST; no forward/GPU
 2	P106B	run_P106B_Stage4dyWa_night_unique32k_cost8.sh	Y	.05	Y	Y	Same originalP090B actual8 QA updates for new32k once; no checkpoint writes
 2	P106B	run_P106B_Stage4dyWb_night_unique32k_train.sh	Y	.6	Y	Y	Unique32k once across four logical quarters/640 matched updates, not32k repeated4epochs; full budget09:00
-2	P106B	run_P106B_Stage4dw0Wb_night_falcon_cpu_json.sh	N	.08	N	Y	CPU12 actual local Falcon strict-load and set-to-list JSON proof; new v2, old raw/partial source preserved
-2	P106B	run_P106B_Stage4dw0W_night_falcon_cpu.sh	N	.08	N	Y	CPU9 and actual strictly loaded local Falcon asset/tokenization/frozen896; offline no model forward
 2	P106B	run_P106B_Stage4dwWa_night_falcon_cost8.sh	D	.25	Y	Y	Offline Falcon eight preregistered median/longest timing cases; no new weights, full reference only if fits45min
 2	P106B	run_P106B_Stage4dwWb_night_falcon_english896.sh	D	.75	Y	Y	Same fixed EnglishMC768 and separate raw/ChatML GSM128; no-BOS FP32, no official score equivalence
 # DONE294a663 run_P106B_Stage4dmWd_night_parent_metrics_recovery-done.sh; actual public/native and carried five source lanes verified, command/source preserved.

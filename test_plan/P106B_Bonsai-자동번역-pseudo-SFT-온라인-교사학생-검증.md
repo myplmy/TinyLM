@@ -4888,7 +4888,7 @@ CPU실물/새 비용8·모든 원래파이프라인·Falcon준거·추가학습/
 |---|---|
 | Stage4eb0W_night_order_cpu | CPU12+실제32k의0/3 canonical·실제 shift/target·문자멀티셋·상한·원부모 검산 |
 | Stage4ebWa_night_order_cost8 | 같은 원P090B8회·저장0 |
-| Stage4ebWb_night_order_train640 | 원래foundation/prompt/고유QA의14endpoint 원답감사·원형/receipt 완료 뒤만,추가90분예약/09시내640 |
+| Stage4ebWb_night_order_train640 | 원래 세 원답감사의14검산 항목(기준선2개 중복 포함,실제 endpoint명12개)·원형/receipt 완료 뒤만,추가90분예약/09시내640 |
 | Stage4ec0W_night_order_eval_cpu | CPU4+같은 원형3형식/보존/공개 입력 연결 |
 | Stage4ecWa_night_order_final_eval |0/3 최종640 주대조·8lane 실제 답·FP32 MATH |
 | Stage4ecWb_night_order_dev_eval |같은 원래DEV0/1 최소 대표 별도,TEST선택 아님 |
@@ -4902,3 +4902,50 @@ CPU실물/새 비용8·모든 원래파이프라인·Falcon준거·추가학습/
 `Stage4dxW_night_reference_common_readback`(전체Falcon원답/비용8과같은eligible ID 교집합별 독립집계)을 준비했다.
 reader CPU는 모델을 로딩하지 않지만 원자산SHA를위해가중치파일바이트를읽는다. ‘가중치를안읽음’이아니라‘모델로딩/추론0’이다.
 완성Tiny보고서없는팔은0점으로가정하지않고NOT_COMPLETE로남기며누락을숨기지않는다.선택지합NLL과문자정규화·GSM두프롬프트를분리한다.
+
+## 2026-10-17 04시 평가 비용 실측 정정 — 교육 전 부모는 별도 균형 소형 진단
+
+### 1. 관찰·예측 오류
+
+교육 전 원P090B의 natural 원답은03:57경148행 중144행이 출력128을 모두 썼다. 파일 생성03:52:09부터의 약5분 실측으로 natural1536행만약50~60분이 예상된다.
+이것은 생성 종료 분포의 차이이며 GPU 장애·정답률 음성의 판정이 아니다. 종전900초/endpoint 예산은 짧게 종료하는 교육된 E970 실측을 다른 부모에 옮긴 부정확한 예측이었다.
+
+### 2. 세 대안과 현재 선택
+
+①옛512질문/3뷰/128출력을 교육전 두부모에서도 계속하면 조건은 같지만 기본부모에만2시간 이상을 쓰며 새 학습/원답 회수를 밀 수 있다.
+②두 교육전 부모만 source/root hash로 고정한 한영각32질문(64질문×3뷰)의 별도 진단으로 나누고, 실제 교육후 final/DEV 네 모델 및 본문/고유자료는기존512질문 전량을 유지한다.
+③전체 모델의 출력 상한을32로 줄여 새 평가버전으로 재수행하면 시간은 줄지만 장답의 정답 가능성/완결률이 바뀌고 기존128 결과와 직접 섞을 수 없다.
+현재 시간한정 주도적 승인에서는②를 선택한다. 이 선택은 정답성 문턱·골드·출력128·FP32/캐시를 완화하지 않는다.
+
+### 3. 보존·새 비교 범위
+
+원P090B의 옛 full512×3 시도는 비용상한 재계획을 위해 정상 인터럽트하고 raw/원로그를 그대로 둔다. 전량완료나 과학적 gate-negative로 승격하지 않는다.
+교육전 추가native 부모의 옛 full512×3는미실행으로 남긴다. 옛6endpoint전량 readback은 선결미충족이므로 실행하지 않는다.
+새 소형 부모진단은 정확도·개별 답을 보지 않고 언어별 source/root의고정 hash로 선택한다. 선택시드/전체원형index/CASE와모든gold를CPU로 동결한뒤만 실행한다.
+교육된 모델의512원답 중 같은64질문 ID를 골라 대응 비교하며, 부모64와학생512의서로다른분모를직접차이로쓰지않는다.
+학습후 네 trained endpoint의 전량8lane은 유지하고 별도 CPU reader에서원형/원답/receipt/모델SHA를검산한다. bare부모 미완료를0점이나DONE으로채우지않는다.
+
+### 4. 영향·시간·명시 보류
+
+기존 학습/마스크/optimizer·가중치·source CODE를수정하지않는다. 새 scope/namespace의진단·readback만추가한다.
+동결된 학습 driver의 옛 예산표에는 미완료부모가계속표시되며 그것을새scope완료의증거로쓰지않는다. 실제 남은 GPU학습·새진단/전량평가 시간을별도로재계산한다.
+기존6endpoint원답감사를 요구한 질문앞 추가 본640은선결미충족 상태를 유지한다. 이를속이거나gate를우회하지않고이번창에서는보류한다.
+비용8과실제source가완료된 준비물은보존하고, 75M×4epoch목표·held2학습금지·원형/오답보존·09시GPU중단/10시보고는유지한다.
+새 정확SH·source 동결과실행은별도단계/새출력으로기록한다. 현재미완료와부분실행을완료로바꾸지않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+### 5. 별도 소형 진단의 구현·실행 전 조건
+
+- 새 경로는 `p106b_night_parent_panel_v1_s1337`이며, 기존 전량 평가의 source·raw·receipt를 수정하지 않는다. 질문·정답·출력 조건은 원형 그대로이고 source/root hash만으로 한영 각32개를 고른다. 기존512개에서 답을 잘한 항목을 고르는 것이 아니다.
+- CPU 회귀는 선정 helper10개와 controller5개다. 실제 CPU 동결에서 원형64개·원래 영어 선택형768개·선정 index/SHA를 다시 묶는다. GPU/학습/체크포인트 쓰기는 없다.
+- 교육 전 두 부모에서는64×3개의 실제 답, 영어 선택형768개의 합 NLL/문자 정규화, 같은 native32/256을 새로 측정한다. 교육 후 네 모델의 full512×3와 보존평가8lane은 그대로 둔다.
+- 새 `trained_foundation_readback.json`은 교육된 네 모델만 검산한다. 별도 `bounded_parent_readback.json`은 학생 원답에서 같은64개 ID를 추출해 대응한다. 어느 파일도 옛 `foundation_readback.json`을 대체하거나 질문앞 본학습 선결을 해제하지 않는다.
+
+| 단계 | 정확한 실행파일 | 범위·예상 |
+|---|---|---|
+| CPU | `run_P106B_Stage4dq0Wb_parent_panel_cpu.sh` | 15개 합성 회귀 후 실제 원형 동결, 모델 로딩 없음 |
+| 부모1 | `run_P106B_Stage4dqWg_original_parent_panel.sh` | 원P090B의64질문×3뷰+영어MC768, 최대30분 |
+| 부모2 | `run_P106B_Stage4dqWh_native_parent_panel.sh` | 추가native 부모의 같은 소형 원형, 최대30분 |
+| 학습후4 검산 | `run_P106B_Stage4drWb_trained_foundation_readback.sh` | 네 full8lane 완료가 필수, CPU raw/receipt 검산 |
+| 대응64 검산 | `run_P106B_Stage4drWc_parent_panel_readback.sh` | 부모2+학생4를 같은64개 ID로 비교 |
+
+**실행 전 영향도·preflight:** 모델/학습 core 및 optimizer 변경0, 보호 원천/기존 가중치·로그 변경0, 새 진단·회귀4파일/SH5개와 해당 공유 연구문서만 추가한다. 새 태그 레지스트리 충돌0, 기존 부모 full512는 동일 비교가 아니므로 별도 보존한다. 개별 요청의128출력·1024문맥·FP32·greedy·cache 조건은 기존과 같다. 비교 분모가 다른 수치를 빼지 않고 같은64개 ID에서만 부모-학생 차이를 낸다. 당시 실측과 여유를 합산해 소형 두 부모 최대60분, 남은 trained3 평가 약20분, 본문 두 팔/고유32k 학습과6평가 약120~150분을 예약한다. 추정은 모델별 종료 분포에 따라 바뀌며09시 GPU 종료가 우선이다.
