@@ -55,6 +55,14 @@ RE_CMD = re.compile(r"^\[runlog\] cmd=(.+?)\s*$")
 RE_END = re.compile(r"^\[runlog\] 종료코드 (\d+)\s")
 CODEX_HANDOFF = ".agents/skills/session-handoff/scripts/check_handoff_codex.py"
 ISOLATED_CHECKER = "scripts/diag_p106b_authorized_smoke.py"
+
+
+def authorized_profiles():
+    return (
+        (AUTHORIZED_TAG, ISOLATED_CHECKER, "P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_V1", "smoke_codex_20261016_v1"),
+        ("p106b_night_final_smoke_v1_s1337", "scripts/diag_p106b_night_final_smoke.py",
+         "P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_NIGHT_FINAL_V1", "smoke_codex_20261017_night_final_v1"),
+    )
 AUTHORIZED_TAG = "p106b_authorized_validation_v1_s1337"
 CODEX_ITEMS = ("CHECK handoff/", "PASS static structure and local links",
                "SUMMARY files=1 errors=0")
@@ -138,7 +146,7 @@ def authorized_aliases(log):
     """
     records = log_records(log)
     if not any(CODEX_HANDOFF in cmd.replace("\\", "/") or
-               ISOLATED_CHECKER in cmd.replace("\\", "/") for cmd, _, _ in records):
+               any(p[1] in cmd.replace("\\", "/") for p in authorized_profiles()) for cmd, _, _ in records):
         return {}, []
     try:
         from smoke_module import parse_smoke_module
@@ -152,21 +160,26 @@ def authorized_aliases(log):
         def sha(path):
             return hashlib.sha256(regular(path).read_bytes()).hexdigest().upper()
 
-        receipt = ROOT / "test_result/evidence" / AUTHORIZED_TAG / "smoke_report.json"
+        profiles = authorized_profiles()
+        selected = [p for p in profiles if any(p[1] in command.replace("\\", "/") for command, _, _ in records)]
+        if len(selected) != 1:
+            raise ValueError("one exact approved isolation driver profile required")
+        tag, driver, schema, log_name = selected[0]
+        receipt = ROOT / "test_result/evidence" / tag / "smoke_report.json"
         data = json.loads(regular(receipt).read_text(encoding="utf-8"))
         regular(ROOT / CODEX_HANDOFF)
-        if not isinstance(data, dict) or data.get("schema") != "P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_V1":
+        if not isinstance(data, dict) or data.get("schema") != schema:
             raise ValueError("unsupported adaptation receipt schema")
         if (data.get("source") != "scripts/batch/tool_smoke.bat" or
-                data.get("runtime") != f"runs/validation/{AUTHORIZED_TAG}" or
+                data.get("runtime") != f"runs/validation/{tag}" or
                 (ROOT / data["log"]).resolve() != regular(log).resolve()):
             raise ValueError("source/runtime/log identity mismatch")
         for key, path in (("source_sha256", BATCH),
-                          ("driver_sha256", ROOT / ISOLATED_CHECKER),
+                          ("driver_sha256", ROOT / driver),
                           ("log_sha256", log)):
             if data.get(key) != sha(path):
                 raise ValueError(f"{key} mismatch")
-        actions = parse_smoke_module(BATCH, log_name="smoke_codex_20261016_v1")
+        actions = parse_smoke_module(BATCH, log_name=log_name)
         calls = [a for a in actions if a.kind == "run"]
         children = [a for a in calls if "--" in a.argv]
         if (data.get("action_count") != len(actions) or
@@ -185,7 +198,7 @@ def authorized_aliases(log):
         required = {"scripts/check_handoff.py":
                     ("codex_document_checker", ["-I", "-B", CODEX_HANDOFF]),
                     "scripts/check_smoke.py":
-                    ("isolated_field_log_path", [ISOLATED_CHECKER, "--mode", "contract"])}
+                    ("isolated_field_log_path", [driver, "--mode", "contract"])}
         expected_edits, expected_commands, matched = [], [], {}
         for action in children:
             before = list(action.argv)
@@ -347,7 +360,10 @@ def main():
         watched = [ROOT / "scripts" / r["script"] for r in rows]
         watched += [ROOT / "tinylm" / "model" / "lut.py", BATCH]
         if aliases:
-            watched += [ROOT / CODEX_HANDOFF, ROOT / ISOLATED_CHECKER]
+            actual_drivers=[p[1] for p in authorized_profiles() if Path(p[1]).name in blocks]
+            if len(actual_drivers)!=1:raise ValueError('one validated field checker driver required')
+            actual_driver=actual_drivers[0]
+            watched += [ROOT / CODEX_HANDOFF, ROOT / actual_driver]
         newest_code = max((p.stat().st_mtime for p in watched if p.exists()), default=0)
         stale = log.stat().st_mtime < newest_code
         sink = warns if stale else fails
@@ -364,7 +380,7 @@ def main():
             if s in aliases:
                 body, code, alias_items = aliases[s]
                 items = alias_items or items
-                actual_name = CODEX_HANDOFF if s == "check_handoff.py" else ISOLATED_CHECKER + " --mode contract"
+                actual_name = CODEX_HANDOFF if s == "check_handoff.py" else actual_driver + " --mode contract"
                 print(f"      [ADAPTED] {s} => {actual_name} (원본 명령·SHA·전체 실행 영수증 확인)")
             else:
                 body, code = blocks[s]

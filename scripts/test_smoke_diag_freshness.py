@@ -238,6 +238,35 @@ class AdaptationTests(unittest.TestCase):
                 self.assertEqual(check.main(), expected_code)
                 self.assertIn("[ADAPTED]", out.getvalue())
 
+    def use_night_profile(self):
+        driver='scripts/diag_p106b_night_final_smoke.py'
+        path=self.root/driver;path.write_bytes(self.driver.read_bytes())
+        self.log.write_text(self.log.read_text().replace(check.ISOLATED_CHECKER,driver))
+        self.data['substitutions']=json.loads(json.dumps(self.data['substitutions']).replace(check.ISOLATED_CHECKER,driver)
+            .replace('smoke_codex_20261016_v1','smoke_codex_20261017_night_final_v1'))
+        self.data.update(schema='P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_NIGHT_FINAL_V1',
+            runtime='runs/validation/p106b_night_final_smoke_v1_s1337',driver_sha256=self.sha(path))
+        self.receipt=self.root/'test_result/evidence/p106b_night_final_smoke_v1_s1337/smoke_report.json'
+        self.receipt.parent.mkdir(parents=True);self.save(rehash=True)
+        return path
+
+    def test_night_profile_uses_own_exact_receipt_not_original(self):
+        self.use_night_profile();self.assertEqual(self.aliases()[1],[])
+
+    def test_night_profile_cannot_use_original_runtime_or_unknown_schema(self):
+        self.use_night_profile();original=dict(self.data)
+        for change in (dict(runtime='runs/validation/'+check.AUTHORIZED_TAG),dict(schema='UNKNOWN')):
+            self.data=dict(original,**change);self.save();self.assertTrue(self.aliases()[1])
+
+    def test_night_driver_hash_and_missing_receipt_fail_closed(self):
+        path=self.use_night_profile();path.write_text('changed')
+        self.assertTrue(self.aliases()[1]);self.receipt.unlink();self.assertTrue(self.aliases()[1])
+
+    def test_mixed_profiles_not_accepted_as_either(self):
+        self.use_night_profile()
+        self.log.write_text(self.log.read_text()+'\n[runlog] cmd=python '+check.ISOLATED_CHECKER+'\n[runlog] 종료코드 0 소요 0분')
+        self.save(rehash=True);self.assertTrue(self.aliases()[1])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -117,6 +117,8 @@ def build_index():
 #   2026-09-03 첫 실행에서 `torch.profiler.profile` 이 `diag_spam_rate.profile` 로
 #   잘못 결합돼 오탐 2건이 났다 — **이름만 보고 결합하면 안 된다.**
 _REPO_MODS = ("tinylm", "scripts")
+_GLOBAL_BINDING = object()
+_NONLOCAL_BINDING = object()
 
 
 def _repo_visible(tree, path):
@@ -154,6 +156,7 @@ def scan(path: Path, idx, errs):
     except (SyntaxError, UnicodeDecodeError):
         return 0
     vis = _repo_visible(tree, path)
+    parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
     rel = path.relative_to(ROOT).as_posix()
     n = 0
     for node in ast.walk(tree):
@@ -162,7 +165,11 @@ def scan(path: Path, idx, errs):
         name = node.func.id
         if name not in idx or name not in vis:
             continue
-        _p, (names, has_kw, n_pos, has_var) = idx[name]
+        local = _nested_binding(node, name, parents)
+        if local is False:
+            continue                                  # parameters/assignments/imports shadow an unrelated global
+        if local is _GLOBAL_BINDING:local = None        # known import/global boundary must not inspect outer closures
+        _p, (names, has_kw, n_pos, has_var) = (path, _sig(local)) if local is not None else idx[name]
         if any(isinstance(x, ast.Starred) for x in node.args):
             continue                                    # *seq 전개 → 개수를 모른다
         n += 1
@@ -180,6 +187,51 @@ def scan(path: Path, idx, errs):
                              f"{name}() 에 '{kw.arg}' 파라미터가 없다  "
                              f"[{_p.relative_to(ROOT).as_posix()}]"))
     return n
+
+
+def _nested_binding(call, name, parents):
+    """Resolve only lexical function-local bindings; never substitute another module's same name.
+
+    None means no local binding, False means unknown/shadowed, FunctionDef is
+    an actual local definition. A known repository import/global declaration
+    terminates lexical search at the existing global index; nonlocal continues.
+    """
+    child = call
+    while child in parents:
+        scope = parents[child]
+        if isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)) and child in scope.body:
+            found = []
+            args = scope.args.posonlyargs + scope.args.args + scope.args.kwonlyargs
+            if any(a.arg == name for a in args): found.append(False)
+            if any(a is not None and a.arg == name for a in (scope.args.vararg, scope.args.kwarg)):
+                found.append(False)
+            def collect(node):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                    if node.name == name: found.append(node if not isinstance(node, ast.ClassDef) else False)
+                    return
+                if isinstance(node, ast.Lambda): return
+                if isinstance(node, ast.Global) and name in node.names:found.append(_GLOBAL_BINDING)
+                if isinstance(node, ast.Nonlocal) and name in node.names:found.append(_NONLOCAL_BINDING)
+                if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)) and node.id == name:
+                    found.append(False)
+                if isinstance(node, (ast.Import, ast.ImportFrom)):
+                    for alias in node.names:
+                        if (alias.asname or alias.name.split('.')[0]) != name:continue
+                        repo_from = isinstance(node, ast.ImportFrom) and alias.asname is None and (
+                            node.level > 0 or (node.module or '').split('.')[0] in _REPO_MODS or
+                            (node.module or '').split('.')[0] in {p.stem for p in (ROOT/'scripts').glob('*.py')})
+                        found.append(_GLOBAL_BINDING if repo_from else False)
+                for item in ast.iter_child_nodes(node): collect(item)
+            for item in scope.body: collect(item)
+            if found:
+                if all(value is _GLOBAL_BINDING for value in found):return _GLOBAL_BINDING
+                if all(value is _NONLOCAL_BINDING for value in found):
+                    child = scope
+                    continue
+                if len(found)!=1:return False
+                if found[0] is not _NONLOCAL_BINDING:return found[0]
+        child = scope
+    return None
 
 
 def main():

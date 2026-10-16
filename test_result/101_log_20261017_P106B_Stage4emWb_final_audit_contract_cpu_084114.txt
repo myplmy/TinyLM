@@ -1,0 +1,74 @@
+CPU34 scope/profile regressions, real repository call signatures and unchanged final44 smoke receipt. No models/GPU/new smoke/training. Original static errors retained in FINAL audit.
+
+==============================================================================
+[runlog] 2026-10-17 08:41:14  name=P106B_Stage4emWb_final_audit_contract_cpu_084114
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest -b scripts.test_check_call_kwargs_scope scripts.test_smoke_diag_freshness
+==============================================================================
+..................................
+----------------------------------------------------------------------
+Ran 34 tests in 0.098s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-17 08:41:14)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-17 08:41:14  name=P106B_Stage4emWb_final_audit_contract_cpu_084114
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/check_call_kwargs.py
+==============================================================================
+==============================================================================
+  호출 인자 정합성 검사 — cli.py + scripts/ (torch 불필요)
+==============================================================================
+  ① cli.py 명시 대상 8종 · 호출 12건
+  ② 인덱스 1661개 함수 · 파일 738개 · 검사한 호출 4351건
+     (이름이 둘 이상 정의돼 **건너뛴** 함수 281개)
+
+총 에러 0건
+주의: `**kwargs`·`*args`·전개·메서드 호출·이름 충돌은 건너뛴다. 정적 검사의 한계다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-10-17 08:41:19)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-17 08:41:19  name=P106B_Stage4emWb_final_audit_contract_cpu_084114
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/check_smoke_diag.py
+==============================================================================
+============================================================================================
+  스모크 진단런 계약 — 표 vs 배치 vs 로그
+============================================================================================
+
+  [1] 집합 — 표 11개 · 배치 11개
+      ✅ 일치
+
+  [1b] 항목 중복 — 두 팔이 같은 것을 재는가
+      ✅ 축 11종 · 표지 29종 — 겹치는 팔 없다
+
+  [2] 항목 실재 — 표의 표지가 스크립트 소스에 있는가
+      ✅ 항목 29개 전부 소스에 있다
+
+  [3] 로그 인쇄 — 202610170747_smoke_codex_20261017_night_final_v1_bb12d7b.txt
+      ✅ test_p101a_sft_mtp.py      exit 0
+      ✅ check_attrs.py             exit 0
+      ✅ check_diag_data.py         exit 0
+      ✅ diag_init_cla_owner.py     exit 0
+      [ADAPTED] check_handoff.py => .agents/skills/session-handoff/scripts/check_handoff_codex.py (원본 명령·SHA·전체 실행 영수증 확인)
+      [NOT_RUN] check_handoff.py: selected handoff input changed; recorded exit remains historical; new smoke required
+      ✅ check_handoff.py           exit 0
+      ✅ check_links.py             exit 0
+      ✅ check_return_probs.py      exit 0
+      ✅ diag_sparse34_pack.py      exit 0
+      ✅ mem_runtime.py             exit 0
+      ✅ diag_sft_mask.py           exit 0
+      [ADAPTED] check_smoke.py => scripts/diag_p106b_night_final_smoke.py --mode contract (원본 명령·SHA·전체 실행 영수증 확인)
+      ✅ check_smoke.py             exit 0
+
+  ----------------------------------------------------------------------------------------
+  ✅ 표·배치·로그 셋이 일치한다.
+  🚫단 이것은 '그 검사가 돌았다' 이지 '값이 옳다' 가 아니다.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-17 08:41:19)
+==============================================================================
