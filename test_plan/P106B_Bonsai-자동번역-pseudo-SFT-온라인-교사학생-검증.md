@@ -4029,3 +4029,6 @@ cs0W는 CPU24(10+5+6+3), cs1W는 실제동결, cs2W는 실제7E부모/전체소�
 | 7 | `run_P106B_Stage4cuWb_evidence_recovery_full216.sh` |
 | 8 | `run_P106B_Stage4cvW_evidence_recovery_actual.sh` |
 | 9 | `run_P106B_Stage4cwW_evidence_recovery_readback.sh` |
+
+cs0/1/2·ctWa/b·cuWa는 실제완료 후 done처리했고, 이전cq/cr와 합8SH를673fda2/2e84e7a에본문/명령/원로그SHA로선보존한뒤정확삭제했다.
+재현 명령은101§194/197~199·Phase12감사/Git에있다. cuWb활성 및cv/cw미실행은삭제하지않았다.
