@@ -1,0 +1,104 @@
+"""Offline reference cohort/prompt/cost tests, no model load or GPU."""
+from pathlib import Path
+import sys
+import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
+from datetime import timedelta
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts import diag_p106b_night_falcon as d
+
+
+class RawTokenizer:
+    def __init__(self): self.flags = []
+    def encode(self, text, *, add_special_tokens):
+        self.flags.append(add_special_tokens); return list(text.encode('utf-8'))
+    def decode(self, ids, **kwargs): return bytes(ids).decode('utf-8')
+
+
+def cohort():
+    rows = []
+    for task in d.TASKS[:3]:
+        for i in range(256):
+            rows.append(dict(task=task, kind='mc', index=i, item=dict(ctx='Question ' + 'x' * i,
+                choices=[' yes', ' no'], gold=i % 2, _iid=task + '#' + str(i))))
+    for i in range(64):
+        rows.append(dict(task='gsm8k_free', kind='gen', index=i, id='gsm8k#' + str(i),
+            prompt='<|im_start|>user\n' + 'word ' * (i + 1) + '<|im_end|>\n<|im_start|>assistant\n',
+            question='word ' * (i + 1), golds=[str(i)]))
+    return rows
+
+
+class FalconTests(unittest.TestCase):
+    def test_pure_import_has_real_runtime_symbols(self):
+        self.assertTrue(callable(d.previous.deadline)); self.assertTrue(callable(d.runtime_api.state_fingerprint))
+        self.assertTrue(callable(d.qa.data.digest)); self.assertTrue(callable(d.evaluation.old.mc_skip_reason))
+
+    def test_no_bos_or_added_specials(self):
+        raw = RawTokenizer(); tok = d.Tokens(raw)
+        self.assertEqual(tok.encode('한글 A').ids, list('한글 A'.encode('utf-8')))
+        self.assertEqual(raw.flags, [False]); self.assertEqual(tok.decode(tok.encode('1').ids), '1')
+
+    def test_same_mc_and_separate_plain_chatml_questions(self):
+        raw = cohort(); tok = d.Tokens(RawTokenizer()); rows = d.select_cases(raw, tok)
+        self.assertEqual(len(rows), 896); self.assertEqual(len({r['case_id'] for r in rows}), 896)
+        self.assertEqual(rows[0]['item'], raw[0]['item'])
+        first_plain, first_chat = rows[768:770]
+        self.assertEqual(first_plain['question'], first_chat['question'])
+        self.assertEqual(first_plain['golds'], first_chat['golds'])
+        self.assertEqual(first_plain['prompt'], 'Question: ' + first_plain['question'] + '\nAnswer:')
+        self.assertIn('<|im_start|>', first_chat['prompt'])
+        self.assertNotEqual(first_plain['case_id'], first_chat['case_id'])
+
+    def test_no_silent_cohort_shrinking(self):
+        with self.assertRaises(ValueError): d.select_cases(cohort()[:-1], d.Tokens(RawTokenizer()))
+
+    def test_case_identity_covers_original_prompt_and_gold(self):
+        row = dict(task='piqa', index=3, item=dict(gold=1, ctx='hello'))
+        self.assertNotEqual(d.case_id(row), d.case_id(dict(row, item=dict(gold=0, ctx='hello'))))
+
+    def test_cost_cases_selected_without_answers_and_unique(self):
+        tok = d.Tokens(RawTokenizer()); rows = d.select_cases(cohort(), tok); pilot = d.pilot_cases(rows, tok)
+        self.assertEqual(len(pilot), 8); self.assertEqual(len({r['case_id'] for r in pilot}), 8)
+        self.assertEqual([r['task'] for r in pilot], ['piqa'] * 2 + ['hellaswag'] * 2 + ['arc_easy'] * 2 + ['gsm8k_plain'] * 2)
+        self.assertEqual(pilot[-1]['index'], 63)
+
+    def test_forecast_reserves_both_generation_formats(self):
+        pilot = dict(timing={task:[1., 2.] for task in (*d.TASKS[:3], 'gsm8k_plain')})
+        r = d.estimate(pilot)
+        self.assertEqual(r['by_task_seconds']['gsm8k_two_formats'], 384.)
+        self.assertEqual(r['total_seconds'], 2808.)
+        self.assertFalse(r['fits45min'])
+
+    def test_bad_timing_does_not_open_full_run(self):
+        for value in (float('nan'), 0., -1., float('inf')):
+            p = dict(timing={task:[1., value] for task in (*d.TASKS[:3], 'gsm8k_plain')})
+            with self.assertRaises(ValueError): d.estimate(p)
+
+    def test_environment_is_process_local_and_explicitly_disables_network_kernel(self):
+        with patch.dict(d.os.environ, {}, clear=True):
+            d.offline()
+            self.assertEqual({k:d.os.environ[k] for k in d.OFFLINE}, d.OFFLINE)
+            self.assertEqual(d.os.environ['USE_HUB_KERNELS'], '0')
+
+    def test_wall_clock_is_clamped_within_each_long_generation_and_cost15min(self):
+        now = d.qa.TRAIN_STOP - timedelta(seconds=30)
+        self.assertEqual(d.bounded_wall(2700, False, now), 30)
+        self.assertEqual(d.bounded_wall(2700, True, now), 30)
+        early = d.qa.TRAIN_STOP - timedelta(hours=2)
+        self.assertEqual(d.bounded_wall(2700, True, early), 900)
+        self.assertEqual(d.bounded_wall(2700, False, early), 2700)
+
+    def test_expired_authority_never_enters_model_load(self):
+        with self.assertRaises(ValueError): d.bounded_wall(900, True, d.qa.TRAIN_STOP)
+
+    def test_actual_transformers_loading_sets_are_json_stable(self):
+        import json
+        value = d.loading_proof(dict(missing_keys=set(), unexpected_keys=set(), mismatched_keys=set(), error_msgs=[]))
+        self.assertEqual(json.loads(json.dumps(value)), value)
+        self.assertEqual(value['missing_keys'], [])
+
+
+if __name__ == '__main__': unittest.main()

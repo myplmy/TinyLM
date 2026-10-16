@@ -4818,7 +4818,7 @@ GPU는한모델단독·새최종/DEV최소대표 weight-only만 저장하며 원
 ### 2. 자산·범위·공정성
 
 자산은 기존 `HF/models--tiiuae--Falcon-H1-Tiny-90M-Base/snapshots/7994372e93b62822ae25f8bfb19f653649cea3a3/`만 읽는다.
-새 namespace `p106b_night_falcon_v1_s1337`에 실제 CPU strict-load/전체 자산·원형·토크나이저SHA를 검산한다. 환경/라이브러리를 수정하거나 가중치를 쓰지 않는다.
+새 namespace `p106b_night_falcon_v2_s1337`에 실제 CPU strict-load/전체 자산·원형·토크나이저SHA를 검산한다. 환경/라이브러리를 수정하거나 가중치를 쓰지 않는다.
 프로세스 한정 `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`, `HF_DATASETS_OFFLINE=1`, `USE_HUB_KERNELS=0`으로 네트워크/Hub kernel 취득을 막는다.
 설치된 Transformers의 내장 falcon_h1과 torch fallback만 사용하며 trust_remote_code는False다. CPU검사 뒤 GPU비용8을 먼저 잰다.
 
@@ -4838,3 +4838,17 @@ Falcon은800B급 기초학습·다른 구조·실수 가중치/토크나이저�
 Falcon과 선택지 우도가 비슷해도 자유 QA·한국어·배포40MiB·일반 지능 동등을 주장하지 않는다.
 정확 SH/CPU회귀/계보·독립 원답 재집계는 구현 뒤 아래에 추가한다. 현재 모델 로딩/GPU/전량 결과는 모두 NOT_RUN이다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+구현 단계는 `Stage4dw0W_night_falcon_cpu`(CPU11+실물 CPU strict), `Stage4dwWa_night_falcon_cost8`(최대900초), `Stage4dwWb_night_falcon_english896`(최대2700초)다.
+각각의 정확 실행파일은 `run_P106B_`+해당 단계명+`.sh`이며 무입력·새 로그·오프라인 단독 실행이다.
+전체 입력은 주 MC768와 별도 두 형식의 GSM128로896행이다. 전자는 같은 문항 우도 대조, 후자는 프롬프트 민감도 진단으로 분리한다.
+새 driver의 HF리다이렉트 명시 import 누락1은 모델 실행 전 전수정적에서 검출해 수리했다. 실패 감사도 덮어쓰지 않고 보존한다.
+행 사이 확인만으로 긴 생성의09시 초과를 막지 못하므로 프로세스 벽시간도09시 잔여·요청상한·비용900초 중 최솟값으로 제한한다.
+
+첫 CPU시도는 로컬 가중치 strict 로딩과896원형 작성까지 했지만 설치된 라이브러리의 빈 set 진단값을 JSON으로 저장하는 단계에서 종료9가 났다.
+이것은 GPU/모델 품질 음성이 아니다. v1원형/원로그를 그대로 두고 v2에 안정적인 list 진단값으로 수리하며 CPU회귀12와 `Stage4dw0Wb_night_falcon_cpu_json` 새 SH로 다시 검산한다.
+수리 전 소스2개는 기록된 패치에서 재구성하고 v1 manifest의 원SHA와 모두 일치함을 검산해 별도 Git제외 위치에 보존했다. 원본 HF 디렉터리는 고치지 않았다.
+
+고유QA 대조도 정확 SH 세 개를 준비했다. `run_P106B_Stage4dy0W_night_diversity_cpu.sh`는 CPU16+실제4원천/32k/quarter0인코더·부모 동결,
+`run_P106B_Stage4dyWa_night_unique32k_cost8.sh`는 새 저장0 비용8, `run_P106B_Stage4dyWb_night_unique32k_train.sh`는 전체예산 안640회다.
+논리구간은 학습내용이 다른 네 구간이며 자연자료 epoch는1이다. 평가 adapter/실제 답은 별도 준비하고 비용만으로 품질 판정을 열지 않는다.
