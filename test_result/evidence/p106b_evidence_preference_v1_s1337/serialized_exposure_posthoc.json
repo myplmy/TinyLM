@@ -1,0 +1,32 @@
+{
+  "schema": "P106B_PREFERENCE_ACTUAL_ENCODER_EXPOSURE_V1",
+  "tag": "p106b_evidence_preference_v1_s1337",
+  "corpus_report_sha256": "C7CFB9057FEEA5EFB1852D6F62A66ABAC3EAC28F31CE18F77CF7D1F7F9FE331C",
+  "encoder": "scripts/diag_p106b_evidence_preference_train.py encode delegates existing task producer; not generic encode_record",
+  "rows": 8192,
+  "sft_x_tokens": 1066751,
+  "assistant_targets": 62065,
+  "distinct_serialized_conversations": 8188,
+  "distinct_serialized_x": 1066172,
+  "distinct_serialized_targets": 62023,
+  "languages": {
+    "ko": {
+      "rows": 4096,
+      "x_tokens": 557937,
+      "assistant_targets": 32971
+    },
+    "en": {
+      "rows": 4096,
+      "x_tokens": 508814,
+      "assistant_targets": 29094
+    }
+  },
+  "passes": 1,
+  "native_x_tokens": 524288,
+  "pair_x_tokens": 300652,
+  "pair_scored_targets": 21024,
+  "per_language_gpu_counter": false,
+  "world_fact_tokens": "NOT_MEASURED; serialization and repeated exposure are not unique knowledge",
+  "scope": "CPU recomputation from frozen8192 with actual task encoder; both64 GPU totals matched; no new model forward/optimizer/teacher",
+  "calculation_source": "import json,hashlib\nfrom collections import Counter,defaultdict\nfrom pathlib import Path\nfrom scripts import diag_p106b_evidence_preference_train as t\nc=t.course\nr=json.loads((c.CORPUS/'report.json').read_text())\nrows=list(c.training.data.stream_rows(c.CORPUS,r['manifests']['train']))\ntok=c.upstream.old._tokenizer()\ndef sig(row):return c.upstream.conversation_signature(row['messages'])\nencoded=[t.encode(row,tok) for row in rows]\nbylang=defaultdict(lambda:Counter(rows=0,x_tokens=0,assistant_targets=0))\nunique={}\nfor row,rec in zip(rows,encoded):\n lang=row['meta']['language'];bylang[lang].update(rows=1,x_tokens=rec.x_tokens,assistant_targets=rec.targets)\n unique.setdefault(sig(row),rec)\nout=dict(schema='P106B_PREFERENCE_ACTUAL_ENCODER_EXPOSURE_V1',tag=c.TAG,corpus_report_sha256=c.training.data.digest(c.CORPUS/'report.json'),encoder='scripts/diag_p106b_evidence_preference_train.py encode delegates existing task producer; not generic encode_record',rows=len(rows),sft_x_tokens=sum(x.x_tokens for x in encoded),assistant_targets=sum(x.targets for x in encoded),distinct_serialized_conversations=len(unique),distinct_serialized_x=sum(x.x_tokens for x in unique.values()),distinct_serialized_targets=sum(x.targets for x in unique.values()),languages={k:dict(v) for k,v in bylang.items()},passes=1,native_x_tokens=524288,pair_x_tokens=300652,pair_scored_targets=21024,per_language_gpu_counter=False,world_fact_tokens='NOT_MEASURED; serialization and repeated exposure are not unique knowledge',scope='CPU recomputation from frozen8192 with actual task encoder; both64 GPU totals matched; no new model forward/optimizer/teacher')\nassert out['sft_x_tokens']==1066751 and out['assistant_targets']==62065\nprint(json.dumps(out,ensure_ascii=False,indent=2))\n"
+}
