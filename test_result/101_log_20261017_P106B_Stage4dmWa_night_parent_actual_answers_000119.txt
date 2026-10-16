@@ -1,0 +1,37 @@
+Immutable E970 baseline, actual QA3 views/cube/retention/public/native; no training. Read semantic limits, exact complete denominators, source/prompt/raw SHA and paired intervals. MC likelihood and stopping are not free-answer understanding; source annotation is not full truth adjudication.
+
+==============================================================================
+[runlog] 2026-10-17 00:01:19  name=P106B_Stage4dmWa_night_parent_actual_answers_000119
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_night_eval.py --mode evaluate --endpoint parent --max-wall-sec 7200 --execute
+==============================================================================
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 32, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 64, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 96, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 128, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 160, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 192, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 224, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 256, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 288, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 320, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 352, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 384, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 416, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 448, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 480, "total": 512}
+[NIGHT_NATURAL_PROGRESS] {"endpoint": "parent", "pairs": 512, "total": 512}
+[NIGHT_RETENTION] {"endpoint": "parent", "lane": "role", "counts": {"ACTUAL_MODEL/all": {"n": 192, "literal": 150, "empty": 0}, "ACTUAL_MODEL/ko": {"n": 96, "literal": 75, "empty": 0}, "ACTUAL_MODEL/turn1": {"n": 64, "literal": 61, "empty": 0}, "ACTUAL_MODEL/turn2": {"n": 64, "literal": 46, "empty": 0}, "GOLD_REFERENCE/all": {"n": 128, "literal": 89, "empty": 0}, "GOLD_REFERENCE/ko": {"n": 64, "literal": 44, "empty": 0}, "GOLD_REFERENCE/turn2": {"n": 64, "literal": 46, "empty": 0}, "ACTUAL_MODEL/turn3": {"n": 64, "literal": 43, "empty": 0}, "GOLD_REFERENCE/turn3": {"n": 64, "literal": 43, "empty": 0}, "ACTUAL_MODEL/en": {"n": 96, "literal": 75, "empty": 0}, "GOLD_REFERENCE/en": {"n": 64, "literal": 45, "empty": 0}}}
+[NIGHT_RETENTION] {"endpoint": "parent", "lane": "recovery", "counts": {"ACTUAL_MODEL/all": {"n": 192, "literal": 85, "empty": 0}, "ACTUAL_MODEL/ko": {"n": 96, "literal": 47, "empty": 0}, "ACTUAL_MODEL/turn1": {"n": 64, "literal": 37, "empty": 0}, "ACTUAL_MODEL/condition0": {"n": 48, "literal": 21, "empty": 0}, "ACTUAL_MODEL/turn2": {"n": 64, "literal": 34, "empty": 0}, "GOLD_REFERENCE/all": {"n": 128, "literal": 66, "empty": 0}, "GOLD_REFERENCE/ko": {"n": 64, "literal": 37, "empty": 0}, "GOLD_REFERENCE/turn2": {"n": 64, "literal": 46, "empty": 0}, "GOLD_REFERENCE/condition0": {"n": 32, "literal": 15, "empty": 0}, "ACTUAL_MODEL/turn3": {"n": 64, "literal": 14, "empty": 0}, "GOLD_REFERENCE/turn3": {"n": 64, "literal": 20, "empty": 0}, "ACTUAL_MODEL/condition1": {"n": 48, "literal": 16, "empty": 0}, "GOLD_REFERENCE/condition1": {"n": 32, "literal": 23, "empty": 0}, "ACTUAL_MODEL/condition2": {"n": 48, "literal": 24, "empty": 0}, "GOLD_REFERENCE/condition2": {"n": 32, "literal": 16, "empty": 0}, "ACTUAL_MODEL/condition3": {"n": 48, "literal": 24, "empty": 0}, "GOLD_REFERENCE/condition3": {"n": 32, "literal": 12, "empty": 0}, "ACTUAL_MODEL/en": {"n": 96, "literal": 38, "empty": 0}, "GOLD_REFERENCE/en": {"n": 64, "literal": 29, "empty": 0}}}
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_night_eval.py", line 508, in main
+    return evaluate(a.endpoint, min(a.max_wall_sec, remaining))
+  File "/home/uranus/tinyLM/scripts/diag_p106b_night_eval.py", line 387, in evaluate
+    outputs[lane] = dict(manifest=writer.close(lineage=info()), counts=summarize_dialogue(events))
+  File "/home/uranus/tinyLM/scripts/diag_p106b_night_eval.py", line 203, in summarize_dialogue
+    if key in seen: raise ValueError('duplicate retention event')
+ValueError: duplicate retention event
+[NIGHT_EVAL_ERROR] duplicate retention event
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 5.3분  (2026-10-17 00:06:39)
+==============================================================================

@@ -4489,7 +4489,8 @@ wrapper만 바뀌는 불변성에 더해 한영 각4개 새 코드 사실의 wra
 ### 9. 실행 이력
 
 10/16 야간 착수: 문헌·정·반을 필요시 각1회 호출해 source 방향·역할 replay 누락·first-turn 전용 선호·KL 붕괴 반증을 독립 대조했다.
-현재는 설계/구현 착수 단계이며 새 학습·품질 결과는 NOT_RUN이다.
+10/17 회수: [101 §224,226~229](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 V2 양팔640회를 완료했다.
+DEV1epoch 이후 악화와 부모5lane 저장 뒤 사례키 오류를 보존하고 새 평가 복구를 CPU45/실제 원형 전수로 준비했다. 실제 학생 품질은 아직 미판정이다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 ### 10. 패딩 실제 소비 복구 — 동일 과학 설계, 새 실행 버전
@@ -4513,7 +4514,7 @@ V1 코드/원형/원로그는 로컬 커밋 `160d587`에 보존했다. 새 PASS�
 ### 11. 고정 평가 준비 — 실제 답/동일오답/보존을 함께 회수
 
 Stage4dk0Wb는 CPU45/실제 패딩·소비 완료, Stage4dkWc/Stage4dkWd는 각8회/저장0으로 완료됐다([101 §222](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
-CE640회는 진행 중이며 아래 입력을 답안 생성 전에 동결한다. TEST로 checkpoint·epoch·계수를 고르지 않고 마지막4pass만 비교한다.
+아래 입력은 당시 CE640 진행 중 답안 생성 전에 동결했다. 이후 양640회 완료·사례키 복구는 뒤의10/17절이 소유한다. TEST로 checkpoint·epoch·계수를 고르지 않고 마지막4pass만 비교한다.
 
 | 정확 단계 | SH | 내용·선결 |
 |---|---|---|
@@ -4608,7 +4609,8 @@ native CE만 개선되면 언어모델링 개선이며 QA/일반 지능 개선�
 
 ### 9. 현재 상태
 
-추가 문헌/반증 검토와 코드 계약 준비 단계다. CPT/추가 QA/효과는 NOT_RUN이다.
+10/17 실제 CPU16과 원부모 QA/native 각8회 비용을 완료하고, 전체 잔여 예산 후 원P090B→QA640 기준 팔을 실행 중이다.
+원문 CPT/그 후 QA와 실제 효과는 NOT_RUN이다([101 §228](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
 전수 정적·원천/실물 CPU·비용·최종 답안의 순서를 지키고 실제 끝난 단계만 결과문서에 누적한다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
@@ -4625,4 +4627,33 @@ native CE만 개선되면 언어모델링 개선이며 QA/일반 지능 개선�
 원 P090B의 실제 CPU strict/body·native TRAIN 전체 ID 최대값·실제 단일창/패딩·실제 encoder를 별도로 확인한다.
 
 Stage4do0W는23:50:48에 CPU16과 실제 parent/cache/encoder를 검산해 완료했다([101 §225](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)).
-CPT/추가 QA·새 비용과 평가 효과는 NOT_RUN이며 현재 E970 CE/KL 대조를 우선 회수한다.
+CPT/그 후 QA·평가 효과는 NOT_RUN이며 비용은 이후8회로 회수했다. E970 CE/KL 대조와 별도로 기록한다.
+
+## 2026-10-17 평가 문항 식별자 복구 — 학습·질문·원답 불변
+
+Stage4dmWa는 자연 QA3뷰/조건 cube/역할/정보복구/코드의 원답을 저장한 뒤 코드 집계에서9로 종료했다.
+기존 `(semantic_root,turn,history)`는 같은 언어의 서로 다른 자식 질문까지 중복으로 오인했다.
+128개 코드 event 중3키/6행이 충돌했으며 실제 messages SHA는 모두 달랐다. 언어만 키에 넣어서는 고쳐지지 않는다.
+원형96개 문항의 canonical row SHA·lane·동결 index로 사례 ID를 만들고, semantic root는 묶음 집계에만 쓴다.
+
+세 후보는 저장된5 lane을 그대로 검산·새 수집 폴더로 계보 복사하는 복구, 전량 재추론, 옛 코드 수정 후 혼합이다.
+이미 얻은 원답을 바꾸지 않고 비용을 줄이는 첫 경로를 채택한다. 옛 코드/원답/실패 로그와 판정은 불변이다.
+새 evaluator `evaluation_v2/evaluate_v2`는 원본 `evaluation` 입력을 그대로 참조하고 source/CODE SHA를 고정한다.
+CPU에서 실제 role/recovery/code 전수 원형을 모의 emitter로 통과시켜 동일 입력의 상충 gold·누락·중복·이력 재구성을 먼저 확인한다.
+모의 emitter는 답변 품질 증거가 아니다. 저장된 parent5 lane의 원답/질문/gold/출처/순서/종료와 manifest SHA를 검산한 뒤 사본만 새 폴더에 쓴다.
+새 원답으로 위장하지 않고 `CARRIED_VERIFIED_RAW`·이전 원로그/manifest SHA와 이전 전체 body 종료 지문 미기록 한계를 명시한다.
+공개 벤치/native만 부모에 추가 실행하고, 두 학습 학생은 같은 고정 입력/FP32 MATH/greedy/cache로 전량 실행한다.
+각 lane 완료 receipt를 따로 저장하고 미완성 raw가 있으면 덮어쓰거나 자동 재생성하지 않는다.
+
+| 단계 | SH | 선결/범위 |
+|---|---|---|
+| Stage4dm0Wb | `run_P106B_Stage4dm0Wb_night_eval_casekey_cpu.sh` | 새12+driver CPU·실제 동결 원천 전수 wire/상충 검사·부모5 lane 손실 없는 회수 |
+| Stage4dmWd | `run_P106B_Stage4dmWd_night_parent_metrics_recovery.sh` | 회수 parent5 lane 보존·미실행 공개/native만 추론 |
+| Stage4dmWe | `run_P106B_Stage4dmWe_night_ce_metrics_recovery.sh` | CE640 고정 endpoint 전량8 lane |
+| Stage4dmWf | `run_P106B_Stage4dmWf_night_consistency_metrics_recovery.sh` | KL640 고정 endpoint 전량8 lane |
+| Stage4dnWb | `run_P106B_Stage4dnWb_night_recovery_paired_readback.sh` | 새 사례키/원형/6raw+2native/세 모델 대응 전량 검산 |
+
+추가 원부모/CPT 후 평가도 같은 원형·평가 함수를 새 endpoint 폴더에서 재사용할 수 있도록 준비하되 아직 실물 완료를 뜻하지 않는다.
+09시 GPU 중단·10시 승인 종료, teacher/학습/가중치 저장0, 원본/보호 데이터/다운로드/push 금지 경계는 유지한다.
+현재 1개 학습 seed의 사례 CI는 학습 재현성 분산이 아니다. 기존 음성을 PASS로 바꾸지 않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

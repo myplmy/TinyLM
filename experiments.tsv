@@ -28,25 +28,30 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-2	P106B	run_P106B_Stage4do0W_foundation_cpu_contract.sh	N	.08	-	Y	Actual original P090B, locked QA and native TRAIN bounds/hash/offsets CPU wire; not model quality; 09:00 stop/10:00 authority end, not original75M SFT completion	
-2	P106B	run_P106B_Stage4doWa_foundation_baseqa_cost8.sh	Y	.05	Y	Y	Original P090B QA8 cost, same frozen two-view course and replay; no checkpoint; 09:00 stop/10:00 authority end, not original75M SFT completion	
-2	P106B	run_P106B_Stage4doWb_foundation_native_cost8.sh	Y	.05	Y	Y	Original P090B full-target native8 cost, micro8 accum16; no checkpoint; 09:00 stop/10:00 authority end, not original75M SFT completion	
+# DONE run_P106B_Stage4dk0W_night_grounded_cpu-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4dkWa_night_ce_cost8-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4dk0Wb_night_grounded_padding_cpu-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4dkWc_night_ce_padding_cost8-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4dkWd_night_consistency_padding_cost8-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4dlWc_night_grounded_ce4_padding-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4dm0W_night_eval_frozen_inputs-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+# DONE run_P106B_Stage4do0W_foundation_cpu_contract-done.sh; exact completed/failed attempt, result101 sections221-225 and machine-extracted commands; source recoverable from df03d2c; deleted under current overnight cleanup approval.
+2	P106B	run_P106B_Stage4doWa_foundation_baseqa_cost8-done.sh	Y	.05	Y	Y	Completed QA8 cost/no checkpoint; result101 section228
+2	P106B	run_P106B_Stage4doWb_foundation_native_cost8-done.sh	Y	.05	Y	Y	Completed native8 cost/no checkpoint; result101 section228
 4	P106B	run_P106B_Stage4doWc_foundation_native_299m.sh	Y	2.2	Y	Y	Conditional original P090B plus298975232 native targets; both cost gates and full budget required; 09:00 stop/10:00 authority end, not original75M SFT completion	
 2	P106B	run_P106B_Stage4doWd_foundation_cptqa_cost8.sh	Y	.05	Y	Y	Completed native parent QA8 cost, new moments and same QA consumers; no checkpoint; 09:00 stop/10:00 authority end, not original75M SFT completion	
 4	P106B	run_P106B_Stage4dpWa_foundation_baseqa_repeat4.sh	Y	.5	Y	Y	Original P090B sameQA640 final4 and DEV representative, not E970 initialization; 09:00 stop/10:00 authority end, not original75M SFT completion	
 4	P106B	run_P106B_Stage4dpWb_foundation_cptqa_repeat4.sh	Y	.5	Y	Y	Native-continued P090B sameQA640 final4 and DEV representative; constant same QA recipe; 09:00 stop/10:00 authority end, not original75M SFT completion	
-1	P106B	run_P106B_Stage4dm0W_night_eval_frozen_inputs.sh	N	.04	-	Y	Freeze all TEST, cube, retention and existing public inputs before child answers; CPU only; fixed source, 09:00 GPU stop and10:00 authority end	
-3	P106B	run_P106B_Stage4dmWa_night_parent_actual_answers.sh	D	.5	Y	Y	Immutable E970 baseline, actual QA3 views/cube/retention/public/native; no training; fixed source, 09:00 GPU stop and10:00 authority end	
-3	P106B	run_P106B_Stage4dmWb_night_ce_actual_answers.sh	D	.5	Y	Y	Fixed final640 CE checkpoint, same actual inputs and precision as parent; fixed source, 09:00 GPU stop and10:00 authority end	
-3	P106B	run_P106B_Stage4dmWc_night_consistency_actual_answers.sh	D	.5	Y	Y	Fixed final640 consistency checkpoint; same complete answers and retention; fixed source, 09:00 GPU stop and10:00 authority end	
-3	P106B	run_P106B_Stage4dnW_night_paired_raw_readback.sh	N	.04	-	Y	Independent original-case/raw score/actual-history/native contract and article paired recount; fixed source, 09:00 GPU stop and10:00 authority end	
-1	P106B	run_P106B_Stage4dk0Wb_night_grounded_padding_cpu.sh	N	.08	-	Y	Freeze same explicit QA in V2 and verify real CPU padding IDs, masks and consumers;10/17 10:00KST stop, original V1 preserved	
-1	P106B	run_P106B_Stage4dkWc_night_ce_padding_cost8.sh	Y	.15	Y	Y	V2 CE cost8 only with actual padding prerequisite, no checkpoint;10/17 10:00KST stop, original V1 preserved	
-1	P106B	run_P106B_Stage4dkWd_night_consistency_padding_cost8.sh	Y	.15	Y	Y	V2 consistency cost8, same pair path and .05, no checkpoint;10/17 10:00KST stop, original V1 preserved	
-2	P106B	run_P106B_Stage4dlWc_night_grounded_ce4_padding.sh	Y	1.7	Y	Y	V2 same E970 two-view CE plus balanced replay/native640, both real cost gates required;10/17 10:00KST stop, original V1 preserved	
-2	P106B	run_P106B_Stage4dlWd_night_grounded_consistency4_padding.sh	Y	1.7	Y	Y	V2 same course640 with SymKL .05 only; original V1 failure preserved;10/17 10:00KST stop, original V1 preserved	
-1	P106B	run_P106B_Stage4dk0W_night_grounded_cpu-done.sh	N	.08	-	Y	Freeze explicit natural QA and balanced replay, then verify actual CPU parent/masks and consumers; not quality; one-time overnight permit, original outputs preserved	
-1	P106B	run_P106B_Stage4dkWa_night_ce_cost8-done.sh	Y	.15	Y	Y	CE arm cost8 only, no checkpoint; actual finite gradient and matched exposure; one-time overnight permit, original outputs preserved	
+3	P106B	run_P106B_Stage4dmWa_night_parent_actual_answers-done.sh	D	.5	Y	Y	Completed error9 after five raw lanes: semantic root wrongly used as unique event; raw preserved, public/native NOT_RUN
+# HOLD run_P106B_Stage4dmWb_night_ce_actual_answers-hold.sh; NOT_RUN; old aggregate key invalid, replaced by new recovery case-ID evaluator.
+# HOLD run_P106B_Stage4dmWc_night_consistency_actual_answers-hold.sh; NOT_RUN; old aggregate key invalid, replaced by new recovery case-ID evaluator.
+# HOLD run_P106B_Stage4dnW_night_paired_raw_readback-hold.sh; NOT_RUN; old aggregate key invalid, replaced by new recovery case-ID readback.
+1	P106B	run_P106B_Stage4dm0Wb_night_eval_casekey_cpu-done.sh	N	.05	N	Y	Completed CPU45/actual frozen-case wire and lossless parent five-lane recovery; result101 section229
+3	P106B	run_P106B_Stage4dmWd_night_parent_metrics_recovery.sh	D	.5	Y	Y	Same source FP32 parent; verified carried five lanes, only public/native newly run, no checkpoint writes
+3	P106B	run_P106B_Stage4dmWe_night_ce_metrics_recovery.sh	D	.5	Y	Y	Same fixed640 CE; complete eight-lane case-ID evaluation, immutable original inputs and old raw
+3	P106B	run_P106B_Stage4dmWf_night_consistency_metrics_recovery.sh	D	.5	Y	Y	Same fixed640 KL; complete eight-lane case-ID evaluation; 09:00 stop10:00 authority end
+3	P106B	run_P106B_Stage4dnWb_night_recovery_paired_readback.sh	N	.05	N	Y	Exact original-case/raw/receipt SHA recount for all three endpoints and paired article intervals
+2	P106B	run_P106B_Stage4dlWd_night_grounded_consistency4_padding-done.sh	Y	1.7	Y	Y	Completed KL640/matched actual exposure, actual quality pending; result101 section226
 # 1	P106B	run_P106B_Stage4dkWb_night_consistency_cost8-hold.sh	Y	.15	Y	Y	HOLD: V1 padding invalid; use V2; Consistency arm cost8 only, no checkpoint; same pair path and lambda .05; one-time overnight permit, original outputs preserved	
 # 2	P106B	run_P106B_Stage4dlWa_night_grounded_ce4-hold.sh	Y	1.7	Y	Y	HOLD: V1 padding invalid; use V2; Same E970 natural two-view CE plus balanced replay/native, four passes640 updates; cost pair required; one-time overnight permit, original outputs preserved	
 # 2	P106B	run_P106B_Stage4dlWb_night_grounded_consistency4-hold.sh	Y	1.7	Y	Y	HOLD: V1 padding invalid; use V2; Same course/640/order/init with SymKL .05 only; matched CE comparison, not global winner; one-time overnight permit, original outputs preserved	

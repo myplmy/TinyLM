@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Original P090B QA8 cost, same frozen two-view course and replay; no checkpoint.
+# Original P090B QA8 cost, same frozen two-view course and replay; no checkpoint. Completed; original log and exact commands preserved.
 # Estimate .05h; actual cost must fit all remaining QA/evaluation before09:00.
 # Native CPT is not300M SFT; no old asset changes/downloads/interactive input.
 # One-time user authority ends2026-10-17 10:00KST; micro8 accum16 seq1024 ckptON.
@@ -15,4 +15,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4doWa_foundation_baseqa_cost8_"$run_stamp" --num 101 --note 'Original P090B QA8 cost, same frozen two-view course and replay; no checkpoint. Read exact processed/native/assistant denominators, DEV vs TEST and actual answers separately. Additional native data may overlap prior parent exposure. No original checkpoint overwrite, downloads, protected data or automatic truth certification.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4doWa_foundation_baseqa_cost8_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_night_foundation.py --mode cost --arm base_qa --max-wall-sec 1800 --execute
-

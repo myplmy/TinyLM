@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Fixed final640 CE checkpoint, same actual inputs and precision as parent.
+# HOLD NOT_RUN: old row-root aggregate is invalid; new recovery stage uses case IDs.
 # Estimated .5h; independent cost/test contracts are not intelligence claims.
 # One-time authority ends2026-10-17 10:00KST; no new GPU after09:00.
 # No stdin, model writes, old mutations, downloads or online semantic filtering.
@@ -15,4 +15,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4dmWb_night_ce_actual_answers_"$run_stamp" --num 101 --note 'Fixed final640 CE checkpoint, same actual inputs and precision as parent. Read semantic limits, exact complete denominators, source/prompt/raw SHA and paired intervals. MC likelihood and stopping are not free-answer understanding; source annotation is not full truth adjudication.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4dmWb_night_ce_actual_answers_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_night_eval.py --mode evaluate --endpoint ce --max-wall-sec 7200 --execute
-

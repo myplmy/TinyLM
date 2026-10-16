@@ -509,3 +509,10 @@ actual문자1/13/22of1024·고정8문맥판독의필명/작품명·생년/출판
 KL은 각 뷰의 causal predictor를 gold ID 순서로 정렬하고 내용 target에만 평균한다. EOT는 CE로 학습한다.
 정답 이력 prefix의 낮은 KL과 같은 오답 수렴을 피하기 위해 실제 양뷰 정답·미학습 wrapper·대상/값 갱신·역할·언어 보존을 별도 회수한다.
 V1 패딩 검증누락은 GPU 전 거부됐고 새 V2의 실제 패딩/8회 비용은 통과했지만, 이 단계 자체는 교육 효과를 보증하지 않는다.
+
+2026-10-17 [101 §224~228](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):
+같은640회 CE/KL의 DEV 최소는1epoch였으므로 일반 원문 반복 노출의 안전 결과를 짧은 assistant-only SFT에 이식하지 않는다.
+사전고정 마지막4pass와 별도 DEV 최소 대표를 구별하고 TEST로 선택하지 않는다.
+semantic root는 동일 개념의 다른 질문을 포함하므로 event ID로 쓰지 않는다. 전체 원형 SHA·lane·동결 index와 언어/turn/history로 사례를 식별한다.
+집계 실패 전에 생성한 원답은 source/gold/prefix/manifest를 재구성해 보존하며 새 추론과 구분한다.
+실제 완료 receipt는 각 lane body 불변 검산 후 발행하고, 과거 전체 종료 지문이 없으면 그 한계를 소급해서 지우지 않는다.

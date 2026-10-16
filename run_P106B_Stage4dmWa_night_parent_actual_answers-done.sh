@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Immutable E970 baseline, actual QA3 views/cube/retention/public/native; no training.
+# Completed failed attempt: five raw lanes preserved; aggregation9, no public/native.
 # Estimated .5h; independent cost/test contracts are not intelligence claims.
 # One-time authority ends2026-10-17 10:00KST; no new GPU after09:00.
 # No stdin, model writes, old mutations, downloads or online semantic filtering.
@@ -15,4 +15,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4dmWa_night_parent_actual_answers_"$run_stamp" --num 101 --note 'Immutable E970 baseline, actual QA3 views/cube/retention/public/native; no training. Read semantic limits, exact complete denominators, source/prompt/raw SHA and paired intervals. MC likelihood and stopping are not free-answer understanding; source annotation is not full truth adjudication.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4dmWa_night_parent_actual_answers_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_night_eval.py --mode evaluate --endpoint parent --max-wall-sec 7200 --execute
-
