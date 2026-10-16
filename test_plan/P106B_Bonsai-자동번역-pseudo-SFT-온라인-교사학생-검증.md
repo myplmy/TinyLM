@@ -4852,3 +4852,53 @@ Falcon과 선택지 우도가 비슷해도 자유 QA·한국어·배포40MiB·�
 고유QA 대조도 정확 SH 세 개를 준비했다. `run_P106B_Stage4dy0W_night_diversity_cpu.sh`는 CPU16+실제4원천/32k/quarter0인코더·부모 동결,
 `run_P106B_Stage4dyWa_night_unique32k_cost8.sh`는 새 저장0 비용8, `run_P106B_Stage4dyWb_night_unique32k_train.sh`는 전체예산 안640회다.
 논리구간은 학습내용이 다른 네 구간이며 자연자료 epoch는1이다. 평가 adapter/실제 답은 별도 준비하고 비용만으로 품질 판정을 열지 않는다.
+
+## 2026-10-17 조건부 질문-앞 학습 대조 — 기존 봉인 형식은 학습하지 않음
+
+### 1. 실제 관찰과 세 후보
+
+지문·출력128이 모두1024에 들어가는 평가에서도 질문을 지문 앞에 둔 wrapper2의 정답이 거의 늘지 않았다.
+후보는①같은0/1형식의 업데이트 증가,②같은32k에서 두 번째 학습 형식의 질문/지문 순서만 뒤집기,③문맥을2048 이상으로 확대하기다.
+검증 손실이 이른 시점 뒤 악화했고 현재 입력 절단이 없으므로②를 조건부로 우선한다. 이것이 일반적인 장문 한계나 기억 부재를 해결하는 보증은 아니다.
+
+### 2. 변경 범위와 봉인 경계
+
+기존 collector·render_view·부모·source·32k 고유QA/기사분할·replay/native·평가512/3형식은 바꾸지 않는다.
+특히 wrapper2는 계속 학습 금지다. train임을 dev로 위장하거나 기존 금지 검사를 완화하지 않는다.
+새 독립 producer의 wrapper3만 만든다. wrapper1의 지시문·‘지문/질문’ 라벨·문맥·질문·정답은 그대로이고 질문 블록을 지문 앞에 옮긴다.
+예: ‘지문에 근거해 답만 쓰세요 / 지문: A는 빨강 / 질문: A는?’ → ‘같은 지시 / 질문: A는? / 지문: A는 빨강’이다.
+새3은 봉인2의 ‘자료만 이용해 간결하게 답’ 문구와 다르다. 0/3을 학습하며 예전0/1/2 평가를 그대로 읽는다.
+첫 번째0은 그대로, 두 번째1만 새3으로 바꾼다. source질문·정답·문자 멀티셋·실제 target IDs 보존과 full-prompt+128 예산을 CPU 전수검산한다.
+한 행이라도 길이/정답/출처가 깨지면 행을 조용히 버리지 않고 선결 미충족으로 남긴다.
+
+### 3. 비교·비용·판정
+
+새 namespace `p106b_night_order_v1_s1337`는 같은 원P090B·새optimizer/seed1337·micro8×accum16/1024/ckptON·Adam5e-5/Muon2e-4/WD0/clip1·640회다.
+자연32k한번/네 논리구간·보존4096×4/native5.24M, 두뷰 CE/일관성0·입력본문/MTP/이진/사실 보조off는 고정한다.
+직전 선등록32k 0/1 팔을 기준으로 비교한다. 실제 입력/지도 토큰이 같은지는 측정값으로 보고하며 순서 외 문자열이 바뀌면 같은조건이라 주장하지 않는다.
+최종640 주대조와 DEV 최소 대표를 분리한다. 이미 본 평가 코호트는 반복 개발 평가이고 미학습3→봉인2의 이득도 일반 지능이나 독립 전수벤치로 승격하지 않는다.
+두 질문 배치의 정답·일관오답·역할/정보복구/코드·공개/native와 실제 답안을 함께 본다. 특정 형식만 개선되면 그 한계와 교환비를 남긴다.
+CPU실물/새 비용8·모든 원래파이프라인·Falcon준거·추가학습/평가가09시 이전일 때만 실제 실행한다. 불충족이면 준비만 보존한다.
+새최종/DEV weight-only 약0.75GB를 더 쓸 수 있으며 원본/보호/다운로드/제품default/09는 바꾸지 않는다. 정확 SH는 구현 뒤 추가한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+구현/선결 단계는 다음과 같다. 각 이름의 정확 파일은 `run_P106B_`+단계명+`.sh`다.
+
+| 단계 | 실제 범위 |
+|---|---|
+| Stage4eb0W_night_order_cpu | CPU12+실제32k의0/3 canonical·실제 shift/target·문자멀티셋·상한·원부모 검산 |
+| Stage4ebWa_night_order_cost8 | 같은 원P090B8회·저장0 |
+| Stage4ebWb_night_order_train640 | 원래foundation/prompt/고유QA의14endpoint 원답감사·원형/receipt 완료 뒤만,추가90분예약/09시내640 |
+| Stage4ec0W_night_order_eval_cpu | CPU4+같은 원형3형식/보존/공개 입력 연결 |
+| Stage4ecWa_night_order_final_eval |0/3 최종640 주대조·8lane 실제 답·FP32 MATH |
+| Stage4ecWb_night_order_dev_eval |같은 원래DEV0/1 최소 대표 별도,TEST선택 아님 |
+| Stage4edW_night_order_paired_readback |동일32k 0/1 대0/3의 실제 원형/원답/receipt/모델SHA 재검산 |
+
+독립 검토16의 처음에는 새 evaluator info()의 HF메타SHA읽기3회가 섞여 이를 보고했다. digest를모의값으로격리한후 새16회귀를검산했다.
+실제 source CPU는02:56:06에완료했고 새0/3과원래0/1의x19,759,460/지도513,694가실제로같았다. 모델GPU/비용은아직미실행이다.
+이CPU입력검산은 QA정답률·일반화를 증명하지 않는다.
+
+외부 준거 reader도 `Stage4dx0W_night_reference_reader_cpu`(합성19+기존896원형/17Tiny endpoint 선언 동결),
+`Stage4dxW_night_reference_common_readback`(전체Falcon원답/비용8과같은eligible ID 교집합별 독립집계)을 준비했다.
+reader CPU는 모델을 로딩하지 않지만 원자산SHA를위해가중치파일바이트를읽는다. ‘가중치를안읽음’이아니라‘모델로딩/추론0’이다.
+완성Tiny보고서없는팔은0점으로가정하지않고NOT_COMPLETE로남기며누락을숨기지않는다.선택지합NLL과문자정규화·GSM두프롬프트를분리한다.

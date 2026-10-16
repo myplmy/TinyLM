@@ -1,0 +1,31 @@
+CPU12 plus actual strictly loaded offline Falcon; stable JSON loading proof in new v2 namespace, old error preserved. No forward/GPU/weight writes.
+
+==============================================================================
+[runlog] 2026-10-17 02:11:31  name=P106B_Stage4dw0Wb_night_falcon_cpu_json_021131
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_night_falcon
+==============================================================================
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.076s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-17 02:11:33)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-17 02:11:33  name=P106B_Stage4dw0Wb_night_falcon_cpu_json_021131
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_night_falcon.py --mode freeze --max-wall-sec 900 --execute
+==============================================================================
+[transformers] The fast path is not available because one of `(selective_state_update, causal_conv1d_fn, causal_conv1d_update)` is None. Falling back to the naive implementation. To install follow https://github.com/state-spaces/mamba/#installation and https://github.com/Dao-AILab/causal-conv1d
+
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]
+Loading weights:  39%|███▊      | 149/386 [00:00<00:00, 1477.38it/s]
+Loading weights:  83%|████████▎ | 322/386 [00:00<00:00, 1609.83it/s]
+Loading weights: 100%|██████████| 386/386 [00:00<00:00, 1810.92it/s]
+[FALCON_CPU] {"status": "FALCON_CPU_STRICT_FROZEN", "rows": 896, "runtime": {"transformers_version": "5.14.1", "torch_version": "2.10.0+cu130", "model_class": "FalconH1ForCausalLM", "parameters": 91131072, "bos_config": 1, "eos_config": 11, "pad_config": 0, "loading": {"missing_keys": [], "unexpected_keys": [], "mismatched_keys": [], "error_msgs": []}, "runtime_source_sha256": "E90BF774524E9B66284AD1C5528C35339271A187F58F16BA2D45C97F4BC6B5BD", "fast_mamba_path": false, "actual_kernel_functions": {"causal_conv1d_fn": false, "causal_conv1d_update": false, "selective_state_update": false, "mamba_chunk_scan_combined": false, "mamba_split_conv1d_scan_combined": false}}}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-10-17 02:11:38)
+==============================================================================

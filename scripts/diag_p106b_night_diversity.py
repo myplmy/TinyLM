@@ -160,6 +160,27 @@ def cost_forecast(report):
     return max(values) * 640 + 600
 
 
+def completed(proof):
+    def validate(report):
+        expected = proof['actual_exposure']
+        if (report.get('code_sha256') != info()['code_sha256'] or report.get('updates') != 640
+                or report.get('cpu_contract_sha256') != qa.data.digest(CORPUS / 'report.json')
+                or report.get('initial_core_sha256') != proof['initial_core_sha256']
+                or report.get('initializer_sha256') != foundation.data.PARENT_SHA
+                or report.get('actual_x_tokens') != expected['x_tokens']
+                or report.get('assistant_targets') != expected['assistant_targets']
+                or report.get('native_x_tokens') != 5242880 or report.get('padded_slots') != 83886080
+                or report.get('pairs_seen') != 32768 or report.get('natural_epoch') != 1
+                or report.get('logical_quarters') != 4 or report.get('actual_oom') is not False
+                or report.get('checkpoint_written') is not True
+                or report.get('checkpoint') != str(checkpoint().relative_to(ROOT))
+                or qa.data.digest(checkpoint()) != report.get('checkpoint_sha256')
+                or report.get('event_manifest', {}).get('rows') != 640):
+            raise ValueError('complete same-source unique32k640 exposure/body/checkpoint proof required')
+        verify(EVIDENCE / 'unique32k', report['event_manifest'])
+    return other.completion(EVIDENCE / 'unique32k/report.json', 'DIVERSITY_TRAIN_COMPLETE', validate)
+
+
 def save(torch, path, state, cfg, steps, quarter, core):
     with path.open('xb') as output:
         torch.save(dict(model=state, cfg=asdict(cfg), step=steps, optimizer_saved=False,

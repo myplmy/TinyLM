@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed once; archive exact commands and source before cleanup.
 # New v2 namespace preserves the failed v1 CPU raw and partial896 source.
 # CPU only; no forward, GPU, installation, download or weight writes.
 set -euo pipefail

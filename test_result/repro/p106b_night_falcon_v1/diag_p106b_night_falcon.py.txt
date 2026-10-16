@@ -1,0 +1,299 @@
+#!/usr/bin/env python3
+"""Offline local Falcon reference; no installation, download or weight writes.
+
+Same frozen English MC inputs, explicit no-BOS tokenization, separate raw QA
+and historical ChatML generation. This is not the official model-card harness.
+"""
+from __future__ import annotations
+from pathlib import Path
+import sys
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+import tinylm  # noqa: F401 -- process-local repository HF cache routing precedes transformers
+import argparse
+from collections import Counter
+from datetime import datetime, timezone
+import json
+import math
+import os
+import time
+from scripts import diag_p106b_night_eval_recovery as evaluation
+from scripts import diag_p106b_authorized_benchmark as public
+from scripts import eval_bench_suite as suite
+from scripts import diag_p101a_sft_mtp as runtime_api
+from scripts.p106b_shards import ShardWriter
+
+qa, previous = evaluation.c, evaluation.train
+TAG = 'p106b_night_falcon_v1_s1337'
+ASSET = ROOT / 'HF/models--tiiuae--Falcon-H1-Tiny-90M-Base/snapshots/7994372e93b62822ae25f8bfb19f653649cea3a3'
+FROZEN = ROOT / 'HF/sft_ready' / TAG / 'corpus'
+EVIDENCE = ROOT / 'test_result/evidence' / TAG
+LOCAL = ROOT / 'test_result/evidence/local' / TAG
+FILES = ('config.json', 'generation_config.json', 'tokenizer.json', 'tokenizer_config.json',
+         'special_tokens_map.json', 'model.safetensors', 'README.md')
+TASKS = ('piqa', 'hellaswag', 'arc_easy', 'gsm8k_plain', 'gsm8k_chatml')
+OFFLINE = dict(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1', HF_DATASETS_OFFLINE='1', USE_HUB_KERNELS='0')
+CODE = ('scripts/diag_p106b_night_falcon.py', 'scripts/test_p106b_night_falcon.py',
+        'scripts/eval_bench_suite.py', 'scripts/diag_p106b_authorized_benchmark.py',
+        'scripts/diag_p101a_sft_mtp.py', *evaluation.CODE)
+
+
+def offline():
+    # Set before importing transformers. No persistent environment/config edits.
+    for key, value in OFFLINE.items(): os.environ[key] = value
+
+
+def info():
+    return dict(schema='P106B_NIGHT_FALCON_OFFLINE_REFERENCE_V1', tag=TAG,
+        code_sha256={p: qa.data.digest(ROOT / p) for p in sorted(set(CODE))},
+        asset_sha256={p: qa.data.digest(ASSET / p) for p in FILES},
+        original_scientific_input_sha256=evaluation.info()['original_input_report_sha256'],
+        precision='FP32_MATH', context=1024, max_new_tokens=128, add_special_tokens=False,
+        explicit_bos_added=False, temperature=0., do_sample=False, use_cache_generation=True,
+        runtime_kernels='installed built-in falcon_h1 torch fallback; hub kernels disabled',
+        tasks=list(TASKS), training=False, optimizer_updates=0, checkpoints_written=0,
+        offline_environment=OFFLINE, official_harness_equivalence=False,
+        cross_model_ce_comparable=False, contamination='NOT_AUDITED_ALL_PRETRAINING',
+        scope='same English MC subset; separate prompt-format free-answer diagnostics; not architecture-only causality')
+
+
+class Tokens:
+    """HF tokenizer adapter preserving the existing scorer's separate boundaries."""
+    def __init__(self, tokenizer): self.tokenizer = tokenizer
+    def encode(self, text):
+        from types import SimpleNamespace
+        return SimpleNamespace(ids=self.tokenizer.encode(text, add_special_tokens=False))
+    def decode(self, ids):
+        return self.tokenizer.decode(ids, skip_special_tokens=False, clean_up_tokenization_spaces=False)
+
+
+class Forward:
+    def __init__(self, model, torch): self.model, self.torch = model, torch
+    def __call__(self, x):
+        with self.torch.autocast('cuda', enabled=False):
+            logits = self.model(input_ids=x, use_cache=False, logits_to_keep=0).logits
+        if logits.shape[:2] != x.shape or logits.dtype != self.torch.float32:
+            raise ValueError('complete FP32 next-token logits required')
+        return logits
+
+
+def case_id(row): return qa.data.sha([row['task'], row['index'], row])
+
+
+def select_cases(original, tok):
+    selected = []
+    for row in original:
+        if row['task'] in TASKS[:3]:
+            value = json.loads(json.dumps(row)); value['expected_skip'] = evaluation.old.mc_skip_reason(value['item'], tok)
+            selected.append(value)
+        elif row['task'] == 'gsm8k_free':
+            for variant in ('plain', 'chatml'):
+                value = json.loads(json.dumps(row)); value['task'] = 'gsm8k_' + variant
+                if variant == 'plain': value['prompt'] = 'Question: ' + value['question'] + '\nAnswer:'
+                value['prompt_tokens'] = len(tok.encode(value['prompt']).ids)
+                value['expected_skip'] = 'full_prompt_plus128_exceeds1024' if value['prompt_tokens'] + 128 > 1024 else None
+                selected.append(value)
+    expected = dict(piqa=256, hellaswag=256, arc_easy=256, gsm8k_plain=64, gsm8k_chatml=64)
+    if dict(Counter(row['task'] for row in selected)) != expected: raise ValueError('complete fixed English reference cohort required')
+    for row in selected: row['case_id'] = case_id(row)
+    return selected
+
+
+def pilot_cases(rows, tok):
+    out = []
+    for task in (*TASKS[:3], 'gsm8k_plain'):
+        candidates = [r for r in rows if r['task'] == task and r['expected_skip'] is None]
+        def length(row):
+            if row['kind'] == 'gen': return row['prompt_tokens'] + 128
+            it = row['item']; pairs = it.get('pairs') or [(it['ctx'], c) for c in it['choices']]
+            return max(len(tok.encode(p).ids) + len(tok.encode(c).ids) for p, c in pairs)
+        candidates.sort(key=lambda r: (length(r), r['case_id']))
+        if len(candidates) < 2: raise ValueError('two eligible timing examples per family required')
+        out.extend([candidates[len(candidates) // 2], candidates[-1]])
+    if len({r['case_id'] for r in out}) != 8: raise ValueError('distinct preregistered pilot cases required')
+    return out
+
+
+def load():
+    offline()
+    import torch
+    import transformers
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    tokenizer = AutoTokenizer.from_pretrained(str(ASSET), local_files_only=True, trust_remote_code=False)
+    model, loading = AutoModelForCausalLM.from_pretrained(str(ASSET), local_files_only=True,
+        trust_remote_code=False, dtype=torch.float32, attn_implementation='eager', output_loading_info=True)
+    if any(loading.get(k) for k in ('missing_keys', 'unexpected_keys', 'mismatched_keys', 'error_msgs')):
+        raise ValueError('strict complete cached Falcon weights required: ' + repr(loading))
+    if model.config.model_type != 'falcon_h1' or any(p.dtype != torch.float32 for p in model.parameters()):
+        raise ValueError('built-in actual FP32 falcon_h1 required')
+    if (model.config.eos_token_id, model.config.pad_token_id) != (11, 0):
+        raise ValueError('actual cached EOS11/PAD0 contract differs')
+    model.eval()
+    implementation = sys.modules[type(model).__module__]
+    proof = dict(transformers_version=transformers.__version__, torch_version=torch.__version__,
+        model_class=type(model).__name__, parameters=sum(p.numel() for p in model.parameters()),
+        bos_config=model.config.bos_token_id, eos_config=model.config.eos_token_id,
+        pad_config=model.config.pad_token_id, loading=loading,
+        runtime_source_sha256=qa.data.digest(Path(implementation.__file__)),
+        fast_mamba_path=bool(getattr(implementation, 'is_fast_path_available', False)),
+        actual_kernel_functions={name: getattr(implementation, name, None) is not None for name in
+            ('causal_conv1d_fn', 'causal_conv1d_update', 'selective_state_update',
+             'mamba_chunk_scan_combined', 'mamba_split_conv1d_scan_combined')})
+    return torch, model, Tokens(tokenizer), proof
+
+
+def prepare():
+    previous.deadline(training=True)
+    if FROZEN.parent.exists() or EVIDENCE.exists(): raise FileExistsError('old Falcon trial preserved')
+    identity = info(); _, _, original = evaluation.read_inputs()
+    torch, model, tok, runtime = load()
+    if torch.cuda.is_initialized(): raise ValueError('CPU Falcon loading initialized CUDA')
+    body = runtime_api.state_fingerprint(model)
+    rows = select_cases(original['public'], tok); pilots = pilot_cases(rows, tok)
+    FROZEN.mkdir(parents=True, exist_ok=False); writer = ShardWriter(FROZEN, 'cases')
+    for row in rows: writer.append(row)
+    manifest = writer.close(lineage=identity)
+    result = dict(identity, status='FALCON_CPU_STRICT_FROZEN', manifest=manifest, runtime=runtime,
+        initial_core_sha256=body, actual_rows=dict(Counter(r['task'] for r in rows)),
+        skip_counts=dict(Counter(r['task'] for r in rows if r['expected_skip'])),
+        pilot_case_ids=[r['case_id'] for r in pilots], cuda_initialized=False,
+        actual_model_cpu_loaded=True, source_report_sha256=qa.data.digest(evaluation.FROZEN / 'report.json'))
+    qa.write(FROZEN / 'report.json', result); qa.write(EVIDENCE / 'cpu_contract.json', result)
+    print('[FALCON_CPU] ' + json.dumps(dict(status=result['status'], rows=len(rows), runtime=runtime)), flush=True)
+    return 0
+
+
+def read_inputs():
+    report = qa.required(FROZEN / 'report.json')
+    if (report['status'] != 'FALCON_CPU_STRICT_FROZEN' or report['code_sha256'] != info()['code_sha256']
+            or report['asset_sha256'] != info()['asset_sha256']
+            or report['source_report_sha256'] != qa.data.digest(evaluation.FROZEN / 'report.json')
+            or qa.required(EVIDENCE / 'cpu_contract.json') != report):
+        raise ValueError('same strict CPU/runtime/source/asset contract required')
+    rows = list(evaluation.old.stream(FROZEN, report['manifest']))
+    if len(rows) != 896 or len({r['case_id'] for r in rows}) != 896: raise ValueError('complete unique 896 cases required')
+    for row in rows:
+        check = dict(row); check.pop('case_id')
+        if case_id(check) != row['case_id']: raise ValueError('frozen case original changed')
+    return report, rows
+
+
+def generate(torch, model, tok, row):
+    ids = tok.encode(row['prompt']).ids
+    if len(ids) + 128 > 1024: raise ValueError('never truncate reference generation')
+    x = torch.tensor([ids], dtype=torch.long, device='cuda'); tick = time.perf_counter()
+    with torch.no_grad(), torch.autocast('cuda', enabled=False):
+        result = model.generate(input_ids=x, max_new_tokens=128, do_sample=False,
+            use_cache=True, eos_token_id=11, pad_token_id=0)
+    torch.cuda.synchronize(); new = result[0, len(ids):].tolist(); raw = tok.decode(new)
+    terminal = bool(new and new[-1] == 11); content = new[:-1] if terminal else new
+    answer = tok.decode(content).strip()
+    numeric = public.numerical(answer)
+    score = int(numeric is not None and numeric == public.numerical(row['golds'][0]))
+    return dict(kind='gen', task=row['task'], case_id=row['case_id'], index=row['index'],
+        id=row['id'], prompt=row['prompt'], question=row['question'], golds=row['golds'],
+        input_ids=ids, new_ids=new, raw_answer=raw, answer=answer, numeric_exact=score,
+        seconds=time.perf_counter() - tick, finish_reason='eos' if terminal else 'max_new_tokens',
+        generation=dict(temperature=0., max_new=128, do_sample=False, use_cache=True, bos_added=False))
+
+
+def estimate(pilot):
+    timing = pilot['timing']; required = {}
+    for task in TASKS[:3]:
+        values = timing.get(task, [])
+        if len(values) != 2 or any(not math.isfinite(v) or v <= 0 for v in values): raise ValueError('complete positive family cost required')
+        required[task] = max(values) * 256 * 1.5
+    values = timing.get('gsm8k_plain', [])
+    if len(values) != 2 or any(not math.isfinite(v) or v <= 0 for v in values): raise ValueError('generation timing required')
+    required['gsm8k_two_formats'] = max(values) * 128 * 1.5
+    total = sum(required.values()) + 120
+    return dict(by_task_seconds=required, total_seconds=total, fits45min=total <= 2700)
+
+
+def bounded_wall(requested, cost, now=None):
+    remaining = int((qa.TRAIN_STOP - (now or datetime.now(timezone.utc))).total_seconds())
+    if remaining <= 0: raise ValueError('09:00 hard GPU deadline expired')
+    return min(requested, 900 if cost else 2700, remaining)
+
+
+def run(cost, max_wall_sec):
+    from scripts.p106b_gate_runtime import idle_before_gpu, wall_limit
+    report, all_rows = read_inputs(); name = 'cost8' if cost else 'english896'
+    target = EVIDENCE / name; directory = LOCAL / name
+    if target.exists() or directory.exists(): raise FileExistsError('complete/partial Falcon trial preserved')
+    if not cost:
+        pilot = qa.required(EVIDENCE / 'cost8/report.json')
+        if (pilot['status'] != 'FALCON_COST_COMPLETE' or pilot['code_sha256'] != info()['code_sha256']
+                or pilot['input_sha256'] != qa.data.digest(FROZEN / 'report.json')):
+            raise ValueError('actual same-source eight-case cost required')
+        forecast = estimate(pilot)
+        remaining = (qa.TRAIN_STOP - datetime.now(timezone.utc)).total_seconds()
+        if not forecast['fits45min'] or forecast['total_seconds'] + 3600 > remaining:
+            raise ValueError('fallback cost does not fit bounded reference and remaining evaluation reserve')
+        print('[FALCON_FORECAST] ' + json.dumps(forecast), flush=True)
+    previous.deadline(training=True); idle_before_gpu()
+    target.mkdir(parents=True, exist_ok=False); directory.mkdir(parents=True, exist_ok=False)
+    qa.write(target / 'start.json', dict(info(), cost=cost, input_sha256=qa.data.digest(FROZEN / 'report.json')))
+    began = time.perf_counter(); writer = ShardWriter(directory, 'answers'); timing = {}; outputs = []
+    with wall_limit(bounded_wall(max_wall_sec, cost)):
+        torch, model, tok, runtime = load()
+        if runtime != report['runtime'] or runtime_api.state_fingerprint(model) != report['initial_core_sha256']:
+            raise ValueError('same actual CPU-loaded runtime/body required')
+        torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
+        model = model.cuda(); torch.cuda.reset_peak_memory_stats()
+        rows = [r for r in all_rows if r['case_id'] in report['pilot_case_ids']] if cost else all_rows
+        for row in rows:
+            previous.deadline(training=True); tick = time.perf_counter()
+            if row['expected_skip']:
+                event = dict(task=row['task'], case_id=row['case_id'], index=row['index'], skipped=True, reason=row['expected_skip'])
+            elif row['kind'] == 'mc':
+                import torch.nn.functional as F
+                result = suite.run_mc(row['task'], [row['item']], Forward(model, torch), tok, 'cuda', 1024, torch, F, True)
+                if len(result['rows']) != 1 or result['skip_rows']: raise ValueError('MC eligibility/source differs from CPU')
+                torch.cuda.synchronize()
+                event = dict(kind='mc', task=row['task'], case_id=row['case_id'], index=row['index'],
+                    source_item=row['item'], scores=result['rows'][0], skipped=False, seconds=time.perf_counter() - tick)
+            else:
+                event = generate(torch, model, tok, row); event['skipped'] = False
+            writer.append(event); outputs.append(event)
+            if not event['skipped']: timing.setdefault(row['task'], []).append(event['seconds'])
+            if cost or len(outputs) % 64 == 0:
+                print('[FALCON_PROGRESS] ' + json.dumps(dict(mode=name, rows=len(outputs), task=row['task'], seconds=time.perf_counter() - began)), flush=True)
+        final = runtime_api.state_fingerprint(model)
+        if final != report['initial_core_sha256']: raise ValueError('read-only Falcon inference changed body')
+        if info()['asset_sha256'] != report['asset_sha256']: raise ValueError('immutable cached Falcon changed')
+        manifest = writer.close(lineage=info())
+        summary = {}
+        for task in dict.fromkeys(r['task'] for r in rows):
+            values = [e for e in outputs if e['task'] == task and not e['skipped']]
+            if not values: raise ValueError('all-skip family is not a completed benchmark')
+            correct = sum(e['scores']['pred_harness'] == e['scores']['gold'] for e in values) if task in TASKS[:3] else sum(e['numeric_exact'] for e in values)
+            summary[task] = dict(n=len(values), correct=correct, wilson=suite.wilson(correct, len(values)),
+                skipped=sum(e['task'] == task and e['skipped'] for e in outputs))
+            if task in TASKS[:3]:
+                summary[task]['char_norm_correct'] = sum(e['scores']['pred_harness_norm'] == e['scores']['gold'] for e in values)
+                summary[task]['predictions'] = dict(Counter(e['scores']['pred_harness'] for e in values))
+        output = dict(info(), status='FALCON_COST_COMPLETE' if cost else 'FALCON_REFERENCE_COMPLETE',
+            cost=cost, input_sha256=qa.data.digest(FROZEN / 'report.json'), runtime=runtime, manifest=manifest,
+            directory=str(directory.relative_to(ROOT)), timing=timing, summary=summary, body_unchanged=True,
+            initial_core_sha256=final, whole_seconds=time.perf_counter() - began,
+            peak_reserved_mib=torch.cuda.max_memory_reserved() / 2**20)
+        if cost: output['forecast'] = estimate(output)
+        qa.write(target / 'report.json', output)
+        print('[FALCON_COMPLETE] ' + json.dumps(dict(mode=name, summary=summary, seconds=output['whole_seconds'])), flush=True)
+    return 0
+
+
+def main():
+    p = argparse.ArgumentParser(); p.add_argument('--mode', choices=('freeze', 'cost', 'evaluate'), required=True)
+    p.add_argument('--max-wall-sec', type=int, default=2700); p.add_argument('--execute', action='store_true'); args = p.parse_args()
+    if not args.execute or not 60 <= args.max_wall_sec <= 2700: p.error('explicit execute and60..2700 bounded wall required')
+    try:
+        return prepare() if args.mode == 'freeze' else run(args.mode == 'cost', args.max_wall_sec)
+    except KeyboardInterrupt:
+        print('[FALCON_INTERRUPTED] partial raw preserved'); return 130
+    except Exception as exc:
+        print('[FALCON_ERROR] ' + type(exc).__name__ + ': ' + str(exc)); return 9
+
+
+if __name__ == '__main__': raise SystemExit(main())

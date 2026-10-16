@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed once; archive exact commands and source before cleanup.
 # Completed native parent QA8 cost, new moments and same QA consumers; no checkpoint.
 # Estimate .05h; actual cost must fit all remaining QA/evaluation before09:00.
 # Native CPT is not300M SFT; no old asset changes/downloads/interactive input.
@@ -15,4 +16,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4doWd_foundation_cptqa_cost8_"$run_stamp" --num 101 --note 'Completed native parent QA8 cost, new moments and same QA consumers; no checkpoint. Read exact processed/native/assistant denominators, DEV vs TEST and actual answers separately. Additional native data may overlap prior parent exposure. No original checkpoint overwrite, downloads, protected data or automatic truth certification.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4doWd_foundation_cptqa_cost8_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_night_foundation.py --mode cost --arm cpt_qa --max-wall-sec 1800 --execute
-
