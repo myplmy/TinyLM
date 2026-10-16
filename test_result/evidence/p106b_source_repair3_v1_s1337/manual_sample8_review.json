@@ -1,0 +1,109 @@
+{
+  "schema": "P106B_REPAIR3_POSTHOC_MANUAL_SAMPLE8_V1",
+  "selection_rule": "SHA(TAG,POSTHOC_TEACHER_MANUAL,root) first4 per language after frozen course; no training filter",
+  "source_groups": 8,
+  "qa_pairs": 24,
+  "unblinded": true,
+  "reviewer": "GPT",
+  "source_scope": "Read supplied TRAIN reference and original/repaired QA only; no internet/world-truth certificate; not used as online filter or cohort reselection",
+  "population_error_rate": "NOT_ESTIMATED",
+  "changes_all1536_pairs": {
+    "question_changed": 1292,
+    "answer_changed": 1412
+  },
+  "selected": [
+    {
+      "root": "30B22888325754CC0C73E09C64CA1B48A94EB09BA8C0A18C294D1E2D84376789",
+      "language": "ko",
+      "source_id": "train-00000-of-00002.parquet:3471",
+      "notes": {
+        "scope": "ko/source3471",
+        "assessment": "질문 주체를 조지왕자로 명확히 하고 출생일/장소/이름을 구분했다. 세 답은 제공참조에 부합한다. 참조 자체의 오역/현재세계사실은 별도다.",
+        "warnings": []
+      }
+    },
+    {
+      "root": "9B1104D38BC79C59DEA2055299DDEDC63006B6F7CD9740D6A3FCCB19AC14EAE0",
+      "language": "ko",
+      "source_id": "train-00000-of-00002.parquet:572",
+      "notes": {
+        "scope": "ko/source572",
+        "assessment": "원형의 안뜰 대신 실제참조의 정원으로 위치를 교정했다. 시간/인물은 참조부합. '누구가'는 부자연스러운 문법이 남았다.",
+        "warnings": [
+          "surface_grammar"
+        ]
+      }
+    },
+    {
+      "root": "E8A55C69CB280837EC08331E3719C90FB900144AD356F2EBAA3021E4199E1A60",
+      "language": "ko",
+      "source_id": "train-00000-of-00002.parquet:3473",
+      "notes": {
+        "scope": "ko/source3473",
+        "assessment": "'디저트를 제외하고 제거'된 식탁을 '아무것도 남지 않음/모든디저트 제거'로 고쳐 오히려 원문관계와 충돌했다. 조지에게 사과/반복분노는 부합하나 첫 답의 내용 결함이 남는다.",
+        "warnings": [
+          "source_relation_contradiction",
+          "repair_can_introduce_error"
+        ]
+      }
+    },
+    {
+      "root": "DCB8A694945AAC83583E4B5D2FBFD3C20F7F33A79F3464885744A747C6878D09",
+      "language": "ko",
+      "source_id": "train-00000-of-00002.parquet:2083",
+      "notes": {
+        "scope": "ko/source2083",
+        "assessment": "현재27세/실종당시16세는 참조부합. 4월21일이17번째생일 전날이라는 근거로 다음날을 추론할 수 있는데 '정확생일 미명시'로 회피했다. 문맥추론을 교육하는 데 불충분한 후보다.",
+        "warnings": [
+          "over_abstention_or_missed_inference"
+        ]
+      }
+    },
+    {
+      "root": "A149D6E189561578DAC7515E3F88E5B4916856AD2396ABC16FA003676070BC26",
+      "language": "en",
+      "source_id": "4719",
+      "notes": {
+        "scope": "en/source4719",
+        "assessment": "공식 창립일이라는 과장 표현을 '통상 로마요새 건립과 연관'으로 고쳐50CE/석기·청동기/Claudius의 참조조건을 잘 보존했다.",
+        "warnings": []
+      }
+    },
+    {
+      "root": "C7EFFDB07D38FCB402F70C2D46DBB443E76CFFF0AA86C1BB8A541A3DBC7C7963",
+      "language": "en",
+      "source_id": "1493",
+      "notes": {
+        "scope": "en/source1493",
+        "assessment": "도시/광역권 및 크기/인구의 모호한 원래 true/false 질문을 명시적 광역권인구4위로 바꾸었다. 새답은 참조부합하지만 원질문 의도도 바뀌었고 NOTE는 비어있다.",
+        "warnings": [
+          "question_intent_change",
+          "empty_change_note"
+        ]
+      }
+    },
+    {
+      "root": "D451942522D51095202490DDD10520BA15E6F3BFC89C33EA0379BF8E0E813586",
+      "language": "en",
+      "source_id": "5354",
+      "notes": {
+        "scope": "en/source5354",
+        "assessment": "Sheryl/Anna와 각직함을 분리해 앞문맥 의존표현을 명료화했다. 제공참조상 두사람/직함 연결은 부합한다. 실제조직/현직사실 검증은 하지 않았다.",
+        "warnings": []
+      }
+    },
+    {
+      "root": "72FB52015298D596B366AB23FD2EC73B346CC53FF8D85D04D68AF0FF259AB032",
+      "language": "en",
+      "source_id": "4377",
+      "notes": {
+        "scope": "en/source4377",
+        "assessment": "Bolkiah/제국전성기/재위1485~1528은 참조부합. how long을 during what years로 바꿔 기간길이 질문을 연도범위 질문으로 명시화했으므로 과제 의미의 이동은 별도 기록한다.",
+        "warnings": [
+          "duration_vs_year_range_reframe"
+        ]
+      }
+    }
+  ],
+  "warnings_policy": "Preserve frozen original/repaired cohort; no phrase blacklist or semantic regeneration; downstream manual review only"
+}

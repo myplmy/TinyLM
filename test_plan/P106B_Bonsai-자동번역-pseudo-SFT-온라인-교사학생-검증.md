@@ -3874,6 +3874,11 @@ frozen course/trainer CODE와 새64 비열람을 유지한다.
 | 실제소비 | cn2 CPU본문SHA불변/4×4epoch 인코딩·모든3072 binary/epoch·DEV512/640·read-only native1728/16슬라이스 확인 |
 | 비교 | 같은부모567D/m8a16/cp-on/216회/손실. 내용/입력·지도량 차이 있어 PARTIAL_CONFOUNDED 전체 교육안 대조 |
 | 평가/선택 | 새64와128neutral graph·질문체계2/3은 TRAIN제외. 고정최종4epoch·TEST 선택0·actual/gold/원문문자/코드주어진사실/내용판독 분리 |
-| 시간/VRAM | 예상 단독3.1GiB reserved는 과거근거. 새네 cost8 실측/warmmax×216+각900초/평가3600/마감2700이 기한내일 때만 본교육 |
+| 시간/VRAM | 네cost8 실측3090~3110MiB·warm최대1.13/1.21/1.23/1.16초. 11:19:37 전체10923초 대잔여20423초를 확인 후 첫216회 개방; 매팔 재검증 |
+
+실제 답을 보기 전 수동 판독 표본도 고정한다. 공개새64는 SHA(TAG,FIXED_MANUAL_SOURCE,root)의 언어별 첫4지문,
+역할은 SHA(TAG,FIXED_MANUAL_ROLE,neutral_root)의 가족별 첫1 neutral graph에서 모든 한영/질문체계 자식을 읽는다.
+표본은 현재동결course SHA8BD0F0D4...에 묶으며 결과가 좋거나 나쁜 문항으로 교체하지 않는다. 비맹검 설명용이고 전체의 의미정확도 통계/기본승자 판정으로 쓰지 않는다.
+코드는 검산을 위해 sealed rows를 읽지만 GPT/교사·학습/선택에는 새 TEST 질문·답 내용을 노출하지 않는다.
 
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
