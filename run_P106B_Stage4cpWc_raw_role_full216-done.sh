@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed 2026-10-16 11:45:48 KST; raw113806 exit0/exact216; final7E584E9F.
 # Fixed-parent source repair crossed with code role bridge; independent recipe study.
 # Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.
 # Fail closed only for this stage's dependencies; no stdin, queue or cleanup.

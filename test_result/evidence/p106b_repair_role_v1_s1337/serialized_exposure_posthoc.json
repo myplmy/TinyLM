@@ -1,0 +1,107 @@
+{
+  "schema": "P106B_SERIALIZED_EXPOSURE_POSTHOC_V1",
+  "created_at": "2026-10-16T02:55:05.814878+00:00",
+  "corpus_sha256": "8BD0F0D40C542CD1907AF582A698170B3FEECBA9E64BF8324DCB551C7D24B1D8",
+  "arms": {
+    "raw_repeat": {
+      "total_draws": {
+        "rows": 27648,
+        "x_tokens": 3101657,
+        "assistant_targets": 169371
+      },
+      "distinct_serialized_conversations": {
+        "serialized_conversations": 7680,
+        "serialized_x_tokens": 988592
+      },
+      "language_draws": {
+        "ko": {
+          "rows": 13824,
+          "x_tokens": 1601032,
+          "assistant_targets": 87846
+        },
+        "en": {
+          "rows": 13824,
+          "x_tokens": 1500625,
+          "assistant_targets": 81525
+        }
+      }
+    },
+    "repair_repeat": {
+      "total_draws": {
+        "rows": 27648,
+        "x_tokens": 3145081,
+        "assistant_targets": 196503
+      },
+      "distinct_serialized_conversations": {
+        "serialized_conversations": 7680,
+        "serialized_x_tokens": 999448
+      },
+      "language_draws": {
+        "ko": {
+          "rows": 13824,
+          "x_tokens": 1627996,
+          "assistant_targets": 105146
+        },
+        "en": {
+          "rows": 13824,
+          "x_tokens": 1517085,
+          "assistant_targets": 91357
+        }
+      }
+    },
+    "raw_role": {
+      "total_draws": {
+        "rows": 27648,
+        "x_tokens": 3539598,
+        "assistant_targets": 162938
+      },
+      "distinct_serialized_conversations": {
+        "serialized_conversations": 13822,
+        "serialized_x_tokens": 2251397
+      },
+      "language_draws": {
+        "ko": {
+          "rows": 13824,
+          "x_tokens": 1833063,
+          "assistant_targets": 80409
+        },
+        "en": {
+          "rows": 13824,
+          "x_tokens": 1706535,
+          "assistant_targets": 82529
+        }
+      }
+    },
+    "repair_role": {
+      "total_draws": {
+        "rows": 27648,
+        "x_tokens": 3583022,
+        "assistant_targets": 190070
+      },
+      "distinct_serialized_conversations": {
+        "serialized_conversations": 13822,
+        "serialized_x_tokens": 2262253
+      },
+      "language_draws": {
+        "ko": {
+          "rows": 13824,
+          "x_tokens": 1860027,
+          "assistant_targets": 97709
+        },
+        "en": {
+          "rows": 13824,
+          "x_tokens": 1722995,
+          "assistant_targets": 92361
+        }
+      }
+    }
+  },
+  "definition": "Deduplicate canonical messages with original producer SHA; sum actual factory.encode x once per distinct serialization. Not semantic facts or novel pretraining exposure.",
+  "masking": "Total assistant targets uses actual factory encoder, including protected wrong-first mask",
+  "native": "Separate1769472 processed x per arm; novel native text/substring overlap NOT_ESTABLISHED",
+  "model_loaded": false,
+  "cuda": false,
+  "optimizer": 0,
+  "calculation_source": "from scripts import diag_p106b_repair_role_course as c\nfrom collections import Counter\nfrom datetime import datetime,timezone\nimport json\nr,rows,_=c.read_course();tok=c._tokenizer();result={}\nfor arm in c.ARMS:\n seen=set();total=Counter();unique=Counter();by_language={l:Counter() for l in ('ko','en')}\n for epoch in range(4):\n  for row in rows[arm+'_train'+str(epoch)]:\n   rec,_=c.factory.encode(row,tok);key=c.conversation_signature(row['messages']);lang=row['meta']['language']\n   total.update(rows=1,x_tokens=rec.x_tokens,assistant_targets=rec.targets)\n   by_language[lang].update(rows=1,x_tokens=rec.x_tokens,assistant_targets=rec.targets)\n   if key not in seen:\n    seen.add(key);unique.update(serialized_conversations=1,serialized_x_tokens=rec.x_tokens)\n assert total['x_tokens']==r['expected_exposures'][arm]['x_tokens'] and total['assistant_targets']==r['expected_exposures'][arm]['assistant_targets']\n result[arm]=dict(total_draws=dict(total),distinct_serialized_conversations=dict(unique),language_draws={k:dict(v) for k,v in by_language.items()})\nprint(json.dumps(dict(schema='P106B_SERIALIZED_EXPOSURE_POSTHOC_V1',created_at=datetime.now(timezone.utc).isoformat(),corpus_sha256=c.training.data.digest(c.CORPUS/'report.json'),arms=result,definition='Deduplicate canonical messages with original producer SHA; sum actual factory.encode x once per distinct serialization. Not semantic facts or novel pretraining exposure.',masking='Total assistant targets uses actual factory encoder, including protected wrong-first mask',native='Separate1769472 processed x per arm; novel native text/substring overlap NOT_ESTABLISHED',model_loaded=False,cuda=False,optimizer=0),ensure_ascii=False))\n",
+  "execution_evidence": "Read-only CPU exec session15889 terminal0; stdout preserved exactly in numeric fields, no model or parameter updates"
+}
