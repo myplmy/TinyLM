@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD20261017: original budget scope unchanged; separate scope_v2, never completed by proxy.
 # One-time authorized overnight local source contrast; original assets read-only.
 # No stdin, teacher calls, downloads or product-default changes;09:00 GPU stop.
 set -euo pipefail

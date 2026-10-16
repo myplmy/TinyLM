@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD20261017: original budget scope unchanged; separate scope_v2, never completed by proxy.
 # Same immutable scientific inputs; unique32k once versus8k four-pass baseline.
 # No stdin, training, checkpoint writes, installs or downloads;09:00 GPU stop.
 set -euo pipefail

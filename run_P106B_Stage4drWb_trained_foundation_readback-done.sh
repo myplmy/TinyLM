@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Executed20261017; immutable raw/receipt and exact commands preserved.
 # Separate64-root bare-parent panel; trained512-root evaluation unchanged.
 # No stdin/training/weights writes; partial old full512 parent is not complete.
 # Approval expires2026-10-17 10:00KST; GPU stops09:00KST.

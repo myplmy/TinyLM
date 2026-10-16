@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Executed20261017; immutable raw/receipt and exact commands preserved.
 # Same fixed original-input QA/public/retention cohort; independent endpoint.
 # Diagnostic only; no model writes or stdin. TEST never chooses checkpoints.
 # Authority ends2026-10-17 10:00KST;09:00 GPU stop; old data preserved.
