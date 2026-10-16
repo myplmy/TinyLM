@@ -3731,3 +3731,149 @@ CPU는 원형 재구성/범위·Unicode·token budget·정답 비사용 QUERY·s
 기존 serializer/emit/score/ShardWriter는 재사용한다. 새 API는 실험 helper만 소유하고 마이그레이션은 없다.
 도메인5축에서 실행권한·데이터 소유·동일 모델/동일 이력·진단과 품질 분리·정본문서 연쇄를 따로 확인한다.
 16:15 새 GPU 중단/17시 종료와45분 마감 여유를 유지한다. 전체 smoke/설치/다운로드/외부 게시 권한은 확장하지 않는다.
+
+### Stage4cj~4cl 구현 전 고정한 세부와 preflight(10/16 09:09)
+
+- 기존 연구 [Lost in the Middle](https://arxiv.org/abs/2307.03172)는 문맥 내 관련 정보의 위치에 따른 영향을 보였다.
+  이번에는 그 결과를 우리1024 문맥 모델의 원인으로 가정하지 않고 입력 개입의 동기로만 참고한다.
+- QUERY는 [벡터 질의의 cosine 원리](https://nlp.stanford.edu/IR-book/html/htmledition/queries-as-vectors-1.html)를 차용한 문자3-gram 변형이다.
+  각 사용자 질문에서 따로 gram을 세어 질문 경계를 가로지르는 인공 조각을 만들지 않는다. 현재 질문2회·이전 질문 각1회이며 답은 제외한다.
+  tf=1+ln(count), idf=1+ln((1+창수)/(1+해당gram창수)), 두 벡터의 L2 정규화 내적이다. 이 smoothing/문자단위는 프로젝트 선택이며 문헌의 정확한 재현은 아니다.
+- 동점은 앞 문자 위치, RANDOM은 VERSION/seed1337/root/turn 해시, GOLD_LITERAL은 문자열을 포함한 후보 중 같은 QUERY 순위로 고정한다.
+- 입력 CPU는14개 순수 회귀와5개 실제 소비 회귀로 검증한다. 최초 구현의 경계 gram 혼입을 자체 동일 문장 cosine 시험이 발견했고 질문별 Counter 합산으로 수리했다.
+  이 개발 단계에는 새 모델/자료 동결/학습/GPU 실행이 없었다. 정식 CPU proof는 아래 새 SH에서 따로 생성한다.
+
+| preflight 항목 | 판정 | 근거 |
+|---|---|---|
+| 학습 토큰·pool 비율 | 해당 없음 | optimizer0·CPT0·동일 모델의 입력 진단, 본300M 대체 아님 |
+| 새 태그/덮어쓰기 | 통과 | registry에 새 태그 로그 없음, 새 HF/private/EVI만 생성 |
+| 중복 조건 | 통과 | 과거 원문3QA 평가와 달리 실제 이력 고정·원문 창만 개입 |
+| 모델/토크나이저 | 고정 | 부모687EBC/3QA567D37·같은 chat32 SHA·그대로인 코드 |
+| 같은 평가 단위 | 조건부 | 이전64문항의 후행 개발용·각 endpoint 안의 같은 적격 사건 대응 |
+| 자원 | 조건부 | 교사 없이 한 모델씩·기존 FP32 경로, 현재 진단 예상10~20분·상한30분과 마감45분 여유 |
+| 정합 선결 | 필수 | FULL384 출력이 기존 원답과 byte 일치해야 다른 조건을 해석함 |
+| 품질 문턱 | 새 승격 없음 | 이 가족의 σ를 빌리지 않고 root 대응 기술구간·내용 한계·NOT_ELIGIBLE 분모를 보고 |
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage4cj~4cl 회수(10/16 09:35)
+
+결과101§185~186. FULL384 byte 재현 뒤1828회 생성/1920행을09:16:00 종료0, 원형 검산은09:16:40 종료0으로 회수했다.
+3QA FULL17/192 대 QUERY12/RANDOM6/원문제거5다. 정답문자열 창은 같은 적격146에서14→18이나 문자 차이 구간에0이 들었다.
+짧은 창만으로 문제가 해결될 것이라는 기대는 지지되지 않았다. 원문 사용의 영향은 있지만 역할/값 선택 약점은 남는다.
+QUERY를 생산 기본값으로 채택하지 않고 모든 원형·모델·코드를 보존한다. 창/정보/위치 효과를 단일 내부 원인으로 분해하지 않는다.
+
+## Stage4cm~4cr — 교사 교정과 코드 역할교량의 두 축 교육(설계)
+
+### 왜·대안·선택
+
+원문64에서 자료 단위 오류와 학생의 인물/속성/숫자 혼동이 함께 보였다. 교정 자료와 의미역할 교육의 효과를 분리한다.
+
+| 안 | 구체 방법 | 장점 | 비용·한계 |
+|---|---|---|---|
+| A | 원형/교사교정 두 팔만 학습한다. | 원문 오류를 직접 다룸 | 역할·단위 교육의 별도 효과는 남고 교사 비용 필요 |
+| B | 교사 없이 역할교량/반복 대조만 학습한다. | 코드 정답·생성 비용 작음 | 원문의 오류가 남아 자연 QA 실패 원인 해석이 제한됨 |
+| C·선택 | 원형/교정 × 정상반복/역할교량 네 팔을 같은 부모·업데이트 수로 비교한다. | 두 개입의 방향과 상호작용을 관찰 | 구현·교사·4팔 비용, 문장/지도량 차이는 여전히 함께 바뀜 |
+
+현재 주도 실행 권한과 남은 시간 안에서 C를 준비한다. 효과는 보장하지 않으며 비용8 실측 후 네 팔과 평가/마감이 모두 맞을 때만 본 probe를 연다.
+이는 본75M/300M의 대체가 아닌 오류 교정/교육 방법의 별도 probe다. 제품 구조·MTP·재귀·폭·copy head는 바꾸지 않는다.
+
+### 자료와 교사 계약
+
+- 새 교사 태그 `p106b_source_repair3_v1_s1337`, 새 학습 태그 `p106b_repair_role_v1_s1337`을 사용한다.
+- 기존 원문 TRAIN2004 안에서 실제 참조640 learner token 이하의 후보는 ko992/en1006이다. 한영320씩640개를 hash 순으로 봉인하고, 구조 수락256씩512개를 공통 원천으로 삼는다.
+  처음16개(한영8씩)는 pilot이며 수락 원형을 다음 생산에 재사용하고 동일 root를 다시 생성하지 않는다. 구조 실패/거절 root도 총3시도 뒤 자동 반복하지 않는다.
+- Gemma4-12B Q4_0 + Q8_0 MTP assistant/draft2, llama-b11396·기존 sampler·thinking256/context8192/output3072를 명시한다.
+  교사/학생은 이 대조의 자료 동결 전후로 별도 실행한다. 전역 교사 기본값·기존 모델/설정 파일은 수정하지 않는다.
+- 교사는 Q1/A1/Q2/A2/Q3/A3와 선택 NOTE만 쓴다. 코드가 canonical JSON/ChatML·역할·출처를 담당한다.
+  원형 질문/답은 미검증 참고물로 주고 참조에 맞춰 오역·단위·인물/조건을 고치게 한다. 근거/의도가 부족하면 지어내지 말고 필요한 정보를 묻는 답을 쓸 수 있다.
+- 사고 채널·최종 원답·원형 QA·교정본·변경 여부/NOTE·시드/시도·출처/참조 SHA를 별도 보존한다. 학생에는 사고/NOTE가 아닌 최종 세 QA와 같은 참조만 준다.
+- 구조/길이/종료만 총3시도 안에서 회복한다. 임의 원천은 중복 유형 UNKNOWN이므로 같은 정답을 자동 불량으로 삼거나 의미 문자열 목록/전수 검증으로 재생성하지 않는다.
+- 모든 raw/canonical은20MB 이하 write-once 조각·Git 제외다. 공개 원문 권리/PII·세계정답/정식 TRAIN_READY는 자동 승격하지 않는다.
+
+### 네 교육 팔과 코드 교량
+
+1. raw_repeat: 공통512 원형3QA + 기존code4096 + 가상재생256 + 정상 반복 대조2048.
+2. repair_repeat: 같은512 참조의 교사교정3QA + 같은 재생/반복 대조.
+3. raw_role: 원형3QA + 같은 재생 + 역할교량2048.
+4. repair_role: 교사교정3QA + 같은 재생 + 역할교량2048.
+
+역할교량은 코드가 선언한 두 인물/역할·행위자/수신자·나이/연도/단위·간단 기간 계산을 원문과 세 질문으로 만든다.
+예: 소년11/소녀12를 제시하고 누구/나이/학년이나 다른 속성을 구분한다. 반복/동의표현/질문대상 변경/명시 조건 갱신을 root·epoch로 회전한다.
+주어진 사실·숫자의 정답만 프로그램으로 계산하며 임의 공개 질문의 의미 유형을 추정하지 않는다. 정상 반복은 양성 지도이고 중복 재생성 대상이 아니다.
+반복 대조는 기존 code의 검증된 질문/답을 명시적으로 되묻는3턴이다. 새 독립 지식으로 세지 않는다. 기존 binary 보조라벨은 원래 code4096에만 동일하게 적용한다.
+
+각6912행/epoch, micro8×accum16·checkpoint-on·4epoch=216업데이트, 기존 Adam5e-5/Muon2e-4·clip1·word/native/binary1·fact0다.
+새 native1728 read-only 창/1,769,472x를 네 팔에 동일하게 쓴다. 실제 SFT/지도/패딩/언어비·고유 직렬화·재노출을 별도 계수한다.
+원형/교정 및 반복/교량은 내용과 지도량도 달라 순수 한 요소 효과로 단정하지 않는다. 같은216회/같은 부모의 전체 교육안 비교다.
+공통 부모는 지금3QA 최종567D379E...로 고정하고 optimizer는 새로 시작한다. 새 CPT는 우선 최종본만 저장해 불필요한 중간 가중치를 늘리지 않는다.
+
+이는 부모 이후의 추가4pass다. 원형512는 이미 이전 학습에 쓰인 참조의 일부이므로 누적 전체 노출을4회 또는 새 독립 지식512개로 부풀리지 않는다.
+교정 후 재교육을 시험하는 목적이며 원형 반복 대조의 추가 노출/과적합 위험도 결과에 포함한다. 새 역할 graph와 기존 code 재생의 고유량은 따로 보고한다.
+역할교량 질문은 TRAIN에서 기본0/동의표현1을 사용하고 TEST의 별도 체계2/3은 이 생산자의 TRAIN에서 제외한다.
+같은 neutral graph의 한영·질문체계 자식은 bootstrap에서 함께 묶는다. 단어/사실의 사전학습 미노출을 보장한다는 뜻은 아니다.
+
+### 새 평가·선결·비용
+
+- 과거 추출형 first-pair 유일 문자열 조건 때문에 기존 fresh KO48개는 이미 모두 사용됐다. 이를 새 TEST로 재사용하지 않는다.
+  새3QA는 위치감독이 없으므로 별도 parser에서 번호1~4/원형 범위·역할·토큰 예산은 유지하되 불필요한 span-unique 조건은 요구하지 않는다.
+  Yes/No·재표현·계산 답도 새 후보가 될 수 있다. 이것은 새 목적/새 버전이며 옛 결과·gate·parser를 약화하거나 덮어쓰지 않는다.
+- 새 공개64(한영32씩)는 기존 source IDs와 정확24word passage 및 동일 참조를 제외한 뒤 봉인하고 끝까지 비열람한다. 사전학습/의미 중복은 NOT_AUDITED다.
+- 별도 코드 교량 TRAIN/DEV/TEST는 neutral graph/이름/사실을 분리한다. 실제3턴과 골드 이력을 분리하고 같은질문/다른질문/조건변경별 점수를 보고한다.
+- 이전 자연64·code640·가상관계 보존·개발8/native32crop도 개발 대조로 유지한다. 새 평가와 섞어 새 표본이라고 부르지 않는다.
+- CPU에서 세 QA 파서/동일답 허용·공통 참조·canonical source_transform·마스크·원천 분리·실제 TRAIN/DEV/native 소비를 확인한다.
+  pilot은 형식·비용 경로만 확인하며 내용 PASS가 아니다. 데이터512 실제 quota와 동일CODE·네 비용8·전체 시간 예산을 선결로 둔다.
+- 구현/검증 약1~2시간·교사512개 약40~80분·네 비용8 약12분·네216회 약40~80분·평가 약20~30분 추정이다.
+  실제 teacher pilot/비용8과 잔여시간을 재어16:15 새 GPU 중단/17시 종료·최소45분 마감을 보장할 수 없으면 해당 본 실행은 열지 않는다.
+- Stage4cm0W CPU/원천봉인→cm1W 교사16 pilot→cm2W 나머지 생산→cn0W/1W 교량CPU/공통course→coWa~d 비용→cpWa~d 교육→cqW 새평가→crW 대응검산 순이다.
+
+### 영향도·권한
+
+새 source_repair helper/producer/test와 별도 role_bridge/course/trainer/evaluator·SH만 추가한다.
+교사 생산의 CODE는 이후 역할교량 구현과 분리해 생성 중 원형 해시가 바뀌지 않게 한다. 기존 frozen 코드·제품·공용검사기·환경은 변경0이다.
+새 HF/private/EVI·계획/결과/기준표/방법론/COMPASS/현재원장/인계·명시 선별 한국어 커밋은 사용자 주도 실험/주기 기록 권한 안이다.
+보호 TinyDataset/사전·기존 원형/CPT/캐시 수정·다운로드/설치·외부 게시·타 WIP는 제외한다.
+GPU 권한·소유권·비교 조건·증거수준·정본 연쇄5축을 각각 확인하며 teacher pseudo-label과 코드의 제한된 생산자 정답을 혼합 승격하지 않는다.
+
+### Stage4cm0W / Stage4cm1W / Stage4cm2W — 교사 전용 동결 경로
+
+cm0W는 CPU12개 content 회귀/3개 실제640+새64 소비 회귀 뒤 원천을 봉인한다.
+cm1W는 Gemma4 MTP16개 파일럿이며 원형/교정 질문·답을 화면과 raw에 함께 남긴다.
+cm2W는 이미 처리한 pilot root를 건너뛰고 실제한영256씩512 source quota까지 봉인 batch16개 단위로 진행한다.
+pilot의 wire 통과는 양 언어에서 실제3QA/동일 참조/canonical 경로가 열린다는 의미이지 내용 승인이나 quota 완료가 아니다.
+source_transform은 이미 등록된 teacher_answer를 쓰고, 사고/NOTE는 학생 메시지에 넣지 않는다. UNKNOWN 같은 답은 내용 재생성 사유가 아니다.
+stdout 행은8KiB로 상한을 두고 완전 원답은20MB 이하 raw/canonical에 남긴다. 최대640root×3시도에서도 콘솔 raw가20MB를 넘지 않도록 설계했다.
+유효 원문을 줄여 강제로 맞추지 않고 새 질문/답 길이만 구조 피드백으로 회복한다. root별3시도 예산은 batch/재개 사이에도 초기화하지 않는다.
+
+### Stage4cn~4cr 실제 입력·preflight(10/16 10:58, GPU 전)
+
+cm0/1/2는 종료0·교정512 quota 완료다. cn0 CPU26·cn1 동결·cn2 실제 CPU부모/전체 소비도 각각10:52:29/10:54:46/10:57:15 종료0이다.
+frozen course/trainer CODE와 새64 비열람을 유지한다.
+
+| 순 | 정확 launcher | 범위 |
+|---|---|---|
+| 1 | `run_P106B_Stage4cn0W_repair_role_cpu.sh` | CPU26 role views, mask, native consumer, accumulation and paired neutral-root regression. No model/CUDA forward. |
+| 2 | `run_P106B_Stage4cn1W_repair_role_common_course.sh` | Actual accepted512 quota and operational teacher seal required. Freeze four6912-row recipes and fresh64; no CUDA. |
+| 3 | `run_P106B_Stage4cn2W_repair_role_actual_cpu_wire.sh` | Read-only fixed parent and actual four-arm encoded consumers. CPU model load only, no forward/optimizer/CUDA/CPT. |
+| 4 | `run_P106B_Stage4coWa_raw_repeat_cost8.sh` | Same parent and batch, cost8 only. No checkpoint. Four same-code costs required before full216/evaluation/closure budget. |
+| 5 | `run_P106B_Stage4coWb_repair_repeat_cost8.sh` | Same parent and batch, cost8 only. No checkpoint. Four same-code costs required before full216/evaluation/closure budget. |
+| 6 | `run_P106B_Stage4coWc_raw_role_cost8.sh` | Same parent and batch, cost8 only. No checkpoint. Four same-code costs required before full216/evaluation/closure budget. |
+| 7 | `run_P106B_Stage4coWd_repair_role_cost8.sh` | Same parent and batch, cost8 only. No checkpoint. Four same-code costs required before full216/evaluation/closure budget. |
+| 8 | `run_P106B_Stage4cpWa_raw_repeat_full216.sh` | Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. |
+| 9 | `run_P106B_Stage4cpWb_repair_repeat_full216.sh` | Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. |
+| 10 | `run_P106B_Stage4cpWc_raw_role_full216.sh` | Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. |
+| 11 | `run_P106B_Stage4cpWd_repair_role_full216.sh` | Same parent, micro8 accum16 cp-on, additional4passes,216 updates; final-only checkpoint. No MTP, fact head or teacher concurrency. Not main300M. |
+| 12 | `run_P106B_Stage4cqW_repair_role_actual_evaluation.sh` | Fixed parent plus fourfinals. Fresh64 actual/gold separate; neutral-role styles and retention. FP32 greedy64; no teacher or optimization. |
+| 13 | `run_P106B_Stage4crW_repair_role_paired_readback.sh` | Recount all sealed raw events, pair fresh sources and neutral graphs. No model/CUDA. Not world truth or automatic default adoption. |
+
+| preflight | 판정과 근거 |
+|---|---|
+| 계산 | 216×8×16×1024=28.31M은 패딩 상한. 실제 SFT x3.102/3.145/3.540/3.583M, 별도native1.769M/각4pass |
+| 풀/반복 | 고정 SFT 추가4pass의 의도된 진단. 원형512는 이미 본 원천이며 새 독립지식/누적4epoch 아님. 일반 비반복2배풀과 분리 |
+| 충돌/중복 | check_run_registry 새태그 충돌0/유사런0. 새namespace, 원본/제품 불변 |
+| 실제소비 | cn2 CPU본문SHA불변/4×4epoch 인코딩·모든3072 binary/epoch·DEV512/640·read-only native1728/16슬라이스 확인 |
+| 비교 | 같은부모567D/m8a16/cp-on/216회/손실. 내용/입력·지도량 차이 있어 PARTIAL_CONFOUNDED 전체 교육안 대조 |
+| 평가/선택 | 새64와128neutral graph·질문체계2/3은 TRAIN제외. 고정최종4epoch·TEST 선택0·actual/gold/원문문자/코드주어진사실/내용판독 분리 |
+| 시간/VRAM | 예상 단독3.1GiB reserved는 과거근거. 새네 cost8 실측/warmmax×216+각900초/평가3600/마감2700이 기한내일 때만 본교육 |
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
