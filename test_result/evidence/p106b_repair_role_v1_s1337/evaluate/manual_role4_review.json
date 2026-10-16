@@ -1,0 +1,46 @@
+{
+  "schema": "P106B_PRIMARY_REPAIR_ROLE_FIXED_ROLE4_MANUAL_V1",
+  "tag": "p106b_repair_role_v1_s1337",
+  "selection": "Before outputs: SHA(TAG,FIXED_MANUAL_ROLE,neutral_root), first1 per four families; all language/style children",
+  "neutral_groups": 4,
+  "conversations": 16,
+  "actual_answers_read": 240,
+  "endpoints": [
+    "parent",
+    "raw_repeat",
+    "repair_repeat",
+    "raw_role",
+    "repair_role"
+  ],
+  "unblinded": true,
+  "reviewer": "GPT",
+  "scope": "All fixed original question/reference/three golds and actual three-turn answers read. Given fictional facts only; no general-world/population semantic accuracy; no online exclusions/regeneration.",
+  "rows": [
+    {
+      "family": "people",
+      "neutral_root": "3C253BFA144920A35D1FB0B131A6CDD52338F641B2507F0AA90972C55F489658",
+      "language_style_children": 4,
+      "observation": "기존 질문체계의 나이→나이→이름은 두 역할팔이 모두 맞혔다. 새 질문체계에서는 나이를 학년12로 읽거나 소녀나이11로 바꾸고 영어 이름도 Case로 잘랐다. 정상 동일답을 금지할 문제가 아니라 질문체계/필드 연결의 전이다."
+    },
+    {
+      "family": "units",
+      "neutral_root": "E3752C21E606BB1F726BBCB7897812DCCEDEF1B818A0C62E68DEA4F91D5C26F8",
+      "language_style_children": 4,
+      "observation": "기존 체계에서는 면적22834와 지정연도1985를 구분했지만 +2 갱신을 적용하지 못했다. 새 영어 체계에서는 면적을21634로 오독하거나 마지막 연도 질문에도 면적을 반복했다. 수치 복사·대상 선택·조건 갱신을 분리해야 한다."
+    },
+    {
+      "family": "transfer",
+      "neutral_root": "285374D4792F371B42F71621944EA0808549DD92648BBA32CC9FAC6A993C9142",
+      "language_style_children": 4,
+      "observation": "기존 체계의 저녁→저녁→가방/evening→evening→bag은 두 역할팔이 모두 맞혔다. 새 체계의 마지막 물품은 사람 이름/저녁으로 바뀌거나 영어 time 질문부터 morning/7로 흔들렸다. 형태만 달라진 질문에 대한 일반화가 약하다."
+    },
+    {
+      "family": "years",
+      "neutral_root": "640618B0B593B6F4C3ECD056FA98DFB9D9E0A2E2A4D6E4728F226F09C0A08841",
+      "language_style_children": 4,
+      "observation": "두 역할팔은 언어/질문체계에 관계없이 종료1974와 시작1969를 읽었으나 차5는 전부 틀렸다(24/16/15/17). 기록 조회를 배웠다는 관측과 뺄셈 연산 학습을 구별한다. 단순 앞 답 반복만으로 설명되지 않는다."
+    }
+  ],
+  "calculation_source": "import json,hashlib\nfrom pathlib import Path\ntag=\"p106b_repair_role_v1_s1337\"; root=Path(\".\"); corpus=root/\"HF/sft_ready\"/tag/\"corpus\"\nrep=json.loads((corpus/\"report.json\").read_text()); rows=[]\nfor key in (\"test_role_style0\",\"test_role_style2\"):\n for spec in rep[\"manifests\"][key][\"shards\"]:\n  rows.extend(json.loads(x) for x in (corpus/spec[\"path\"]).read_text().splitlines())\ndef sha(v): return hashlib.sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(\",\",\":\")).encode()).hexdigest().upper()\ngroups={r[\"meta\"][\"neutral_root\"]:r[\"meta\"][\"producer_graph\"][\"family\"] for r in rows}\nchosen={f:min([k for k,v in groups.items() if v==f],key=lambda k:sha([tag,\"FIXED_MANUAL_ROLE\",k])) for f in (\"people\",\"units\",\"transfer\",\"years\")}\nevents={}\nfor arm in (\"parent\",\"raw_repeat\",\"repair_repeat\",\"raw_role\",\"repair_role\"):\n d=root/\"test_result/evidence/local\"/tag/\"evaluate\"/arm\n events[arm]=[json.loads(x) for x in (d/\"role_bridge_000000.jsonl\").read_text().splitlines()]\ndef text(m):return \"\".join(x[\"text\"] for x in m[\"content\"])\nout=[]\nfor f,neutral in chosen.items():\n item={\"family\":f,\"neutral\":neutral,\"selection\":\"SHA(TAG,FIXED_MANUAL_ROLE,neutral) first1/family\",\"cases\":[]}\n for r in rows:\n  if r[\"meta\"][\"neutral_root\"]!=neutral: continue\n  m=r[\"meta\"]; key=m[\"semantic_root_id\"]; case={\"lang\":m[\"language\"],\"style\":m[\"question_style\"],\"view\":m[\"view\"],\"fields\":m[\"requested_fields\"],\"reference_and_q1\":text(r[\"messages\"][0]),\"q2\":text(r[\"messages\"][2]),\"q3\":text(r[\"messages\"][4]),\"gold\":[text(r[\"messages\"][i]) for i in (1,3,5)],\"actual\":{}}\n  for arm,ee in events.items():\n   e=sorted([e for e in ee if e[\"root\"]==key and e[\"history\"]==\"ACTUAL_MODEL\"],key=lambda x:x[\"turn\"])\n   if len(e)!=3: raise ValueError((arm,key,len(e)))\n   case[\"actual\"][arm]=[x[\"answer\"] for x in e]\n  item[\"cases\"].append(case)\n out.append(item)\nprint(json.dumps(out,ensure_ascii=False))\n",
+  "raw_preservation": "Full original references and answers remain in private20MB shards; this metadata does not duplicate public-source corpora."
+}
