@@ -1,0 +1,272 @@
+{
+  "schema": "TINYLM_OWNED_DONE_LAUNCHER_ARCHIVE_V1",
+  "created_at": "2026-10-16T02:04:06.611770+00:00",
+  "wip": "handoff/WIP_20261015b_작업원장.md",
+  "git_recovery_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+  "files": [
+    {
+      "path": "run_P106B_Stage4cj0W_source_window_cpu-done.sh",
+      "bytes": 1358,
+      "sha256": "1AD39AC315BF06345094B2AAC859269D5115550B769A7690A12037C583E3F80C",
+      "script": "#!/usr/bin/env bash\n# Posthoc fixed-history source-only intervention; primary/model/data unchanged.\n# Dependencies fail closed; no stdin, downloads, queue calls or old output reset.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cj0W_source_window_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve original raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cj0W_source_window_cpu_\"$run_stamp\" --num 101 --note 'CPU19 and actual384 prefixes, zero model/CUDA/optimizer/checkpoint; preserve primary history. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cj0W_source_window_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_windows.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cj0W_source_window_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_window_consumer.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cj0W_source_window_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_window.py --mode cpu --execute\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cj0W_source_window_cpu-done.sh",
+      "git_blob": "59679c555e7f7c41c447b204810d758e8480d29a",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cj0W_source_window_cpu_090945.txt",
+      "raw_sha256": "BF72CB4BC7008668A3F3D74BB1288DAD48B07F2F65DA4D9E2C7795EAC8FC3074",
+      "raw_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_windows.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_window_consumer.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_window.py --mode cpu --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cj1W_source_window_inputs-done.sh",
+      "bytes": 1011,
+      "sha256": "CA29D153D8A5B7C237427EC364DA87A62EEED1C37AA36C363A2C3BCF18C1DCC3",
+      "script": "#!/usr/bin/env bash\n# Posthoc fixed-history source-only intervention; primary/model/data unchanged.\n# Dependencies fail closed; no stdin, downloads, queue calls or old output reset.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cj1W_source_window_inputs_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve original raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cj1W_source_window_inputs_\"$run_stamp\" --num 101 --note 'Freeze independent diagnostic-only source windows below20MB; no training data promotion. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cj1W_source_window_inputs_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_window.py --mode freeze --execute\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cj1W_source_window_inputs-done.sh",
+      "git_blob": "a18b84a8ea3aed6c735067485283856edea37075",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cj1W_source_window_inputs_091032.txt",
+      "raw_sha256": "3BE3F7A62C0FF980AABB62171543682A971533A01369562C657F24FF788DA669",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_window.py --mode freeze --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4ckW_fixed_history_source_windows-done.sh",
+      "bytes": 1106,
+      "sha256": "656256F54A0D89C475C80B55E301516E3A2224FB8CD9A3B5AB5C83CE5FEE12D3",
+      "script": "#!/usr/bin/env bash\n# Posthoc fixed-history source-only intervention; primary/model/data unchanged.\n# Dependencies fail closed; no stdin, downloads, queue calls or old output reset.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ckW_fixed_history_source_windows_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve original raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ckW_fixed_history_source_windows_\"$run_stamp\" --num 101 --note 'Same parent/threeQA models, FULL384 must reproduce primary first; fixed history and source-only interventions. GPU bound30min, no training/CPT. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ckW_fixed_history_source_windows_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_window.py --mode probe --execute --max-wall-sec 1800\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4ckW_fixed_history_source_windows-done.sh",
+      "git_blob": "1a7666f97939f974f419dc79a284f00863c7a8e3",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4ckW_fixed_history_source_windows_091148.txt",
+      "raw_sha256": "EEA366C6C092B2BD5BB6CFF3338D38931C4B441C2D25284299220E43E5E3C90E",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_window.py --mode probe --execute --max-wall-sec 1800"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4clW_source_window_readback-done.sh",
+      "bytes": 1029,
+      "sha256": "C0DABADA745686407B1F94AF42293FD15AD54828DFDED3ACF22757BB212B9104",
+      "script": "#!/usr/bin/env bash\n# Posthoc fixed-history source-only intervention; primary/model/data unchanged.\n# Dependencies fail closed; no stdin, downloads, queue calls or old output reset.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4clW_source_window_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve original raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4clW_source_window_readback_\"$run_stamp\" --num 101 --note 'CPU raw/eligibility/matched root recount. GOLD_LITERAL is not a truth oracle or accuracy upper bound. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4clW_source_window_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_window.py --mode readback --execute\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4clW_source_window_readback-done.sh",
+      "git_blob": "f77cd3228b9bfda33e0fe4f4387f79b98809650f",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4clW_source_window_readback_091636.txt",
+      "raw_sha256": "60598BECC5C23B08A304E50CBC4AE3A84692DE79DEE6B1A2EA7AE4AD2923D3BF",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_window.py --mode readback --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cm0W_repair3_cpu_source_deck-done.sh",
+      "bytes": 1446,
+      "sha256": "CF6ACA96136FE9B1B3ACD4BF75679654D3BD08E9950641276911A89299BC4706",
+      "script": "#!/usr/bin/env bash\n# Independent content-repair dataset, original sources/old producers unchanged.\n# Dependencies fail closed; no stdin, install, downloads, queue or cleanup calls.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cm0W_repair3_cpu_source_deck_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm0W_repair3_cpu_source_deck_\"$run_stamp\" --num 101 --note 'CPU15, syntax-only general3QA parser, equal-answer protection, source640 and fresh64 freeze. No model loading/training. All raw/canonical shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm0W_repair3_cpu_source_deck_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_repair3.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm0W_repair3_cpu_source_deck_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_source_repair3_deck.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm0W_repair3_cpu_source_deck_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_repair3.py --mode freeze --execute\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cm0W_repair3_cpu_source_deck-done.sh",
+      "git_blob": "6bd5c511e2f0a80e9cd3a94f3f3e5176b7ad74e3",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cm0W_repair3_cpu_source_deck_095617.txt",
+      "raw_sha256": "FF3B13C8ED82E637D03B396E52B6032E6F07493589356D1B6099D46AD789DD1C",
+      "raw_exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_repair3.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_source_repair3_deck.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_repair3.py --mode freeze --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cm1W_gemma_repair3_pilot16-done.sh",
+      "bytes": 1132,
+      "sha256": "031191606317FAC28B18148BD5212A756902DB264D2526C51B71A1AAAF4FEC1F",
+      "script": "#!/usr/bin/env bash\n# Independent content-repair dataset, original sources/old producers unchanged.\n# Dependencies fail closed; no stdin, install, downloads, queue or cleanup calls.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cm1W_gemma_repair3_pilot16_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm1W_gemma_repair3_pilot16_\"$run_stamp\" --num 101 --note 'Gemma4 MTP on, repair original TRAIN16 only, three content QA labels, native reasoning preserved outside student. Structural wire/cost gate, not truth PASS. All raw/canonical shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm1W_gemma_repair3_pilot16_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_repair3.py --mode pilot --execute --max-wall-sec 900\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cm1W_gemma_repair3_pilot16-done.sh",
+      "git_blob": "4f6996d3478f53ac9cb34d56522bf029f935e76b",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cm1W_gemma_repair3_pilot16_100251.txt",
+      "raw_sha256": "EE65E95D7F85770A1D4FCC218359E7974EAD27E1D5B9D918BBFD01A370B9F159",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_repair3.py --mode pilot --execute --max-wall-sec 900"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cm2W_gemma_repair3_source512-done.sh",
+      "bytes": 1212,
+      "sha256": "9FA09D1F30C82B1D0A907CF54AAC3AAFDDE9730348C197ADB2EFB8970FDE8A62",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 10:52:28 KST; raw100716 exit0, accepted ko256/en256.\n# Independent content-repair dataset, original sources/old producers unchanged.\n# Dependencies fail closed; no stdin, install, downloads, queue or cleanup calls.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cm2W_gemma_repair3_source512_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm2W_gemma_repair3_source512_\"$run_stamp\" --num 101 --note 'Explicit sealed continuation after pilot: common512 accepted sources, ko/en256 each, shared3 structural attempts, no root restart, no student training. All raw/canonical shards below20MB. Full smoke remains user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cm2W_gemma_repair3_source512_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_source_repair3.py --mode produce --execute --max-wall-sec 5400\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cm2W_gemma_repair3_source512-done.sh",
+      "git_blob": "1debf26df84434c56907287bd9a442c3a94ca81c",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cm2W_gemma_repair3_source512_100716.txt",
+      "raw_sha256": "F2854B09F883D039CB0A355C3CEEE13E791292A8442562938AAB33B04329A99C",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_source_repair3.py --mode produce --execute --max-wall-sec 5400"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cn0W_repair_role_cpu-done.sh",
+      "bytes": 1706,
+      "sha256": "54276D9AAEF0C5C6A1FE8C0C2D22A310542DEAD2385F8061EE0D13346A784BF3",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 10:52:29 KST; raw105221 exit0, CPU26 only.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cn0W_repair_role_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn0W_repair_role_cpu_\"$run_stamp\" --num 101 --note 'CPU26 role views, mask, native consumer, accumulation and paired neutral-root regression. No model/CUDA forward. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn0W_repair_role_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_role_bridge.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn0W_repair_role_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_repair_role_course.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn0W_repair_role_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_repair_role_train.py\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn0W_repair_role_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/test_p106b_repair_role_evaluation.py\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cn0W_repair_role_cpu-done.sh",
+      "git_blob": "da90beb69ac125b6b01a170d251b73b64394d67e",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cn0W_repair_role_cpu_105221.txt",
+      "raw_sha256": "E352B392C37614848380E43D5395D2D3524197344714929A8132F12ABA1FB153",
+      "raw_exit_codes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_role_bridge.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_repair_role_course.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_repair_role_train.py",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_repair_role_evaluation.py"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cn1W_repair_role_common_course-done.sh",
+      "bytes": 1235,
+      "sha256": "1C421F4691C1DF9D6F87D5801F3CFAD8699E7A91AF6EBD3EE792012107D5983E",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 10:54:46 KST; raw105332 exit0, four courses frozen.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cn1W_repair_role_common_course_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn1W_repair_role_common_course_\"$run_stamp\" --num 101 --note 'Actual accepted512 quota and operational teacher seal required. Freeze four6912-row recipes and fresh64; no CUDA. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn1W_repair_role_common_course_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_repair_role_course.py --execute\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cn1W_repair_role_common_course-done.sh",
+      "git_blob": "0310c93fcd3bc7b3bc8058dde2c8405444780774",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cn1W_repair_role_common_course_105332.txt",
+      "raw_sha256": "8093596AEDB0B4E016C9C65FC350E307CCDB205D7399324E77060084463C53B5",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_repair_role_course.py --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    },
+    {
+      "path": "run_P106B_Stage4cn2W_repair_role_actual_cpu_wire-done.sh",
+      "bytes": 1264,
+      "sha256": "A179C5A33DC36CDACBA9C53CB2AAB412C1C758A810346FFF1A8BC5B1EC7076E2",
+      "script": "#!/usr/bin/env bash\n# Completed 2026-10-16 10:57:15 KST; raw105617 exit0, CPU body/RNG/consumers verified.\n# Fixed-parent source repair crossed with code role bridge; independent recipe study.\n# Expected CPU seconds or GPU minutes; exact bounds in plan and commands below.\n# Fail closed only for this stage's dependencies; no stdin, queue or cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4cn2W_repair_role_actual_cpu_wire_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Preserve old raw evidence; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn2W_repair_role_actual_cpu_wire_\"$run_stamp\" --num 101 --note 'Read-only fixed parent and actual four-arm encoded consumers. CPU model load only, no forward/optimizer/CUDA/CPT. Complete raw/canonical private shards below20MB. Full smoke user-owned NOT_RUN.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4cn2W_repair_role_actual_cpu_wire_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode wire --execute\n",
+      "git_commit": "5097551a9e2f6a6f67c97f109b607f920a2975e8",
+      "git_path": "run_P106B_Stage4cn2W_repair_role_actual_cpu_wire-done.sh",
+      "git_blob": "25f06e35ee5b31dd7a57d03cc1ee82acc169f558",
+      "filesystem_mode": "0o755",
+      "raw_path": "test_result/101_log_20261016_P106B_Stage4cn2W_repair_role_actual_cpu_wire_105617.txt",
+      "raw_sha256": "E9EC851C67592B86543E03C9D20E9A28661681D0171BED4A6621CC58400B7804",
+      "raw_exit_codes": [
+        0
+      ],
+      "executed_commands": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_repair_role_train.py --mode wire --execute"
+      ],
+      "actual_wrapper_executed": true,
+      "completed_attempt": true,
+      "scientific_success_not_implied": true,
+      "rerun_planned": false,
+      "decision": "DELETE_AFTER_ARCHIVE_COMMIT_ONLY",
+      "outcome": "COMPLETED_SCOPE_EXIT0",
+      "scope": "Only exact completed source-window/repair/course/CPU-wire wrappers; original CODE/raw/HF/CPT kept"
+    }
+  ]
+}
