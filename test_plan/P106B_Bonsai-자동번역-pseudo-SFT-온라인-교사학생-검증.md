@@ -4462,7 +4462,20 @@ wrapper만 바뀌는 불변성에 더해 한영 각4개 새 코드 사실의 wra
 
 ### 7. 실행·영향도
 
-구현 전이므로 위 단계 SH는 아직 미작성이다. 구현/CPU 계약이 끝난 뒤 정확한 runlog SH와 TSV를 함께 등록한다.
+새 데이터/손실/강제 소비 driver와 CPU 회귀41개를 구현했고, 다음 SH/TSV를 등록한다. 실행 전 전수 정적과 실제 CPU wire를 확인한다.
+
+| 정확한 단계 | 실행 SH | 역할 |
+|---|---|---|
+| Stage4dk0W | `run_P106B_Stage4dk0W_night_grounded_cpu.sh` | 새 자료 동결→실제 CPU 부모/마스크/소비 검산 |
+| Stage4dkWa | `run_P106B_Stage4dkWa_night_ce_cost8.sh` | CE8회 비용, 체크포인트 저장0 |
+| Stage4dkWb | `run_P106B_Stage4dkWb_night_consistency_cost8.sh` | 동일경로 KL8회 비용, 저장0 |
+| Stage4dlWa | `run_P106B_Stage4dlWa_night_grounded_ce4.sh` | 양뷰 CE640회·최종만 저장 |
+| Stage4dlWb | `run_P106B_Stage4dlWb_night_grounded_consistency4.sh` | 양뷰 CE+KL640회·최종만 저장 |
+
+구조상640×8×16×1024=83,886,080은 padding 포함 SFT 슬롯이며 실제 학습 토큰이 아니다.
+실제 x/assistant target은 동결 encoder 소비로 별도 확정하고 native640×8192=5,242,880을 추가 구분한다.
+4pass 노출이므로 사전학습의 풀≥2배 규칙을 만족한다고 부르지 않고, 원천 기사봉인·반복량·실제 자유답으로 검증한다.
+손실 계수0/.05는 이번 연구축이며 전역 기본값이 아니다. 수치부호/소수 구별과 raw exact를 보존하는 로컬 QA metric을 쓰며 공식 전체 채점과 구분한다.
 새 데이터 모듈·학습/평가 driver·CPU 회귀·SH와 새 HF/EVI namespace만 신설하며 기존 CODE/학습함수/제품을 덮지 않는다.
 기존 자료/토크나이저/가중치/원로그는 읽기 전용이고 보호 원천/타 WIP/09·환경 설정·공용 검사기 추가수정은 제외한다.
 데이터 계보·손실 분모·비교 통제·실제 자원·문서 연쇄를 영향 축으로 기록한다. 기존 main의 만료 deadline은 전역 monkeypatch하지 않는다.

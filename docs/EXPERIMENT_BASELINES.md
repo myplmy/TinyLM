@@ -234,6 +234,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 접두사 | 용도 | 상태 |
 |---|---|---|
+| `p106b_night_grounded_v1_s1337` | E970·명시 KorQuAD/SQuAD QA8192 양뷰·보존4096/native·640회, SymKL0/.05 | 야간10/17 10시 한정 예약. CPU41회귀, actual freeze/wire·GPU/정답평가 NOT_RUN. 기존75M/300M 대체·기본값 승격 아님 |
 | `p106b_grounded_span_v1_s1337` | 공개 첫 QA2048+코드1024·한영균형·4pass96 설계 | CPU12/동결만 완료. CPU fork 내 manual_seed의 CUDA seed 호출을 GPU 전에 확인해 실행판 수리 대기; 학생0·본75M/300M 아님 [101 §151](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
 | `p106b_grounded_span_exec_v2_s1337` | 같은 v1 QA를 참조하는 엄격 초기화 실행판 | CPU16·source계약만; GPU0. 인자 위임의 정적 오탐을 명시 분기로 보완한 v3와 원형 구분 |
 | `p106b_grounded_span_exec_v3_s1337` | 동일 v1 자료·부모/96회·위치 보조0/.3 | 실제source문자0/12/13of256·상한255/4/6·보조추가차이구간0포함으로미승격. 별칭정답/관계오답수동8관찰·native3.53992/3.54202·clip96회. 세계지능미확립 [101 §152~154](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
