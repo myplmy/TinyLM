@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed640 on2026-10-17; original raw/event/checkpoint proof preserved.
 # New budget scope only: original32k courses, loss,640 updates and512-case eval unchanged.
 # Actual new CPU/cost8 required; original bare-full/input-order HOLD is not completed.
 # One-time approval ends2026-10-17 10:00KST; GPU stops09:00KST.

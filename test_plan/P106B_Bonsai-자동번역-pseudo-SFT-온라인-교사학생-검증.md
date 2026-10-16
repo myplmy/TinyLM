@@ -1,6 +1,8 @@
 # P106B — Bonsai 자동번역 pseudo-label SFT와 온라인 교사·학생 연결 검증
 
-> **현재 2026-10-16 회수 §194~215:** 역할교량/정보복구와SFT/ORPO 양64회·실제새128대화·표현192답을회수했다. 역할조회/보충뒤개선은있으나자연QA·갱신/언어보존은부족하고전면승자미채택이다. 같은정보에서질문표현0/3의차이를확인했으며원답/오답은보존한다. 아래날짜별‘현재/최신’은역사다. 옛v3의300M교육§54~55는실제완료했고, 새capability75M/300M확보·승격은별개로미완이다.
+> **현재 2026-10-17 05시 야간 회수 §244~249:** 추가 원문298.975M과 같은QA640 두 팔, 학습후4체크포인트의 실제 전량8lane/원답 검산을 완료했다. 익숙한 표현의 영어 QA 일부 이득은 있지만 낯선 배치·값 갱신·보존의 한계가 남는다. 입력본문 β0 기준640 및 고유32k 한 번의640을 완료했고 β.1은 실제 진행 중이다. 두 계열 실제 답 평가는 아직 미실행이다. 지시고정1/3 읽기 전용 진단은 CPU29·실제64 동결만 완료했고 주평가6개 후에만 연다. source해시64 부모진단은 따로 준비하며, 옛6전량/질문앞/고유V1 보류를 완료로 대체하지 않는다. 이후 날짜별 ‘현재/최신’은 당시 기록이다. 옛v3 300M교육 완료와 새capability75M×4epoch 목표의 미완을 구별한다.
+
+> **당시 2026-10-16 회수 §194~215:** 역할교량/정보복구와SFT/ORPO 양64회·실제새128대화·표현192답을회수했다. 역할조회/보충뒤개선은있으나자연QA·갱신/언어보존은부족하고전면승자미채택이다. 같은정보에서질문표현0/3의차이를확인했으며원답/오답은보존한다. 아래날짜별‘현재/최신’은역사다. 옛v3의300M교육§54~55는실제완료했고, 새capability75M/300M확보·승격은별개로미완이다.
 
 > **현재 본경로 선결:** 남은옛v5/v4/OFF/V2의14개live런처는해당버전75M/quota·원래과제/학습자가보는근거정책·wire/정확자식의선결이남아이번인계에서HOLD다. 파일존재/자동READY는실제실행가능증거가아니다. 현재짧은후속의성공/실패를옛버전의선결통과로대체하지않는다.
 
@@ -281,7 +283,9 @@ JSON 내부에는 `한국어기초사전 - 국립국어원 제공`, 생성시각
 
 기존 `ko-en`의 **단순 다음토큰 캐시**를 교사가 질문·답으로 변환하는 네 번째 후보도 가능하지만, 토큰 `.bin`의 임의 1024 경계를 그대로 질문으로 삼으면 문서 출처·완결 문맥·근거 답의 경계가 없다. P037에서 기존 300M/600M train–val 동일 EOS 문서 2/6건이 확인돼 문서 ID·공통 val 누출 정리가 먼저다([결과023 §12](../test_result/023_20260802100000_P037-단계2-필터는작동-검증이엉뚱한캐시를쟀다.md)). 사용하려면 승인된 공개 원문 문서에서 근거 범위를 고정하고, 교사가 질문과 답을 생성하되 원문 인용 위치·문서 계보·QA 오류를 별도로 보존해야 한다. 지금의 Stage1a/b는 이를 OASST2와 섞지 않는다. 기존 공개 v3 canonical 3,154행을 교사가 재표현하는 길도 있지만 한국어 비율5.83%·사람/오염 gate 미완을 해결하지 않으므로 P090B와 분리해 후속 비교한다.
 
-### Stage3 — 사용자 승인 생산성·재사용·통합 게이트 (2026-09-30 준비, 모델 NOT_RUN)
+### Stage3 — 사용자 승인 생산성·재사용·통합 게이트 (2026-09-30 역사 설계·원통합 HOLD)
+
+**현재 상태와 역사 범위:** 아래는 당시 사전등록 조건이며 수치·문턱을 바꾸지 않는다. 독립 C4/B2/B4 등 실제 실행은 결과101 §31, 두 슬롯 A1 음성과 단일 슬롯 A2 겹침은 §32, 후속 단일 슬롯 통합128행/1업데이트 완료는 §33이 소유한다. 원2slot 통합3fW와 원3g0/g는 원선결 미충족으로 모델/새 교육0을 보존한 HOLD다. 후속1slot의 성공으로 그 원형을 소급 통과시키지 않는다. 따라서 이 역사 설계를 새로 실행할 첫 단계로 반복 안내하지 않으며, 현재 작업은 위 머리말과 끝의 야간 계획·실제 회수를 따른다.
 
 **선택 회수:** A1/A2 모두 독립 테스트, B2→4, C4 실제4epoch, 모두 해당 문턱을 통과하면 통합1 optimizer다. 통합은 C reader의epoch1만 쓰고4epoch 완료로 부르지 않는다. 그 다음 통합에서 보존한 자료를 별도 train/val로 나눠 작은4epoch 교육을 준비한다. 보호 원천은 연결하지 않으며 학습량을 맞추기 위한 수백회 재사용도 하지 않는다.
 
@@ -4468,9 +4472,9 @@ wrapper만 바뀌는 불변성에 더해 한영 각4개 새 코드 사실의 wra
 |---|---|---|
 | Stage4dk0W | `run_P106B_Stage4dk0W_night_grounded_cpu.sh` | 새 자료 동결→실제 CPU 부모/마스크/소비 검산 |
 | Stage4dkWa | `run_P106B_Stage4dkWa_night_ce_cost8.sh` | CE8회 비용, 체크포인트 저장0 |
-| Stage4dkWb | `run_P106B_Stage4dkWb_night_consistency_cost8.sh` | 동일경로 KL8회 비용, 저장0 |
-| Stage4dlWa | `run_P106B_Stage4dlWa_night_grounded_ce4.sh` | 양뷰 CE640회·최종만 저장 |
-| Stage4dlWb | `run_P106B_Stage4dlWb_night_grounded_consistency4.sh` | 양뷰 CE+KL640회·최종만 저장 |
+| Stage4dkWb | `run_P106B_Stage4dkWb_night_consistency_cost8-hold.sh` | ⏸ 역사V1 패딩 계약 무효로 보류,새V2 비용을 별도 수행 |
+| Stage4dlWa | `run_P106B_Stage4dlWa_night_grounded_ce4-hold.sh` | ⏸ 역사V1 미실행 보류,패딩 수리한 새Wc의 CE640과 구별 |
+| Stage4dlWb | `run_P106B_Stage4dlWb_night_grounded_consistency4-hold.sh` | ⏸ 역사V1 미실행 보류,새Wd의 KL640과 구별 |
 
 구조상640×8×16×1024=83,886,080은 padding 포함 SFT 슬롯이며 실제 학습 토큰이 아니다.
 실제 x/assistant target은 동결 encoder 소비로 별도 확정하고 native640×8192=5,242,880을 추가 구분한다.
@@ -4520,8 +4524,8 @@ Stage4dk0Wb는 CPU45/실제 패딩·소비 완료, Stage4dkWc/Stage4dkWd는 각8
 |---|---|---|
 | Stage4dm0W | `run_P106B_Stage4dm0W_night_eval_frozen_inputs.sh` | 순수 평가24CPU·TEST512QA/3뷰·cube64·보존·같은 공개1920·추가 native256 동결 |
 | Stage4dmWa | `run_P106B_Stage4dmWa_night_parent_actual_answers.sh` | E970 부모·동일 FP32 MATH/greedy/cache·새 학습0 |
-| Stage4dmWb | `run_P106B_Stage4dmWb_night_ce_actual_answers.sh` | 완주 CE640의 실제 답·보존/공개 벤치 |
-| Stage4dmWc | `run_P106B_Stage4dmWc_night_consistency_actual_answers.sh` | 완주 KL640의 같은 입력/분모/정밀도 |
+| Stage4dmWb | `run_P106B_Stage4dmWb_night_ce_actual_answers-hold.sh` | ⏸ 역사 evaluator 키 충돌로 미실행 보류,새복구 evaluator는 별도 완료 |
+| Stage4dmWc | `run_P106B_Stage4dmWc_night_consistency_actual_answers-hold.sh` | ⏸ 같은 키 충돌로 미실행 보류,새복구 원답과 섞지 않음 |
 | Stage4dnW | `run_P106B_Stage4dnW_night_paired_raw_readback.sh` | 세 endpoint 전량·기사 단위 CI·동일오답/빈답 구별·코드 source/gold 재구성 |
 
 역할16개/정보복구8개 neutral root의 모든 언어·지시/조건 자식을 함께 골라 원형 실제 이력과 gold 이력을 분리한다.
@@ -4671,7 +4675,7 @@ TEST로 epoch/LR을 고르지 않는다. QA최종4가 사전 주대조이고 DEV
 | 단계 | SH | 정확 endpoint/선결 |
 |---|---|---|
 | Stage4dqWa | `run_P106B_Stage4dqWa_foundation_original_parent_eval.sh` | 불변 P090B, 학습0 |
-| Stage4dqWb | `run_P106B_Stage4dqWb_foundation_native_parent_eval.sh` | 새 native2281 완료·strict source/lineage |
+| Stage4dqWb | `run_P106B_Stage4dqWb_foundation_native_parent_eval-hold.sh` | ⏸ bare full512 비용 예산 재산정으로 미실행 보류,별도64진단이 대체 완료는 아님 |
 | Stage4dqWc | `run_P106B_Stage4dqWc_foundation_baseqa_final_eval.sh` | 원 P090B→QA640 최종4 |
 | Stage4dqWd | `run_P106B_Stage4dqWd_foundation_baseqa_dev_eval.sh` | 같은 교육의 DEV CE 최소 대표, TEST 선택 아님 |
 | Stage4dqWe | `run_P106B_Stage4dqWe_foundation_cptqa_final_eval.sh` | native2281→동일 QA640 최종4 |
@@ -4991,3 +4995,50 @@ reader CPU는 모델을 로딩하지 않지만 원자산SHA를위해가중치파
 **preflight:** 레지스트리 새 태그 충돌0, SH7개의 Bash구문/입력태그 검사0오류. 같은 부모·토크나이저·풀·스케줄·손실·업데이트·정답·출력예산 유지, 별도 예산/경로만 바뀐다.
 실제 source가 기존19,759,460 SFT x/513,694 지도·5,242,880 native·83,886,080 padding과 일치해야 한다. 비용8의 실제 새 이벤트/SHA가 없으면 본학습을 열지 않는다.
 기존 V1 본640/평가/검산은 별도 보류로 보존하며 새 버전의 성공으로 옛 파일을 완료 처리하지 않는다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+## 2026-10-17 조건부 읽기 전용 원인분리 — 지시가 같은 view1 대 순서만 바꾼 view3
+
+### 목적·세 대안과 현재 선택
+
+기존 v2 평가의 view2는 지시 문구/라벨과 질문·근거 순서가 함께 바뀐다. 그 점수 감소를 순서 효과 하나로 해석할 수 없다.
+
+| 안 | 수행 | 비용·한계 |
+|---|---|---|
+| 1. 기존0/1/2만 해석 | 새 실행 없이 기존 점수/원답을 읽음 | 비용0,순서와 문구 효과가 섞임 |
+| 2. 같은 지시의1/3 대응 진단 | source해시로 이미 고정한64질문에서 블록 순서만 교환,같은 두 모델 읽기 전용 생성 | CPU/실행판 준비+추가GPU 약10~20분 예상,과제 범위의 순서 효과만 봄 |
+| 3. 새 순서로 재학습 | 원래 준비한0/3 학습으로 개선을 시험 | 옛6전량 선결이 미충족이므로 이번 진단의 대안으로 우회 실행하지 않음 |
+
+**현재 선택은2다.** 새 학습/헤드/목표함수는 도입하지 않는다. 기존 본문/고유32k 학습·전량 평가를 먼저 회수하며,09시까지 최소35분이 남는 경우에만 이 추가 진단을 연다.
+
+### 설계·영향 범위
+
+- 새 `p106b_night_order_probe_v1_s1337`, source64는 앞서 부모진단에 이미 동결한 KO32/EN32와 완전히 같다. probe 결과나 정오로 다시 선정하지 않는다.
+- 비교는 **view1 대3**이다. 계획 구두 착수 때 언급한0/3는 기존 producer를 읽은 뒤 실물 동결 전에1/3으로 정정했다. view3는1의 동일 지시/Question·Passage 라벨·모든 문자/원형/aliases를 보존하고 Q/C 블록 순서만 바꾼다.
+- 기존 TRAIN 전용 `p106b_night_order_data.render`에 TEST를 넣기 위해 split을 바꾸지 않는다. 새 순수 probe helper는 원래 TEST/메타를 그대로 두며 학습행을 만들지 않는다. held2도 학습하지 않는다.
+- 대상은 사전지정한 `base_qa` final4와 새 `unique32k` final640 두 모델이다. DEV 또는 TEST 점수를 보고 모델을 교체하지 않는다. 각자의 full512/8lane 완료·원답·CP SHA를 검증한 후만 읽는다.
+- 한 모델당64×2=128새 생성, 두 모델256응답이다. root별1→3/3→1 순서를 source index로 번갈아 배치한다. greedy/FP32 MATH/cacheON/출력128/1024문맥,학습0·checkpoint쓰기0.
+- CPU에서 전체 prompt SHA·실제 tokenizer 길이·128생성 여유를 검산한다. 문자 동일성과 토큰화 경계의 길이는 별개이므로 실제 길이 차이도 남기며 입력을 자르지 않는다.
+- view1도 새로 생성해 같은 호출 경로에서 비교한다. 기존 full512의 같은64 view1 원답과 재현 일치도를 별도로 남기고, 같은 답 일치를 정답성으로 세지 않는다.
+- 언어별 EM/F1·같은 오답·정답→오답/오답→정답·상한/EOS/정지를 분리한다. 같은 alias 기반의 국소 평가이며 세계 정답성/모든 문맥 일반화·구조 결함의 증명이 아니다.
+- 새 helper/회귀2파일·별도 controller/회귀2파일과 CPU/모델2/검산SH만 추가한다. 제품 core·기존 동결 source/data/가중치·공용검사기·보호 원천은 수정하지 않는다.
+
+### 비용·해석·보류 조건
+
+기존 고유32k forecast는 이 추가 진단을 포함하지 않았으므로 그 표를 전체 예산 보증으로 쓰지 않는다. 첫 실행 전 남은 모델수×900초+예비300초를 별도로 예약하고09시에 GPU를 멈춘다.
+새 CPU/합성 회귀·실제 full평가 선결·시간이 부족하면 `NOT_RUN/HOLD`로 남긴다. 원형을 줄이거나 출력 상한을 낮춰 완료처럼 만들지 않는다.
+1→3에서 하락하면 그 모델/프롬프트 범위의 입력 순서 민감성이다.1/3이 비슷하더라도 점수 바닥/작은 표본과 view2의 다른 지시·라벨 차이가 남으므로 ‘순서 문제 없음’이나 ‘문구만 원인’으로 단정하지 않는다.
+이 진단은 옛 질문앞640·원6모델 gate를 열거나 자료/모델을 채택하는 절차가 아니다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 실행판·실행 전 점검
+
+| 단계 | SH | 범위 |
+|---|---|---|
+| CPU 동결 | `run_P106B_Stage4ee0W_order_probe_cpu.sh` | 순수29회귀·기존64 원형·실제 토큰/스케줄, 모델 forward0 |
+| 기존8k 최종 | `run_P106B_Stage4eeWa_baseqa_order_probe.sh` | 고정 baseQA final4,128응답,최대900초 |
+| 고유32k 최종 | `run_P106B_Stage4eeWb_unique32k_order_probe.sh` | 고정 unique32k final640,같은128응답,최대900초 |
+| 독립 검산 | `run_P106B_Stage4efW_order_probe_readback.sh` | 두 원답128행씩·원형·본체·실제 CP 경로·주평가 해시 |
+
+독립 검토가 찾은 주평가 선결·보고 경로 누락은 CPU 동결 전에 수리했다.
+두 모델의 full source뿐 아니라 prompt4/unique2의 **6개 주평가와 baseQA 전량**의 원답/receipt/CP/본체가 실제 완료돼야 새 진단을 열고 회수할 수 있다.
+별도 실행판을 먼저 부른다고 남은 평가 예산을 소비할 수 없게 했으며, 저장 report의 CP 문자열만 변조해도 거부하는 합성 시험을 추가했다.
+합성29개는 실제 원형·모델 검증과 구별한다. 새 태그 충돌0, 유사 registry에는 같은64의 지시고정1/3 읽기 전용 비교가 없고, Bash구문/SH 진입점82개 검사를 통과했다.
+학습steps0·자료 풀/학습 LR 비교는 해당 없으며 부모/토크나이저/답 예산/precision은 각 source에 고정한다. 예상 allocator 메모리는 선행 FP32 모델 평가 수준이며 전역 peak 보증은 아니다.
