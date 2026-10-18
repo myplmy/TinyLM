@@ -1,0 +1,894 @@
+{
+  "schema": "TINYLM_SMOKE_INDEPENDENT_READBACK_V1",
+  "created_at_utc": "2026-10-18T16:38:00.375071+00:00",
+  "status": "INDEPENDENT_READBACK_MATCHED_COMMON_GATE_UNRESOLVED",
+  "authorized_write": "이 새 보고 JSON 한 개만 쓰기 허가. 공용 코드 및 다른 파일은 변경하지 않는다.",
+  "writer_role": "antithesis",
+  "input_artifacts": {
+    "raw_log": {
+      "path": "smoketest_logs/202610190118_smoke_6ada839.txt",
+      "sha256": "C6072DB0B840A4136C0EA26066A3FBF431A210D0578547B3DF805C664F65FAFA",
+      "bytes": 211688,
+      "regular": true
+    },
+    "isolation": {
+      "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/isolation.json",
+      "sha256": "C1770A2BA618A4B42F948E141FF0044E297BB6A853E6BD41A5BD2A89528935A1",
+      "bytes": 48759,
+      "regular": true
+    },
+    "canonical_source": {
+      "path": "scripts/batch/tool_smoke.bat",
+      "sha256": "9235BC91F19CFF9B3D57EE6772761E74DB3669C0C6482404E8B15BC98728CB54",
+      "bytes": 38659,
+      "regular": true
+    },
+    "current_driver": {
+      "path": "scripts/p106b_relation_smoke.py",
+      "sha256": "BDE14B56E0B16CF821EA32D817F2B21E40A3FA3736C51128AAD5AD78AD06863A",
+      "bytes": 4504,
+      "regular": true
+    },
+    "codex_checker": {
+      "path": ".agents/skills/session-handoff/scripts/check_handoff_codex.py",
+      "sha256": "C01AAE60D87FF4628B38331AE213CB99F43CF8A1C37392E3CA5DB27D8EC408FB",
+      "bytes": 16787,
+      "regular": true
+    },
+    "common_checker": {
+      "path": "scripts/check_smoke_diag.py",
+      "sha256": "627E0E6057B6F735F255DC5F3721FFCA639482EEC3CB72214463EAFE515FDD98",
+      "bytes": 22017,
+      "regular": true
+    },
+    "pre_execution_audits": [
+      {
+        "path": "handoff/audit/WIP_20261019_SMOKE_PREP_STATIC_AUDIT.json",
+        "sha256": "6DE5AE1B4A1B6A6D40E2A483DBA377DE9D39CA4AC01F6FC574E3194B52A6860A",
+        "bytes": 39032,
+        "regular": true,
+        "created_at": "2026-10-19T01:17:30+09:00",
+        "recorded_driver_sha256": "BDE14B56E0B16CF821EA32D817F2B21E40A3FA3736C51128AAD5AD78AD06863A",
+        "current_driver_matches": true
+      },
+      {
+        "path": "handoff/audit/WIP_20261019_SMOKE_READY_STATIC_AUDIT.json",
+        "sha256": "CD250A0601F2F3ADEF1DD374E924625A7B46A9C11EC61E22CD94FDB69D50BFBA",
+        "bytes": 39222,
+        "regular": true,
+        "created_at": "2026-10-19T01:18:25+09:00",
+        "recorded_driver_sha256": "BDE14B56E0B16CF821EA32D817F2B21E40A3FA3736C51128AAD5AD78AD06863A",
+        "current_driver_matches": true
+      }
+    ],
+    "unresolved_gate_audit": {
+      "path": "handoff/audit/WIP_20261019_PREFLIGHT_COST_STATIC_AUDIT.json",
+      "sha256": "D4A8BDD0953C5D2A3A33F1FAEAC1FCE8CB7AA068BEF1E3D50DEDEC43F5D30E6B",
+      "bytes": 40127,
+      "regular": true
+    }
+  },
+  "contract": {
+    "canonical_actions": 106,
+    "actual_manifest_actions": 106,
+    "canonical_child_count": 44,
+    "training_child_count": 33,
+    "raw_child_count": 44,
+    "raw_summary_count": 1,
+    "substitutions": [
+      {
+        "source_line": 75,
+        "kind": "legacy_handoff_to_codex",
+        "before": [
+          "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+          "scripts/check_handoff.py"
+        ],
+        "after": [
+          "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+          "-I",
+          "-B",
+          ".agents/skills/session-handoff/scripts/check_handoff_codex.py"
+        ]
+      },
+      {
+        "source_line": 492,
+        "kind": "contract_reads_fresh_isolated_logs",
+        "before": [
+          "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+          "scripts/check_smoke.py"
+        ],
+        "after": [
+          "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+          "-B",
+          "-X",
+          "utf8",
+          "scripts/p106b_relation_smoke.py",
+          "--contract",
+          "--root",
+          "/home/uranus/tinyLM/test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019"
+        ]
+      }
+    ],
+    "interpreter": "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+    "isolated_output_root": "/home/uranus/tinyLM/test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019"
+  },
+  "checks": {
+    "canonical_action_manifest_exact": true,
+    "canonical_counts_equal": true,
+    "canonical_source_sha_matches": true,
+    "exact_two_substitutions": true,
+    "exact_44_children_plus_summary": true,
+    "all_actual_commands_exact_and_ordered": true,
+    "all_45_returncodes_zero": true,
+    "all_required_markers_present": true,
+    "no_exit0_error_markers": true,
+    "one_smoke_session": true,
+    "one_exact_isolation_note": true,
+    "complete_command_end_pairs": true,
+    "pre_execution_driver_hashes_match": true,
+    "isolated_json_count32": true,
+    "current_field_contract_errors_zero": true,
+    "raw_field_titles_equal_isolated_json_stems": true,
+    "raw_field_blocks_all_ok": true
+  },
+  "all_independent_checks_pass": true,
+  "actual_commands": [
+    {
+      "ordinal": 1,
+      "role": "canonical_child",
+      "canonical_source_line": 63,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/check_attrs.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "주의: 정적 검사라 getattr()": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 2,
+      "role": "canonical_child",
+      "canonical_source_line": 64,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/check_diag_data.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "진단 도구 계측 건강": true,
+        "통과가 '계측이 옳다' 는 증명이 아니다": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 3,
+      "role": "canonical_child",
+      "canonical_source_line": 70,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_init_cla_owner.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "PASS: role-mapped CLA parent init resolves K/V through teacher.owner": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 4,
+      "role": "canonical_child",
+      "canonical_source_line": 75,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B .agents/skills/session-handoff/scripts/check_handoff_codex.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "CHECK handoff/": true,
+        "PASS static structure and local links": true,
+        "SUMMARY files=1 errors=0": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 5,
+      "role": "canonical_child",
+      "canonical_source_line": 79,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/check_links.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "문서 상대링크 검사": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 6,
+      "role": "canonical_child",
+      "canonical_source_line": 85,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --tag sm_base",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 7,
+      "role": "canonical_child",
+      "canonical_source_line": 91,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --seed 4242 --tag sm_seed",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 8,
+      "role": "canonical_child",
+      "canonical_source_line": 97,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sparse34 --tag sm_s34",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 9,
+      "role": "canonical_child",
+      "canonical_source_line": 109,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --cla-group 2 --sparse34 --tag sm_s34_dense",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 10,
+      "role": "canonical_child",
+      "canonical_source_line": 115,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --sched wsd --anneal-end 0.80 --decay-frac 0.2 --tag sm_sched",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 11,
+      "role": "canonical_child",
+      "canonical_source_line": 125,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --tag sm_nockpt",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 12,
+      "role": "canonical_child",
+      "canonical_source_line": 131,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 13,
+      "role": "canonical_child",
+      "canonical_source_line": 133,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --init-from --mlp-group 4 --kd-every 4 --tag sm_kd",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 14,
+      "role": "canonical_child",
+      "canonical_source_line": 153,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --attn-group 2 --init-from --tag sm_ag",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 15,
+      "role": "canonical_child",
+      "canonical_source_line": 158,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --attn-group 2 --init-from --group-init mean --attn-group-init norm_mean --tag sm_ag_attnorm",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 16,
+      "role": "canonical_child",
+      "canonical_source_line": 164,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --mlp-split 1 --init-from --tag sm_split",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 17,
+      "role": "canonical_child",
+      "canonical_source_line": 170,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --wq-dtype bf16 --init-from --tag sm_wqbf16",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 18,
+      "role": "canonical_child",
+      "canonical_source_line": 176,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --reuse-attn-on-dup --init-from --tag sm_reuseattn",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 19,
+      "role": "canonical_child",
+      "canonical_source_line": 182,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --repeat-mode inplace --init-from --tag sm_inplace",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 20,
+      "role": "canonical_child",
+      "canonical_source_line": 188,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --cla-group 1 --init-from --tag sm_cla1",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 21,
+      "role": "canonical_child",
+      "canonical_source_line": 194,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --ce-chunk 256 --tag sm_cechunk",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 22,
+      "role": "canonical_child",
+      "canonical_source_line": 215,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --tag sm_denseinit",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 23,
+      "role": "canonical_child",
+      "canonical_source_line": 220,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --mlp-group 2 --tag sm_tieddepth",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 24,
+      "role": "canonical_child",
+      "canonical_source_line": 234,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --train-repeat 2.0 --init-from --depth-init role --tag sm_denserep",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 25,
+      "role": "canonical_child",
+      "canonical_source_line": 247,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --emb-rank 64 --init-from --tag sm_embrank",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 26,
+      "role": "canonical_child",
+      "canonical_source_line": 261,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --kd --kd-every 4 --kd-chunk 256 --teacher-dtype bf16 --init-from --mlp-group 4 --tag sm_kdchunk",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 27,
+      "role": "canonical_child",
+      "canonical_source_line": 266,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --init-from --mlp-group 4 --mlp-film --tag sm_film",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 28,
+      "role": "canonical_child",
+      "canonical_source_line": 274,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --tag sm_densecla",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 29,
+      "role": "canonical_child",
+      "canonical_source_line": 285,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --no-cla-edges --tag sm_claedge",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 30,
+      "role": "canonical_child",
+      "canonical_source_line": 296,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --mlp-lrm --tag sm_lrm",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 31,
+      "role": "canonical_child",
+      "canonical_source_line": 315,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 4M --ckpt-tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --depth-init role --tag sm_ckpttok",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 32,
+      "role": "canonical_child",
+      "canonical_source_line": 328,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --cla-group 2 --init-from --depth-init role --train-repeat 2.0 --repeat-mode block --tag sm_denseblock",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 33,
+      "role": "canonical_child",
+      "canonical_source_line": 339,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --init-from --mlp-group 2 --mlp-lrm --tag sm_tiedlrm",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 34,
+      "role": "canonical_child",
+      "canonical_source_line": 352,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --mlp-lrm --mlp-lrm-mode vector --mlp-lrm-wd 0 --tag sm_vlrm",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 35,
+      "role": "canonical_child",
+      "canonical_source_line": 367,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --optimizer muon --muon-lr-mult 5 --tag sm_muon",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 36,
+      "role": "canonical_child",
+      "canonical_source_line": 380,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch tied --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --mlp-group 2 --optimizer muon --muon-lr-mult 5 --tag sm_tiedmuon",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 37,
+      "role": "canonical_child",
+      "canonical_source_line": 400,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --optimizer muon --muon-scale rms --tag sm_muonrms",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 38,
+      "role": "canonical_child",
+      "canonical_source_line": 419,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python run100m.py train --arch dense --tiny --data synthetic --tokens 2M --steps 30 --micro-bs 4 --seq 128 --accum 2 --eval-every 15 --no-ckpt --ce-chunk 256 --optimizer muon --muon-lr-mult 5 --matrix-weight-decay 0.05 --tag sm_muonwd",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {},
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 39,
+      "role": "canonical_child",
+      "canonical_source_line": 429,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/check_return_probs.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "[1] 로짓 비트 동일": true,
+        "[2] 행 합 = 1": true,
+        "[3] 상삼각": true,
+        "[4] `last_probs`": true,
+        "[5] 학습 모드에서 차단": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 40,
+      "role": "canonical_child",
+      "canonical_source_line": 446,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sparse34_pack.py --ckpt sm_s34_dense --preset tiny --data synthetic --tokens 2M --arch dense",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "[1] 왕복": true,
+        "[1b] codebook/tail": true,
+        "[2] bpw": true,
+        "[3] 거절": true,
+        "[4] ★상주 이득": true,
+        "[5] ★★교환비": true,
+        "[6] ★★실측": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 41,
+      "role": "canonical_child",
+      "canonical_source_line": 461,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/mem_runtime.py --preset tiny --data synthetic --tokens 2M --models sm_base --device cpu --max-new 4 --drop-latent --lut --emb-quant int8 --kv-seq 128 --kv-dtype bf16",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "P014 단계1": true,
+        "LUT 상주(코드+alpha)": true,
+        "로짓 차이": true,
+        "★상주 감축": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 42,
+      "role": "canonical_child",
+      "canonical_source_line": 481,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/diag_sft_mask.py --data synthetic",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "M1·M2 규모": true,
+        "M3 경계": true,
+        "M4 경계 토큰 미포함": true,
+        "밀기 규약": true,
+        "지도 토큰": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 43,
+      "role": "canonical_child",
+      "canonical_source_line": 483,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/test_p101a_sft_mtp.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "CPU_SFT_MTP_PASS": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 44,
+      "role": "canonical_child",
+      "canonical_source_line": 492,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_relation_smoke.py --contract --root /home/uranus/tinyLM/test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "이면 계측 계약이 지켜지고 있습니다": true,
+        "총 에러 0건": true
+      },
+      "exit0_error_markers": []
+    },
+    {
+      "ordinal": 45,
+      "role": "summary",
+      "canonical_source_line": null,
+      "actual_command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/summarize_smoke.py",
+      "exact_ordered_argv_match": true,
+      "returncode": 0,
+      "required_markers": {
+        "스모크 종료코드 요약": true,
+        "팔 44개": true,
+        "실패 0개": true,
+        "exit 0 인데 오류 표지 0개": true,
+        "계측 필드 계약(check_smoke): 총 에러 0건": true
+      },
+      "exit0_error_markers": []
+    }
+  ],
+  "isolated_field_json_readback": {
+    "count": 32,
+    "current_contract_errors": 0,
+    "missing_expected_tags": [],
+    "raw_ok_block_count": 32,
+    "files": [
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_ag.json",
+        "sha256": "34ACECE2828085E2FFEB1F28B8A5B092D4AD10001C895F4FA63017CA7B55144E",
+        "bytes": 5441,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_ag_attnorm.json",
+        "sha256": "73F3FB66E071A07FF14318BC63B109345D36B7DFD7E898582AB9172721B913E7",
+        "bytes": 5455,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_base.json",
+        "sha256": "620EC5A4EB25B1BE9BFE24F5D21B5F233ED81ABC5A064089A157EFFC9B177109",
+        "bytes": 5427,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_cechunk.json",
+        "sha256": "3F5D813AB25CAE7ADF8D586CB84605E51DBA1C6F04990C58DDF0F6041826F7B9",
+        "bytes": 5432,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_cla1.json",
+        "sha256": "42701A9FCFAF46DB735CAF3F67FEE8C75743688B5A3F9007D2E40C452F9681F0",
+        "bytes": 5421,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_claedge.json",
+        "sha256": "3E230A7E65FC4159099C7E95F992161803E7FE8E3C79FCA2B775DA6DD7575846",
+        "bytes": 5443,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_denseblock.json",
+        "sha256": "9A7C9756D2CDC31CDD48ACA1056845580C0E837AFB27D7174E428528D7289A85",
+        "bytes": 5455,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_densecla.json",
+        "sha256": "6C326E0ACDE193AE9DA60EB48651EB0B6F4FDE5E31F0352B5D1A559DCA6D0A91",
+        "bytes": 5433,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_denseinit.json",
+        "sha256": "288823708350B5B419B963D9AC016E4144036777A471D844424738D4417AD1CC",
+        "bytes": 5453,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_denserep.json",
+        "sha256": "21DDB5C7433067D8498441ADDC4CA5060FFDF6CCDF5A0079C4A33659362AE16E",
+        "bytes": 5442,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_embrank.json",
+        "sha256": "67D394BA45FD75626F199A99AF659BBBE6380EF147A8B796219923DE416541F1",
+        "bytes": 5424,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_film.json",
+        "sha256": "15A23D4C8D7407A5F66705D0B045D54F9AC9A5D7BACA3CD7AE92D8E74CB313FE",
+        "bytes": 5438,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_inplace.json",
+        "sha256": "5167B8CF616D72002FF5E1493E63F4E1A87AA33E8A8A7892ED92F2055313F049",
+        "bytes": 5449,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_kd.json",
+        "sha256": "4CEA93C8A5CF13C364AC8ECC76A4ECAD31D3A619E2D3D8C28609B66A3926DCD2",
+        "bytes": 5652,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_kdchunk.json",
+        "sha256": "57AC04CD9B52E7BFA41CF93ABEC21991B2EE90652E15AB939971A96BDE8162C9",
+        "bytes": 5660,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_lrm.json",
+        "sha256": "85A49DA45E3A33903D8A9FD2D18B80031D0D71E12B2A5C2D2CF10931EBCF23F9",
+        "bytes": 5612,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_muon.json",
+        "sha256": "B6DD2170BCFE160878B8C6CF175A175AECB6082191EC1037E050F4EBAD636E3F",
+        "bytes": 5403,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_muonrms.json",
+        "sha256": "B30FF99B65EB7D15609589083A119D59356A3DA4D8E5C53058B5C075D971C841",
+        "bytes": 5440,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_muonwd.json",
+        "sha256": "3C8DB3C68A74F1713AE9AB051E8F377FC24CA9FDD63CC2AB6CEBA79497F195EB",
+        "bytes": 5429,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_nockpt.json",
+        "sha256": "7630B585EAD1D5447B85235DBB660BE1DFB99269117A61F285FDD84E4EDA84F4",
+        "bytes": 5429,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_reuseattn.json",
+        "sha256": "6A8E56D9B1833A43B6B0E14A0F0239458157B9C7213C2E99F25D06FB27C2C9D7",
+        "bytes": 5445,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_s34.json",
+        "sha256": "D1A6FB0B6FA459E2A511AA933D6C325293B59746EB93F55A258AD9C66602882C",
+        "bytes": 5413,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_s34_dense.json",
+        "sha256": "E81493CB3290AE5D7FD0F93A5C35AF8971C9841887FCD869AB9325691538424D",
+        "bytes": 5416,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_sched.json",
+        "sha256": "A765F47EBC9ACDCF3D63E086D35441BE685D51F8128D004F7BA2201BA3B23CD0",
+        "bytes": 5422,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_seed.json",
+        "sha256": "671D19B55E54267CD94A86CF39DA9A35E20DA070A6F59BDF4DBA1C423226DC2A",
+        "bytes": 5428,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_split.json",
+        "sha256": "E21B46B11A8BB4799FDA79312449C67793DB66D3F8CA9DFB82B6BA283149F034",
+        "bytes": 5452,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_tieddepth.json",
+        "sha256": "F2EA44644CCCF7C53BC2E1416B156979227E5DFCB236C88BF879F066B8FF284F",
+        "bytes": 5431,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_tiedlrm.json",
+        "sha256": "2A9C5B7146A52FD517DD2C9CC385CE5B8D8FC2FBBA516319B0D424489503B6B6",
+        "bytes": 5625,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_tiedmuon.json",
+        "sha256": "347293E52D8ED1677E6A9940E0BB66E9796B1E05570F25AAC07FB41F41A1EE5E",
+        "bytes": 5433,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_vlrm.json",
+        "sha256": "D57C295335253C36EB45FFFA2561D91003EFC52C481020AFB87C83AC8A25F114",
+        "bytes": 5608,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_2M_sm_wqbf16.json",
+        "sha256": "C2458DE27A92F846E949246B4409C6DF4353075CC5FE34B97C8F4A0B53D05B6B",
+        "bytes": 5447,
+        "regular": true
+      },
+      {
+        "path": "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019/runs/logs/tiny_synthetic_4M_sm_ckpttok.json",
+        "sha256": "E4689B80BB998A79DA5A4BEBD9ECB49BFC145C6F05656AFF570BDC7477EF0554",
+        "bytes": 5433,
+        "regular": true
+      }
+    ]
+  },
+  "common_gate": {
+    "status": "UNRESOLVED_FAIL",
+    "original_gate_records": [
+      {
+        "name": "check_smoke_diag",
+        "status": "ERROR",
+        "returncode": 1,
+        "reason": "★★스모크 **진단런**의 계약(`smoke_diag_contract.tsv`) ↔ 배치 ↔ 로그 — 2026-09-05 에 `diag_sparse34_pack` 이 exit 1 인데 *'총 에러 0건'* 이 찍혔다. `check_smoke` 는 필드만 보고 종료코드를 안 보며, 종료코드를 보라고 만든 `summarize_smoke` 는 배치가 `--` 를 빠뜨려 신설 이래 한 번도 안 돌았다. ★이 게이트가 *'그 팔이 무엇을 인쇄했는가'* 를 본다(로그가 코드보다 낡으면 경고)",
+        "output_sha256": "3459C22217B26946285360F25F856417C989D5FF779845483CF5EF069C7AF71E"
+      }
+    ],
+    "current_alias_errors": [
+      "Codex 대체 실행 증거 불일치: one exact approved isolation driver profile required"
+    ],
+    "aliases_returned": [],
+    "gate_bypassed": false,
+    "gate_waived": false,
+    "common_code_modified": false,
+    "new_profile_implemented": false,
+    "explanation_ko": "독립 검산 일치는 공용 check_smoke_diag.py의 기존 FAIL을 면제하거나 PASS로 변경하지 않는다. 승인된 새 profile 구현과 회귀 및 재검사가 필요하다."
+  },
+  "method_ko": [
+    "원본 tool_smoke.bat를 strict parser로 읽고 두 child만 독립 재구성했다. 새 smoke driver는 import하거나 실행하지 않았다.",
+    "106개 전체 action을 isolation manifest와 비교하고 raw44 child+summary1의 정확한 argv, 순서, 종료코드를 전수 대조했다.",
+    "기존 TSV 표지와 Codex 전용 표지, 격리 field 계약 및 summary 표지를 실제 각 명령 블록에서 대조했다.",
+    "실행 전 PREP/READY audit에 기록된 driver SHA와 현재 driver SHA를 대조했다. source/isolation/raw/격리 JSON hash는 이번 판독 시점에 계산했다.",
+    "격리 JSON32개를 check_smoke.check 순수 CPU 함수로 재검사했다. 실제 GPU/모델/가중치/학습/optimizer/기존 smoke는 실행하지 않았다."
+  ],
+  "limitations_ko": [
+    "공용 진단 게이트 FAIL은 현재 미해결이다. 이 보고서는 별도 독립 판독 증거다.",
+    "isolation.json의 prior_checkpoint_writes=false와 protected_dataset_access=false는 driver 선언이다. 원본 합성 자산의 실행 전후 hash 또는 모든 파일 접근 감시 증거가 아니다.",
+    "원본 합성 자산이나 원래 runs/ckpt의 사전 SHA를 이번에 새로 측정하거나 재구성했다고 주장하지 않는다. 보호 TinyDataset 접근0이다.",
+    "raw/isolation/격리 JSON SHA는 이번 판독 시점의 값이다. 실행 전 driver SHA는 PREP/READY audit만 근거로 사용한다.",
+    "summary는 --log 인자 없이 실행됐다. 본문이 정확한 raw 파일명을 가리키며 모든44명령과 계약결과를 별도로 검산했다.",
+    "106 action의 manifest 동일성과 실제44 child 실행을 구분한다. note/sleep106개 각각의 성공 exit receipt를 보존했다는 주장은 하지 않는다.",
+    "44팔 합성 smoke·field 기록 검증은 관계학습 본체 성공, 모델 품질, 장기 안정성 또는 자산보존 전수감시를 입증하지 않는다."
+  ],
+  "proposed_profile_ko": {
+    "status": "DESIGNED_ONLY",
+    "routing": "scripts/p106b_relation_smoke.py --contract가 정확히 한 번 등장하는 경우에만 새 profile을 선택한다.",
+    "requirements": [
+      "고정 tag/root/raw/isolation/보고서 schema와 regular 파일 및 부모 symlink·경로탈출을 검사한다.",
+      "raw/source/isolation/current driver hash를 보고서와 실행 전 READY audit에 결합한다. 누락·불일치는 fail-closed한다.",
+      "canonical106 action을 다시 해석하고 source75/492행의 두 child 교체만 허용한다. 추가·누락·중복·순서·interpreter·root·mode 변경을 거부한다.",
+      "raw44 child+summary1의 정확 argv·exit0와 Codex CHECK/PASS/SUMMARY, field 총에러0·32개OK, summary44/실패0/exit0오류0을 검사한다.",
+      "실제 summary 명령형식(-B -X utf8, --log 없음)은 이 profile에만 적용하고 본문의 raw 파일명도 결합한다.",
+      "성공해야만 check_handoff.py/check_smoke.py 두 alias를 반환한다. raw 명령명은 고치지 않는다.",
+      "원본자산보존 선언을 기존 full receipt의 실측 unchanged 증거로 강제 변환하지 않는다.",
+      "기존 두 authorized profile 및 canonical log 계약을 유지하며 mixed profile은 거부한다."
+    ],
+    "regressions": [
+      "정확 profile 성공 및 기존 두 profile 성공 유지",
+      "raw/source/isolation/driver SHA 변경·누락·형식오류 거부",
+      "child 누락·중복·순서교환·nonzero 및 다른 interpreter/root/mode 거부",
+      "Codex 표지 누락, field/summary 에러,44개 수 불일치 거부",
+      "다른 driver/기존 profile 혼합 거부 및 raw 명령명 유지"
+    ]
+  }
+}

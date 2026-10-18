@@ -48,6 +48,13 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
+1	P106B	run_P106B_Stage4en0W_relation_bind_cpu.sh	N	.10	N	N	CPU-only77+entry regressions and actual tokenizer/data freeze; no model/weights/GPU; preserve originals	8
+2	P106B	run_P106B_Stage4enWa_relation_ce_cost8.sh	Y	.25	Y	Y	User GPU cost8 baseline, same positive/cross paths, no checkpoint; resource/prerequisite8 is not answer-quality failure	8
+3	P106B	run_P106B_Stage4enWb_relation_contrast_cost8.sh	Y	.25	Y	Y	User GPU cost8 lambda.1, all-group WD0, no checkpoint; source/code/body matched	8
+4	P106B	run_P106B_Stage4enWc_relation_ce_train768.sh	Y	1.0	Y	Y	GATED both cost8 and4h forecast; fresh original parent, m8a16 ckptON,768updates, not old640 comparison	8
+5	P106B	run_P106B_Stage4enWd_relation_contrast_train768.sh	Y	1.0	Y	Y	GATED same source/init/exposure/schedule; only row contrast0/.1; fresh original parent	8
+6	P106B	run_P106B_Stage4enWe_relation_actual_answers.sh	D	1.0	Y	Y	GATED two exact completed students; parent/CE/contrast actual first answers and separate TF row/branch/native32	8
+7	P106B	run_P106B_Stage4enWf_relation_raw_readback.sh	N	.10	N	N	GATED all three actual evaluations; source/checkpoint/body/manifest binding and graph-cluster descriptive intervals	8
 # 7	P106B	run_P106B_Stage4ehW_question_bundles_readback-hold.sh	N	.10	N	Y	HOLD V1 freeze20MB before writes; separate shardedV2 is not this failed stage completion
 # 4	P106B	run_P106B_Stage4dqWb_foundation_native_parent_eval-hold.sh	D	.25	Y	Y	HOLD: original six-full-endpoint source audit incomplete; new64 panel is not a substitute. Completed native2281 endpoint, exact source/init and actual counts required; same frozen complete evaluation
 # 4	P106B	run_P106B_Stage4drW_foundation_raw_pair_readback-hold.sh	N	.05	N	Y	HOLD: original six-full-endpoint source audit incomplete; new64 panel is not a substitute. Six complete endpoints raw/receipt/original source recount and paired article intervals; one learning seed only

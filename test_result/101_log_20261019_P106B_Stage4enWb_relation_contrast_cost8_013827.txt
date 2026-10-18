@@ -1,0 +1,118 @@
+
+==============================================================================
+[runlog] 2026-10-19 01:38:27  name=P106B_Stage4enWb_relation_contrast_cost8_013827
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_relation_bind_entry.py --mode cost_contrast --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+[PHASE_COMMAND] ["/home/uranus/miniforge3/envs/tlm_torch/bin/python", "-B", "-X", "utf8", "-m", "unittest", "scripts.test_p106b_relation_bind_data", "scripts.test_p106b_relation_bind_loss", "scripts.test_p106b_relation_bind", "scripts.test_p106b_relation_bind_entry", "-v"]
+test_code_answers_and_both_cross_negatives (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_complete_content_and_answer_free_prefix (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_conservative_metric_does_not_erase_meaning (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_deterministic_balanced_distinct_graphs (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_duplicate_entity_slots_refused (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_eligibility_filters_before_quota_and_keeps_both_translations (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_eval_fact_reversal_and_question_paraphrase_keep_gold (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_eval_view_not_train (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_forged_natural_negative_flag_rejected (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_header_answer_token_straddle_is_rejected (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_invalid_size_does_not_repeat_to_fill (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_no_oracle_meta_in_prompt (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_only_cross_candidate_not_positive (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_recomputed_digest_cannot_certify_arbitrary_wrong_answer (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_rendered_meaning_has_independent_fixed_role_answers (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_simple_shortcuts_only_half_questions (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_translations_share_graph_and_partition (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_invalid_denominators_weight_and_scalar_are_refused (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_micro_partition_matches_whole_update_value_and_gradient (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_zero_lambda_is_exact_ce_gradient_with_zero_cross_gradient (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_zero_relation_lane_keeps_safe_zero_graph (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_interleaved_matrix_preserves_both_question_answer_maps (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_invalid_pairs_temperature_margin_and_nonfinite_scores_refused (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_joint_question_answer_permutation_preserves_loss (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_positive_column_gaps_do_not_hide_wrong_first_row (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_shared_content_prefix_cancels_without_token_negative_mask (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_unequal_lengths_do_not_claim_shared_prefix_cancellation (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_actual_full_schedule_counts_and_positive_micro_shapes (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_deterministic_seed_epoch_and_legacy_zero_relation_schedule (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_direct_isolated_script_import_is_safe (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_partial_empty_and_noninteger_schedule_refused (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_bad_hidden_head_and_token_counts_are_refused (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_checkpoint_matches_values_and_gradients_for_different_lengths (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_eot_has_ce_gradient_but_no_content_or_contrast_gradient (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_invalid_shift_hole_multiturn_and_missing_eot_are_refused (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_only_supervised_predictors_receive_direct_hidden_gradient (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_padding_and_prompt_logits_do_not_change_selected_scores (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_shifted_content_eot_and_lengths_match_manual_predictions (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_cost_budget_uses_worst_warm_step_and_both_arms_with_evaluation_reserve (scripts.test_p106b_relation_bind.BudgetTests) ... ok
+test_incomplete_nonfinite_or_nonpositive_warmed_times_fail (scripts.test_p106b_relation_bind.BudgetTests) ... ok
+test_mismatched_cost_receipt_cannot_authorize_full_training (scripts.test_p106b_relation_bind.BudgetTests) ... ok
+test_all_check_only_modes_are_noninteractive_and_skip_asset_readers (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_budget_mode_dispatches_cpu_estimate_only (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_direct_help_exits_without_models_assets_or_input (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_invalid_mode_action_arm_wall_and_budget_fail_in_argument_parser (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_unexecuted_budget_stage_exits8_and_tool_error_exits9 (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_cpu_input_proof_rejects_assistant_gold_and_exhausted_context (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_cpu_input_proof_uses_complete_candidate_free_actual_prompt_ids (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_invalid_actual_generation_accounting_is_rejected (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_missing_duplicate_unknown_or_changed_source_events_are_rejected (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_natural_monitor_requires32_source_questions_in_each_language (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_one_correct_question_does_not_make_the_bundle_correct (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_paired_relation_invalid_draws_and_incomplete_graphs_are_rejected (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_paired_relation_mixed_counterfactual_changes_have_expected25pp (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_paired_relation_positive_and_negative_changes_count_graphs_not_questions (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_small_evaluation_has_complete_relation_views_natural64_and_no_assistant_gold (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_summary_separates_exact_pair_success_natural_metrics_and_unadjudicated (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_output_escape_parent_traversal_and_link_are_rejected (scripts.test_p106b_relation_bind.OutputTests) ... ok
+test_twenty_mb_or_nonfinite_evidence_is_rejected_before_file_creation (scripts.test_p106b_relation_bind.OutputTests) ... ok
+test_write_is_utf8_newfile_only_and_preserves_existing_evidence (scripts.test_p106b_relation_bind.OutputTests) ... ok
+test_both_correct_rows_and_first_branches_are_separately_counted (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_branch_position_token_count_and_candidate_record_spec_mutations_are_rejected (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_missing_duplicate_nonfinite_or_changed_rank_source_is_rejected (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_positive_two_column_gaps_cannot_be_reported_as_two_correct_answer_rows (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_rank_specifications_recompute_exact_shared_prefix_branch_from_mock_records (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_denominator_counts_only_positive_records_and_two_questions_per_bundle (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_exposure_keeps_crossed_work_separate_from_positive_supervision (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_four_pass_schedule_proof_has192_updates_each_and_unique_epoch_hash (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_replay_only_denominator_and_zero_target_update (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_absent_stage_is_not_run_and_does_not_open_a_source (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_child_identity_binds_complete_training_receipt_code_corpus_checkpoint_and_body (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_failure_status_keeps_missing_resource_oom_error_and_interrupt_distinct (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_old_optimizer_embedding_decay_and_new_explicit_all_group_zero_are_observed (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_other_arm_receipt_and_swapped_answer_or_rank_lineages_are_rejected (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_parent_identity_checks_immutable_hash_without_loading_weights (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_source_checkpoint_case_core_or_training_lineage_mutations_are_rejected (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_valid_evaluation_receipt_binds_both_raw_manifest_lineages (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_check_only_never_launches_children (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+test_complete_receipt_is_phase_completion_not_quality (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+test_exact_phase_order_and_explicit_matching_arms (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+test_subprocess_stdin_is_disabled_and_failure_keeps_execute_not_run (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+
+----------------------------------------------------------------------
+Ran 81 tests in 3.082s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[PHASE_COMMAND] ["/home/uranus/miniforge3/envs/tlm_torch/bin/python", "-B", "-X", "utf8", "scripts/diag_p106b_relation_bind.py", "--mode", "preflight", "--execute"]
+[RELATION_PREFLIGHT] exact data/code/tokenizer/target proof; model/GPU not loaded; quality NOT_RUN
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[PHASE_COMMAND] ["/home/uranus/miniforge3/envs/tlm_torch/bin/python", "-B", "-X", "utf8", "scripts/diag_p106b_relation_bind.py", "--mode", "cost", "--arm", "contrast", "--execute", "--budget-hours", "4", "--max-wall-sec", "3600"]
+[RELATION_ACTUAL_OPTIMIZERS] [{"optimizer": "adamw", "group": 0, "lr": 5e-05, "weight_decay": 0.0, "tensors": 1, "parameters": 8388608}, {"optimizer": "adamw", "group": 1, "lr": 5e-05, "weight_decay": 0.0, "tensors": 71, "parameters": 43804}, {"optimizer": "muon", "group": 0, "lr": 0.0002, "weight_decay": 0.0, "tensors": 85, "parameters": 84836352}]
+W1019 01:39:29.308000 16964 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[RELATION_UPDATE] {"arm": "contrast", "update": 1, "epoch": 1, "correct_ce": 6.770586438885648, "row_contrast": 0.8547797203063965, "relation_questions": 8, "assistant_targets": 857, "lambda_weight": 0.1, "native_ce": 3.5056309700012207, "gradient_norm": 19.41644859313965, "clipped": true, "step_seconds": 37.064904598999874}
+[RELATION_UPDATE] {"arm": "contrast", "update": 2, "epoch": 1, "correct_ce": 6.686060232034594, "row_contrast": 0.7391824722290039, "relation_questions": 24, "assistant_targets": 701, "lambda_weight": 0.1, "native_ce": 3.310302734375, "gradient_norm": 21.407499313354492, "clipped": true, "step_seconds": 2.505733728999985}
+[RELATION_UPDATE] {"arm": "contrast", "update": 3, "epoch": 1, "correct_ce": 6.619767087365165, "row_contrast": 0.7955001990000407, "relation_questions": 24, "assistant_targets": 788, "lambda_weight": 0.1, "native_ce": 3.5831186771392822, "gradient_norm": 19.092206954956055, "clipped": true, "step_seconds": 2.49739280599988}
+[RELATION_UPDATE] {"arm": "contrast", "update": 4, "epoch": 1, "correct_ce": 6.522224672379032, "row_contrast": 0.8254606127738953, "relation_questions": 32, "assistant_targets": 682, "lambda_weight": 0.1, "native_ce": 3.7761847972869873, "gradient_norm": 16.09588623046875, "clipped": true, "step_seconds": 2.6300664000000324}
+[RELATION_UPDATE] {"arm": "contrast", "update": 5, "epoch": 1, "correct_ce": 6.309199825213973, "row_contrast": 0.8810929457346598, "relation_questions": 24, "assistant_targets": 628, "lambda_weight": 0.1, "native_ce": 3.8024744987487793, "gradient_norm": 15.246186256408691, "clipped": true, "step_seconds": 2.487943427999653}
+[RELATION_UPDATE] {"arm": "contrast", "update": 6, "epoch": 1, "correct_ce": 5.750216331707655, "row_contrast": 0.8391208648681641, "relation_questions": 24, "assistant_targets": 676, "lambda_weight": 0.1, "native_ce": 3.449059009552002, "gradient_norm": 18.92670249938965, "clipped": true, "step_seconds": 2.492481821000183}
+[RELATION_UPDATE] {"arm": "contrast", "update": 7, "epoch": 1, "correct_ce": 5.349302386293317, "row_contrast": 0.8149164199829102, "relation_questions": 40, "assistant_targets": 707, "lambda_weight": 0.1, "native_ce": 3.600149154663086, "gradient_norm": 16.45453643798828, "clipped": true, "step_seconds": 2.78025790699985}
+[RELATION_UPDATE] {"arm": "contrast", "update": 8, "epoch": 1, "correct_ce": 4.969007253037084, "row_contrast": 0.8087117671966553, "relation_questions": 16, "assistant_targets": 782, "lambda_weight": 0.1, "native_ce": 3.703019618988037, "gradient_norm": 15.76584243774414, "clipped": true, "step_seconds": 2.3608205549999184}
+[RELATION_FINAL] {"arm": "contrast", "status": "COST8_COMPLETE", "updates": 8, "checkpoint_written": false, "quality": "EVALUATION_PENDING"}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_RELATION_cost_contrast", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+[EVIDENCE_BOUNDARY] Phase completion is not correctness or model adoption.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.8분  (2026-10-19 01:40:15)
+==============================================================================

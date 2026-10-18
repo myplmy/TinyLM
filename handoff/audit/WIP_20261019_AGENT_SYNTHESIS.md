@@ -1,0 +1,37 @@
+# 2026-10-19 문헌·정·반의 독립 검토와 총괄 결정
+
+사용자가 지정한 gpt-6.1-sol/max 세 역할만 호출했다. 보조는 실제 모델·가중치·GPU·학습·파일 쓰기·Git·삭제·보호데이터 접근을 하지 않았다. 반 역할의 메모리 내 합성 CPU 계산과 문헌 역할의 웹검색은 수행했다. 실물 실행·자료·문서·Git은 총괄이 소유한다.
+
+## 정: 실제 답을 먼저 판독
+
+주 비교는 같은 지문 아래 두 질문 모두 맞춘 사실표 수다. 언어/view별 TEST64 사실표이며 한영·세 view는 같은 사실의 반복이라 독립 표본수로 합치지 않는다. CE에서 틀렸다가 대조에서 맞춘 것과 반대 퇴행을 함께 센다. 종료 정상/대상 정답을 교차해 틀린 이름을 짧게 말하고 끝내는 현상을 숨기지 않는다.
+
+같은 주어의 다른 역할, 다른 주어의 같은 역할, 질문 주어 복사, 복수 후보 나열, 맞는 이름+불필요한 문장의 유형을 보조 판독한다. 공식 exact는 기존 보수적 정규화를 유지한다. 자연 QA의 문자/token F1, 이미 관측한 개발 cohort, 자동 의미 미판정인 사용자6개, native32 FP32의 제한을 구별한다. TF 행/열/최초분기는 view0만이며 후보 없는 자유답을 대신하지 않는다.
+
+## 반: 중단할 확정 결함 없음, 운영·계측 보완
+
+동결 코드의 whole-update 양성 CE·관계 질문 분모, 교차답을 CE 정답으로 쓰지 않는 정책, lambda0에도 같은 교차 forward를 계산하는 경로를 읽기 검토했다. 보조가 실제 helper를 결합한 합성 tensor 16micro×8양성/392targets/32관계질문/native8192를 직접 기준식과 대조했다. lambda0 loss·gradient차0, lambda.1 loss차4.77e-7/gradient 최대차4.66e-10이었다. 이는 보조 보고이며 실제 TinyLM 본체/compile/CUDA/optimizer 검증이 아니다.
+
+mutable quant tensor를 두 forward 사이 교체하면 checkpoint backward가 깨질 수 있다는 의심은 최소 nonreentrant checkpoint CPU fixture에서 eager와 정확히 같아 재현하지 못했다. 확정 버그로 취급하지 않는다.
+
+- v1 JSON의 grad_max는 clip 전 전체 gradient L2 norm 최대다. 다른 driver의 원소별 최대 절댓값과 직접 비교하지 않고 max_preclip_global_l2_norm으로 설명한다.
+- CODE44 외 실제 의존 네 파일과 Python/PyTorch/CUDA 버전을 추가 운영 지문으로 동결한다. 기존 corpus/contract를 수정하지 않는다.
+- controller의 상대 timeout은 사용자 허가 마감시각이 아니다. 총괄이 최신 20일17시 KST 절대 한계를 따로 지키고 새 단계 시작 전에 비용/문서 예비를 확인한다.
+
+## 문헌: 가설을 분리하는 저비용 후보
+
+총괄도 DisentQA 원문 §2.2~3.4·4.1~4.3을 확인했다. 같은 질문 아래 문맥의 정답 entity를 바꾸고 gold를 바꾸는 자료에서 착안할 수 있다. 원형은 gold 문맥/T5-770M·11B이며 TinyLM의 성공 근거가 아니다. 현재 generator도 이미 이름·배정·사실순서를 무작위화하므로 질문-only shortcut을 실제 실패 원인으로 단정하지 않는다.
+
+- A: 역할값 교환 문맥을 같은 질문으로 읽는 별도 후행 평가. 현재 시험128 한영묶음에서 추가256첫답/모델을 기록하고 원문/교환문 모두 정답·이전 답 고수·순서 불변을 분리한다. 실제 원답 이후 조건부 검토다.
+- B: 물은 사실 edge만 제거하고 다른 사람·역할은 남긴 코드 검증 자료. 답할 수 있는 질문의 성능과 과잉 거절을 동시에 본다. 아직 미구현이며 기존 학습에 섞지 않는다.
+- C: 내용과 현재 역할 연결을 분리하는 작은 표현공간은 장기 가설이다. 동일 token의 hidden을 문맥 무관하게 모두 당기는 손실은 연결 정보를 지울 수 있다. 반사실로 답이 바뀐 두 문맥에 출력 KL 불변성을 요구하지 않는다.
+
+현재 group_id는 facts hash이므로 값교환 시 split도 바뀐다. 후속에는 사전 parent-family ID로 번역·교환·질문/어순 view를 같은 split에 묶고 타 parent 사이 실제 graph 중복도 검사해야 한다. 같은 additive CE의 같은 예제를 같은 update에서 단순히 pair 순서만 바꾸는 것은 gradient 합을 바꾸지 않으므로 새 방법이라고 주장하지 않는다.
+
+## 총괄의 현재 결정
+
+1. 기존 선택 A의 동결 v1은 수정하지 않고 스모크→두 비용8→768회 두팔→실제답/원형검산을 먼저 수행한다.
+2. 실제 모델 결과를 기다리며 후보 점수나 합성 CPU만으로 개선을 선언하지 않는다.
+3. 후속 문맥개입/자료 변경은 별도 namespace·계획·독립 분모와 실측 비용으로만 연다. 현재 보류된 다른 연구나 75M 부족을 자동 해소하지 않는다.
+
+원문: [DisentQA](https://aclanthology.org/2023.acl-long.559.pdf), [Binding-ID](https://arxiv.org/pdf/2310.17191), [과제 다양성](https://proceedings.neurips.cc/paper_files/paper/2023/file/2e10b2c2e1aa4f8083c37dfe269873f8-Paper-Conference.pdf). 문헌별 크기·전제·실험 차이는 실제 후속 설계에서 다시 대조한다.
