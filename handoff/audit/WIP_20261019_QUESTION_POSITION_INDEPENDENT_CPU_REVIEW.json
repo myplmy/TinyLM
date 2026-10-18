@@ -1,0 +1,399 @@
+{
+  "schema": "P106B_QUESTION_POSITION_INDEPENDENT_CPU_REVIEW_V1",
+  "date_kst": "2026-10-19",
+  "tag": "p106b_question_position_v1_s1337",
+  "status": "FINAL_FROZEN_CODE_SYNTHETIC65_PASS_NO_INDEPENDENT_REAL_SOURCE_OR_MODEL_RUN",
+  "작성자": "oct19_antithesis",
+  "범위": {
+    "현재위임": "Stage4es/Scope와 신규 두 파일을 비판 검토하고 순수 합성 CPU 회귀만 수행한다. 실물 source/tokenizer/가중치 읽기·실모델생성/forward·GPU 초기화·네트워크·기존 파일쓰기·Git·새 agent는0이다.",
+    "Torch권한명확화": "초기 wrapper는 Torch import 자체와 stdin/devnull O_RDWR까지 금지했으나 총괄이 이번 CPU 검산에서 Torch 라이브러리 import 및 stdin용/devnull을 명시적으로 허용했다. 학습가중치읽기/load/save·실모델생성/forward·GPU초기화 금지는 유지했다.",
+    "임시wrapper만": "공유 guard·환경설정·프로젝트 코드 파일을 수정하지 않았다. stdin 임시 Python 프로세스 안에서만 guard와 patch를 적용했다.",
+    "기록추가위임": "현재의 감사 JSON 정확히 한 파일을 추가 작성하도록 총괄이 허가했다. 기존 실물 파일을 다시 열지 않고 메모리에 보존된 명령/출력을 사용한다.",
+    "root와분리": "root의 실제 CPU0W/기존CQ256 검산은 뒤의 별도 전달근거 절에만 기록한다. 이 agent의 실제 모델/원형 검증 성공으로 섞지 않는다.",
+    "기록시점쓰기구별": "세 wrapper 실행 당시 실제 파일쓰기0이다. 그 뒤 현재 감사 파일 한 개만 apply_patch로 생성한다."
+  },
+  "동결코드": {
+    "final_sha256": {
+      "scripts/diag_p106b_question_position.py": "ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393",
+      "scripts/test_p106b_question_position.py": "C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9"
+    },
+    "measurement": "최종 정상 CPU 검산 명령에서 실행 전후 두 실제 코드 파일의 바이트 SHA를 모두 직접 계산해 위 값과 exact 대조했다.",
+    "code_changed_by_this_agent": 0,
+    "actual_freeze_owner": "root가 실물 동결 후 추가 코드 수정 금지를 통보했다. 이 agent는 두 파일을 수정하지 않았다.",
+    "검토범위": "최초 AC1A…/123A… 판 전체와 최종 canonical 수리·사전고정 stdout8root 추가분, 기존 provider의 schema/path/생성helper 코드 및 Stage4es/Scope를 읽었다."
+  },
+  "정상최종CPU결과": {
+    "exact_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 timeout 60 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nimport hashlib,json,os,sys,time,unittest\nfrom pathlib import Path\nROOT=Path('/home/uranus/tinyLM');denied=[];real_data_reads=[];physical_writes=[];child_commands=[];start=time.perf_counter()\ntorch_library_imports=[];devnull_opens=[];blocked_prefixes=tuple(str(ROOT/p)+'/' for p in ('datasets','data_cache','HF','runs','test_result/evidence'))\ndef guard(event,args):\n if event=='import' and (args[0]=='torch' or args[0].startswith('torch.')):\n  torch_library_imports.append(args[0])\n if event=='open':\n  filename=args[0]\n  if isinstance(filename,(str,bytes,os.PathLike)):\n   name=os.fsdecode(filename);mode=args[1];flags=args[2] if len(args)>2 else 0\n   writing=(isinstance(mode,str) and any(c in mode for c in 'wax+')) or (isinstance(flags,int) and bool(flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND)))\n   if writing and name!='/dev/null':physical_writes.append(name);raise AssertionError('No actual filesystem writes permitted')\n   if name=='/dev/null':devnull_opens.append(name)\n   if any(name.startswith(p) for p in blocked_prefixes) or name.endswith(('.pt','.safetensors')):\n    real_data_reads.append(name);raise AssertionError('Actual corpus/tokenizer/checkpoint reads forbidden')\n if event in ('socket.connect','socket.bind','socket.getaddrinfo'):\n  denied.append([event]);raise AssertionError('Network forbidden')\n if event=='subprocess.Popen':\n  argv=args[1];child_commands.append(argv)\n  if not (isinstance(argv,list) and 'scripts/diag_p106b_question_position.py' in ' '.join(argv) and ('--help' in argv or '--check-only' in argv) and '--execute' not in argv):\n   denied.append([event,str(argv)]);raise AssertionError('Only source-free help/check-only child is permitted')\nimport tempfile\ntempfile.tempdir='/tmp'\nassert Path(tempfile.tempdir).is_dir()\nsys.addaudithook(guard)\nimport torch\nfrom contextlib import ExitStack\nfrom unittest.mock import patch\nmodel_or_weight_calls=[]\ndef forbidden(name):\n def block(*args,**kwargs):\n  model_or_weight_calls.append(name);raise AssertionError('Forbidden actual operation: '+name)\n return block\nstack=ExitStack()\nfor owner,name in ((torch,'load'),(torch,'save'),(torch.nn.Module,'__init__'),(torch.nn.Module,'_call_impl'),(torch.cuda,'_lazy_init')):\n stack.enter_context(patch.object(owner,name,side_effect=forbidden(name)))\nexpected={'scripts/diag_p106b_question_position.py':'ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393','scripts/test_p106b_question_position.py':'C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9'}\ndef hashes():return {p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest().upper() for p in expected}\nbefore=hashes();assert before==expected\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106b_question_position')\nresult=unittest.TextTestRunner(verbosity=1).run(suite)\nafter=hashes();assert after==expected\nsummary=dict(status='INDEPENDENT_SYNTHETIC_CPU_ONLY',tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),elapsed_seconds=time.perf_counter()-start,source_sha256_before=before,source_sha256_after=after,denied_actions=denied,actual_source_tokenizer_checkpoint_reads=real_data_reads,physical_write_attempts=physical_writes,source_free_child_count=len(child_commands),torch_imported='torch' in sys.modules,torch_library_import_only=True,forbidden_model_weight_or_cuda_calls=model_or_weight_calls,real_model_created=False,gpu_initialized=torch.cuda.is_initialized(),gpu_used=False,network_used=False,files_written=0,stdin_devnull_open_count=len(devnull_opens))\nprint(json.dumps(summary,ensure_ascii=False,indent=2))\nraise SystemExit(0 if result.wasSuccessful() and not denied and not real_data_reads and not physical_writes and not model_or_weight_calls and not torch.cuda.is_initialized() else 1)\nPY",
+    "tool_chunks": {
+      "dispatch": {
+        "chunk_id": "8c74fd",
+        "wall_time_seconds": 1.001758308,
+        "session_id": 78200,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "intermediate": {
+        "chunk_id": "503761",
+        "wall_time_seconds": 5.000981174,
+        "session_id": 78200,
+        "original_token_count": 11,
+        "output": "..........................................."
+      },
+      "completion": {
+        "chunk_id": "e9a631",
+        "wall_time_seconds": 0.00001434,
+        "exit_code": 0,
+        "original_token_count": 297,
+        "output": "......................\n----------------------------------------------------------------------\nRan 65 tests in 8.703s\n\nOK\n{\n  \"status\": \"INDEPENDENT_SYNTHETIC_CPU_ONLY\",\n  \"tests\": 65,\n  \"failures\": 0,\n  \"errors\": 0,\n  \"elapsed_seconds\": 9.61908145399866,\n  \"source_sha256_before\": {\n    \"scripts/diag_p106b_question_position.py\": \"ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393\",\n    \"scripts/test_p106b_question_position.py\": \"C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9\"\n  },\n  \"source_sha256_after\": {\n    \"scripts/diag_p106b_question_position.py\": \"ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393\",\n    \"scripts/test_p106b_question_position.py\": \"C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9\"\n  },\n  \"denied_actions\": [],\n  \"actual_source_tokenizer_checkpoint_reads\": [],\n  \"physical_write_attempts\": [],\n  \"source_free_child_count\": 5,\n  \"torch_imported\": true,\n  \"torch_library_import_only\": true,\n  \"forbidden_model_weight_or_cuda_calls\": [],\n  \"real_model_created\": false,\n  \"gpu_initialized\": false,\n  \"gpu_used\": false,\n  \"network_used\": false,\n  \"files_written\": 0,\n  \"stdin_devnull_open_count\": 14\n}\n"
+      }
+    },
+    "chunks_note": "정상 진행 점은 중간43개와 마지막22개이며 최종 Ran65/OK/JSON이 판정 근거다. 중간 chunk는 이 대화에 반환된 원문을 그대로 보존했으며 새 프로세스를 실행해 재생성한 것이 아니다.",
+    "parsed_output": {
+      "status": "INDEPENDENT_SYNTHETIC_CPU_ONLY",
+      "tests": 65,
+      "failures": 0,
+      "errors": 0,
+      "elapsed_seconds": 9.61908145399866,
+      "source_sha256_before": {
+        "scripts/diag_p106b_question_position.py": "ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393",
+        "scripts/test_p106b_question_position.py": "C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9"
+      },
+      "source_sha256_after": {
+        "scripts/diag_p106b_question_position.py": "ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393",
+        "scripts/test_p106b_question_position.py": "C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9"
+      },
+      "denied_actions": [],
+      "actual_source_tokenizer_checkpoint_reads": [],
+      "physical_write_attempts": [],
+      "source_free_child_count": 5,
+      "torch_imported": true,
+      "torch_library_import_only": true,
+      "forbidden_model_weight_or_cuda_calls": [],
+      "real_model_created": false,
+      "gpu_initialized": false,
+      "gpu_used": false,
+      "network_used": false,
+      "files_written": 0,
+      "stdin_devnull_open_count": 14
+    },
+    "observed_unittest_summary": {
+      "tests": 65,
+      "failures": 0,
+      "errors": 0,
+      "unittest_seconds": 8.703,
+      "full_wrapper_elapsed_seconds": 9.61908145399866
+    },
+    "guard0_정의": "guard 함수나 audit hook 자체의 총호출이0이라는 뜻이 아니다. 아래 금지대상 동작의 시도/차단 기록이 모두 비어 있다는 뜻이다.",
+    "forbidden_guard_calls": {
+      "model_weight_cuda": [],
+      "actual_source_tokenizer_checkpoint_reads": [],
+      "physical_file_write_attempts": [],
+      "denied_actions": []
+    },
+    "torch_library_imported": true,
+    "torch_library_import_only": true,
+    "gpu_initialized": false,
+    "gpu_used": false,
+    "network_used": false,
+    "files_written_during_test": 0,
+    "source_free_cli_children": 5,
+    "stdin_devnull_open_count": 14,
+    "child_scope": "실제로 spawn한 자식은 현재 driver의 --help 또는 --check-only 다섯 개뿐이다. 실제 --execute 자식/준비/평가/모델 로드는 금지했고 나머지 pipeline/worker 테스트는 합성 fixture/mock이다.",
+    "not_quality_pass": "65개는 합성 입력·계약·흐름의 회귀다. 실제 BPE512 입력/source81/CP/새512답·원점수·모델품질을 이 agent가 검증했다는 뜻이 아니다."
+  },
+  "과도wrapper실패보존": {
+    "판정": "실패 사실과 원문은 유지한다. 정상 코드의 모델/실험/품질 실패 또는 최종65 회귀 실패에 합산하지 않는다.",
+    "실행1_Torchimport와DEVNULL차단": {
+      "exact_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 timeout 60 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nimport hashlib,json,os,sys,time,unittest\nfrom pathlib import Path\nROOT=Path('/home/uranus/tinyLM');denied=[];real_data_reads=[];physical_writes=[];child_commands=[];start=time.perf_counter()\nblocked_prefixes=tuple(str(ROOT/p)+'/' for p in ('datasets','data_cache','HF','runs','test_result/evidence'))\ndef guard(event,args):\n if event=='import' and (args[0]=='torch' or args[0].startswith('torch.')):\n  denied.append(['import',args[0]]);raise AssertionError('Torch import forbidden in this independent CPU audit')\n if event=='open':\n  filename=args[0]\n  if isinstance(filename,(str,bytes,os.PathLike)):\n   name=os.fsdecode(filename);mode=args[1];flags=args[2] if len(args)>2 else 0\n   writing=(isinstance(mode,str) and any(c in mode for c in 'wax+')) or (isinstance(flags,int) and bool(flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND)))\n   if writing:physical_writes.append(name);raise AssertionError('No actual filesystem writes permitted')\n   if any(name.startswith(p) for p in blocked_prefixes) or name.endswith(('.pt','.safetensors')):\n    real_data_reads.append(name);raise AssertionError('Actual corpus/tokenizer/checkpoint reads forbidden')\n if event in ('socket.connect','socket.bind','socket.getaddrinfo'):\n  denied.append([event]);raise AssertionError('Network forbidden')\n if event=='subprocess.Popen':\n  argv=args[1];child_commands.append(argv)\n  if not (isinstance(argv,list) and 'scripts/diag_p106b_question_position.py' in ' '.join(argv) and ('--help' in argv or '--check-only' in argv) and '--execute' not in argv):\n   denied.append([event,str(argv)]);raise AssertionError('Only source-free help/check-only child is permitted')\nsys.addaudithook(guard)\nexpected={'scripts/diag_p106b_question_position.py':'ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393','scripts/test_p106b_question_position.py':'C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9'}\ndef hashes():return {p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest().upper() for p in expected}\nbefore=hashes();assert before==expected\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106b_question_position')\nresult=unittest.TextTestRunner(verbosity=1).run(suite)\nafter=hashes();assert after==expected\nsummary=dict(status='INDEPENDENT_SYNTHETIC_CPU_ONLY',tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),elapsed_seconds=time.perf_counter()-start,source_sha256_before=before,source_sha256_after=after,denied_actions=denied,actual_source_tokenizer_checkpoint_reads=real_data_reads,physical_write_attempts=physical_writes,source_free_child_count=len(child_commands),torch_imported='torch' in sys.modules,real_model_created=False,gpu_used=False,network_used=False,files_written=0)\nprint(json.dumps(summary,ensure_ascii=False,indent=2))\nraise SystemExit(0 if result.wasSuccessful() and not denied and not real_data_reads and not physical_writes else 1)\nPY",
+      "tool_chunks": {
+        "dispatch": {
+          "chunk_id": "8916eb",
+          "wall_time_seconds": 1.001626027,
+          "session_id": 46522,
+          "original_token_count": 4,
+          "output": "......F......F.F"
+        },
+        "completion": {
+          "chunk_id": "941162",
+          "wall_time_seconds": 0.000013892,
+          "exit_code": 1,
+          "original_token_count": 9727,
+          "output": "F....FFFFFFFFFFFFFFF.FF......F............FF.FFFF\n======================================================================\nFAIL: test_direct_absolute_entry_from_other_cwd_help_and_all_check_modes (scripts.test_p106b_question_position.BudgetAndEntryTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 731, in test_direct_absolute_entry_from_other_cwd_help_and_all_check_modes\n    result = subprocess.run([sys.executable, '-B', '-X', 'utf8', driver, *argv],\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py\", line 503, in run\n    with Popen(*popenargs, **kwargs) as process:\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py\", line 837, in __init__\n    errread, errwrite) = self._get_handles(stdin, stdout, stderr)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py\", line 1619, in _get_handles\n    p2cread = self._get_devnull()\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py\", line 1082, in _get_devnull\n    self._devnull = os.open(os.devnull, os.O_RDWR)\n  File \"<stdin>\", line 13, in guard\nAssertionError: No actual filesystem writes permitted\n\n======================================================================\nFAIL: test_worker_actual_completion_error_and_interrupt_record_active_time (scripts.test_p106b_question_position.BudgetAndEntryTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 615, in test_worker_actual_completion_error_and_interrupt_record_active_time\n    from scripts import p106b_gate_runtime as runtime\n  File \"/home/uranus/tinyLM/scripts/p106b_gate_runtime.py\", line 17, in <module>\n    from scripts.diag_p106b_online_rate5 import (MODEL, MODEL_SHA256, SERVER, STUDENT,\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_online_rate5.py\", line 31, in <module>\n    from scripts.build_p106b_multisource_deck import teacher_admission  # noqa: E402\n  File \"/home/uranus/tinyLM/scripts/build_p106b_multisource_deck.py\", line 33, in <module>\n    from tinylm.data.sft import conversation_split_key, load_canonical  # noqa: E402\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_case_manifest_and_public_summary_tamper_are_detected (scripts.test_p106b_question_position.CpuLifecycleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 865, in test_case_manifest_and_public_summary_tamper_are_detected\n    self.lifecycle(mutate)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 838, in lifecycle\n    self.assertEqual(d.prepare(), 0)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 677, in prepare\n    or any(c['messages'] != [dict(role='user', content=old_user(c['context'], c['question'], c['language'], 0))]\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 677, in <genexpr>\n    or any(c['messages'] != [dict(role='user', content=old_user(c['context'], c['question'], c['language'], 0))]\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_real_prepare_read_prepared_functions_share_wire_contract_without_files (scripts.test_p106b_question_position.CpuLifecycleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 855, in test_real_prepare_read_prepared_functions_share_wire_contract_without_files\n    self.lifecycle()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 838, in lifecycle\n    self.assertEqual(d.prepare(), 0)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 677, in prepare\n    or any(c['messages'] != [dict(role='user', content=old_user(c['context'], c['question'], c['language'], 0))]\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 677, in <genexpr>\n    or any(c['messages'] != [dict(role='user', content=old_user(c['context'], c['question'], c['language'], 0))]\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_both_reports_all16_lane_receipts_two_cps_and1536_source_equal (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 941, in test_both_reports_all16_lane_receipts_two_cps_and1536_source_equal\n    fixture = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 874, in fixture\n    event['messages'] = canonical_source_messages(event, event['view'])\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_canonical_and_old_string_prompts_and_new_cq_are_byte_identical (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 965, in test_canonical_and_old_string_prompts_and_new_cq_are_byte_identical\n    canonical = canonical_source_messages(row, view)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_canonical_text_block_source_full_roundtrip_is_lossless (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 950, in test_canonical_text_block_source_full_roundtrip_is_lossless\n    fixture = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 874, in fixture\n    event['messages'] = canonical_source_messages(event, event['view'])\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_changed_lane_body_or_manifest_stops_before_selection (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 1016, in test_changed_lane_body_or_manifest_stops_before_selection\n    fixture = self.fixture(); provider = fixture[0][0]\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 874, in fixture\n    event['messages'] = canonical_source_messages(event, event['view'])\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_fixed_readback_digest_and_loaded_checkpoint_bytes_are_bound (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 1008, in test_fixed_readback_digest_and_loaded_checkpoint_bytes_are_bound\n    fixture = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 874, in fixture\n    event['messages'] = canonical_source_messages(event, event['view'])\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_source_alias_or_question_difference_across_models_is_rejected (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 995, in test_source_alias_or_question_difference_across_models_is_rejected\n    fixture = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 874, in fixture\n    event['messages'] = canonical_source_messages(event, event['view'])\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_source_message_block_tamper_and_same_prompt_shape_changes_rejected (scripts.test_p106b_question_position.FullSourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 978, in test_source_message_block_tamper_and_same_prompt_shape_changes_rejected\n    fixture = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 874, in fixture\n    event['messages'] = canonical_source_messages(event, event['view'])\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 64, in canonical_source_messages\n    body = d.old_user(row['context'], row['question'], row['language'], view)\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_actual_collection_path_runs512_pure_receipts_without_model (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 286, in test_actual_collection_path_runs512_pure_receipts_without_model\n    cases, originals, expected = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_article_paired_is_within_cp_all_roots_and_deterministic (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 429, in test_article_paired_is_within_cp_all_roots_and_deterministic\n    _, _, events = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_collection_rejects_runtime_prefix_before_any_new_answer (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 300, in test_collection_rejects_runtime_prefix_before_any_new_answer\n    cases, originals, _ = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_count_sum_is_stable_after_raw_order_permutation (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 424, in test_count_sum_is_stable_after_raw_order_permutation\n    cases, originals, events = fresh_events(wrong=True)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_cq_new_answer_and_receipt_mismatch_preserved_and_hold (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 352, in test_cq_new_answer_and_receipt_mismatch_preserved_and_hold\n    cases, originals, events = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_free512_count_and_original_cq_receipt_exact_agreement (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 306, in test_free512_count_and_original_cq_receipt_exact_agreement\n    cases, originals, events = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_gold_source_messages_counts_and_scores_tamper_rejected (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 370, in test_gold_source_messages_counts_and_scores_tamper_rejected\n    cases, originals, clean = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_legitimate_empty_answer_is_not_missing (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 327, in test_legitimate_empty_answer_is_not_missing\n    cases, originals, events = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_missing_is_hold_duplicate_and_other_endpoint_are_error (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 316, in test_missing_is_hold_duplicate_and_other_endpoint_are_error\n    cases, originals, events = fresh_events()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_numeric_alias_local_rule_is_not_silently_corrected (scripts.test_p106b_question_position.GenerationAndRecountTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 419, in test_numeric_alias_local_rule_is_not_silently_corrected\n    self.assertEqual(d.score('0.25%', ['.25%'], 'en'), dict(em=0., f1=0., raw_exact=0.))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_cq_byte_identical_to_old_view0_in_both_languages (scripts.test_p106b_question_position.RenderAndSelectionTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 180, in test_cq_byte_identical_to_old_view0_in_both_languages\n    self.assertEqual(body, d.old_user(row['context'], row['question'], language, 0))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 165, in old_user\n    from scripts.p106b_night_qa_data import _user\n  File \"/home/uranus/tinyLM/scripts/p106b_night_qa_data.py\", line 20, in <module>\n    from tinylm.data.sft import encode_conversation\n  File \"/home/uranus/tinyLM/tinylm/data/__init__.py\", line 3, in <module>\n    from .loader import Loader\n  File \"/home/uranus/tinyLM/tinylm/data/loader.py\", line 7, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_actual_readback_prints_eight_questions_for_each_complete_endpoint (scripts.test_p106b_question_position.StdoutExampleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 544, in test_actual_readback_prints_eight_questions_for_each_complete_endpoint\n    cases, _, events, _, manifest, selected = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 444, in fixture\n    cases, originals, events = fresh_events(endpoint)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_answers_scores_and_finish_changes_cannot_change_display_root_selection (scripts.test_p106b_question_position.StdoutExampleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 520, in test_answers_scores_and_finish_changes_cannot_change_display_root_selection\n    cases, _, events, directory, manifest, selected = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 444, in fixture\n    cases, originals, events = fresh_events(endpoint)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_empty_wrong_and_max_new_are_shown_verbatim_without_replacement (scripts.test_p106b_question_position.StdoutExampleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 484, in test_empty_wrong_and_max_new_are_shown_verbatim_without_replacement\n    cases, originals, events, directory, _, selected = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 444, in fixture\n    cases, originals, events = fresh_events(endpoint)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_full_question_four_answers_finish_and_multishard_raw_locators (scripts.test_p106b_question_position.StdoutExampleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 462, in test_full_question_four_answers_finish_and_multishard_raw_locators\n    cases, _, events, directory, manifest, selected = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 444, in fixture\n    cases, originals, events = fresh_events(endpoint)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_helper_changes_no_raw_scores_cases_or_corpus_selection_sha (scripts.test_p106b_question_position.StdoutExampleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 508, in test_helper_changes_no_raw_scores_cases_or_corpus_selection_sha\n    cases, _, events, directory, manifest, selected = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 444, in fixture\n    cases, originals, events = fresh_events(endpoint)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n======================================================================\nFAIL: test_missing_duplicate_manifest_or_precommitted_selection_tamper_rejected (scripts.test_p106b_question_position.StdoutExampleTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 530, in test_missing_duplicate_manifest_or_precommitted_selection_tamper_rejected\n    cases, _, events, directory, manifest, selected = self.fixture()\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 444, in fixture\n    cases, originals, events = fresh_events(endpoint)\n  File \"/home/uranus/tinyLM/scripts/test_p106b_question_position.py\", line 89, in fresh_events\n    events.append(d.event_for_case(case, endpoint, answer, meta, original))\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 783, in event_for_case\n    generation_protocol=PROTOCOL, scores=score(answer, case['aliases'], case['language']),\n  File \"/home/uranus/tinyLM/scripts/diag_p106b_question_position.py\", line 155, in score\n    from scripts.p106b_night_learning import qa_scores\n  File \"/home/uranus/tinyLM/scripts/p106b_night_learning.py\", line 10, in <module>\n    import torch\n  File \"<stdin>\", line 7, in guard\nAssertionError: Torch import forbidden in this independent CPU audit\n\n----------------------------------------------------------------------\nRan 65 tests in 2.952s\n\nFAILED (failures=28)\n{\n  \"status\": \"INDEPENDENT_SYNTHETIC_CPU_ONLY\",\n  \"tests\": 65,\n  \"failures\": 28,\n  \"errors\": 0,\n  \"elapsed_seconds\": 3.0026217119993817,\n  \"source_sha256_before\": {\n    \"scripts/diag_p106b_question_position.py\": \"ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393\",\n    \"scripts/test_p106b_question_position.py\": \"C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9\"\n  },\n  \"source_sha256_after\": {\n    \"scripts/diag_p106b_question_position.py\": \"ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393\",\n    \"scripts/test_p106b_question_position.py\": \"C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9\"\n  },\n  \"denied_actions\": [\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ],\n    [\n      \"import\",\n      \"torch\"\n    ]\n  ],\n  \"actual_source_tokenizer_checkpoint_reads\": [],\n  \"physical_write_attempts\": [\n    \"/dev/null\"\n  ],\n  \"source_free_child_count\": 0,\n  \"torch_imported\": false,\n  \"real_model_created\": false,\n  \"gpu_used\": false,\n  \"network_used\": false,\n  \"files_written\": 0\n}\n"
+        }
+      },
+      "parsed_output": {
+        "status": "INDEPENDENT_SYNTHETIC_CPU_ONLY",
+        "tests": 65,
+        "failures": 28,
+        "errors": 0,
+        "elapsed_seconds": 3.0026217119993817,
+        "source_sha256_before": {
+          "scripts/diag_p106b_question_position.py": "ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393",
+          "scripts/test_p106b_question_position.py": "C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9"
+        },
+        "source_sha256_after": {
+          "scripts/diag_p106b_question_position.py": "ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393",
+          "scripts/test_p106b_question_position.py": "C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9"
+        },
+        "denied_actions": [
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ],
+          [
+            "import",
+            "torch"
+          ]
+        ],
+        "actual_source_tokenizer_checkpoint_reads": [],
+        "physical_write_attempts": [
+          "/dev/null"
+        ],
+        "source_free_child_count": 0,
+        "torch_imported": false,
+        "real_model_created": false,
+        "gpu_used": false,
+        "network_used": false,
+        "files_written": 0
+      },
+      "actual_process_outcome": {
+        "returncode": 1,
+        "tests": 65,
+        "failures": 28,
+        "errors": 0
+      },
+      "classification": "27개 Torch import 차단과1개 subprocess stdin용/devnull O_RDWR 차단 때문에 wrapper가 합성 시험을 막았다. 실물자료·가중치·실모델·GPU·실제 파일쓰기0을 유지했고 두 코드 SHA도 전후 동일했다.",
+      "library_import_chain_examples": [
+        "old_user -> p106b_night_qa_data -> tinylm.data.sft -> tinylm.data.__init__ -> loader -> import torch",
+        "score -> p106b_night_learning -> import torch",
+        "gate_runtime -> 기존 helper import chain -> import torch"
+      ],
+      "devnull_scope": "/dev/null의 O_RDWR open은 실제 연구파일 쓰기가 아니다. 초기 wrapper가 이를 너무 넓게 write로 분류했다.",
+      "raw_preservation": "dispatch.output과completion.output을 이 순서로 잇는 것이 첫 실행의 원문 출력이다. 원문 결과를 success0으로 바꾸거나 실패를 삭제하지 않는다."
+    },
+    "실행2_Torchbootstrap임시파일탐색차단": {
+      "exact_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 timeout 60 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nimport hashlib,json,os,sys,time,unittest\nfrom pathlib import Path\nROOT=Path('/home/uranus/tinyLM');denied=[];real_data_reads=[];physical_writes=[];child_commands=[];start=time.perf_counter()\ntorch_library_imports=[];devnull_opens=[];blocked_prefixes=tuple(str(ROOT/p)+'/' for p in ('datasets','data_cache','HF','runs','test_result/evidence'))\ndef guard(event,args):\n if event=='import' and (args[0]=='torch' or args[0].startswith('torch.')):\n  torch_library_imports.append(args[0])\n if event=='open':\n  filename=args[0]\n  if isinstance(filename,(str,bytes,os.PathLike)):\n   name=os.fsdecode(filename);mode=args[1];flags=args[2] if len(args)>2 else 0\n   writing=(isinstance(mode,str) and any(c in mode for c in 'wax+')) or (isinstance(flags,int) and bool(flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND)))\n   if writing and name!='/dev/null':physical_writes.append(name);raise AssertionError('No actual filesystem writes permitted')\n   if name=='/dev/null':devnull_opens.append(name)\n   if any(name.startswith(p) for p in blocked_prefixes) or name.endswith(('.pt','.safetensors')):\n    real_data_reads.append(name);raise AssertionError('Actual corpus/tokenizer/checkpoint reads forbidden')\n if event in ('socket.connect','socket.bind','socket.getaddrinfo'):\n  denied.append([event]);raise AssertionError('Network forbidden')\n if event=='subprocess.Popen':\n  argv=args[1];child_commands.append(argv)\n  if not (isinstance(argv,list) and 'scripts/diag_p106b_question_position.py' in ' '.join(argv) and ('--help' in argv or '--check-only' in argv) and '--execute' not in argv):\n   denied.append([event,str(argv)]);raise AssertionError('Only source-free help/check-only child is permitted')\nsys.addaudithook(guard)\nimport torch\nfrom contextlib import ExitStack\nfrom unittest.mock import patch\nmodel_or_weight_calls=[]\ndef forbidden(name):\n def block(*args,**kwargs):\n  model_or_weight_calls.append(name);raise AssertionError('Forbidden actual operation: '+name)\n return block\nstack=ExitStack()\nfor owner,name in ((torch,'load'),(torch,'save'),(torch.nn.Module,'__init__'),(torch.nn.Module,'_call_impl'),(torch.cuda,'_lazy_init')):\n stack.enter_context(patch.object(owner,name,side_effect=forbidden(name)))\nexpected={'scripts/diag_p106b_question_position.py':'ECC1FB79C5DCE3A1D54E66B89C29C1E4837820EF87ADD8C4B653C78E1EF48393','scripts/test_p106b_question_position.py':'C533C7F1A5040C58B040A048815A54A41DE12E58629C47C292E3F519F24F99C9'}\ndef hashes():return {p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest().upper() for p in expected}\nbefore=hashes();assert before==expected\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106b_question_position')\nresult=unittest.TextTestRunner(verbosity=1).run(suite)\nafter=hashes();assert after==expected\nsummary=dict(status='INDEPENDENT_SYNTHETIC_CPU_ONLY',tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),elapsed_seconds=time.perf_counter()-start,source_sha256_before=before,source_sha256_after=after,denied_actions=denied,actual_source_tokenizer_checkpoint_reads=real_data_reads,physical_write_attempts=physical_writes,source_free_child_count=len(child_commands),torch_imported='torch' in sys.modules,torch_library_import_only=True,forbidden_model_weight_or_cuda_calls=model_or_weight_calls,real_model_created=False,gpu_initialized=torch.cuda.is_initialized(),gpu_used=False,network_used=False,files_written=0,stdin_devnull_open_count=len(devnull_opens))\nprint(json.dumps(summary,ensure_ascii=False,indent=2))\nraise SystemExit(0 if result.wasSuccessful() and not denied and not real_data_reads and not physical_writes and not model_or_weight_calls and not torch.cuda.is_initialized() else 1)\nPY",
+      "raw_tool_result": {
+        "chunk_id": "b49dc9",
+        "wall_time_seconds": 0.94192362,
+        "exit_code": 1,
+        "original_token_count": 925,
+        "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 24, in <module>\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/__init__.py\", line 2204, in <module>\n    from torch import _VF as _VF, functional as functional  # usort: skip\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/functional.py\", line 8, in <module>\n    import torch.nn.functional as F\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/__init__.py\", line 8, in <module>\n    from torch.nn.modules import *  # usort: skip # noqa: F403\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/__init__.py\", line 1, in <module>\n    from .module import Module  # usort: skip\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 17, in <module>\n    from torch.utils._python_dispatch import is_traceable_wrapper_subclass\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/__init__.py\", line 8, in <module>\n    from torch.utils import (\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/__init__.py\", line 1, in <module>\n    from torch.utils.data.dataloader import (\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/dataloader.py\", line 26, in <module>\n    import torch.utils.data.graph_settings\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/graph_settings.py\", line 8, in <module>\n    from torch.utils.data.datapipes.iter.sharding import (\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/datapipes/__init__.py\", line 1, in <module>\n    from torch.utils.data.datapipes import dataframe as dataframe, iter as iter, map as map\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/datapipes/dataframe/__init__.py\", line 1, in <module>\n    from torch.utils.data.datapipes.dataframe.dataframes import (\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/datapipes/dataframe/dataframes.py\", line 4, in <module>\n    from torch.utils.data.datapipes._decorator import functional_datapipe\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/datapipes/_decorator.py\", line 8, in <module>\n    from torch.utils.data.datapipes.datapipe import IterDataPipe, MapDataPipe\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/data/datapipes/datapipe.py\", line 17, in <module>\n    dill = import_dill()\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/_import_utils.py\", line 30, in import_dill\n    import dill\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/dill/__init__.py\", line 33, in <module>\n    from .session import (\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/dill/session.py\", line 25, in <module>\n    TEMPDIR = pathlib.PurePath(tempfile.gettempdir())\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/tempfile.py\", line 315, in gettempdir\n    return _os.fsdecode(_gettempdir())\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/tempfile.py\", line 308, in _gettempdir\n    tempdir = _get_default_tempdir()\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/tempfile.py\", line 203, in _get_default_tempdir\n    fd = _os.open(filename, _bin_openflags, 0o600)\n  File \"<stdin>\", line 13, in guard\nAssertionError: No actual filesystem writes permitted\n"
+      },
+      "actual_process_outcome": {
+        "returncode": 1,
+        "unit_tests_started": false,
+        "unit_test_count": null
+      },
+      "classification": "Torch 라이브러리 import를 허용한 뒤 dill이 tempfile.gettempdir의 쓰기 가능성 probe를 시도했고, os.open 전에 임시 wrapper의 실제 파일쓰기 금지 guard가 중단했다. 65회귀나 모델 계산이 시작돼 실패한 것이 아니다.",
+      "before_after_hash_scope": "이 명령은 Torch import 뒤에 두 코드 hash 단계가 있으므로 그 hash 단계/모델 guard patch 설치까지 도달하지 않았다. 없는 hash 관측 또는65시험 결과를 꾸며 넣지 않는다.",
+      "filesystem_scope": "실제 임시파일 생성 전에 guard가 raise했다. 임시파일 target의 정확한 basename은 출력되지 않았으므로 기록하지 않는다."
+    },
+    "정상wrapper의좁은변경": [
+      "Torch import는 라이브러리 로딩으로만 허용하고 실제 torch.load/save, nn.Module 생성/forward, CUDA lazy-init은 patch로 차단했다.",
+      "stdin의/dev/null open만 허용하고 실제 파일 쓰기 금지는 유지했다.",
+      "Torch/dill bootstrap의 불필요한 tempdir 쓰기탐색을 없애기 위해 해당 프로세스의 tempfile.tempdir만 기존/tmp로 지정했다. 공용 설정/환경파일/guard 파일 변경은0이다.",
+      "실물 datasets/data_cache/HF/runs/evidence 및 .pt/.safetensors open, 네트워크를 계속 차단했다.",
+      "정상 프로세스가 끝나면 임시 patch·tempfile 캐시는 사라지며 공유 프로젝트나 다른 실행에 적용되지 않는다."
+    ]
+  },
+  "읽기검토경계": {
+    "추가확정차단결함": "최종 ECC1…/C533…에서 추가 확정 차단 결함은 찾지 못했다. 결함 부재 또는 실물 동작 보장은 아니다.",
+    "canonical수리": {
+      "원문제": "최초 코드가 raw의 canonical text-block(list content)와 기대 string content를 직접 비교해 serialized prompt가 같아도 거부했다. root가 실제 한 행으로 재현해 수리를 배정했다.",
+      "최종수리": "원형을 변환하지 않고 기대 messages에만 기존 normalize를 적용한다. canonical1536×2 source fixture와 기존 generation_proof/summarize_natural helper 합성 왕복·변조거부 회귀로 확인했다.",
+      "원형영향": "기존 A/CF/CPT/SR frozen 코드/자료/CP는 수정하지 않았다."
+    },
+    "선정누설": {
+      "observed": "project_natural은 source/question/context/alias/root 전용 projection으로 answer/scores/generation을 제거한다. selector가 이 outcome 필드를 포함한 입력을 거부하고 outcome 값을 바꿔도 선정이 같다는 합성 회귀가 있다.",
+      "nuance": "read_source가 기존 점수·receipt를 재계수하여 원형 무결성을 검증하는 것은 전체 원형 admission 단계다. 높은/낮은 점수를 보고128root를 교체하는 선정은 아니다.",
+      "source": "기존1536view/512root(언어별 원모집256root)에서 공통 source를 확인한다. 모든 조건이 적합한 집합만을 상대 문맥길이4분위로 나누고 각16root를 source_key순으로 선정한다. 전체조건 하나라도 길이초과면 그 root 전체를 제외하고 부족은HOLD이다."
+    },
+    "입력과반복": {
+      "conditions": {
+        "CQ": "전체문맥1회→질문1회",
+        "QC": "질문1회→전체문맥1회",
+        "QCQ": "질문→전체문맥→같은질문, 질문2회",
+        "CQQ": "전체문맥→같은질문두번, 질문2회"
+      },
+      "instruction": "언어별 지시문/지문·질문내용은 같고 CQ는 기존 view0와 같은 prefix여야 한다.",
+      "no_gold_append": "생성에는 user 메시지만 넘기고 assistant gold나 후보목록을 붙이지 않는다. 원문 안의 정답문자열은 정상 source이며 이 부정확한 의미의‘정답없음’으로 해석하지 않는다.",
+      "budget": "전체 ChatML prefix에 max_new128을 더해1024 이내인지 확인한다. crop/답주변절단/암묵 padding/truncation은 금지한다.",
+      "confound": "QCQ/CQQ는 질문2회와 추가BPE/거리 차이가 있다. 두 조건 비교가 순수 위치 기제 전체를 인과적으로 분리한다는 결론은 하지 않는다."
+    },
+    "분모와지표": {
+      "endpoints": 2,
+      "roots_total_selected": 128,
+      "roots_per_language": 64,
+      "roots_per_language_quartile": 16,
+      "conditions_per_root": 4,
+      "responses_per_endpoint": 512,
+      "total_responses_if_both_complete": 1024,
+      "new_training_updates": 0,
+      "new_ce_or_loss_measurement": 0,
+      "QA": "기존 local qa_scores의 EM/F1/raw_exact를 그대로 사용한다. 언어×조건은64root, 언어×사분위×조건은16root의 평균이다.512/1024응답을 독립 root로 세지 않는다.",
+      "paired": "같은 CP 안에서 article_id 단위 대응 bootstrap을 질문 수 가중 평균으로 계산한다. 단일seed·반복관측 개발코호트 기술구간이며 두 CP 차이의 native학습 독립 인과효과가 아니다.",
+      "numeric_rule": "기존0.25%/.25% 등 local scorer의0점 가능성을 조용히 고치거나 새 성능문턱/자동채택 규칙을 추가하지 않는다."
+    },
+    "본체와원형결합": {
+      "code_level": "원P090B→32k와native→같은32k의 완료final만 사용하고 DEV-best를 선택하지 않는다. provider schema/path와 현재 코드가 맞는지 읽기 확인했다.",
+      "expected_checks": "고정 paired readback/두완료보고/16lane receipt·natural1536원형/CPbyte SHA/tokenizer SHA 및 실제 model fingerprint before=after가 실행 경로에서 결합된다.",
+      "scope_limit": "이 agent는 해당 실물파일을 열지 않았다. 읽기 코드/합성 fixture의 checks를 확인한 것이며 실제 CP 바이트 또는 tensor fingerprint 새 검산이 아니다."
+    },
+    "CQ재현": {
+      "rule": "선정된 원래CQ의 fresh answer와 전체 generation receipt를 기존 같은CP CQ와 exact 대조한다.",
+      "mismatch": "답 또는 receipt가 달라도 새 원답을 그대로 보존하고 readback을 CQ-HOLD8로 분리한다. 경로 정합을 확인하기 전 조건효과를 확정하지 않는다.",
+      "no_reuse_as_new": "기존 답을 새512답으로 재사용해 채우지 않고 실제 collect 경로에서 매조건 새 emit이 필요하다."
+    },
+    "stdout8root": {
+      "rule": "CPU동결 때 언어×길이사분위마다 source_key 최솟값1root, 총8root를 outcome 없이 사전선정하고 SHA를 고정한다.",
+      "printed": "실제 질문과 CQ/QC/QCQ/CQQ 네 원답·빈답·종료·생성토큰·caseID·raw경로/1-based행을 연결한다. 본문은stdout에 전량 복제하지 않고 context SHA만 둔다.",
+      "scope": "평가와readback 둘에서 동일 선정 규칙을 사용한다. 예시8개는 성능 추정표본이 아니고 성공표본으로 교체하지 않는다."
+    },
+    "active시간과종료": {
+      "slots_seconds": {
+        "prepare": 300,
+        "evaluate_cpt_unique32k": 1200,
+        "evaluate_unique32k": 1200,
+        "readback": 300
+      },
+      "record_reserve_seconds": 600,
+      "total_reserved_active_seconds": 3600,
+      "includes": "worker 안의 source/model load·GPU-idle wait를 포함한다.",
+      "excludes": "wrapper 회귀/preflight 및 큐 대기는 active budget에서 제외한다. prepare+1시간의 달력 만료가 아니다.",
+      "absolute": "2026-10-20 17:00 KST(08:00 UTC)와 남은 모든 worker/기록 예비를 admission/guard에서 다시 검사한다.",
+      "operator_dependency": "기존896 세 팔 회수 뒤 새GPU를 순차 실행하는 운영순서는 root 큐가 보장해야 한다. 이 driver가 SR 세 팔 전체완료를 별도로 검증하는 구조는 아니다."
+    },
+    "상태와보존": "공용 REGRESSION/PREFLIGHT/EXECUTE3단계·stdin 차단·미실행/도구오류/중단구분·safe path/xb write-once가 있다. 기술완료는 기본prompt 채택/모델정답성 PASS가 아니다.",
+    "재선정한계": "read_prepared는 source/code/512case/hash/문구/길이/분모계약을 검산하지만 실제 tokenizer로 전체512source의 선정 알고리즘을 다시 실행하지 않는다. 실제평가에서는각선정case를재인코딩해CPU동결prefix와대조한다."
+  },
+  "root의별도실물전달근거": {
+    "origin": "2026-10-19 root의 현재 메시지",
+    "independently_opened_or_rechecked_by_this_agent": false,
+    "root_message": "root는06:19:25~06:19:38 실제CPU0W를65회귀+전체실물source81/128root×4조건512입력으로종료0완료했고, 이후256개기존CQ영수증도새validate함수로검산0오류입니다.",
+    "reported_window_kst": {
+      "start": "2026-10-19 06:19:25",
+      "end": "2026-10-19 06:19:38"
+    },
+    "reported_cpu_exit_code": 0,
+    "reported_selected_roots": 128,
+    "reported_conditions_per_root": 4,
+    "reported_prepared_cases": 512,
+    "reported_existing_CQ_receipts_revalidated": 256,
+    "reported_existing_CQ_errors": 0,
+    "reported_source_label": "전체실물source81 (root 원문 표기이며 이 agent가81의 단위/경로를 다시 계측하지 않았다)",
+    "actual_artifact_sha256": "NOT_READ_BY_THIS_AGENT",
+    "distinction": "실물 CPU동결 성공과 기존CQ 영수증 검산은 root 소유의 실제 증거다. 새 질문배치1024응답·실제 모델 품질/효과 결과는 이 전달 메시지에 포함되지 않는다.",
+    "code_freeze": "root가QPOS두코드를ECC1/C533으로실물동결했고추가수정금지를통보했다."
+  },
+  "변경과정지": {
+    "audit_path": "handoff/audit/WIP_20261019_QUESTION_POSITION_INDEPENDENT_CPU_REVIEW.json",
+    "audit_files_written_now": 1,
+    "actual_test_files_written": 0,
+    "original_code_source_logs_reports_checkpoints_changed": 0,
+    "shared_guard_or_environment_files_changed": 0,
+    "git_operations": 0,
+    "additional_agents": 0,
+    "next": "이 감사 파일 자체의JSON/SHA만 확인한 뒤 추가CPU/GPU/실물읽기 없이 대기한다."
+  }
+}

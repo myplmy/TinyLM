@@ -48,12 +48,6 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-11	P106B	run_P106B_Stage4epWc_cpt_unique32k_final_eval.sh	D	.25	Y	Y	GATED exact final640; same full8lanes and candidate-free actual answers; no training	8
-12	P106B	run_P106B_Stage4epWd_cpt_unique32k_dev_eval.sh	D	.25	Y	Y	GATED exact DEV-only representative; same8lanes, no TEST selection; source and body binding	8
-13	P106B	run_P106B_Stage4epWe_cpt_unique32k_readback.sh	N	.10	N	N	GATED all original3cells and new fourth-cell final/DEV; exact raw/source/body recount; no automatic adoption	8
-16	P106B	run_P106B_Stage4erWa_old_ce_four_candidates.sh	Y	.15	Y	Y	GATED A990x3/raw; old CE2queries x4TF candidates, no training/free-answer substitution	8
-17	P106B	run_P106B_Stage4erWb_old_contrast_four_candidates.sh	Y	.15	Y	Y	GATED A990x3/raw; old contrast2x4 TF, source/body binding, no training	8
-18	P106B	run_P106B_Stage4erXa_ce4_cost8.sh	Y	.25	Y	Y	GATED CPU freeze; CE4 cost8 full16 scored paths, no checkpoint	8
 19	P106B	run_P106B_Stage4erXb_role_only4_cost8.sh	Y	.25	Y	Y	GATED CPU freeze; role-only4 cost8 same full16 computation, no checkpoint	8
 20	P106B	run_P106B_Stage4erXc_all_axes4_cost8.sh	Y	.25	Y	Y	GATED CPU freeze; all-axes4 cost8 mean3 negative edges per query, no checkpoint	8
 21	P106B	run_P106B_Stage4erYa_ce4_train896.sh	Y	1.3	Y	Y	GATED all3cost8 and8h/current deadline budget; fresh original parent CE4 positive896	8
@@ -63,6 +57,10 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 25	P106B	run_P106B_Stage4erZb_role_only4_actual_answers.sh	D	.3	Y	Y	GATED exact role-only4 full896; candidate-free1758 and error-axis/native32	8
 26	P106B	run_P106B_Stage4erZc_all_axes4_actual_answers.sh	D	.3	Y	Y	GATED exact all-axes4 full896; candidate-free1758, no automatic quality adoption	8
 27	P106B	run_P106B_Stage4erR_subject_role_readback.sh	N	.15	N	N	GATED all3exact actual evaluations/raw/source/body; paired graph recount, no automatic adoption	8
+28	P106B	run_P106B_Stage4es0W_question_position_cpu.sh	N	.08	N	N	CPU freeze exact source and128roots x4CQ/QC/QCQ/CQQ; same two final models; no model load	8
+29	P106B	run_P106B_Stage4esWa_cpt32_question_position.sh	D	.33	Y	Y	GATED CPU freeze; CPT32 final512answers and exactCQ reproduction; no training	8
+30	P106B	run_P106B_Stage4esWb_base32_question_position.sh	D	.33	Y	Y	GATED CPU freeze; base32 final same512inputs; show8preselected actual question-answer groups	8
+31	P106B	run_P106B_Stage4esWc_question_position_readback.sh	N	.08	N	N	GATED both512actual cohorts; source/body/raw and article paired recount; CQ mismatch HOLD	8
 # 7	P106B	run_P106B_Stage4ehW_question_bundles_readback-hold.sh	N	.10	N	Y	HOLD V1 freeze20MB before writes; separate shardedV2 is not this failed stage completion
 # 4	P106B	run_P106B_Stage4dqWb_foundation_native_parent_eval-hold.sh	D	.25	Y	Y	HOLD: original six-full-endpoint source audit incomplete; new64 panel is not a substitute. Completed native2281 endpoint, exact source/init and actual counts required; same frozen complete evaluation
 # 4	P106B	run_P106B_Stage4drW_foundation_raw_pair_readback-hold.sh	N	.05	N	Y	HOLD: original six-full-endpoint source audit incomplete; new64 panel is not a substitute. Six complete endpoints raw/receipt/original source recount and paired article intervals; one learning seed only
@@ -1064,6 +1062,15 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   14	P106B	run_P106B_Stage4eqW_public_qa_supply_cpu.sh	N	.5	N	N	DONE exact raw/result command preserved; source recover9249d94:run_P106B_Stage4eqW_public_qa_supply_cpu-done.sh; no rerun planned; not global quality adoption	8
 #   28	P106B	run_P106B_Stage4eqWa_public_qa_supply_readback.sh	N	.1	N	N	DONE exact raw/result command preserved; source recover9249d94:run_P106B_Stage4eqWa_public_qa_supply_readback-done.sh; no rerun planned; not global quality adoption	8
 #   15	P106B	run_P106B_Stage4er0W_subject_role_cpu.sh	N	.15	N	N	DONE exact raw/result command preserved; source recover9249d94:run_P106B_Stage4er0W_subject_role_cpu-done.sh; no rerun planned; not global quality adoption	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   11	P106B	run_P106B_Stage4epWc_cpt_unique32k_final_eval.sh	D	.25	Y	Y	GATED exact final640; same full8lanes and candidate-free actual answers; no training	8
+#   12	P106B	run_P106B_Stage4epWd_cpt_unique32k_dev_eval.sh	D	.25	Y	Y	GATED exact DEV-only representative; same8lanes, no TEST selection; source and body binding	8
+#   13	P106B	run_P106B_Stage4epWe_cpt_unique32k_readback.sh	N	.10	N	N	GATED all original3cells and new fourth-cell final/DEV; exact raw/source/body recount; no automatic adoption	8
+#   16	P106B	run_P106B_Stage4erWa_old_ce_four_candidates.sh	Y	.15	Y	Y	GATED A990x3/raw; old CE2queries x4TF candidates, no training/free-answer substitution	8
+#   17	P106B	run_P106B_Stage4erWb_old_contrast_four_candidates.sh	Y	.15	Y	Y	GATED A990x3/raw; old contrast2x4 TF, source/body binding, no training	8
+#   18	P106B	run_P106B_Stage4erXa_ce4_cost8.sh	Y	.25	Y	Y	GATED CPU freeze; CE4 cost8 full16 scored paths, no checkpoint	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

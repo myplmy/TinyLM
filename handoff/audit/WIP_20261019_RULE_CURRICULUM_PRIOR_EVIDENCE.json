@@ -1,0 +1,477 @@
+{
+  "schema": "P106D_RULE_CURRICULUM_PRIOR_EVIDENCE_V1",
+  "date_kst": "2026-10-19",
+  "status": "SAVED_ARTIFACT_REVIEW_COMPLETE_NO_MODEL_RERUN_NO_NEW_EXPERIMENT",
+  "owner": "oct19_antithesis",
+  "핵심": "산수/조회/조건갱신4096행·128회·fixed/view를 그대로 다시 여는 것은 중복이다. 기존 실험은 기초와후속 정답 모두CE지도했으나, 평가에서는 gold 기초답을 제공하고 후속 한 응답만 생성했다. 질문 표현·최소기초 coverage·현재상태 완전명시를 분리해야 한다.",
+  "권한": {
+    "최초": "결과104와 P106D 소형보고/관련계획·코드만 읽는 검토였다. 모델/Torch/GPU·파일쓰기·원형/코드/기존결과/Git 변경·새원천/다운로드·추가agent0.",
+    "추가": "총괄이 이 감사 JSON 한 파일 생성과 기존 동결 산수512root/1024한영행의 실제 연산자·기초/후속 피연산자 분포의 짧은 판독을 추가 승인했다.",
+    "실제": "보존된 보고/답/동결 학습샤드의 stdlib JSON·SHA 판독이다. 모델을 다시 학습하거나 추론하지 않았다.",
+    "단일출력": "handoff/audit/WIP_20261019_RULE_CURRICULUM_PRIOR_EVIDENCE.json",
+    "미접근": "체크포인트 바이트/tensor, 실제 tokenizer, 보호 TinyDataset, 신규원천, 진행중 학습 원형에는 접근하지 않았다."
+  },
+  "근거": {
+    "결과문서": "test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md",
+    "계획문서": "test_plan/P106D_규칙뷰-조건갱신-형식요구와-교사-2QA-게이트.md",
+    "보고디렉터리": "test_result/evidence/p106d_ruleviews_v3_length_s1337",
+    "report_sha256": {
+      "prepare": "1ECA440C38642755B33BC0B1ED600046EDC08EE5BC3CC96138736AB7EE9B3FC9",
+      "fixed": "887F5A829F637C03EEFCF91774F51C56BDF8FB0D3CA12DF5A8CB884DEDBC4F48",
+      "views": "DF43D5B03D74C33E25A57036F56D45291C6FC1549BD92410D05793354C7AEEF8",
+      "readback": "0FD848F4FB37201F3DB08E51F8AA96E681F16BE000B0311193B0E2B240455A30"
+    },
+    "code_path_refs": {
+      "scripts/p106d_views.py:44": "기초질문/답 생성, 산수·Boolean·색상표·known문자열",
+      "scripts/p106d_views.py:72": "[U기초,A코드정답,U후속,A코드정답] 대화",
+      "scripts/p106d_expanded_views.py:21": "지원 generator의 산수index범위와연산자선택",
+      "scripts/p106d_expanded_views.py:55": "답변경/유지 후보의 숫자범위",
+      "scripts/p106d_expanded_views.py:112": "길이별 최소2개 서로다른뷰 gate",
+      "scripts/p106d_expanded_views.py:125": "가족별선착순모집/언어·변경유지균형",
+      "scripts/diag_p106d_views.py:157": "messages[:-1]의 gold-history 후속 응답 평가",
+      "scripts/diag_p106d_views.py:207": "freshP090B·4epoch·CE만 학습",
+      "scripts/train_sft_p090.py:48": "encode_records→encode_conversation",
+      "tinylm/data/sft.py:89": "assistant span만 labels에 유지",
+      "tinylm/chat/serialize.py:143": "두 assistant 본문+각EOT span",
+      "scripts/p106b_education_followup.py:379": "부모/optimizer 생성"
+    },
+    "frozen_declared_code_check": "고정/뷰 보고 input.code_sha256의11개 파일 각각이 현재 byteSHA와 일치했다. bool 결과는 저장답 판독 출력에 남았으며 신규 코드 수정은0이다.",
+    "code_sha256_selected": {
+      "scripts/diag_p106d_views.py": "456A6DCB0B6FC9BE183674E976DF243720AFF4DC8399E56A0E482C0677A30F9C",
+      "scripts/p106d_views.py": "8E4B912E32AB94A326787962BD2FBD869A7B93279C6E96D149A3E521B28B9F7A",
+      "scripts/p106d_expanded_views.py": "463EAFA0FC1A78F054CCCC1228C8B0EA4EC98838E364FDFB7FAC7CAE7AB06448",
+      "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34"
+    },
+    "child_answer_sources": {
+      "fixed": {
+        "path": "test_result/evidence/p106d_ruleviews_v3_length_s1337/fixed/answers_child_000000.jsonl",
+        "rows": 128,
+        "bytes": 139919,
+        "sha256": "B739EE2714969DBFA8D4282AFF74C0934841557710A06A5E03A30FFF61B0B5A9"
+      },
+      "views": {
+        "path": "test_result/evidence/p106d_ruleviews_v3_length_s1337/views/answers_child_000000.jsonl",
+        "rows": 128,
+        "bytes": 139675,
+        "sha256": "0A78539B2722B87A9410405A5DA1259CAD9510A268F60DB94DE9DE29F1B3BE4A"
+      }
+    },
+    "원문복사범위": "원문128답/학습행 전량을 이 감사에 복사하지 않는다."
+  },
+  "실제교육": {
+    "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "parent": "원P090B dense14/chat32/untied, 새optimizer",
+    "micro_bs": 8,
+    "accum": 16,
+    "seq_max": 1024,
+    "grad_checkpoint": true,
+    "compile": "default",
+    "seed": 1337,
+    "adam_lr": 0.0001,
+    "muon_lr": 0.0004,
+    "epochs": 4,
+    "updates": 128,
+    "train_neutral_roots": 2048,
+    "train_canonical_dialogues": 4096,
+    "family_neutral_roots": {
+      "arithmetic": 512,
+      "boolean": 512,
+      "lookup": 512,
+      "format": 512
+    },
+    "language_rows": {
+      "ko": 2048,
+      "en": 2048
+    },
+    "dialogue_shape": "각 대화는 두 올바른 assistant turn을 갖는다. 첫 질문은 root별 고정이고 한영/뷰를 같은 split 가족에 둔다.",
+    "train_policy_rows": {
+      "ANSWER_CHANGED": 1536,
+      "ANSWER_UNCHANGED": 1536,
+      "FORMAT_VERBATIM": 1024
+    },
+    "true_input_tokens_per_pass": 360090,
+    "assistant_targets_per_pass": 30467,
+    "true_input_tokens_total": 1440360,
+    "assistant_targets_total": 121868,
+    "max_padded_slots_not_actual_tokens": 16777216,
+    "supervision": "기초답과후속답 둘 모두의 본문+각EOT를CE로 지도한다. user/header/PAD는 직접지도하지 않는다. 임의로 틀린 과거assistant를 C2로 교정하는 교육이 아니다.",
+    "fixed_view_difference": "fixed는 root당 선택한동일 대화를4pass 반복,views는 동일 답변경/유지 정책과같은 실제x/target 길이인 최소2개 대안을순환한다. 매epoch서로다른4문장을보장하지 않는다.",
+    "retention": "학습 루프에 native replay/별도보존 CE는 없고 native8crop은 전후평가만 수행한다.",
+    "no_new_knowledge_claim": "4096한영행/표현변형은2048중립root 또는4절차가족 이상의 새지식량으로 세지 않는다."
+  },
+  "산수실제모집": {
+    "state": "기존5학습샤드의 실제 metadata source_original/derived_payload를 stdlib로 전량 판독한 결과",
+    "source_files": {
+      "fixed_train": [
+        {
+          "path": "HF/sft_ready/p106d_ruleviews_v3_length_s1337/corpus/fixed_train_000000.jsonl",
+          "bytes": 5697238,
+          "sha256": "1AD20B738772CD8161C6F45843286470A521AC2C651A573A03231709A347F40C"
+        }
+      ],
+      "view_train_01": [
+        {
+          "path": "HF/sft_ready/p106d_ruleviews_v3_length_s1337/corpus/view_train_01_000000.jsonl",
+          "bytes": 5697238,
+          "sha256": "1AD20B738772CD8161C6F45843286470A521AC2C651A573A03231709A347F40C"
+        }
+      ],
+      "view_train_02": [
+        {
+          "path": "HF/sft_ready/p106d_ruleviews_v3_length_s1337/corpus/view_train_02_000000.jsonl",
+          "bytes": 5697272,
+          "sha256": "D78CD2E4C331229C9D908CD1E1BADF424CBCCF2CF24150804C67F7DCFA330BA7"
+        }
+      ],
+      "view_train_03": [
+        {
+          "path": "HF/sft_ready/p106d_ruleviews_v3_length_s1337/corpus/view_train_03_000000.jsonl",
+          "bytes": 5696732,
+          "sha256": "1C944AD65496EF92E23C91C85A338D242854B7622AEC59C681C2206177299F8B"
+        }
+      ],
+      "view_train_04": [
+        {
+          "path": "HF/sft_ready/p106d_ruleviews_v3_length_s1337/corpus/view_train_04_000000.jsonl",
+          "bytes": 5696166,
+          "sha256": "D80E4BA5B877BE5A5FA758E2D65A2475E5C60742BB219A618E7625DC53875224"
+        }
+      ]
+    },
+    "same_first_arithmetic_roots_all5_shards": true,
+    "per_shard_arithmetic_neutral_roots": 512,
+    "per_shard_arithmetic_rows": 1024,
+    "per_shard_language_rows": {
+      "ko": 512,
+      "en": 512
+    },
+    "actual_operator_roots": {
+      "+": 512,
+      "-": 0,
+      "*": 0
+    },
+    "actual_operator_rows": {
+      "+": 1024,
+      "-": 0,
+      "*": 0
+    },
+    "base_first_operand_a": {
+      "min": 2,
+      "max": 65,
+      "unique": 64
+    },
+    "base_first_operand_b": {
+      "min": 2,
+      "max": 11,
+      "unique": 10
+    },
+    "changed_followup_a_b_range_all5": {
+      "a": [2,65],
+      "b": [2,65]
+    },
+    "followup_by_stem": {
+      "columns": [
+        "changed_rows",
+        "changed_a_min",
+        "changed_a_max",
+        "changed_a_unique",
+        "changed_b_min",
+        "changed_b_max",
+        "changed_b_unique",
+        "unchanged_rows",
+        "unchanged_a_min",
+        "unchanged_a_max",
+        "unchanged_a_unique",
+        "unchanged_b_min",
+        "unchanged_b_max",
+        "unchanged_b_unique"
+      ],
+      "rows": {
+        "fixed_train": [512,2,65,63,2,65,61,512,2,65,59,2,65,57],
+        "view_train_01": [512,2,65,63,2,65,61,512,2,65,59,2,65,57],
+        "view_train_02": [512,2,65,63,2,65,63,512,2,64,56,2,59,55],
+        "view_train_03": [512,2,65,64,2,65,63,512,2,65,53,2,64,52],
+        "view_train_04": [512,2,65,64,2,65,61,512,2,65,57,2,64,55]
+      }
+    },
+    "측정한계": "이 범위는 선택된 기존 source field 분포이지 tokenizer 학습성공·숫자일반화의 측정이 아니다.",
+    "지원과실제선정구별": "generator의 +,-,* 지원과 실제512선정root 전부+라는 관측을 구별한다.연산자/모집/범위 확장0."
+  },
+  "평가분모와판독": {
+    "per_arm_questions": 128,
+    "prior_known_diagnostic": {
+      "questions": 64,
+      "neutral_roots": 32,
+      "scope": "이미본 실패진단이며blind평가아님"
+    },
+    "fresh_closed_probe": {
+      "questions": 64,
+      "neutral_roots": 32,
+      "scope": "기존64root/첫질문을train및새val에서제외"
+    },
+    "actual_input": "[기초질문, gold 기초답, 후속질문]을직렬화하고추가응답하나만생성한다. 학생의실제기초답을사용한2turn평가는아니다.",
+    "classify": "JSON은parse한객체동등성,Boolean은strip+casefold,정수는부호를허용한정수동등성,색상은strip문자열동등성이다.",
+    "current_recount": "각팔 저장128답의SHA/행수와 원 closed_code_contract_pass를 직접 재산출하여 전체fixed73/views68과 old/fresh 분해를 확인했다.",
+    "family_label_source": "과제분류는저장된표준첫질문형과gold형태에서재구성했다. 원형에새family field가존재했다고주장하지않는다.",
+    "final_counts": {
+      "fixed": {
+        "total": {
+          "n": 128,
+          "correct": 73,
+          "stop": 128
+        },
+        "old64": {
+          "n": 64,
+          "correct": 30
+        },
+        "fresh64": {
+          "n": 64,
+          "correct": 43
+        },
+        "by_family": {
+          "arithmetic": [32,8],
+          "boolean": [32,22],
+          "lookup": [32,32],
+          "format": [32,11]
+        },
+        "answer_changed": {
+          "n": 64,
+          "correct": 34
+        },
+        "answer_unchanged": {
+          "n": 32,
+          "correct": 28
+        },
+        "format_transform": {
+          "n": 32,
+          "correct": 11
+        },
+        "by_family_answer_policy": {
+          "arithmetic|answer_changed": [24,0],
+          "boolean|answer_changed": [20,14],
+          "boolean|answer_unchanged": [12,8],
+          "lookup|answer_changed": [20,20],
+          "lookup|answer_unchanged": [12,12],
+          "arithmetic|answer_unchanged": [8,8]
+        },
+        "by_family_language": {
+          "arithmetic|ko": [16,4],
+          "arithmetic|en": [16,4],
+          "boolean|ko": [16,11],
+          "boolean|en": [16,11],
+          "lookup|ko": [16,16],
+          "lookup|en": [16,16],
+          "format|ko": [16,0],
+          "format|en": [16,11]
+        }
+      },
+      "views": {
+        "total": {
+          "n": 128,
+          "correct": 68,
+          "stop": 128
+        },
+        "old64": {
+          "n": 64,
+          "correct": 31
+        },
+        "fresh64": {
+          "n": 64,
+          "correct": 37
+        },
+        "by_family": {
+          "arithmetic": [32,9],
+          "boolean": [32,21],
+          "lookup": [32,32],
+          "format": [32,6]
+        },
+        "answer_changed": {
+          "n": 64,
+          "correct": 32
+        },
+        "answer_unchanged": {
+          "n": 32,
+          "correct": 30
+        },
+        "format_transform": {
+          "n": 32,
+          "correct": 6
+        },
+        "by_family_answer_policy": {
+          "arithmetic|answer_changed": [24,1],
+          "boolean|answer_changed": [20,11],
+          "boolean|answer_unchanged": [12,10],
+          "lookup|answer_changed": [20,20],
+          "lookup|answer_unchanged": [12,12],
+          "arithmetic|answer_unchanged": [8,8]
+        },
+        "by_family_language": {
+          "arithmetic|ko": [16,4],
+          "arithmetic|en": [16,5],
+          "boolean|ko": [16,10],
+          "boolean|en": [16,11],
+          "lookup|ko": [16,16],
+          "lookup|en": [16,16],
+          "format|ko": [16,2],
+          "format|en": [16,4]
+        }
+      }
+    },
+    "arithmetic_key_limit": "산수32문항의fixed8/views9중답유지8문항은둘다8/8이다. 답변경24문항은fixed0/views1이다. 종료/전체73·68을일반계산학습으로읽지않는다.",
+    "other_task_limit": "반대로조회는답변경20/20과답유지12/12를두팔모두맞혔다. 모든조건갱신·기억능력의실패로일반화하지않는다.",
+    "parent_result_level": "부모0/128은소형보고의기록이다. 이번저장답재계수는두child각128행을대상으로했고부모답원형을새로전수읽지는않았다.",
+    "아래과제그룹배열열": [
+      "문항수",
+      "정답수"
+    ]
+  },
+  "대표사례": [
+    {
+      "task": "덧셈변경실패",
+      "given": "10+2→12",
+      "followup": "첫수31/둘째23",
+      "gold": "54",
+      "fixed": "34",
+      "views_ko": "60",
+      "views_en": "51"
+    },
+    {
+      "task": "덧셈답유지성공",
+      "given": "31+2→33",
+      "followup": "첫수25/둘째8",
+      "gold": "33",
+      "fixed": "33",
+      "views": "33",
+      "limit": "이사례는답을복사해도정답이므로독립계산성공증거아님"
+    },
+    {
+      "task": "뷰팔의유일한산수답변경정답",
+      "language": "en",
+      "given": "28+3→31",
+      "followup": "첫수48/둘째25",
+      "gold": "73",
+      "views": "73",
+      "limit": "1/24의한관측이며규칙습득/범용일반화증명아님"
+    },
+    {
+      "task": "조회갱신성공",
+      "given": "가0=노랑,나0=빨강;나0질문→빨강",
+      "followup": "가0값질문",
+      "gold": "노랑",
+      "fixed": "노랑",
+      "views": "노랑"
+    },
+    {
+      "task": "Boolean방향별차이",
+      "given": "A=false,B=false의A AND NOT B→false",
+      "followup": "A=true로변경",
+      "gold": "true",
+      "fixed": "false",
+      "views": "false",
+      "contrast": "반대true→false조건은두팔모두false로성공한예시가있음"
+    }
+  ],
+  "최소기초사례": {
+    "membership": {
+      "1+1": {
+        "root": "CA39DDED8A2F2138E7ABC433186FEBEABE773D1F5DCAE09956A9B47F64BAEA2C",
+        "in_v3_train": false,
+        "in_v3_val": false,
+        "declared_hash_split": "train"
+      },
+      "2+2": {
+        "root": "DED19608635BEF45AADA06953FF36FAF4D0A80BA49DF8F19587FFC3060A45332",
+        "in_v3_train": false,
+        "in_v3_val": false,
+        "declared_hash_split": "train"
+      },
+      "10+2": {
+        "root": "23E4C816FAA4C2F8470F5DBE0B42FE580FE861A952C8756776B925B4330D4423",
+        "in_v3_train": false,
+        "in_v3_val": false,
+        "declared_hash_split": "val"
+      }
+    },
+    "confirmed": [
+      "1+1과2+2의덧셈root는v3 train및새val root명단에없다.",
+      "기초생성a/b및후속샘플링의허용범위는2..65이고실제5source판독도최소2였다.따라서1+1은이규칙코퍼스의숫자범위밖이다.",
+      "2+2 root는hash상train이다.그러나실제로선정되지는않았다."
+    ],
+    "code_inference": "모집첫산수root가답유지정책이고합4를유지하는범위내쌍은(2,2)뿐이다.서로다른최소2뷰를요구하는matched_class가이기초root를제외하는구조라는추론이가능하다.",
+    "uncertainty": "not_enough_matched_distinct_views120건이라는총계는있지만root별거절trace는없다.따라서2+2의실행당시거절reason을직접읽은것과코드추론을동일시하지않는다.",
+    "global_exposure_limit": "P106D v3코퍼스의부재일뿐부모사전학습전체에1+1/2+2가없었다거나전체모델이노출된적없다는주장은아니다."
+  },
+  "안정성과비교한계": {
+    "fixed_grad_max": 24.766666412353516,
+    "views_grad_max": 24.734115600585938,
+    "gradient_definition": "이옛driver는clip전 max(abs(gradient element))를기록한다.현재CPT/관계driver의global L2 norm grad_max와수치비교하지않는다.",
+    "native_probe": {
+      "prediction_tokens": 1016,
+      "windows": 8,
+      "parent_ce": 3.2909217476844788,
+      "fixed_ce": 3.532916307449341,
+      "views_ce": 3.531553268432617,
+      "scope": "같은8×127 native-val창,전체VAL/일반언어손실증명아님"
+    },
+    "current_followup_condition_differences": [
+      "현재CPT32는원P090B가아닌완료native2281에서시작하고자연QA32k/native replay를더한계보다.P106D학생가중치의후손이라고보지않는다.",
+      "현재CPT32/관계후속의LR5e-5/Muon2e-4·native8192/update·보존자료와P106D의LR1e-4/Muon4e-4·규칙CE단독은다른조리법이다.",
+      "P106D의정형색상표/gold-history후속정답과현재짧은1+1/2+2/사과-당근A-B자유질문은입력표현·출력어휘·history조건이같지않다.",
+      "새표현/부모/범위/학습량/보존을함께바꾸면원P106D대비개선을한원인의인과효과라고주장할수없다.",
+      "fixed73/views68의차이는이한seed·관측개발집합의결과이며뷰일반우위/열위나아키텍처원인·학습량만의해결을증명하지않는다."
+    ]
+  },
+  "후속3안": [
+    {
+      "id": 1,
+      "name": "학습없는질문위치·표현진단",
+      "independent_variable": "같은계산/조회/gold의짧은단일질문·완전명시단일질문·gold-history후속·실제-history후속입력조건",
+      "cost": "낮음:학습0,작은CPU계약과소형실제추론은추후별도수행.본검토에서는NOT_RUN.",
+      "impact": "평가입력과receipt만.자료/손실/기존모델변경없음.",
+      "risk": "문구길이차이와gold/실제history를따로보고;같은정답을더많이본숫자로독립분모를부풀리지않음."
+    },
+    {
+      "id": 2,
+      "name": "변형가능성과최소기초coverage분리",
+      "independent_variable": "공통새부모·업데이트·native보존·가족비율에서기존선별식대필수최소기초root를보장한모집",
+      "cost": "중간:새소형2팔의CPU자료/마스크회귀·비용측정·학습/보존평가필요.이문서가실행승인은아님.",
+      "impact": "새자료eligibility/rootcoverage·평가·정본문서.추가head/모델구조변경없음.",
+      "risk": "1+1/2+2학습후그문항성공은fit지표이며일반화가아님.미학습숫자조합을별도보존.새뺄셈/곱셈추가는다른독립변수여서여기에몰래합치지않음."
+    },
+    {
+      "id": 3,
+      "name": "현재상태완전명시대delta후속교육",
+      "independent_variable": "같은root/정답에서‘앞조건을바꾸라’대‘현재계산/상태는이것’이라는자기완결입력교육",
+      "cost": "중간~높음:같은새source/부모의2팔학습과공통네입력조건평가필요.",
+      "impact": "새질문표현자료·실제x/target계측·평가.기존동결/추론head변경없음.",
+      "risk": "길이/학습token차이도기록하고순수기억능력효과로단정하지않음.기존P106D도두assistantCE였으므로기초지도를처음추가한다고설명하지않음."
+    }
+  ],
+  "권장": "1안부터.완전명시단일질문도실패하면2안의최소coverage를,단일질문은되는데후속에서실패하면3안을우선판단한다.이미정담당이준비중인질문위치두파일은아직이agent검토배정전이므로읽거나수정하지않았다.",
+  "후속마스크안전": "실제학생오답을과거assistant로넣는C2를추가한다면오답부분을양성CE로지도하지않는turn별mask가먼저필요하다.현재P106D의두assistantCE경로를그대로사용하면잘못된답도배울수있다.",
+  "재현": {
+    "saved_answer_recount": {
+      "exact_command": "PYTHONDONTWRITEBYTECODE=1 timeout 20 /usr/bin/python3 -B - <<'PY'\nfrom pathlib import Path\nimport collections,hashlib,json,re,time\nR=Path('/home/uranus/tinyLM');E=R/'test_result/evidence/p106d_ruleviews_v3_length_s1337';start=time.perf_counter()\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest().upper()\ndef classify(a,g):\n a=a.strip()\n if g.startswith('{'):\n  try:return json.loads(a)==json.loads(g)\n  except (ValueError,TypeError):return False\n if g.casefold() in ('true','false'):return a.casefold()==g.casefold()\n if re.fullmatch('-?[0-9]+',g):return bool(re.fullmatch('[+-]?[0-9]+',a)) and int(a)==int(g)\n return a==g\ndef messages(prompt,role):\n return [x.split('<|im_end|>',1)[0] for x in prompt.split('<|im_start|>'+role+chr(10))[1:]]\nprepared=json.loads((E/'prepare/report.json').read_text());out={};examples={};codecheck={}\nfor arm in ('fixed','views'):\n report=json.loads((E/arm/'report.json').read_text());codecheck[arm]={p:sha(R/p)==h for p,h in report['input']['code_sha256'].items()};assert all(codecheck[arm].values())\n rows=[]; arithmetic_changed_success=[]\n for spec in report['child_answers']['shards']['shards']:\n  p=E/arm/spec['path'];assert sha(p)==spec['sha256'];values=[json.loads(x) for x in p.read_text().splitlines()];assert len(values)==spec['rows'];rows.extend(values)\n assert len(rows)==128;totals=collections.defaultdict(lambda:collections.Counter());success=[];failure=[]\n for i,row in enumerate(rows):\n  u=messages(row['prompt'],'user');a=messages(row['prompt'],'assistant')[0];assert len(u)==2\n  family='format' if row['gold'].startswith('{') else 'boolean' if ('논리식' in u[0] or 'Variables ' in u[0]) else 'lookup' if ('표 ' in u[0] or 'Table ' in u[0]) else 'arithmetic'\n  ok=classify(row['answer'],row['gold']);assert ok==row['closed_code_contract_pass'];split='old64' if i<64 else 'fresh64';kind='format_transform' if family=='format' else 'answer_changed' if a!=row['gold'] else 'answer_unchanged'\n  for key in (family,split,kind,family+'|'+split,family+'|'+row['language'],family+'|'+kind):totals[key].update(n=1,correct=int(ok),stopped=int(row['generation']['finish_reason']=='STOP_SEQUENCE'))\n  example=dict(index=i,root=row['root'],language=row['language'],family=family,cohort=split,base_question=u[0],given_gold_first_answer=a,followup_question=u[1],gold=row['gold'],actual_answer=row['answer'],pass_closed=ok)\n  if ok and family=='arithmetic' and a!=row['gold']:arithmetic_changed_success.append(example)\n  target=success if ok else failure\n  if len([x for x in target if x['family']==family])<2:target.append(example)\n assert totals['old64']['correct']+totals['fresh64']['correct']==report['child_answers']['first_answer_pass']\n out[arm]={k:dict(v) for k,v in totals.items()};examples[arm]=dict(success=success,failure=failure,arithmetic_changed_success=arithmetic_changed_success)\nroots={}\nfor a,b in ((1,1),(2,2),(10,2)):\n root=hashlib.sha256(json.dumps(dict(family='arithmetic',a=a,b=b,op='+'),sort_keys=True,ensure_ascii=False,separators=(',',':'),allow_nan=False).encode()).hexdigest().upper()\n roots[str(a)+'+'+str(b)]=dict(root=root,in_v3_train=root in prepared['roots']['train'],in_v3_val=root in prepared['roots']['val'],declared_hash_split='val' if int(root[:8],16)%5==0 else 'train')\nprint(json.dumps(dict(status='P106D_SMALL_RECORD_READBACK',prepare_report_sha256=sha(E/'prepare/report.json'),code_hashes_match=codecheck,results=out,representatives=examples,selected_basic_root_membership=roots,elapsed_seconds=time.perf_counter()-start,model_torch_gpu_files_written=0,limits=['Family labels are reconstructed from standardized saved prompt/gold shapes, not claimed as a new original-metadata field.','Only saved128-child records per arm are read; no corpus/tokenizer/CP loading. Format family and policy keys are distinct to avoid double counting the same event.']),ensure_ascii=False,indent=2))\nPY",
+      "exit_code": 0,
+      "tool_wall_seconds": 0.548939772,
+      "inner_elapsed_seconds": 0.0074537559994496405
+    },
+    "actual_training_distribution": {
+      "exact_command": "PYTHONDONTWRITEBYTECODE=1 timeout 20 /usr/bin/python3 -B - <<'PY'\nfrom pathlib import Path\nimport collections,hashlib,json,time\nR=Path('/home/uranus/tinyLM');tag='p106d_ruleviews_v3_length_s1337';E=R/'test_result/evidence'/tag;C=R/'HF/sft_ready'/tag/'corpus';start=time.perf_counter()\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest().upper()\nprep=json.loads((E/'prepare/report.json').read_text(encoding='utf-8'));results={};signatures={}\ndef span(values):return dict(min=min(values),max=max(values),unique=len(set(values)))\nfor stem in ('fixed_train','view_train_01','view_train_02','view_train_03','view_train_04'):\n manifest=prep['shards'][stem];records=[];hashes=[]\n for s in manifest['shards']:\n  p=C/s['path'];b=p.read_bytes();h=hashlib.sha256(b).hexdigest().upper();assert h==s['sha256'] and len(b)==s['bytes'];lines=b.decode('utf-8').splitlines();assert len(lines)==s['rows'];hashes.append(dict(path=str(p.relative_to(R)),bytes=len(b),sha256=h));records.extend(json.loads(line) for line in lines)\n assert len(records)==4096\n rows=[r for r in records if r['meta']['root_family']=='arithmetic'];assert len(rows)==1024\n roots={};ops=collections.Counter();langs=collections.Counter();policy=collections.defaultdict(list);base=[];follow=[]\n for row in rows:\n  m=row['meta'];p=m['source_original'];q=m['derived_payload'];root=m['root_concept_id'];fixed=(p['a'],p['b'],p['op'])\n  assert root not in roots or roots[root]==fixed;roots[root]=fixed;ops[p['op']]+=1;langs[m['language']]+=1;base.append(p);follow.append(q);policy[m['curriculum_policy']].append(q)\n assert len(roots)==512 and langs==dict(ko=512,en=512)\n unique_ops=collections.Counter(p[2] for p in roots.values());signatures[stem]=roots\n results[stem]=dict(files=hashes,total_rows=4096,arithmetic_rows=1024,neutral_roots=512,language_rows=dict(langs),operator_rows={o:ops[o] for o in ('+','-','*')},operator_roots={o:unique_ops[o] for o in ('+','-','*')},base_first_operands=dict(a=span([p['a'] for p in base]),b=span([p['b'] for p in base])),all_followup_operands=dict(a=span([p['a'] for p in follow]),b=span([p['b'] for p in follow])),followup_by_policy={key:dict(rows=len(vals),a=span([p['a'] for p in vals]),b=span([p['b'] for p in vals])) for key,vals in sorted(policy.items())})\nassert all(roots==signatures['fixed_train'] for roots in signatures.values())\nreport_shas={name:sha(E/name/'report.json') for name in ('prepare','fixed','views','readback')}\nprint(json.dumps(dict(status='EXISTING_P106D_ARITHMETIC_TRAIN_SELECTION_READBACK',report_sha256=report_shas,results=results,same_first_arithmetic_roots_all5_shards=True,elapsed_seconds=time.perf_counter()-start,model_torch_gpu_files_written=0,source_changed=False,limits=['This reads only the already frozen code-owned P106D training shards, not a new collection or tokenizer run.','Operand ranges describe selected source instances, not learned or generalized numeric capability.']),ensure_ascii=False,indent=2))\nPY",
+      "exit_code": 0,
+      "tool_wall_seconds": 0.904819983,
+      "inner_elapsed_seconds": 0.38349893200211227
+    },
+    "보조집계정정": "초기메모리분류에서format가족명과정책명이같아그카운터만중복누적했다.정책명을format_transform으로분리한위최종재현명령은가족32문항의11/6정답을기록하며전체73/68과일치한다.원형/모델문제가아니고기존코드수정은없었다.",
+    "증거범위": "이두명령은기존저장기록판독이다.새학습/추론결과로소개하지않는다."
+  },
+  "보존": {
+    "new_audit_files": 1,
+    "original_code_source_checkpoint_raw_reports_modified": 0,
+    "model_torch_gpu_operations": 0,
+    "git_operations": 0,
+    "new_agents": 0,
+    "after_completion": "추가실행없이대기"
+  }
+}
