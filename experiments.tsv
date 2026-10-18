@@ -48,7 +48,6 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-22	P106B	run_P106B_Stage4erYb_role_only4_train896.sh	Y	1.3	Y	Y	GATED all3cost8; same4queries/native/order; fresh parent role-only negative896	8
 23	P106B	run_P106B_Stage4erYc_all_axes4_train896.sh	Y	1.3	Y	Y	GATED all3cost8; same4queries/native/order; fresh parent all3 negatives896	8
 24	P106B	run_P106B_Stage4erZa_ce4_actual_answers.sh	D	.3	Y	Y	GATED exact CE4 full896; candidate-free1758 and separate4x4TF/native32	8
 25	P106B	run_P106B_Stage4erZb_role_only4_actual_answers.sh	D	.3	Y	Y	GATED exact role-only4 full896; candidate-free1758 and error-axis/native32	8
@@ -57,7 +56,6 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 29	P106B	run_P106B_Stage4esWa_cpt32_question_position.sh	D	.33	Y	Y	GATED CPU freeze; CPT32 final512answers and exactCQ reproduction; no training	8
 30	P106B	run_P106B_Stage4esWb_base32_question_position.sh	D	.33	Y	Y	GATED CPU freeze; base32 final same512inputs; show8preselected actual question-answer groups	8
 31	P106B	run_P106B_Stage4esWc_question_position_readback.sh	N	.08	N	N	GATED both512actual cohorts; source/body/raw and article paired recount; CQ mismatch HOLD	8
-32	P106D	run_P106D_Stage5W0_history_scope_cpu.sh	N	.167	N	N	CPU old64/fresh64 producer and418static128dynamic templates; three CPU tensor loads, no Module/GPU	8
 33	P106D	run_P106D_Stage5Wa_parent_history_scope.sh	D	.333	Y	Y	GATED CPU; original parent546cases, FP32MATH actual history, no training	8
 34	P106D	run_P106D_Stage5Wb_fixed_history_scope.sh	D	.333	Y	Y	GATED CPU; old fixed128 student546cases, visible first body and C3 target	8
 35	P106D	run_P106D_Stage5Wc_views_history_scope.sh	D	.333	Y	Y	GATED CPU; old views128 student546cases, C1 state versus C3 string	8
@@ -1082,6 +1080,11 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #
 # ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
 #   21	P106B	run_P106B_Stage4erYa_ce4_train896.sh	Y	1.3	Y	Y	GATED all3cost8 and8h/current deadline budget; fresh original parent CE4 positive896	8
+
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   22	P106B	run_P106B_Stage4erYb_role_only4_train896.sh	Y	1.3	Y	Y	GATED all3cost8; same4queries/native/order; fresh parent role-only negative896	8
+#   32	P106D	run_P106D_Stage5W0_history_scope_cpu.sh	N	.167	N	N	CPU old64/fresh64 producer and418static128dynamic templates; three CPU tensor loads, no Module/GPU	8
 
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)

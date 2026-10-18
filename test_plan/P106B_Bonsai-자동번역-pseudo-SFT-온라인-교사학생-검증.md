@@ -5503,6 +5503,10 @@ Stage4erXa CE4 cost8은05:18:55 종료0/새CP0·allocated4173.874/reserved4392Mi
 
 07:44:43 ROLE_ONLY4도 종료0·896회·같은 실제 분모와 초기 본체로 완료했다([101 §296](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). DEV .48800/native32 +.05228이지만 실제 답변 개선 여부는 평가 전이다. driver3552.909초·peak reserved4472MiB·전체896 clip을 보존하며 CPU 병행으로 격리 속도 비교는 하지 않는다. 완료 SH는 `-done.sh`로 보존했고 새 CP는 후속 평가 입력으로 목록에 추가했다. 07:45:33 ALL_AXES4를 같은 원부모에서 시작했으며 세 실제 답변 평가 전까지 목적함수의 품질 우열을 판단하지 않는다.
 
+
+08:47:03 ALL_AXES4도896회/같은 분모·초기화로 완료했다([101 §298](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). DEV .52735/native32 +.05218·driver3539.739초·reserved4472MiB·clip896을 확인했다. 세 팔 손실 하락은 실제 답변 성공과 다르며, 08:49:41 CE1758답부터 순차 평가를 시작했다. 전체 assistant targets613928 중 실제 종료 ID140544는22.8926%다. replay의 여러 지도 턴을 행당1개로 계산하지 않고 이 비중을 실패 원인의 증거로도 올리지 않는다.
+
+
 ### 사용자 실행파일·현재 준비 순서
 
 13개SH는아래순서로등록하며,현재총괄은20일17시위임안에서기존CPT32평가뒤단독GPU로수행한다. 실제완료/진행은9절·결과문서가소유하며이목록존재를실행성공으로세지않는다. 공통micro8×accum16/seq1024/checkpoint-on과최대wall/8시간gate는source receipt에명시된다.
@@ -5575,3 +5579,68 @@ CPU동결수분이내·GPU기존CP2개×512답은잠정10~20분,전체평가/검
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 본body학습시간의선험추정은팔당60~80분이며세cost가이예상/총8시간/최신허가를검증하기전본학습을열지않는다. 새13런처는stdin/선택대기0이며공용표준3단계최종receipt로완료/보류/도구오류를분리한다. 알려진설계실수점검통과가실제효능예측은아니다.
+
+## Stage4erS — 실제 생성 토큰과 TF 분기 prefix의 CPU 인증
+
+### 1. 왜
+
+§291의 첫 분기 점수는 canonical 후보 prefix의 진단이다. 실제 자유 답변과 같은 토큰 prefix에서 잰 것인지까지 연결해야 해석을 더 좁힐 수 있다. 기존 helper는 실제 continuation ID 전체를 해시했으나 공개 원형에는 ID 목록 대신 그 SHA를 남긴다. 모델 가중치나 동결8파일을 바꾸지 않고, 복원 가능한 후보의 해시를 대조하는 독립 CPU 판독을 준비한다.
+
+### 2. 질문
+
+| 질문 | 범위 |
+|---|---|
+| 원답이 네 이름 중 하나와 raw 문자열로 같을 때 실제 token열도 같은가 | 생성 continuation SHA와 완전 레코드의 유효 assistant target ID 비교 |
+| 같다면 각 TF 분기가 실제로 도달한 동일 prefix인가 | 질문마다 세 음성 edge를 별도로 검산 |
+| 어디까지 미해결인가 | 다른 segmentation·미등록 종료·미도달·후보 밖 답을 별도 분모로 보존 |
+
+### 3. 예측·세 대안
+
+| 안 | 장점 | 비용·한계 |
+|---|---|---|
+| A 독립 CPU 해시 인증 | 모델/기존 원형 변경 없이 일부 실제 prefix를 확인 | 두 코드와 회귀 필요, canonical 해시 불일치는 미해결로 남음 |
+| B 소형 GPU 재생성과 전체ID 관찰 | 비정규 segmentation까지 새로 관찰 가능 | 새 생성·cache/수치 경로 검증과 GPU 비용 필요 |
+| C 기존 canonical TF 해석만 유지 | 추가 비용0 | 실제 prefix와 같다는 주장 범위를 넓힐 수 없음 |
+
+총괄은20일17시까지 허가된 진단 안에서 A를 선택한다. B는 아직 구현/실행하지 않는다. 해시 인증이 많이 되더라도 실제답 정답성이나 cached/full-forward 수치 동등성이 증명되는 것은 아니다.
+
+### 4. 단계·계약
+
+독립 `scripts/diag_p106b_actual_prefix_readback.py`와 `scripts/test_p106b_actual_prefix_readback.py`만 신설한다. namespace는 `p106b_subject_role_prefix_v1_s1337`다. 기존 main8코드·D/QPOS·모델/공용checker는 수정하지 않는다.
+
+CPU 회귀 뒤 main 세 평가1758답과 Stage4erR의 원형 판독 완료를 선결로 한다. 각 모델의 관계 view0 512개, 세 모델1536개 원형을 고정하며 각질문 세 edge, 모델별1536/전체4608 edge를 빠짐없이 분류한다. 부분 원형은 HOLD8, SHA/계보 손상은 TOOL_ERROR9다.
+
+이름 매칭에는 raw 문자열의 정확 일치만 쓰고 NFKC/strip/공백 정리나 채점용 정규화를 사용하지 않는다. 같은 bundle 안의 유일 후보만 인증 대상으로 삼는다. 후보 ID는 standalone 이름 재인코딩이 아니라 기존 complete_record가 검산한 완전 레코드의 유효 assistant y에서 얻는다. shifted x/y·마스크·원 prompt/BPE 경계·CPU 동결 record/spec 지문을 확인한다.
+
+STOP_SEQUENCE는 인증된 EOT 한 개가 continuation SHA에 포함된다는 기존 계약을 따른다. EOS에는 EOT를 붙이지 않으며 좁은 판독에서는 미해결이다. MAX_NEW는 종료를 추측하지 않고 실제 내용 IDs·길이·SHA가 모두 맞을 때만 인증한다. 해시 함수는 기존 compact JSON list[int] UTF-8 SHA256 정의 그대로다. 해시 불일치는 segmentation 차이일 수 있으므로 모델 오답이나 도구 손상으로 바꾸지 않는다.
+
+prompt 길이 L, 분기 인덱스 d, predictor p=L-1+d에서 실제 `P+G[:d]`와 해당 edge의 `record.x[:p+1]`를 정확 비교한다. G[d] 자체는 prefix에 넣지 않는다. 다른 후보의 더 늦은 분기까지 같다고 추정하지 않고 미도달/불일치/미인증을 별도 기록한다. EOT 분기와 공유 prefix도 유지한다.
+
+### 5. 판정
+
+모델별 전체 view0/유일 raw 이름 매칭/token SHA 인증/각 edge의 prefix 일치·불일치·미도달·미인증을 같은 고정 분모로 보고한다. 기존 점수·생성·모델 선택 정책은 바꾸지 않는다. 지식/품질 통계 문턱을 새로 만들지 않으며 기존 dense/recur의 sigma를 이 정확 해시 검사에 복사하지 않는다.
+
+### 6. 비용
+
+GPU/Module/forward/학습/새CP/교사/다운로드0이다. source 검산과 판독 worker를 각300초 이내로 제한하며 기존 실제 생성이 끝난 뒤 최대600초 CPU 활동을 예약한다. SH 회귀·큐 대기와 달력시간은 별도다. 대용량 source/답 복제는 ignored local의 새 이름공간에만 두고 공개 summary/원형 SHA/분모만 선택 보존한다. 파일별20MB 미만·기존 산출물 덮어쓰기 금지를 지킨다.
+
+### 7. 실행
+
+`run_P106B_Stage4erS_actual_prefix_cpu.sh`를 회귀→선결→본판독의 비대화형3단계로 준비한다. 우선순위는 main세896→세1758답→R→이CPU판독→QPOS→D이며 새 GPU를 병행하지 않는다. 현재 SH는 **미작성**이다.
+
+### 8. 한계
+
+인증 가능한 부분집합만의 cryptographic 연결이다. 해시 미해결을0점으로 채우지 않는다. 같은 token-prefix라고 quantization/cache/정밀도 logits가 같다는 증명도 아니며 실제 선택한 토큰·두 후보 gap·전체 어휘 argmax도 서로 다르다. 일반적 반복 원인이나 지능향상의 단독 증거가 아니다.
+
+### 9. 초안 검산과 남은 실행 선결
+
+A08FA0FB…/101F4DF4… 초안의 합성36개와 독립36개는 통과했다. 독립 감사는48개 edge와 실제 encoder의 ignored newline/BPE 경계를 별도 검산했다. 다만 재서명한 메모리 raw manifest의 절대경로가 exact basename/stem 확인 전에 digest에 전달되는 P1을 확인했다. 실제 보호자료 접근/원형 변경/모델 실행은0이다.
+
+초안과 반례를 먼저 보존한 뒤 독립 두 코드에만 선해시 경로 검사와 회귀를 수리한다. main8·기존 생성·손실·원형은 바꾸지 않는다. 현재 SH 미작성/실물판독 NOT_RUN이며 수리·새 SHA 동결·독립 재검토·관련 정적과 main 세 평가/R 완료가 모두 먼저다. 합성 회귀가 통과해도 이 안전 반례를 무시하지 않는다.
+
+
+### 9. 착수전 점검
+
+2026-10-19 namespace 조회에서 기존 로그 충돌과 유사 런을 찾지 못했다. 기존 matching reader와 달리 실제 continuation SHA를 후보 ID로 역대조한다. 새 학습/draw가0이므로 풀2배·LR·batch 조건 변경은 해당없다. source/CP/토크나이저와 기존 점수는 그대로다. 코드·CPU 회귀·실물 판독은 아직 **NOT_RUN**이다. 자세한 파일 권한과 영향은 현재 WIP scope가 소유한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

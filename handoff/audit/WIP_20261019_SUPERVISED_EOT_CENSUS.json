@@ -1,0 +1,52 @@
+{
+  "schema": "TINYLM_SUPERVISED_EOT_CENSUS_V1",
+  "source_tag": "p106b_subject_role_v1_s1337",
+  "source_cpu_report_sha256": "72DFCE3613B2B756BB307CDE3FC83727B7C88C72D602BBB255BF097B32713FDC",
+  "source_public_sha256": "6CCEE95B0EB27612A0333480143CB2838AA4A5AB37E4DAE62E1DB98E9EC6EC0D",
+  "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+  "eot_token_id": 4,
+  "per_pass_by_lane": {
+    "natural": {
+      "rows": 16384,
+      "x_tokens": 4112674,
+      "assistant_targets": 90888,
+      "eot_targets": 16384
+    },
+    "replay": {
+      "rows": 4096,
+      "x_tokens": 777315,
+      "assistant_targets": 37770,
+      "eot_targets": 10560
+    },
+    "relation": {
+      "rows": 8192,
+      "x_tokens": 685090,
+      "assistant_targets": 24824,
+      "eot_targets": 8192
+    }
+  },
+  "per_pass": {
+    "rows": 28672,
+    "x_tokens": 5575079,
+    "assistant_targets": 153482,
+    "eot_targets": 35136
+  },
+  "four_pass": {
+    "rows": 114688,
+    "x_tokens": 22300316,
+    "assistant_targets": 613928,
+    "eot_targets": 140544
+  },
+  "eot_fraction_of_assistant_targets": 0.22892586752843982,
+  "model_created": false,
+  "forward_run": false,
+  "checkpoint_tensors_loaded": false,
+  "cuda_initialized": false,
+  "optimizer_updates": 0,
+  "original_files_changed": 0,
+  "seconds": 42.09061695499986,
+  "session_id": 35652,
+  "exit_code": 0,
+  "reproduction_command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 timeout --signal=INT --kill-after=5s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nfrom scripts import diag_p106b_subject_role as d\nfrom tokenizers import Tokenizer\nfrom collections import Counter\nimport torch,json,time\nbegan=time.perf_counter()\nassert not torch.cuda.is_initialized()\nfrozen, rows, bundles=d.read_prepared()\ntok=Tokenizer.from_file(str(d.natural_data.TOKENIZER));eot=tok.token_to_id('<|im_end|>')\nnatural,replay=d.encode_old(rows,tok)\ntotals={}\nfor lane,records in [('natural',[r for pair in natural for r in pair]),('replay',replay)]:\n c=Counter()\n for r in records:\n  c.update(rows=1,x_tokens=r.x_tokens,assistant_targets=r.targets,eot_targets=sum(v==eot for v in r.y))\n totals[lane]=dict(c)\nc=Counter()\nfor bundle in bundles['train']:\n positive,_=d.data.encode_bundle(bundle,tok)\n for r in positive:c.update(rows=1,x_tokens=r.x_tokens,assistant_targets=r.targets,eot_targets=sum(v==eot for v in r.y))\ntotals['relation']=dict(c)\ncombined=Counter()\nfor c in totals.values():combined.update(c)\nassert combined['rows']*4==frozen['exposure']['four_pass']['positive_rows']\nassert combined['assistant_targets']*4==frozen['exposure']['four_pass']['assistant_targets']\nassert combined['x_tokens']*4==frozen['exposure']['four_pass']['x_tokens']\nassert not torch.cuda.is_initialized()\noutput=dict(schema='TINYLM_SUPERVISED_EOT_CENSUS_V1',source_tag=d.TAG,source_cpu_report_sha256=d.digest(d.CORPUS/'report.json'),source_public_sha256=d.digest(d.EVIDENCE/'cpu_contract.json'),tokenizer_sha256=d.digest(d.natural_data.TOKENIZER),eot_token_id=eot,per_pass_by_lane=totals,per_pass=dict(combined),four_pass={k:4*v for k,v in combined.items()},eot_fraction_of_assistant_targets=combined['eot_targets']/combined['assistant_targets'],model_created=False,forward_run=False,checkpoint_tensors_loaded=False,cuda_initialized=False,optimizer_updates=0,original_files_changed=0,seconds=time.perf_counter()-began,interpretation='actual supervised label-ID counts only; not per-token loss/gradient attribution, EOT dominance, answer quality or new training')\nprint(json.dumps(output,ensure_ascii=False,indent=2))\nPY",
+  "interpretation": "Actual supervised label-ID counts only; not per-token loss/gradient attribution, EOT dominance, answer quality or new training. Replay includes multiple supervised turns, so one EOT per row is invalid."
+}
