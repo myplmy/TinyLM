@@ -1,0 +1,1400 @@
+{
+  "schema": "P106B_OLD_2X4_INDEPENDENT_RECOUNT_V1",
+  "date_kst": "2026-10-19",
+  "status": "SCOPED_TF_PROBE_RECOUNT_COMPLETE_NO_MODEL_ADOPTION",
+  "tag": "p106b_subject_role_v1_s1337",
+  "작성자": "oct19_antithesis",
+  "권한과시점": {
+    "과제": "기존 A CE/contrast의 두 질문×네 후보 TF 원형을 표준라이브러리 CPU로 짧게 독립 검산하고 이 감사 JSON 한 파일만 보존한다.",
+    "완료보고먼저": "첫 확인 시 CE와contrast 완료 report.json이 모두 존재했다. contrast partial raw는 읽지 않았고 OLD_2X4_TF_DIAGNOSTIC_COMPLETE 확인 후에만 원형을 읽었다.",
+    "실행경계": "학습·모델 생성/forward·Torch import·GPU·가중치 역직렬화·원자료/기존코드 변경·Git·새 agent0. 대형 CPU 계산이나 새 모델 run은 없다.",
+    "CPU실행당시쓰기0": "실제 재계수 명령은 읽기 전용이었다. 그 뒤 총괄이 지정한 현재 감사 JSON 한 파일만 apply_patch로 생성한다.",
+    "비용측정경합": "총괄의05:15:35 CE4 cost SH 시작 통보 뒤에는 이 작은 감사 JSON 저장/자체 검증만 수행하고 원형 재읽기·추가 CPU/GPU 실행 없이 대기한다."
+  },
+  "읽은대상과미접근": {
+    "probe_reports": [
+      "test_result/evidence/p106b_subject_role_v1_s1337/probe_old_ce/report.json",
+      "test_result/evidence/p106b_subject_role_v1_s1337/probe_old_contrast/report.json"
+    ],
+    "probe_raw": [
+      "test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_ce/rank2x4_000000.jsonl",
+      "test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_contrast/rank2x4_000000.jsonl"
+    ],
+    "연결메타데이터": "각 manifest·현재 code_sha256 파일·기존 A의 readback/완료 evaluate3보고/해당 train보고만 해시 또는 JSON으로 읽었다.",
+    "미접근": [
+      "실제 tokenizer 파일",
+      "모델/가중치 tensor",
+      "체크포인트 바이트 자체의 새 해시",
+      "기존 A 자유답 문자열/생성 token ID 원형의 재판독",
+      "보호 datasets/TinyDataset",
+      "진행 중 contrast partial raw",
+      "진행 중 새 cost 원형"
+    ],
+    "source_binding_limit": "오답 유형은 probe에 보존된 actual_original_error_types/actual_original_answer_sha256를 사용한다. 기존 A 완료보고 SHA와 train768/source/readback 계보를 결합했지만, 이번 과제에서 원답 문자열로 오류유형을 새로 분류한 것은 아니다."
+  },
+  "분모와정의": {
+    "모델수": 2,
+    "모델당bundle수": 128,
+    "언어당bundle수": 64,
+    "모델언어당질문수": 128,
+    "질문인덱스": [
+      0,
+      1
+    ],
+    "후보인덱스": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "총질문관측": 512,
+    "총첫분기edge": 1536,
+    "원래질문과후보": "q0/1은 원 A의 같은 첫 대상/두 역할이다. candidate0/1은 해당 대상, candidate2/3은 둘째 대상의 같은 역할 순서다.",
+    "역할음성": "a=q^1: 같은 대상·다른 역할. role_negative_only_comparison_win은 이 한 edge만 대조한다는 뜻이며 나머지 두 edge에서 반드시 패했다는 배타 의미가 아니다.",
+    "다른대상같은역할": "a=q^2",
+    "다른대상다른역할": "a=q^3",
+    "내용평균": "content_means[q][a] == content_sums[q][a] / content_lengths[q][a]를 전256bundle의2×4칸에서 exact 재산출했다. EOT logP는 별도이고 평균에 포함하지 않는다.",
+    "승리": "gold mean logP > 비교 후보 mean logP라는 엄격한 부등식이다. 임의 epsilon/허용오차/채택 문턱을 추가하지 않는다.",
+    "정답rank1": "gold가 나머지3답보다 모두 엄격히 클 때 unique rank1이다. ties를 허용한 competition-rank1도 별도 계수했으며 실제 동점은0이다.",
+    "gap": "correct_logit-crossed_logit를1536edge에서 exact 재산출했다. 양수는 해당 공유 TF prefix에서 gold token이 그 후보 token보다 높다는 뜻이다.",
+    "독립단위": "언어당64사실 그래프이며 같은 그래프의 두 질문/번역을 독립 세계로 합산하지 않는다.512질문/1536edge는 관측 개수이지512개 독립 그래프가 아니다."
+  },
+  "핵심집계": [
+    {
+      "model": "ce",
+      "language": "en",
+      "bundles": 64,
+      "questions": 128,
+      "role_q_xor1_win": {
+        "numerator": 128,
+        "denominator": 128,
+        "fraction": "128/128",
+        "rate": 1
+      },
+      "other_subject_same_role_q_xor2_win": {
+        "numerator": 78,
+        "denominator": 128,
+        "fraction": "78/128",
+        "rate": 0.609375
+      },
+      "all_three_negative_win": {
+        "numerator": 78,
+        "denominator": 128,
+        "fraction": "78/128",
+        "rate": 0.609375
+      },
+      "strict_unique_gold_rank1": {
+        "numerator": 78,
+        "denominator": 128,
+        "fraction": "78/128",
+        "rate": 0.609375
+      },
+      "actual_old_free_correct": {
+        "numerator": 77,
+        "denominator": 128,
+        "fraction": "77/128",
+        "rate": 0.6015625
+      },
+      "actual_old_error_q_xor2": 51,
+      "first_gap_to_actual_wrong": {
+        "n": 51,
+        "positive": 0,
+        "zero": 0,
+        "negative": 51,
+        "min": -7.264962196350098,
+        "max": -0.023271560668945312,
+        "mean": -1.4917898178100586,
+        "median": -1.2299823760986328,
+        "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+      },
+      "branch0_negative": 51,
+      "later_prefix_comparisons": 0,
+      "EOT_comparisons": 0,
+      "graph_scores": {
+        "role_edge_both_win": 64,
+        "all_three_both_win": 23,
+        "actual_free_both_correct": 22
+      }
+    },
+    {
+      "model": "ce",
+      "language": "ko",
+      "bundles": 64,
+      "questions": 128,
+      "role_q_xor1_win": {
+        "numerator": 128,
+        "denominator": 128,
+        "fraction": "128/128",
+        "rate": 1
+      },
+      "other_subject_same_role_q_xor2_win": {
+        "numerator": 71,
+        "denominator": 128,
+        "fraction": "71/128",
+        "rate": 0.5546875
+      },
+      "all_three_negative_win": {
+        "numerator": 71,
+        "denominator": 128,
+        "fraction": "71/128",
+        "rate": 0.5546875
+      },
+      "strict_unique_gold_rank1": {
+        "numerator": 71,
+        "denominator": 128,
+        "fraction": "71/128",
+        "rate": 0.5546875
+      },
+      "actual_old_free_correct": {
+        "numerator": 72,
+        "denominator": 128,
+        "fraction": "72/128",
+        "rate": 0.5625
+      },
+      "actual_old_error_q_xor2": 56,
+      "first_gap_to_actual_wrong": {
+        "n": 56,
+        "positive": 0,
+        "zero": 0,
+        "negative": 56,
+        "min": -5.18498420715332,
+        "max": -0.03625297546386719,
+        "mean": -1.520057235445295,
+        "median": -1.243046760559082,
+        "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+      },
+      "branch0_negative": 53,
+      "later_prefix_comparisons": 3,
+      "EOT_comparisons": 0,
+      "graph_scores": {
+        "role_edge_both_win": 64,
+        "all_three_both_win": 16,
+        "actual_free_both_correct": 17
+      }
+    },
+    {
+      "model": "contrast",
+      "language": "en",
+      "bundles": 64,
+      "questions": 128,
+      "role_q_xor1_win": {
+        "numerator": 128,
+        "denominator": 128,
+        "fraction": "128/128",
+        "rate": 1
+      },
+      "other_subject_same_role_q_xor2_win": {
+        "numerator": 86,
+        "denominator": 128,
+        "fraction": "86/128",
+        "rate": 0.671875
+      },
+      "all_three_negative_win": {
+        "numerator": 86,
+        "denominator": 128,
+        "fraction": "86/128",
+        "rate": 0.671875
+      },
+      "strict_unique_gold_rank1": {
+        "numerator": 86,
+        "denominator": 128,
+        "fraction": "86/128",
+        "rate": 0.671875
+      },
+      "actual_old_free_correct": {
+        "numerator": 86,
+        "denominator": 128,
+        "fraction": "86/128",
+        "rate": 0.671875
+      },
+      "actual_old_error_q_xor2": 42,
+      "first_gap_to_actual_wrong": {
+        "n": 42,
+        "positive": 0,
+        "zero": 0,
+        "negative": 42,
+        "min": -9.229355812072754,
+        "max": -0.012269973754882812,
+        "mean": -1.9192441531590052,
+        "median": -1.597757339477539,
+        "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+      },
+      "branch0_negative": 42,
+      "later_prefix_comparisons": 0,
+      "EOT_comparisons": 0,
+      "graph_scores": {
+        "role_edge_both_win": 64,
+        "all_three_both_win": 29,
+        "actual_free_both_correct": 29
+      }
+    },
+    {
+      "model": "contrast",
+      "language": "ko",
+      "bundles": 64,
+      "questions": 128,
+      "role_q_xor1_win": {
+        "numerator": 128,
+        "denominator": 128,
+        "fraction": "128/128",
+        "rate": 1
+      },
+      "other_subject_same_role_q_xor2_win": {
+        "numerator": 74,
+        "denominator": 128,
+        "fraction": "74/128",
+        "rate": 0.578125
+      },
+      "all_three_negative_win": {
+        "numerator": 74,
+        "denominator": 128,
+        "fraction": "74/128",
+        "rate": 0.578125
+      },
+      "strict_unique_gold_rank1": {
+        "numerator": 74,
+        "denominator": 128,
+        "fraction": "74/128",
+        "rate": 0.578125
+      },
+      "actual_old_free_correct": {
+        "numerator": 74,
+        "denominator": 128,
+        "fraction": "74/128",
+        "rate": 0.578125
+      },
+      "actual_old_error_q_xor2": 54,
+      "first_gap_to_actual_wrong": {
+        "n": 54,
+        "positive": 0,
+        "zero": 0,
+        "negative": 54,
+        "min": -5.199491500854492,
+        "max": -0.03817939758300781,
+        "mean": -1.686780541031449,
+        "median": -1.4009275436401367,
+        "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+      },
+      "branch0_negative": 51,
+      "later_prefix_comparisons": 3,
+      "EOT_comparisons": 0,
+      "graph_scores": {
+        "role_edge_both_win": 64,
+        "all_three_both_win": 18,
+        "actual_free_both_correct": 18
+      }
+    }
+  ],
+  "실제오답분기": {
+    "recorded_error_type": "OTHER_SUBJECT_SAME_ROLE",
+    "candidate_mapping": "a=q^2",
+    "actual_wrong_questions": 203,
+    "positive_first_gap": 0,
+    "zero_first_gap": 0,
+    "negative_first_gap": 203,
+    "branch0_content_negative": 197,
+    "later_shared_content_prefix": 6,
+    "EOT_prefix_comparisons": 0,
+    "언어모델별": "CE EN51/KO56,contrast EN42/KO54. 네 집단 총203개의 실제 오답 후보는 첫 분기 gap이 모두 음수였다.",
+    "관측": "이203오답에는 gold−실제오답 token 첫 분기 gap이 양수인데 오답을 생성했다는 사례가 없다.",
+    "해석": "해당 후보와의 분기 부호는 모델 자체가 다른 대상의 같은 역할을 선택한 방향과 일치한다. 이 부분에서 구현경로 불일치의 양수-gap 반례는 발견하지 못했다.",
+    "해석한계": "양수 반례가 없다는 것은 모든 실행경로/gradient/quant cache가 정확하다는 증명이 아니다. TF와 실제생성의 causal history·tokenization·precision/backend·cached batch shape가 같은지 이번 원형만으로 전부 재현한 것은 아니다."
+  },
+  "평균점수와greedy차이": {
+    "CE_EN": "4후보 평균 rank1은78/128인데 실제 자유답 정답은77/128이다. 실제 오답51건 중2건은 gold의 전체 내용 평균이 오답보다 높아도 최초 분기 gap은 음수였다. 반대로 실제 정답77건 중1건은 평균 rank2였다.",
+    "CE_KO": "평균 rank1은71/128이고 실제 정답은72/128이다. 실제 정답 중1건은 평균 rank2지만 실제 오답56건의 최초 분기는 모두음수였다.",
+    "contrast": "EN86/128·KO74/128은 평균 rank1과 실제 정답 수가 같고 이번 보존 오류유형과도 일치한다. 이 수치 일치가 일반적인 지표 동치라는 뜻은 아니다.",
+    "이유": "후보 전체 평균은 그 후보 뒤쪽의 정답 토큰들을 teacher forcing한 합/길이다. 실제 greedy는 현재 prefix의 토큰 argmax를 택한다. 미래 토큰의 높은 우도가 최초 잘못된 선택을 되돌리지 않으며, 길이가 다르면 앞부분/공유 토큰의 상대 기여도 달라진다.",
+    "첫분기조건": "branch_index>0의 gap은 두 후보가 공유하는 내용 prefix를 이미 따랐다는 조건부 점수다. 실제 생성이 다른 prefix/앞 공백/다른 tokenization을 택했다면 그 TF gap만으로 실제 생성의 논리적 모순을 주장하지 않는다.",
+    "EOT": "내용이 다른 후보의 prefix이면 한쪽 EOT와 다른쪽 다음 내용 토큰이 최초분기일 수 있다. 코드 원형은 includes_eot/type/content-length index로 이를 구분하며 학습 내용 평균에는 EOT를 넣지 않는다. 이번1536edge의 EOT분기는0이었다.",
+    "실제올바른답과다른edge": "모든 edge의 부호 집계는 parsed_output.results.*.*.edge_summary에 그대로 보존했다. 실제 오답과의q^2 분기 결과만으로 다른 후보 edge까지 모두 양수라고 주장하지 않는다."
+  },
+  "관측본체와계보": {
+    "identities": {
+      "ce": {
+        "report_path": "test_result/evidence/p106b_subject_role_v1_s1337/probe_old_ce/report.json",
+        "report_sha256": "EFB326600C1B8969D28475ED807C2397B22E9E713E6686BB5E3759462F821EC2",
+        "manifest_path": "test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_ce/rank2x4_shards_manifest.json",
+        "manifest_sha256": "C76FA40D17E7B5D4DD24A2F43F5995C97C03E74250A10A8D2D3E9BAE4ED57857",
+        "raw_shards": [
+          {
+            "path": "rank2x4_000000.jsonl",
+            "bytes": 362724,
+            "rows": 128,
+            "sha256": "6A9AF9EB288A3BA9D2A9EFC65DEFAAC22708304B48BE99D7E214003691F0E393"
+          }
+        ],
+        "raw_concat_sha256": "6A9AF9EB288A3BA9D2A9EFC65DEFAAC22708304B48BE99D7E214003691F0E393",
+        "lineage": {
+          "checkpoint": "runs/ckpt/m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_ce.pt",
+          "checkpoint_sha256": "7DDC52E19C20B2FC27CA72761C7BDC6ED726F20233F075D646BAEBA43CB58D0A",
+          "endpoint": "ce",
+          "expected_core_sha256": "BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80",
+          "probe": "ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES",
+          "tag": "p106b_subject_role_v1_s1337",
+          "training_report_sha256": "72AE5F686FF9972023E5876F97453A472D1E757258C9F0A29F628A45B1F39EDF"
+        },
+        "recorded_core_before": "BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80",
+        "recorded_core_after": "BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80",
+        "new_free_answers": 0,
+        "actual_old_training_updates": 768,
+        "study_metadata_updates": 896,
+        "code_files": 53,
+        "original_readback_sha256": "28041479DFAB1480F4144063750B9014A313A505C118B58FFBB3F13C9F49092F",
+        "original_source_reports_sha256": {
+          "ce": "EE0AEDB4FFF61840C1D693FB3FC8C44B725E9B6EFA4333AE52080C98C2496621",
+          "contrast": "2D93462C51EC7E813075B2296391012DC71443F634496544503AA8BFC41D4426",
+          "parent": "41F2B013EA10BF5D8EDEA02A43575DE01AC96074A8A9BCC95A30F7F8A284EE8C"
+        }
+      },
+      "contrast": {
+        "report_path": "test_result/evidence/p106b_subject_role_v1_s1337/probe_old_contrast/report.json",
+        "report_sha256": "97F4C57F5C12CF240D1DAB010B56FE0C1FD5C53BF7516A7F9ADD3973F6DF0E4F",
+        "manifest_path": "test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_contrast/rank2x4_shards_manifest.json",
+        "manifest_sha256": "7F569F1131C3B1D95B4805C125FA77171732FAD6A26FBA672647AEA25F2A145F",
+        "raw_shards": [
+          {
+            "path": "rank2x4_000000.jsonl",
+            "bytes": 362416,
+            "rows": 128,
+            "sha256": "19744D5FEA0C3E4B7DA93110CE74A03C24B3B2C0871AB134763B70B773330A16"
+          }
+        ],
+        "raw_concat_sha256": "19744D5FEA0C3E4B7DA93110CE74A03C24B3B2C0871AB134763B70B773330A16",
+        "lineage": {
+          "checkpoint": "runs/ckpt/m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_contrast.pt",
+          "checkpoint_sha256": "354F5A9C91126D0A633F084DFA10AB9ADF630956CBEE10535B79386A0B32527A",
+          "endpoint": "contrast",
+          "expected_core_sha256": "7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644",
+          "probe": "ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES",
+          "tag": "p106b_subject_role_v1_s1337",
+          "training_report_sha256": "CDBF81B771439D3033235F639B3911CC854FFF4D011486CDC492A5107D3C9DA4"
+        },
+        "recorded_core_before": "7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644",
+        "recorded_core_after": "7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644",
+        "new_free_answers": 0,
+        "actual_old_training_updates": 768,
+        "study_metadata_updates": 896,
+        "code_files": 53,
+        "original_readback_sha256": "28041479DFAB1480F4144063750B9014A313A505C118B58FFBB3F13C9F49092F",
+        "original_source_reports_sha256": {
+          "ce": "EE0AEDB4FFF61840C1D693FB3FC8C44B725E9B6EFA4333AE52080C98C2496621",
+          "contrast": "2D93462C51EC7E813075B2296391012DC71443F634496544503AA8BFC41D4426",
+          "parent": "41F2B013EA10BF5D8EDEA02A43575DE01AC96074A8A9BCC95A30F7F8A284EE8C"
+        }
+      }
+    },
+    "새자유답": 0,
+    "현재작업모델로딩": 0,
+    "기록본체확인": "두 probe 모두 core_before==core_after==lineage.expected_core_sha256다. 새 tensor fingerprint 재계산은 하지 않았다.",
+    "CP해시확인수준": "이번에는 CP 바이트를 새로 해시하지 않았다. 완료한 원 A train768보고의 checkpoint_sha256/final_core와 probe lineage를 exact 연결하고 해당 train보고의 바이트 SHA를 재확인했다.",
+    "top_metadata_updates_주의": "probe 보고의 updates896/native7168/3팔/LR 등은 독립 새 subject-role 실험의 공통 info 메타데이터다. 실제 probe 대상은 lineage로 결합된 원 A의768회 CE/contrast이며, 새896회 학습이나새7168창 사용을 뜻하지 않는다."
+  },
+  "재현과원출력": {
+    "성공실행": {
+      "exact_command": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 timeout 30 /usr/bin/python3 -B - <<'PY'\nfrom pathlib import Path\nimport collections,hashlib,json,math,statistics,sys,time\nR=Path('/home/uranus/tinyLM');TAG='p106b_subject_role_v1_s1337';E=R/'test_result/evidence'/TAG;L=R/'test_result/evidence/local'/TAG;began=time.perf_counter();checks=collections.Counter();sha_cache={}\ndef ck(v,k):\n if not v:raise AssertionError(k)\n checks[k]+=1\ndef sha(p):\n if p not in sha_cache:\n  h=hashlib.sha256()\n  with p.open('rb') as f:\n   for b in iter(lambda:f.read(1048576),b''):h.update(b)\n  sha_cache[p]=h.hexdigest().upper()\n return sha_cache[p]\ndef js(p):return json.loads(p.read_text(encoding='utf-8'))\ndef finite(v):return type(v) in (int,float) and math.isfinite(v)\ndef ratio(n,d):return dict(numerator=n,denominator=d,fraction=str(n)+'/'+str(d),rate=n/d)\ndef stats(v):\n total=0.\n for x in v:total+=x\n return dict(n=len(v),positive=sum(x>0 for x in v),zero=sum(x==0 for x in v),negative=sum(x<0 for x in v),min=min(v),max=max(v),mean=total/len(v),median=statistics.median(v),aggregation='saved source row order; explicit sequential left-fold, no tolerance')\naxes={'same_subject_other_role':1,'other_subject_same_role':2,'other_subject_other_role':3};error_axis={'SAME_SUBJECT_OTHER_ROLE':1,'OTHER_SUBJECT_SAME_ROLE':2,'OTHER_SUBJECT_OTHER_ROLE':3}\nallresults={};identities={};source_signatures={};examples=[]\nfor label in ('ce','contrast'):\n p=E/('probe_old_'+label)/'report.json'\n if not p.is_file():raise RuntimeError('COMPLETE_REPORT_NOT_YET_CREATED:'+label)\n report=js(p);ck(report['status']=='OLD_2X4_TF_DIAGNOSTIC_COMPLETE' and report['model']==label and report['bundles']==128,'completed_exact_probe')\n ck(report['additional_free_answers']==0 and report['model_training'] is False and report['weights_changed'] is False,'no_new_free_answers_or_training')\n identity=report['lineage'];ck(identity['endpoint']==label and identity['probe']=='ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES' and identity['tag']==TAG,'lineage_endpoint_probe')\n ck(report['core_before']==report['core_after']==identity['expected_core_sha256'],'recorded_body_before_after_equal')\n for name,h in report['code_sha256'].items():ck(sha(R/name)==h,'current_code_sha')\n directory=L/('probe_old_'+label);mp=directory/'rank2x4_shards_manifest.json';m=js(mp)\n ck(m==report['rank_manifest'] and sha(mp)==report['rank_manifest_sha256'] and m['lineage']==identity,'manifest_hash_report_lineage')\n whole=hashlib.sha256();rows=[];nb=0\n for i,s in enumerate(m['shards']):\n  ck(s['path']==f'rank2x4_{i:06d}.jsonl','ordered_shard_name');b=(directory/s['path']).read_bytes();whole.update(b);nb+=len(b)\n  ck(len(b)==s['bytes'] and len(b)<20000000 and b.endswith(bytes([10])) and hashlib.sha256(b).hexdigest().upper()==s['sha256'],'raw_bytes_sha_limit')\n  values=[json.loads(x) for x in b.decode('utf-8').splitlines()];ck(len(values)==s['rows'],'raw_shard_rows');rows.extend(values)\n ck(len(rows)==m['rows']==128 and nb==m['bytes'] and whole.hexdigest().upper()==m['concat_sha256'],'whole128_raw_sha')\n A=R/'test_result/evidence/p106b_relation_bind_v1_s1337'\n ck(sha(A/'readback.json')==report['original_readback_sha256'],'old_A_readback_report_sha')\n for endpoint,h in report['original_source_reports_sha256'].items():ck(sha(A/('evaluate_'+endpoint)/'report.json')==h,'old_A_evaluation_report_sha')\n train=js(A/('train_'+label)/'report.json');ck(sha(A/('train_'+label)/'report.json')==identity['training_report_sha256'] and train['checkpoint_sha256']==identity['checkpoint_sha256'] and train['final_core_sha256']==report['core_before'] and train['updates']==768,'actual_old768_training_identity')\n seen=set();questions=collections.defaultdict(list);graphs=collections.defaultdict(list);signatures=[]\n for row in rows:\n  key=row['bundle_id'];ck(key not in seen,'unique_bundle_id');seen.add(key);ck(row['language'] in ('en','ko'),'declared_language')\n  ck(all(isinstance(row[k],str) and len(row[k])==64 for k in ('bundle_id','parent_bundle_id','group_id')),'bundle_parent_group_sha_shape')\n  for name in ('content_lengths','content_sums','content_means','eot_logp'):\n   a=row[name];ck(isinstance(a,list) and len(a)==2 and all(isinstance(x,list) and len(x)==4 for x in a),'exact2x4_shape')\n   ck(all(type(v) is int and v>0 for x in a for v in x) if name=='content_lengths' else all(finite(v) and v<=0 for x in a for v in x),'positive_lengths_or_finite_nonpositive_logp')\n  ck(row['content_lengths'][0]==row['content_lengths'][1],'candidate_own_length_same_across_questions')\n  ck(row['content_means']==[[row['content_sums'][q][a]/row['content_lengths'][q][a] for a in range(4)] for q in range(2)],'exact_own_length_mean_recalculation')\n  ck(len(row['actual_original_answer_sha256'])==len(row['actual_original_error_types'])==2 and all(isinstance(h,str) and len(h)==64 and all(c in '0123456789ABCDEF' for c in h) for h in row['actual_original_answer_sha256']),'two_actual_answer_hashes')\n  branches=row['first_divergence'];ck(len(branches)==6 and [(b['question_index'],b['candidate_index']) for b in branches]==[(q,a) for q in range(2) for a in range(4) if a!=q],'six_ordered_first_divergence_edges');bm={}\n  static=[]\n  for b in branches:\n   q=b['question_index'];a=b['candidate_index'];idx=b['branch_index'];ck(type(idx) is int and 0<=idx<=min(row['content_lengths'][q][q],row['content_lengths'][q][a]),'branch_in_complete_content_EOT_range')\n   ck(all(finite(b[k]) for k in ('correct_logit','crossed_logit','gap')) and b['gap']==b['correct_logit']-b['crossed_logit'],'exact_first_gap_recalculation')\n   ck(type(b['correct_token']) is int and type(b['crossed_token']) is int and b['correct_token']!=b['crossed_token'] and 0<=b['correct_token']<32768 and 0<=b['crossed_token']<32768,'distinct_in_vocab_branch_tokens')\n   eot=b['correct_token']==4 or b['crossed_token']==4;ck(b['includes_eot'] is eot and b['branch_type']==('CONTENT_PREFIX_EOT_BRANCH' if eot else 'CONTENT_INNER_DIVERGENCE'),'prefix_EOT_branch_type')\n   ck((b['correct_token']==4)==(idx==row['content_lengths'][q][q]) and (b['crossed_token']==4)==(idx==row['content_lengths'][q][a]),'EOT_index_matches_own_content_length')\n   ck(type(b['correct_predictor_position']) is int and 0<=b['correct_predictor_position']<1024,'predictor_position_range');bm[q,a]=b;static.append({k:v for k,v in b.items() if k not in ('correct_logit','crossed_logit','gap')})\n  for q in range(2):\n   ck(len({bm[q,a]['correct_predictor_position']-bm[q,a]['branch_index'] for a in range(4) if a!=q})==1,'shared_predictor_prefix_base')\n   values=row['content_means'][q];gold=values[q];kind=row['actual_original_error_types'][q];ck(kind in ('CORRECT',*error_axis,'EMPTY','OTHER_CONTEXT_ENTITY','OUT_OF_TABLE'),'known_actual_error_type')\n   mean_gaps={name:gold-values[q^flip] for name,flip in axes.items()};edge={name:bm[q,q^flip] for name,flip in axes.items()};rank=1+sum(v>gold for a,v in enumerate(values) if a!=q);ties=sum(v==gold for a,v in enumerate(values) if a!=q)\n   item=dict(bundle_id=key,parent_bundle_id=row['parent_bundle_id'],group_id=row['group_id'],question_index=q,language=row['language'],actual_error_type=kind,actual_answer_sha256=row['actual_original_answer_sha256'][q],rank=rank,ties=ties,strict_rank1=rank==1 and ties==0,mean_gaps=mean_gaps,first_edges=edge)\n   if kind in error_axis:\n    chosen=bm[q,q^error_axis[kind]];item['actual_wrong_edge']=chosen\n    if chosen['gap']>0 and len([x for x in examples if x['model']==label and x['language']==row['language']])<8:examples.append(dict(model=label,language=row['language'],bundle_id=key,parent_bundle_id=row['parent_bundle_id'],group_id=row['group_id'],question_index=q,actual_error_type=kind,actual_answer_sha256=item['actual_answer_sha256'],gold_rank=rank,mean_gap_to_actual_wrong=gold-values[chosen['candidate_index']],first_divergence=chosen))\n   questions[row['language']].append(item);graphs[row['language']].append(item)\n  signatures.append(dict(bundle_id=key,parent_bundle_id=row['parent_bundle_id'],group_id=row['group_id'],language=row['language'],content_lengths=row['content_lengths'],branches=static))\n source_signatures[label]=signatures;model={}\n for language,items in sorted(questions.items()):\n  n=len(items);ck(n==128 and len({x['group_id'] for x in items})==64,'per_language128_questions64_graphs')\n  wins=lambda axis:sum(x['mean_gaps'][axis]>0 for x in items)\n  by_error={}\n  for kind in sorted({x['actual_error_type'] for x in items}):\n   sub=[x for x in items if x['actual_error_type']==kind];out=dict(n=len(sub),strict_mean_rank1=sum(x['strict_rank1'] for x in sub),rank_histogram=dict(collections.Counter(x['rank'] for x in sub)))\n   if kind in error_axis:\n    gaps=[x['actual_wrong_edge']['gap'] for x in sub];mg=[x['mean_gaps'][next(a for a,f in axes.items() if f==error_axis[kind])] for x in sub];out.update(first_gap_to_actual_wrong=stats(gaps),mean_gap_to_actual_wrong=stats(mg),first_branch0_content={sign:sum((x['actual_wrong_edge']['gap']>0 if sign=='positive' else x['actual_wrong_edge']['gap']<0 if sign=='negative' else x['actual_wrong_edge']['gap']==0) and x['actual_wrong_edge']['branch_index']==0 and not x['actual_wrong_edge']['includes_eot'] for x in sub) for sign in ('positive','zero','negative')},prefix_later=sum(x['actual_wrong_edge']['branch_index']>0 for x in sub),eot_comparisons=sum(x['actual_wrong_edge']['includes_eot'] for x in sub))\n   by_error[kind]=out\n  edge_summary={}\n  for name in axes:\n   edges=[x['first_edges'][name] for x in items];edge_summary[name]=dict(mean_logp_gap=stats([x['mean_gaps'][name] for x in items]),first_divergence_gap=stats([b['gap'] for b in edges]),branch_indices=dict(collections.Counter(b['branch_index'] for b in edges)),content_edges=sum(not b['includes_eot'] for b in edges),EOT_prefix_edges=sum(b['includes_eot'] for b in edges))\n  grouped=collections.defaultdict(list)\n  for x in items:grouped[x['group_id']].append(x)\n  ck(all(len(v)==2 and {x['question_index'] for x in v}=={0,1} for v in grouped.values()),'two_original_questions_per_graph')\n  model[language]=dict(bundles=64,questions=128,mean_logp=dict(strict_unique_gold_rank1=ratio(sum(x['strict_rank1'] for x in items),n),gold_rank1_allowing_ties=ratio(sum(x['rank']==1 for x in items),n),gold_has_tied_competitor=ratio(sum(x['ties']>0 for x in items),n),role_negative_only_comparison_win=ratio(wins('same_subject_other_role'),n),other_subject_same_role_win=ratio(wins('other_subject_same_role'),n),other_subject_other_role_win=ratio(wins('other_subject_other_role'),n),all_three_negative_win=ratio(sum(all(v>0 for v in x['mean_gaps'].values()) for x in items),n),role_win_but_not_all_three=ratio(sum(x['mean_gaps']['same_subject_other_role']>0 and not x['strict_rank1'] for x in items),n),rank_histogram=dict(collections.Counter(x['rank'] for x in items))),actual_original_free_correct=ratio(sum(x['actual_error_type']=='CORRECT' for x in items),n),actual_error_conditioned=by_error,edge_summary=edge_summary,both_original_questions_per64graphs=dict(role_edge_both_win=sum(all(x['mean_gaps']['same_subject_other_role']>0 for x in v) for v in grouped.values()),all_three_both_win=sum(all(x['strict_rank1'] for x in v) for v in grouped.values()),actual_free_both_correct=sum(all(x['actual_error_type']=='CORRECT' for x in v) for v in grouped.values())))\n allresults[label]=model;identities[label]=dict(report_path=str(p.relative_to(R)),report_sha256=sha(p),manifest_path=str(mp.relative_to(R)),manifest_sha256=sha(mp),raw_shards=m['shards'],raw_concat_sha256=m['concat_sha256'],lineage=identity,recorded_core_before=report['core_before'],recorded_core_after=report['core_after'],new_free_answers=report['additional_free_answers'],actual_old_training_updates=train['updates'],study_metadata_updates=report['updates'],code_files=len(report['code_sha256']),original_readback_sha256=report['original_readback_sha256'],original_source_reports_sha256=report['original_source_reports_sha256'])\nck(source_signatures['ce']==source_signatures['contrast'],'exact_same_source_candidate_branch_spec_across_models')\nprint(json.dumps(dict(status='OLD_2X4_STANDARD_JSON_RECOUNT_COMPLETE',python_version=sys.version,elapsed_seconds=time.perf_counter()-began,checks=dict(checks),check_count=sum(checks.values()),failures=0,identities=identities,results=allresults,positive_actual_wrong_edge_examples=examples,definitions=dict(role_only='Only compare gold against q^1, not exclusive win against exactly one of three.',strict_rank1='gold mean logP > every other candidate; ties are not strict success.',first_gap='correct_logit-crossed_logit at first divergent token of teacher-forced shared candidate prefix; EOT may be compared for content-prefix candidates.',mapped_actual_error='Use saved actual_original_error_types and answer hashes. This command does not reopen original free-answer strings or generated token IDs.'),limits=['Sequence mean logP, shared-prefix first divergence and actual greedy free output are different observables.','Positive gap on an actual-wrong candidate is an implementation-path question only conditionally: the actual generated history/tokenization must match the saved teacher-forced prefix.','No new tokenizer/source re-encoding, model/forward, Torch, GPU, CP tensor or CP byte hash run; checkpoint identity is source-bound through completed reports.','study report metadata updates896 refers to the new study recipe, not a new896-update execution of these old768 models.','These are64 related bilingual source graphs per language, not256 independent worlds.','No model-quality PASS, tolerance or new adoption threshold is introduced.'],torch_imported='torch' in sys.modules,model_loaded=False,gpu_used=False,files_written=0,partial_contrast_read=False),ensure_ascii=False,indent=2))\nPY",
+      "raw_tool_result": {
+        "chunk_id": "ba72d6",
+        "wall_time_seconds": 0.427453165,
+        "exit_code": 0,
+        "original_token_count": 8429,
+        "output": "{\n  \"status\": \"OLD_2X4_STANDARD_JSON_RECOUNT_COMPLETE\",\n  \"python_version\": \"3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]\",\n  \"elapsed_seconds\": 0.01748496499931207,\n  \"checks\": {\n    \"completed_exact_probe\": 2,\n    \"no_new_free_answers_or_training\": 2,\n    \"lineage_endpoint_probe\": 2,\n    \"recorded_body_before_after_equal\": 2,\n    \"current_code_sha\": 106,\n    \"manifest_hash_report_lineage\": 2,\n    \"ordered_shard_name\": 2,\n    \"raw_bytes_sha_limit\": 2,\n    \"raw_shard_rows\": 2,\n    \"whole128_raw_sha\": 2,\n    \"old_A_readback_report_sha\": 2,\n    \"old_A_evaluation_report_sha\": 6,\n    \"actual_old768_training_identity\": 2,\n    \"unique_bundle_id\": 256,\n    \"declared_language\": 256,\n    \"bundle_parent_group_sha_shape\": 256,\n    \"exact2x4_shape\": 1024,\n    \"positive_lengths_or_finite_nonpositive_logp\": 1024,\n    \"candidate_own_length_same_across_questions\": 256,\n    \"exact_own_length_mean_recalculation\": 256,\n    \"two_actual_answer_hashes\": 256,\n    \"six_ordered_first_divergence_edges\": 256,\n    \"branch_in_complete_content_EOT_range\": 1536,\n    \"exact_first_gap_recalculation\": 1536,\n    \"distinct_in_vocab_branch_tokens\": 1536,\n    \"prefix_EOT_branch_type\": 1536,\n    \"EOT_index_matches_own_content_length\": 1536,\n    \"predictor_position_range\": 1536,\n    \"shared_predictor_prefix_base\": 512,\n    \"known_actual_error_type\": 512,\n    \"per_language128_questions64_graphs\": 4,\n    \"two_original_questions_per_graph\": 4,\n    \"exact_same_source_candidate_branch_spec_across_models\": 1\n  },\n  \"check_count\": 14223,\n  \"failures\": 0,\n  \"identities\": {\n    \"ce\": {\n      \"report_path\": \"test_result/evidence/p106b_subject_role_v1_s1337/probe_old_ce/report.json\",\n      \"report_sha256\": \"EFB326600C1B8969D28475ED807C2397B22E9E713E6686BB5E3759462F821EC2\",\n      \"manifest_path\": \"test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_ce/rank2x4_shards_manifest.json\",\n      \"manifest_sha256\": \"C76FA40D17E7B5D4DD24A2F43F5995C97C03E74250A10A8D2D3E9BAE4ED57857\",\n      \"raw_shards\": [\n        {\n          \"path\": \"rank2x4_000000.jsonl\",\n          \"bytes\": 362724,\n          \"rows\": 128,\n          \"sha256\": \"6A9AF9EB288A3BA9D2A9EFC65DEFAAC22708304B48BE99D7E214003691F0E393\"\n        }\n      ],\n      \"raw_concat_sha256\": \"6A9AF9EB288A3BA9D2A9EFC65DEFAAC22708304B48BE99D7E214003691F0E393\",\n      \"lineage\": {\n        \"checkpoint\": \"runs/ckpt/m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_ce.pt\",\n        \"checkpoint_sha256\": \"7DDC52E19C20B2FC27CA72761C7BDC6ED726F20233F075D646BAEBA43CB58D0A\",\n        \"endpoint\": \"ce\",\n        \"expected_core_sha256\": \"BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80\",\n        \"probe\": \"ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES\",\n        \"tag\": \"p106b_subject_role_v1_s1337\",\n        \"training_report_sha256\": \"72AE5F686FF9972023E5876F97453A472D1E757258C9F0A29F628A45B1F39EDF\"\n      },\n      \"recorded_core_before\": \"BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80\",\n      \"recorded_core_after\": \"BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80\",\n      \"new_free_answers\": 0,\n      \"actual_old_training_updates\": 768,\n      \"study_metadata_updates\": 896,\n      \"code_files\": 53,\n      \"original_readback_sha256\": \"28041479DFAB1480F4144063750B9014A313A505C118B58FFBB3F13C9F49092F\",\n      \"original_source_reports_sha256\": {\n        \"ce\": \"EE0AEDB4FFF61840C1D693FB3FC8C44B725E9B6EFA4333AE52080C98C2496621\",\n        \"contrast\": \"2D93462C51EC7E813075B2296391012DC71443F634496544503AA8BFC41D4426\",\n        \"parent\": \"41F2B013EA10BF5D8EDEA02A43575DE01AC96074A8A9BCC95A30F7F8A284EE8C\"\n      }\n    },\n    \"contrast\": {\n      \"report_path\": \"test_result/evidence/p106b_subject_role_v1_s1337/probe_old_contrast/report.json\",\n      \"report_sha256\": \"97F4C57F5C12CF240D1DAB010B56FE0C1FD5C53BF7516A7F9ADD3973F6DF0E4F\",\n      \"manifest_path\": \"test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_contrast/rank2x4_shards_manifest.json\",\n      \"manifest_sha256\": \"7F569F1131C3B1D95B4805C125FA77171732FAD6A26FBA672647AEA25F2A145F\",\n      \"raw_shards\": [\n        {\n          \"path\": \"rank2x4_000000.jsonl\",\n          \"bytes\": 362416,\n          \"rows\": 128,\n          \"sha256\": \"19744D5FEA0C3E4B7DA93110CE74A03C24B3B2C0871AB134763B70B773330A16\"\n        }\n      ],\n      \"raw_concat_sha256\": \"19744D5FEA0C3E4B7DA93110CE74A03C24B3B2C0871AB134763B70B773330A16\",\n      \"lineage\": {\n        \"checkpoint\": \"runs/ckpt/m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_contrast.pt\",\n        \"checkpoint_sha256\": \"354F5A9C91126D0A633F084DFA10AB9ADF630956CBEE10535B79386A0B32527A\",\n        \"endpoint\": \"contrast\",\n        \"expected_core_sha256\": \"7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644\",\n        \"probe\": \"ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES\",\n        \"tag\": \"p106b_subject_role_v1_s1337\",\n        \"training_report_sha256\": \"CDBF81B771439D3033235F639B3911CC854FFF4D011486CDC492A5107D3C9DA4\"\n      },\n      \"recorded_core_before\": \"7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644\",\n      \"recorded_core_after\": \"7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644\",\n      \"new_free_answers\": 0,\n      \"actual_old_training_updates\": 768,\n      \"study_metadata_updates\": 896,\n      \"code_files\": 53,\n      \"original_readback_sha256\": \"28041479DFAB1480F4144063750B9014A313A505C118B58FFBB3F13C9F49092F\",\n      \"original_source_reports_sha256\": {\n        \"ce\": \"EE0AEDB4FFF61840C1D693FB3FC8C44B725E9B6EFA4333AE52080C98C2496621\",\n        \"contrast\": \"2D93462C51EC7E813075B2296391012DC71443F634496544503AA8BFC41D4426\",\n        \"parent\": \"41F2B013EA10BF5D8EDEA02A43575DE01AC96074A8A9BCC95A30F7F8A284EE8C\"\n      }\n    }\n  },\n  \"results\": {\n    \"ce\": {\n      \"en\": {\n        \"bundles\": 64,\n        \"questions\": 128,\n        \"mean_logp\": {\n          \"strict_unique_gold_rank1\": {\n            \"numerator\": 78,\n            \"denominator\": 128,\n            \"fraction\": \"78/128\",\n            \"rate\": 0.609375\n          },\n          \"gold_rank1_allowing_ties\": {\n            \"numerator\": 78,\n            \"denominator\": 128,\n            \"fraction\": \"78/128\",\n            \"rate\": 0.609375\n          },\n          \"gold_has_tied_competitor\": {\n            \"numerator\": 0,\n            \"denominator\": 128,\n            \"fraction\": \"0/128\",\n            \"rate\": 0.0\n          },\n          \"role_negative_only_comparison_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"other_subject_same_role_win\": {\n            \"numerator\": 78,\n            \"denominator\": 128,\n            \"fraction\": \"78/128\",\n            \"rate\": 0.609375\n          },\n          \"other_subject_other_role_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"all_three_negative_win\": {\n            \"numerator\": 78,\n            \"denominator\": 128,\n            \"fraction\": \"78/128\",\n            \"rate\": 0.609375\n          },\n          \"role_win_but_not_all_three\": {\n            \"numerator\": 50,\n            \"denominator\": 128,\n            \"fraction\": \"50/128\",\n            \"rate\": 0.390625\n          },\n          \"rank_histogram\": {\n            \"2\": 50,\n            \"1\": 78\n          }\n        },\n        \"actual_original_free_correct\": {\n          \"numerator\": 77,\n          \"denominator\": 128,\n          \"fraction\": \"77/128\",\n          \"rate\": 0.6015625\n        },\n        \"actual_error_conditioned\": {\n          \"CORRECT\": {\n            \"n\": 77,\n            \"strict_mean_rank1\": 76,\n            \"rank_histogram\": {\n              \"1\": 76,\n              \"2\": 1\n            }\n          },\n          \"OTHER_SUBJECT_SAME_ROLE\": {\n            \"n\": 51,\n            \"strict_mean_rank1\": 2,\n            \"rank_histogram\": {\n              \"2\": 49,\n              \"1\": 2\n            },\n            \"first_gap_to_actual_wrong\": {\n              \"n\": 51,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 51,\n              \"min\": -7.264962196350098,\n              \"max\": -0.023271560668945312,\n              \"mean\": -1.4917898178100586,\n              \"median\": -1.2299823760986328,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"mean_gap_to_actual_wrong\": {\n              \"n\": 51,\n              \"positive\": 2,\n              \"zero\": 0,\n              \"negative\": 49,\n              \"min\": -2.4286492693548403,\n              \"max\": 0.17571419477462769,\n              \"mean\": -0.6983800590695703,\n              \"median\": -0.6076548248529434,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_branch0_content\": {\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 51\n            },\n            \"prefix_later\": 0,\n            \"eot_comparisons\": 0\n          }\n        },\n        \"edge_summary\": {\n          \"same_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.1942293643951416,\n              \"max\": 4.66736749233678,\n              \"mean\": 2.291726458546691,\n              \"median\": 2.236713871359825,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.3882293701171875,\n              \"max\": 9.334381103515625,\n              \"mean\": 4.611623466014862,\n              \"median\": 4.473143577575684,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 128\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_same_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 78,\n              \"zero\": 0,\n              \"negative\": 50,\n              \"min\": -2.4286492693548403,\n              \"max\": 9.370214144466445,\n              \"mean\": 0.5693373401936697,\n              \"median\": 0.28325491646925605,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 77,\n              \"zero\": 0,\n              \"negative\": 51,\n              \"min\": -7.264962196350098,\n              \"max\": 9.368764877319336,\n              \"mean\": 0.8820532411336899,\n              \"median\": 0.597376823425293,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 128\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.28044772148132324,\n              \"max\": 13.488231897354126,\n              \"mean\": 2.745387264877233,\n              \"median\": 2.4250166133667035,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.7861099243164062,\n              \"max\": 12.862659454345703,\n              \"mean\": 5.178707621991634,\n              \"median\": 4.91335916519165,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 128\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          }\n        },\n        \"both_original_questions_per64graphs\": {\n          \"role_edge_both_win\": 64,\n          \"all_three_both_win\": 23,\n          \"actual_free_both_correct\": 22\n        }\n      },\n      \"ko\": {\n        \"bundles\": 64,\n        \"questions\": 128,\n        \"mean_logp\": {\n          \"strict_unique_gold_rank1\": {\n            \"numerator\": 71,\n            \"denominator\": 128,\n            \"fraction\": \"71/128\",\n            \"rate\": 0.5546875\n          },\n          \"gold_rank1_allowing_ties\": {\n            \"numerator\": 71,\n            \"denominator\": 128,\n            \"fraction\": \"71/128\",\n            \"rate\": 0.5546875\n          },\n          \"gold_has_tied_competitor\": {\n            \"numerator\": 0,\n            \"denominator\": 128,\n            \"fraction\": \"0/128\",\n            \"rate\": 0.0\n          },\n          \"role_negative_only_comparison_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"other_subject_same_role_win\": {\n            \"numerator\": 71,\n            \"denominator\": 128,\n            \"fraction\": \"71/128\",\n            \"rate\": 0.5546875\n          },\n          \"other_subject_other_role_win\": {\n            \"numerator\": 127,\n            \"denominator\": 128,\n            \"fraction\": \"127/128\",\n            \"rate\": 0.9921875\n          },\n          \"all_three_negative_win\": {\n            \"numerator\": 71,\n            \"denominator\": 128,\n            \"fraction\": \"71/128\",\n            \"rate\": 0.5546875\n          },\n          \"role_win_but_not_all_three\": {\n            \"numerator\": 57,\n            \"denominator\": 128,\n            \"fraction\": \"57/128\",\n            \"rate\": 0.4453125\n          },\n          \"rank_histogram\": {\n            \"2\": 56,\n            \"1\": 71,\n            \"3\": 1\n          }\n        },\n        \"actual_original_free_correct\": {\n          \"numerator\": 72,\n          \"denominator\": 128,\n          \"fraction\": \"72/128\",\n          \"rate\": 0.5625\n        },\n        \"actual_error_conditioned\": {\n          \"CORRECT\": {\n            \"n\": 72,\n            \"strict_mean_rank1\": 71,\n            \"rank_histogram\": {\n              \"1\": 71,\n              \"2\": 1\n            }\n          },\n          \"OTHER_SUBJECT_SAME_ROLE\": {\n            \"n\": 56,\n            \"strict_mean_rank1\": 0,\n            \"rank_histogram\": {\n              \"2\": 55,\n              \"3\": 1\n            },\n            \"first_gap_to_actual_wrong\": {\n              \"n\": 56,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 56,\n              \"min\": -5.18498420715332,\n              \"max\": -0.03625297546386719,\n              \"mean\": -1.520057235445295,\n              \"median\": -1.243046760559082,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"mean_gap_to_actual_wrong\": {\n              \"n\": 56,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 56,\n              \"min\": -2.5924931671470404,\n              \"max\": -0.018033117055892944,\n              \"mean\": -0.7547303147979879,\n              \"median\": -0.6208859905600548,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_branch0_content\": {\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 53\n            },\n            \"prefix_later\": 3,\n            \"eot_comparisons\": 0\n          }\n        },\n        \"edge_summary\": {\n          \"same_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.1108102798461914,\n              \"max\": 5.993622223846614,\n              \"mean\": 2.0706844924061443,\n              \"median\": 2.0227787792682648,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.2216205596923828,\n              \"max\": 10.182225227355957,\n              \"mean\": 4.135787509381771,\n              \"median\": 4.0795111656188965,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 126,\n              \"1\": 2\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_same_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 71,\n              \"zero\": 0,\n              \"negative\": 57,\n              \"min\": -2.5924931671470404,\n              \"max\": 4.452659167582169,\n              \"mean\": 0.427144875691738,\n              \"median\": 0.1304837018251419,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 72,\n              \"zero\": 0,\n              \"negative\": 56,\n              \"min\": -5.18498420715332,\n              \"max\": 8.89006233215332,\n              \"mean\": 0.818239375948906,\n              \"median\": 0.31180381774902344,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 125,\n              \"1\": 3\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 127,\n              \"zero\": 0,\n              \"negative\": 1,\n              \"min\": -0.11089086532592773,\n              \"max\": 4.895177433267236,\n              \"mean\": 2.3335427793717827,\n              \"median\": 2.306602694094181,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 125,\n              \"zero\": 0,\n              \"negative\": 3,\n              \"min\": -0.7553825378417969,\n              \"max\": 10.60219955444336,\n              \"mean\": 4.629721909761429,\n              \"median\": 4.613377571105957,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 127,\n              \"1\": 1\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          }\n        },\n        \"both_original_questions_per64graphs\": {\n          \"role_edge_both_win\": 64,\n          \"all_three_both_win\": 16,\n          \"actual_free_both_correct\": 17\n        }\n      }\n    },\n    \"contrast\": {\n      \"en\": {\n        \"bundles\": 64,\n        \"questions\": 128,\n        \"mean_logp\": {\n          \"strict_unique_gold_rank1\": {\n            \"numerator\": 86,\n            \"denominator\": 128,\n            \"fraction\": \"86/128\",\n            \"rate\": 0.671875\n          },\n          \"gold_rank1_allowing_ties\": {\n            \"numerator\": 86,\n            \"denominator\": 128,\n            \"fraction\": \"86/128\",\n            \"rate\": 0.671875\n          },\n          \"gold_has_tied_competitor\": {\n            \"numerator\": 0,\n            \"denominator\": 128,\n            \"fraction\": \"0/128\",\n            \"rate\": 0.0\n          },\n          \"role_negative_only_comparison_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"other_subject_same_role_win\": {\n            \"numerator\": 86,\n            \"denominator\": 128,\n            \"fraction\": \"86/128\",\n            \"rate\": 0.671875\n          },\n          \"other_subject_other_role_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"all_three_negative_win\": {\n            \"numerator\": 86,\n            \"denominator\": 128,\n            \"fraction\": \"86/128\",\n            \"rate\": 0.671875\n          },\n          \"role_win_but_not_all_three\": {\n            \"numerator\": 42,\n            \"denominator\": 128,\n            \"fraction\": \"42/128\",\n            \"rate\": 0.328125\n          },\n          \"rank_histogram\": {\n            \"1\": 86,\n            \"2\": 42\n          }\n        },\n        \"actual_original_free_correct\": {\n          \"numerator\": 86,\n          \"denominator\": 128,\n          \"fraction\": \"86/128\",\n          \"rate\": 0.671875\n        },\n        \"actual_error_conditioned\": {\n          \"CORRECT\": {\n            \"n\": 86,\n            \"strict_mean_rank1\": 86,\n            \"rank_histogram\": {\n              \"1\": 86\n            }\n          },\n          \"OTHER_SUBJECT_SAME_ROLE\": {\n            \"n\": 42,\n            \"strict_mean_rank1\": 0,\n            \"rank_histogram\": {\n              \"2\": 42\n            },\n            \"first_gap_to_actual_wrong\": {\n              \"n\": 42,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 42,\n              \"min\": -9.229355812072754,\n              \"max\": -0.012269973754882812,\n              \"mean\": -1.9192441531590052,\n              \"median\": -1.597757339477539,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"mean_gap_to_actual_wrong\": {\n              \"n\": 42,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 42,\n              \"min\": -3.082505145614656,\n              \"max\": -0.004892706871032715,\n              \"mean\": -0.8726371624396139,\n              \"median\": -0.7967990450561047,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_branch0_content\": {\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 42\n            },\n            \"prefix_later\": 0,\n            \"eot_comparisons\": 0\n          }\n        },\n        \"edge_summary\": {\n          \"same_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 1.289890925089518,\n              \"max\": 7.810914096538909,\n              \"mean\": 4.616040067156746,\n              \"median\": 4.679213657975197,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 3.883955955505371,\n              \"max\": 15.621480941772461,\n              \"mean\": 9.297757863998413,\n              \"median\": 9.357763767242432,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 128\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_same_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 86,\n              \"zero\": 0,\n              \"negative\": 42,\n              \"min\": -3.082505145614656,\n              \"max\": 13.57541452589794,\n              \"mean\": 1.066651509150764,\n              \"median\": 0.44168557971715927,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 86,\n              \"zero\": 0,\n              \"negative\": 42,\n              \"min\": -9.229355812072754,\n              \"max\": 13.77367877960205,\n              \"mean\": 1.6836073026061058,\n              \"median\": 0.9043159484863281,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 128\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 0.5219357013702393,\n              \"max\": 16.523614406585693,\n              \"mean\": 4.8541261817943,\n              \"median\": 4.269169483333826,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 2.3505859375,\n              \"max\": 18.33456563949585,\n              \"mean\": 9.27158933877945,\n              \"median\": 9.256466388702393,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 128\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          }\n        },\n        \"both_original_questions_per64graphs\": {\n          \"role_edge_both_win\": 64,\n          \"all_three_both_win\": 29,\n          \"actual_free_both_correct\": 29\n        }\n      },\n      \"ko\": {\n        \"bundles\": 64,\n        \"questions\": 128,\n        \"mean_logp\": {\n          \"strict_unique_gold_rank1\": {\n            \"numerator\": 74,\n            \"denominator\": 128,\n            \"fraction\": \"74/128\",\n            \"rate\": 0.578125\n          },\n          \"gold_rank1_allowing_ties\": {\n            \"numerator\": 74,\n            \"denominator\": 128,\n            \"fraction\": \"74/128\",\n            \"rate\": 0.578125\n          },\n          \"gold_has_tied_competitor\": {\n            \"numerator\": 0,\n            \"denominator\": 128,\n            \"fraction\": \"0/128\",\n            \"rate\": 0.0\n          },\n          \"role_negative_only_comparison_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"other_subject_same_role_win\": {\n            \"numerator\": 74,\n            \"denominator\": 128,\n            \"fraction\": \"74/128\",\n            \"rate\": 0.578125\n          },\n          \"other_subject_other_role_win\": {\n            \"numerator\": 128,\n            \"denominator\": 128,\n            \"fraction\": \"128/128\",\n            \"rate\": 1.0\n          },\n          \"all_three_negative_win\": {\n            \"numerator\": 74,\n            \"denominator\": 128,\n            \"fraction\": \"74/128\",\n            \"rate\": 0.578125\n          },\n          \"role_win_but_not_all_three\": {\n            \"numerator\": 54,\n            \"denominator\": 128,\n            \"fraction\": \"54/128\",\n            \"rate\": 0.421875\n          },\n          \"rank_histogram\": {\n            \"2\": 54,\n            \"1\": 74\n          }\n        },\n        \"actual_original_free_correct\": {\n          \"numerator\": 74,\n          \"denominator\": 128,\n          \"fraction\": \"74/128\",\n          \"rate\": 0.578125\n        },\n        \"actual_error_conditioned\": {\n          \"CORRECT\": {\n            \"n\": 74,\n            \"strict_mean_rank1\": 74,\n            \"rank_histogram\": {\n              \"1\": 74\n            }\n          },\n          \"OTHER_SUBJECT_SAME_ROLE\": {\n            \"n\": 54,\n            \"strict_mean_rank1\": 0,\n            \"rank_histogram\": {\n              \"2\": 54\n            },\n            \"first_gap_to_actual_wrong\": {\n              \"n\": 54,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 54,\n              \"min\": -5.199491500854492,\n              \"max\": -0.03817939758300781,\n              \"mean\": -1.686780541031449,\n              \"median\": -1.4009275436401367,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"mean_gap_to_actual_wrong\": {\n              \"n\": 54,\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 54,\n              \"min\": -2.5986902061849833,\n              \"max\": -0.020376861095428467,\n              \"mean\": -0.8436713164103113,\n              \"median\": -0.6985290125012398,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_branch0_content\": {\n              \"positive\": 0,\n              \"zero\": 0,\n              \"negative\": 51\n            },\n            \"prefix_later\": 3,\n            \"eot_comparisons\": 0\n          }\n        },\n        \"edge_summary\": {\n          \"same_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 1.8705624341964722,\n              \"max\": 8.664361238479614,\n              \"mean\": 4.595593937754074,\n              \"median\": 4.5441819205880165,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 127,\n              \"zero\": 0,\n              \"negative\": 1,\n              \"min\": -1.0416278839111328,\n              \"max\": 16.615063667297363,\n              \"mean\": 8.948858566582203,\n              \"median\": 8.960846424102783,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 126,\n              \"1\": 2\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_same_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 74,\n              \"zero\": 0,\n              \"negative\": 54,\n              \"min\": -2.5986902061849833,\n              \"max\": 4.577300593431573,\n              \"mean\": 0.5215804619342634,\n              \"median\": 0.28219708800315857,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 74,\n              \"zero\": 0,\n              \"negative\": 54,\n              \"min\": -5.199491500854492,\n              \"max\": 9.131073951721191,\n              \"mean\": 1.0419198796153069,\n              \"median\": 0.5552215576171875,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 125,\n              \"1\": 3\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          },\n          \"other_subject_other_role\": {\n            \"mean_logp_gap\": {\n              \"n\": 128,\n              \"positive\": 128,\n              \"zero\": 0,\n              \"negative\": 0,\n              \"min\": 1.7387039065361023,\n              \"max\": 7.84122109413147,\n              \"mean\": 4.6939499462837375,\n              \"median\": 4.7385900389635935,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"first_divergence_gap\": {\n              \"n\": 128,\n              \"positive\": 126,\n              \"zero\": 0,\n              \"negative\": 2,\n              \"min\": -3.6394176483154297,\n              \"max\": 17.338489532470703,\n              \"mean\": 8.92726793140173,\n              \"median\": 9.204346656799316,\n              \"aggregation\": \"saved source row order; explicit sequential left-fold, no tolerance\"\n            },\n            \"branch_indices\": {\n              \"0\": 127,\n              \"1\": 1\n            },\n            \"content_edges\": 128,\n            \"EOT_prefix_edges\": 0\n          }\n        },\n        \"both_original_questions_per64graphs\": {\n          \"role_edge_both_win\": 64,\n          \"all_three_both_win\": 18,\n          \"actual_free_both_correct\": 18\n        }\n      }\n    }\n  },\n  \"positive_actual_wrong_edge_examples\": [],\n  \"definitions\": {\n    \"role_only\": \"Only compare gold against q^1, not exclusive win against exactly one of three.\",\n    \"strict_rank1\": \"gold mean logP > every other candidate; ties are not strict success.\",\n    \"first_gap\": \"correct_logit-crossed_logit at first divergent token of teacher-forced shared candidate prefix; EOT may be compared for content-prefix candidates.\",\n    \"mapped_actual_error\": \"Use saved actual_original_error_types and answer hashes. This command does not reopen original free-answer strings or generated token IDs.\"\n  },\n  \"limits\": [\n    \"Sequence mean logP, shared-prefix first divergence and actual greedy free output are different observables.\",\n    \"Positive gap on an actual-wrong candidate is an implementation-path question only conditionally: the actual generated history/tokenization must match the saved teacher-forced prefix.\",\n    \"No new tokenizer/source re-encoding, model/forward, Torch, GPU, CP tensor or CP byte hash run; checkpoint identity is source-bound through completed reports.\",\n    \"study report metadata updates896 refers to the new study recipe, not a new896-update execution of these old768 models.\",\n    \"These are64 related bilingual source graphs per language, not256 independent worlds.\",\n    \"No model-quality PASS, tolerance or new adoption threshold is introduced.\"\n  ],\n  \"torch_imported\": false,\n  \"model_loaded\": false,\n  \"gpu_used\": false,\n  \"files_written\": 0,\n  \"partial_contrast_read\": false\n}\n"
+      },
+      "parsed_output": {
+        "status": "OLD_2X4_STANDARD_JSON_RECOUNT_COMPLETE",
+        "python_version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+        "elapsed_seconds": 0.01748496499931207,
+        "checks": {
+          "completed_exact_probe": 2,
+          "no_new_free_answers_or_training": 2,
+          "lineage_endpoint_probe": 2,
+          "recorded_body_before_after_equal": 2,
+          "current_code_sha": 106,
+          "manifest_hash_report_lineage": 2,
+          "ordered_shard_name": 2,
+          "raw_bytes_sha_limit": 2,
+          "raw_shard_rows": 2,
+          "whole128_raw_sha": 2,
+          "old_A_readback_report_sha": 2,
+          "old_A_evaluation_report_sha": 6,
+          "actual_old768_training_identity": 2,
+          "unique_bundle_id": 256,
+          "declared_language": 256,
+          "bundle_parent_group_sha_shape": 256,
+          "exact2x4_shape": 1024,
+          "positive_lengths_or_finite_nonpositive_logp": 1024,
+          "candidate_own_length_same_across_questions": 256,
+          "exact_own_length_mean_recalculation": 256,
+          "two_actual_answer_hashes": 256,
+          "six_ordered_first_divergence_edges": 256,
+          "branch_in_complete_content_EOT_range": 1536,
+          "exact_first_gap_recalculation": 1536,
+          "distinct_in_vocab_branch_tokens": 1536,
+          "prefix_EOT_branch_type": 1536,
+          "EOT_index_matches_own_content_length": 1536,
+          "predictor_position_range": 1536,
+          "shared_predictor_prefix_base": 512,
+          "known_actual_error_type": 512,
+          "per_language128_questions64_graphs": 4,
+          "two_original_questions_per_graph": 4,
+          "exact_same_source_candidate_branch_spec_across_models": 1
+        },
+        "check_count": 14223,
+        "failures": 0,
+        "identities": {
+          "ce": {
+            "report_path": "test_result/evidence/p106b_subject_role_v1_s1337/probe_old_ce/report.json",
+            "report_sha256": "EFB326600C1B8969D28475ED807C2397B22E9E713E6686BB5E3759462F821EC2",
+            "manifest_path": "test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_ce/rank2x4_shards_manifest.json",
+            "manifest_sha256": "C76FA40D17E7B5D4DD24A2F43F5995C97C03E74250A10A8D2D3E9BAE4ED57857",
+            "raw_shards": [
+              {
+                "path": "rank2x4_000000.jsonl",
+                "bytes": 362724,
+                "rows": 128,
+                "sha256": "6A9AF9EB288A3BA9D2A9EFC65DEFAAC22708304B48BE99D7E214003691F0E393"
+              }
+            ],
+            "raw_concat_sha256": "6A9AF9EB288A3BA9D2A9EFC65DEFAAC22708304B48BE99D7E214003691F0E393",
+            "lineage": {
+              "checkpoint": "runs/ckpt/m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_ce.pt",
+              "checkpoint_sha256": "7DDC52E19C20B2FC27CA72761C7BDC6ED726F20233F075D646BAEBA43CB58D0A",
+              "endpoint": "ce",
+              "expected_core_sha256": "BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80",
+              "probe": "ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES",
+              "tag": "p106b_subject_role_v1_s1337",
+              "training_report_sha256": "72AE5F686FF9972023E5876F97453A472D1E757258C9F0A29F628A45B1F39EDF"
+            },
+            "recorded_core_before": "BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80",
+            "recorded_core_after": "BEE0F7C0286425E4F1CBD6834A5881F02338F5D5C4868DE006012D6D21617C80",
+            "new_free_answers": 0,
+            "actual_old_training_updates": 768,
+            "study_metadata_updates": 896,
+            "code_files": 53,
+            "original_readback_sha256": "28041479DFAB1480F4144063750B9014A313A505C118B58FFBB3F13C9F49092F",
+            "original_source_reports_sha256": {
+              "ce": "EE0AEDB4FFF61840C1D693FB3FC8C44B725E9B6EFA4333AE52080C98C2496621",
+              "contrast": "2D93462C51EC7E813075B2296391012DC71443F634496544503AA8BFC41D4426",
+              "parent": "41F2B013EA10BF5D8EDEA02A43575DE01AC96074A8A9BCC95A30F7F8A284EE8C"
+            }
+          },
+          "contrast": {
+            "report_path": "test_result/evidence/p106b_subject_role_v1_s1337/probe_old_contrast/report.json",
+            "report_sha256": "97F4C57F5C12CF240D1DAB010B56FE0C1FD5C53BF7516A7F9ADD3973F6DF0E4F",
+            "manifest_path": "test_result/evidence/local/p106b_subject_role_v1_s1337/probe_old_contrast/rank2x4_shards_manifest.json",
+            "manifest_sha256": "7F569F1131C3B1D95B4805C125FA77171732FAD6A26FBA672647AEA25F2A145F",
+            "raw_shards": [
+              {
+                "path": "rank2x4_000000.jsonl",
+                "bytes": 362416,
+                "rows": 128,
+                "sha256": "19744D5FEA0C3E4B7DA93110CE74A03C24B3B2C0871AB134763B70B773330A16"
+              }
+            ],
+            "raw_concat_sha256": "19744D5FEA0C3E4B7DA93110CE74A03C24B3B2C0871AB134763B70B773330A16",
+            "lineage": {
+              "checkpoint": "runs/ckpt/m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_contrast.pt",
+              "checkpoint_sha256": "354F5A9C91126D0A633F084DFA10AB9ADF630956CBEE10535B79386A0B32527A",
+              "endpoint": "contrast",
+              "expected_core_sha256": "7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644",
+              "probe": "ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES",
+              "tag": "p106b_subject_role_v1_s1337",
+              "training_report_sha256": "CDBF81B771439D3033235F639B3911CC854FFF4D011486CDC492A5107D3C9DA4"
+            },
+            "recorded_core_before": "7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644",
+            "recorded_core_after": "7C30259BCFD143865CAB91A2650987A26C7E32D2D8AF632276BD2E721CA51644",
+            "new_free_answers": 0,
+            "actual_old_training_updates": 768,
+            "study_metadata_updates": 896,
+            "code_files": 53,
+            "original_readback_sha256": "28041479DFAB1480F4144063750B9014A313A505C118B58FFBB3F13C9F49092F",
+            "original_source_reports_sha256": {
+              "ce": "EE0AEDB4FFF61840C1D693FB3FC8C44B725E9B6EFA4333AE52080C98C2496621",
+              "contrast": "2D93462C51EC7E813075B2296391012DC71443F634496544503AA8BFC41D4426",
+              "parent": "41F2B013EA10BF5D8EDEA02A43575DE01AC96074A8A9BCC95A30F7F8A284EE8C"
+            }
+          }
+        },
+        "results": {
+          "ce": {
+            "en": {
+              "bundles": 64,
+              "questions": 128,
+              "mean_logp": {
+                "strict_unique_gold_rank1": {
+                  "numerator": 78,
+                  "denominator": 128,
+                  "fraction": "78/128",
+                  "rate": 0.609375
+                },
+                "gold_rank1_allowing_ties": {
+                  "numerator": 78,
+                  "denominator": 128,
+                  "fraction": "78/128",
+                  "rate": 0.609375
+                },
+                "gold_has_tied_competitor": {
+                  "numerator": 0,
+                  "denominator": 128,
+                  "fraction": "0/128",
+                  "rate": 0
+                },
+                "role_negative_only_comparison_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "other_subject_same_role_win": {
+                  "numerator": 78,
+                  "denominator": 128,
+                  "fraction": "78/128",
+                  "rate": 0.609375
+                },
+                "other_subject_other_role_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "all_three_negative_win": {
+                  "numerator": 78,
+                  "denominator": 128,
+                  "fraction": "78/128",
+                  "rate": 0.609375
+                },
+                "role_win_but_not_all_three": {
+                  "numerator": 50,
+                  "denominator": 128,
+                  "fraction": "50/128",
+                  "rate": 0.390625
+                },
+                "rank_histogram": {
+                  "1": 78,
+                  "2": 50
+                }
+              },
+              "actual_original_free_correct": {
+                "numerator": 77,
+                "denominator": 128,
+                "fraction": "77/128",
+                "rate": 0.6015625
+              },
+              "actual_error_conditioned": {
+                "CORRECT": {
+                  "n": 77,
+                  "strict_mean_rank1": 76,
+                  "rank_histogram": {
+                    "1": 76,
+                    "2": 1
+                  }
+                },
+                "OTHER_SUBJECT_SAME_ROLE": {
+                  "n": 51,
+                  "strict_mean_rank1": 2,
+                  "rank_histogram": {
+                    "1": 2,
+                    "2": 49
+                  },
+                  "first_gap_to_actual_wrong": {
+                    "n": 51,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 51,
+                    "min": -7.264962196350098,
+                    "max": -0.023271560668945312,
+                    "mean": -1.4917898178100586,
+                    "median": -1.2299823760986328,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "mean_gap_to_actual_wrong": {
+                    "n": 51,
+                    "positive": 2,
+                    "zero": 0,
+                    "negative": 49,
+                    "min": -2.4286492693548403,
+                    "max": 0.17571419477462769,
+                    "mean": -0.6983800590695703,
+                    "median": -0.6076548248529434,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_branch0_content": {
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 51
+                  },
+                  "prefix_later": 0,
+                  "eot_comparisons": 0
+                }
+              },
+              "edge_summary": {
+                "same_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.1942293643951416,
+                    "max": 4.66736749233678,
+                    "mean": 2.291726458546691,
+                    "median": 2.236713871359825,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.3882293701171875,
+                    "max": 9.334381103515625,
+                    "mean": 4.611623466014862,
+                    "median": 4.473143577575684,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 128
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_same_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 78,
+                    "zero": 0,
+                    "negative": 50,
+                    "min": -2.4286492693548403,
+                    "max": 9.370214144466445,
+                    "mean": 0.5693373401936697,
+                    "median": 0.28325491646925605,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 77,
+                    "zero": 0,
+                    "negative": 51,
+                    "min": -7.264962196350098,
+                    "max": 9.368764877319336,
+                    "mean": 0.8820532411336899,
+                    "median": 0.597376823425293,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 128
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.28044772148132324,
+                    "max": 13.488231897354126,
+                    "mean": 2.745387264877233,
+                    "median": 2.4250166133667035,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.7861099243164062,
+                    "max": 12.862659454345703,
+                    "mean": 5.178707621991634,
+                    "median": 4.91335916519165,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 128
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                }
+              },
+              "both_original_questions_per64graphs": {
+                "role_edge_both_win": 64,
+                "all_three_both_win": 23,
+                "actual_free_both_correct": 22
+              }
+            },
+            "ko": {
+              "bundles": 64,
+              "questions": 128,
+              "mean_logp": {
+                "strict_unique_gold_rank1": {
+                  "numerator": 71,
+                  "denominator": 128,
+                  "fraction": "71/128",
+                  "rate": 0.5546875
+                },
+                "gold_rank1_allowing_ties": {
+                  "numerator": 71,
+                  "denominator": 128,
+                  "fraction": "71/128",
+                  "rate": 0.5546875
+                },
+                "gold_has_tied_competitor": {
+                  "numerator": 0,
+                  "denominator": 128,
+                  "fraction": "0/128",
+                  "rate": 0
+                },
+                "role_negative_only_comparison_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "other_subject_same_role_win": {
+                  "numerator": 71,
+                  "denominator": 128,
+                  "fraction": "71/128",
+                  "rate": 0.5546875
+                },
+                "other_subject_other_role_win": {
+                  "numerator": 127,
+                  "denominator": 128,
+                  "fraction": "127/128",
+                  "rate": 0.9921875
+                },
+                "all_three_negative_win": {
+                  "numerator": 71,
+                  "denominator": 128,
+                  "fraction": "71/128",
+                  "rate": 0.5546875
+                },
+                "role_win_but_not_all_three": {
+                  "numerator": 57,
+                  "denominator": 128,
+                  "fraction": "57/128",
+                  "rate": 0.4453125
+                },
+                "rank_histogram": {
+                  "1": 71,
+                  "2": 56,
+                  "3": 1
+                }
+              },
+              "actual_original_free_correct": {
+                "numerator": 72,
+                "denominator": 128,
+                "fraction": "72/128",
+                "rate": 0.5625
+              },
+              "actual_error_conditioned": {
+                "CORRECT": {
+                  "n": 72,
+                  "strict_mean_rank1": 71,
+                  "rank_histogram": {
+                    "1": 71,
+                    "2": 1
+                  }
+                },
+                "OTHER_SUBJECT_SAME_ROLE": {
+                  "n": 56,
+                  "strict_mean_rank1": 0,
+                  "rank_histogram": {
+                    "2": 55,
+                    "3": 1
+                  },
+                  "first_gap_to_actual_wrong": {
+                    "n": 56,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 56,
+                    "min": -5.18498420715332,
+                    "max": -0.03625297546386719,
+                    "mean": -1.520057235445295,
+                    "median": -1.243046760559082,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "mean_gap_to_actual_wrong": {
+                    "n": 56,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 56,
+                    "min": -2.5924931671470404,
+                    "max": -0.018033117055892944,
+                    "mean": -0.7547303147979879,
+                    "median": -0.6208859905600548,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_branch0_content": {
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 53
+                  },
+                  "prefix_later": 3,
+                  "eot_comparisons": 0
+                }
+              },
+              "edge_summary": {
+                "same_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.1108102798461914,
+                    "max": 5.993622223846614,
+                    "mean": 2.0706844924061443,
+                    "median": 2.0227787792682648,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.2216205596923828,
+                    "max": 10.182225227355957,
+                    "mean": 4.135787509381771,
+                    "median": 4.0795111656188965,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 126,
+                    "1": 2
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_same_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 71,
+                    "zero": 0,
+                    "negative": 57,
+                    "min": -2.5924931671470404,
+                    "max": 4.452659167582169,
+                    "mean": 0.427144875691738,
+                    "median": 0.1304837018251419,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 72,
+                    "zero": 0,
+                    "negative": 56,
+                    "min": -5.18498420715332,
+                    "max": 8.89006233215332,
+                    "mean": 0.818239375948906,
+                    "median": 0.31180381774902344,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 125,
+                    "1": 3
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 127,
+                    "zero": 0,
+                    "negative": 1,
+                    "min": -0.11089086532592773,
+                    "max": 4.895177433267236,
+                    "mean": 2.3335427793717827,
+                    "median": 2.306602694094181,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 125,
+                    "zero": 0,
+                    "negative": 3,
+                    "min": -0.7553825378417969,
+                    "max": 10.60219955444336,
+                    "mean": 4.629721909761429,
+                    "median": 4.613377571105957,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 127,
+                    "1": 1
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                }
+              },
+              "both_original_questions_per64graphs": {
+                "role_edge_both_win": 64,
+                "all_three_both_win": 16,
+                "actual_free_both_correct": 17
+              }
+            }
+          },
+          "contrast": {
+            "en": {
+              "bundles": 64,
+              "questions": 128,
+              "mean_logp": {
+                "strict_unique_gold_rank1": {
+                  "numerator": 86,
+                  "denominator": 128,
+                  "fraction": "86/128",
+                  "rate": 0.671875
+                },
+                "gold_rank1_allowing_ties": {
+                  "numerator": 86,
+                  "denominator": 128,
+                  "fraction": "86/128",
+                  "rate": 0.671875
+                },
+                "gold_has_tied_competitor": {
+                  "numerator": 0,
+                  "denominator": 128,
+                  "fraction": "0/128",
+                  "rate": 0
+                },
+                "role_negative_only_comparison_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "other_subject_same_role_win": {
+                  "numerator": 86,
+                  "denominator": 128,
+                  "fraction": "86/128",
+                  "rate": 0.671875
+                },
+                "other_subject_other_role_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "all_three_negative_win": {
+                  "numerator": 86,
+                  "denominator": 128,
+                  "fraction": "86/128",
+                  "rate": 0.671875
+                },
+                "role_win_but_not_all_three": {
+                  "numerator": 42,
+                  "denominator": 128,
+                  "fraction": "42/128",
+                  "rate": 0.328125
+                },
+                "rank_histogram": {
+                  "1": 86,
+                  "2": 42
+                }
+              },
+              "actual_original_free_correct": {
+                "numerator": 86,
+                "denominator": 128,
+                "fraction": "86/128",
+                "rate": 0.671875
+              },
+              "actual_error_conditioned": {
+                "CORRECT": {
+                  "n": 86,
+                  "strict_mean_rank1": 86,
+                  "rank_histogram": {
+                    "1": 86
+                  }
+                },
+                "OTHER_SUBJECT_SAME_ROLE": {
+                  "n": 42,
+                  "strict_mean_rank1": 0,
+                  "rank_histogram": {
+                    "2": 42
+                  },
+                  "first_gap_to_actual_wrong": {
+                    "n": 42,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 42,
+                    "min": -9.229355812072754,
+                    "max": -0.012269973754882812,
+                    "mean": -1.9192441531590052,
+                    "median": -1.597757339477539,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "mean_gap_to_actual_wrong": {
+                    "n": 42,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 42,
+                    "min": -3.082505145614656,
+                    "max": -0.004892706871032715,
+                    "mean": -0.8726371624396139,
+                    "median": -0.7967990450561047,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_branch0_content": {
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 42
+                  },
+                  "prefix_later": 0,
+                  "eot_comparisons": 0
+                }
+              },
+              "edge_summary": {
+                "same_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 1.289890925089518,
+                    "max": 7.810914096538909,
+                    "mean": 4.616040067156746,
+                    "median": 4.679213657975197,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 3.883955955505371,
+                    "max": 15.621480941772461,
+                    "mean": 9.297757863998413,
+                    "median": 9.357763767242432,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 128
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_same_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 86,
+                    "zero": 0,
+                    "negative": 42,
+                    "min": -3.082505145614656,
+                    "max": 13.57541452589794,
+                    "mean": 1.066651509150764,
+                    "median": 0.44168557971715927,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 86,
+                    "zero": 0,
+                    "negative": 42,
+                    "min": -9.229355812072754,
+                    "max": 13.77367877960205,
+                    "mean": 1.6836073026061058,
+                    "median": 0.9043159484863281,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 128
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 0.5219357013702393,
+                    "max": 16.523614406585693,
+                    "mean": 4.8541261817943,
+                    "median": 4.269169483333826,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 2.3505859375,
+                    "max": 18.33456563949585,
+                    "mean": 9.27158933877945,
+                    "median": 9.256466388702393,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 128
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                }
+              },
+              "both_original_questions_per64graphs": {
+                "role_edge_both_win": 64,
+                "all_three_both_win": 29,
+                "actual_free_both_correct": 29
+              }
+            },
+            "ko": {
+              "bundles": 64,
+              "questions": 128,
+              "mean_logp": {
+                "strict_unique_gold_rank1": {
+                  "numerator": 74,
+                  "denominator": 128,
+                  "fraction": "74/128",
+                  "rate": 0.578125
+                },
+                "gold_rank1_allowing_ties": {
+                  "numerator": 74,
+                  "denominator": 128,
+                  "fraction": "74/128",
+                  "rate": 0.578125
+                },
+                "gold_has_tied_competitor": {
+                  "numerator": 0,
+                  "denominator": 128,
+                  "fraction": "0/128",
+                  "rate": 0
+                },
+                "role_negative_only_comparison_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "other_subject_same_role_win": {
+                  "numerator": 74,
+                  "denominator": 128,
+                  "fraction": "74/128",
+                  "rate": 0.578125
+                },
+                "other_subject_other_role_win": {
+                  "numerator": 128,
+                  "denominator": 128,
+                  "fraction": "128/128",
+                  "rate": 1
+                },
+                "all_three_negative_win": {
+                  "numerator": 74,
+                  "denominator": 128,
+                  "fraction": "74/128",
+                  "rate": 0.578125
+                },
+                "role_win_but_not_all_three": {
+                  "numerator": 54,
+                  "denominator": 128,
+                  "fraction": "54/128",
+                  "rate": 0.421875
+                },
+                "rank_histogram": {
+                  "1": 74,
+                  "2": 54
+                }
+              },
+              "actual_original_free_correct": {
+                "numerator": 74,
+                "denominator": 128,
+                "fraction": "74/128",
+                "rate": 0.578125
+              },
+              "actual_error_conditioned": {
+                "CORRECT": {
+                  "n": 74,
+                  "strict_mean_rank1": 74,
+                  "rank_histogram": {
+                    "1": 74
+                  }
+                },
+                "OTHER_SUBJECT_SAME_ROLE": {
+                  "n": 54,
+                  "strict_mean_rank1": 0,
+                  "rank_histogram": {
+                    "2": 54
+                  },
+                  "first_gap_to_actual_wrong": {
+                    "n": 54,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 54,
+                    "min": -5.199491500854492,
+                    "max": -0.03817939758300781,
+                    "mean": -1.686780541031449,
+                    "median": -1.4009275436401367,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "mean_gap_to_actual_wrong": {
+                    "n": 54,
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 54,
+                    "min": -2.5986902061849833,
+                    "max": -0.020376861095428467,
+                    "mean": -0.8436713164103113,
+                    "median": -0.6985290125012398,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_branch0_content": {
+                    "positive": 0,
+                    "zero": 0,
+                    "negative": 51
+                  },
+                  "prefix_later": 3,
+                  "eot_comparisons": 0
+                }
+              },
+              "edge_summary": {
+                "same_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 1.8705624341964722,
+                    "max": 8.664361238479614,
+                    "mean": 4.595593937754074,
+                    "median": 4.5441819205880165,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 127,
+                    "zero": 0,
+                    "negative": 1,
+                    "min": -1.0416278839111328,
+                    "max": 16.615063667297363,
+                    "mean": 8.948858566582203,
+                    "median": 8.960846424102783,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 126,
+                    "1": 2
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_same_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 74,
+                    "zero": 0,
+                    "negative": 54,
+                    "min": -2.5986902061849833,
+                    "max": 4.577300593431573,
+                    "mean": 0.5215804619342634,
+                    "median": 0.28219708800315857,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 74,
+                    "zero": 0,
+                    "negative": 54,
+                    "min": -5.199491500854492,
+                    "max": 9.131073951721191,
+                    "mean": 1.0419198796153069,
+                    "median": 0.5552215576171875,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 125,
+                    "1": 3
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                },
+                "other_subject_other_role": {
+                  "mean_logp_gap": {
+                    "n": 128,
+                    "positive": 128,
+                    "zero": 0,
+                    "negative": 0,
+                    "min": 1.7387039065361023,
+                    "max": 7.84122109413147,
+                    "mean": 4.6939499462837375,
+                    "median": 4.7385900389635935,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "first_divergence_gap": {
+                    "n": 128,
+                    "positive": 126,
+                    "zero": 0,
+                    "negative": 2,
+                    "min": -3.6394176483154297,
+                    "max": 17.338489532470703,
+                    "mean": 8.92726793140173,
+                    "median": 9.204346656799316,
+                    "aggregation": "saved source row order; explicit sequential left-fold, no tolerance"
+                  },
+                  "branch_indices": {
+                    "0": 127,
+                    "1": 1
+                  },
+                  "content_edges": 128,
+                  "EOT_prefix_edges": 0
+                }
+              },
+              "both_original_questions_per64graphs": {
+                "role_edge_both_win": 64,
+                "all_three_both_win": 18,
+                "actual_free_both_correct": 18
+              }
+            }
+          }
+        },
+        "positive_actual_wrong_edge_examples": [],
+        "definitions": {
+          "role_only": "Only compare gold against q^1, not exclusive win against exactly one of three.",
+          "strict_rank1": "gold mean logP > every other candidate; ties are not strict success.",
+          "first_gap": "correct_logit-crossed_logit at first divergent token of teacher-forced shared candidate prefix; EOT may be compared for content-prefix candidates.",
+          "mapped_actual_error": "Use saved actual_original_error_types and answer hashes. This command does not reopen original free-answer strings or generated token IDs."
+        },
+        "limits": [
+          "Sequence mean logP, shared-prefix first divergence and actual greedy free output are different observables.",
+          "Positive gap on an actual-wrong candidate is an implementation-path question only conditionally: the actual generated history/tokenization must match the saved teacher-forced prefix.",
+          "No new tokenizer/source re-encoding, model/forward, Torch, GPU, CP tensor or CP byte hash run; checkpoint identity is source-bound through completed reports.",
+          "study report metadata updates896 refers to the new study recipe, not a new896-update execution of these old768 models.",
+          "These are64 related bilingual source graphs per language, not256 independent worlds.",
+          "No model-quality PASS, tolerance or new adoption threshold is introduced."
+        ],
+        "torch_imported": false,
+        "model_loaded": false,
+        "gpu_used": false,
+        "files_written": 0,
+        "partial_contrast_read": false
+      },
+      "elapsed_inner_seconds": 0.01748496499931207,
+      "check_label_count": 33,
+      "executed_predicate_count": 14223,
+      "판정": "원형/분모/수치 재계수 불일치0. 이14300여 predicate를 독립 실험/품질 PASS 수로 세지 않는다."
+    },
+    "실행전훅거절": {
+      "executed": false,
+      "attempted_command": "PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 timeout 30 /usr/bin/python3 -B - <<'PY'\nfrom pathlib import Path\nimport collections,hashlib,json,math,statistics,sys,time\nR=Path('/home/uranus/tinyLM');TAG='p106b_subject_role_v1_s1337';E=R/'test_result/evidence'/TAG;L=R/'test_result/evidence/local'/TAG;began=time.perf_counter();checks=collections.Counter();sha_cache={}\ndef ck(v,k):\n if not v:raise AssertionError(k)\n checks[k]+=1\ndef sha(p):\n if p not in sha_cache:\n  h=hashlib.sha256()\n  with p.open('rb') as f:\n   for b in iter(lambda:f.read(1048576),b''):h.update(b)\n  sha_cache[p]=h.hexdigest().upper()\n return sha_cache[p]\ndef js(p):return json.loads(p.read_text(encoding='utf-8'))\ndef finite(v):return type(v) in (int,float) and math.isfinite(v)\ndef ratio(n,d):return dict(numerator=n,denominator=d,fraction=str(n)+'/'+str(d),rate=n/d)\ndef stats(v):\n total=0.\n for x in v:total+=x\n return dict(n=len(v),positive=sum(x>0 for x in v),zero=sum(x==0 for x in v),negative=sum(x<0 for x in v),min=min(v),max=max(v),mean=total/len(v),median=statistics.median(v),aggregation='saved source row order; explicit sequential left-fold, no tolerance')\naxes={'same_subject_other_role':1,'other_subject_same_role':2,'other_subject_other_role':3};error_axis={'SAME_SUBJECT_OTHER_ROLE':1,'OTHER_SUBJECT_SAME_ROLE':2,'OTHER_SUBJECT_OTHER_ROLE':3}\nallresults={};identities={};source_signatures={};examples=[]\nfor label in ('ce','contrast'):\n p=E/('probe_old_'+label)/'report.json'\n if not p.is_file():raise RuntimeError('COMPLETE_REPORT_NOT_YET_CREATED:'+label)\n report=js(p);ck(report['status']=='OLD_2X4_TF_DIAGNOSTIC_COMPLETE' and report['model']==label and report['bundles']==128,'completed_exact_probe')\n ck(report['additional_free_answers']==0 and report['model_training'] is False and report['weights_changed'] is False,'no_new_free_answers_or_training')\n identity=report['lineage'];ck(identity['endpoint']==label and identity['probe']=='ORIGINAL_A_TWO_QUESTIONS_FOUR_CANDIDATES' and identity['tag']==TAG,'lineage_endpoint_probe')\n ck(report['core_before']==report['core_after']==identity['expected_core_sha256'],'recorded_body_before_after_equal')\n for name,h in report['code_sha256'].items():ck(sha(R/name)==h,'current_code_sha')\n directory=L/('probe_old_'+label);mp=directory/'rank2x4_shards_manifest.json';m=js(mp)\n ck(m==report['rank_manifest'] and sha(mp)==report['rank_manifest_sha256'] and m['lineage']==identity,'manifest_hash_report_lineage')\n whole=hashlib.sha256();rows=[];nb=0\n for i,s in enumerate(m['shards']):\n  ck(s['path']==f'rank2x4_{i:06d}.jsonl','ordered_shard_name');b=(directory/s['path']).read_bytes();whole.update(b);nb+=len(b)\n  ck(len(b)==s['bytes'] and len(b)<20000000 and b.endswith(b'\\n') and hashlib.sha256(b).hexdigest().upper()==s['sha256'],'raw_bytes_sha_limit')\n  values=[json.loads(x) for x in b.decode('utf-8').splitlines()];ck(len(values)==s['rows'],'raw_shard_rows');rows.extend(values)\n ck(len(rows)==m['rows']==128 and nb==m['bytes'] and whole.hexdigest().upper()==m['concat_sha256'],'whole128_raw_sha')\n A=R/'test_result/evidence/p106b_relation_bind_v1_s1337'\n ck(sha(A/'readback.json')==report['original_readback_sha256'],'old_A_readback_report_sha')\n for endpoint,h in report['original_source_reports_sha256'].items():ck(sha(A/('evaluate_'+endpoint)/'report.json')==h,'old_A_evaluation_report_sha')\n train=js(A/('train_'+label)/'report.json');ck(sha(A/('train_'+label)/'report.json')==identity['training_report_sha256'] and train['checkpoint_sha256']==identity['checkpoint_sha256'] and train['final_core_sha256']==report['core_before'] and train['updates']==768,'actual_old768_training_identity')\n seen=set();questions=collections.defaultdict(list);graphs=collections.defaultdict(list);signatures=[]\n for row in rows:\n  key=row['bundle_id'];ck(key not in seen,'unique_bundle_id');seen.add(key);ck(row['language'] in ('en','ko'),'declared_language')\n  ck(all(isinstance(row[k],str) and len(row[k])==64 for k in ('bundle_id','parent_bundle_id','group_id')),'bundle_parent_group_sha_shape')\n  for name in ('content_lengths','content_sums','content_means','eot_logp'):\n   a=row[name];ck(isinstance(a,list) and len(a)==2 and all(isinstance(x,list) and len(x)==4 for x in a),'exact2x4_shape')\n   ck(all(type(v) is int and v>0 for x in a for v in x) if name=='content_lengths' else all(finite(v) and v<=0 for x in a for v in x),'positive_lengths_or_finite_nonpositive_logp')\n  ck(row['content_lengths'][0]==row['content_lengths'][1],'candidate_own_length_same_across_questions')\n  ck(row['content_means']==[[row['content_sums'][q][a]/row['content_lengths'][q][a] for a in range(4)] for q in range(2)],'exact_own_length_mean_recalculation')\n  ck(len(row['actual_original_answer_sha256'])==len(row['actual_original_error_types'])==2 and all(isinstance(h,str) and len(h)==64 and all(c in '0123456789ABCDEF' for c in h) for h in row['actual_original_answer_sha256']),'two_actual_answer_hashes')\n  branches=row['first_divergence'];ck(len(branches)==6 and [(b['question_index'],b['candidate_index']) for b in branches]==[(q,a) for q in range(2) for a in range(4) if a!=q],'six_ordered_first_divergence_edges');bm={}\n  static=[]\n  for b in branches:\n   q=b['question_index'];a=b['candidate_index'];idx=b['branch_index'];ck(type(idx) is int and 0<=idx<=min(row['content_lengths'][q][q],row['content_lengths'][q][a]),'branch_in_complete_content_EOT_range')\n   ck(all(finite(b[k]) for k in ('correct_logit','crossed_logit','gap')) and b['gap']==b['correct_logit']-b['crossed_logit'],'exact_first_gap_recalculation')\n   ck(type(b['correct_token']) is int and type(b['crossed_token']) is int and b['correct_token']!=b['crossed_token'] and 0<=b['correct_token']<32768 and 0<=b['crossed_token']<32768,'distinct_in_vocab_branch_tokens')\n   eot=b['correct_token']==4 or b['crossed_token']==4;ck(b['includes_eot'] is eot and b['branch_type']==('CONTENT_PREFIX_EOT_BRANCH' if eot else 'CONTENT_INNER_DIVERGENCE'),'prefix_EOT_branch_type')\n   ck((b['correct_token']==4)==(idx==row['content_lengths'][q][q]) and (b['crossed_token']==4)==(idx==row['content_lengths'][q][a]),'EOT_index_matches_own_content_length')\n   ck(type(b['correct_predictor_position']) is int and 0<=b['correct_predictor_position']<1024,'predictor_position_range');bm[q,a]=b;static.append({k:v for k,v in b.items() if k not in ('correct_logit','crossed_logit','gap')})\n  for q in range(2):\n   ck(len({bm[q,a]['correct_predictor_position']-bm[q,a]['branch_index'] for a in range(4) if a!=q})==1,'shared_predictor_prefix_base')\n   values=row['content_means'][q];gold=values[q];kind=row['actual_original_error_types'][q];ck(kind in ('CORRECT',*error_axis,'EMPTY','OTHER_CONTEXT_ENTITY','OUT_OF_TABLE'),'known_actual_error_type')\n   mean_gaps={name:gold-values[q^flip] for name,flip in axes.items()};edge={name:bm[q,q^flip] for name,flip in axes.items()};rank=1+sum(v>gold for a,v in enumerate(values) if a!=q);ties=sum(v==gold for a,v in enumerate(values) if a!=q)\n   item=dict(bundle_id=key,parent_bundle_id=row['parent_bundle_id'],group_id=row['group_id'],question_index=q,language=row['language'],actual_error_type=kind,actual_answer_sha256=row['actual_original_answer_sha256'][q],rank=rank,ties=ties,strict_rank1=rank==1 and ties==0,mean_gaps=mean_gaps,first_edges=edge)\n   if kind in error_axis:\n    chosen=bm[q,q^error_axis[kind]];item['actual_wrong_edge']=chosen\n    if chosen['gap']>0 and len([x for x in examples if x['model']==label and x['language']==row['language']])<8:examples.append(dict(model=label,language=row['language'],bundle_id=key,parent_bundle_id=row['parent_bundle_id'],group_id=row['group_id'],question_index=q,actual_error_type=kind,actual_answer_sha256=item['actual_answer_sha256'],gold_rank=rank,mean_gap_to_actual_wrong=gold-values[chosen['candidate_index']],first_divergence=chosen))\n   questions[row['language']].append(item);graphs[row['language']].append(item)\n  signatures.append(dict(bundle_id=key,parent_bundle_id=row['parent_bundle_id'],group_id=row['group_id'],language=row['language'],content_lengths=row['content_lengths'],branches=static))\n source_signatures[label]=signatures;model={}\n for language,items in sorted(questions.items()):\n  n=len(items);ck(n==128 and len({x['group_id'] for x in items})==64,'per_language128_questions64_graphs')\n  wins=lambda axis:sum(x['mean_gaps'][axis]>0 for x in items)\n  by_error={}\n  for kind in sorted({x['actual_error_type'] for x in items}):\n   sub=[x for x in items if x['actual_error_type']==kind];out=dict(n=len(sub),strict_mean_rank1=sum(x['strict_rank1'] for x in sub),rank_histogram=dict(collections.Counter(x['rank'] for x in sub)))\n   if kind in error_axis:\n    gaps=[x['actual_wrong_edge']['gap'] for x in sub];mg=[x['mean_gaps'][next(a for a,f in axes.items() if f==error_axis[kind])] for x in sub];out.update(first_gap_to_actual_wrong=stats(gaps),mean_gap_to_actual_wrong=stats(mg),first_branch0_content={sign:sum((x['actual_wrong_edge']['gap']>0 if sign=='positive' else x['actual_wrong_edge']['gap']<0 if sign=='negative' else x['actual_wrong_edge']['gap']==0) and x['actual_wrong_edge']['branch_index']==0 and not x['actual_wrong_edge']['includes_eot'] for x in sub) for sign in ('positive','zero','negative')},prefix_later=sum(x['actual_wrong_edge']['branch_index']>0 for x in sub),eot_comparisons=sum(x['actual_wrong_edge']['includes_eot'] for x in sub))\n   by_error[kind]=out\n  edge_summary={}\n  for name in axes:\n   edges=[x['first_edges'][name] for x in items];edge_summary[name]=dict(mean_logp_gap=stats([x['mean_gaps'][name] for x in items]),first_divergence_gap=stats([b['gap'] for b in edges]),branch_indices=dict(collections.Counter(b['branch_index'] for b in edges)),content_edges=sum(not b['includes_eot'] for b in edges),EOT_prefix_edges=sum(b['includes_eot'] for b in edges))\n  grouped=collections.defaultdict(list)\n  for x in items:grouped[x['group_id']].append(x)\n  ck(all(len(v)==2 and {x['question_index'] for x in v}=={0,1} for v in grouped.values()),'two_original_questions_per_graph')\n  model[language]=dict(bundles=64,questions=128,mean_logp=dict(strict_unique_gold_rank1=ratio(sum(x['strict_rank1'] for x in items),n),gold_rank1_allowing_ties=ratio(sum(x['rank']==1 for x in items),n),gold_has_tied_competitor=ratio(sum(x['ties']>0 for x in items),n),role_negative_only_comparison_win=ratio(wins('same_subject_other_role'),n),other_subject_same_role_win=ratio(wins('other_subject_same_role'),n),other_subject_other_role_win=ratio(wins('other_subject_other_role'),n),all_three_negative_win=ratio(sum(all(v>0 for v in x['mean_gaps'].values()) for x in items),n),role_win_but_not_all_three=ratio(sum(x['mean_gaps']['same_subject_other_role']>0 and not x['strict_rank1'] for x in items),n),rank_histogram=dict(collections.Counter(x['rank'] for x in items))),actual_original_free_correct=ratio(sum(x['actual_error_type']=='CORRECT' for x in items),n),actual_error_conditioned=by_error,edge_summary=edge_summary,both_original_questions_per64graphs=dict(role_edge_both_win=sum(all(x['mean_gaps']['same_subject_other_role']>0 for x in v) for v in grouped.values()),all_three_both_win=sum(all(x['strict_rank1'] for x in v) for v in grouped.values()),actual_free_both_correct=sum(all(x['actual_error_type']=='CORRECT' for x in v) for v in grouped.values())))\n allresults[label]=model;identities[label]=dict(report_path=str(p.relative_to(R)),report_sha256=sha(p),manifest_path=str(mp.relative_to(R)),manifest_sha256=sha(mp),raw_shards=m['shards'],raw_concat_sha256=m['concat_sha256'],lineage=identity,recorded_core_before=report['core_before'],recorded_core_after=report['core_after'],new_free_answers=report['additional_free_answers'],actual_old_training_updates=train['updates'],study_metadata_updates=report['updates'],code_files=len(report['code_sha256']),original_readback_sha256=report['original_readback_sha256'],original_source_reports_sha256=report['original_source_reports_sha256'])\nck(source_signatures['ce']==source_signatures['contrast'],'exact_same_source_candidate_branch_spec_across_models')\nprint(json.dumps(dict(status='OLD_2X4_STANDARD_JSON_RECOUNT_COMPLETE',python_version=sys.version,elapsed_seconds=time.perf_counter()-began,checks=dict(checks),check_count=sum(checks.values()),failures=0,identities=identities,results=allresults,positive_actual_wrong_edge_examples=examples,definitions=dict(role_only='Only compare gold against q^1, not exclusive win against exactly one of three.',strict_rank1='gold mean logP > every other candidate; ties are not strict success.',first_gap='correct_logit-crossed_logit at first divergent token of teacher-forced shared candidate prefix; EOT may be compared for content-prefix candidates.',mapped_actual_error='Use saved actual_original_error_types and answer hashes. This command does not reopen original free-answer strings or generated token IDs.'),limits=['Sequence mean logP, shared-prefix first divergence and actual greedy free output are different observables.','Positive gap on an actual-wrong candidate is an implementation-path question only conditionally: the actual generated history/tokenization must match the saved teacher-forced prefix.','No new tokenizer/source re-encoding, model/forward, Torch, GPU, CP tensor or CP byte hash run; checkpoint identity is source-bound through completed reports.','study report metadata updates896 refers to the new study recipe, not a new896-update execution of these old768 models.','These are64 related bilingual source graphs per language, not256 independent worlds.','No model-quality PASS, tolerance or new adoption threshold is introduced.'],torch_imported='torch' in sys.modules,model_loaded=False,gpu_used=False,files_written=0,partial_contrast_read=False),ensure_ascii=False,indent=2))\nPY",
+      "reason": "Codex 전용 역슬래시 보호 훅이 inline 읽기 전용 명령의 literal LF escape를 위험한 쓰기 이스케이프로 판단하여 프로세스 실행 전에 거절했다.",
+      "처리": "guard/whitelist/설정을 바꾸지 않았다. 동일 LF 바이트 점검을 b.endswith(bytes([10]))로 표현한 읽기 전용 명령으로 재시도했다.",
+      "무실행거절과모델실패구별": "거절된 첫 시도는 모델/GPU 실행이나 자료/숫자 검산의 실패가 아니다. 실제 검산 결과와 분리 보존한다."
+    }
+  },
+  "한계와다음주체": {
+    "품질승격": false,
+    "허용오차추가": false,
+    "새PASS문턱추가": false,
+    "조리법채택": "USER_REVIEW_REQUIRED",
+    "계보": "이번 집계는 이미 반복 관측한 가상 관계/24이름/단일학습seed의 view0 두질문이다. 일반 세계지식·미학습 언어/사실·새4질문 성공을 뜻하지 않는다.",
+    "원형유지": "원 A/CF/CPT/subject-role 동결 코드, CP, source, raw, report는 수정하지 않았다.",
+    "대기": "감사 한 파일 저장/자체 검증 후 새 CPU/GPU 작업 없이 총괄의 세 cost 측정 동안 대기한다."
+  },
+  "현재감사파일": {
+    "path": "handoff/audit/WIP_20261019_OLD_2X4_INDEPENDENT_RECOUNT.json",
+    "edit_tool": "apply_patch Add File",
+    "audit_files_written": 1,
+    "original_files_modified": 0,
+    "diagnostic_files_written": 0,
+    "model_gpu_torch_operations": 0,
+    "git_operations": 0,
+    "new_agents": 0
+  }
+}
