@@ -1,0 +1,769 @@
+{
+  "schema": "P106D_HISTORY_DRAFT_INDEPENDENT_CPU_REVIEW_V1",
+  "reviewer": "/root/oct19_antithesis",
+  "artifact_status": "COMPLETED_SYNTHETIC_REVIEW_OF_F04E_78AD_DRAFT_ONLY",
+  "scope": {
+    "승인": "총괄의 지정 두 동결 파일·Stage5 계획/Scope 읽기 및 CPU 합성 회귀 승인, 이후 이 새 감사 JSON 한 파일만 작성 승인",
+    "유효배정": "앞선 불완전 배정은 이후 정정된 배정으로 대체되었다. 정정 전 배정 내용은 인용하지 않는다.",
+    "읽은대상": "scripts/diag_p106d_history_scope.py 및 대응 test 전체, Stage5/Scope와 필요한 기존 producer·생성·receipt·baseline의 코드/문서. 기존 코드의 수정은0.",
+    "합성실행": "Torch 라이브러리 import 및 작은 합성 CPU tensor/문자열/fixture, 원본 I/O를 메모리 mock으로 치환한61개 회귀와 별도 두 지표 반례",
+    "금지": "실제 HF/source/tokenizer/CP/native자료 읽기·실제 torch.load/save·nn.Module 생성/forward·CUDA초기화·GPU·네트워크·물리 쓰기·설치·Git·기존 파일 변경·추가agent",
+    "보존파일": "handoff/audit/WIP_20261019_HISTORY_DRAFT_INDEPENDENT_CPU_REVIEW.json",
+    "시점": "세 차례 검산과 두 반례 당시 파일 쓰기0. 이후 이 파일1개만 apply_patch로 새로 작성. 기존 코드·다른 감사·학습 원형은 변경하지 않음.",
+    "역할분리": "총괄만 실제 source/tokenizer/CPU checkpoint prepare·GPU·최종판정·Git을 담당. 진행 중 role 학습 원형은 읽지 않음."
+  },
+  "frozen_draft_sources": {
+    "scripts/diag_p106d_history_scope.py": {
+      "bytes": 86049,
+      "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+    },
+    "scripts/test_p106d_history_scope.py": {
+      "bytes": 73919,
+      "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+    }
+  },
+  "outcome": {
+    "tests": 61,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "unittest_elapsed_seconds": 50.056,
+    "wrapper_elapsed_seconds": 50.08773773199937,
+    "final_exit_code": 0,
+    "source_bytes_sha_before_after_equal": true,
+    "p0_p1_execution_blocker_confirmed": false,
+    "confirmed_interpretation_boundaries": 2,
+    "판단": "동결 초안의 합성 경계61개 통과. 실제128행 복원·실토크나이저·CP/모델·품질 동작은 NOT_RUN이며 실행/효능 PASS가 아님.",
+    "후속주의": "총괄이 선택한 보고용 좁은 보완은 아직 이 감사의 대상이 아니다. 이후 소스 SHA와 별도 독립 재검토가 필요하다."
+  },
+  "wrapper_attempts": [
+    {
+      "attempt": 1,
+      "classification": "HARNESS_IMPORT_SIDE_EFFECT_BLOCKED_NOT_PRODUCT_OR_MODEL_FAILURE",
+      "command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nBOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\"\nexec(BOOT)\nimport copy, runpy, unittest\nfrom pathlib import Path\nstarted=time.perf_counter()\nowned=[Path(_ROOT)/'scripts/diag_p106d_history_scope.py',Path(_ROOT)/'scripts/test_p106d_history_scope.py']\ndef identity():\n    return {str(p.relative_to(_ROOT)):{'bytes':len(p.read_bytes()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()} for p in owned}\nbefore=identity()\nexpected={'scripts/diag_p106d_history_scope.py':{'bytes':86049,'sha256':'F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73'},'scripts/test_p106d_history_scope.py':{'bytes':73919,'sha256':'78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371'}}\nassert before==expected\n_original_run=subprocess.run\nchild_receipts=[]\ndef _guarded_cli_run(command,*args,**kwargs):\n    if not isinstance(command,(tuple,list)):\n        raise AssertionError('GUARD explicit CLI argv needed')\n    argv=list(command)\n    driver=str(owned[0])\n    if argv[:5]!=[sys.executable,'-B','-X','utf8',driver]:\n        raise AssertionError('GUARD only exact frozen driver CLI allowed '+repr(argv))\n    tail=argv[5:]\n    allowed=(tail==['--help'] or (len(tail)>=3 and tail[0]=='--mode' and tail[1] in ('prepare','preflight','evaluate','readback') and '--check-only' in tail and '--execute' not in tail))\n    if not allowed or kwargs.get('cwd')!='/tmp':\n        raise AssertionError('GUARD source-free CLI selectors only')\n    extra=\"\\nimport runpy\\nsys.argv=\"+repr([driver,*tail])+\"\\ntry:\\n    runpy.run_path(\"+repr(driver)+\",run_name='__main__')\\nfinally:\\n    print('[CHILD_GUARD] '+json.dumps(_COUNTS,sort_keys=True),file=sys.stderr)\\n\"\n    guarded=[sys.executable,'-B','-X','utf8','-c',BOOT+extra]\n    _ALLOWED_CHILDREN.add(tuple(guarded));_COUNTS['source_free_children']+=1\n    result=_original_run(guarded,*args,**kwargs)\n    receipt=[line for line in result.stderr.splitlines() if line.startswith('[CHILD_GUARD] ')]\n    if len(receipt)!=1:\n        raise AssertionError('GUARD child receipt missing '+result.stderr)\n    counts=json.loads(receipt[0].split('] ',1)[1]);child_receipts.append(dict(original_argv=argv,returncode=result.returncode,counts=counts))\n    if any(v for k,v in counts.items() if k!='source_free_children'):\n        raise AssertionError('GUARD child attempted forbidden operation')\n    return result\nsubprocess.run=_guarded_cli_run\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106d_history_scope')\nresult=unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite)\nafter=identity()\nassert after==before\ncounts=copy.deepcopy(_COUNTS)\nfinal=dict(tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),successful=result.wasSuccessful(),before=before,after=after,counts=counts,child_receipts=child_receipts,cuda_initialized=torch.cuda.is_initialized(),elapsed_seconds=time.perf_counter()-started)\nprint('[INDEPENDENT_GUARDED_RESULT] '+json.dumps(final,ensure_ascii=False,sort_keys=True))\nraise SystemExit(0 if result.wasSuccessful() and all(v==0 for k,v in counts.items() if k!='source_free_children') else 1)\nPY",
+      "raw_tool_output": "Warning: truncated output (original token count: 21154)\nTotal output lines: 1144\n\ntest_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_all546_safe_cases_generated_once_initial_and_complete_recount (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_all_eight_canonical_chatml_markers_preserve_first_and_only_skip_actual (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_boolean_code_label_distribution_and_constant_baselines_are_condition_specific (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_c1_wrong_initial_is_kept_in_history_but_follow_target_uses_actual_code_state (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_c3_uses_actual_previous_string_not_gold_when_scoring (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_c3_wrong_empty_whitespace_json_first_answers_preserved_without_strip (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_canonical_reference_over128_keeps_generation_and_all_c3_denominators (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_chatml_control_skips_only_actual_case_and_never_fakes_empty_answer (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_constant_false_first_answers_not_promoted_to_general_boolean_learning (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_eos_terminated_first_reuses_visible_body_not_original_helper_eos_marker (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_other_endpoint_initial_ref_hash_or_raw_tamper_is_technical_error (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_partial_duplicate_and_safe_case_forged_not_run_rejected (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_seven_non_eot_chatml_payload_markers_end_to_end_preserve546_accounting (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_strict_c3_rejects_duplicate_extra_key_and_non_string_values (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_unsafe_and_input_overflow_reasons_both_preserved_for_one_not_run (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_active_receipts_bind_returncode_output_and_nonfinite_or_bool_time_rejected (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_all_modes_check_only_are_source_tokenizer_tensor_model_free (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_cli_exact_endpoint_and_bounded_wall_mutual_exclusion (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_every_mode_actually_drives_shared_three_phase_adapters (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_initial_reservation_exact5400_and_cpu600 (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_failed_over_budget_or_duplicate_worker_are_not_executed (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_prepared_blocks_gpu_admission_before_model_import (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_pipeline_hold_error_interrupt_timeout_leave_unrun_receipt (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_preflight_is_no_write_no_tensor_and_deadline_checked_before_prepared_read (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_public_execute_calls_pipeline_not_direct_worker (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_queue_wait_not_charged_and_latest_absolute_deadline_rechecked (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_worker_complete_hold_corruption_interrupt_and_timeout_write_distinct_receipts (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... FAIL\ntest_c3_current_is_literal_data_not_completed_gold_json (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_compact_uses_initial_not_updated_operands (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_exact546_with418_static128_templates_and_language_denominators (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_minimal_questions_are_separate_development_prompts (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_cpu_checkpoint_inspection_is_three_mock_loads_no_module_optimizer_or_write (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... FAIL\ntest_cpu_manifest_case_actual_template_or_checkpoint_metadata_tamper_rejected (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... FAIL\ntest_full_prepare_read_roundtrip_is_memory_only_with_canonical_source (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... FAIL\ntest_state_fingerprint_reuses_exact_helper_without_nn_module (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_adapter_error_appends_unmodified_raw_evidence_then_aborts_without_model_metric (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_eos_retained_or_hidden_by_original_decoder_both_keep_original_helper (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_eot_only_boundary_removed_empty_whitespace_and_json_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_max_new_preserves_all128_content_tokens_and_literal_eos_text (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_middle_nonterminal_special_marker_is_not_removed (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_missing_helper_return_or_decode_calls_preserves_error_evidence (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_nonterminal_textual_eot_helper_split_difference_is_error_not_content_repair (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_observer_delegate_returns_unchanged_and_original_helper_metadata_object_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_wrong_terminal_prefix_generated_count_and_sha_tamper_rejected (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_mock_emit_training_mode_change_aborts_before_success_report (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... FAIL\ntest_mock_orchestration_every_call_no_grad_eval_and_cleanup_restores_eval (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... FAIL\ntest_all128_old_and_fresh_exact_grammar_metadata_and_root_recovered (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_boolean_ast_full_grammar_roundtrip_and_no_eval (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_initial_follow_gold_meta_and_state_tamper_rejected (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_noncanonical_source_blocks_and_split_change_are_not_accepted (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_old_state_rule_not_recovered_from_gold_or_keywords (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_endpoint_partial_or_corrupt_core_mode_count_and_initial_reference_rejected (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_endpoint_raw546_recount_and_receipt_exact_match_without_model (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_stdout_source_fixed16_plus_minimal2_prints_actual_questions_and_answers_without_mutation (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_three_endpoint_readback_preserves1638_expected_and_one_explicit_not_run (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_complete_source_reports_manifests_and_four_old128_raws_roundtrip (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\ntest_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\ntest_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\ntest_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\n\n======================================================================\nFAIL: test_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 460, in test_actual_input_overflow_not_run_but_other545_generations_continue\n    p = next(p for p in source_fixture() if p['family'] == 'format')\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 62, in source_fixture\n    _, small, expanded, _ = d.producers()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/…16654 tokens truncated…ifests_and_four_old128_raws_roundtrip\n    fixture = source_documents(); before = d.sha(fixture.documents)\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n======================================================================\nFAIL: test_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 660, in test_missing_report_and_byte_hash_corruption_rejected_without_model\n    fixture = source_documents(); fixture.documents.pop(str(d.SOURCE_EVIDENCE / 'fixed/report.json'))\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n======================================================================\nFAIL: test_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 685, in test_partial_old_records_and_probe_rows_do_not_become_wrong_zero\n    fixture = source_documents(); fixture.shards[str(directory), stem].pop()\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n======================================================================\nFAIL: test_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 670, in test_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected\n    fixture = source_documents()\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n----------------------------------------------------------------------\nRan 61 tests in 6.084s\n\nFAILED (failures=48)\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"before\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"child_receipts\": [{\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--help\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"prepare\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"preflight\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"evaluate\", \"--check-only\", \"--endpoint\", \"parent\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"readback\", \"--check-only\"], \"returncode\": 0}], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 48, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 5, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 6.116842597999494, \"errors\": 0, \"failures\": 48, \"skipped\": 0, \"successful\": false, \"tests\": 61}\n",
+      "raw_tool_output_complete": false,
+      "truncation": "첫 결과의 도구 출력 제한으로 중간 traceback 일부가 축약되었다. 수신된 원문과 명시된 truncation을 그대로 보존하며 누락 구간을 복원/추정하지 않는다. 추가 재실행으로 과거 출력 원문을 대체하지 않았다.",
+      "tool_chunks": [
+        {
+          "chunk_id": "aacff2",
+          "wall_time_seconds": 1.000887986,
+          "session_id": 87361,
+          "original_token_count": 0,
+          "output": ""
+        },
+        {
+          "chunk_id": "450846",
+          "wall_time_seconds": 0.000009139,
+          "exit_code": 1,
+          "original_token_count": 21154,
+          "output": "Warning: truncated output (original token count: 21154)\nTotal output lines: 1144\n\ntest_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_all546_safe_cases_generated_once_initial_and_complete_recount (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_all_eight_canonical_chatml_markers_preserve_first_and_only_skip_actual (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_boolean_code_label_distribution_and_constant_baselines_are_condition_specific (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_c1_wrong_initial_is_kept_in_history_but_follow_target_uses_actual_code_state (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_c3_uses_actual_previous_string_not_gold_when_scoring (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_c3_wrong_empty_whitespace_json_first_answers_preserved_without_strip (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_canonical_reference_over128_keeps_generation_and_all_c3_denominators (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_chatml_control_skips_only_actual_case_and_never_fakes_empty_answer (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_constant_false_first_answers_not_promoted_to_general_boolean_learning (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_eos_terminated_first_reuses_visible_body_not_original_helper_eos_marker (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_other_endpoint_initial_ref_hash_or_raw_tamper_is_technical_error (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_partial_duplicate_and_safe_case_forged_not_run_rejected (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_seven_non_eot_chatml_payload_markers_end_to_end_preserve546_accounting (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_strict_c3_rejects_duplicate_extra_key_and_non_string_values (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_unsafe_and_input_overflow_reasons_both_preserved_for_one_not_run (scripts.test_p106d_history_scope.ActualHistoryTests) ... FAIL\ntest_active_receipts_bind_returncode_output_and_nonfinite_or_bool_time_rejected (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_all_modes_check_only_are_source_tokenizer_tensor_model_free (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_cli_exact_endpoint_and_bounded_wall_mutual_exclusion (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_every_mode_actually_drives_shared_three_phase_adapters (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_initial_reservation_exact5400_and_cpu600 (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_failed_over_budget_or_duplicate_worker_are_not_executed (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_prepared_blocks_gpu_admission_before_model_import (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_pipeline_hold_error_interrupt_timeout_leave_unrun_receipt (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_preflight_is_no_write_no_tensor_and_deadline_checked_before_prepared_read (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_public_execute_calls_pipeline_not_direct_worker (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_queue_wait_not_charged_and_latest_absolute_deadline_rechecked (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_worker_complete_hold_corruption_interrupt_and_timeout_write_distinct_receipts (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... FAIL\ntest_c3_current_is_literal_data_not_completed_gold_json (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_compact_uses_initial_not_updated_operands (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_exact546_with418_static128_templates_and_language_denominators (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_minimal_questions_are_separate_development_prompts (scripts.test_p106d_history_scope.CaseContractTests) ... FAIL\ntest_cpu_checkpoint_inspection_is_three_mock_loads_no_module_optimizer_or_write (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... FAIL\ntest_cpu_manifest_case_actual_template_or_checkpoint_metadata_tamper_rejected (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... FAIL\ntest_full_prepare_read_roundtrip_is_memory_only_with_canonical_source (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... FAIL\ntest_state_fingerprint_reuses_exact_helper_without_nn_module (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_adapter_error_appends_unmodified_raw_evidence_then_aborts_without_model_metric (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_eos_retained_or_hidden_by_original_decoder_both_keep_original_helper (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_eot_only_boundary_removed_empty_whitespace_and_json_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_max_new_preserves_all128_content_tokens_and_literal_eos_text (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_middle_nonterminal_special_marker_is_not_removed (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_missing_helper_return_or_decode_calls_preserves_error_evidence (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_nonterminal_textual_eot_helper_split_difference_is_error_not_content_repair (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_observer_delegate_returns_unchanged_and_original_helper_metadata_object_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_wrong_terminal_prefix_generated_count_and_sha_tamper_rejected (scripts.test_p106d_history_scope.DecodeObservationTests) ... FAIL\ntest_mock_emit_training_mode_change_aborts_before_success_report (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... FAIL\ntest_mock_orchestration_every_call_no_grad_eval_and_cleanup_restores_eval (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... FAIL\ntest_all128_old_and_fresh_exact_grammar_metadata_and_root_recovered (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_boolean_ast_full_grammar_roundtrip_and_no_eval (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_initial_follow_gold_meta_and_state_tamper_rejected (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_noncanonical_source_blocks_and_split_change_are_not_accepted (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_old_state_rule_not_recovered_from_gold_or_keywords (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... FAIL\ntest_endpoint_partial_or_corrupt_core_mode_count_and_initial_reference_rejected (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_endpoint_raw546_recount_and_receipt_exact_match_without_model (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_stdout_source_fixed16_plus_minimal2_prints_actual_questions_and_answers_without_mutation (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_three_endpoint_readback_preserves1638_expected_and_one_explicit_not_run (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... FAIL\ntest_complete_source_reports_manifests_and_four_old128_raws_roundtrip (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\ntest_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\ntest_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\ntest_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests) ... FAIL\n\n======================================================================\nFAIL: test_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 460, in test_actual_input_overflow_not_run_but_other545_generations_continue\n    p = next(p for p in source_fixture() if p['family'] == 'format')\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 62, in source_fixture\n    _, small, expanded, _ = d.producers()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/…16654 tokens truncated…ifests_and_four_old128_raws_roundtrip\n    fixture = source_documents(); before = d.sha(fixture.documents)\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n======================================================================\nFAIL: test_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 660, in test_missing_report_and_byte_hash_corruption_rejected_without_model\n    fixture = source_documents(); fixture.documents.pop(str(d.SOURCE_EVIDENCE / 'fixed/report.json'))\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n======================================================================\nFAIL: test_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 685, in test_partial_old_records_and_probe_rows_do_not_become_wrong_zero\n    fixture = source_documents(); fixture.shards[str(directory), stem].pop()\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n======================================================================\nFAIL: test_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 670, in test_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected\n    fixture = source_documents()\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 180, in source_documents\n    legacy, _, expanded, _ = d.producers(); probes = source_fixture()\n  File \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", line 74, in producers\n    from scripts import p106d_views as small\n  File \"/home/uranus/tinyLM/scripts/p106d_views.py\", line 15, in <module>\n    from tinylm.chat.canonical import normalize, validate\n  File \"/home/uranus/tinyLM/tinylm/__init__.py\", line 6, in <module>\n    from . import paths  # noqa: F401  (import 부작용으로 HF_HOME 등 설정)\n  File \"/home/uranus/tinyLM/tinylm/paths.py\", line 33, in <module>\n    _d.mkdir(parents=True, exist_ok=True)\n  File \"/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py\", line 1175, in mkdir\n    self._accessor.mkdir(self, mode)\n  File \"<string>\", line 26, in _audit\nAssertionError: GUARD physical mutation os.mkdir\n\n----------------------------------------------------------------------\nRan 61 tests in 6.084s\n\nFAILED (failures=48)\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"before\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"child_receipts\": [{\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--help\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"prepare\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"preflight\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"evaluate\", \"--check-only\", \"--endpoint\", \"parent\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"readback\", \"--check-only\"], \"returncode\": 0}], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 48, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 5, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 6.116842597999494, \"errors\": 0, \"failures\": 48, \"skipped\": 0, \"successful\": false, \"tests\": 61}\n"
+        }
+      ],
+      "parsed_result": {
+        "after": {
+          "scripts/diag_p106d_history_scope.py": {
+            "bytes": 86049,
+            "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+          },
+          "scripts/test_p106d_history_scope.py": {
+            "bytes": 73919,
+            "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+          }
+        },
+        "before": {
+          "scripts/diag_p106d_history_scope.py": {
+            "bytes": 86049,
+            "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+          },
+          "scripts/test_p106d_history_scope.py": {
+            "bytes": 73919,
+            "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+          }
+        },
+        "child_receipts": [
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--help"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "prepare",
+              "--check-only"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "preflight",
+              "--check-only"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "evaluate",
+              "--check-only",
+              "--endpoint",
+              "parent"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "readback",
+              "--check-only"
+            ],
+            "returncode": 0
+          }
+        ],
+        "counts": {
+          "cuda_initialization_calls": 0,
+          "forbidden_data_reads": 0,
+          "network_calls": 0,
+          "nn_module_construction_calls": 0,
+          "nn_module_forward_calls": 0,
+          "physical_write_attempts": 48,
+          "real_tokenizer_creation_calls": 0,
+          "source_free_children": 5,
+          "torch_load_calls": 0,
+          "torch_save_calls": 0
+        },
+        "cuda_initialized": false,
+        "elapsed_seconds": 6.116842597999494,
+        "errors": 0,
+        "failures": 48,
+        "skipped": 0,
+        "successful": false,
+        "tests": 61
+      },
+      "원인": "tinylm.__init__→tinylm.paths:33이 import 때 HF/cache/runs의 mkdir(exist_ok=True)를 요청했고 물리쓰기 guard가 직전에 거부했다.61개 중48 FAIL/0 ERROR로 출력되었으며 모델이나 제품 회귀의 실패 수로 합산하지 않는다.",
+      "경계": "physical_write_attempts48은 거부된 호출 시도 수다. 실제 디렉터리 생성·파일쓰기0, 실제자료/가중치/모델/토크나이저/GPU호출0. code-only help/check-only5자식은 각각exit0.",
+      "elapsed_seconds": 6.116842597999494,
+      "unittest_elapsed_seconds": 6.084,
+      "exit_code": 1,
+      "source_before": {
+        "scripts/diag_p106d_history_scope.py": {
+          "bytes": 86049,
+          "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+        },
+        "scripts/test_p106d_history_scope.py": {
+          "bytes": 73919,
+          "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+        }
+      },
+      "source_after": {
+        "scripts/diag_p106d_history_scope.py": {
+          "bytes": 86049,
+          "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+        },
+        "scripts/test_p106d_history_scope.py": {
+          "bytes": 73919,
+          "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+        }
+      }
+    },
+    {
+      "attempt": 2,
+      "classification": "HARNESS_CHILD_CWD_PRELOAD_IMPORT_FAILURE_NOT_PRODUCT_OR_MODEL_FAILURE",
+      "command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nBOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\\n# Import only the package's path declarations, with its exact six mkdir calls mocked.\\n# No real directory is queried, created, or permitted by the physical-write guard.\\nfrom unittest.mock import patch as _guard_patch\\n_path_root=pathlib.Path(os.environ.get('TINYLM_DIR',_ROOT))\\n_path_hf=pathlib.Path(os.environ.get('TINYLM_HF',_path_root/'HF'))\\n_path_import_dirs={str(p) for p in (_path_hf,_path_hf/'hub',_path_root/'data_cache',_path_root/'runs',_path_root/'runs/ckpt',_path_root/'runs/logs')}\\n_COUNTS['path_import_mkdir_mock_calls']=0\\ndef _memory_path_import_mkdir(path,*args,**kwargs):\\n    if str(path) not in _path_import_dirs or args or kwargs!={'parents':True,'exist_ok':True}:\\n        raise AssertionError('GUARD unexpected path import mkdir')\\n    _COUNTS['path_import_mkdir_mock_calls']+=1\\nwith _guard_patch.object(pathlib.Path,'mkdir',_memory_path_import_mkdir):\\n    import tinylm.paths\\nassert _COUNTS['path_import_mkdir_mock_calls']==6\\n\"\nexec(BOOT)\nimport copy, runpy, unittest\nfrom pathlib import Path\nstarted=time.perf_counter()\nowned=[Path(_ROOT)/'scripts/diag_p106d_history_scope.py',Path(_ROOT)/'scripts/test_p106d_history_scope.py']\ndef identity():\n    return {str(p.relative_to(_ROOT)):{'bytes':len(p.read_bytes()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()} for p in owned}\nbefore=identity()\nexpected={'scripts/diag_p106d_history_scope.py':{'bytes':86049,'sha256':'F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73'},'scripts/test_p106d_history_scope.py':{'bytes':73919,'sha256':'78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371'}}\nassert before==expected\n_original_run=subprocess.run\nchild_receipts=[]\ndef _guarded_cli_run(command,*args,**kwargs):\n    if not isinstance(command,(tuple,list)):\n        raise AssertionError('GUARD explicit CLI argv needed')\n    argv=list(command)\n    driver=str(owned[0])\n    if argv[:5]!=[sys.executable,'-B','-X','utf8',driver]:\n        raise AssertionError('GUARD only exact frozen driver CLI allowed '+repr(argv))\n    tail=argv[5:]\n    allowed=(tail==['--help'] or (len(tail)>=3 and tail[0]=='--mode' and tail[1] in ('prepare','preflight','evaluate','readback') and '--check-only' in tail and '--execute' not in tail))\n    if not allowed or kwargs.get('cwd')!='/tmp':\n        raise AssertionError('GUARD source-free CLI selectors only')\n    extra=\"\\nimport runpy\\nsys.argv=\"+repr([driver,*tail])+\"\\ntry:\\n    runpy.run_path(\"+repr(driver)+\",run_name='__main__')\\nfinally:\\n    print('[CHILD_GUARD] '+json.dumps(_COUNTS,sort_keys=True),file=sys.stderr)\\n\"\n    guarded=[sys.executable,'-B','-X','utf8','-c',BOOT+extra]\n    _ALLOWED_CHILDREN.add(tuple(guarded));_COUNTS['source_free_children']+=1\n    result=_original_run(guarded,*args,**kwargs)\n    receipt=[line for line in result.stderr.splitlines() if line.startswith('[CHILD_GUARD] ')]\n    if len(receipt)!=1:\n        raise AssertionError('GUARD child receipt missing '+result.stderr)\n    counts=json.loads(receipt[0].split('] ',1)[1]);child_receipts.append(dict(original_argv=argv,returncode=result.returncode,counts=counts))\n    if any(v for k,v in counts.items() if k not in ('source_free_children','path_import_mkdir_mock_calls')):\n        raise AssertionError('GUARD child attempted forbidden operation')\n    return result\nsubprocess.run=_guarded_cli_run\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106d_history_scope')\nresult=unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite)\nafter=identity()\nassert after==before\ncounts=copy.deepcopy(_COUNTS)\nfinal=dict(tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),successful=result.wasSuccessful(),before=before,after=after,counts=counts,child_receipts=child_receipts,cuda_initialized=torch.cuda.is_initialized(),elapsed_seconds=time.perf_counter()-started)\nprint('[INDEPENDENT_GUARDED_RESULT] '+json.dumps(final,ensure_ascii=False,sort_keys=True))\nraise SystemExit(0 if result.wasSuccessful() and all(v==0 for k,v in counts.items() if k not in ('source_free_children','path_import_mkdir_mock_calls')) else 1)\nPY",
+      "raw_tool_output": "test_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all546_safe_cases_generated_once_initial_and_complete_recount (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all_eight_canonical_chatml_markers_preserve_first_and_only_skip_actual (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_boolean_code_label_distribution_and_constant_baselines_are_condition_specific (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c1_wrong_initial_is_kept_in_history_but_follow_target_uses_actual_code_state (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_uses_actual_previous_string_not_gold_when_scoring (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_wrong_empty_whitespace_json_first_answers_preserved_without_strip (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_canonical_reference_over128_keeps_generation_and_all_c3_denominators (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_chatml_control_skips_only_actual_case_and_never_fakes_empty_answer (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_constant_false_first_answers_not_promoted_to_general_boolean_learning (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_eos_terminated_first_reuses_visible_body_not_original_helper_eos_marker (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_other_endpoint_initial_ref_hash_or_raw_tamper_is_technical_error (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_partial_duplicate_and_safe_case_forged_not_run_rejected (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_seven_non_eot_chatml_payload_markers_end_to_end_preserve546_accounting (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_strict_c3_rejects_duplicate_extra_key_and_non_string_values (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_unsafe_and_input_overflow_reasons_both_preserved_for_one_not_run (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_active_receipts_bind_returncode_output_and_nonfinite_or_bool_time_rejected (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_all_modes_check_only_are_source_tokenizer_tensor_model_free (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_cli_exact_endpoint_and_bounded_wall_mutual_exclusion (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... FAIL\ntest_every_mode_actually_drives_shared_three_phase_adapters (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_initial_reservation_exact5400_and_cpu600 (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_failed_over_budget_or_duplicate_worker_are_not_executed (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_prepared_blocks_gpu_admission_before_model_import (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_pipeline_hold_error_interrupt_timeout_leave_unrun_receipt (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_preflight_is_no_write_no_tensor_and_deadline_checked_before_prepared_read (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_public_execute_calls_pipeline_not_direct_worker (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_queue_wait_not_charged_and_latest_absolute_deadline_rechecked (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_worker_complete_hold_corruption_interrupt_and_timeout_write_distinct_receipts (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_c3_current_is_literal_data_not_completed_gold_json (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_compact_uses_initial_not_updated_operands (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_exact546_with418_static128_templates_and_language_denominators (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_minimal_questions_are_separate_development_prompts (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_cpu_checkpoint_inspection_is_three_mock_loads_no_module_optimizer_or_write (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_cpu_manifest_case_actual_template_or_checkpoint_metadata_tamper_rejected (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_full_prepare_read_roundtrip_is_memory_only_with_canonical_source (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_state_fingerprint_reuses_exact_helper_without_nn_module (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_adapter_error_appends_unmodified_raw_evidence_then_aborts_without_model_metric (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eos_retained_or_hidden_by_original_decoder_both_keep_original_helper (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eot_only_boundary_removed_empty_whitespace_and_json_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_max_new_preserves_all128_content_tokens_and_literal_eos_text (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_middle_nonterminal_special_marker_is_not_removed (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_missing_helper_return_or_decode_calls_preserves_error_evidence (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_nonterminal_textual_eot_helper_split_difference_is_error_not_content_repair (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_observer_delegate_returns_unchanged_and_original_helper_metadata_object_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_wrong_terminal_prefix_generated_count_and_sha_tamper_rejected (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_mock_emit_training_mode_change_aborts_before_success_report (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_mock_orchestration_every_call_no_grad_eval_and_cleanup_restores_eval (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_all128_old_and_fresh_exact_grammar_metadata_and_root_recovered (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_boolean_ast_full_grammar_roundtrip_and_no_eval (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_initial_follow_gold_meta_and_state_tamper_rejected (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_noncanonical_source_blocks_and_split_change_are_not_accepted (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_old_state_rule_not_recovered_from_gold_or_keywords (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_endpoint_partial_or_corrupt_core_mode_count_and_initial_reference_rejected (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_endpoint_raw546_recount_and_receipt_exact_match_without_model (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_stdout_source_fixed16_plus_minimal2_prints_actual_questions_and_answers_without_mutation (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_three_endpoint_readback_preserves1638_expected_and_one_explicit_not_run (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_complete_source_reports_manifests_and_four_old128_raws_roundtrip (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\n\n======================================================================\nFAIL: test_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 1073, in test_direct_absolute_help_and_every_check_only_from_other_cwd\n    result = subprocess.run([sys.executable, '-B', '-X', 'utf8', driver, *argv], cwd='/tmp',\n  File \"<stdin>\", line 31, in _guarded_cli_run\nAssertionError: GUARD child receipt missing Traceback (most recent call last):\n  File \"<string>\", line 80, in <module>\nModuleNotFoundError: No module named 'tinylm'\n\n\n----------------------------------------------------------------------\nRan 61 tests in 45.307s\n\nFAILED (failures=1)\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"before\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"child_receipts\": [], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"path_import_mkdir_mock_calls\": 6, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 1, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 45.33775701599734, \"errors\": 0, \"failures\": 1, \"skipped\": 0, \"successful\": false, \"tests\": 61}\n",
+      "raw_tool_output_complete": true,
+      "tool_chunks": [
+        {
+          "chunk_id": "c10916",
+          "wall_time_seconds": 1.001933836,
+          "session_id": 22703,
+          "original_token_count": 0,
+          "output": ""
+        },
+        {
+          "chunk_id": "a7223e",
+          "wall_time_seconds": 5.000945175,
+          "session_id": 22703,
+          "original_token_count": 467,
+          "output": "test_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all546_safe_cases_generated_once_initial_and_complete_recount (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all_eight_canonical_chatml_markers_preserve_first_and_only_skip_actual (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_boolean_code_label_distribution_and_constant_baselines_are_condition_specific (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c1_wrong_initial_is_kept_in_history_but_follow_target_uses_actual_code_state (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_uses_actual_previous_string_not_gold_when_scoring (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_wrong_empty_whitespace_json_first_answers_preserved_without_strip (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_canonical_reference_over128_keeps_generation_and_all_c3_denominators (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_chatml_control_skips_only_actual_case_and_never_fakes_empty_answer (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_constant_false_first_answers_not_promoted_to_general_boolean_learning (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_eos_terminated_first_reuses_visible_body_not_original_helper_eos_marker (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_other_endpoint_initial_ref_hash_or_raw_tamper_is_technical_error (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_partial_duplicate_and_safe_case_forged_not_run_rejected (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_seven_non_eot_chatml_payload_markers_end_to_end_preserve546_accounting (scripts.test_p106d_history_scope.ActualHistoryTests) ... "
+        },
+        {
+          "chunk_id": "e45db1",
+          "wall_time_seconds": 4.657012767,
+          "exit_code": 1,
+          "original_token_count": 2042,
+          "output": "ok\ntest_strict_c3_rejects_duplicate_extra_key_and_non_string_values (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_unsafe_and_input_overflow_reasons_both_preserved_for_one_not_run (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_active_receipts_bind_returncode_output_and_nonfinite_or_bool_time_rejected (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_all_modes_check_only_are_source_tokenizer_tensor_model_free (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_cli_exact_endpoint_and_bounded_wall_mutual_exclusion (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... FAIL\ntest_every_mode_actually_drives_shared_three_phase_adapters (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_initial_reservation_exact5400_and_cpu600 (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_failed_over_budget_or_duplicate_worker_are_not_executed (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_prepared_blocks_gpu_admission_before_model_import (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_pipeline_hold_error_interrupt_timeout_leave_unrun_receipt (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_preflight_is_no_write_no_tensor_and_deadline_checked_before_prepared_read (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_public_execute_calls_pipeline_not_direct_worker (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_queue_wait_not_charged_and_latest_absolute_deadline_rechecked (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_worker_complete_hold_corruption_interrupt_and_timeout_write_distinct_receipts (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_c3_current_is_literal_data_not_completed_gold_json (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_compact_uses_initial_not_updated_operands (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_exact546_with418_static128_templates_and_language_denominators (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_minimal_questions_are_separate_development_prompts (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_cpu_checkpoint_inspection_is_three_mock_loads_no_module_optimizer_or_write (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_cpu_manifest_case_actual_template_or_checkpoint_metadata_tamper_rejected (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_full_prepare_read_roundtrip_is_memory_only_with_canonical_source (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_state_fingerprint_reuses_exact_helper_without_nn_module (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_adapter_error_appends_unmodified_raw_evidence_then_aborts_without_model_metric (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eos_retained_or_hidden_by_original_decoder_both_keep_original_helper (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eot_only_boundary_removed_empty_whitespace_and_json_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_max_new_preserves_all128_content_tokens_and_literal_eos_text (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_middle_nonterminal_special_marker_is_not_removed (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_missing_helper_return_or_decode_calls_preserves_error_evidence (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_nonterminal_textual_eot_helper_split_difference_is_error_not_content_repair (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_observer_delegate_returns_unchanged_and_original_helper_metadata_object_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_wrong_terminal_prefix_generated_count_and_sha_tamper_rejected (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_mock_emit_training_mode_change_aborts_before_success_report (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_mock_orchestration_every_call_no_grad_eval_and_cleanup_restores_eval (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_all128_old_and_fresh_exact_grammar_metadata_and_root_recovered (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_boolean_ast_full_grammar_roundtrip_and_no_eval (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_initial_follow_gold_meta_and_state_tamper_rejected (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_noncanonical_source_blocks_and_split_change_are_not_accepted (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_old_state_rule_not_recovered_from_gold_or_keywords (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_endpoint_partial_or_corrupt_core_mode_count_and_initial_reference_rejected (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_endpoint_raw546_recount_and_receipt_exact_match_without_model (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_stdout_source_fixed16_plus_minimal2_prints_actual_questions_and_answers_without_mutation (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_three_endpoint_readback_preserves1638_expected_and_one_explicit_not_run (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_complete_source_reports_manifests_and_four_old128_raws_roundtrip (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\n\n======================================================================\nFAIL: test_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_p106d_history_scope.py\", line 1073, in test_direct_absolute_help_and_every_check_only_from_other_cwd\n    result = subprocess.run([sys.executable, '-B', '-X', 'utf8', driver, *argv], cwd='/tmp',\n  File \"<stdin>\", line 31, in _guarded_cli_run\nAssertionError: GUARD child receipt missing Traceback (most recent call last):\n  File \"<string>\", line 80, in <module>\nModuleNotFoundError: No module named 'tinylm'\n\n\n----------------------------------------------------------------------\nRan 61 tests in 45.307s\n\nFAILED (failures=1)\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"before\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"child_receipts\": [], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"path_import_mkdir_mock_calls\": 6, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 1, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 45.33775701599734, \"errors\": 0, \"failures\": 1, \"skipped\": 0, \"successful\": false, \"tests\": 61}\n"
+        }
+      ],
+      "parsed_result": {
+        "after": {
+          "scripts/diag_p106d_history_scope.py": {
+            "bytes": 86049,
+            "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+          },
+          "scripts/test_p106d_history_scope.py": {
+            "bytes": 73919,
+            "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+          }
+        },
+        "before": {
+          "scripts/diag_p106d_history_scope.py": {
+            "bytes": 86049,
+            "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+          },
+          "scripts/test_p106d_history_scope.py": {
+            "bytes": 73919,
+            "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+          }
+        },
+        "child_receipts": [],
+        "counts": {
+          "cuda_initialization_calls": 0,
+          "forbidden_data_reads": 0,
+          "network_calls": 0,
+          "nn_module_construction_calls": 0,
+          "nn_module_forward_calls": 0,
+          "path_import_mkdir_mock_calls": 6,
+          "physical_write_attempts": 0,
+          "real_tokenizer_creation_calls": 0,
+          "source_free_children": 1,
+          "torch_load_calls": 0,
+          "torch_save_calls": 0
+        },
+        "cuda_initialized": false,
+        "elapsed_seconds": 45.33775701599734,
+        "errors": 0,
+        "failures": 1,
+        "skipped": 0,
+        "successful": false,
+        "tests": 61
+      },
+      "wrapper_change": "부모/자식의 tinylm.paths 최초 import 동안 정확6개 mkdir만 메모리 no-op로 만들고 즉시 원 Path.mkdir 복구. 물리쓰기 guard와 나머지 차단은 유지했다.",
+      "원인": "임의cwd /tmp의 source-free CLI 자식에서 wrapper가 driver의 ROOT/sys.path 헤더 실행보다 먼저 tinylm을 사전import하여 ModuleNotFoundError가 났다.60/61 통과·1 FAIL/0 ERROR는 wrapper import 순서 문제이며 driver 자체의 임의cwd 실패나 모델 오류로 해석하지 않는다.",
+      "경계": "부모 금지 guard 호출 모두0, mkdir6회는 메모리 mock. 자식은 사전import에서 실패해 child guard 영수증이 없으며, 성공했다고 꾸미지 않는다. source_free_children1은 시도 수다.",
+      "elapsed_seconds": 45.33775701599734,
+      "unittest_elapsed_seconds": 45.307,
+      "exit_code": 1,
+      "source_before": {
+        "scripts/diag_p106d_history_scope.py": {
+          "bytes": 86049,
+          "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+        },
+        "scripts/test_p106d_history_scope.py": {
+          "bytes": 73919,
+          "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+        }
+      },
+      "source_after": {
+        "scripts/diag_p106d_history_scope.py": {
+          "bytes": 86049,
+          "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+        },
+        "scripts/test_p106d_history_scope.py": {
+          "bytes": 73919,
+          "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+        }
+      }
+    },
+    {
+      "attempt": 3,
+      "classification": "FINAL_GUARDED61_PASS_SYNTHETIC_ONLY",
+      "command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nBOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\\n# Import only the package's path declarations, with its exact six mkdir calls mocked.\\n# No real directory is queried, created, or permitted by the physical-write guard.\\nfrom unittest.mock import patch as _guard_patch\\n_path_root=pathlib.Path(os.environ.get('TINYLM_DIR',_ROOT))\\n_path_hf=pathlib.Path(os.environ.get('TINYLM_HF',_path_root/'HF'))\\n_path_import_dirs={str(p) for p in (_path_hf,_path_hf/'hub',_path_root/'data_cache',_path_root/'runs',_path_root/'runs/ckpt',_path_root/'runs/logs')}\\n_COUNTS['path_import_mkdir_mock_calls']=0\\ndef _memory_path_import_mkdir(path,*args,**kwargs):\\n    if str(path) not in _path_import_dirs or args or kwargs!={'parents':True,'exist_ok':True}:\\n        raise AssertionError('GUARD unexpected path import mkdir')\\n    _COUNTS['path_import_mkdir_mock_calls']+=1\\nwith _guard_patch.object(pathlib.Path,'mkdir',_memory_path_import_mkdir):\\n    import tinylm.paths\\nassert _COUNTS['path_import_mkdir_mock_calls']==6\\n\"\nCHILD_BOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\"\nexec(BOOT)\nimport copy, runpy, unittest\nfrom pathlib import Path\nstarted=time.perf_counter()\nowned=[Path(_ROOT)/'scripts/diag_p106d_history_scope.py',Path(_ROOT)/'scripts/test_p106d_history_scope.py']\ndef identity():\n    return {str(p.relative_to(_ROOT)):{'bytes':len(p.read_bytes()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()} for p in owned}\nbefore=identity()\nexpected={'scripts/diag_p106d_history_scope.py':{'bytes':86049,'sha256':'F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73'},'scripts/test_p106d_history_scope.py':{'bytes':73919,'sha256':'78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371'}}\nassert before==expected\n_original_run=subprocess.run\nchild_receipts=[]\ndef _guarded_cli_run(command,*args,**kwargs):\n    if not isinstance(command,(tuple,list)):\n        raise AssertionError('GUARD explicit CLI argv needed')\n    argv=list(command)\n    driver=str(owned[0])\n    if argv[:5]!=[sys.executable,'-B','-X','utf8',driver]:\n        raise AssertionError('GUARD only exact frozen driver CLI allowed '+repr(argv))\n    tail=argv[5:]\n    allowed=(tail==['--help'] or (len(tail)>=3 and tail[0]=='--mode' and tail[1] in ('prepare','preflight','evaluate','readback') and '--check-only' in tail and '--execute' not in tail))\n    if not allowed or kwargs.get('cwd')!='/tmp':\n        raise AssertionError('GUARD source-free CLI selectors only')\n    extra=\"\\nimport runpy\\nsys.argv=\"+repr([driver,*tail])+\"\\ntry:\\n    runpy.run_path(\"+repr(driver)+\",run_name='__main__')\\nfinally:\\n    print('[CHILD_GUARD] '+json.dumps(_COUNTS,sort_keys=True),file=sys.stderr)\\n\"\n    guarded=[sys.executable,'-B','-X','utf8','-c',CHILD_BOOT+extra]\n    _ALLOWED_CHILDREN.add(tuple(guarded));_COUNTS['source_free_children']+=1\n    result=_original_run(guarded,*args,**kwargs)\n    receipt=[line for line in result.stderr.splitlines() if line.startswith('[CHILD_GUARD] ')]\n    if len(receipt)!=1:\n        raise AssertionError('GUARD child receipt missing '+result.stderr)\n    counts=json.loads(receipt[0].split('] ',1)[1]);child_receipts.append(dict(original_argv=argv,returncode=result.returncode,counts=counts))\n    if any(v for k,v in counts.items() if k not in ('source_free_children','path_import_mkdir_mock_calls')):\n        raise AssertionError('GUARD child attempted forbidden operation')\n    return result\nsubprocess.run=_guarded_cli_run\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106d_history_scope')\nresult=unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite)\nafter=identity()\nassert after==before\ncounts=copy.deepcopy(_COUNTS)\nfinal=dict(tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),successful=result.wasSuccessful(),before=before,after=after,counts=counts,child_receipts=child_receipts,cuda_initialized=torch.cuda.is_initialized(),elapsed_seconds=time.perf_counter()-started)\nprint('[INDEPENDENT_GUARDED_RESULT] '+json.dumps(final,ensure_ascii=False,sort_keys=True))\nraise SystemExit(0 if result.wasSuccessful() and all(v==0 for k,v in counts.items() if k not in ('source_free_children','path_import_mkdir_mock_calls')) else 1)\nPY",
+      "raw_stdout": "test_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all546_safe_cases_generated_once_initial_and_complete_recount (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all_eight_canonical_chatml_markers_preserve_first_and_only_skip_actual (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_boolean_code_label_distribution_and_constant_baselines_are_condition_specific (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c1_wrong_initial_is_kept_in_history_but_follow_target_uses_actual_code_state (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_uses_actual_previous_string_not_gold_when_scoring (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_wrong_empty_whitespace_json_first_answers_preserved_without_strip (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_canonical_reference_over128_keeps_generation_and_all_c3_denominators (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_chatml_control_skips_only_actual_case_and_never_fakes_empty_answer (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_constant_false_first_answers_not_promoted_to_general_boolean_learning (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_eos_terminated_first_reuses_visible_body_not_original_helper_eos_marker (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_other_endpoint_initial_ref_hash_or_raw_tamper_is_technical_error (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_partial_duplicate_and_safe_case_forged_not_run_rejected (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_seven_non_eot_chatml_payload_markers_end_to_end_preserve546_accounting (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_strict_c3_rejects_duplicate_extra_key_and_non_string_values (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_unsafe_and_input_overflow_reasons_both_preserved_for_one_not_run (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_active_receipts_bind_returncode_output_and_nonfinite_or_bool_time_rejected (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_all_modes_check_only_are_source_tokenizer_tensor_model_free (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_cli_exact_endpoint_and_bounded_wall_mutual_exclusion (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_every_mode_actually_drives_shared_three_phase_adapters (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_initial_reservation_exact5400_and_cpu600 (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_failed_over_budget_or_duplicate_worker_are_not_executed (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_prepared_blocks_gpu_admission_before_model_import (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_pipeline_hold_error_interrupt_timeout_leave_unrun_receipt (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_preflight_is_no_write_no_tensor_and_deadline_checked_before_prepared_read (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_public_execute_calls_pipeline_not_direct_worker (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_queue_wait_not_charged_and_latest_absolute_deadline_rechecked (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_worker_complete_hold_corruption_interrupt_and_timeout_write_distinct_receipts (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_c3_current_is_literal_data_not_completed_gold_json (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_compact_uses_initial_not_updated_operands (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_exact546_with418_static128_templates_and_language_denominators (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_minimal_questions_are_separate_development_prompts (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_cpu_checkpoint_inspection_is_three_mock_loads_no_module_optimizer_or_write (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_cpu_manifest_case_actual_template_or_checkpoint_metadata_tamper_rejected (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_full_prepare_read_roundtrip_is_memory_only_with_canonical_source (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_state_fingerprint_reuses_exact_helper_without_nn_module (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_adapter_error_appends_unmodified_raw_evidence_then_aborts_without_model_metric (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eos_retained_or_hidden_by_original_decoder_both_keep_original_helper (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eot_only_boundary_removed_empty_whitespace_and_json_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_max_new_preserves_all128_content_tokens_and_literal_eos_text (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_middle_nonterminal_special_marker_is_not_removed (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_missing_helper_return_or_decode_calls_preserves_error_evidence (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_nonterminal_textual_eot_helper_split_difference_is_error_not_content_repair (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_observer_delegate_returns_unchanged_and_original_helper_metadata_object_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_wrong_terminal_prefix_generated_count_and_sha_tamper_rejected (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_mock_emit_training_mode_change_aborts_before_success_report (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_mock_orchestration_every_call_no_grad_eval_and_cleanup_restores_eval (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_all128_old_and_fresh_exact_grammar_metadata_and_root_recovered (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_boolean_ast_full_grammar_roundtrip_and_no_eval (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_initial_follow_gold_meta_and_state_tamper_rejected (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_noncanonical_source_blocks_and_split_change_are_not_accepted (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_old_state_rule_not_recovered_from_gold_or_keywords (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_endpoint_partial_or_corrupt_core_mode_count_and_initial_reference_rejected (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_endpoint_raw546_recount_and_receipt_exact_match_without_model (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_stdout_source_fixed16_plus_minimal2_prints_actual_questions_and_answers_without_mutation (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_three_endpoint_readback_preserves1638_expected_and_one_explicit_not_run (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_complete_source_reports_manifests_and_four_old128_raws_roundtrip (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\n\n----------------------------------------------------------------------\nRan 61 tests in 50.056s\n\nOK\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"before\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"child_receipts\": [{\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--help\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"prepare\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"preflight\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"evaluate\", \"--check-only\", \"--endpoint\", \"parent\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"readback\", \"--check-only\"], \"returncode\": 0}], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"path_import_mkdir_mock_calls\": 6, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 5, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 50.08773773199937, \"errors\": 0, \"failures\": 0, \"skipped\": 0, \"successful\": true, \"tests\": 61}\n",
+      "raw_stdout_complete": true,
+      "tool_chunks": [
+        {
+          "chunk_id": "fa1641",
+          "wall_time_seconds": 1.001004658,
+          "session_id": 42853,
+          "original_token_count": 0,
+          "output": ""
+        },
+        {
+          "chunk_id": "9bbda3",
+          "wall_time_seconds": 5.000889843,
+          "session_id": 42853,
+          "original_token_count": 662,
+          "output": "test_actual_input_overflow_not_run_but_other545_generations_continue (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all546_safe_cases_generated_once_initial_and_complete_recount (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_all_eight_canonical_chatml_markers_preserve_first_and_only_skip_actual (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_boolean_code_label_distribution_and_constant_baselines_are_condition_specific (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c1_wrong_initial_is_kept_in_history_but_follow_target_uses_actual_code_state (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_uses_actual_previous_string_not_gold_when_scoring (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_c3_wrong_empty_whitespace_json_first_answers_preserved_without_strip (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_canonical_reference_over128_keeps_generation_and_all_c3_denominators (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_chatml_control_skips_only_actual_case_and_never_fakes_empty_answer (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_constant_false_first_answers_not_promoted_to_general_boolean_learning (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_eos_terminated_first_reuses_visible_body_not_original_helper_eos_marker (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_other_endpoint_initial_ref_hash_or_raw_tamper_is_technical_error (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_partial_duplicate_and_safe_case_forged_not_run_rejected (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_seven_non_eot_chatml_payload_markers_end_to_end_preserve546_accounting (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_strict_c3_rejects_duplicate_extra_key_and_non_string_values (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_unsafe_and_input_overflow_reasons_both_preserved_for_one_not_run (scripts.test_p106d_history_scope.ActualHistoryTests) ... ok\ntest_active_receipts_bind_returncode_output_and_nonfinite_or_bool_time_rejected (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_all_modes_check_only_are_source_tokenizer_tensor_model_free (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_cli_exact_endpoint_and_bounded_wall_mutual_exclusion (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_direct_absolute_help_and_every_check_only_from_other_cwd (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... "
+        },
+        {
+          "chunk_id": "0aea91",
+          "wall_time_seconds": 0.000010695,
+          "exit_code": 0,
+          "original_token_count": 2281,
+          "output": "ok\ntest_every_mode_actually_drives_shared_three_phase_adapters (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_initial_reservation_exact5400_and_cpu600 (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_failed_over_budget_or_duplicate_worker_are_not_executed (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_missing_prepared_blocks_gpu_admission_before_model_import (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_pipeline_hold_error_interrupt_timeout_leave_unrun_receipt (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_preflight_is_no_write_no_tensor_and_deadline_checked_before_prepared_read (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_public_execute_calls_pipeline_not_direct_worker (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_queue_wait_not_charged_and_latest_absolute_deadline_rechecked (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_worker_complete_hold_corruption_interrupt_and_timeout_write_distinct_receipts (scripts.test_p106d_history_scope.BudgetAndPipelineTests) ... ok\ntest_c3_current_is_literal_data_not_completed_gold_json (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_compact_uses_initial_not_updated_operands (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_exact546_with418_static128_templates_and_language_denominators (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_minimal_questions_are_separate_development_prompts (scripts.test_p106d_history_scope.CaseContractTests) ... ok\ntest_cpu_checkpoint_inspection_is_three_mock_loads_no_module_optimizer_or_write (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_cpu_manifest_case_actual_template_or_checkpoint_metadata_tamper_rejected (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_full_prepare_read_roundtrip_is_memory_only_with_canonical_source (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_state_fingerprint_reuses_exact_helper_without_nn_module (scripts.test_p106d_history_scope.CpuAndFingerprintTests) ... ok\ntest_adapter_error_appends_unmodified_raw_evidence_then_aborts_without_model_metric (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eos_retained_or_hidden_by_original_decoder_both_keep_original_helper (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_eot_only_boundary_removed_empty_whitespace_and_json_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_max_new_preserves_all128_content_tokens_and_literal_eos_text (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_middle_nonterminal_special_marker_is_not_removed (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_missing_helper_return_or_decode_calls_preserves_error_evidence (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_nonterminal_textual_eot_helper_split_difference_is_error_not_content_repair (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_observer_delegate_returns_unchanged_and_original_helper_metadata_object_preserved (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_wrong_terminal_prefix_generated_count_and_sha_tamper_rejected (scripts.test_p106d_history_scope.DecodeObservationTests) ... ok\ntest_mock_emit_training_mode_change_aborts_before_success_report (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_mock_orchestration_every_call_no_grad_eval_and_cleanup_restores_eval (scripts.test_p106d_history_scope.EvaluationBoundaryTests) ... ok\ntest_all128_old_and_fresh_exact_grammar_metadata_and_root_recovered (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_boolean_ast_full_grammar_roundtrip_and_no_eval (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_initial_follow_gold_meta_and_state_tamper_rejected (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_noncanonical_source_blocks_and_split_change_are_not_accepted (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_old_state_rule_not_recovered_from_gold_or_keywords (scripts.test_p106d_history_scope.ProducerRecoveryTests) ... ok\ntest_endpoint_partial_or_corrupt_core_mode_count_and_initial_reference_rejected (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_endpoint_raw546_recount_and_receipt_exact_match_without_model (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_stdout_source_fixed16_plus_minimal2_prints_actual_questions_and_answers_without_mutation (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_three_endpoint_readback_preserves1638_expected_and_one_explicit_not_run (scripts.test_p106d_history_scope.ReadbackAndPresentationTests) ... ok\ntest_complete_source_reports_manifests_and_four_old128_raws_roundtrip (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_missing_report_and_byte_hash_corruption_rejected_without_model (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_partial_old_records_and_probe_rows_do_not_become_wrong_zero (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\ntest_source_raw_label_gold_root_duplicate_and_manifest_tamper_rejected (scripts.test_p106d_history_scope.SourceBindingTests) ... ok\n\n----------------------------------------------------------------------\nRan 61 tests in 50.056s\n\nOK\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"before\": {\"scripts/diag_p106d_history_scope.py\": {\"bytes\": 86049, \"sha256\": \"F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73\"}, \"scripts/test_p106d_history_scope.py\": {\"bytes\": 73919, \"sha256\": \"78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371\"}}, \"child_receipts\": [{\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--help\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"prepare\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"preflight\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"evaluate\", \"--check-only\", \"--endpoint\", \"parent\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py\", \"--mode\", \"readback\", \"--check-only\"], \"returncode\": 0}], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"path_import_mkdir_mock_calls\": 6, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 5, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 50.08773773199937, \"errors\": 0, \"failures\": 0, \"skipped\": 0, \"successful\": true, \"tests\": 61}\n"
+        }
+      ],
+      "parsed_result": {
+        "after": {
+          "scripts/diag_p106d_history_scope.py": {
+            "bytes": 86049,
+            "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+          },
+          "scripts/test_p106d_history_scope.py": {
+            "bytes": 73919,
+            "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+          }
+        },
+        "before": {
+          "scripts/diag_p106d_history_scope.py": {
+            "bytes": 86049,
+            "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+          },
+          "scripts/test_p106d_history_scope.py": {
+            "bytes": 73919,
+            "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+          }
+        },
+        "child_receipts": [
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--help"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "prepare",
+              "--check-only"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "preflight",
+              "--check-only"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "evaluate",
+              "--check-only",
+              "--endpoint",
+              "parent"
+            ],
+            "returncode": 0
+          },
+          {
+            "counts": {
+              "cuda_initialization_calls": 0,
+              "forbidden_data_reads": 0,
+              "network_calls": 0,
+              "nn_module_construction_calls": 0,
+              "nn_module_forward_calls": 0,
+              "physical_write_attempts": 0,
+              "real_tokenizer_creation_calls": 0,
+              "source_free_children": 0,
+              "torch_load_calls": 0,
+              "torch_save_calls": 0
+            },
+            "original_argv": [
+              "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+              "-B",
+              "-X",
+              "utf8",
+              "/home/uranus/tinyLM/scripts/diag_p106d_history_scope.py",
+              "--mode",
+              "readback",
+              "--check-only"
+            ],
+            "returncode": 0
+          }
+        ],
+        "counts": {
+          "cuda_initialization_calls": 0,
+          "forbidden_data_reads": 0,
+          "network_calls": 0,
+          "nn_module_construction_calls": 0,
+          "nn_module_forward_calls": 0,
+          "path_import_mkdir_mock_calls": 6,
+          "physical_write_attempts": 0,
+          "real_tokenizer_creation_calls": 0,
+          "source_free_children": 5,
+          "torch_load_calls": 0,
+          "torch_save_calls": 0
+        },
+        "cuda_initialized": false,
+        "elapsed_seconds": 50.08773773199937,
+        "errors": 0,
+        "failures": 0,
+        "skipped": 0,
+        "successful": true,
+        "tests": 61
+      },
+      "wrapper_change": "부모에서만 정확6 mkdir를 메모리 mock한 tinylm 사전import를 사용했다. 임의cwd의 help/check-only 자식은 tinylm 사전import가 없는 첫 guard를 사용하므로 frozen driver의 실제 ROOT 헤더로 import 경로를 해결한다. 공유 코드나 공용 guard/환경을 바꾸지 않았다.",
+      "실제자식": "절대 driver 경로로 help1개+각 mode check-only4개를 /tmp에서 실행한 코드 전용 자식5개. 각 자식에도 물리 I/O·source·Torchload/save·Module·GPU·네트워크 차단이 적용되었고 모두exit0·금지호출0.",
+      "실제모델아님": "회귀 안의 mock torch.load3회, fake tokenizer 객체, ModelFixture orchestration은 실제 checkpoint/tokenizer/nn.Module/forward 실행이 아니다. 최종 actual guard count는모두0.",
+      "elapsed_seconds": 50.08773773199937,
+      "unittest_elapsed_seconds": 50.056,
+      "exit_code": 0,
+      "source_before": {
+        "scripts/diag_p106d_history_scope.py": {
+          "bytes": 86049,
+          "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+        },
+        "scripts/test_p106d_history_scope.py": {
+          "bytes": 73919,
+          "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+        }
+      },
+      "source_after": {
+        "scripts/diag_p106d_history_scope.py": {
+          "bytes": 86049,
+          "sha256": "F04E39E18163BBCD77E96F47DEB19B6337C4C191EB421D8C1B3DA21102620D73"
+        },
+        "scripts/test_p106d_history_scope.py": {
+          "bytes": 73919,
+          "sha256": "78AD7B30D54BDABB81B5C2939016C2C6AFE3F28E54072BC1C5A9DB11CF04E371"
+        }
+      }
+    }
+  ],
+  "guard_design": {
+    "environment": "CUDA_VISIBLE_DEVICES=빈값, OMP/MKL/OPENBLAS/NUMEXPR2, PYTHONDONTWRITEBYTECODE=1, python -B -X utf8",
+    "라이브러리": "Torch/tokenizers 라이브러리 import만 허용. 실제 torch.load/save·nn.Module.__init__/_call_impl/forward·CUDA 초기화/장치조회·real Tokenizer 생성은 금지 함수로 대체.",
+    "물리I_O": "sys.addaudithook으로 쓰기 open flag와 mkdir/remove/rmdir/rename/link/symlink/truncate/chmod/chown·실제 자료 경로의 open/listdir/scandir·network를 거부. /dev/null은 stdin용으로만 허용.",
+    "source_free_subprocess": "unittest의 임의cwd help/check-only 원argv만 허용해 동일 guard를 자식 -c bootstrap에 넣고 runpy.run_path로 정확한 frozen driver를 실행. execute/worker/source run은 허용하지 않음.",
+    "paths_import_mock": "tinylm.paths의 정확한 기존6 mkdir(parents=True,exist_ok=True)만 최초 import 동안 no-op. 실제 경로의 존재·내용을 읽거나 생성하지 않고 반환 후 Path.mkdir 원함수 복구.",
+    "final_guard_counts": {
+      "cuda_initialization_calls": 0,
+      "forbidden_data_reads": 0,
+      "network_calls": 0,
+      "nn_module_construction_calls": 0,
+      "nn_module_forward_calls": 0,
+      "path_import_mkdir_mock_calls": 6,
+      "physical_write_attempts": 0,
+      "real_tokenizer_creation_calls": 0,
+      "source_free_children": 5,
+      "torch_load_calls": 0,
+      "torch_save_calls": 0
+    },
+    "actual_cuda_initialized": false,
+    "limits": "합성 검증 프로세스의 audit+금지 함수 범위다. 실제 모델·학습·실데이터 동작이나 범용 보안 sandbox 증명이 아니다."
+  },
+  "reviewed_contracts": [
+    {
+      "항목": "old/fresh128 producer 복원",
+      "근거": "recover_probe/validate_probes/read_source 및 ProducerRecoveryTests/SourceBindingTests",
+      "확인": "old64의 metadata 부재와 fresh64를 다른 경로로 처리; full grammar parse→원 renderer의 initial/follow 질문/gold 왕복, canonical metadata SHA, cohort×family×language8개,64중립root의 한영쌍·old/fresh/TRAIN 격리와 source report/manifest 지문을 검사.",
+      "한계": "128개는 합성fixture의 전량이며 실제 frozen source128행을 읽은 검산이 아니다. 실제 source 권한은 총괄에 있다."
+    },
+    {
+      "항목": "546 case와 runtime 동적 이력",
+      "근거": "make_cases/encoding/materialize/initial_reference/collect/recount",
+      "확인": "128×4+산수초기compact32+KO개발2=546, KO274/EN272, static418/template128. INITIAL은한번생성하고 같은CP/probe/source/input/SHA의 visible body를 strip·수정 없이 ACTUAL에 재사용. C1 target은현재코드상태, C3 target은 실제본문문자열을 지정key에 포장.",
+      "한계": "compact와 최소문항은 새 독립root가 아니며 gold-history와 actual-chain, 형식준수와 사실회복을 구분해야 한다."
+    },
+    {
+      "항목": "원 helper/rawIDs와 visible body",
+      "근거": "DecodeObserver/observe_helper/observed_emission/validate_observation",
+      "확인": "원 sample/helper 반환값을 수정하지 않는 tokenizer decode proxy; finalfull/prefix 두 decode와 actualIDs/개수/SHA를 검산. 실제 마지막 EOT 또는 EOS receipt로 인증된 terminalID만 제거하고 skip_special_tokens=False로 본문 decode. 원helper/meta/fullIDS/finish를 보존.",
+      "한계": "literal textual EOT가 helper 문자열 분할과 visible body를 다르게 만들면 내용을 추정 복구하지 않고 원오류증거를 기록한 TOOL_ERROR9.8 marker payload 단위검산과 가능한7 marker end-to-end 회귀는 별개다."
+    },
+    {
+      "항목": "strict C3와 예산",
+      "근거": "strict_json/strict_format 및 ActualHistoryTests",
+      "확인": "ACTUAL C3는 중복key/추가key/비문자열값을 거부하고 빈답·공백·개행·JSON처럼 생긴 앞답도 정확 보존. canonical target+EOT128 초과여도 생성은실행하고 all-C3와 reference-fit/exceeds를 별도분리.",
+      "한계": "표준참조 token길이는 동등 JSON의 최소길이 또는 보편 불가능성 증명이 아니다. CURRENT/GOLD condition_pass의 legacy 채점은 아래 P2-1에 별도 기록."
+    },
+    {
+      "항목": "안전 미실행과 누락",
+      "근거": "materialize/finish_event/recount/ActualHistoryTests",
+      "확인": "exact8 ChatML payload marker 또는 fullprefix+128>1024는 해당 ACTUAL만 명시미실행, 원case와 목표/초기참조/입력길이·원인을 보존. missing/duplicate/corrupt case는 Pending/ValueError로 기술중단, 오답0이나 빈답으로 대체하지 않음.",
+      "한계": "546은 expected case record 수이며 실제생성수는 안전 미실행만큼 작을 수 있다. full-complete rate와 generated-only rate를 혼용하지 않는다."
+    },
+    {
+      "항목": "source-free CLI/3phase/5400 active",
+      "근거": "syntax_info/main/phase_commands/run_pipeline/activities/admission/run_worker 및 BudgetAndPipelineTests",
+      "확인": "help/check-only가 source/model을 열지 않음. 공개execute는 REGRESSION/PREFLIGHT/EXECUTE, worker 실패는8/9/130 구분. CPU600+3평가×1200+판독600+기록600=5400 active 예약, 기존활동영수증·예비·최신절대20일17시를 재검사.",
+      "한계": "wrapper 회귀/선결/큐대기 제외한 활동합계이며 전체 달력시간 상한이 아니다. 실제 wall/CP/source 모델 admission은 실행하지 않았다."
+    }
+  ],
+  "p2_counterexamples": {
+    "attribution": "소형 합성 CPU fixture만 사용. 실제 source/model의 관측 실패 또는 성적이 아니며, frozen 코드가 구현한 지표의 해석 경계를 보여준다.",
+    "command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nBOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\\n# Import only the package's path declarations, with its exact six mkdir calls mocked.\\n# No real directory is queried, created, or permitted by the physical-write guard.\\nfrom unittest.mock import patch as _guard_patch\\n_path_root=pathlib.Path(os.environ.get('TINYLM_DIR',_ROOT))\\n_path_hf=pathlib.Path(os.environ.get('TINYLM_HF',_path_root/'HF'))\\n_path_import_dirs={str(p) for p in (_path_hf,_path_hf/'hub',_path_root/'data_cache',_path_root/'runs',_path_root/'runs/ckpt',_path_root/'runs/logs')}\\n_COUNTS['path_import_mkdir_mock_calls']=0\\ndef _memory_path_import_mkdir(path,*args,**kwargs):\\n    if str(path) not in _path_import_dirs or args or kwargs!={'parents':True,'exist_ok':True}:\\n        raise AssertionError('GUARD unexpected path import mkdir')\\n    _COUNTS['path_import_mkdir_mock_calls']+=1\\nwith _guard_patch.object(pathlib.Path,'mkdir',_memory_path_import_mkdir):\\n    import tinylm.paths\\nassert _COUNTS['path_import_mkdir_mock_calls']==6\\n\"\nexec(BOOT)\nfrom scripts import diag_p106d_history_scope as d\nfrom scripts.test_p106d_history_scope import source_fixture,collected\nprobe=dict(family='format',current_payload={'literal':'x'},format_key='reply')\nduplicate='{\"reply\":\"x\",\"reply\":\"x\"}'\nformat_case_metrics={}\nfor condition in ('CURRENT_DIRECT','GOLD_HISTORY','ACTUAL_HISTORY'):\n    case=dict(condition=condition,truth_scope='FORMAT_LITERAL_INPUT' if condition=='CURRENT_DIRECT' else 'CLOSED_CODE_CONTRACT')\n    format_case_metrics[condition]=d.classify_metrics(case,probe,duplicate,'{\"reply\":\"x\"}',{'answer':'x'})\nchosen=next(p for p in source_fixture() if p['family']=='boolean')\nprobes,cases,tok,who,events,calls=collected(overrides={chosen['probe_id']:'<|im_start|>'})\nstats=d.recount(events,cases,probes,tok,'parent',who,'A'*64)['boolean_label_diagnostics']['ACTUAL_HISTORY']\ngenerated_gold={label:sum(e['target']==label for e in events if e['condition']=='ACTUAL_HISTORY' and e['family']=='boolean' and e['record_status']==d.GENERATED) for label in ('true','false')}\nprint(json.dumps(dict(c3_duplicate_payload=duplicate,c3_condition_metrics=format_case_metrics,boolean_actual_condition=stats,boolean_constant_correct_on_generated_only=generated_gold,blocked_boolean_gold=chosen['follow_gold'],all_events=len(events),actual_generations=len(calls),guard=_COUNTS,cuda_initialized=torch.cuda.is_initialized()),ensure_ascii=False,indent=2))\nPY",
+    "raw_stdout": "{\n  \"c3_duplicate_payload\": \"{\\\"reply\\\":\\\"x\\\",\\\"reply\\\":\\\"x\\\"}\",\n  \"c3_condition_metrics\": {\n    \"CURRENT_DIRECT\": {\n      \"condition_pass\": true,\n      \"fixed_gold_classify_pass\": true,\n      \"strict_c3_format_preserved\": false,\n      \"first_fact_correct\": null,\n      \"format_success_is_not_fact_recovery\": true,\n      \"current_direct_is_literal_input\": true\n    },\n    \"GOLD_HISTORY\": {\n      \"condition_pass\": true,\n      \"fixed_gold_classify_pass\": true,\n      \"strict_c3_format_preserved\": false,\n      \"first_fact_correct\": null,\n      \"format_success_is_not_fact_recovery\": true,\n      \"current_direct_is_literal_input\": false\n    },\n    \"ACTUAL_HISTORY\": {\n      \"condition_pass\": false,\n      \"fixed_gold_classify_pass\": null,\n      \"strict_c3_format_preserved\": false,\n      \"first_fact_correct\": null,\n      \"format_success_is_not_fact_recovery\": true,\n      \"current_direct_is_literal_input\": false\n    }\n  },\n  \"boolean_actual_condition\": {\n    \"n_expected\": 32,\n    \"n_generated\": 31,\n    \"n_not_run\": 1,\n    \"source_gold_counts\": {\n      \"false\": 18,\n      \"true\": 14\n    },\n    \"actual_label_counts\": {\n      \"false\": 17,\n      \"true\": 14\n    },\n    \"constant_true_correct_sum\": 14,\n    \"constant_false_correct_sum\": 18,\n    \"condition_correct_sum\": 31,\n    \"scope\": \"fixed code-owned labels; constant baseline, not proof of Boolean generalization\"\n  },\n  \"boolean_constant_correct_on_generated_only\": {\n    \"true\": 14,\n    \"false\": 17\n  },\n  \"blocked_boolean_gold\": \"false\",\n  \"all_events\": 546,\n  \"actual_generations\": 545,\n  \"guard\": {\n    \"physical_write_attempts\": 0,\n    \"forbidden_data_reads\": 0,\n    \"torch_load_calls\": 0,\n    \"torch_save_calls\": 0,\n    \"nn_module_construction_calls\": 0,\n    \"nn_module_forward_calls\": 0,\n    \"cuda_initialization_calls\": 0,\n    \"network_calls\": 0,\n    \"real_tokenizer_creation_calls\": 0,\n    \"source_free_children\": 0,\n    \"path_import_mkdir_mock_calls\": 6\n  },\n  \"cuda_initialized\": false\n}\n",
+    "tool_chunks": [
+      {
+        "chunk_id": "b72f2a",
+        "wall_time_seconds": 1.00145249,
+        "session_id": 59901,
+        "original_token_count": 0,
+        "output": ""
+      },
+      {
+        "chunk_id": "4afa6b",
+        "wall_time_seconds": 0.000012949,
+        "exit_code": 0,
+        "original_token_count": 488,
+        "output": "{\n  \"c3_duplicate_payload\": \"{\\\"reply\\\":\\\"x\\\",\\\"reply\\\":\\\"x\\\"}\",\n  \"c3_condition_metrics\": {\n    \"CURRENT_DIRECT\": {\n      \"condition_pass\": true,\n      \"fixed_gold_classify_pass\": true,\n      \"strict_c3_format_preserved\": false,\n      \"first_fact_correct\": null,\n      \"format_success_is_not_fact_recovery\": true,\n      \"current_direct_is_literal_input\": true\n    },\n    \"GOLD_HISTORY\": {\n      \"condition_pass\": true,\n      \"fixed_gold_classify_pass\": true,\n      \"strict_c3_format_preserved\": false,\n      \"first_fact_correct\": null,\n      \"format_success_is_not_fact_recovery\": true,\n      \"current_direct_is_literal_input\": false\n    },\n    \"ACTUAL_HISTORY\": {\n      \"condition_pass\": false,\n      \"fixed_gold_classify_pass\": null,\n      \"strict_c3_format_preserved\": false,\n      \"first_fact_correct\": null,\n      \"format_success_is_not_fact_recovery\": true,\n      \"current_direct_is_literal_input\": false\n    }\n  },\n  \"boolean_actual_condition\": {\n    \"n_expected\": 32,\n    \"n_generated\": 31,\n    \"n_not_run\": 1,\n    \"source_gold_counts\": {\n      \"false\": 18,\n      \"true\": 14\n    },\n    \"actual_label_counts\": {\n      \"false\": 17,\n      \"true\": 14\n    },\n    \"constant_true_correct_sum\": 14,\n    \"constant_false_correct_sum\": 18,\n    \"condition_correct_sum\": 31,\n    \"scope\": \"fixed code-owned labels; constant baseline, not proof of Boolean generalization\"\n  },\n  \"boolean_constant_correct_on_generated_only\": {\n    \"true\": 14,\n    \"false\": 17\n  },\n  \"blocked_boolean_gold\": \"false\",\n  \"all_events\": 546,\n  \"actual_generations\": 545,\n  \"guard\": {\n    \"physical_write_attempts\": 0,\n    \"forbidden_data_reads\": 0,\n    \"torch_load_calls\": 0,\n    \"torch_save_calls\": 0,\n    \"nn_module_construction_calls\": 0,\n    \"nn_module_forward_calls\": 0,\n    \"cuda_initialization_calls\": 0,\n    \"network_calls\": 0,\n    \"real_tokenizer_creation_calls\": 0,\n    \"source_free_children\": 0,\n    \"path_import_mkdir_mock_calls\": 6\n  },\n  \"cuda_initialized\": false\n}\n"
+      }
+    ],
+    "exit_code": 0,
+    "parsed_result": {
+      "c3_duplicate_payload": "{\"reply\":\"x\",\"reply\":\"x\"}",
+      "c3_condition_metrics": {
+        "CURRENT_DIRECT": {
+          "condition_pass": true,
+          "fixed_gold_classify_pass": true,
+          "strict_c3_format_preserved": false,
+          "first_fact_correct": null,
+          "format_success_is_not_fact_recovery": true,
+          "current_direct_is_literal_input": true
+        },
+        "GOLD_HISTORY": {
+          "condition_pass": true,
+          "fixed_gold_classify_pass": true,
+          "strict_c3_format_preserved": false,
+          "first_fact_correct": null,
+          "format_success_is_not_fact_recovery": true,
+          "current_direct_is_literal_input": false
+        },
+        "ACTUAL_HISTORY": {
+          "condition_pass": false,
+          "fixed_gold_classify_pass": null,
+          "strict_c3_format_preserved": false,
+          "first_fact_correct": null,
+          "format_success_is_not_fact_recovery": true,
+          "current_direct_is_literal_input": false
+        }
+      },
+      "boolean_actual_condition": {
+        "n_expected": 32,
+        "n_generated": 31,
+        "n_not_run": 1,
+        "source_gold_counts": {
+          "false": 18,
+          "true": 14
+        },
+        "actual_label_counts": {
+          "false": 17,
+          "true": 14
+        },
+        "constant_true_correct_sum": 14,
+        "constant_false_correct_sum": 18,
+        "condition_correct_sum": 31,
+        "scope": "fixed code-owned labels; constant baseline, not proof of Boolean generalization"
+      },
+      "boolean_constant_correct_on_generated_only": {
+        "true": 14,
+        "false": 17
+      },
+      "blocked_boolean_gold": "false",
+      "all_events": 546,
+      "actual_generations": 545,
+      "guard": {
+        "physical_write_attempts": 0,
+        "forbidden_data_reads": 0,
+        "torch_load_calls": 0,
+        "torch_save_calls": 0,
+        "nn_module_construction_calls": 0,
+        "nn_module_forward_calls": 0,
+        "cuda_initialization_calls": 0,
+        "network_calls": 0,
+        "real_tokenizer_creation_calls": 0,
+        "source_free_children": 0,
+        "path_import_mkdir_mock_calls": 6
+      },
+      "cuda_initialized": false
+    },
+    "findings": [
+      {
+        "id": "P2_1_C3_CLASSIFIER_DIFFERS_BY_CONDITION",
+        "위치": "scripts/diag_p106d_history_scope.py classify_metrics:539~550, recount aggregate",
+        "payload": "{\"reply\":\"x\",\"reply\":\"x\"}",
+        "확정": "같은 중복key 문자열이 CURRENT_DIRECT/GOLD_HISTORY의 condition_pass에서는true이지만 strict_c3_format_preserved는false. ACTUAL_HISTORY의 condition_pass는false.",
+        "이유": "고정gold 조건은 기존 legacy classify를 보존하고 ACTUAL C3만 동적 strict_format을 기본 condition_pass로 사용한다.",
+        "해석": "이는 고정 legacy 채점 유지 계약과 일치한다. 그러나 현재 condition_pass의 C3 조건차이를 모두 이력효과나 공통 엄격JSON 준수율로 부르면 채점기 차이까지 섞인다.",
+        "권장": "기존 condition_pass는 그대로 보존하고 CURRENT/GOLD/ACTUAL 세조건에 공통 strict_c3_format_preserved 집계를 병기. 생성/자료/모델/기존점수는 변경하지 않음.",
+        "실제발생": "NOT_RUN"
+      },
+      {
+        "id": "P2_2_BOOLEAN_NOMINAL_VS_GENERATED_CONSTANT_BASELINE",
+        "위치": "scripts/diag_p106d_history_scope.py recount boolean_label_diagnostics:1019~1030",
+        "확정": "32 Boolean ACTUAL 중 false1개가UNSAFE면 n_expected32/n_generated31. 전체source false18/true14의 constant_false_correct_sum18과 generated subset false17/true14의 constant-false17은 다르다. 모델condition_correct_sum은31.",
+        "해석": "현 constant counter는 full nominal32의 반사실 baseline으로 유효하다. 이를 생성31개만의 모델점수와 같은 분모라고 보고18/31로 비교하면 잘못이다. 미실행을 오답0으로 바꾸거나 조용히 제거하지 않아야 한다.",
+        "권장": "full/source와 generated subset의 gold label counts 및 constant-true/false 정답수를 나란히 보존해 분모를 일치시켜 비교.",
+        "분모": "all case records546, actual generations545. 위 Boolean label18/14는 합성fixture의 값이며 실제128 cohort의 분포가 아니다.",
+        "실제발생": "NOT_RUN"
+      }
+    ]
+  },
+  "root_followup_not_yet_reviewed": {
+    "출처": "총괄의 현재 문서화 승인 메시지",
+    "순서": "현재 정확draft F04E/78AD를 먼저 보존/커밋한 뒤 별도의 좁은 보고용 수리와 재검토를 선택",
+    "예정": "legacy condition_pass 필드는 유지하고 C3세조건 공통 strict aggregates 및 Boolean full-vs-generated constant baseline counter 추가",
+    "보존": "추론/source/model 동작과 기존 metric 값을 변경하지 않음. 실제 source prepare 전에 시행할 계획.",
+    "상태": "DESIGNED_BY_ROOT_NOT_REVIEWED_OR_EXECUTED_BY_THIS_AGENT",
+    "주의": "이 감사의61통과/SHA는 후속수리본에 승계하지 않는다. 새SHA와 별도 독립검토가 필요."
+  },
+  "limitations": [
+    "실제 frozen source128·HF·tokenizer·checkpoint·모델·GPU를 읽거나 실행하지 않았다.",
+    "합성 CP load3회와 작은 tensor 지문 회귀는 mock/in-memory이며 실제 CP 역직렬화가 아니다.",
+    "세 wrapper 시도 모두 exact source byteSHA가 전후 동일하다. 앞선48/1 실패는 harness import 문제로 제품/모델 실패 수에 합산하지 않는다.",
+    "첫 시도의 긴 traceback은 도구 출력 제한으로 일부 축약되었으며 수신된 원문과 축약사실을 보존했다.",
+    "실제 정답효능·성공률·계산능력·이력 이해·훈련gradient·캐시 정확성·일반지능을 증명하지 않는다.",
+    "baseline 비교·새학습·교과과정 채택의 최종판정은 총괄이 실제 모델 증거를 회수한 뒤 수행한다.",
+    "이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다."
+  ]
+}

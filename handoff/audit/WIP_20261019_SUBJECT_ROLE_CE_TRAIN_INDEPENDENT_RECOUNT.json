@@ -1,0 +1,542 @@
+{
+  "schema": "P106B_SUBJECT_ROLE_CE_TRAIN_INDEPENDENT_RECOUNT_V1",
+  "author": "/root/oct19_antithesis",
+  "scope": {
+    "승인": "총괄의 완료 CE896 원형에 대한 읽기 전용 표준 라이브러리 검산 및 이 새 감사 JSON 한 파일 작성 승인",
+    "원검산범위": "완료 train_ce start/report/updates manifest/896 원이벤트/지정 원로그, 공개·local CPU 보고, 원 A 소형 CPU 보고, 보고에 열거된 53개 Python 코드의 바이트 SHA",
+    "금지": "진행 중 role_only 폴더·로그, 실제 CP 바이트·stat·Torch·모델·forward·실 tokenizer·HF 원천·native cache·GPU·네트워크·설치·Git·기존 파일 변경",
+    "산출물": "handoff/audit/WIP_20261019_SUBJECT_ROLE_CE_TRAIN_INDEPENDENT_RECOUNT.json",
+    "증거등급": "완료 기록과 정본의 독립 판독 일치. 학습·추론 재실행 또는 정답 품질 PASS가 아님.",
+    "시점구분": "독립 검산 당시 파일 쓰기 0. 이후 명시 승인으로 이 새 감사 파일 1개만 apply_patch로 작성하며 원형·코드·다른 감사는 변경하지 않음."
+  },
+  "outcome": {
+    "명명검산조건": 53,
+    "불일치조건": [],
+    "원검산_exit_code": 0,
+    "원검산_내부_elapsed_seconds": 0.05666784999993979,
+    "원검산_실행도구_wall_time_seconds": 0.517366438,
+    "원검산_주의": "53은 명명된 복합 검산 조건 수이며 모든 개별 원소 비교의 개수나 품질 문턱이 아니다. 별도 허용오차를 만들지 않았고 정수·문자열·JSON·float 기록·SHA는 직접 동등 비교했다.",
+    "상태": "TRAIN_COMPLETE_EVALUATION_PENDING",
+    "판단": "관측 범위에서 기록 불일치 0. 실제 자유답 평가·일반 품질·정확 gradient·fresh optimizer 내부 상태를 독립 실행으로 증명하지 않음."
+  },
+  "exact_run": {
+    "cwd": "/home/uranus/tinyLM",
+    "command": "/usr/bin/python3 -B - <<'PY'\nimport collections, hashlib, json, math, os, random, re, statistics, sys, time\nfrom pathlib import Path\nbegan=time.perf_counter()\nroot=Path('/home/uranus/tinyLM')\nnamespace='p106b_subject_role_v1_s1337'\nevi=root/'test_result/evidence'/namespace\ntrain=evi/'train_ce'\nlocal=root/'test_result/evidence/local'/namespace/'corpus/report.json'\nraw=root/'test_result/101_log_20261019_P106B_Stage4erYa_ce4_train896_054131.txt'\na_local=root/'test_result/evidence/local/p106b_relation_bind_v1_s1337/corpus/report.json'\na_public=root/'test_result/evidence/p106b_relation_bind_v1_s1337/cpu_contract.json'\nallowed={str(p) for p in (train/'report.json', train/'start.json', train/'updates_shards_manifest.json', train/'updates_000000.jsonl',evi/'cpu_contract.json',local,raw,a_local,a_public)}\nopens=[]\ndef audit(event,args):\n    if event=='open':\n        path, mode, flags=args\n        if isinstance(path,(str,bytes)):\n            p=os.path.abspath(os.fsdecode(path))\n            if flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\n                raise RuntimeError('write forbidden: '+p)\n            if p not in allowed: raise RuntimeError('unapproved read: '+p)\n            opens.append(p)\n    if event in ('socket.__new__','subprocess.Popen','os.system'):\n        raise RuntimeError('network/subprocess forbidden')\nsys.addaudithook(audit)\nrawbytes={}\ndef read(path):\n    value=path.read_bytes();rawbytes[str(path.relative_to(root))]=value;return value\ndef sha(value):return hashlib.sha256(value).hexdigest().upper()\ndef canon(value):return sha(json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode())\ndef parse(path):return json.loads(read(path))\nchecks=[]\ndef check(label,condition):\n    checks.append((label,bool(condition)))\nr=parse(train/'report.json');start=parse(train/'start.json');cpu=parse(evi/'cpu_contract.json');frozen=parse(local)\nm=parse(train/'updates_shards_manifest.json');events_bytes=read(train/'updates_000000.jsonl');events=[json.loads(x) for x in events_bytes.splitlines()]\nrawtext=read(raw).decode('utf-8');a=parse(a_local);acpu=parse(a_public)\ncheck('report_known_bytes_sha',len(rawbytes[str((train/'report.json').relative_to(root))])==34730 and sha(rawbytes[str((train/'report.json').relative_to(root))])=='2FF05474851593D362E2ECDCAE5524693B04265EB67F70EE2B1F06376FA7B668')\ncheck('raw_known_bytes_sha',len(rawbytes[str(raw.relative_to(root))])==22637 and sha(rawbytes[str(raw.relative_to(root))])=='291D77C20B353A238AB28FF026614C3F353AF2EEE914D584BD31D39F1F501EB0')\ncheck('public_local_projection',cpu==dict({k:v for k,v in frozen.items() if k not in ('manifests','native_train_offsets')},corpus_report_sha256=sha(rawbytes[str(local.relative_to(root))])))\ncheck('completed_cpu_and_model_not_run',cpu['status']=='SUBJECT_ROLE_CPU_VERIFIED' and all(cpu[k] is False for k in ('model_loaded','model_forward','cuda_initialized')) and cpu['optimizer_updates']==cpu['checkpoints_written']==0)\ncheck('report_start_common_exact',all(r[k]==start[k] for k in set(r)&set(start)))\ncheck('cpu_recipe_common_exact',all(start[k]==cpu[k] for k in set(start)&set(cpu)))\ncheck('start_train_not_cost',start['arm']=='ce' and start['cost'] is False)\ncheck('report_status_mode_weight_updates',r['status']=='TRAIN_COMPLETE_EVALUATION_PENDING' and r['arm']=='ce' and r['mode']=='CE' and r['weight']==0. and r['updates']==896)\ncheck('corpus_report_bind',r['corpus_sha256']==cpu['corpus_report_sha256']==sha(rawbytes[str(local.relative_to(root))]))\ncheck('code_maps',r['code_sha256']==start['code_sha256']==cpu['code_sha256']==frozen['code_sha256'])\ncode_results={}\nfor relative,expected in r['code_sha256'].items():\n    if not (relative.endswith('.py') and relative.split('/')[0] in ('scripts','tinylm') and '..' not in Path(relative).parts):raise RuntimeError('unexpected code path')\n    p=root/relative;allowed.add(str(p));code_results[relative]=sha(read(p))\ncheck('actual_frozen_code53',len(code_results)==53 and code_results==r['code_sha256'])\nbinding=cpu['source_binding']\ncheck('original_a_report_public_byte_sha',binding['a_corpus_report_sha256']==sha(rawbytes[str(a_local.relative_to(root))]) and binding['a_cpu_contract_sha256']==sha(rawbytes[str(a_public.relative_to(root))]))\ncheck('original_a_public_binding',acpu['corpus_report_sha256']==binding['a_corpus_report_sha256'])\ncheck('original_a_same_parent_tokenizer',all(a[k]==r[k] for k in ('parent_sha256','expected_parent_core_sha256','tokenizer_sha256')))\ncheck('natural_report_metadata_binding',a['natural_source_sha256']==binding['natural_source_sha256'] and a['natural_manifest_sha256']==binding['natural_manifest_sha256'])\ncheck('original_manifest_metadata_binding',canon(a['manifests'])==binding['original_manifests_sha256'])\ncheck('manifest_report_exact',r['event_manifest']==m)\ncheck('manifest_schema_lineage',m['schema']=='P106B_WRITE_ONCE_SHARDS_V1' and m['lineage']==dict(tag=namespace,arm='ce',mode='CE') and m['limit_bytes']==19999999)\ncheck('raw896_manifest_exact',len(events)==m['rows']==896 and len(events_bytes)==m['bytes']==230362 and sha(events_bytes)==m['concat_sha256'] and m['shards']==[dict(path='updates_000000.jsonl',rows=896,bytes=len(events_bytes),sha256=sha(events_bytes))] and len(events_bytes)<20000000)\ncheck('all_events_fields_exact',all(set(e)=={'assistant_targets','clipped','correct_ce','epoch','gradient_norm','lambda_weight','native_ce','relation_questions','row_contrast','step_seconds','update'} for e in events))\ncheck('exact_step_and_epoch',len(r['step_seconds'])==896 and all(e['update']==i+1 and e['epoch']==i//224+1 and e['step_seconds']==r['step_seconds'][i] for i,e in enumerate(events)))\ncheck('finite_event_metrics',all(all(type(e[k]) in (int,float) and math.isfinite(e[k]) for k in ('correct_ce','native_ce','gradient_norm','step_seconds')) and e['step_seconds']>0 and e['correct_ce']>=0 and e['native_ce']>=0 for e in events))\ncheck('integer_denominators',all(type(e['assistant_targets']) is int and e['assistant_targets']>0 and type(e['relation_questions']) is int and e['relation_questions']>=0 and e['relation_questions']%8==0 for e in events))\ncheck('ce_zero_weight_contrast',all(e['lambda_weight']==0. and (e['row_contrast']==0. if e['relation_questions'] else e['row_contrast'] is None) for e in events))\ncheck('clipping_raw_exact',all(type(e['clipped']) is bool and e['clipped']==(e['gradient_norm']>1.) for e in events) and r['grad_clip']==1. and r['clip_events']==sum(e['clipped'] for e in events)==896 and r['grad_max']==max(e['gradient_norm'] for e in events)==20.089187622070312)\nepochs=[];source_exposure=[];schedule_hashes=[];expected_q=[]\nfor ep in range(4):\n    rng=random.Random(1337+ep);micros=[]\n    for kind,count,width in (('natural',8192,4),('relation',2048,2),('replay',4096,8)):\n        indices=list(range(count));rng.shuffle(indices)\n        micros.extend(dict(kind=kind,indices=indices[i:i+width]) for i in range(0,count,width))\n    rng.shuffle(micros);groups=[micros[i:i+16] for i in range(0,len(micros),16)]\n    schedule_hashes.append(dict(epoch=ep+1,updates=len(groups),sha256=canon(groups)))\n    seen={kind:[i for micro in micros if micro['kind']==kind for i in micro['indices']] for kind in ('natural','relation','replay')}\n    check('schedule_source_once_epoch'+str(ep+1),all(sorted(seen[k])==list(range(n)) for k,n in (('natural',8192),('relation',2048),('replay',4096))))\n    check('exact16_micro8_epoch'+str(ep+1),len(groups)==224 and all(len(g)==16 and all(len(micro['indices'])*({'natural':2,'relation':4,'replay':1}[micro['kind']])==8 for micro in g) for g in groups))\n    expected_q.extend(sum(4*len(micro['indices']) for micro in g if micro['kind']=='relation') for g in groups)\n    chosen=events[224*ep:224*(ep+1)]\n    epochs.append(dict(epoch=ep+1,events=len(chosen),assistant_targets=sum(e['assistant_targets'] for e in chosen),relation_questions=sum(e['relation_questions'] for e in chosen),native_targets=len(chosen)*8192,positive_rows=len(chosen)*128))\n    source_exposure.append({kind:len(values) for kind,values in seen.items()})\ncheck('recomputed_schedule4_sha',schedule_hashes==cpu['schedules'])\ncheck('all896_question_denominators_schedule',expected_q==[e['relation_questions'] for e in events])\ncheck('epoch_denominators_exact',all(e['events']==224 and e['assistant_targets']==153482 and e['relation_questions']==8192 and e['native_targets']==1835008 and e['positive_rows']==28672 for e in epochs))\nt=r['totals'];ex=cpu['exposure']\ncheck('raw_positive_assistant_relation_totals',sum(e['assistant_targets'] for e in events)==t['assistant_targets']==613928 and sum(e['relation_questions'] for e in events)==t['relation_questions']==32768)\ncheck('all_cpu_exposure4_exact',all(t[k]==v for k,v in ex['four_pass'].items()) and all(ex['four_pass'][k]==4*v for k,v in ex['per_pass'].items()))\ncheck('native_positive_cross_padding_totals',t['native_targets']==896*8192==7340032 and t['positive_rows']==896*128==114688 and t['crossed_rows']==4*2048*12==98304 and t['padded_positive_slots']==ex['padded_positive_slots']==896*128*1024 and t['padded_crossed_slots']==ex['padded_crossed_slots']==4*2048*12*1024)\noffsets=frozen['native_train_offsets'];expected_offsets=random.Random(20261017).sample(range(0,597995000-1025+1,1025),7168)\ncheck('native7168_vector_sha_same_seed',offsets==expected_offsets and canon(offsets)==cpu['native_train_offsets_sha256'] and len(offsets)==len(set(offsets))==7168)\nordered=sorted(offsets)\ncheck('native_index_bounds_disjoint',cpu['native_train_tokens']==597995000 and all(0<=v<=597995000-1025 for v in offsets) and all(b-a>=1025 for a,b in zip(ordered,ordered[1:])))\ncheck('parent_body_record',r['initial_core_sha256']==r['expected_parent_core_sha256']=='E854AB4EC2E505DDC581CE08C94F9C8B4A8081E456AFBA193DF28A877E34A193')\ncheck('ce_checkpoint_record_only',r['checkpoint']=='runs/ckpt/m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_ce.pt' and r['checkpoint_sha256']=='C7310160A50361146936D97EC8567E5EE93C1B2230DC647745E78FDC77DA2406' and r['final_core_sha256']=='19567E705CE02B01ED29FBDC07E71E8EED29B66462E52E39507DEEBCE6335161' and r['checkpoint_written'] is True and r['optimizer_saved'] is False and r['fresh_optimizer'] is True)\ngroups=r['actual_optimizer_groups']\ncheck('actual_optimizer_groups_wd0',groups==[dict(optimizer='adamw',group=0,lr=5e-5,weight_decay=0.,tensors=1,parameters=8388608),dict(optimizer='adamw',group=1,lr=5e-5,weight_decay=0.,tensors=71,parameters=43804),dict(optimizer='muon',group=0,lr=2e-4,weight_decay=0.,tensors=85,parameters=84836352)])\ncheck('history4_boundaries',[(h['epoch'],h['updates']) for h in r['history']]==[(1,224),(2,448),(3,672),(4,896)])\ncheck('dev_and_native_fixed_denominators',all(d['assistant_targets']==2100 and d['precision']=='BF16_AUTO_HEAD_FP32' for d in [r['dev_before']]+[h['dev'] for h in r['history']]) and all(n['targets']==32768 and n['windows']==32 and n['precision']=='FP32_MATH' and n['val_sha256']==r['native_val_sha256'] for n in [r['native_before']]+[h['native'] for h in r['history']]))\ncheck('final_before_numeric_records',r['dev_before']['ce']==9.034473317464192 and r['history'][-1]['dev']['ce']==0.5450660619654116 and r['native_before']['ce']==3.50420743227005 and r['history'][-1]['native']['ce']==3.5639901012182236)\nsampled=[json.loads(line.split('] ',1)[1]) for line in rawtext.splitlines() if line.startswith('[SUBJECT_ROLE_UPDATE] ')]\ncheck('raw36_event_samples_exact',len(sampled)==36 and [e['update'] for e in sampled]==list(range(1,9))+list(range(32,897,32)) and all(e==dict(arm='ce',**events[e['update']-1]) for e in sampled))\nphase_ends=re.findall(r'^\\[PHASE_END\\] (\\d)/3 (\\w+); rc=(\\d+); status=(\\w+)$',rawtext,re.M)\ncheck('all3_phase0',phase_ends==[('1','REGRESSION','0','PASS'),('2','PREFLIGHT','0','PASS'),('3','EXECUTE','0','PASS')])\nfinals=[json.loads(line.split('] ',1)[1]) for line in rawtext.splitlines() if line.startswith('[EXPERIMENT_FINAL] ')]\ncheck('raw_pipeline_complete',len(finals)==1 and finals[0]['status']=='COMPLETE' and finals[0]['returncode']==0 and finals[0]['failed_phase'] is None and finals[0]['main_experiment_invoked'] is True and finals[0]['phases']==[dict(phase=phase,returncode=0,status='PASS') for phase in ('REGRESSION','PREFLIGHT','EXECUTE')])\ncheck('raw_exit0_endtime_pending_quality','[runlog] 종료코드 0  소요 61.2분  (2026-10-19 06:42:46)' in rawtext and '[SUBJECT_ROLE_FINAL] TRAIN_COMPLETE_EVALUATION_PENDING; quality evaluation pending' in rawtext)\ndef fold(values):\n    total=0.\n    for v in values:total+=v\n    return total\ntimes=[e['step_seconds'] for e in events];grads=[e['gradient_norm'] for e in events]\ncheck('timing_memory_finite',all(type(r[k]) in (int,float) and math.isfinite(r[k]) and r[k]>0 for k in ('whole_seconds','peak_allocated_mib','peak_reserved_mib')) and r['whole_seconds']>fold(times))\ncheck('timing_memory_root_records',r['whole_seconds']==3599.7470251310006 and r['peak_allocated_mib']==4173.8828125 and r['peak_reserved_mib']==4472. and r['memory_scope']=='torch allocator only; not whole device peak')\noutput=dict(schema='INDEPENDENT_STDLIB_READBACK',checks=len(checks),failed_checks=[label for label,ok in checks if not ok],checked_labels=[label for label,ok in checks],file_receipts={path:dict(bytes=len(value),sha256=sha(value)) for path,value in rawbytes.items() if not path.endswith('.py')},actual_code_files=len(code_results),source_binding=binding,epochs=epochs,schedules=schedule_hashes,source_exposure_per_pass=source_exposure,totals=t,relation_questions_histogram=dict(sorted(collections.Counter(e['relation_questions'] for e in events).items())),assistant_targets_range=[min(e['assistant_targets'] for e in events),max(e['assistant_targets'] for e in events)],gradient=dict(definition='preclip global L2 from clip_grad_norm_(parameters,1.)',min=min(grads),max=max(grads),mean_sequential=fold(grads)/896,max_at_update=events[grads.index(max(grads))]['update'],clip_events=sum(e['clipped'] for e in events),clip_denominator=896),timing=dict(driver_whole_seconds=r['whole_seconds'],step_count=len(times),step_seconds_sum_sequential=fold(times),step_seconds_first=times[0],step_seconds_mean_all_sequential=fold(times)/896,step_seconds_mean_after_first_sequential=fold(times[1:])/895,step_seconds_median_after_first=statistics.median(times[1:]),step_seconds_min=min(times),step_seconds_max=max(times),non_step_seconds_difference=r['whole_seconds']-fold(times),not_speed_ranking=True),dev_before=r['dev_before'],native_before=r['native_before'],history=r['history'],checkpoint_record=dict(path=r['checkpoint'],sha256=r['checkpoint_sha256'],final_core_sha256=r['final_core_sha256'],actual_checkpoint_bytes_read=False,actual_checkpoint_size_or_sha_not_rechecked=True),native_offset_record=dict(count=len(offsets),minimum=min(offsets),maximum=max(offsets),sha256=canon(offsets),actual_native_file_not_read=True),optimizer_groups=groups,raw_observed=dict(sampled_updates=len(sampled),tests=re.findall(r'Ran (\\d+) tests in ([0-9.]+)s',rawtext),phases=phase_ends,final=finals[0]),operations=dict(open_calls=len(opens),unique_read_files=len(set(opens)),file_writes=0,checkpoint_reads=0,model_instances=0,model_forward=0,torch_imports=0,tokenizer_loads=0,hf_reads=0,gpu_initialization=0,role_only_reads=0),limits=['This recount checks preserved report/raw/metadata and current source byte hashes, not actual model execution or gradient correctness.','Positive assistant target sums and raw step counts are exact. Individual assistant masks, x/cross token accounting rely on frozen CPU exposure rather than fresh tokenizer/source reconstruction.','Checkpoint SHA/core identity are report records checked against root messages only; actual checkpoint bytes/size/tensor fingerprint were not accessed.','DEV is fixed 2100 correct target CE in BF16 with FP32 head, native is first32 FP32 crops/32768 targets; neither is candidate-free quality/full validation.','All896 clipping events refer to preclip global L2. No numeric stability/quality PASS follows from a completed technical receipt.','Step timings include CPU concurrency and mixture-dependent per-update relation work; first step also includes compile; no inter-arm speed ranking.'],elapsed_seconds=time.perf_counter()-began)\nprint(json.dumps(output,ensure_ascii=False,indent=2))\nPY",
+    "raw_stdout": "{\n  \"schema\": \"INDEPENDENT_STDLIB_READBACK\",\n  \"checks\": 53,\n  \"failed_checks\": [],\n  \"checked_labels\": [\n    \"report_known_bytes_sha\",\n    \"raw_known_bytes_sha\",\n    \"public_local_projection\",\n    \"completed_cpu_and_model_not_run\",\n    \"report_start_common_exact\",\n    \"cpu_recipe_common_exact\",\n    \"start_train_not_cost\",\n    \"report_status_mode_weight_updates\",\n    \"corpus_report_bind\",\n    \"code_maps\",\n    \"actual_frozen_code53\",\n    \"original_a_report_public_byte_sha\",\n    \"original_a_public_binding\",\n    \"original_a_same_parent_tokenizer\",\n    \"natural_report_metadata_binding\",\n    \"original_manifest_metadata_binding\",\n    \"manifest_report_exact\",\n    \"manifest_schema_lineage\",\n    \"raw896_manifest_exact\",\n    \"all_events_fields_exact\",\n    \"exact_step_and_epoch\",\n    \"finite_event_metrics\",\n    \"integer_denominators\",\n    \"ce_zero_weight_contrast\",\n    \"clipping_raw_exact\",\n    \"schedule_source_once_epoch1\",\n    \"exact16_micro8_epoch1\",\n    \"schedule_source_once_epoch2\",\n    \"exact16_micro8_epoch2\",\n    \"schedule_source_once_epoch3\",\n    \"exact16_micro8_epoch3\",\n    \"schedule_source_once_epoch4\",\n    \"exact16_micro8_epoch4\",\n    \"recomputed_schedule4_sha\",\n    \"all896_question_denominators_schedule\",\n    \"epoch_denominators_exact\",\n    \"raw_positive_assistant_relation_totals\",\n    \"all_cpu_exposure4_exact\",\n    \"native_positive_cross_padding_totals\",\n    \"native7168_vector_sha_same_seed\",\n    \"native_index_bounds_disjoint\",\n    \"parent_body_record\",\n    \"ce_checkpoint_record_only\",\n    \"actual_optimizer_groups_wd0\",\n    \"history4_boundaries\",\n    \"dev_and_native_fixed_denominators\",\n    \"final_before_numeric_records\",\n    \"raw36_event_samples_exact\",\n    \"all3_phase0\",\n    \"raw_pipeline_complete\",\n    \"raw_exit0_endtime_pending_quality\",\n    \"timing_memory_finite\",\n    \"timing_memory_root_records\"\n  ],\n  \"file_receipts\": {\n    \"test_result/evidence/p106b_subject_role_v1_s1337/train_ce/report.json\": {\n      \"bytes\": 34730,\n      \"sha256\": \"2FF05474851593D362E2ECDCAE5524693B04265EB67F70EE2B1F06376FA7B668\"\n    },\n    \"test_result/evidence/p106b_subject_role_v1_s1337/train_ce/start.json\": {\n      \"bytes\": 8793,\n      \"sha256\": \"B0BF8E1ACF2C3D85965FE78F62728E38711663A4EDA6E81886636B9449FCFBC5\"\n    },\n    \"test_result/evidence/p106b_subject_role_v1_s1337/cpu_contract.json\": {\n      \"bytes\": 521685,\n      \"sha256\": \"6CCEE95B0EB27612A0333480143CB2838AA4A5AB37E4DAE62E1DB98E9EC6EC0D\"\n    },\n    \"test_result/evidence/local/p106b_subject_role_v1_s1337/corpus/report.json\": {\n      \"bytes\": 632069,\n      \"sha256\": \"72DFCE3613B2B756BB307CDE3FC83727B7C88C72D602BBB255BF097B32713FDC\"\n    },\n    \"test_result/evidence/p106b_subject_role_v1_s1337/train_ce/updates_shards_manifest.json\": {\n      \"bytes\": 483,\n      \"sha256\": \"618074F9C05DA42768A9CBA5A1988F04CEC25AEE4543ECE850BE022ED0D95861\"\n    },\n    \"test_result/evidence/p106b_subject_role_v1_s1337/train_ce/updates_000000.jsonl\": {\n      \"bytes\": 230362,\n      \"sha256\": \"D93D48192B192BB8038EB135B63BDFB22241262B37B992E79E23B313652945E2\"\n    },\n    \"test_result/101_log_20261019_P106B_Stage4erYa_ce4_train896_054131.txt\": {\n      \"bytes\": 22637,\n      \"sha256\": \"291D77C20B353A238AB28FF026614C3F353AF2EEE914D584BD31D39F1F501EB0\"\n    },\n    \"test_result/evidence/local/p106b_relation_bind_v1_s1337/corpus/report.json\": {\n      \"bytes\": 108199,\n      \"sha256\": \"5B85B4D37B15D6AEB7CFB57027CFC68FD91EA5205A4787BE8A0E92870E5DBC51\"\n    },\n    \"test_result/evidence/p106b_relation_bind_v1_s1337/cpu_contract.json\": {\n      \"bytes\": 15485,\n      \"sha256\": \"264FC5088822AFD55B7EF7A6942F73608D66A53244FDFF2646A7C72779335B59\"\n    }\n  },\n  \"actual_code_files\": 53,\n  \"source_binding\": {\n    \"a_corpus_report_sha256\": \"5B85B4D37B15D6AEB7CFB57027CFC68FD91EA5205A4787BE8A0E92870E5DBC51\",\n    \"a_cpu_contract_sha256\": \"264FC5088822AFD55B7EF7A6942F73608D66A53244FDFF2646A7C72779335B59\",\n    \"natural_manifest_sha256\": \"E21F5CF8A99BEC361D90B70F28DD89969FB882A84598D436A8748FF0B1485F20\",\n    \"natural_source_sha256\": \"E340BCE35E0B5FA6CC0EE2F08694E584A711231BC6443C5D599D55F95D5D122B\",\n    \"original_manifests_sha256\": \"8C7C07CE056885EF0FFD6A67A511483ED9F7BA018D8098ABDBC9F80DD6AEE57B\",\n    \"parent_bundle_hashes\": {\n      \"dev\": \"7A81B6EA8FDB59D8EBC25660674B2FA8A154C4319B1FC8853EB76E743D0D7CF6\",\n      \"test\": \"029D41E89A88C0F1F4563454A439D297993C8A7C0406546E5649B52F8A870D12\",\n      \"train\": \"658BCF62C563DE7A60FE6D12FA67F360B54FB0A9CD5CFBECE7BC5EEBDC000B2D\"\n    }\n  },\n  \"epochs\": [\n    {\n      \"epoch\": 1,\n      \"events\": 224,\n      \"assistant_targets\": 153482,\n      \"relation_questions\": 8192,\n      \"native_targets\": 1835008,\n      \"positive_rows\": 28672\n    },\n    {\n      \"epoch\": 2,\n      \"events\": 224,\n      \"assistant_targets\": 153482,\n      \"relation_questions\": 8192,\n      \"native_targets\": 1835008,\n      \"positive_rows\": 28672\n    },\n    {\n      \"epoch\": 3,\n      \"events\": 224,\n      \"assistant_targets\": 153482,\n      \"relation_questions\": 8192,\n      \"native_targets\": 1835008,\n      \"positive_rows\": 28672\n    },\n    {\n      \"epoch\": 4,\n      \"events\": 224,\n      \"assistant_targets\": 153482,\n      \"relation_questions\": 8192,\n      \"native_targets\": 1835008,\n      \"positive_rows\": 28672\n    }\n  ],\n  \"schedules\": [\n    {\n      \"epoch\": 1,\n      \"updates\": 224,\n      \"sha256\": \"57A121FC4181AA3445C9C012205DBB2A2102D71052C7707599BCDFD5FA03B9E6\"\n    },\n    {\n      \"epoch\": 2,\n      \"updates\": 224,\n      \"sha256\": \"970A6B81BCEA9F6D05EA1FBEB8718769E04CE6D5D6089CABEFB6DEFF2016A0EB\"\n    },\n    {\n      \"epoch\": 3,\n      \"updates\": 224,\n      \"sha256\": \"1160A8D1AD0323187F8BA13D82AA00B2B9ECEBF3938AE5741AC596A1584122FC\"\n    },\n    {\n      \"epoch\": 4,\n      \"updates\": 224,\n      \"sha256\": \"BED864B358A655C99067353C41E424AB5E874E05DC4B03D92FBC5808B1100EDD\"\n    }\n  ],\n  \"source_exposure_per_pass\": [\n    {\n      \"natural\": 8192,\n      \"relation\": 2048,\n      \"replay\": 4096\n    },\n    {\n      \"natural\": 8192,\n      \"relation\": 2048,\n      \"replay\": 4096\n    },\n    {\n      \"natural\": 8192,\n      \"relation\": 2048,\n      \"replay\": 4096\n    },\n    {\n      \"natural\": 8192,\n      \"relation\": 2048,\n      \"replay\": 4096\n    }\n  ],\n  \"totals\": {\n    \"assistant_targets\": 613928,\n    \"crossed_content_targets\": 199584,\n    \"crossed_rows\": 98304,\n    \"crossed_x_tokens\": 8221080,\n    \"native_targets\": 7340032,\n    \"padded_crossed_slots\": 100663296,\n    \"padded_positive_slots\": 117440512,\n    \"positive_rows\": 114688,\n    \"relation_questions\": 32768,\n    \"x_tokens\": 22300316\n  },\n  \"relation_questions_histogram\": {\n    \"0\": 3,\n    \"8\": 20,\n    \"16\": 84,\n    \"24\": 152,\n    \"32\": 198,\n    \"40\": 157,\n    \"48\": 163,\n    \"56\": 69,\n    \"64\": 37,\n    \"72\": 12,\n    \"80\": 1\n  },\n  \"assistant_targets_range\": [\n    444,\n    1025\n  ],\n  \"gradient\": {\n    \"definition\": \"preclip global L2 from clip_grad_norm_(parameters,1.)\",\n    \"min\": 1.6887283325195312,\n    \"max\": 20.089187622070312,\n    \"mean_sequential\": 3.8099888476676176,\n    \"max_at_update\": 3,\n    \"clip_events\": 896,\n    \"clip_denominator\": 896\n  },\n  \"timing\": {\n    \"driver_whole_seconds\": 3599.7470251310006,\n    \"step_count\": 896,\n    \"step_seconds_sum_sequential\": 3500.6373395910414,\n    \"step_seconds_first\": 42.979358069002046,\n    \"step_seconds_mean_all_sequential\": 3.9069613165078585,\n    \"step_seconds_mean_after_first_sequential\": 3.863305007287195,\n    \"step_seconds_median_after_first\": 3.7825681719987188,\n    \"step_seconds_min\": 2.039177731003292,\n    \"step_seconds_max\": 42.979358069002046,\n    \"non_step_seconds_difference\": 99.10968553995917,\n    \"not_speed_ranking\": true\n  },\n  \"dev_before\": {\n    \"assistant_targets\": 2100,\n    \"ce\": 9.034473317464192,\n    \"precision\": \"BF16_AUTO_HEAD_FP32\",\n    \"scope\": \"fixed correct DEV CE, not actual first answers or full validation\"\n  },\n  \"native_before\": {\n    \"ce\": 3.50420743227005,\n    \"precision\": \"FP32_MATH\",\n    \"scope\": \"fixed first32 contiguous1024 crops, not full VAL\",\n    \"targets\": 32768,\n    \"val_sha256\": \"AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C\",\n    \"windows\": 32\n  },\n  \"history\": [\n    {\n      \"dev\": {\n        \"assistant_targets\": 2100,\n        \"ce\": 0.7816143862406413,\n        \"precision\": \"BF16_AUTO_HEAD_FP32\",\n        \"scope\": \"fixed correct DEV CE, not actual first answers or full validation\"\n      },\n      \"epoch\": 1,\n      \"native\": {\n        \"ce\": 3.5555009469389915,\n        \"precision\": \"FP32_MATH\",\n        \"scope\": \"fixed first32 contiguous1024 crops, not full VAL\",\n        \"targets\": 32768,\n        \"val_sha256\": \"AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C\",\n        \"windows\": 32\n      },\n      \"updates\": 224\n    },\n    {\n      \"dev\": {\n        \"assistant_targets\": 2100,\n        \"ce\": 0.6923066520690918,\n        \"precision\": \"BF16_AUTO_HEAD_FP32\",\n        \"scope\": \"fixed correct DEV CE, not actual first answers or full validation\"\n      },\n      \"epoch\": 2,\n      \"native\": {\n        \"ce\": 3.5492800399661064,\n        \"precision\": \"FP32_MATH\",\n        \"scope\": \"fixed first32 contiguous1024 crops, not full VAL\",\n        \"targets\": 32768,\n        \"val_sha256\": \"AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C\",\n        \"windows\": 32\n      },\n      \"updates\": 448\n    },\n    {\n      \"dev\": {\n        \"assistant_targets\": 2100,\n        \"ce\": 0.6160994551011494,\n        \"precision\": \"BF16_AUTO_HEAD_FP32\",\n        \"scope\": \"fixed correct DEV CE, not actual first answers or full validation\"\n      },\n      \"epoch\": 3,\n      \"native\": {\n        \"ce\": 3.5533212199807167,\n        \"precision\": \"FP32_MATH\",\n        \"scope\": \"fixed first32 contiguous1024 crops, not full VAL\",\n        \"targets\": 32768,\n        \"val_sha256\": \"AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C\",\n        \"windows\": 32\n      },\n      \"updates\": 672\n    },\n    {\n      \"dev\": {\n        \"assistant_targets\": 2100,\n        \"ce\": 0.5450660619654116,\n        \"precision\": \"BF16_AUTO_HEAD_FP32\",\n        \"scope\": \"fixed correct DEV CE, not actual first answers or full validation\"\n      },\n      \"epoch\": 4,\n      \"native\": {\n        \"ce\": 3.5639901012182236,\n        \"precision\": \"FP32_MATH\",\n        \"scope\": \"fixed first32 contiguous1024 crops, not full VAL\",\n        \"targets\": 32768,\n        \"val_sha256\": \"AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C\",\n        \"windows\": 32\n      },\n      \"updates\": 896\n    }\n  ],\n  \"checkpoint_record\": {\n    \"path\": \"runs/ckpt/m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_ce.pt\",\n    \"sha256\": \"C7310160A50361146936D97EC8567E5EE93C1B2230DC647745E78FDC77DA2406\",\n    \"final_core_sha256\": \"19567E705CE02B01ED29FBDC07E71E8EED29B66462E52E39507DEEBCE6335161\",\n    \"actual_checkpoint_bytes_read\": false,\n    \"actual_checkpoint_size_or_sha_not_rechecked\": true\n  },\n  \"native_offset_record\": {\n    \"count\": 7168,\n    \"minimum\": 17425,\n    \"maximum\": 597953225,\n    \"sha256\": \"85D2FA9585917274D0539CFCC5BDFCC31646236D0DE0D13D26DD5142C8D64398\",\n    \"actual_native_file_not_read\": true\n  },\n  \"optimizer_groups\": [\n    {\n      \"group\": 0,\n      \"lr\": 5e-05,\n      \"optimizer\": \"adamw\",\n      \"parameters\": 8388608,\n      \"tensors\": 1,\n      \"weight_decay\": 0.0\n    },\n    {\n      \"group\": 1,\n      \"lr\": 5e-05,\n      \"optimizer\": \"adamw\",\n      \"parameters\": 43804,\n      \"tensors\": 71,\n      \"weight_decay\": 0.0\n    },\n    {\n      \"group\": 0,\n      \"lr\": 0.0002,\n      \"optimizer\": \"muon\",\n      \"parameters\": 84836352,\n      \"tensors\": 85,\n      \"weight_decay\": 0.0\n    }\n  ],\n  \"raw_observed\": {\n    \"sampled_updates\": 36,\n    \"tests\": [\n      [\n        \"70\",\n        \"9.734\"\n      ]\n    ],\n    \"phases\": [\n      [\n        \"1\",\n        \"REGRESSION\",\n        \"0\",\n        \"PASS\"\n      ],\n      [\n        \"2\",\n        \"PREFLIGHT\",\n        \"0\",\n        \"PASS\"\n      ],\n      [\n        \"3\",\n        \"EXECUTE\",\n        \"0\",\n        \"PASS\"\n      ]\n    ],\n    \"final\": {\n      \"evidence_scope\": \"stage execution, not model quality or scientific adoption\",\n      \"experiment\": \"P106B_SUBJECT_ROLE_train_ce\",\n      \"failed_phase\": null,\n      \"main_experiment_invoked\": true,\n      \"phases\": [\n        {\n          \"phase\": \"REGRESSION\",\n          \"returncode\": 0,\n          \"status\": \"PASS\"\n        },\n        {\n          \"phase\": \"PREFLIGHT\",\n          \"returncode\": 0,\n          \"status\": \"PASS\"\n        },\n        {\n          \"phase\": \"EXECUTE\",\n          \"returncode\": 0,\n          \"status\": \"PASS\"\n        }\n      ],\n      \"returncode\": 0,\n      \"schema\": \"P106B_STAGE_RECEIPT_V1\",\n      \"status\": \"COMPLETE\"\n    }\n  },\n  \"operations\": {\n    \"open_calls\": 62,\n    \"unique_read_files\": 62,\n    \"file_writes\": 0,\n    \"checkpoint_reads\": 0,\n    \"model_instances\": 0,\n    \"model_forward\": 0,\n    \"torch_imports\": 0,\n    \"tokenizer_loads\": 0,\n    \"hf_reads\": 0,\n    \"gpu_initialization\": 0,\n    \"role_only_reads\": 0\n  },\n  \"limits\": [\n    \"This recount checks preserved report/raw/metadata and current source byte hashes, not actual model execution or gradient correctness.\",\n    \"Positive assistant target sums and raw step counts are exact. Individual assistant masks, x/cross token accounting rely on frozen CPU exposure rather than fresh tokenizer/source reconstruction.\",\n    \"Checkpoint SHA/core identity are report records checked against root messages only; actual checkpoint bytes/size/tensor fingerprint were not accessed.\",\n    \"DEV is fixed 2100 correct target CE in BF16 with FP32 head, native is first32 FP32 crops/32768 targets; neither is candidate-free quality/full validation.\",\n    \"All896 clipping events refer to preclip global L2. No numeric stability/quality PASS follows from a completed technical receipt.\",\n    \"Step timings include CPU concurrency and mixture-dependent per-update relation work; first step also includes compile; no inter-arm speed ranking.\"\n  ],\n  \"elapsed_seconds\": 0.05666784999993979\n}\n",
+    "runner_result": {
+      "exit_code": 0,
+      "wall_time_seconds": 0.517366438,
+      "chunk_id": "e96328",
+      "original_token_count": 3447
+    },
+    "환경": "/usr/bin/python3 -B, 표준 라이브러리만. 함수·모델을 import하지 않고 JSON과 원코드 바이트만 읽었다.",
+    "guard": "sys.addaudithook으로 명시 읽기 파일 외 접근과 쓰기 플래그·socket·subprocess·os.system을 거부. 9개 원형/보고와 53개 코드=62개 파일 읽기. CP/role 경로는 allowlist에 없으며 read/stat 모두 코드에서 호출하지 않았다."
+  },
+  "coverage": {
+    "events": {
+      "rows": 896,
+      "manifest_receipt": {
+        "bytes": 483,
+        "sha256": "618074F9C05DA42768A9CBA5A1988F04CEC25AEE4543ECE850BE022ED0D95861"
+      },
+      "shard_receipt": {
+        "bytes": 230362,
+        "sha256": "D93D48192B192BB8038EB135B63BDFB22241262B37B992E79E23B313652945E2"
+      },
+      "전량비교": "896개 event의 update/epoch/timing/finite/CE lambda/대조값/clip bool을 검사했고 step_seconds 보고 배열과 모두 정확 일치했다. stdlib 재구성 schedule에서 update별 relation Q를 구해 실제 event896개와 전량 비교했다.",
+      "원로그샘플": "raw stdout에는 1..8 및 매32 update의 36개 샘플만 있다. 이 36개는 원이벤트와 arm 추가를 제외하고 정확 일치. 나머지 860개는 보존된 JSONL로 검산했다."
+    },
+    "schedules": {
+      "epochs": [
+        {
+          "epoch": 1,
+          "events": 224,
+          "assistant_targets": 153482,
+          "relation_questions": 8192,
+          "native_targets": 1835008,
+          "positive_rows": 28672
+        },
+        {
+          "epoch": 2,
+          "events": 224,
+          "assistant_targets": 153482,
+          "relation_questions": 8192,
+          "native_targets": 1835008,
+          "positive_rows": 28672
+        },
+        {
+          "epoch": 3,
+          "events": 224,
+          "assistant_targets": 153482,
+          "relation_questions": 8192,
+          "native_targets": 1835008,
+          "positive_rows": 28672
+        },
+        {
+          "epoch": 4,
+          "events": 224,
+          "assistant_targets": 153482,
+          "relation_questions": 8192,
+          "native_targets": 1835008,
+          "positive_rows": 28672
+        }
+      ],
+      "reconstructed_sha256": [
+        {
+          "epoch": 1,
+          "updates": 224,
+          "sha256": "57A121FC4181AA3445C9C012205DBB2A2102D71052C7707599BCDFD5FA03B9E6"
+        },
+        {
+          "epoch": 2,
+          "updates": 224,
+          "sha256": "970A6B81BCEA9F6D05EA1FBEB8718769E04CE6D5D6089CABEFB6DEFF2016A0EB"
+        },
+        {
+          "epoch": 3,
+          "updates": 224,
+          "sha256": "1160A8D1AD0323187F8BA13D82AA00B2B9ECEBF3938AE5741AC596A1584122FC"
+        },
+        {
+          "epoch": 4,
+          "updates": 224,
+          "sha256": "BED864B358A655C99067353C41E424AB5E874E05DC4B03D92FBC5808B1100EDD"
+        }
+      ],
+      "source_exposure_per_pass": [
+        {
+          "natural": 8192,
+          "relation": 2048,
+          "replay": 4096
+        },
+        {
+          "natural": 8192,
+          "relation": 2048,
+          "replay": 4096
+        },
+        {
+          "natural": 8192,
+          "relation": 2048,
+          "replay": 4096
+        },
+        {
+          "natural": 8192,
+          "relation": 2048,
+          "replay": 4096
+        }
+      ],
+      "산식": "pass마다 natural8192쌍×2 + relation2048bundle×4 + replay4096행=28672positive. micro8×16=128positive/update, 224update/pass×4=896. seed1337+epoch로 각 lane indices와 micro 순서를 별도 stdlib 재구성.",
+      "관계경로": "관계 micro는 2bundle의 positive8 + crossed24를 물리 cross8×3으로 계산. CE도 전체16score/bundle 계산을 유지하며 lambda0으로 대조 손실을 선택하지 않는다. 이 설명은 동결 코드이며 새 모델 forward로 계측한 것이 아님."
+    },
+    "denominators": {
+      "totals": {
+        "assistant_targets": 613928,
+        "crossed_content_targets": 199584,
+        "crossed_rows": 98304,
+        "crossed_x_tokens": 8221080,
+        "native_targets": 7340032,
+        "padded_crossed_slots": 100663296,
+        "padded_positive_slots": 117440512,
+        "positive_rows": 114688,
+        "relation_questions": 32768,
+        "x_tokens": 22300316
+      },
+      "assistant_targets_range": [
+        444,
+        1025
+      ],
+      "relation_questions_histogram": {
+        "0": 3,
+        "8": 20,
+        "16": 84,
+        "24": 152,
+        "32": 198,
+        "40": 157,
+        "48": 163,
+        "56": 69,
+        "64": 37,
+        "72": 12,
+        "80": 1
+      },
+      "assistant정규화": "positive CE는 EOT를 포함한 전체 update assistant target 수로 나눈다. 실제 이벤트 합613928, 각 pass153482. 114688은 positive 행 수이지 assistant token 분모가 아니다.",
+      "relation정규화": "행별 유효 음성1/3의 평균 뒤 whole-update relation Q로 나눈다. CE lambda0, 실제 Q 합32768. Q0인 update3개는 row_contrast null, 나머지는 정확0. cross target199584나3개 음성 수를 질문 분모로 세지 않는다.",
+      "native정규화": "별도 native CE update당8192=8window×1024target, 896update 합7340032. native7168의 실제 offset 벡터를 CPU 보고에서 읽어 seed20261017 재구성/범위/1025간격/고유성/SHA를 검증했으며 native cache 내용은 읽지 않았다.",
+      "실제token_한계": "assistant 이벤트 합과 Q schedule 대조는 독립 재계수. x_tokens/crossed_x_tokens/crossed_content_targets와 개별 assistant mask의 내용·토크나이저 변환은 새로 재생하지 않고 동결 CPU exposure와 보고의 정확 일치만 검증했다.",
+      "padding": "positive117440512/cross100663296는 padded slot이며 실제 입력token22300316/cross8221080/assistant613928/native7340032와 대체할 수 없다."
+    },
+    "gradient": {
+      "definition": "preclip global L2 from clip_grad_norm_(parameters,1.)",
+      "min": 1.6887283325195312,
+      "max": 20.089187622070312,
+      "mean_sequential": 3.8099888476676176,
+      "max_at_update": 3,
+      "clip_events": 896,
+      "clip_denominator": 896,
+      "해석": "torch.nn.utils.clip_grad_norm_(model.parameters(),1.)의 반환값은 clipping 전 global L2. 최대20.089187622070312는 update3, 최솟값1.6887283325195312, 전체896/896이1을 초과했다.",
+      "한계": "모든 기록이 finite이고 clip bool·최대치가 일치한다는 사실이다. clipping 후 실제 norm, gradient 각 원소, head/core별 기여, optimizer 상태나 양자화 cache의 유효성을 이번 판독으로 검사하지 않았다. 기존 max-absolute-element 지표와 혼동하지 않는다."
+    },
+    "timing": {
+      "driver_whole_seconds": 3599.7470251310006,
+      "step_count": 896,
+      "step_seconds_sum_sequential": 3500.6373395910414,
+      "step_seconds_first": 42.979358069002046,
+      "step_seconds_mean_all_sequential": 3.9069613165078585,
+      "step_seconds_mean_after_first_sequential": 3.863305007287195,
+      "step_seconds_median_after_first": 3.7825681719987188,
+      "step_seconds_min": 2.039177731003292,
+      "step_seconds_max": 42.979358069002046,
+      "non_step_seconds_difference": 99.10968553995917,
+      "not_speed_ranking": true,
+      "allocator_peak_mib": {
+        "allocated": 4173.8828125,
+        "reserved": 4472
+      },
+      "원로그": "05:41:31 시작→06:42:46 종료0, 표시61.2분. driver whole3599.7470251310006초와 wrapper 전체 구간은 별개.",
+      "해석": "첫 step42.979358069002046초는 torch.compile lazy 실행을 포함하는 경로다. step 합3500.6373395910414초, first 제외895개 평균3.863305007287195초. whole-step 차99.10968553995917초는 모델 준비·검증·probe·저장 등을 포함하는 비-step 시간이며 세부 원인 분해 계측은 아님.",
+      "제한": "동시 CPU 작업과 update마다 다른 관계 micro 수가 있는 질적 학습 타이밍. inter-arm 속도 순위·정상상태 하드웨어 성능·전체 device peak로 승격하지 않는다."
+    },
+    "probes": {
+      "dev_before": {
+        "assistant_targets": 2100,
+        "ce": 9.034473317464192,
+        "precision": "BF16_AUTO_HEAD_FP32",
+        "scope": "fixed correct DEV CE, not actual first answers or full validation"
+      },
+      "native_before": {
+        "ce": 3.50420743227005,
+        "precision": "FP32_MATH",
+        "scope": "fixed first32 contiguous1024 crops, not full VAL",
+        "targets": 32768,
+        "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+        "windows": 32
+      },
+      "history": [
+        {
+          "dev": {
+            "assistant_targets": 2100,
+            "ce": 0.7816143862406413,
+            "precision": "BF16_AUTO_HEAD_FP32",
+            "scope": "fixed correct DEV CE, not actual first answers or full validation"
+          },
+          "epoch": 1,
+          "native": {
+            "ce": 3.5555009469389915,
+            "precision": "FP32_MATH",
+            "scope": "fixed first32 contiguous1024 crops, not full VAL",
+            "targets": 32768,
+            "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+            "windows": 32
+          },
+          "updates": 224
+        },
+        {
+          "dev": {
+            "assistant_targets": 2100,
+            "ce": 0.6923066520690918,
+            "precision": "BF16_AUTO_HEAD_FP32",
+            "scope": "fixed correct DEV CE, not actual first answers or full validation"
+          },
+          "epoch": 2,
+          "native": {
+            "ce": 3.5492800399661064,
+            "precision": "FP32_MATH",
+            "scope": "fixed first32 contiguous1024 crops, not full VAL",
+            "targets": 32768,
+            "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+            "windows": 32
+          },
+          "updates": 448
+        },
+        {
+          "dev": {
+            "assistant_targets": 2100,
+            "ce": 0.6160994551011494,
+            "precision": "BF16_AUTO_HEAD_FP32",
+            "scope": "fixed correct DEV CE, not actual first answers or full validation"
+          },
+          "epoch": 3,
+          "native": {
+            "ce": 3.5533212199807167,
+            "precision": "FP32_MATH",
+            "scope": "fixed first32 contiguous1024 crops, not full VAL",
+            "targets": 32768,
+            "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+            "windows": 32
+          },
+          "updates": 672
+        },
+        {
+          "dev": {
+            "assistant_targets": 2100,
+            "ce": 0.5450660619654116,
+            "precision": "BF16_AUTO_HEAD_FP32",
+            "scope": "fixed correct DEV CE, not actual first answers or full validation"
+          },
+          "epoch": 4,
+          "native": {
+            "ce": 3.5639901012182236,
+            "precision": "FP32_MATH",
+            "scope": "fixed first32 contiguous1024 crops, not full VAL",
+            "targets": 32768,
+            "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+            "windows": 32
+          },
+          "updates": 896
+        }
+      ],
+      "해석": "DEV2100 target BF16_AUTO_HEAD_FP32 기록은9.034473317464192→0.5450660619654116. native32 FP32_MATH/32768 target 기록은3.50420743227005→3.5639901012182236로 증가했다.",
+      "한계": "fixed DEV 정답 teacher forcing과 first32 contiguous native VAL crop이다. 전체 VAL, candidate-free 자유답1758, 실제 문제 해결·의미 품질이 아니며 모델 재실행을 하지 않았다."
+    },
+    "optimizer": {
+      "groups": [
+        {
+          "group": 0,
+          "lr": 0.00005,
+          "optimizer": "adamw",
+          "parameters": 8388608,
+          "tensors": 1,
+          "weight_decay": 0
+        },
+        {
+          "group": 1,
+          "lr": 0.00005,
+          "optimizer": "adamw",
+          "parameters": 43804,
+          "tensors": 71,
+          "weight_decay": 0
+        },
+        {
+          "group": 0,
+          "lr": 0.0002,
+          "optimizer": "muon",
+          "parameters": 84836352,
+          "tensors": 85,
+          "weight_decay": 0
+        }
+      ],
+      "기록": "fresh_optimizer true, optimizer_saved false, 전체3그룹 weight_decay0; adamw 5e-5(embedding8388608+other43804), muon2e-4(matrix84836352).",
+      "한계": "원형 보고와 동결 make_optimizers 호출의 일치 판독. 이번 감사는 optimizer 객체 생성·상태 로드·초기 state numel 검사 또는 step 실행을 하지 않았다."
+    },
+    "raw_phase_receipt": {
+      "sampled_updates": 36,
+      "tests": [
+        [
+          "70",
+          "9.734"
+        ]
+      ],
+      "phases": [
+        [
+          "1",
+          "REGRESSION",
+          "0",
+          "PASS"
+        ],
+        [
+          "2",
+          "PREFLIGHT",
+          "0",
+          "PASS"
+        ],
+        [
+          "3",
+          "EXECUTE",
+          "0",
+          "PASS"
+        ]
+      ],
+      "final": {
+        "evidence_scope": "stage execution, not model quality or scientific adoption",
+        "experiment": "P106B_SUBJECT_ROLE_train_ce",
+        "failed_phase": null,
+        "main_experiment_invoked": true,
+        "phases": [
+          {
+            "phase": "REGRESSION",
+            "returncode": 0,
+            "status": "PASS"
+          },
+          {
+            "phase": "PREFLIGHT",
+            "returncode": 0,
+            "status": "PASS"
+          },
+          {
+            "phase": "EXECUTE",
+            "returncode": 0,
+            "status": "PASS"
+          }
+        ],
+        "returncode": 0,
+        "schema": "P106B_STAGE_RECEIPT_V1",
+        "status": "COMPLETE"
+      }
+    },
+    "raw_phase_주의": "원로그의 REGRESSION70/70, PREFLIGHT0, EXECUTE0, 최종 COMPLETE는 root 실행의 보존 증거다. 독립 agent가 이 회귀나 실제 학습을 다시 실행한 것이 아니다.",
+    "operations": {
+      "open_calls": 62,
+      "unique_read_files": 62,
+      "file_writes": 0,
+      "checkpoint_reads": 0,
+      "model_instances": 0,
+      "model_forward": 0,
+      "torch_imports": 0,
+      "tokenizer_loads": 0,
+      "hf_reads": 0,
+      "gpu_initialization": 0,
+      "role_only_reads": 0
+    }
+  },
+  "source_and_code": {
+    "source_binding": {
+      "a_corpus_report_sha256": "5B85B4D37B15D6AEB7CFB57027CFC68FD91EA5205A4787BE8A0E92870E5DBC51",
+      "a_cpu_contract_sha256": "264FC5088822AFD55B7EF7A6942F73608D66A53244FDFF2646A7C72779335B59",
+      "natural_manifest_sha256": "E21F5CF8A99BEC361D90B70F28DD89969FB882A84598D436A8748FF0B1485F20",
+      "natural_source_sha256": "E340BCE35E0B5FA6CC0EE2F08694E584A711231BC6443C5D599D55F95D5D122B",
+      "original_manifests_sha256": "8C7C07CE056885EF0FFD6A67A511483ED9F7BA018D8098ABDBC9F80DD6AEE57B",
+      "parent_bundle_hashes": {
+        "dev": "7A81B6EA8FDB59D8EBC25660674B2FA8A154C4319B1FC8853EB76E743D0D7CF6",
+        "test": "029D41E89A88C0F1F4563454A439D297993C8A7C0406546E5649B52F8A870D12",
+        "train": "658BCF62C563DE7A60FE6D12FA67F360B54FB0A9CD5CFBECE7BC5EEBDC000B2D"
+      }
+    },
+    "file_receipts": {
+      "test_result/evidence/p106b_subject_role_v1_s1337/train_ce/report.json": {
+        "bytes": 34730,
+        "sha256": "2FF05474851593D362E2ECDCAE5524693B04265EB67F70EE2B1F06376FA7B668"
+      },
+      "test_result/evidence/p106b_subject_role_v1_s1337/train_ce/start.json": {
+        "bytes": 8793,
+        "sha256": "B0BF8E1ACF2C3D85965FE78F62728E38711663A4EDA6E81886636B9449FCFBC5"
+      },
+      "test_result/evidence/p106b_subject_role_v1_s1337/cpu_contract.json": {
+        "bytes": 521685,
+        "sha256": "6CCEE95B0EB27612A0333480143CB2838AA4A5AB37E4DAE62E1DB98E9EC6EC0D"
+      },
+      "test_result/evidence/local/p106b_subject_role_v1_s1337/corpus/report.json": {
+        "bytes": 632069,
+        "sha256": "72DFCE3613B2B756BB307CDE3FC83727B7C88C72D602BBB255BF097B32713FDC"
+      },
+      "test_result/evidence/p106b_subject_role_v1_s1337/train_ce/updates_shards_manifest.json": {
+        "bytes": 483,
+        "sha256": "618074F9C05DA42768A9CBA5A1988F04CEC25AEE4543ECE850BE022ED0D95861"
+      },
+      "test_result/evidence/p106b_subject_role_v1_s1337/train_ce/updates_000000.jsonl": {
+        "bytes": 230362,
+        "sha256": "D93D48192B192BB8038EB135B63BDFB22241262B37B992E79E23B313652945E2"
+      },
+      "test_result/101_log_20261019_P106B_Stage4erYa_ce4_train896_054131.txt": {
+        "bytes": 22637,
+        "sha256": "291D77C20B353A238AB28FF026614C3F353AF2EEE914D584BD31D39F1F501EB0"
+      },
+      "test_result/evidence/local/p106b_relation_bind_v1_s1337/corpus/report.json": {
+        "bytes": 108199,
+        "sha256": "5B85B4D37B15D6AEB7CFB57027CFC68FD91EA5205A4787BE8A0E92870E5DBC51"
+      },
+      "test_result/evidence/p106b_relation_bind_v1_s1337/cpu_contract.json": {
+        "bytes": 15485,
+        "sha256": "264FC5088822AFD55B7EF7A6942F73608D66A53244FDFF2646A7C72779335B59"
+      }
+    },
+    "recorded_sources": {
+      "code_sha256": {
+        "scripts/diag_p101a_mtp_parity.py": "300B2C196B9378F76AFD6C9E363C2F4441BAD1594FD91B9C0DF53185A1056A6C",
+        "scripts/diag_p101a_sft_mtp.py": "D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC",
+        "scripts/diag_p106b_evidence_recovery_course.py": "261FDB81A91D8B865A58ADC6EB0813D1D0E2CE146DACD6A7957CB238C6287622",
+        "scripts/diag_p106b_night_foundation.py": "9A5B183CB062972193580E1A68B2D24F5AE2F4369B5EE9A8099D3D8CF4195D59",
+        "scripts/diag_p106b_night_train.py": "BF47194FC71EB4F799B4CF83DAB611ACCF9CB9858D2A7F12DECB9EA0EC82FAF4",
+        "scripts/diag_p106b_relation_bind.py": "CB02DBE956EE7858316A20339059DAD2F27F27E97E23C32B884633E54A455609",
+        "scripts/diag_p106b_subject_role.py": "F6EF1AFA893599F7E1F72AD6E6C906665D26F40274534C1A320D5951B83B11DA",
+        "scripts/p106b_gate_runtime.py": "C65ADE90DB958F1FE8A3382A0F397A24BE8D3A34B2D2A107433FDFE5012A7D8F",
+        "scripts/p106b_native_windows.py": "92964880E8843888C121036E70F82C9F799531AA5F168D78B6C1CDD428155F38",
+        "scripts/p106b_night_course.py": "A8299DF82100B84C96C0685C71C90C8B01DF5E800F29B2325EC91BA3387CE283",
+        "scripts/p106b_night_foundation_data.py": "A4497F28E0C4DCB0CB40EDE9F806A00B9C081C200A81CCB2EDB424BDE966F284",
+        "scripts/p106b_night_learning.py": "8B7D151793CE74914BBFD2EE20FA01028E2BB334D2B8C2A1FCDD52B7622B44A6",
+        "scripts/p106b_night_qa_data.py": "3E301D05BEC1613708A4FAEBD5D4937D2084C94B08A81657A2B2E4E9069D546A",
+        "scripts/p106b_relation_bind_data.py": "732FB6B45BCB1EB8842FC7249E1E2BFFC82B1A777881FC5066E8D330F635E128",
+        "scripts/p106b_relation_bind_entry.py": "F26A6248B2C5DF2679B0F89B0CA1E0BE5FF0AD616004F0C4CCD6867E2E67FD5C",
+        "scripts/p106b_relation_bind_loss.py": "3B8851B70661FCD82399FFC402E3FAD9F1149F9EB2DD2E17038C6342995B35E6",
+        "scripts/p106b_relation_fields.py": "8112A9DE5F2C2BB9ED5DC4FD9DC30F37B80D378D5B088310F070BEFCE7AFCB67",
+        "scripts/p106b_shards.py": "30CBD7D6B5BE09D4C8B8983CDD607EF07BA379CC3892067C41D3A06DF22E1DA4",
+        "scripts/p106b_stage_receipt.py": "334FBD2B9031DA7E58E43762BCFD4CD9902BD972165D953E3D7D385C3B8709B9",
+        "scripts/p106b_subject_role_data.py": "CD8F3E683F23706A3986169A212B9249FD63A1369BE21EB1826AB21E33EDDFE7",
+        "scripts/p106b_subject_role_entry.py": "F27C90F822B4786DFCE6E80650F10AAF7A65900BD3893CF07D48C9BBD8916FE3",
+        "scripts/p106b_subject_role_loss.py": "7A3B49DC31BD128DB95EC7016EADD221E9533DCF637C7064D0B14F686F6DE095",
+        "scripts/test_p106b_night_course.py": "34EE9D86B59EB8B7A487B8AA3B836806E034BA821D4AEFB6723F30493152984A",
+        "scripts/test_p106b_night_learning.py": "1AE788A5BDBE0D135B45A09E046374463A43554A31C9B92F4EC83D6389CDD8FE",
+        "scripts/test_p106b_night_qa_data.py": "5E981867B2BC0D0349FCBBD57908F05DB73AA2468587517653C46612D5482093",
+        "scripts/test_p106b_night_train.py": "3BE06EE847005C4E5F5011B7BA714A82D33EEA6383E77C0B2479E81D05DAFC19",
+        "scripts/test_p106b_relation_bind.py": "64BC7210DF8231ED3C32FE58150B527C056204CD97BBED6C27282065D6A53E14",
+        "scripts/test_p106b_relation_bind_data.py": "EA657DB29EE174720774B69C508DDF7EDC4A9F73288679626B653D09EB7E8A38",
+        "scripts/test_p106b_relation_bind_entry.py": "9B50ED1999CEFB13C2F5218BFC03B206B43ED22B24C289C5FA15C8C619303140",
+        "scripts/test_p106b_relation_bind_loss.py": "2B2468C11CF13F30D0C1F415CD57C8AC6C2722BF66686B3B4A75F807A866FCB3",
+        "scripts/test_p106b_subject_role.py": "51C95B9155B18D9D423254EDB7834D886156080CD40D4BEBF628683F80052FDF",
+        "scripts/test_p106b_subject_role_data.py": "24353A5911015419F7EA958FECBCE2A829B88DDC00A8D8F572C35EB47DA99186",
+        "scripts/test_p106b_subject_role_entry.py": "5C3971F2243C87E7DD65A9465ED682EC953026616821D8B26293A03DB48EFA64",
+        "scripts/test_p106b_subject_role_loss.py": "811D434A9BF215B6E693DC23FD18537A9D45870AFE2465DEC45FFCAF26B7923B",
+        "scripts/train_sft_p090.py": "CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34",
+        "tinylm/chat/canonical.py": "8A514B69CC6C12519166DEFC059C74BF685DEFC85F20461A0E7CB52D092156BC",
+        "tinylm/chat/serialize.py": "F67F8DB7760BE9C1BAE9102692C819E2444C8780A2906179C4C468451926D4C8",
+        "tinylm/config.py": "3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF",
+        "tinylm/data/sft.py": "44327B6D27998BFA8BE160A99B65D530083E18CF640AFE62CA459CF16A276A33",
+        "tinylm/infer/generate.py": "73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4",
+        "tinylm/model/__init__.py": "6ECF25214E7CD9AE187B711487C74E92FCDA9C6E2CC2A2785732CF8A22FAA84C",
+        "tinylm/model/lut.py": "09114E2C03BB6155E974FF1F88FF805F878D8AF6F4BC72038B53D43DFBB119AC",
+        "tinylm/model/lut_cpu.py": "C24A52A2D393A3B4F65A4F7B0E063E2A76451F5CEC7B27D82551F2F00C066518",
+        "tinylm/model/modules.py": "0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C",
+        "tinylm/model/scout_coda.py": "D483EFD8BBF239D2847555581ED80F696075ED333EEDC0E9BC5406BBEFD89A81",
+        "tinylm/model/scout_memory.py": "1BE57504F2BE028F08DB320111260D1D86790BAD50C86BE6BA8F593AAAA4848B",
+        "tinylm/model/sparse_connectivity.py": "5967B9B08D74BC622440497714996D6D23ED7EF511ACD8C5A80C2E029123068C",
+        "tinylm/model/ternary.py": "3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24",
+        "tinylm/model/ternary_kernel.py": "BD0BBA32E1E803CD5D793D6819B6C29733200ECC97B267B09FD004AE745B7BBF",
+        "tinylm/model/transformer.py": "BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A",
+        "tinylm/train/mtp_sft.py": "EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657",
+        "tinylm/train/muon.py": "F2D81EF9903DC4BD2F9298BD65D3B210B1DE21141D22361A85A46F1DDE5F4676",
+        "tinylm/train/optimizer_audit.py": "E7B60AC5D023F797A674A9B625D4DAB6F4BB3A9C2AC35180A1B4FA734DD9B427"
+      },
+      "parent_sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+      "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+      "native_train_sha256": "DBD12235B4A1478177246B4BD5214C8B8BBF10D077CBA80304690AD12A8E59A2",
+      "native_val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C"
+    },
+    "source_record_extraction": {
+      "command": "/usr/bin/python3 -B - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/home/uranus/tinyLM/test_result/evidence/p106b_subject_role_v1_s1337/train_ce/report.json')\nr=json.loads(p.read_text(encoding='utf-8'))\nprint(json.dumps({'code_sha256':r['code_sha256'],'parent_sha256':r['parent_sha256'],'tokenizer_sha256':r['tokenizer_sha256'],'native_train_sha256':r['native_train_sha256'],'native_val_sha256':r['native_val_sha256']},ensure_ascii=False,indent=2))\nPY",
+      "raw_stdout": "{\n  \"code_sha256\": {\n    \"scripts/diag_p101a_mtp_parity.py\": \"300B2C196B9378F76AFD6C9E363C2F4441BAD1594FD91B9C0DF53185A1056A6C\",\n    \"scripts/diag_p101a_sft_mtp.py\": \"D7AC53E981E957C3C3A38417D19F1F3C01CE38DA736607FB6FC2B60E535A44DC\",\n    \"scripts/diag_p106b_evidence_recovery_course.py\": \"261FDB81A91D8B865A58ADC6EB0813D1D0E2CE146DACD6A7957CB238C6287622\",\n    \"scripts/diag_p106b_night_foundation.py\": \"9A5B183CB062972193580E1A68B2D24F5AE2F4369B5EE9A8099D3D8CF4195D59\",\n    \"scripts/diag_p106b_night_train.py\": \"BF47194FC71EB4F799B4CF83DAB611ACCF9CB9858D2A7F12DECB9EA0EC82FAF4\",\n    \"scripts/diag_p106b_relation_bind.py\": \"CB02DBE956EE7858316A20339059DAD2F27F27E97E23C32B884633E54A455609\",\n    \"scripts/diag_p106b_subject_role.py\": \"F6EF1AFA893599F7E1F72AD6E6C906665D26F40274534C1A320D5951B83B11DA\",\n    \"scripts/p106b_gate_runtime.py\": \"C65ADE90DB958F1FE8A3382A0F397A24BE8D3A34B2D2A107433FDFE5012A7D8F\",\n    \"scripts/p106b_native_windows.py\": \"92964880E8843888C121036E70F82C9F799531AA5F168D78B6C1CDD428155F38\",\n    \"scripts/p106b_night_course.py\": \"A8299DF82100B84C96C0685C71C90C8B01DF5E800F29B2325EC91BA3387CE283\",\n    \"scripts/p106b_night_foundation_data.py\": \"A4497F28E0C4DCB0CB40EDE9F806A00B9C081C200A81CCB2EDB424BDE966F284\",\n    \"scripts/p106b_night_learning.py\": \"8B7D151793CE74914BBFD2EE20FA01028E2BB334D2B8C2A1FCDD52B7622B44A6\",\n    \"scripts/p106b_night_qa_data.py\": \"3E301D05BEC1613708A4FAEBD5D4937D2084C94B08A81657A2B2E4E9069D546A\",\n    \"scripts/p106b_relation_bind_data.py\": \"732FB6B45BCB1EB8842FC7249E1E2BFFC82B1A777881FC5066E8D330F635E128\",\n    \"scripts/p106b_relation_bind_entry.py\": \"F26A6248B2C5DF2679B0F89B0CA1E0BE5FF0AD616004F0C4CCD6867E2E67FD5C\",\n    \"scripts/p106b_relation_bind_loss.py\": \"3B8851B70661FCD82399FFC402E3FAD9F1149F9EB2DD2E17038C6342995B35E6\",\n    \"scripts/p106b_relation_fields.py\": \"8112A9DE5F2C2BB9ED5DC4FD9DC30F37B80D378D5B088310F070BEFCE7AFCB67\",\n    \"scripts/p106b_shards.py\": \"30CBD7D6B5BE09D4C8B8983CDD607EF07BA379CC3892067C41D3A06DF22E1DA4\",\n    \"scripts/p106b_stage_receipt.py\": \"334FBD2B9031DA7E58E43762BCFD4CD9902BD972165D953E3D7D385C3B8709B9\",\n    \"scripts/p106b_subject_role_data.py\": \"CD8F3E683F23706A3986169A212B9249FD63A1369BE21EB1826AB21E33EDDFE7\",\n    \"scripts/p106b_subject_role_entry.py\": \"F27C90F822B4786DFCE6E80650F10AAF7A65900BD3893CF07D48C9BBD8916FE3\",\n    \"scripts/p106b_subject_role_loss.py\": \"7A3B49DC31BD128DB95EC7016EADD221E9533DCF637C7064D0B14F686F6DE095\",\n    \"scripts/test_p106b_night_course.py\": \"34EE9D86B59EB8B7A487B8AA3B836806E034BA821D4AEFB6723F30493152984A\",\n    \"scripts/test_p106b_night_learning.py\": \"1AE788A5BDBE0D135B45A09E046374463A43554A31C9B92F4EC83D6389CDD8FE\",\n    \"scripts/test_p106b_night_qa_data.py\": \"5E981867B2BC0D0349FCBBD57908F05DB73AA2468587517653C46612D5482093\",\n    \"scripts/test_p106b_night_train.py\": \"3BE06EE847005C4E5F5011B7BA714A82D33EEA6383E77C0B2479E81D05DAFC19\",\n    \"scripts/test_p106b_relation_bind.py\": \"64BC7210DF8231ED3C32FE58150B527C056204CD97BBED6C27282065D6A53E14\",\n    \"scripts/test_p106b_relation_bind_data.py\": \"EA657DB29EE174720774B69C508DDF7EDC4A9F73288679626B653D09EB7E8A38\",\n    \"scripts/test_p106b_relation_bind_entry.py\": \"9B50ED1999CEFB13C2F5218BFC03B206B43ED22B24C289C5FA15C8C619303140\",\n    \"scripts/test_p106b_relation_bind_loss.py\": \"2B2468C11CF13F30D0C1F415CD57C8AC6C2722BF66686B3B4A75F807A866FCB3\",\n    \"scripts/test_p106b_subject_role.py\": \"51C95B9155B18D9D423254EDB7834D886156080CD40D4BEBF628683F80052FDF\",\n    \"scripts/test_p106b_subject_role_data.py\": \"24353A5911015419F7EA958FECBCE2A829B88DDC00A8D8F572C35EB47DA99186\",\n    \"scripts/test_p106b_subject_role_entry.py\": \"5C3971F2243C87E7DD65A9465ED682EC953026616821D8B26293A03DB48EFA64\",\n    \"scripts/test_p106b_subject_role_loss.py\": \"811D434A9BF215B6E693DC23FD18537A9D45870AFE2465DEC45FFCAF26B7923B\",\n    \"scripts/train_sft_p090.py\": \"CF01D75F21562D6195A6A620A483468CAC736A02B6AC2DB7EF70211E19670E34\",\n    \"tinylm/chat/canonical.py\": \"8A514B69CC6C12519166DEFC059C74BF685DEFC85F20461A0E7CB52D092156BC\",\n    \"tinylm/chat/serialize.py\": \"F67F8DB7760BE9C1BAE9102692C819E2444C8780A2906179C4C468451926D4C8\",\n    \"tinylm/config.py\": \"3F8D9DD89665F77B2915298B0BFAA377FC1338958A5F9808EAB147ADCBB5D8EF\",\n    \"tinylm/data/sft.py\": \"44327B6D27998BFA8BE160A99B65D530083E18CF640AFE62CA459CF16A276A33\",\n    \"tinylm/infer/generate.py\": \"73247098FDF093131175B0F32D7945DC634BA2913D83BC6FC5BDAACA1BCFCBC4\",\n    \"tinylm/model/__init__.py\": \"6ECF25214E7CD9AE187B711487C74E92FCDA9C6E2CC2A2785732CF8A22FAA84C\",\n    \"tinylm/model/lut.py\": \"09114E2C03BB6155E974FF1F88FF805F878D8AF6F4BC72038B53D43DFBB119AC\",\n    \"tinylm/model/lut_cpu.py\": \"C24A52A2D393A3B4F65A4F7B0E063E2A76451F5CEC7B27D82551F2F00C066518\",\n    \"tinylm/model/modules.py\": \"0C85AC5E087A7003D5BADB90733D2CBF21A2C24B7512D6E196E6E7EFD1954A3C\",\n    \"tinylm/model/scout_coda.py\": \"D483EFD8BBF239D2847555581ED80F696075ED333EEDC0E9BC5406BBEFD89A81\",\n    \"tinylm/model/scout_memory.py\": \"1BE57504F2BE028F08DB320111260D1D86790BAD50C86BE6BA8F593AAAA4848B\",\n    \"tinylm/model/sparse_connectivity.py\": \"5967B9B08D74BC622440497714996D6D23ED7EF511ACD8C5A80C2E029123068C\",\n    \"tinylm/model/ternary.py\": \"3B467E3102E59AA665CE0124639BDA2B9F97496A95B5059880959FE2B5C32D24\",\n    \"tinylm/model/ternary_kernel.py\": \"BD0BBA32E1E803CD5D793D6819B6C29733200ECC97B267B09FD004AE745B7BBF\",\n    \"tinylm/model/transformer.py\": \"BB8D88D8C1BA3475777AA65126AEB6A25C0259CC66D9A3BB5FF3CB3B3A37DA1A\",\n    \"tinylm/train/mtp_sft.py\": \"EF508EC83AA16FE37674516A77A3E5B43D69545C05E52E8C6AC34765255BC657\",\n    \"tinylm/train/muon.py\": \"F2D81EF9903DC4BD2F9298BD65D3B210B1DE21141D22361A85A46F1DDE5F4676\",\n    \"tinylm/train/optimizer_audit.py\": \"E7B60AC5D023F797A674A9B625D4DAB6F4BB3A9C2AC35180A1B4FA734DD9B427\"\n  },\n  \"parent_sha256\": \"12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950\",\n  \"tokenizer_sha256\": \"9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E\",\n  \"native_train_sha256\": \"DBD12235B4A1478177246B4BD5214C8B8BBF10D077CBA80304690AD12A8E59A2\",\n  \"native_val_sha256\": \"AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C\"\n}\n",
+      "exit_code": 0,
+      "wall_time_seconds": 0.442624587,
+      "목적": "이미 읽은 완료 report의 53개 code SHA와 parent/tokenizer/native 기록값을 감사에 정확 보존하기 위한 소형 JSON 재판독. 원천이나 토크나이저·가중치를 열지 않았다."
+    },
+    "코드검증": "53개 actual source byteSHA를 원검산에서 산출해 report/start/public/local CPU의 code map과 정확 동등 비교했다. 아래 recorded_sources.code_sha256는 report의 원문 map이며, actual_frozen_code53 조건이 참이므로 당시 계산한 map과 동일하다.",
+    "원천검증한계": "원 A report/public byteSHA와 자연 source/manifest의 기록 binding·부모·토크나이저 identity를 검증했다. 실제 HF/관계 source shard/native cache/토크나이저 byteSHA를 이번 감사에서 다시 측정하지 않았다."
+  },
+  "checkpoint_evidence": {
+    "root_reported_actual_validation": {
+      "source": "이번 작업 지시에서 총괄이 실제 CP byteSHA 및 verify_training_report 검증 성공을 보고",
+      "bytes": 373133445,
+      "sha256": "C7310160A50361146936D97EC8567E5EE93C1B2230DC647745E78FDC77DA2406",
+      "core_sha256": "19567E705CE02B01ED29FBDC07E71E8EED29B66462E52E39507DEEBCE6335161",
+      "attribution": "총괄의 실제 검증 보고. 이 agent의 신규 측정이 아님."
+    },
+    "independent_agent_record_check": {
+      "path": "runs/ckpt/m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_ce.pt",
+      "sha256": "C7310160A50361146936D97EC8567E5EE93C1B2230DC647745E78FDC77DA2406",
+      "final_core_sha256": "19567E705CE02B01ED29FBDC07E71E8EED29B66462E52E39507DEEBCE6335161",
+      "actual_checkpoint_bytes_read": false,
+      "actual_checkpoint_size_or_sha_not_rechecked": true
+    },
+    "agent_한계": "CP 파일 byte read/stat/torch.load/state_fingerprint를 호출하지 않았다. 373133445B는 총괄 전달값이며 report path/SHA/core와 총괄 전달값의 문자열 일치만 독립 확인했다. 따라서 CP byte 검증을 agent가 중복 수행했다고 주장하지 않는다."
+  },
+  "source_math_readback": {
+    "command": "sed -n '319,356p' scripts/diag_p106b_relation_bind.py\nsed -n '381,405p' scripts/diag_p106b_relation_bind.py\nsed -n '149,176p' scripts/p106b_relation_bind_loss.py\nsed -n '72,83p' scripts/p106b_night_qa_data.py",
+    "raw_stdout": "def make_optimizers(model):\n    \"\"\"Local explicit WD0 repair; never change the frozen old optimizer helper.\n\n    The old helper sets matrix WD0 but can retain embedding AdamW WD.1.\n    Both new arms explicitly use all-group WD0 and report the real groups.\n    \"\"\"\n    from scripts import diag_p101a_sft_mtp as runtime\n    adam, muon = runtime.optimizers(model)\n    receipts = []\n    for name, opt in (('adamw', adam), ('muon', muon)):\n        for index, group in enumerate(opt.param_groups):\n            group['lr'] *= .5\n            group['weight_decay'] = 0.\n            receipts.append(dict(optimizer=name, group=index, lr=group['lr'],\n                weight_decay=group['weight_decay'], tensors=len(group['params']),\n                parameters=sum(p.numel() for p in group['params'])))\n    if not receipts or any(r['weight_decay'] != 0. for r in receipts):\n        raise ValueError('actual all-group optimizer WD0 was not enforced')\n    return adam, muon, receipts\n\n\ndef micro_records(micro, natural, relation_records, replay):\n    if micro.kind == 'natural': return [r for i in micro.indices for r in natural[i]]\n    if micro.kind == 'relation': return [r for i in micro.indices for r in relation_records[i][0]]\n    if micro.kind == 'replay': return [replay[i] for i in micro.indices]\n    raise ValueError('unknown lane')\n\n\ndef denominators(group, natural, relation_records, replay):\n    words = sum(r.targets for m in group for r in micro_records(m, natural, relation_records, replay))\n    edges = sum(2 * len(m.indices) for m in group if m.kind == 'relation')\n    if words <= 0: raise ValueError('zero correct assistant target update')\n    return words, edges\n\n\ndef cost_budget(hours):\n    if not math.isfinite(hours) or hours <= 0: raise ValueError('positive user wall budget required')\n    estimates = {}\ndef native_probe(base):\n    \"\"\"Fixed first32 VAL crops, FP32 MATH; neither full VAL nor BF16 train loss.\"\"\"\n    import numpy as np\n    import torch\n    from torch.nn.attention import sdpa_kernel, SDPBackend\n    from tinylm.train import mtp_sft as core\n    if original.digest(NATIVE / 'val.bin') != NATIVE_VAL_SHA: raise ValueError('native VAL changed')\n    values = np.memmap(NATIVE / 'val.bin', mode='r', dtype=np.uint16)\n    total = 0.; count = 0\n    base.eval(); base.freeze_quant()\n    try:\n        with torch.no_grad(), sdpa_kernel(SDPBackend.MATH), torch.autocast('cuda', enabled=False):\n            for start in range(0, 32 * 1024, 1024):\n                ids = values[start:start + 1025].astype('int64').tolist()\n                if len(ids) != 1025: raise ValueError('native32 crop incomplete')\n                x = torch.tensor([ids[:-1]], device='cuda'); y = torch.tensor([ids[1:]], device='cuda')\n                sums, counts = core.components(base, base(x, return_hidden=True), y, torch.ones_like(y),\n                                               horizons=(), checkpoint_heads=False)\n                total += float(sums[1]); count += counts[1]\n    finally:\n        base.clear_quant(); base.train()\n    if count != 32768 or not math.isfinite(total): raise ValueError('native32 denominator/nonfinite error')\n    return dict(ce=total / count, targets=count, windows=32, precision='FP32_MATH',\n        val_sha256=NATIVE_VAL_SHA, scope='fixed first32 contiguous1024 crops, not full VAL')\n\ndef normalized_loss(correct_ce_sum, whole_update_correct_targets, relation_sum,\n                    whole_update_relation_question_count, weight):\n    \"\"\"Whole-update correct CE mean plus lambda times mean relation-question loss.\n\n    Correct CE includes terminal EOT. The relation denominator counts questions\n    (two per bundle), not candidate tokens, padded slots or microbatches.\n    A micro with no relation keeps a zero-valued graph on the same path.\n    \"\"\"\n    _scalar(correct_ce_sum, 'correct CE sum'); _scalar(relation_sum, 'relation sum')\n    _count(whole_update_correct_targets, 'whole-update correct targets', 1)\n    _count(whole_update_relation_question_count, 'whole-update relation questions')\n    if type(weight) not in (int, float) or weight not in (0., .1):\n        raise ValueError('pre-registered lambda0 or lambda.1 required')\n    if correct_ce_sum.device != relation_sum.device:\n        raise ValueError('CE and relation sums must share a device')\n    if whole_update_relation_question_count == 0:\n        if bool(relation_sum.ne(0)):\n            raise ValueError('relation mass without a whole-update relation denominator')\n        return correct_ce_sum / whole_update_correct_targets + relation_sum * 0.\n    return (correct_ce_sum / whole_update_correct_targets\n            + weight * relation_sum / whole_update_relation_question_count)\n\n\ndef schedule(natural_pairs, relation_bundles, replay_rows, epoch, seed=1337):\n    \"\"\"Shuffle atomic eight-positive-row micros into sixteen-micro updates.\n\n    A natural micro has4 two-wrapper pairs. A relation micro has4 bundles,\n    eight positive rows and a separate forward of eight crossed candidate rows.\n    with path.open('rb') as stream:\n        for block in iter(lambda: stream.read(1024 * 1024), b''):\n            h.update(block)\n    return h.hexdigest().upper()\n\n\ndef sha(value):\n    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True,\n                                    separators=(',', ':')).encode()).hexdigest().upper()\n\n\ndef text(message):\n",
+    "주의": "이 명령은 함수의 원코드를 읽기만 했다. normalized_loss의 설명에 남아 있는 two-per-bundle은 원A 문맥이며 새 controller는 실제4query/bundle의 Q를 넘긴다.896개 Q는 새 schedule에서 따로 전량 확인했다."
+  },
+  "limitations": [
+    "보존 기록·정본·현재 코드 SHA의 판독 검증이며 새 학습·모델·추론 실행이 아니다.",
+    "정답 품질, gradient 수학의 실훈련 경로 정확성, clipping 후 norm, 내부 cache 효능 또는 SFT만의 기여를 증명하지 않는다.",
+    "native replay도 함께 업데이트되므로 모든 움직임을 relation SFT 하나의 기여로 귀속하지 않는다.",
+    "원형896개 event에 없는 중간 tensor·미세 batch별 목표·실제 optimizer 내부 state는 검증하지 않았다.",
+    "quality evaluation pending은 그대로 유지한다. 다른 진행 중 role_only arm의 자료를 읽거나 성적·시간 비교를 하지 않았다.",
+    "read-only 진단 당시 filewrites0과 승인 후 새 감사 파일1개 기록의 시점을 분리한다."
+  ]
+}

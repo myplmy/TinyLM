@@ -5481,7 +5481,7 @@ TF4후보순위는실제답을대신하지않는다. 이전고정TEST는이미�
 
 ### 7. 실행·보존
 
-현재독립8파일/회귀/SH를준비중이며실물동결/새모델은NOT_RUN이다. oldA/CF/CPT32의소스·원로그·CP를수정하지않고새namespace에write-once로저장한다. 모든SH는실제공용REGRESSION/PREFLIGHT/EXECUTE3단계연결회귀·stdin차단/실패전파를검증하고20MB미만샤드를사용한다. 큰CP/상세원형은Git에넣지않는다.
+독립8파일/회귀/SH와 실물CPU 동결을 완료했고 실제상태는 아래9절이 소유한다. oldA/CF/CPT32의소스·원로그·CP를수정하지않고새namespace에write-once로저장한다. 모든SH는실제공용REGRESSION/PREFLIGHT/EXECUTE3단계연결회귀·stdin차단/실패전파를검증하고20MB미만샤드를사용한다. 큰CP/상세원형은Git에넣지않는다.
 
 ### 8. 한계
 
@@ -5499,9 +5499,11 @@ Stage4erXa CE4 cost8은05:18:55 종료0/새CP0·allocated4173.874/reserved4392Mi
 
 05:36:17까지 나머지 ROLE_ONLY4/ALL_AXES4 비용8도 완료했고 세 원형/초기본체/그룹·분모가 같았다([101 §293](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). driver 실측과 최악warm 외삽+평가5400/기록3600은6.694h<8h·절대허가안으로 fits였다. 이 값은 모든SH선결/5분대기를포함한전체큐상한보장이아니다. 새896세팔은각원부모에서다시시작하며비용8모델을이어쓰지않는다.
 
+06:42:46 CE4의896/4pass를 종료0으로 완료했다([101 §295](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 실제양성22.300316Mx/613928assistant·native7.340032Mtargets/새weight-only1이며DEV9.03447→.54507/native32+0.05978이다. 정답손실감소 예측은 관측됐으나 네질문·자연QA의 실제답 효과는 아직NOT_RUN이다. 큰초기globalL2/전896clip·비용표본보다긴update와동시CPU작업을보존해격리속도우열을주장하지않는다. 완료CE SH는 `-done.sh`이며06:43:20 ROLE_ONLY4 SH착수/ALL_AXES4·실답은후속이다. 동결8코드는변경하지않았다.
+
 ### 사용자 실행파일·현재 준비 순서
 
-13개SH는아래순서로등록하며,현재총괄은20일17시위임안에서기존CPT32평가뒤단독GPU로수행한다. 상태는신규source동결/모델실행전준비이고이목록존재를실행성공으로세지않는다. 공통micro8×accum16/seq1024/checkpoint-on과최대wall/8시간gate는source receipt에명시된다.
+13개SH는아래순서로등록하며,현재총괄은20일17시위임안에서기존CPT32평가뒤단독GPU로수행한다. 실제완료/진행은9절·결과문서가소유하며이목록존재를실행성공으로세지않는다. 공통micro8×accum16/seq1024/checkpoint-on과최대wall/8시간gate는source receipt에명시된다.
 
 | 순 | 단계·SH | 선결·현재 상태 |
 |---|---|---|

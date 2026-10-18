@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GATED all3cost8 and8h/current deadline budget; fresh original parent CE4 positive896
+# Completed Oct19 06:42:46 KST: CE4positive896; actual answer evaluation pending.
 # New4query study; m8 accum16 seq1024 checkpointON; original A code untouched.
 # Bounded CPU/GPU authority through Oct20 17:00 KST; no stdin/old overwrite.
 # Estimated 1.3h; actual8cost gates and full raw readback own any adoption.
