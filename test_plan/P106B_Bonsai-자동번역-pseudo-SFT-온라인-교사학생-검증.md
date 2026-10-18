@@ -5196,9 +5196,9 @@ Stage4emW는 합성30과 실제 저장 smoke/호출 인자 검사를 CPU로 기�
 | 단계 | 내용 | 선결·판정 | 실행 권한 |
 |---|---|---|---|
 | Stage4en0W | 코드 사실표·한영2048/DEV128/TEST128 관계묶음, 실제 chat32 마스크/2×2/prefix·원자료/분모 검산 | **완료** [101 §272](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): CPU81·동결·재소비0. 모델/GPU 아님 | 이번 CPU 준비 |
-| Stage4enWa/Wb | CE/대조 각각8업데이트 비용 | 새 corpus/code/parent 동일, 실제 시간/allocator peak/gradient/clip와 각 손실 별도 | 사용자 GPU, 이번 미실행 |
-| Stage4enWc/Wd | CE/대조 각각4pass·768업데이트 | 두 cost8 성공·무OOM·사용자 시간예산 충족, 실제 동일 초기 본체 확인 | 사용자 GPU, 이번 미실행 |
-| Stage4enWe | 부모/두 학생의 후보 없는 실제 첫 답·우도·자연 QA·기초 canary·원문 손실 대조 | 성공 학습의 정확 code/corpus/부모/가중치SHA와 원답 receipt | 사용자 GPU, 이번 미실행 |
+| Stage4enWa/Wb 완료 | CE/대조 각각8업데이트 비용 | [101 §274](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 같은 code/corpus/초기화·노출/무OOM·allocator와예산확인 | 19일 총괄이 최신 위임으로 실제 완료 |
+| Stage4enWc/Wd 완료 | CE/대조 각각4pass·768업데이트 | CE01:46~02:19/대조02:26~02:59 종료0·실제노출동일·각weight-only1,실제답별도 | 20일17시까지 사용자 위임 범위 |
+| Stage4enWe 진행 | 부모/두 학생의 후보 없는 실제 첫 답·우도·자연 QA·기초 canary·원문 손실 대조 | 성공 학습의 정확 code/corpus/부모/가중치SHA와 원답 receipt | 03:04실행착수,효능미판정 |
 | Stage4enWf | 원답·후보 우도·실물 가중치/본체/학습 보고/manifest를 결합한 CPU 재검산 | 세 평가 완결·같은 입력과 원형, 누락/다른 팔 복사 거부 | 평가 뒤 CPU, 이번 미실행 |
 
 각 팔은 원P090B dense14 chat32 부모·같은 tokenizer·micro8 양성행×accum16·seq1024·checkpoint-on·compile default·seed1337·새 optimizer·constant Adam5e-5/Muon2e-4/RMS4/WD0/clip1을 유지한다. 기존 자연 QA8192묶음의 두 올바른 표현(16384행)과 replay4096행을 그대로 유지하고 관계2048묶음의 두 올바른 답(4096행)을 추가한다. 총24576 양성행/pass,192업데이트/pass,4pass768회다. 원문8192 targets/update는 별도 평균 손실이며 최종6291456 targets를 처리한다. 이전640회보다20% 늘어 옛결과와 단일축 인과비교하지 않는다.
@@ -5254,3 +5254,130 @@ CPU 회귀와 자료 검산 뒤 아래 개별 런처를 사용한다. 중간 입
 Stage4en0Wa의 독립 CPU5와01:18~01:25 실제 격리 스모크44팔은 종료0·실패0·exit0오류표지0·계측0으로 완료했다([결과101 §273](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). GPU 비용8 두 팔을 다음으로 연다. 모델 품질·두 새 학습·실제 답은 이 시점 NOT_RUN이다. 보조의 합성 gradient/분모 검산과 원문·반사실 자료 가설은 실물 성공을 대신하지 않으며 추가 구현/학습은 기존 A 결과 뒤 별도 단계로 판단한다.
 
 운영 지문은 `handoff/audit/WIP_20261019_RUNTIME_LOCK.json`, 권한·영향은 `handoff/audit/WIP_20261019_SCOPE.md`, 정·반·문헌 합은 `handoff/audit/WIP_20261019_AGENT_SYNTHESIS.md`에 보존했다. report의 grad_max는 clip 전 전체 gradient L2 norm 최대이며 다른 계열의 원소별 abs-max와 직접 비교하지 않는다.
+
+두 비용8은01:30~01:32/01:38~01:40 종료0·같은노출·무CP였다. 원래 max(warm7) 외삽과평가예약은2.53h로4h안이다. CE768은01:46~02:19 실제완료했고[101 §275](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에 CP/실제 분모/DEV·native를 기록했다. 대조768은02:26부터 실행 중이다. 새44팔을공용판독기가인식하지못한1ERROR는실제학습실패와구별해보존했고별도수리승인전공용코드는변경하지않는다. 독립44명령/32JSON 검산은완료했다. CPU준비/두비용 SH는3ac5cce에원형/명령을선보존후삭제했으며현재재실행대상이아니다. 기존API완료만있는u1W-done은보존한다.
+
+## 2026-10-19 조건부 후속 Stage4eo — 같은 질문의 문맥 역할값 교환 평가
+
+### 1. 왜
+
+Stage4en의 손실/후보 점수만으로 문맥을 실제로 읽었다고 말할 수 없다. 같은 가상 기록/질문/이름집합을 유지하고 물은 두 역할의 값을 바꾸는 개입으로,기존 답을 고수하는지 새 기록에 맞게 답하는지를 분리한다. 근거는 [DisentQA §2.2~3.4](https://aclanthology.org/2023.acl-long.559.pdf)의 문맥 정답 치환 아이디어다. 원형의 T5-770M/11B·이중답 학습 재현이 아니라 현재 TinyLM/코드 사실표에 한정한 로컬 평가다.
+
+### 2. 질문
+
+| 질문 | 직접 관측 |
+|---|---|
+| 질문과 이름은 같은데 기록의 역할값이 바뀌면 정답도 바뀌는가? | 원답 view0와 교환문 첫답의 양쪽 정답 |
+| 답이 바뀌기만 하거나 기존 오답이 반복된 것은 아닌가? | 원문/교환문 각각 정답·양문맥 모두 정답·기존답 고수/종료 분리 |
+| 두 역할을 둘 다 바르게 연결했는가? | 원래/교환 각2질문,4답 모두 정답인64 parent-graph/언어 |
+
+### 3. 예측 — 실행 전
+
+정말 역할을 읽는 학생이라면 질문이 같아도 새 기록을 따라야 한다. 그러나 기존 이름/배치나 출현 위치에 의존하면 이전 답을 유지하거나 임의의 다른 이름을 낼 수 있다. 원문 성적이 낮을 때 교환 실패만으로 원인을 확정할 수 없으며,양문맥 모두 정답을 함께 봐야 한다. 현재 generator도 이미 배정/순서를 무작위화하므로 질문-only 지름길이 주원인이라고 단정하지 않는다.
+
+### 4. 단계 설계
+
+새 태그는 `p106b_relation_cf_eval_v1_s1337`이다. registry에서 기존 실행 충돌0을 확인했다. 기존 v1 코드/자료/학습/현재 GPU 경로는 수정하지 않는다.
+
+| 단계 | 범위 | 선결·판정 | 상태 |
+|---|---|---|---|
+| Stage4eo0W 완료 | 합성 CPU44·실제 tokenizer/source의 파생256case 동결 | 두 fact sentence만 치환·질문/다른주어/순서/생성prefix 불변·고유조회·TRAIN/원TEST 순환충돌0 | 02:31~02:32 종료0·모델0·[101 §276](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md) |
+| Stage4eoWa/Wb/Wc | 같은 부모/CE/대조에 추가256첫답씩 | 원래 A 세990답+RAW_READBACK_COMPLETE·같은code/corpus/CP/본체·A실측에 따른 시간예약 | SH 작성/직접check-only·CPU 완료,GPU 미실행 |
+| Stage4eoWd | 기존 원답과 새256답/모델 대응 검산 | 정확 case·manifest·label/source/본체·원답 결손/위조 없음 | SH 작성/CPU 완료,실물 평가 뒤 실행 |
+
+가상 TEST128 한영묶음(원래 parent graph64개)마다 두 질문을 유지한다. queried subject의 역할0/1 값만 서로 교환하고 다른 주어의 사실과 줄 순서는 유지한다. 문자열 전체의 사람 이름을 바꾸지 않고,코드가 만든 정확한 두 사실문장만 한 번씩 치환한다. 원래 bundle을 변조해 v1 validate를 우회하지 않는다. 파생 schema는 parent bundle SHA·새 fact graph SHA·새 case SHA를 나누고 원TEST split을 상속하며,파생 전체 graph가 기존 TRAIN/원TEST와 겹치거나 다른 부모가 같은 교환 graph로 수렴하면 거부한다. 공통 이름/관계/일부edge 한계는 유지한다.
+
+canonical은 지원된 최소 messages/감독-turn만 사용하고 새 source_transform enum을 강제로 추가하지 않는다. 감독용 정답을 토큰 경계 검산에 쓸 수 있지만 실제 generate에는 user만 전달한다. FP32-MATH·greedy·KV·EOT·최대128·새 추론 head/MTP 없음은 원 A와 같다. teacher/optimizer/학습/새 checkpoint는0이다.
+
+### 5. 판정 기준
+
+구조 CPU 통과는 모델 효과가 아니다. 원문 view0를 다시 생성하지 않고 동일 checkpoint의 이미 저장된256답을 정확한 ID로 재사용한다. 새256답은 별도 분모로 보고,양쪽정답/4답모두정답/정답변화에도이전답고수/종료를 언어별로 나눈다. 번역/두 질문/두 문맥을 독립 표본으로 부풀리지 않으며 parent graph64개를 묶는다. 단일 학습 seed·반복 관측 fixture의 탐색 결과이고 자동 채택이나 범용 지능 판정은 하지 않는다.
+
+### 6. 비용
+
+CPU는 source/실제 tokenizer 동결과 합성 회귀이며 모델 로딩0이다. GPU는 모델당256추가응답·최대32768생성토큰이고3모델 최대98304토큰이다. 새 학습은 없다. 실제 A의990답 처리시간을 확인해 비례 예약과 모델 load 여유를 붙이고 총1시간을 우선 예약하되 미실측 추정임을 표시한다. 모델별 상한3600초/새 단계 시작 전 최신20일17시 및 문서 마감 예비를 총괄이 확인한다. 현재 학습과 동시 GPU 실행은 하지 않는다.
+
+### 7. 실행
+
+새 독립 driver/test와 기존 단계 receipt를 재사용한 entry/test 총4파일을 실물 CPU 동결 전에 완성했다. CPU44·직접 진입·check-only·bash-n을 확인했고 아래5개 SH를 준비했다. 원 A가 끝난 후에만 GPU 선결을 연다. 입력 대기·전수 사람 승인·잘못된 문구 목록 검사를 추가하지 않는다.
+
+| 순서 | 실제 SH | 동작 |
+|---|---|---|
+| 완료 | `run_P106B_Stage4eo0W_counterfactual_cpu-done.sh` | CPU44와 실제256건 동결,재실행 금지 |
+| 1 | `run_P106B_Stage4eoWa_cf_parent.sh` | 부모256추가 첫답 |
+| 2 | `run_P106B_Stage4eoWb_cf_ce.sh` | CE256추가 첫답 |
+| 3 | `run_P106B_Stage4eoWc_cf_contrast.sh` | 대조256추가 첫답 |
+| 4 | `run_P106B_Stage4eoWd_cf_readback.sh` | 세 모델의 원문/교환문 대응 원형 검산 |
+
+### 8. 한계
+
+정확한 문맥 교환에 따라 답을 바꾸는 것이 일반 세계지식·산수·새 이름/관계·자유 한국어의 충분조건은 아니다. 원래 문맥 성적이 나쁘면 교환문 성적만으로 질문 무시/기억편향/구현원인을 특정할 수 없다. 반사실 평가를 새 학습/정답재교정으로 부르지 않는다. 새로운 자료 정책의 학습 대조나 값 없는 문맥·추가 head는 별도 설계다.
+
+### 9. 실행 이력 / 갱신
+
+2026-10-19 CPU 설계·충돌 확인/F4 뒤02:31~02:32 회귀44·실제 파생256건/64한영그래프를 동결했다. 실제 최대 prompt88·출력예산128·교사/학습/가중치저장/CUDA0이다. 전체 정적은 알려진 새 smoke profile 미등록1ERROR 외67PASS/6NOT_RUN이며공용수리승인대기다. 모델/GPU/품질 판정은 아직 NOT_RUN이다. 현재 실제 CE768/진행 중 대조768과 A 원답 회수의 독립성을 유지한다.
+
+## 2026-10-19 후속 Stage4ep — 완료 원문 부모에서 고유32k를 한 번 학습
+
+### 1. 왜
+
+17일의 DESIGNED 빈 네 번째 셀을 구체화한다. 현재 새 관계 CE/대조와 값교환은 질문 연결의 작은 원인분리다. 별도로 이미 완료한 native298.975M의 기초학습과 고유32k 질문 다양화가 함께 작용하는지는 아직 측정하지 않았다. 새 native나 교사 생성 없이 기존 두 원형을 재사용하므로 추가 GPU 약1시간의 정보 대비 비용이 좋다. 새 태그는 `p106b_cpt_unique32k_v1_s1337`이고 기존 frozen 코드/자료/모델은 바꾸지 않는다.
+
+### 2. 질문과 대안
+
+| 안 | 정확한 범위·장단점 | 현재 판단 |
+|---|---|---|
+| 완료 native→고유32k | 기초학습/고유질문의 빈 조합,기존640/평가를 그대로 검산할 수 있음. 이전8k/32k 노출 차이·단일seed는 남음 | **독립 CPU/비용 준비**,현재 A/CF 결과 회수 뒤 순차 실행 |
+| 문맥값 교환을 새 학습자료 정책으로 추가 | 관계를 읽는 연습을 직접 바꾸지만 두 새 학습과 자료/마스크 선결 필요 | 현재 A/CF 실제답을 본 뒤 변경축 확정 |
+| 새 native 약299M 대1B | 같은 새 풀에서 양만 비교하면 기초학습량 가설을 직접 가름. 계산보다 합법·비보호 TRAIN≥2.000159B 공급이 선결 | 현재 공급 미확인/다운로드 미승인으로 HOLD |
+
+### 3. 예측 — 실행 전
+
+native와 고유질문은 각각 국소 이득만 있었다. 결합에서 학습형식의 정답은 더 늘 수 있으나 역할/정보부족 판별·미학습 질문/어순·일반 한국어가 함께 나아진다고 보장할 수 없다. 원문 CE나 DEV CE만 더 낮아지면 자유답 개선 가설의 확증이 아니다. `(CPT32−CPT8)−(base32−base8)`은 단일seed/관측 개발코호트의 **조리법 상호작용**이지 기초학습량만의 독립 인과 추정이 아니다.
+
+### 4. 단계 설계
+
+| 단계 | 범위 | 선결·관측 |
+|---|---|---|
+| Stage4ep0W 오류→0Wb/0Wc 복구 | 독립 실행판/회귀·실제 CPU 부모/source/courses 동결·평가 입력 별도 결합 | 첫0W는공용3단계에4개전달해실동작전종료1·0Wb의source/CPU→0Wc의평가입력동결을각3단계로분리 |
+| Stage4epWa | 같은 native에서 새 비용8 | 모델 새 로드/optimizer 새 생성·무CP/finite·노출·actual LR/WD/메모리/시간 |
+| Stage4epWb | 같은 native에서 원점 시작640회 | 비용8의 새 전체예산 충족·기존32k와 science core 동등성·A/CF GPU 미경합 |
+| Stage4epWc/Wd | final640 및 DEV 최저 대표의 동일8영역 실제 평가 | 같은원형·FP32 생성·기존 과제별계측·최종/DEV 분리·학생 이전답을 사용하는 실제멀티턴 |
+| Stage4epWe | 4조합의 원답/manifest/source/본체 대응 판독 | 모든 필요실행 완결·기존 세 셀의 적합한 동일출력만 비교·누락을0으로 대체 금지 |
+
+부모는 `diag_p106b_night_foundation.load_foundation_parent('cpt_qa')`가 읽는 **native 최종** SHA `D6ECF7127A719A08ED396B39A51285DD9F20568880F21049DF56149E01A53A11`/본체 `16CBDEC379D9DAB4193B22DF41241AC1746ADEE94C03F4491B2D5E3AC39CC640`다. QA까지 학습한 `cpt_qa` 최종에서 시작하지 않는다. source CPU의 원P090B initial `E854AB4E…`와 새 실제 initializer를 별도 필드로 보존한다. strict CPU 로드/현재 SHA와 실제 model fingerprint가 맞아야 한다.
+
+기존 `diag_p106b_night_diversity_scope_v2.py`의 고유32k courses/순서/원문 창/양성 CE/EOT·마스크/보존자료/640 update·micro8×accum16·seq1024·ckpt-on·compile-default·seed1337·LR/clip/optimizer를 유지한다. embedding WD0.1이 남는 옛 조리법을 여기서 조용히0으로 고치지 않으며 실제 그룹 receipt를 남긴다. 초기화·새 경로/계보·명시 종료시각·운영 예산의 허용 차이만 구간 AST/문자 검산으로 분리한다. 옛 deadline/budget_only_revision의 무조건 계승이나 전역 monkeypatch로 frozen 코드를 우회하지 않는다.
+
+고유32k 한 번·보존4096의4분기에서 원본 실제 SFT x19,759,460/assistant513,694·native5,242,880·positive padded83,886,080을 각각 유지한다. 한영 질문수16,384/16,384는 같지만 자연QA x는KO9,492,326/EN7,157,874(57.01/42.99%),assistant는148,306/214,308(40.90/59.10%)다. 이를한영50:50토큰학습으로보고하지않는다. 원문 cache이름으로언어비를인증하지않는다.
+
+### 5. 판정 기준
+
+CPU/비용 성공과 모델의 자유답·정보판별/멀티턴·일반 언어 손실을 분리한다. final640은 primary이고 DEV 대표는 같은 DEV CE의 사전규칙으로만 고르며 TEST를 보고 epoch를 선택하지 않는다. 기존 base8/CPT8/base32와 같은 원질문·gold·생성/종료·평가 분모를 대조하고 기사 단위 대응 구간은 학습seed 변동을 대신하지 않는다. 자동 모델 채택/보편 지능/Falcon 동등 선언은 하지 않는다.
+
+### 6. 비용과 종료
+
+기존 native 실제2,281회/298,975,232target는드라이버5597.685초였으나 이번에는다시학습하지않는다. 기존32k SFT는드라이버25.34분/SH30.2분,최종/DEV평가각약7.2/7.3분이었다. CPU45~90분은구현검토의추정이고실물CPU시간은별도기록한다. cost8+640+최종/DEV/원형검산을GPU50~70분으로우선예약하되새cost8과남은시간으로다시확인한다. 각실행wall과20일17시KST절대허가종료/최소1시간마감예비중더엄격한조건을적용한다. 긴허가를이유로중복실험을채우지않는다.
+
+### 7. 실행·보존
+
+독립train/eval/entry와시험6파일·SH를작성했다. 모든단계는회귀→선결→동작→최종판정의기존receipt를재사용하고stdin대기0이다. 새namespace만write-once로쓰며공개원문/source·기존보고/CP는변경하지않는다. raw/row는20MB미만샤드,작은해시/요약은Git,CP·상세원형은로컬보존한다. 새로운download/보호TinyDataset/교사모델호출은없다.
+
+| 순서 | 실제SH | 선결 |
+|---|---|---|
+| 실패기록보존 | `run_P106B_Stage4ep0W_cpt_unique32k_cpu-done.sh` | [101 §278](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md),원형/명령선보존뒤삭제검토 |
+| 1 | `run_P106B_Stage4ep0Wb_cpt_unique32k_cpu_recovery.sh` | CPU54·새parent/source동결 |
+| 2 | `run_P106B_Stage4ep0Wc_cpt_unique32k_eval_freeze.sh` | 같은코드의CPU동결완료·기존완전평가입력 |
+| 3 | `run_P106B_Stage4epWa_cpt_unique32k_cost8.sh` | 1/2완료·단독GPU·현재권한 |
+| 4 | `run_P106B_Stage4epWb_cpt_unique32k_train640.sh` | 새실제cost8와마감/평가예비충족 |
+| 5 | `run_P106B_Stage4epWc_cpt_unique32k_final_eval.sh` | 새640완료·최종weight-only/입력해시 |
+| 6 | `run_P106B_Stage4epWd_cpt_unique32k_dev_eval.sh` | 같은완료보고의사전규칙DEV대표 |
+| 7 | `run_P106B_Stage4epWe_cpt_unique32k_readback.sh` | 기존3셀/새셀의final·DEV48+16영역원형완결 |
+
+### 8. 한계와 문헌
+
+Falcon공식[90M Base 모델카드](https://huggingface.co/tiiuae/Falcon-H1-Tiny-90M-Base)와[Tiny 기술문서의Training/Base 절](https://tiiuae-tiny-h1-blogpost.hf.space/)은영어·hybrid구조·800B학습을설명한다. 이는현재모델의토큰규모와다르지만구조/언어/자료/최적화도다르므로현재실패를학습량하나로단정하지않는다. Base의SFT비율과별도Instruct의SFT-pretraining혼합도구별한다. 본실험은그800B재현이나학습목표전환이아니며고유75M SFT×4의미완을유지한다.
+
+### 9. 이력
+
+2026-10-19총괄이3경로의비용/공급/정보가치를보고하고,기존DESIGNED빈셀의독립준비를선택했다. 권한/F4는현재scope에명시했다. 첫0W는4단계adapter를공용3단계로검증하지못한구현오류로실동작전종료1이었다·현재신규회귀54/직접metadata·AST를확인해0Wb의실물source/CPU동결을진행하며완료판정은아직대기다. 비용/학습/평가는NOT_RUN이고현재A/CF의소스와모델은변경하지않는다.

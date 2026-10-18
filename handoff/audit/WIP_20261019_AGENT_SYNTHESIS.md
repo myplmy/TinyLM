@@ -35,3 +35,13 @@ mutable quant tensor를 두 forward 사이 교체하면 checkpoint backward가 �
 3. 후속 문맥개입/자료 변경은 별도 namespace·계획·독립 분모와 실측 비용으로만 연다. 현재 보류된 다른 연구나 75M 부족을 자동 해소하지 않는다.
 
 원문: [DisentQA](https://aclanthology.org/2023.acl-long.559.pdf), [Binding-ID](https://arxiv.org/pdf/2310.17191), [과제 다양성](https://proceedings.neurips.cc/paper_files/paper/2023/file/2e10b2c2e1aa4f8083c37dfe269873f8-Paper-Conference.pdf). 문헌별 크기·전제·실험 차이는 실제 후속 설계에서 다시 대조한다.
+
+## 2026-10-19 실제 학습과 후속의 독립 검산
+
+반 담당은CE768의모든업데이트/4pass/assistant564048·관계16384·native6291456,코드44·자료10샤드·원로그46샘플·CP byteSHA를재검산해불일치0을회신했다. 자유답은NOT_RUN이며최종core는보고연결검산만했고가중치재로딩으로새로계산하지않았다. whole_seconds1960.03은드라이버의CP직렬화이전계측이고SH전체33.2분과구별한다. DEV최저3pass와최종4pass를새로선택/섞지않는다.
+
+정 담당의CF독립구현에반담당이원TEST반대짝이같은교환graph가될수있는경계를찾았다. 총괄은실물동결전에TRAIN뿐아니라원TEST/타parent와의전체graph중복거부를추가한것을검토했다. 그뒤원source는그대로두고CF회귀39+entry5와실제256건동결을완료했다. 생성256건을의미상독립지식256건으로부풀리지않는다.
+
+문헌 담당은다음ROI를기존실측으로산정했다. 완료native298.975M을재학습하지않고고유32k640을한번붙이는빈셀은GPU약50~70분의초기예약이다. 새1B native는실측53.4k token/s의단순외삽5.20h이지만동일새풀≥2.000159B공급이선결이며현재확인된597.995M풀로는열수없다. 대조A/CF를먼저회수하고빈셀을독립준비하는것을총괄이선택했다.
+
+Falcon공식[모델카드](https://huggingface.co/tiiuae/Falcon-H1-Tiny-90M-Base)와[Tiny 기술문서](https://tiiuae-tiny-h1-blogpost.hf.space/)를총괄도직접열어영어hybrid/800B학습과별도Instruct경로를확인했다. 토큰규모차이는크지만구조/언어/자료/정밀도/최적화차이도있어현재TinyLM오답의원인을학습량하나로단정하지않는다. Falcon의기억창추정과반복안전성가설을우리모델에서검증된일반규칙으로옮기지않는다.

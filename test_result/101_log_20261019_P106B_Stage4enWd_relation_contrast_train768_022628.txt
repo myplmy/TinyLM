@@ -1,0 +1,161 @@
+
+==============================================================================
+[runlog] 2026-10-19 02:26:28  name=P106B_Stage4enWd_relation_contrast_train768_022628
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/p106b_relation_bind_entry.py --mode train_contrast --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+[PHASE_COMMAND] ["/home/uranus/miniforge3/envs/tlm_torch/bin/python", "-B", "-X", "utf8", "-m", "unittest", "scripts.test_p106b_relation_bind_data", "scripts.test_p106b_relation_bind_loss", "scripts.test_p106b_relation_bind", "scripts.test_p106b_relation_bind_entry", "-v"]
+test_code_answers_and_both_cross_negatives (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_complete_content_and_answer_free_prefix (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_conservative_metric_does_not_erase_meaning (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_deterministic_balanced_distinct_graphs (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_duplicate_entity_slots_refused (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_eligibility_filters_before_quota_and_keeps_both_translations (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_eval_fact_reversal_and_question_paraphrase_keep_gold (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_eval_view_not_train (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_forged_natural_negative_flag_rejected (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_header_answer_token_straddle_is_rejected (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_invalid_size_does_not_repeat_to_fill (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_no_oracle_meta_in_prompt (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_only_cross_candidate_not_positive (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_recomputed_digest_cannot_certify_arbitrary_wrong_answer (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_rendered_meaning_has_independent_fixed_role_answers (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_simple_shortcuts_only_half_questions (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_translations_share_graph_and_partition (scripts.test_p106b_relation_bind_data.RelationDataTests) ... ok
+test_invalid_denominators_weight_and_scalar_are_refused (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_micro_partition_matches_whole_update_value_and_gradient (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_zero_lambda_is_exact_ce_gradient_with_zero_cross_gradient (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_zero_relation_lane_keeps_safe_zero_graph (scripts.test_p106b_relation_bind_loss.NormalizationTests) ... ok
+test_interleaved_matrix_preserves_both_question_answer_maps (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_invalid_pairs_temperature_margin_and_nonfinite_scores_refused (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_joint_question_answer_permutation_preserves_loss (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_positive_column_gaps_do_not_hide_wrong_first_row (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_shared_content_prefix_cancels_without_token_negative_mask (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_unequal_lengths_do_not_claim_shared_prefix_cancellation (scripts.test_p106b_relation_bind_loss.RankingTests) ... ok
+test_actual_full_schedule_counts_and_positive_micro_shapes (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_deterministic_seed_epoch_and_legacy_zero_relation_schedule (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_direct_isolated_script_import_is_safe (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_partial_empty_and_noninteger_schedule_refused (scripts.test_p106b_relation_bind_loss.ScheduleTests) ... ok
+test_bad_hidden_head_and_token_counts_are_refused (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_checkpoint_matches_values_and_gradients_for_different_lengths (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_eot_has_ce_gradient_but_no_content_or_contrast_gradient (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_invalid_shift_hole_multiturn_and_missing_eot_are_refused (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_only_supervised_predictors_receive_direct_hidden_gradient (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_padding_and_prompt_logits_do_not_change_selected_scores (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_shifted_content_eot_and_lengths_match_manual_predictions (scripts.test_p106b_relation_bind_loss.SequenceTests) ... ok
+test_cost_budget_uses_worst_warm_step_and_both_arms_with_evaluation_reserve (scripts.test_p106b_relation_bind.BudgetTests) ... ok
+test_incomplete_nonfinite_or_nonpositive_warmed_times_fail (scripts.test_p106b_relation_bind.BudgetTests) ... ok
+test_mismatched_cost_receipt_cannot_authorize_full_training (scripts.test_p106b_relation_bind.BudgetTests) ... ok
+test_all_check_only_modes_are_noninteractive_and_skip_asset_readers (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_budget_mode_dispatches_cpu_estimate_only (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_direct_help_exits_without_models_assets_or_input (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_invalid_mode_action_arm_wall_and_budget_fail_in_argument_parser (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_unexecuted_budget_stage_exits8_and_tool_error_exits9 (scripts.test_p106b_relation_bind.CliTests) ... ok
+test_cpu_input_proof_rejects_assistant_gold_and_exhausted_context (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_cpu_input_proof_uses_complete_candidate_free_actual_prompt_ids (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_invalid_actual_generation_accounting_is_rejected (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_missing_duplicate_unknown_or_changed_source_events_are_rejected (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_natural_monitor_requires32_source_questions_in_each_language (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_one_correct_question_does_not_make_the_bundle_correct (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_paired_relation_invalid_draws_and_incomplete_graphs_are_rejected (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_paired_relation_mixed_counterfactual_changes_have_expected25pp (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_paired_relation_positive_and_negative_changes_count_graphs_not_questions (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_small_evaluation_has_complete_relation_views_natural64_and_no_assistant_gold (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_summary_separates_exact_pair_success_natural_metrics_and_unadjudicated (scripts.test_p106b_relation_bind.EvaluationTests) ... ok
+test_output_escape_parent_traversal_and_link_are_rejected (scripts.test_p106b_relation_bind.OutputTests) ... ok
+test_twenty_mb_or_nonfinite_evidence_is_rejected_before_file_creation (scripts.test_p106b_relation_bind.OutputTests) ... ok
+test_write_is_utf8_newfile_only_and_preserves_existing_evidence (scripts.test_p106b_relation_bind.OutputTests) ... ok
+test_both_correct_rows_and_first_branches_are_separately_counted (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_branch_position_token_count_and_candidate_record_spec_mutations_are_rejected (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_missing_duplicate_nonfinite_or_changed_rank_source_is_rejected (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_positive_two_column_gaps_cannot_be_reported_as_two_correct_answer_rows (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_rank_specifications_recompute_exact_shared_prefix_branch_from_mock_records (scripts.test_p106b_relation_bind.RankSummaryTests) ... ok
+test_denominator_counts_only_positive_records_and_two_questions_per_bundle (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_exposure_keeps_crossed_work_separate_from_positive_supervision (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_four_pass_schedule_proof_has192_updates_each_and_unique_epoch_hash (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_replay_only_denominator_and_zero_target_update (scripts.test_p106b_relation_bind.ScheduleAndDenominatorTests) ... ok
+test_absent_stage_is_not_run_and_does_not_open_a_source (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_child_identity_binds_complete_training_receipt_code_corpus_checkpoint_and_body (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_failure_status_keeps_missing_resource_oom_error_and_interrupt_distinct (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_old_optimizer_embedding_decay_and_new_explicit_all_group_zero_are_observed (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_other_arm_receipt_and_swapped_answer_or_rank_lineages_are_rejected (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_parent_identity_checks_immutable_hash_without_loading_weights (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_source_checkpoint_case_core_or_training_lineage_mutations_are_rejected (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_valid_evaluation_receipt_binds_both_raw_manifest_lineages (scripts.test_p106b_relation_bind.StageAndIdentityTests) ... ok
+test_check_only_never_launches_children (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+test_complete_receipt_is_phase_completion_not_quality (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+test_exact_phase_order_and_explicit_matching_arms (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+test_subprocess_stdin_is_disabled_and_failure_keeps_execute_not_run (scripts.test_p106b_relation_bind_entry.EntryTests) ... ok
+
+----------------------------------------------------------------------
+Ran 81 tests in 3.408s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[PHASE_COMMAND] ["/home/uranus/miniforge3/envs/tlm_torch/bin/python", "-B", "-X", "utf8", "scripts/diag_p106b_relation_bind.py", "--mode", "preflight", "--execute"]
+[RELATION_PREFLIGHT] exact data/code/tokenizer/target proof; model/GPU not loaded; quality NOT_RUN
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[PHASE_COMMAND] ["/home/uranus/miniforge3/envs/tlm_torch/bin/python", "-B", "-X", "utf8", "scripts/diag_p106b_relation_bind.py", "--mode", "train", "--arm", "contrast", "--execute", "--budget-hours", "4", "--max-wall-sec", "10800"]
+[RELATION_BUDGET] {"per_arm_seconds": {"ce": 2773.7615101441042, "contrast": 2735.238072575885}, "forecast_including_evaluation_sec": 9108.99958271999, "user_budget_sec": 14400.0, "fits": true, "scope": "conservative estimate, not an upper bound; no adoption/quality claim"}
+[RELATION_ACTUAL_OPTIMIZERS] [{"optimizer": "adamw", "group": 0, "lr": 5e-05, "weight_decay": 0.0, "tensors": 1, "parameters": 8388608}, {"optimizer": "adamw", "group": 1, "lr": 5e-05, "weight_decay": 0.0, "tensors": 71, "parameters": 43804}, {"optimizer": "muon", "group": 0, "lr": 0.0002, "weight_decay": 0.0, "tensors": 85, "parameters": 84836352}]
+W1019 02:27:47.244000 26808 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[RELATION_UPDATE] {"arm": "contrast", "update": 1, "epoch": 1, "correct_ce": 6.77082744585035, "row_contrast": 0.8585333824157715, "relation_questions": 8, "assistant_targets": 857, "lambda_weight": 0.1, "native_ce": 3.5059010982513428, "gradient_norm": 19.427427291870117, "clipped": true, "step_seconds": 44.8750281800003}
+[RELATION_UPDATE] {"arm": "contrast", "update": 2, "epoch": 1, "correct_ce": 6.690724327968973, "row_contrast": 0.7372446060180664, "relation_questions": 24, "assistant_targets": 701, "lambda_weight": 0.1, "native_ce": 3.310147523880005, "gradient_norm": 21.41175079345703, "clipped": true, "step_seconds": 2.5163227849998293}
+[RELATION_UPDATE] {"arm": "contrast", "update": 3, "epoch": 1, "correct_ce": 6.617250703918147, "row_contrast": 0.7999730110168457, "relation_questions": 24, "assistant_targets": 788, "lambda_weight": 0.1, "native_ce": 3.583270788192749, "gradient_norm": 18.98195457458496, "clipped": true, "step_seconds": 2.486693237999134}
+[RELATION_UPDATE] {"arm": "contrast", "update": 4, "epoch": 1, "correct_ce": 6.527081710502199, "row_contrast": 0.8293909430503845, "relation_questions": 32, "assistant_targets": 682, "lambda_weight": 0.1, "native_ce": 3.775390148162842, "gradient_norm": 16.22801971435547, "clipped": true, "step_seconds": 2.672380938999595}
+[RELATION_UPDATE] {"arm": "contrast", "update": 5, "epoch": 1, "correct_ce": 6.31065339495422, "row_contrast": 0.8823223908742269, "relation_questions": 24, "assistant_targets": 628, "lambda_weight": 0.1, "native_ce": 3.8018107414245605, "gradient_norm": 15.117889404296875, "clipped": true, "step_seconds": 2.522946256999603}
+[RELATION_UPDATE] {"arm": "contrast", "update": 6, "epoch": 1, "correct_ce": 5.753447944595969, "row_contrast": 0.8387829462687174, "relation_questions": 24, "assistant_targets": 676, "lambda_weight": 0.1, "native_ce": 3.4480957984924316, "gradient_norm": 19.156070709228516, "clipped": true, "step_seconds": 2.499763410999549}
+[RELATION_UPDATE] {"arm": "contrast", "update": 7, "epoch": 1, "correct_ce": 5.348383492088048, "row_contrast": 0.8138702392578125, "relation_questions": 40, "assistant_targets": 707, "lambda_weight": 0.1, "native_ce": 3.599632740020752, "gradient_norm": 16.517229080200195, "clipped": true, "step_seconds": 2.7188958269998693}
+[RELATION_UPDATE] {"arm": "contrast", "update": 8, "epoch": 1, "correct_ce": 4.9759799342631075, "row_contrast": 0.8121595978736877, "relation_questions": 16, "assistant_targets": 782, "lambda_weight": 0.1, "native_ce": 3.702493667602539, "gradient_norm": 15.662914276123047, "clipped": true, "step_seconds": 2.310602005999499}
+[RELATION_UPDATE] {"arm": "contrast", "update": 20, "epoch": 1, "correct_ce": 2.8562814042665727, "row_contrast": 0.8474562168121338, "relation_questions": 24, "assistant_targets": 709, "lambda_weight": 0.1, "native_ce": 3.402604341506958, "gradient_norm": 8.55659294128418, "clipped": true, "step_seconds": 2.4442611849999594}
+[RELATION_UPDATE] {"arm": "contrast", "update": 40, "epoch": 1, "correct_ce": 2.183219618469704, "row_contrast": 0.7300826072692871, "relation_questions": 40, "assistant_targets": 524, "lambda_weight": 0.1, "native_ce": 3.80855393409729, "gradient_norm": 8.022560119628906, "clipped": true, "step_seconds": 2.755296201999954}
+[RELATION_UPDATE] {"arm": "contrast", "update": 60, "epoch": 1, "correct_ce": 1.4893617640337216, "row_contrast": 0.7438982129096985, "relation_questions": 16, "assistant_targets": 923, "lambda_weight": 0.1, "native_ce": 3.5621767044067383, "gradient_norm": 4.238616466522217, "clipped": true, "step_seconds": 2.3563967849995606}
+[RELATION_UPDATE] {"arm": "contrast", "update": 80, "epoch": 1, "correct_ce": 1.5706884600850675, "row_contrast": null, "relation_questions": 0, "assistant_targets": 889, "lambda_weight": 0.1, "native_ce": 3.7486562728881836, "gradient_norm": 4.177360534667969, "clipped": true, "step_seconds": 2.038633154999843}
+[RELATION_UPDATE] {"arm": "contrast", "update": 100, "epoch": 1, "correct_ce": 1.5029196034307066, "row_contrast": 0.7447732289632162, "relation_questions": 24, "assistant_targets": 690, "lambda_weight": 0.1, "native_ce": 3.3356411457061768, "gradient_norm": 5.533563137054443, "clipped": true, "step_seconds": 2.4641823540005134}
+[RELATION_UPDATE] {"arm": "contrast", "update": 120, "epoch": 1, "correct_ce": 1.3617598864496971, "row_contrast": 0.7258667945861816, "relation_questions": 16, "assistant_targets": 784, "lambda_weight": 0.1, "native_ce": 3.656284809112549, "gradient_norm": 3.9826419353485107, "clipped": true, "step_seconds": 2.3726867320001475}
+[RELATION_UPDATE] {"arm": "contrast", "update": 140, "epoch": 1, "correct_ce": 1.4051803302509216, "row_contrast": 0.6931749582290649, "relation_questions": 32, "assistant_targets": 746, "lambda_weight": 0.1, "native_ce": 3.74312686920166, "gradient_norm": 4.850794315338135, "clipped": true, "step_seconds": 2.6720496710004227}
+[RELATION_UPDATE] {"arm": "contrast", "update": 160, "epoch": 1, "correct_ce": 1.4487757598553446, "row_contrast": 0.6305015484491984, "relation_questions": 24, "assistant_targets": 566, "lambda_weight": 0.1, "native_ce": 3.9436936378479004, "gradient_norm": 6.183435916900635, "clipped": true, "step_seconds": 2.507199476000096}
+[RELATION_UPDATE] {"arm": "contrast", "update": 180, "epoch": 1, "correct_ce": 1.1733661476039488, "row_contrast": 0.6303329467773438, "relation_questions": 32, "assistant_targets": 717, "lambda_weight": 0.1, "native_ce": 3.7328081130981445, "gradient_norm": 5.734616756439209, "clipped": true, "step_seconds": 2.621140731000196}
+[RELATION_EPOCH] {"epoch": 1, "updates": 192, "dev": {"ce": 0.9620113878539114, "assistant_targets": 1320, "natural_bundles": 64, "relation_bundles": 128, "precision": "BF16_AUTO_head_FP32", "scope": "fixed source-order DEV correct CE; no test selection or free-answer claim"}, "native": {"ce": 3.5495678409934044, "targets": 32768, "windows": 32, "precision": "FP32_MATH", "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C", "scope": "fixed first32 contiguous1024 crops, not full VAL"}}
+[RELATION_UPDATE] {"arm": "contrast", "update": 200, "epoch": 2, "correct_ce": 0.7992262682377897, "row_contrast": 0.4754863679409027, "relation_questions": 16, "assistant_targets": 755, "lambda_weight": 0.1, "native_ce": 3.974270820617676, "gradient_norm": 3.7183609008789062, "clipped": true, "step_seconds": 2.332131801000287}
+[RELATION_UPDATE] {"arm": "contrast", "update": 220, "epoch": 2, "correct_ce": 0.9308510483495447, "row_contrast": 0.21474634110927582, "relation_questions": 8, "assistant_targets": 755, "lambda_weight": 0.1, "native_ce": 3.869863510131836, "gradient_norm": 3.0414161682128906, "clipped": true, "step_seconds": 2.206720701999984}
+[RELATION_UPDATE] {"arm": "contrast", "update": 240, "epoch": 2, "correct_ce": 0.7404851140202703, "row_contrast": 0.35066187381744385, "relation_questions": 16, "assistant_targets": 814, "lambda_weight": 0.1, "native_ce": 3.625947952270508, "gradient_norm": 3.423450469970703, "clipped": true, "step_seconds": 2.3096709829997053}
+[RELATION_UPDATE] {"arm": "contrast", "update": 260, "epoch": 2, "correct_ce": 0.7985693279065584, "row_contrast": 0.2533299446105957, "relation_questions": 40, "assistant_targets": 608, "lambda_weight": 0.1, "native_ce": 3.5350050926208496, "gradient_norm": 2.9410974979400635, "clipped": true, "step_seconds": 2.7677296800002296}
+[RELATION_UPDATE] {"arm": "contrast", "update": 280, "epoch": 2, "correct_ce": 0.8885551600302419, "row_contrast": 0.3149889310201009, "relation_questions": 24, "assistant_targets": 775, "lambda_weight": 0.1, "native_ce": 3.8099238872528076, "gradient_norm": 3.4840173721313477, "clipped": true, "step_seconds": 2.47766943500028}
+[RELATION_UPDATE] {"arm": "contrast", "update": 300, "epoch": 2, "correct_ce": 0.587335205078125, "row_contrast": 0.3068036437034607, "relation_questions": 32, "assistant_targets": 715, "lambda_weight": 0.1, "native_ce": 3.760568380355835, "gradient_norm": 3.9611623287200928, "clipped": true, "step_seconds": 2.60400545200082}
+[RELATION_UPDATE] {"arm": "contrast", "update": 320, "epoch": 2, "correct_ce": 0.6848624613747668, "row_contrast": 0.17738805214564005, "relation_questions": 48, "assistant_targets": 670, "lambda_weight": 0.1, "native_ce": 3.7827467918395996, "gradient_norm": 4.195366382598877, "clipped": true, "step_seconds": 2.875617515999693}
+[RELATION_UPDATE] {"arm": "contrast", "update": 340, "epoch": 2, "correct_ce": 1.07064208984375, "row_contrast": 0.14975228905677795, "relation_questions": 24, "assistant_targets": 560, "lambda_weight": 0.1, "native_ce": 3.918525218963623, "gradient_norm": 5.081552982330322, "clipped": true, "step_seconds": 2.489778956999544}
+[RELATION_UPDATE] {"arm": "contrast", "update": 360, "epoch": 2, "correct_ce": 1.128728803419909, "row_contrast": 0.15750305652618407, "relation_questions": 40, "assistant_targets": 604, "lambda_weight": 0.1, "native_ce": 3.576746702194214, "gradient_norm": 5.223422050476074, "clipped": true, "step_seconds": 2.7397085430002335}
+[RELATION_UPDATE] {"arm": "contrast", "update": 380, "epoch": 2, "correct_ce": 0.9610005561879139, "row_contrast": 0.20902530352274576, "relation_questions": 24, "assistant_targets": 755, "lambda_weight": 0.1, "native_ce": 3.881913185119629, "gradient_norm": 4.315613746643066, "clipped": true, "step_seconds": 2.4737620310006605}
+[RELATION_EPOCH] {"epoch": 2, "updates": 384, "dev": {"ce": 0.8954865914402586, "assistant_targets": 1320, "natural_bundles": 64, "relation_bundles": 128, "precision": "BF16_AUTO_head_FP32", "scope": "fixed source-order DEV correct CE; no test selection or free-answer claim"}, "native": {"ce": 3.5484619736671448, "targets": 32768, "windows": 32, "precision": "FP32_MATH", "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C", "scope": "fixed first32 contiguous1024 crops, not full VAL"}}
+[RELATION_UPDATE] {"arm": "contrast", "update": 400, "epoch": 3, "correct_ce": 0.5522587674668525, "row_contrast": 0.34730643033981323, "relation_questions": 8, "assistant_targets": 667, "lambda_weight": 0.1, "native_ce": 3.5603246688842773, "gradient_norm": 2.8395681381225586, "clipped": true, "step_seconds": 2.2245555700001205}
+[RELATION_UPDATE] {"arm": "contrast", "update": 420, "epoch": 3, "correct_ce": 0.44013894184698327, "row_contrast": 0.12634357384272984, "relation_questions": 56, "assistant_targets": 534, "lambda_weight": 0.1, "native_ce": 3.8276474475860596, "gradient_norm": 3.656303644180298, "clipped": true, "step_seconds": 2.995734631999767}
+[RELATION_UPDATE] {"arm": "contrast", "update": 440, "epoch": 3, "correct_ce": 0.5116465137936071, "row_contrast": 0.18201813101768494, "relation_questions": 32, "assistant_targets": 722, "lambda_weight": 0.1, "native_ce": 3.46329927444458, "gradient_norm": 2.8184938430786133, "clipped": true, "step_seconds": 2.5703616410000905}
+[RELATION_UPDATE] {"arm": "contrast", "update": 460, "epoch": 3, "correct_ce": 0.5400710519870378, "row_contrast": 0.13395565748214722, "relation_questions": 32, "assistant_targets": 622, "lambda_weight": 0.1, "native_ce": 3.330038070678711, "gradient_norm": 2.9775431156158447, "clipped": true, "step_seconds": 2.690755394000007}
+[RELATION_UPDATE] {"arm": "contrast", "update": 480, "epoch": 3, "correct_ce": 0.5220457278423428, "row_contrast": 0.023059258858362835, "relation_questions": 24, "assistant_targets": 644, "lambda_weight": 0.1, "native_ce": 3.82718825340271, "gradient_norm": 2.920797348022461, "clipped": true, "step_seconds": 2.4644748020000407}
+[RELATION_UPDATE] {"arm": "contrast", "update": 500, "epoch": 3, "correct_ce": 0.5870764699268041, "row_contrast": 0.06669598072767258, "relation_questions": 32, "assistant_targets": 634, "lambda_weight": 0.1, "native_ce": 3.5872411727905273, "gradient_norm": 3.424872398376465, "clipped": true, "step_seconds": 2.6578758420000668}
+[RELATION_UPDATE] {"arm": "contrast", "update": 520, "epoch": 3, "correct_ce": 0.5688413102105754, "row_contrast": 0.041272807866334915, "relation_questions": 16, "assistant_targets": 755, "lambda_weight": 0.1, "native_ce": 3.804255723953247, "gradient_norm": 2.46545147895813, "clipped": true, "step_seconds": 2.3554879849998542}
+[RELATION_UPDATE] {"arm": "contrast", "update": 540, "epoch": 3, "correct_ce": 0.46631174543942855, "row_contrast": 0.046556875109672546, "relation_questions": 16, "assistant_targets": 794, "lambda_weight": 0.1, "native_ce": 3.424713611602783, "gradient_norm": 2.6577210426330566, "clipped": true, "step_seconds": 2.3626494020008977}
+[RELATION_UPDATE] {"arm": "contrast", "update": 560, "epoch": 3, "correct_ce": 0.4979023001047486, "row_contrast": 0.015025096014142036, "relation_questions": 8, "assistant_targets": 716, "lambda_weight": 0.1, "native_ce": 3.834425926208496, "gradient_norm": 3.259258985519409, "clipped": true, "step_seconds": 2.213298585999837}
+[RELATION_EPOCH] {"epoch": 3, "updates": 576, "dev": {"ce": 0.8607710631507816, "assistant_targets": 1320, "natural_bundles": 64, "relation_bundles": 128, "precision": "BF16_AUTO_head_FP32", "scope": "fixed source-order DEV correct CE; no test selection or free-answer claim"}, "native": {"ce": 3.5529267713427544, "targets": 32768, "windows": 32, "precision": "FP32_MATH", "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C", "scope": "fixed first32 contiguous1024 crops, not full VAL"}}
+[RELATION_UPDATE] {"arm": "contrast", "update": 580, "epoch": 4, "correct_ce": 0.21518216508158136, "row_contrast": 0.024371209740638732, "relation_questions": 40, "assistant_targets": 712, "lambda_weight": 0.1, "native_ce": 3.506823778152466, "gradient_norm": 2.2734339237213135, "clipped": true, "step_seconds": 2.782948946000033}
+[RELATION_UPDATE] {"arm": "contrast", "update": 600, "epoch": 4, "correct_ce": 0.19465718035242047, "row_contrast": 0.01536843553185463, "relation_questions": 32, "assistant_targets": 774, "lambda_weight": 0.1, "native_ce": 3.5991146564483643, "gradient_norm": 3.543276071548462, "clipped": true, "step_seconds": 2.637087441999938}
+[RELATION_UPDATE] {"arm": "contrast", "update": 620, "epoch": 4, "correct_ce": 0.3480930529142681, "row_contrast": 0.018194472417235374, "relation_questions": 8, "assistant_targets": 760, "lambda_weight": 0.1, "native_ce": 3.4688446521759033, "gradient_norm": 4.125858783721924, "clipped": true, "step_seconds": 2.2090198399992005}
+[RELATION_UPDATE] {"arm": "contrast", "update": 640, "epoch": 4, "correct_ce": 0.2894028352686842, "row_contrast": 0.022234110161662102, "relation_questions": 32, "assistant_targets": 641, "lambda_weight": 0.1, "native_ce": 3.974663257598877, "gradient_norm": 3.1578500270843506, "clipped": true, "step_seconds": 2.615211134000674}
+[RELATION_UPDATE] {"arm": "contrast", "update": 660, "epoch": 4, "correct_ce": 0.21226022805377937, "row_contrast": 0.022023528814315796, "relation_questions": 24, "assistant_targets": 628, "lambda_weight": 0.1, "native_ce": 3.7921597957611084, "gradient_norm": 2.9802725315093994, "clipped": true, "step_seconds": 2.4597332210005334}
+[RELATION_UPDATE] {"arm": "contrast", "update": 680, "epoch": 4, "correct_ce": 0.3523711878738124, "row_contrast": 0.018451201419035595, "relation_questions": 24, "assistant_targets": 546, "lambda_weight": 0.1, "native_ce": 3.6574628353118896, "gradient_norm": 3.246291160583496, "clipped": true, "step_seconds": 2.655165725000188}
+[RELATION_UPDATE] {"arm": "contrast", "update": 700, "epoch": 4, "correct_ce": 0.3249355758751295, "row_contrast": 0.024044446647167206, "relation_questions": 16, "assistant_targets": 724, "lambda_weight": 0.1, "native_ce": 3.4596407413482666, "gradient_norm": 3.5281622409820557, "clipped": true, "step_seconds": 2.425498917999903}
+[RELATION_UPDATE] {"arm": "contrast", "update": 720, "epoch": 4, "correct_ce": 0.3258795323579208, "row_contrast": 0.023074977099895477, "relation_questions": 24, "assistant_targets": 736, "lambda_weight": 0.1, "native_ce": 3.8652291297912598, "gradient_norm": 2.880002975463867, "clipped": true, "step_seconds": 2.5759296779997385}
+[RELATION_UPDATE] {"arm": "contrast", "update": 740, "epoch": 4, "correct_ce": 0.2052251060852728, "row_contrast": 0.04142943024635315, "relation_questions": 16, "assistant_targets": 811, "lambda_weight": 0.1, "native_ce": 3.309803009033203, "gradient_norm": 2.728350877761841, "clipped": true, "step_seconds": 2.392295859999649}
+[RELATION_UPDATE] {"arm": "contrast", "update": 760, "epoch": 4, "correct_ce": 0.4047357044080748, "row_contrast": 0.01876608468592167, "relation_questions": 16, "assistant_targets": 685, "lambda_weight": 0.1, "native_ce": 3.604616165161133, "gradient_norm": 3.173168182373047, "clipped": true, "step_seconds": 2.395183894999718}
+[RELATION_EPOCH] {"epoch": 4, "updates": 768, "dev": {"ce": 0.8988922882034923, "assistant_targets": 1320, "natural_bundles": 64, "relation_bundles": 128, "precision": "BF16_AUTO_head_FP32", "scope": "fixed source-order DEV correct CE; no test selection or free-answer claim"}, "native": {"ce": 3.555269405245781, "targets": 32768, "windows": 32, "precision": "FP32_MATH", "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C", "scope": "fixed first32 contiguous1024 crops, not full VAL"}}
+[RELATION_FINAL] {"arm": "contrast", "status": "TRAIN_COMPLETE_EVALUATION_PENDING", "updates": 768, "checkpoint_written": true, "quality": "EVALUATION_PENDING"}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_RELATION_train_contrast", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+[EVIDENCE_BOUNDARY] Phase completion is not correctness or model adoption.
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 33.4분  (2026-10-19 02:59:53)
+==============================================================================
