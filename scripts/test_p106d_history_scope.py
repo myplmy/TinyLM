@@ -638,6 +638,97 @@ class DecodeObservationTests(unittest.TestCase):
         self.assertEqual(error['case_id'], first['case_id'])
 
 
+class ReportOnlyOptionATests(unittest.TestCase):
+    def test_duplicate_key_legacy_and_common_strict_c3_are_reported_without_predicate_change(self):
+        probes, cases, tok, who, events, _ = collected()
+        p = next(p for p in probes if p['family'] == 'format')
+        first = next(e for e in events if e['probe_id'] == p['probe_id'] and e['condition'] == 'INITIAL_DIRECT')
+        for condition in ('CURRENT_DIRECT', 'GOLD_HISTORY', 'ACTUAL_HISTORY'):
+            case = next(c for c in cases if c['probe_id'] == p['probe_id'] and c['condition'] == condition)
+            initial = first if condition == 'ACTUAL_HISTORY' else None
+            actual = d.materialize(case, p, tok, initial, who, 'parent', 'A' * 64)
+            key, value = next(iter(json.loads(actual['target']).items()))
+            item = json.dumps(key) + ':' + json.dumps(value, ensure_ascii=False)
+            duplicate = '{' + item + ',' + item + '}'
+            body, generation, observation = response(actual['messages'], duplicate, tok)
+            replaced = d.finish_event(actual, p, 'parent', who, 'A' * 64, body, generation, initial, observation, tok)
+            events[next(i for i, e in enumerate(events) if e['case_id'] == case['case_id'])] = replaced
+            self.assertFalse(replaced['metrics']['strict_c3_format_preserved'])
+            self.assertEqual(replaced['metrics']['condition_pass'], condition != 'ACTUAL_HISTORY')
+        before = d.sha(events)
+        report = d.recount(events, cases, probes, tok, 'parent', who, 'A' * 64)
+        common = report['c3_common_strict_diagnostics']
+        self.assertTrue(common['existing_condition_pass_unchanged'])
+        for condition, values in common['by_condition'].items():
+            self.assertEqual(values['n_expected'], 32); self.assertEqual(values['n_evaluated'], 32)
+            self.assertEqual(values['strict_pass_sum'], 31)
+            self.assertEqual(values['strict_pass_rate_evaluated_only'], 31 / 32)
+            self.assertEqual(values['strict_pass_rate_full_when_complete'], 31 / 32)
+            legacy = report['by_condition'][condition]['condition_pass_sum']
+            self.assertEqual(legacy, 127 if condition == 'ACTUAL_HISTORY' else 128)
+        self.assertEqual(d.sha(events), before)
+
+    def test_one_missing_boolean_case_has_distinct_nominal32_and_generated31_baselines(self):
+        probes, cases = frozen()
+        prompts = [d.common.prompt(c['messages']) for c in cases if c['messages'] is not None]
+        p = next(p for p in probes if p['family'] == 'boolean' and p['follow_gold'] == 'false'
+                 and prompts.count(d.common.prompt(p['source_row']['messages'][:1])) == 1)
+        probes, cases, tok, who, events, _ = collected(overrides={p['probe_id']: '<|think|>'})
+        before = d.sha(events)
+        result = d.recount(events, cases, probes, tok, 'parent', who, 'A' * 64)
+        values = result['boolean_label_diagnostics']['ACTUAL_HISTORY']
+        nominal, generated = values['full_nominal_baseline'], values['generated_subset_baseline']
+        self.assertEqual(values['n_not_run'], 1)
+        self.assertEqual(nominal['denominator'], 32); self.assertEqual(generated['denominator'], 31)
+        self.assertEqual(nominal['constant_false_correct_sum'] - generated['constant_false_correct_sum'], 1)
+        self.assertEqual(nominal['constant_true_correct_sum'], generated['constant_true_correct_sum'])
+        self.assertEqual(nominal['source_gold_counts']['false'] - generated['source_gold_counts']['false'], 1)
+        self.assertEqual(nominal['constant_false_correct_sum'], values['constant_false_correct_sum'])
+        self.assertEqual(nominal['source_gold_counts'], values['source_gold_counts'])
+        self.assertEqual(generated['condition_correct_sum'], 31); self.assertEqual(generated['condition_pass_rate'], 1.)
+        self.assertEqual(nominal['constant_false_rate'], nominal['constant_false_correct_sum'] / 32)
+        self.assertEqual(generated['constant_false_rate'], generated['constant_false_correct_sum'] / 31)
+        missing = next(e for e in events if e['probe_id'] == p['probe_id'] and e['condition'] == 'ACTUAL_HISTORY')
+        self.assertEqual(missing['record_status'], d.UNSAFE)
+        self.assertNotIn('answer', missing); self.assertNotIn('metrics', missing)
+        self.assertEqual(result['actual_generations'], 545); self.assertEqual(result['explicit_not_run'], 1)
+        self.assertEqual(d.sha(events), before)
+
+    def test_strict_c3_missing_or_empty_generated_subset_never_fabricates_wrong_zero_rate(self):
+        format_probes = [p for p in source_fixture() if p['family'] == 'format']
+        for selected in (format_probes[:1], format_probes):
+            overrides = {p['probe_id']: '<|think|>' for p in selected}
+            probes, cases, tok, who, events, _ = collected(overrides=overrides)
+            result = d.recount(events, cases, probes, tok, 'parent', who, 'A' * 64)
+            strict = result['c3_common_strict_diagnostics']['by_condition']
+            actual = strict['ACTUAL_HISTORY']; expected_generated = 32 - len(selected)
+            self.assertEqual(actual['n_expected'], 32); self.assertEqual(actual['n_not_run'], len(selected))
+            self.assertEqual(actual['n_generated'], expected_generated); self.assertEqual(actual['n_evaluated'], expected_generated)
+            self.assertEqual(actual['strict_pass_sum'], expected_generated)
+            self.assertEqual(actual['n_generated_without_strict_flag'], 0)
+            self.assertIsNone(actual['strict_pass_rate_full_when_complete'])
+            if expected_generated:
+                self.assertEqual(actual['strict_pass_rate_evaluated_only'], 1.)
+            else:
+                self.assertIsNone(actual['strict_pass_rate_evaluated_only'])
+            for condition in ('CURRENT_DIRECT', 'GOLD_HISTORY'):
+                self.assertEqual(strict[condition]['n_evaluated'], 32)
+                self.assertEqual(strict[condition]['strict_pass_sum'], 32)
+
+    def test_report_only_fields_leave_frozen_cases_events_and_all_legacy_aggregate_values_identical(self):
+        probes, cases, tok, who, events, _ = collected()
+        self.assertEqual(d.sha(cases), 'B4D9952CB7EE02A22DE96F5DF4B38214D6A10B910036A05EFD7A6976C3BAEBBA')
+        self.assertEqual(d.sha(probes), 'C5FDFB31516786584E9C9AC97280AF3923BF078F3F60E5B98DDE4110A7E96120')
+        self.assertEqual(d.sha(events), '1A2A876DDDCB4BD9EB0BA895138C42B64415E362FCB1314044F4E3A7D58D09FB')
+        report = d.recount(events, cases, probes, tok, 'parent', who, 'A' * 64)
+        report.pop('c3_common_strict_diagnostics')
+        for values in report['boolean_label_diagnostics'].values():
+            values.pop('full_nominal_baseline'); values.pop('generated_subset_baseline')
+        # F04E39E1/78AD7B30 초안의 합성 전체집계 SHA. 실제 source 점수가 아니다.
+        self.assertEqual(d.sha(report), '08F33A5FD9098E71487F077685DE94551D5F823367D8887D6AFE47F6856C4882')
+        self.assertEqual(d.sha(events), '1A2A876DDDCB4BD9EB0BA895138C42B64415E362FCB1314044F4E3A7D58D09FB')
+
+
 class SourceBindingTests(unittest.TestCase):
     def run_source(self, fixture):
         with patch.object(d, 'SOURCE_REPORT_SHAS', fixture.report_shas), patch.object(d, 'AUDIT_SHA', fixture.audit_sha), \

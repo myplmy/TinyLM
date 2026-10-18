@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Completed 2026-10-19 07:51:38 KST; real CPU preparation, no new inference.
 # CPU old64/fresh64 producer and418static128dynamic templates; three CPU tensor loads, no Module/GPU
 # Active workers total5400sec, absolute Oct20 17:00 KST; no stdin waits.
 # Same immutable old parent/fixed/views; no learning, optimizer or checkpoint writes.

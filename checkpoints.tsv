@@ -625,7 +625,7 @@ delete	m100s8_ko-en_600M_d12_cla2_r20_muon20_t600_best.pt	651.6	final 짝 실존
 keep	m100s8_ko-en_600M_d12_cla2_r20_rms4_t600.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
 delete	m100s8_ko-en_600M_d12_cla2_r20_rms4_t600_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
 # ★2026-09-26 자동 판정 6행 (scripts/ckpt_audit.py) — 정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold
-keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt	743.9	P090B chat32 사전학습 부모 final; 후속 3계보 SFT·형식 비교의 실제 init 후보라 보존(2026-09-26)
+keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt	743.9	P090B chat32 사전학습 부모 final; 후속 3계보 SFT·형식 비교의 실제 init 후보(2026-09-26). 2026-10-19 Stage4er 세 팔 원초기값 및 Stage5Wa 이력 진단의 현재 입력으로 CPU byte/본체 지문 확인. 현재 소비 필요와 영구 최우수 판정을 구분함.
 keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337_best.pt	743.9	P090B chat32 부모 best 유일본; best val 대 final 차이와 SFT 부모 선정 전 보존(2026-09-26)
 keep	m100s12_ko-en_100M_dense_p102a_t0_s1337.pt	836.2	P102A T0 100M 기존 final; C 단계 원인분리·조건부 ABBA 공통 crop 대조가 실제로 읽음(2026-09-26)
 delete	m100s12_ko-en_100M_dense_p102a_t0_s1337_best.pt	836.3	P102A ABBA 고정 crop·결과093 §10~§11 회수 완료; final 보존, 현재 best 참조·G1 부모보호 0(2026-09-27 직접 재검수)
@@ -715,3 +715,6 @@ keep	m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_ce.pt	355.8	2026-10-19 
 keep	m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_contrast.pt	355.8	2026-10-19 현재Stage4erWb old2x4/4질문CPU source와A/CF원형재현의대조768 입력. 실제373133445B/SHA354F5A9C91126D0A633F084DFA10AB9ADF630956CBEE10535B79386A0B32527A. 표크기는MiB이며packed/배포상주아님. optimizer미저장/Git제외/삭제변환0,전역승자/영구필수아님.
 keep	m100s10_ko-en_night_p106b_cpt_unique32k_v1_s1337.pt	355.8	2026-10-19 현재Stage4epWc/Wd/We의native부모+고유32k640 최종/DEV4 동일파일·4조합8영역실답/원형판독 입력. 실제373133637B/SHAD9FD5D7B766FE563FBD3E36510D7049461B51C5E5D1BCD3D077E44622409B13B. 표크기는MiB,weight-only/optimizer0/Git제외/삭제변환0,범용품질승격아님.
 keep	m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_ce.pt	355.8	2026-10-19 Stage4erYa의CE4양성896 완료·Stage4erZa/R의1758실답/4후보대응 현재입력. 실제373133445B/SHA C7310160A50361146936D97EC8567E5EE93C1B2230DC647745E78FDC77DA2406. 표크기는MiB·weight-only/optimizer0/Git제외/삭제변환0. DEV감소는품질PASS/영구필수판정아님.
+keep	m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_role_only.pt	355.8	2026-10-19 Stage4erYb의ROLE_ONLY4 896 완료·Stage4erZb/R의1758실답/4후보 대응 현재입력. 실제373133445B/SHA D9B0188CA7C7A4C7881BB45195B929B066034CB2AF6E9D0E136F4EF134C1AD45. MiB·weight-only/optimizer0·가중치Git제외/삭제변환0. DEV감소를품질PASS/영구필수로보지않음.
+keep	m100s10_ko-en_300M_dense_chat32_p106d_ruleviews_v3_length_s1337_fixed.pt	355.8	2026-10-19 실제 CPU 준비로 존재/계보를 확인한 기존128회 fixed. Stage5Wb/Wd의546조건 및 실제 이력 판독 현재 입력. 373133509B/SHA C67DD70767FC51A8FABAC51B69382470246566C941A912BFF60BADB412B50559. 기존 결과73은 gold 이력 후속 답이며 독립 첫답 성공/영구필수 아님. 삭제/변환0.
+keep	m100s10_ko-en_300M_dense_chat32_p106d_ruleviews_v3_length_s1337_views.pt	355.8	2026-10-19 실제 CPU 준비로 존재/계보를 확인한 기존128회 views. Stage5Wc/Wd의546조건 및 실제 이력 판독 현재 입력. 373133509B/SHA 17DA44EB681FA3C6113DD886A43B5379034291A8ADAC48CE8789F6D9C7D3892F. 기존 결과68은 gold 이력 후속 답이며 독립 첫답 성공/영구필수 아님. 삭제/변환0.

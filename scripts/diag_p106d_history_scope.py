@@ -1012,6 +1012,24 @@ def recount(events, cases, probes, tokenizer, endpoint, identity, input_sha):
         compact_correct_sum=sum(e['metrics']['condition_pass'] for e in compact),
         same_raw_answer=sum(e['answer'] == initials[e['probe_id']]['answer'] for e in compact),
         input_state='INITIAL operands/operator; not updated state', independent_new_roots=0)
+    strict_conditions = ('CURRENT_DIRECT', 'GOLD_HISTORY', 'ACTUAL_HISTORY')
+    strict_by_condition = {}
+    for condition in strict_conditions:
+        rows = [e for e in events if e['family'] == 'format' and e['condition'] == condition]
+        generated = [e for e in rows if e['record_status'] == GENERATED]
+        evaluated = [e for e in generated if type(e['metrics'].get('strict_c3_format_preserved')) is bool]
+        passed = sum(e['metrics']['strict_c3_format_preserved'] for e in evaluated)
+        strict_by_condition[condition] = dict(n_expected=len(rows), n_generated=len(generated),
+            n_not_run=len(rows) - len(generated), n_evaluated=len(evaluated),
+            n_generated_without_strict_flag=len(generated) - len(evaluated), strict_pass_sum=passed,
+            strict_pass_rate_evaluated_only=passed / len(evaluated) if evaluated else None,
+            strict_pass_rate_full_when_complete=passed / len(rows) if rows and len(evaluated) == len(rows) else None,
+            rate_denominator='n_evaluated; explicit NOT_RUN is not scored as wrong')
+    result['c3_common_strict_diagnostics'] = dict(by_condition=strict_by_condition,
+        predicate='existing metrics.strict_c3_format_preserved; exact one string key/value and no duplicate keys',
+        aggregation_order='frozen event order; integer strict pass/evaluated sums per condition',
+        existing_condition_pass_unchanged=True,
+        scope='same strict predicate, not identical targets: CURRENT/GOLD use code literal; ACTUAL uses visible first body')
     result['boolean_label_diagnostics'] = {}
     for condition in CONDITIONS:
         rows = [e for e in events if e['family'] == 'boolean' and e['condition'] == condition]
@@ -1027,6 +1045,20 @@ def recount(events, cases, probes, tokenizer, endpoint, identity, input_sha):
             constant_true_correct_sum=gold['true'], constant_false_correct_sum=gold['false'],
             condition_correct_sum=sum(e['metrics']['condition_pass'] for e in generated),
             scope='fixed code-owned labels; constant baseline, not proof of Boolean generalization')
+        generated_gold = Counter(e['target'] for e in generated)
+        result['boolean_label_diagnostics'][condition].update(
+            full_nominal_baseline=dict(denominator=len(rows), source_gold_counts=dict(sorted(gold.items())),
+                constant_true_correct_sum=gold['true'], constant_false_correct_sum=gold['false'],
+                constant_true_rate=gold['true'] / len(rows) if rows else None,
+                constant_false_rate=gold['false'] / len(rows) if rows else None,
+                scope='all nominal source labels, including ungenerated cases; not a model score'),
+            generated_subset_baseline=dict(denominator=len(generated), source_gold_counts=dict(sorted(generated_gold.items())),
+                constant_true_correct_sum=generated_gold['true'], constant_false_correct_sum=generated_gold['false'],
+                constant_true_rate=generated_gold['true'] / len(generated) if generated else None,
+                constant_false_rate=generated_gold['false'] / len(generated) if generated else None,
+                condition_correct_sum=sum(e['metrics']['condition_pass'] for e in generated),
+                condition_pass_rate=sum(e['metrics']['condition_pass'] for e in generated) / len(generated) if generated else None,
+                scope='only actually generated cases; compare model and constant baseline on this same subset'))
     return result
 
 
