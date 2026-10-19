@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD v1: preserved CPU corpus has a consumer mask-owner incompatibility. Use the separately versioned recovery.
 # Question wording x position study; original P090B parent, same targets and native windows.
 # micro8 accum16 seq1024 checkpointON compile-default; CE-only; no teacher or MTP.
 # train bounded 7200s; train requires all four actual cost8 receipts.

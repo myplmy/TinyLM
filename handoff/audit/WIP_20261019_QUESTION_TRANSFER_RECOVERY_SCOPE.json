@@ -1,0 +1,48 @@
+{
+  "schema": "TINYLM_QUESTION_TRANSFER_RECOVERY_SCOPE_V1",
+  "authority": "사용자 2026-10-20 17:00 KST까지 CPU+GPU 주도 작업·주기 문서/커밋 허가",
+  "cause": "읽기 계약의 역함의가 기존 교정 producer의 무시라벨/양의 owner를 거부함",
+  "v1_source_commit": "d216de4cbebaf265100b802eede2c713ea7a5a4e",
+  "v1_status": "CPU_WRITTEN_CONSUMER_HOLD_NO_MODEL",
+  "oldwrong_answer": "y=-100 문맥 전용; 직접 target 손실 없음. 후속 정답 손실의 입력 문맥 gradient와 구분",
+  "alternatives": [
+    {
+      "option": "A",
+      "choice": "채택",
+      "method": "새 v2 namespace/실제 소비 검증·같은 source selection과 x/y/owner/targets 보존",
+      "benefit": "자료/목적 변경 없이 실제 reader만 정합화",
+      "cost": "별도 CPU 약2~3분 및 독립 대조"
+    },
+    {
+      "option": "B",
+      "choice": "비채택",
+      "method": "무시 위치 owner를0으로 바꾼 파생본",
+      "risk": "필요 없는 segment 상태 변경·기존 producer와 불일치"
+    },
+    {
+      "option": "C",
+      "choice": "비채택",
+      "method": "교정 replay 제외",
+      "risk": "자료/정답 노출과 과제 구성을 바꿈"
+    }
+  ],
+  "f4": {
+    "code": "독립 question_transfer driver/test만 새 버전 변경. 기존 core/encoder/producer 불변",
+    "data": "v1 immutable·v2 새 namespace. scientific selection key는 v1 유지",
+    "tests": "무시 label/양 owner 왕복·직접 logit gradient·오염 fail-before-model·실제 전량 소비·v1/v2 동등성",
+    "docs": "101§302/계획/기준표/방법론/COMPASS/목록/WIP/registry 연쇄",
+    "debt": "v1 미실행14SH hold·동결 보고 보존, v2 별도 비용으로만 진행",
+    "authority": "20일17시, 모델 전 게이트/8h예약 유지",
+    "ownership": "기존 HF/cache/CP/로그·보호/타세션·공용검사기 불변",
+    "comparison": "같은4팔부모/자료/targets/배치/목적/평가와 실행 독립성",
+    "evidence": "CPU 작성과 실제 소비/모델품질 구분"
+  },
+  "not_run": [
+    "GPU",
+    "NEW_MODEL",
+    "NEW_CHECKPOINT",
+    "QUALITY",
+    "75M_COMPLETION"
+  ],
+  "tool_only_failure": "문서 append patch 생성용 Python -c의 쉘 이스케이프 오류로 읽기만 실패했고 쓰기 전 중단했다. heredoc 재생성 뒤 apply_patch로만 썼다."
+}

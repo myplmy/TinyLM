@@ -5705,7 +5705,7 @@ dev/test는 별도 산수64·조회32질의(8표)·Boolean64·JSON32질의(16문
 
 | 단계 | 내용 | 다음 선결·상태 |
 |---|---|---|
-| Stage4etW0 | source/그룹/quotas/encoder/CE분모/스케줄·64토큰 회귀 및 실제CPU | 코드/회귀66·독립검증 완료, 실제동결 미실행 |
+| Stage4etW0 ✅ 작성 완료·소비 HOLD | source/그룹/quotas/encoder/CE분모/스케줄·64토큰 회귀 및 실제CPU | 결과101§302·실제CPU127.28초/19manifest·독립 실제 소비불일치64replay/pass·모델0 |
 | Stage4etCa/Cb/Cc/Cd | 네 팔 각각 같은 새 부모에서8update 비용, CP저장0 | 공통 실제 source·마스크·native와 optimizer receipts 일치 |
 | Stage4etTa/Tb/Tc/Td | 네 팔 각각384update/4epoch, 최종CP1개씩 | 네 cost8·시간상한/VRAM·실제 target분모·부모 지문 일치 시만 |
 | Stage4etEp/Ea/Eb/Ec/Ed | 부모·네 학생의1694실답/같은 원문32crop | 원답/입력/종료·CP불변·분모 정합 |
@@ -5763,3 +5763,7 @@ SH15개와 독립4코드의 실행 전 검증을 완료했다. 실제CPU 동결 
 총괄의 실제 읽기전용 토큰 사전계측24.788초에서는1694평가질문의 전체prompt 최대521·정답+EOT 최대27로64/1024예산실패가0이었다. 선택한자연QA4096과T0CQ 한pass12288행의 실제입력은2045891x·지도75664·EOT18752(24.783%)였다. 산수는2048한영행이나지도4618/75664(6.103%)·content2570/56912(4.516%)로행비율과다르다. 현재목적을바꾸지않고학습결과뒤필요한경우만[리뷰08 §19](../docs/methods/08_paper_review2.md)의종료지도보존재가중을검토한다. 이사전검사는새코퍼스namespace/CP를쓰지않았고모델/GPU/학습0이다.
 
 **실행 전 수리 검증 완료:** 독립 최종 감사 `handoff/audit/WIP_20261019_QUESTION_TRANSFER_FINAL_INDEPENDENT_CPU_REVIEW.json`(69346B·SHA `621D5AE4B7338714984EE9E406037D4EA46C2894337DB522F4FEB045E851F36B`)은 guarded66/66·37음성차단/5양성·실제asset/model/GPU0을 확인했다. driver `F7284ED86A37DF86E003F28440589E9953959F6CDB6E2D7AB7AF09EE2B6944EB`와 test `2D053078863E0BCDAF0D3AA3DC296A5D25321FCDB40E01D841D56178315664AD`로 동결하며 순수data2파일은 초안과 byte가 같다. 29개 기존함수/상태·자료·학습수학이 보존됐고 train의 추가는 x_tokens 로깅뿐이다. 8h는 실제worker 활동이며 회귀/선결wrapper의 모든 process벽시간 보장이 아니다. source/preflight/budget도 절대허가 종료는 검사한다. 최신전수정적은67PASS/공용profile오류1/NOT_RUN6이며 공용수리승인대기는 그대로다. 이제원형선커밋→실제Stage4etW0→유휴5분뒤cost8부터진행하며 실제동결/새학습/정답성은아직미판정이다.
+
+**실제 CPU 완료(10:57:58KST):** d216de4 원형 선보존 뒤 Stage4etW0 회귀66/선결/실물동결을 모두 종료0으로 마쳤다([101 §302](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). worker127.280441초·공개CPU56746B/CFA9214F…·16팔/pass와coded/cases/dev의19manifest다. 각pass12288/75664targets/18752EOT·한영행6144씩이며 target/turnowner·96update순서/분모가네팔에서전량동일했다. 문구변형은x/pass6272가늘며위치만변경은이번합계가같았다. 실제GPU/학습/새CP/답안0이므로설계효능은아직미판정이다. 독립파생재집계→유휴5분뒤4cost8을먼저수행하고8h예약계산을통과해야384네팔을연다. CPU SH는done으로보존한다.
+
+**독립 소비 HOLD 정정:** 위 CPU 작성 완료 뒤 실제 reader 전량 검산에서64replay/pass·16자료1024복사본의 무시라벨/양의 owner를 새 reader가 과잉 거부함을 발견했다. 원형 F728·자료·음성은 보존하고14미실행 SH를 hold로 둔다. 교정 첫 오답은 y=-100으로 계속 문맥 전용이며 잘못 학습됐다는 결과가 아니다. Stage4eu/v2의 소비복구·원형 동등성·모델 전 실제 읽기 선결을 완료하기 전 cost/GPU를 실행하지 않는다. 상세는101§302의 후속 정정과 독립 actual CPU 감사가 소유한다.
