@@ -1,0 +1,128 @@
+{
+  "schema": "TINYLM_REGISTRY_ISOLATION_ACTUAL_VERIFICATION_V1",
+  "approval": "현재 사용자 권장 레지스트리 수정 및 이번 작업 CPU+GPU 허가",
+  "source_change": "registry ROOT가 tinylm.paths와 같은 TINYLM_DIR 선택식을 사용한다. 여섯 런타임 경로와 기본값·스키마는 그대로다.",
+  "tests": {
+    "pre_fix": {
+      "exit_code": 1,
+      "tests": 12,
+      "failures": 11,
+      "raw_output": ".FFFFFFFFFFF\n======================================================================\nFAIL: test_full_train_metric_schema_is_unchanged (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 103, in test_full_train_metric_schema_is_unchanged\n    path = self.train_json(steps=500)\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 62, in train_json\n    return self.write(\"runs/logs/tiny_synthetic_1M_\" + tag + \".json\",\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 55, in write\n    self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_upy_b090')\n\n======================================================================\nFAIL: test_missing_tag_returns_two_without_creating_registry (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 87, in test_missing_tag_returns_two_without_creating_registry\n    registry = self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_1zt9t6ci')\n\n======================================================================\nFAIL: test_override_binds_all_six_runtime_paths (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 73, in test_override_binds_all_six_runtime_paths\n    self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_5gsbypi2')\n\n======================================================================\nFAIL: test_override_preserves_spaces_and_korean_path (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 78, in test_override_preserves_spaces_and_korean_path\n    self.assertEqual(registry.ROOT, root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_syt9xchz/runtime space 한글')\n\n======================================================================\nFAIL: test_real_runlog_registration_uses_the_imported_runtime_registry (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 151, in test_real_runlog_registration_uses_the_imported_runtime_registry\n    registry = self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_7fykhltj')\n\n======================================================================\nFAIL: test_record_stays_in_override_and_keeps_probe_loss_blank (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 92, in test_record_stays_in_override_and_keeps_probe_loss_blank\n    self.train_json()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 62, in train_json\n    return self.write(\"runs/logs/tiny_synthetic_1M_\" + tag + \".json\",\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 55, in write\n    self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture__3qx8kzp')\n\n======================================================================\nFAIL: test_relative_override_matches_existing_tinylm_path_contract (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 83, in test_relative_override_matches_existing_tinylm_path_contract\n    self.assertEqual(registry.ROOT, Path(\"relative_runtime\"))\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('relative_runtime')\n\n======================================================================\nFAIL: test_render_database_and_scan_use_override_only (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 130, in test_render_database_and_scan_use_override_only\n    registry = self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_yygl57l1')\n\n======================================================================\nFAIL: test_result_harvest_and_manual_file_are_local (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 120, in test_result_harvest_and_manual_file_are_local\n    registry = self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_jo9ghpsd')\n\n======================================================================\nFAIL: test_scan_detects_only_the_fixture_unregistered_run (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 144, in test_scan_detects_only_the_fixture_unregistered_run\n    registry = self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_e__m1tk1')\n\n======================================================================\nFAIL: test_separate_imports_and_same_tag_do_not_share_records (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 110, in test_separate_imports_and_same_tag_do_not_share_records\n    registry = self.isolated()\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 49, in isolated\n    self.assertEqual(self.registry.ROOT, self.root)\nAssertionError: PosixPath('/home/uranus/tinyLM') != PosixPath('/tmp/registry_runtime_fixture_oao8o86c')\n\n----------------------------------------------------------------------\nRan 12 tests in 0.015s\n\nFAILED (failures=11)\n"
+    },
+    "fixture_correction": {
+      "exit_code": 1,
+      "errors": 1,
+      "reason": "생산 read_manual은 tuple을 반환하지만 최초 시험이 dict를 가정했다. 회귀 기대값만 정확한 tuple로 고쳤다.",
+      "raw_output": "...../home/uranus/tinyLM/scripts/registry.py:127: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/registry_runtime_fixture_vcafguci/runs/registry.tsv.tmp'>\n  io.open(tmp, \"wb\").write(b)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/home/uranus/tinyLM/scripts/registry.py:109: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/registry_runtime_fixture_vcafguci/runs/registry.tsv' mode='r' encoding='utf-8'>\n  for i, ln in enumerate(io.open(TSV, encoding=\"utf-8\").read().split(NL)):\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n./home/uranus/tinyLM/scripts/registry.py:127: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/registry_runtime_fixture_6v62hpws/runs/registry.tsv.tmp'>\n  io.open(tmp, \"wb\").write(b)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/home/uranus/tinyLM/scripts/registry.py:109: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/registry_runtime_fixture_6v62hpws/runs/registry.tsv' mode='r' encoding='utf-8'>\n  for i, ln in enumerate(io.open(TSV, encoding=\"utf-8\").read().split(NL)):\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n../home/uranus/tinyLM/scripts/registry.py:127: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/registry_runtime_fixture_g_m_ujs1/runs/registry.tsv.tmp'>\n  io.open(tmp, \"wb\").write(b)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/home/uranus/tinyLM/scripts/registry.py:109: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/registry_runtime_fixture_g_m_ujs1/runs/registry.tsv' mode='r' encoding='utf-8'>\n  for i, ln in enumerate(io.open(TSV, encoding=\"utf-8\").read().split(NL)):\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/home/uranus/tinyLM/scripts/registry.py:303: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/registry_runtime_fixture_g_m_ujs1/docs/RUN_REGISTRY.md.tmp'>\n  io.open(tmp, \"wb\").write(b)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n./home/uranus/tinyLM/scripts/registry.py:190: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/registry_runtime_fixture_kulk44mn/test_result/101_fixture.txt' mode='r' encoding='utf-8'>\n  for ln in io.open(f, encoding=\"utf-8\", errors=\"replace\"):\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/home/uranus/tinyLM/scripts/registry.py:222: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/registry_runtime_fixture_kulk44mn/runs/registry_manual.tsv' mode='r' encoding='utf-8'>\n  for i, ln in enumerate(io.open(MANUAL, encoding=\"utf-8\").read().split(NL)):\nResourceWarning: Enable tracemalloc to get the object allocation traceback\nE./home/uranus/tinyLM/scripts/registry.py:127: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/registry_runtime_fixture_yde4mdq9/runs/registry.tsv.tmp'>\n  io.open(tmp, \"wb\").write(b)\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n/home/uranus/tinyLM/scripts/registry.py:109: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/registry_runtime_fixture_yde4mdq9/runs/registry.tsv' mode='r' encoding='utf-8'>\n  for i, ln in enumerate(io.open(TSV, encoding=\"utf-8\").read().split(NL)):\nResourceWarning: Enable tracemalloc to get the object allocation traceback\n.\n======================================================================\nERROR: test_result_harvest_and_manual_file_are_local (__main__.RegistryRuntimePaths)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/uranus/tinyLM/scripts/test_registry_runtime_paths.py\", line 127, in test_result_harvest_and_manual_file_are_local\n    self.assertEqual(registry.read_manual()[\"fixture\"][\"note\"], \"local\")\nTypeError: tuple indices must be integers or slices, not str\n\n----------------------------------------------------------------------\nRan 12 tests in 0.088s\n\nFAILED (errors=1)\n"
+    },
+    "verified": {
+      "exit_code": 0,
+      "tests": 176,
+      "raw_output": ".................................................................................................................\n----------------------------------------------------------------------\nRan 176 tests in 1.563s\n\nOK\n"
+    }
+  },
+  "full_smoke": {
+    "returncode": 0,
+    "started_at": "2026-10-19T08:57:56.342902+00:00",
+    "finished_at": "2026-10-19T09:04:58.951226+00:00",
+    "whole_sec": 400.29070388900436,
+    "complete": true,
+    "action_count": 106,
+    "child_count": 44,
+    "training_count": 33,
+    "failed_calls": 0,
+    "failed_run_calls": 0,
+    "source_pins_unchanged": true,
+    "original_synthetic_unchanged": true,
+    "summary_returncode": 0,
+    "snapshot_errors": [],
+    "safety_errors": [],
+    "log": "smoketest_logs/20261019085756_smoke_codex_registry_20261019_approved_v1_751a6de.txt",
+    "log_sha256": "24F7EE9A532BBE0C62E7EDF1B100BB34F4729692E6A05C5496DEA0B65429EABE",
+    "log_bytes": 212847
+  },
+  "original_registry_before": {
+    "runs/registry.tsv": {
+      "exists": true,
+      "bytes": 333740,
+      "sha256": "0956EA45B2A90C64D084440CD209A53DCA9A5CBDE050DC142249CDA7BB6FB45A"
+    },
+    "docs/RUN_REGISTRY.md": {
+      "exists": true,
+      "bytes": 83681,
+      "sha256": "A57874E2BF82CA4CC73364CBFB6A90D51531ABEE252A1B81CF2CD67A7AC48655"
+    },
+    "runs/registry.db": {
+      "exists": true,
+      "bytes": 438272,
+      "sha256": "8D10E38EB963A1D6FA13064B4033132364CF9B4FDDC7C71C2F3E74C4CD2DEF6D"
+    },
+    "runs/registry_manual.tsv": {
+      "exists": true,
+      "bytes": 1074,
+      "sha256": "5121D6326330D78C9FF28A9C5ABAD7AEE98EEDFBC2DED9AEEEFC7ED942AE954E"
+    }
+  },
+  "original_registry_after": {
+    "runs/registry.tsv": {
+      "exists": true,
+      "bytes": 333740,
+      "sha256": "0956EA45B2A90C64D084440CD209A53DCA9A5CBDE050DC142249CDA7BB6FB45A"
+    },
+    "docs/RUN_REGISTRY.md": {
+      "exists": true,
+      "bytes": 83681,
+      "sha256": "A57874E2BF82CA4CC73364CBFB6A90D51531ABEE252A1B81CF2CD67A7AC48655"
+    },
+    "runs/registry.db": {
+      "exists": true,
+      "bytes": 438272,
+      "sha256": "8D10E38EB963A1D6FA13064B4033132364CF9B4FDDC7C71C2F3E74C4CD2DEF6D"
+    },
+    "runs/registry_manual.tsv": {
+      "exists": true,
+      "bytes": 1074,
+      "sha256": "5121D6326330D78C9FF28A9C5ABAD7AEE98EEDFBC2DED9AEEEFC7ED942AE954E"
+    }
+  },
+  "original_registry_unchanged": true,
+  "isolated_registry": {
+    "path": "runs/validation/codex_smoke/registry_20261019_approved_v1/runs/registry.tsv",
+    "exists": true,
+    "sha256": "EC223D07D4313E1EE0161211A340D4B4472EF46867BDD369DCCA28560867EADA",
+    "rows": 32
+  },
+  "actual_registration": {
+    "tagged_training_calls": 32,
+    "registered_rows": 32,
+    "tag_sets_exact": true,
+    "untagged_calls": 1
+  },
+  "diagnostics": {
+    "exit_code": 0,
+    "raw_output": "============================================================================================\n  스모크 진단런 계약 — 표 vs 배치 vs 로그\n============================================================================================\n\n  [1] 집합 — 표 11개 · 배치 11개\n      ✅ 일치\n\n  [1b] 항목 중복 — 두 팔이 같은 것을 재는가\n      ✅ 축 11종 · 표지 29종 — 겹치는 팔 없다\n\n  [2] 항목 실재 — 표의 표지가 스크립트 소스에 있는가\n      ✅ 항목 29개 전부 소스에 있다\n\n  [3] 로그 인쇄 — 20261019085756_smoke_codex_registry_20261019_approved_v1_751a6de.txt\n      ✅ test_p101a_sft_mtp.py      exit 0\n      ✅ check_attrs.py             exit 0\n      ✅ check_diag_data.py         exit 0\n      ✅ diag_init_cla_owner.py     exit 0\n      [ADAPTED] check_handoff.py => .agents/skills/session-handoff/scripts/check_handoff_codex.py (원본 명령·SHA·전체 실행 영수증 확인)\n      ✅ check_handoff.py           exit 0\n      ✅ check_links.py             exit 0\n      ✅ check_return_probs.py      exit 0\n      ✅ diag_sparse34_pack.py      exit 0\n      ✅ mem_runtime.py             exit 0\n      ✅ diag_sft_mask.py           exit 0\n      [ADAPTED] check_smoke.py => /home/uranus/miniforge3/envs/tlm_torch/bin/python scripts/codex_smoke.py --mode contract --session-id registry_20261019_approved_v1 (원본 명령·SHA·전체 실행 영수증 확인)\n      ✅ check_smoke.py             exit 0\n\n  ----------------------------------------------------------------------------------------\n  ✅ 표·배치·로그 셋이 일치한다.\n  🚫단 이것은 '그 검사가 돌았다' 이지 '값이 옳다' 가 아니다.\n"
+  },
+  "runtime_assets": {
+    "path": "runs/validation/codex_smoke/registry_20261019_approved_v1",
+    "files": 106,
+    "bytes": 3141883340,
+    "synthetic_checkpoint_files": 66,
+    "git_staging": "EXCLUDED",
+    "deleted": 0
+  },
+  "boundaries": {
+    "new_scientific_student_training": 0,
+    "new_scientific_checkpoint": 0,
+    "synthetic_smoke_training_calls": 33,
+    "existing_checkpoint_overwrite": 0,
+    "source_synthetic_unchanged": true,
+    "protected_data_access": 0,
+    "download": 0,
+    "external_publish": 0,
+    "gpu_compute_processes_after": 0
+  },
+  "interpretation": "동적 경로 격리·정본 명령 및 계측을 확인했다. 일반 지능·언어 품질·Windows E2E·전역 registry 재고 PASS가 아니다.",
+  "timing_note": "driver monotonic whole_sec와 시작/종료 UTC의 차이를 별도로 보존한다. 벽시계와 단독 GPU 속도 benchmark로 해석하지 않는다.",
+  "language_correction": "원장8 완료 한 줄에 비한국어 표현이 들어가 즉시 정식 CAS API로 한국어 정정했다. 원래 변경·감사 이력은 삭제하지 않았다.",
+  "corrections": "최초 원답 조회 helper의 stop_reason/null은 finish_reason을 재확인해 정정했다. 위 결과나 원답을 바꾸지 않았다."
+}

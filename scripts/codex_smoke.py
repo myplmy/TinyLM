@@ -35,9 +35,9 @@ MAX_WALL_SECONDS = 1800
 DEFAULT_WALL_SECONDS = 1200
 POLL_SECONDS = .2
 CLEANUP_RESERVE_SECONDS = 5.
-FULL_EXECUTION_DEPENDENCY_HOLD = (
-    'registry runtime paths ignore TINYLM_DIR; path-isolation repair is awaiting '
-    'separate approval and verification')
+# Registry paths now follow TINYLM_DIR; temporary-root regressions cover the
+# actual registration call without touching source-checkout records.
+FULL_EXECUTION_DEPENDENCY_HOLD = None
 SLEEP_CHUNK_SECONDS = 1.
 _OWNED_GROUPS = {}
 ENVIRONMENT_KEYS = (

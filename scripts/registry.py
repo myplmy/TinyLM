@@ -54,7 +54,9 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+# Match tinylm.paths: isolated runs must never read/write the source checkout's
+# registry just because runlog imports this module from that checkout.
+ROOT = Path(os.environ.get("TINYLM_DIR", Path(__file__).resolve().parent.parent))
 LOGS = ROOT / "runs" / "logs"
 RESULTS = ROOT / "test_result"
 TSV = ROOT / "runs" / "registry.tsv"
