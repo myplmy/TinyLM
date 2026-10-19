@@ -1,0 +1,80 @@
+{
+  "schema": "TINYLM_NATIVE_FLOAT_INDEPENDENT_AUDIT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "checks": {
+    "raw2281ordered": true,
+    "each131072targets": true,
+    "total_targets": 298975232,
+    "each128crop_start": true,
+    "same_crop_positions_as_ternary": true,
+    "all_gradient_ce_finite": true,
+    "no_replay": true,
+    "step_time_array_exact": true,
+    "max_gradient_exact": true,
+    "clip_count_exact": true,
+    "checkpoint_file_hash_exact": true,
+    "raw_hash_exact": true,
+    "same_initial_core": true,
+    "same_source_tokenizer_schedule": true
+  },
+  "pins": {
+    "test_result/evidence/p106b_native_weight_route_v1_s1337/train_float/report.json": {
+      "bytes": 69515,
+      "sha256": "4AEC0FA5C4983CF89D0CEB7829341CE00245DC4760C4BDF3B06C29B6ADC536E2"
+    },
+    "runs/eval/p106b_native_weight_route_v1_s1337/train_float/updates_000000.jsonl": {
+      "bytes": 832255,
+      "sha256": "ACC046F50ADCB8D43A49A144C63A56EEBAD518693E2640B1703DF718C9C32876"
+    },
+    "runs/ckpt/m100s10_ko-en_p106b_native_weight_route_v1_s1337_float_native.pt": {
+      "bytes": 373134213,
+      "sha256": "FBC0AF70CDD9BAFD2011825B404BF336B138B21CBC137C0086833D7A1FDD9508"
+    },
+    "test_result/101_log_20261019_P106B_Stage4ezWe_float_native2281_235927.txt": {
+      "bytes": 21578,
+      "sha256": "0657DA0D763776BDAA58352C3B58773764B1D4C8043C63BD047B9EC4F6C32590"
+    }
+  },
+  "clock": {
+    "utc_elapsed_seconds": 6367.157578,
+    "worker_perf_seconds": 5921.482077611989,
+    "difference_utc_perf_seconds": 445.67550038801164,
+    "fit_whole_seconds": 5891.873926676999,
+    "step_sum_seconds": 5888.850144061245,
+    "first_step_seconds": 32.27952699900197,
+    "remaining2280_mean_seconds": 2.568671323272914
+  },
+  "first_ce": 10.414251446723938,
+  "last_ce": 3.428369030356407,
+  "gradient_max": 2.7093541622161865,
+  "clip_events": 50,
+  "memory": {
+    "allocated_mib": 2203.43896484375,
+    "reserved_mib": 2440
+  },
+  "native32": {
+    "ce": 3.377574920654297,
+    "precision": "FP32_MATH",
+    "scope": "고정 1024 길이의 첫 32개 crop이며 전체 VAL 또는 두 언어 능력 평가가 아니다",
+    "targets": 32768,
+    "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+    "windows": 32
+  },
+  "native32_ternary": {
+    "ce": 3.4995118379592896,
+    "precision": "FP32_MATH",
+    "scope": "고정 1024 길이의 첫 32개 crop이며 전체 VAL 또는 두 언어 능력 평가가 아니다",
+    "targets": 32768,
+    "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+    "windows": 32
+  },
+  "native32_float_minus_ternary": -0.12193691730499268,
+  "final_core": "BE1DB16875AF5316EEB47167E6FD44CCCD0FF67F957DF05525748AC0FE4A6A6D",
+  "scope": "Read-only complete2281-row recount and exact report/raw/checkpoint/log SHA, no new model/tensor/GPU call.",
+  "limitations": [
+    "Native32 is first32x1024 shared validation IDs only, not full VAL or general QA.",
+    "Diagonal comparison changes both training weight route and final inference route; cross readout remains required to separate them.",
+    "Training ran concurrently with some CPU preparation; no isolated speed claim.",
+    "UTC/perf difference remains unexplained; no suspend/NTP/monitor cause inferred."
+  ]
+}

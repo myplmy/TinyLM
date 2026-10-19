@@ -1,0 +1,78 @@
+{
+  "schema": "TINYLM_P070B_PREFILL_SHAPE_CAUSE_F4_V1",
+  "recorded_at_utc": "2026-10-19 16:45:28 UTC",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "Current autonomous CPU+GPU research until 2026-10-20T08Z; this intervention is CPU-only and changes no acceptance threshold.",
+  "before_implementation": true,
+  "selected": {
+    "method": "Same failed reverse-R2 weights and nine input IDs; isolate full versus prefill length, cache flag at equal length, and future-content changes.",
+    "files_create": [
+      "scripts/diag_p070b_prefill_shape_cause.py",
+      "scripts/test_p070b_prefill_shape_cause.py"
+    ],
+    "root_docs": "P070B Stage1Wb prospective plan, result105 separate section, own CPU SH and explicit tag registry.",
+    "read_only": [
+      "scripts/diag_p070b_full_checkpoint_cpu.py",
+      "scripts/p070b_cla_routes.py",
+      "tinylm/model/transformer.py",
+      "runs/ckpt/m100s10_ko-en_p106b_native_weight_route_v1_s1337_ternary_native.pt",
+      "runs/eval/p070b_full_model_cache_v1_s1337/failure_r2_reverse_ko.npz",
+      "test_result/evidence/p070b_full_model_cache_v1_s1337/failure.json"
+    ],
+    "namespace": "p070b_prefill_shape_cause_v1_s1337"
+  },
+  "alternatives": [
+    {
+      "name": "Retain NPZ-only arithmetic recount",
+      "benefit": "No model run",
+      "limit": "Does not manipulate cache flag or sequence shape",
+      "selected": false
+    },
+    {
+      "name": "Narrow same-weight CPU counterfactual",
+      "benefit": "Separates equal-shape cache effect from first-prefill/full length effect",
+      "cost": "Two new research files, tests, actual CPU max600s; no GPU",
+      "selected": true
+    },
+    {
+      "name": "Immediately add FP64/GPU/router training",
+      "benefit": "Broader investigation",
+      "cost": "Changes precision/device/learning and expands interpretation",
+      "selected": false
+    }
+  ],
+  "controls": {
+    "parent_sha256": "AF3644F5AA515AC1C5E02154582396D080B77E7CD7827F0D32A9EB947ECE747C",
+    "parent_core_sha256": "68F8E780623C7699A411A6E35EDB9809C0911CD03AF719E60DBE4DA6582B6A6D",
+    "old_failure_sha256": "CF707AAA4927746636C797F66D5724AE9D35413F17135A354E54F80623ACAD32",
+    "old_raw_sha256": "31D4590CEDB8E8DB130CEA4FD7607BB9BFC5ED8EEE030B1CB9CCDAD29C8DECC8",
+    "device": "CPU1 FP32 SDPA_MATH TF32/NVIDIA unused",
+    "route": "Exactly fixed reverse R2 from original helper; no new route learning",
+    "inputs": "Exactly nine old failure IDs; first3 prefill; future tail changed only in separate same-length control",
+    "comparisons": [
+      "Reproduce full9 versus saved old full; prefill3 plus incremental versus saved old cached",
+      "full9 without/with cache flag",
+      "prefix3 without/with cache flag",
+      "full9 first3 versus prefix3 no-cache (shape-only contrast)",
+      "Same full9 shape with only last6 ordinary input IDs changed; compare first3 outputs",
+      "Before/after CP/tokenizer/core integrity"
+    ],
+    "threshold": {
+      "atol": 0.00001,
+      "rtol": 0.0001,
+      "changed": false
+    },
+    "interpretation": "All observed differences and top1/top2 retained. Diagnostic completion is not old parity PASS, language quality, or route-training admission.",
+    "raw_policy": "Write-once ignored runs/eval NPZ each<20MB; small public scalar/hash only.",
+    "maximum_cpu_worker_seconds": 600,
+    "record_reserve_seconds": 600
+  },
+  "impact": {
+    "code": "Only two new tools; frozen sources/helper/product/common checker unchanged",
+    "data": "Exact CP/tokenizer metadata and old raw read-only; original data/weights untouched",
+    "tests": "Tiny synthetic array and end-to-end worker fixtures, code-only input guards, scalar/NPZ readback, failures/time/TERM",
+    "documents": "Preserve original Stage1Wa negative and separately record causal observation",
+    "debt": "No learned router or acceptance-policy revision",
+    "resources": "CPU1 only, schedule outside GPU cost windows"
+  }
+}

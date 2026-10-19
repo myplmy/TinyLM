@@ -6107,7 +6107,7 @@ v1 실제prepare는 source_admission 정책문자열/결과dict 충돌로 ERROR9
 | Stage4ezW0 | source/offset/전체 SFT 소비 동결·CPU77회귀 | 모델0·900초 | CPU77/원형동결완료·101§339 |
 | Stage4ezWa/Wb | 각 native cost8+anneal1 역전파1micro·optimizer0 추가 probe | 양팔 단독·직전5분 유휴·각1200초·CP0 | 양완료/같은core·float 최초CUDA 유휴시각 미계측·101§340~341 |
 | Stage4ezWc | native 예산·같은 초기화·말기 유한성 검산 | 미측정 SFT3600초/마감10800초 예비 | 보수예약통과31,126초·101§342 |
-| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | 삼진19일23:59완료·101§347, 실수23:59:27부터진행 |
+| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | 양완료·101§347/350·같은초기core/crop·CP2, 실제QA미평가 |
 | Stage4ezWf/Wg/Wh | 자기 native CP로 SFT cost8씩→실측 예산 | native 양팔 완료 후만·각900초 | NOT_RUN |
 | Stage4ezWi/Wj | 각 동일 SFT384회 | 실제 SFT 예산 통과·각3600초 | NOT_RUN |
 | Stage4ezWk/Wl/Wm/Wn | native/SFT 양팔 각1694 실제 답과 native32 | 자기 route/CP/SHA/완료 activity·각1800초 | NOT_RUN |

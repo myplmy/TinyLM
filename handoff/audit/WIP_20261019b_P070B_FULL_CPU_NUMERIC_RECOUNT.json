@@ -1,0 +1,248 @@
+{
+  "schema": "TINYLM_P070B_FULL_CPU_NUMERIC_RECOUNT_V1",
+  "status": "READ_ONLY_ARRAY_RECOUNT_COMPLETE_GATE_ERROR9_PRESERVED",
+  "tag": "p070b_full_model_cache_v1_s1337",
+  "authority": "root가 지정한 NPZ7개와 public failure/activity/final.json만 읽기; 이 감사JSON 하나만 apply_patch로 신설",
+  "scope": {
+    "model_checkpoint_tokenizer_loading": 0,
+    "gpu_calls": 0,
+    "model_or_gate_reruns": 0,
+    "frozen_source_or_original_artifact_changes": 0,
+    "new_files": ["handoff/audit/WIP_20261019b_P070B_FULL_CPU_NUMERIC_RECOUNT.json"],
+    "other_data_sources_read": 0,
+    "not_a_quality_or_generation_evaluation": true
+  },
+  "source_public_json": {
+    "directory": "test_result/evidence/p070b_full_model_cache_v1_s1337",
+    "failure.json": "CF707AAA4927746636C797F66D5724AE9D35413F17135A354E54F80623ACAD32",
+    "activity.json": "68673FB0474A339088BCBEC11D5020AA2DB5D8280BF0AD2EEC1AC1F017BEF6FC",
+    "final.json": "2854802AE766B2A28C82F1E8661539F81C7BD43365254EA0F1E677A554F1E83E"
+  },
+  "source_code_pins_as_declared_in_public_recipe_not_rehashed_here": {
+    "scripts/diag_p070b_full_checkpoint_cpu.py": "F4C3422CF1752C24F918BAEC4929BD1E0A62B9CFC5F3B2DF5E1026C632740E60",
+    "scripts/test_p070b_full_checkpoint_cpu.py": "7FE7905C3C70CA002D538829DC7BAE442494B5FC306D41A8D50FB7C80ED9ED54",
+    "scripts/p070b_cla_routes.py": "B7C0C255F4F341DA547986408A93C534A0AAFCC0748D90E730174066DEE65F55"
+  },
+  "public_integrity_recount": {
+    "failure_integrity_sha256_matches": true,
+    "final_integrity_sha256_matches": true,
+    "activity_failure_file_sha256_matches": true,
+    "activity_recipe_sha256_matches_failure_recipe": true,
+    "final_recipe_equals_failure_recipe": true,
+    "failure_raw_file_sha256_matches": true,
+    "failure_full_and_cached_array_sha256_match": true,
+    "failure_input_ids_sha256_matches": true,
+    "failure_shape_elements_dtype_max_abs_mean_abs_exactly_reproduced": true,
+    "limitation": "SHA256은 해당 파일·배열·메타데이터의 무결성 결합이며 실행 진위나 원인에 대한 증명이 아니다."
+  },
+  "recount_method": {
+    "runtime": "numpy2.2.6; torch/model/tokenizer를 import하거나 실행하지 않은 NumPy CPU 배열 검산",
+    "raw_directory": "runs/eval/p070b_full_model_cache_v1_s1337",
+    "np_load_allow_pickle": false,
+    "array_members": ["ids", "full", "cached"],
+    "common_logits_shape": [1, 9, 32768],
+    "logits_dtype": "float32",
+    "ids_dtype": "int64",
+    "elements_per_file": 294912,
+    "all_seven_arrays_finite": true,
+    "bytes_per_npz": 2360112,
+    "single_npz_below20MB": true,
+    "atol": 0.00001,
+    "rtol": 0.0001,
+    "comparison": "np.isclose(full,cached,atol=1e-5,rtol=1e-4), equal_nan=False",
+    "elementwise_formula": "abs(full-cached) <= atol + rtol*abs(cached)",
+    "reference_side": "cached",
+    "allowed_tol_array_dtype": "float32",
+    "mean_abs_accumulator": "float64; individual absolute differences are computed from original float32 arrays",
+    "top2": "stable argsort of negative saved logits; equal logits retain ascending vocabulary ID order",
+    "token_position_semantics": "0-based sequence position. Each logit vector predicts a next token conditioned on input IDs through that position; no token text was decoded.",
+    "prefill_ids": 3,
+    "incremental_positions_zero_based": [3, 4, 5, 6, 7, 8],
+    "threshold_changed": false
+  },
+  "raw_files": [
+    {
+      "name": "product_r1_ko.npz",
+      "sha256": "CBAEB018C819975E47D02E9A57B6AE35C3B82D00ADF1DDC4BDF8D8DACC5C80B9",
+      "full_sha256": "FA1227B14B39FE11FE2F558EBAB9E694CB0E2447ADD777572056B4744FD68F46",
+      "cached_sha256": "F0C6D04D771B505A896FD5C4B3B240B6D4C66EF91E80D7B3FEF081B99D116775",
+      "isclose_mismatch_elements": 0,
+      "float32_value_unequal_full_vs_cached_elements": 279497,
+      "max_abs": 0.000011920928955078125,
+      "mean_abs": 0.000001588411129836863,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    },
+    {
+      "name": "product_r1_en.npz",
+      "sha256": "27653F54AEAC5A0124EFCE0569A2F9E3F0B96AFEF3A4E1E8AB3F636FE493C1B4",
+      "full_sha256": "41D3C24BD687AE7E96CB647A2AC7B5C95F8E41A5F640CC1A56EC231A18DC2C6F",
+      "cached_sha256": "B9DC991AA885642DE190A81606AAD84D61132710C51A41546D82B9364E2F3740",
+      "isclose_mismatch_elements": 0,
+      "float32_value_unequal_full_vs_cached_elements": 274498,
+      "max_abs": 0.00001239776611328125,
+      "mean_abs": 0.000001668609251560661,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    },
+    {
+      "name": "fixed_r1_ko.npz",
+      "sha256": "CBAEB018C819975E47D02E9A57B6AE35C3B82D00ADF1DDC4BDF8D8DACC5C80B9",
+      "full_sha256": "FA1227B14B39FE11FE2F558EBAB9E694CB0E2447ADD777572056B4744FD68F46",
+      "cached_sha256": "F0C6D04D771B505A896FD5C4B3B240B6D4C66EF91E80D7B3FEF081B99D116775",
+      "isclose_mismatch_elements": 0,
+      "float32_value_unequal_full_vs_cached_elements": 279497,
+      "max_abs": 0.000011920928955078125,
+      "mean_abs": 0.000001588411129836863,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    },
+    {
+      "name": "fixed_r1_en.npz",
+      "sha256": "27653F54AEAC5A0124EFCE0569A2F9E3F0B96AFEF3A4E1E8AB3F636FE493C1B4",
+      "full_sha256": "41D3C24BD687AE7E96CB647A2AC7B5C95F8E41A5F640CC1A56EC231A18DC2C6F",
+      "cached_sha256": "B9DC991AA885642DE190A81606AAD84D61132710C51A41546D82B9364E2F3740",
+      "isclose_mismatch_elements": 0,
+      "float32_value_unequal_full_vs_cached_elements": 274498,
+      "max_abs": 0.00001239776611328125,
+      "mean_abs": 0.000001668609251560661,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    },
+    {
+      "name": "r2_uniform_ko.npz",
+      "sha256": "F2726BC69AEDA04912AD7C83F3849FFCAB1CDAFD090AE7B02CD6127335AFA22D",
+      "full_sha256": "9F2C6613F0BCE521ABD5CC38C64C0ACD2A942534CC1C334F8CC05B893A2D623F",
+      "cached_sha256": "3E99183F6A631625241DDCAA48803EDF90519E77C7E598466ADD728176D9384E",
+      "isclose_mismatch_elements": 0,
+      "float32_value_unequal_full_vs_cached_elements": 279273,
+      "max_abs": 0.0000095367431640625,
+      "mean_abs": 0.0000014663394899293457,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    },
+    {
+      "name": "r2_uniform_en.npz",
+      "sha256": "4F77869C043964C005829B901B8BF1F939F6BEBBEA7C3E274BAFE74908A9E9A4",
+      "full_sha256": "028E4DD28573C9E902775754E9BFFD0F0E4FC43CDA41AA4D6815410E0D976F07",
+      "cached_sha256": "BC6421B9E2EBCBACE657FB9D759F92FD25ADB84EF1B104B4271A8D605222B3FD",
+      "isclose_mismatch_elements": 0,
+      "float32_value_unequal_full_vs_cached_elements": 276387,
+      "max_abs": 0.00001239776611328125,
+      "mean_abs": 0.000001625800093860461,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    },
+    {
+      "name": "failure_r2_reverse_ko.npz",
+      "sha256": "31D4590CEDB8E8DB130CEA4FD7607BB9BFC5ED8EEE030B1CB9CCDAD29C8DECC8",
+      "full_sha256": "55C9A4C3888E00276590789C7D888CA6A1927BC734C2DAE52B42BB15FE9DF879",
+      "cached_sha256": "8C98A8948560F009F76B4DBEF75004BFB79BFA8051D57EB1F726C1A0548BDC0D",
+      "isclose_mismatch_elements": 1,
+      "float32_value_unequal_full_vs_cached_elements": 282071,
+      "max_abs": 0.00001239776611328125,
+      "mean_abs": 0.0000019036612728642567,
+      "argmax_changes": 0,
+      "ordered_top2_changes": 0
+    }
+  ],
+  "failure_element": {
+    "coordinate_batch_sequence_vocab_zero_based": [0, 0, 1515],
+    "input_token_id_at_sequence_position": 3591,
+    "causally_available_prefix_ids_count": 1,
+    "cached_call": "initial3-ID PREFILL; no prior past_kv supplied",
+    "incremental_call_index": null,
+    "full": -0.005094125866889954,
+    "cached": -0.005083322525024414,
+    "full_minus_cached": -0.00001080334186553955,
+    "abs_diff": 0.00001080334186553955,
+    "allowed_tol_numpy_float32": 0.000010508331797609571,
+    "allowed_tol_float64_formula_from_saved_cached_value": 0.000010508332252502443,
+    "excess_over_numpy_allowed": 0.0000002950100679299794,
+    "abs_diff_div_allowed": 1.028073920162769,
+    "within_original_tolerance": false,
+    "top2_at_this_position_full_and_cached": [321, 334],
+    "failure_vocab_is_in_top2": false
+  },
+  "global_max_is_not_the_failing_element": {
+    "coordinate_batch_sequence_vocab_zero_based": [0, 2, 19164],
+    "full": -4.521166801452637,
+    "cached": -4.52117919921875,
+    "abs_diff": 0.00001239776611328125,
+    "allowed_tol_numpy_float32": 0.00046211789594963193,
+    "within_original_tolerance": true,
+    "interpretation": "max_abs와고정atol만비교하면원소별relative항을놓친다. 실패는near-zero인vocab1515의별도성분이다."
+  },
+  "failure_route_per_position": [
+    {"position": 0, "prefix_ids_count": 1, "phase": "PREFILL", "mismatch_elements": 1, "max_abs": 0.000011801719665527344, "top2_full_and_cached": [321, 334], "top1_margin_full": 0.8620338439941406, "top1_margin_cached": 0.8620328903198242},
+    {"position": 1, "prefix_ids_count": 2, "phase": "PREFILL", "mismatch_elements": 0, "max_abs": 0.00001049041748046875, "top2_full_and_cached": [321, 46], "top1_margin_full": 0.09155464172363281, "top1_margin_cached": 0.09154987335205078},
+    {"position": 2, "prefix_ids_count": 3, "phase": "PREFILL", "mismatch_elements": 0, "max_abs": 0.00001239776611328125, "top2_full_and_cached": [46, 334], "top1_margin_full": 0.7393860816955566, "top1_margin_cached": 0.7393841743469238},
+    {"position": 3, "prefix_ids_count": 4, "phase": "INCREMENTAL", "mismatch_elements": 0, "max_abs": 0.000009655952453613281, "top2_full_and_cached": [46, 233], "top1_margin_full": 0.05610466003417969, "top1_margin_cached": 0.056104183197021484},
+    {"position": 4, "prefix_ids_count": 5, "phase": "INCREMENTAL", "mismatch_elements": 0, "max_abs": 0.000009059906005859375, "top2_full_and_cached": [46, 539], "top1_margin_full": 0.28589773178100586, "top1_margin_cached": 0.2859015464782715},
+    {"position": 5, "prefix_ids_count": 6, "phase": "INCREMENTAL", "mismatch_elements": 0, "max_abs": 0.000010967254638671875, "top2_full_and_cached": [46, 334], "top1_margin_full": 1.0267419815063477, "top1_margin_cached": 1.0267419815063477},
+    {"position": 6, "prefix_ids_count": 7, "phase": "INCREMENTAL", "mismatch_elements": 0, "max_abs": 0.000009000301361083984, "top2_full_and_cached": [46, 539], "top1_margin_full": 0.42625904083251953, "top1_margin_cached": 0.4262557029724121},
+    {"position": 7, "prefix_ids_count": 8, "phase": "INCREMENTAL", "mismatch_elements": 0, "max_abs": 0.00001049041748046875, "top2_full_and_cached": [46, 539], "top1_margin_full": 0.09091949462890625, "top1_margin_cached": 0.09091711044311523},
+    {"position": 8, "prefix_ids_count": 9, "phase": "INCREMENTAL", "mismatch_elements": 0, "max_abs": 0.0000095367431640625, "top2_full_and_cached": [233, 46], "top1_margin_full": 0.892064094543457, "top1_margin_cached": 0.8920660018920898}
+  ],
+  "product_r1_vs_fixed_r1": {
+    "ko": {"input_ids_equal": true, "full_array_bitwise_equal": true, "cached_array_bitwise_equal": true, "npz_file_byte_identical": true, "full_max_abs": 0.0, "cached_max_abs": 0.0},
+    "en": {"input_ids_equal": true, "full_array_bitwise_equal": true, "cached_array_bitwise_equal": true, "npz_file_byte_identical": true, "full_max_abs": 0.0, "cached_max_abs": 0.0},
+    "qualification": "제품 간 대응하는full끼리/cached끼리의동일성이다. 각파일내full대cached는bit동일이아니라원tolerance이내이다."
+  },
+  "ranking_scope": {
+    "saved_rows_examined": 63,
+    "argmax_changes_full_vs_cached": 0,
+    "ordered_top2_changes_full_vs_cached": 0,
+    "top2_set_changes_full_vs_cached": 0,
+    "duplicate_rows_included": "productR1과fixedR1은동일배열이므로63행이서로독립인63문맥은아니다.",
+    "free_generation_stability": "NOT_RUN; saved fixed-prefix rankings do not establish rollout stability or language quality"
+  },
+  "execution_status_preserved": {
+    "regression": "PASS as recorded in final.json",
+    "preflight": "PASS as recorded in final.json",
+    "execute": "ERROR9",
+    "error_type": "ToleranceFailure",
+    "activity_complete": false,
+    "worker_seconds": 13.122863748998498,
+    "worker_cap_seconds": 600,
+    "worker_started_at_utc": "2026-10-19T16:40:46.281459+00:00",
+    "worker_ended_at_utc": "2026-10-19T16:40:59.404323+00:00",
+    "activity_report_sha256": null,
+    "final_readback": null,
+    "timeout_failure": false,
+    "gate_complete": false
+  },
+  "partial_function_scope": {
+    "independently_recounted_from_retained_raw": [
+      "productR1/fixedR1/r2_uniform의KO/EN6개full-cache는원tolerance위반0",
+      "productR1과fixedR1는두언어의입력ID·full배열·cached배열·NPZ파일이각각동일",
+      "r2_reverse/KO는완전한9위치logit배열을남겼지만원tolerance위반1개로실패"
+    ],
+    "not_run_or_not_reached": [
+      "r2_reverse/EN",
+      "r2_shuffle/KO 및EN",
+      "전체5경로종결및최종gate readback",
+      "모든경로후최종CP/tokenizer 재해시와최종전역CUDA체크",
+      "생성정답성·언어품질·경로재학습·optimizer update·R2교육부모실험"
+    ],
+    "control_flow_inferences_not_independently_measured_from_these_raw_files": {
+      "basis": "사전검토한동결driver의run_gate순서와publicrecipe code SHA. 본감사에서는코드를다시열거나실행하지않았다.",
+      "r2_uniform_changed_route_cache_rejection": "r2_reverse/KO까지진행했다면앞선호출은반환했음. 별도측정receipt가이번실패원형에남지않았으므로독립raw PASS로승격하지않는다.",
+      "r2_uniform_ntp_backward": "같은동결순서상앞서실행·반환했을것으로추론된다. 따라서NOT_RUN으로단정하지않지만loss/gradient수치가공개실패원형에보존되지않아이번배열감사로검산하지못했다.",
+      "kv_owner_keys_shapes_and_intermediate_states": "NPZ에는KV텐서/owner trace가없다. frozen driver의선행assert반환은추론할수있으나실제KV중간값을독립재검증한것은아니다.",
+      "input_weight_immutability": "원본을쓰는코드/optimizer동작은없지만전체루프말미원본재해시는실패로도달하지않았다. 본감사는CP를읽거나해시하지않았으므로전후실물검증을새로주장하지않는다."
+    }
+  },
+  "interpretation": {
+    "confirmed": [
+      "원래정한원소별tolerance의수치음성이실제배열에서재현됨. 종료9/completeFalse를유지한다.",
+      "실패위치는incremental KV이어붙임이아니라past_kv가없는초기prefill의첫출력이다.",
+      "다른6파일에도비슷한크기의FP32 full/cache차이가있지만원소별relative허용항을포함하면위반0이다.",
+      "저장된고정prefix의argmax/top2변화는없다. 이는정답성이나새생성품질PASS가아니다."
+    ],
+    "compatible_but_not_established": "full9행과prefill3행의서로다른행렬/attention계산형상및FP32누적순서차이와양립하는양상이다. 원소별/연산별중간값이나통제재실행이없어이기전을확정하지않는다.",
+    "logical_cache_defect": "UNDETERMINED. 첫prefill실패는incremental-cache-concatenation만을직접원인으로지목하지않으며,작은차이/순위동일성도route·CLA·cache논리무결성전체를증명하지않는다.",
+    "prohibited_promotions": ["문턱완화", "자동PASS", "실제R2학습효과", "언어품질동급", "모든cache결함부재"],
+    "rerun_or_threshold_change_proposal": "NONE"
+  }
+}
