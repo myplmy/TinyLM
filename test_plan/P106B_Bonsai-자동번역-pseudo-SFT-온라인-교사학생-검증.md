@@ -5705,7 +5705,7 @@ dev/test는 별도 산수64·조회32질의(8표)·Boolean64·JSON32질의(16문
 
 | 단계 | 내용 | 다음 선결·상태 |
 |---|---|---|
-| Stage4etW0 | source/그룹/quotas/encoder/CE분모/스케줄·64토큰 회귀 및 실제CPU | 아직 미구현·실제 미실행 |
+| Stage4etW0 | source/그룹/quotas/encoder/CE분모/스케줄·64토큰 회귀 및 실제CPU | 코드/회귀66·독립검증 완료, 실제동결 미실행 |
 | Stage4etCa/Cb/Cc/Cd | 네 팔 각각 같은 새 부모에서8update 비용, CP저장0 | 공통 실제 source·마스크·native와 optimizer receipts 일치 |
 | Stage4etTa/Tb/Tc/Td | 네 팔 각각384update/4epoch, 최종CP1개씩 | 네 cost8·시간상한/VRAM·실제 target분모·부모 지문 일치 시만 |
 | Stage4etEp/Ea/Eb/Ec/Ed | 부모·네 학생의1694실답/같은 원문32crop | 원답/입력/종료·CP불변·분모 정합 |
@@ -5727,7 +5727,7 @@ dev/test는 별도 산수64·조회32질의(8표)·Boolean64·JSON32질의(16문
 
 ### 7. 실행
 
-SH15개를 작성했으나 아직 독립 검토 중인 DRAFT다. 구현/회귀/실제CPU 뒤에만 네 cost8을 수행한다. cost와 본학습은 분리하고 write-once namespace/출력에 종료8보류·오류·완료를 구분한다. 모델 로딩 전 사전검사·회귀, 사용자 입력 대기 없음,20MB 미만 행 경계 샤드, 새CP만 저장, 완료 source/명령/Git 선보존 뒤 정확 삭제 원칙을 유지한다.
+SH15개와 독립4코드의 실행 전 검증을 완료했다. 실제CPU 동결 뒤에만 네 cost8을 수행한다. cost와 본학습은 분리하고 write-once namespace/출력에 종료8보류·오류·완료를 구분한다. 모델 로딩 전 사전검사·회귀, 사용자 입력 대기 없음,20MB 미만 행 경계 샤드, 새CP만 저장, 완료 source/명령/Git 선보존 뒤 정확 삭제 원칙을 유지한다.
 
 - `run_P106B_Stage4etW0_question_transfer_cpu.sh` — `prepare`, 상한600초.
 - `run_P106B_Stage4etCa_fixed_last_cost8.sh` — `cost fixed_last`, 상한900초.
@@ -5755,3 +5755,11 @@ SH15개를 작성했으나 아직 독립 검토 중인 DRAFT다. 구현/회귀/�
 2026-10-19 새 Stage4et를 계획했다. CPU/GPU/새자료/학습/실제답 모두 아직 NOT_RUN이며 기존 완료결과를 승격하지 않는다. 독립 정의 검토에서 문구×위치의 완전교차·Boolean 이름쌍 split·산수 첫답 coverage·max64와 옛128 helper의 충돌을 확인해 위 계약에 반영했다. 작은 모든 필드의 실제 encoder/SHA/수는 구현 후 먼저 검증한다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 초안 선보존과 실행 전 계보 수리 이력
+
+초안은 로컬 커밋 `d1d58ce`에4코드·15SH·56/독립56·P1 두건을 먼저 보존했다. 이후 driver/test 두파일만 CP의 exact소유경로를해시전검사하고, 완료384·현재code/corpus/cases/events/본체·닫힌활동원장·실제ID타입/종료/본문decode·절대권한을 묶도록 보완했다. 순수 data/test2파일·질문/정답·분할·스케줄·학습목적은 불변이다. 최종후보66합성회귀에는8470메모리양성연결과 잘못된경로/오래된source/cases/미완료train/잘못된토큰/본문불일치 반례가 포함된다. 이 양성연결은 합성입력/decoder로만 수행했고 실제8470생성을 뜻하지 않는다. 독립최종검토 전 실물동결/모델은 여전히 미실행이다.
+
+총괄의 실제 읽기전용 토큰 사전계측24.788초에서는1694평가질문의 전체prompt 최대521·정답+EOT 최대27로64/1024예산실패가0이었다. 선택한자연QA4096과T0CQ 한pass12288행의 실제입력은2045891x·지도75664·EOT18752(24.783%)였다. 산수는2048한영행이나지도4618/75664(6.103%)·content2570/56912(4.516%)로행비율과다르다. 현재목적을바꾸지않고학습결과뒤필요한경우만[리뷰08 §19](../docs/methods/08_paper_review2.md)의종료지도보존재가중을검토한다. 이사전검사는새코퍼스namespace/CP를쓰지않았고모델/GPU/학습0이다.
+
+**실행 전 수리 검증 완료:** 독립 최종 감사 `handoff/audit/WIP_20261019_QUESTION_TRANSFER_FINAL_INDEPENDENT_CPU_REVIEW.json`(69346B·SHA `621D5AE4B7338714984EE9E406037D4EA46C2894337DB522F4FEB045E851F36B`)은 guarded66/66·37음성차단/5양성·실제asset/model/GPU0을 확인했다. driver `F7284ED86A37DF86E003F28440589E9953959F6CDB6E2D7AB7AF09EE2B6944EB`와 test `2D053078863E0BCDAF0D3AA3DC296A5D25321FCDB40E01D841D56178315664AD`로 동결하며 순수data2파일은 초안과 byte가 같다. 29개 기존함수/상태·자료·학습수학이 보존됐고 train의 추가는 x_tokens 로깅뿐이다. 8h는 실제worker 활동이며 회귀/선결wrapper의 모든 process벽시간 보장이 아니다. source/preflight/budget도 절대허가 종료는 검사한다. 최신전수정적은67PASS/공용profile오류1/NOT_RUN6이며 공용수리승인대기는 그대로다. 이제원형선커밋→실제Stage4etW0→유휴5분뒤cost8부터진행하며 실제동결/새학습/정답성은아직미판정이다.

@@ -68,7 +68,7 @@ def info():
         parent=str(base.PARENT.relative_to(ROOT)), parent_sha256=base.PARENT_SHA,
         expected_parent_core_sha256=base.PARENT_CORE, tokenizer_sha256=natural.TOK_SHA,
         micro_bs=8, accum=16, seq=CONTEXT, grad_checkpoint=True, compile='default',
-        seed=1337, epochs=4, updates=UPDATES, rows_per_pass=ROWS,
+        seed=1337, epochs=4, training_updates_per_arm=UPDATES, rows_per_pass=ROWS,
         adam_lr=5e-5, muon_lr=2e-4, all_group_weight_decay=0., grad_clip=1.,
         fresh_optimizer=True, schedule='constant', mtp=False, teacher_calls=0,
         native_targets_per_update=8192, native_windows=3072,
@@ -522,11 +522,36 @@ def spent_seconds():
     values = []
     if EVIDENCE.is_dir():
         for p in sorted(EVIDENCE.glob('activity_*.json')):
-            r = required(safe(p))
-            if r.get('tag') != TAG or not finite(r.get('seconds'), True):
-                raise ValueError('actual activity ledger invalid')
+            r = read_activity(p)
             values.append(r['seconds'])
     return sum(values)
+
+
+def read_activity(path, *, mode=None, arm=None, endpoint=None, completed=False):
+    path=safe(path);r=required(path)
+    keys={'schema','tag','key','mode','arm','endpoint','seconds','returncode','complete','limit',
+          'recorded_at','scope','code_sha256','corpus_sha256'}
+    if (not isinstance(r,dict) or set(r)!=keys or r.get('schema')!=SCHEMA or r.get('tag')!=TAG
+            or r.get('mode') not in ('prepare','cost','train','evaluate','readback')
+            or not finite(r.get('seconds'),True) or type(r.get('limit')) is not int or not 60<=r['limit']<=7200
+            or type(r.get('complete')) is not bool
+            or not (r.get('returncode') is None or type(r.get('returncode')) is int and r['returncode']==0)
+            or r['complete'] is not (r['returncode']==0) or r.get('code_sha256')!=info()['code_sha256']
+            or r.get('scope')!='actual worker wall including input verification; regression/preflight wrapper excluded'):
+        raise ValueError('complete typed activity schema/code/status required; no zero imputation')
+    phases=phase_commands(r['mode'],r['arm'],r['endpoint'],r['limit'])
+    if not phases or r['key']!=activity_key(r['mode'],r['arm'],r['endpoint']) or path.name!='activity_'+r['key']+'.json':
+        raise ValueError('activity filename/mode/selectors differ')
+    stamp=datetime.fromisoformat(r['recorded_at'])
+    if stamp.tzinfo is None:
+        raise ValueError('activity completion timezone required')
+    if r['complete'] and (not (CORPUS/'report.json').is_file() or r['corpus_sha256']!=digest(CORPUS/'report.json')):
+        raise ValueError('closed activity/current corpus binding differs')
+    if mode is not None and (r['mode'],r['arm'],r['endpoint'])!=(mode,arm,endpoint):
+        raise ValueError('activity belongs to another stage')
+    if completed and not r['complete']:
+        raise Pending('interrupted or failed activity retained; not completed cost/train evidence')
+    return r
 
 
 def budget():
@@ -534,11 +559,13 @@ def budget():
     for arm in ARMS:
         r = base.stage_report(EVIDENCE / ('cost_' + arm) / 'report.json')
         verify_training(r, arm, frozen, cost=True)
+        read_activity(EVIDENCE/('activity_cost_'+arm+'.json'),mode='cost',arm=arm,completed=True)
         t = r['step_seconds']
         estimate = t[0] + sum(t[1:]) / 7 * (UPDATES - 1) * 1.25 + 240.
         done_path = EVIDENCE / ('train_' + arm) / 'report.json'
         if done_path.exists():
             done = required(done_path); verify_training(done, arm, frozen, cost=False)
+            read_activity(EVIDENCE/('activity_train_'+arm+'.json'),mode='train',arm=arm,completed=True)
             estimates[arm] = 0.
         else:
             estimates[arm] = estimate
@@ -553,15 +580,24 @@ def budget():
 
 
 def verify_training(report, arm, frozen, cost):
+    if arm not in ARMS or type(cost) is not bool:
+        raise ValueError('registered training identity required')
     n = 8 if cost else UPDATES
+    if not cost and report.get('checkpoint') != str(checkpoint(arm).relative_to(ROOT)):
+        raise ValueError('exact owned checkpoint path required before any checkpoint I/O')
     if (report.get('status') != ('COST8_COMPLETE' if cost else 'TRAIN_COMPLETE_EVALUATION_PENDING')
             or report.get('arm') != arm or report.get('updates') != n
-            or report.get('code_sha256') != info()['code_sha256']
+            or any(report.get(k)!=v for k,v in info().items() if k!='updates')
             or report.get('corpus_sha256') != digest(CORPUS / 'report.json')
             or report.get('initial_core_sha256') != base.PARENT_CORE
             or report.get('checkpoint_written') != (not cost)):
         raise ValueError('same independent code/source/parent/update completion required')
     original.validate_groups(report.get('actual_optimizer_groups'))
+    if (not isinstance(report.get('event_manifest'),dict)
+            or report['event_manifest'].get('lineage')!=dict(tag=TAG,arm=arm,cost=cost)
+            or not isinstance(report.get('final_core_sha256'),str)
+            or re.fullmatch('[0-9A-F]{64}',report['final_core_sha256']) is None):
+        raise ValueError('training raw manifest/final body identity differs')
     directory = EVIDENCE / (('cost_' if cost else 'train_') + arm)
     events = read_rows(directory, report['event_manifest'], 'updates', n)
     if len(report.get('step_seconds', [])) != n or report['step_seconds'] != [e['step_seconds'] for e in events]:
@@ -578,7 +614,8 @@ def verify_training(report, arm, frozen, cost):
             or report['clip_events'] != sum(e['gradient_norm'] > 1. for e in events)
             or report['totals']['assistant_targets'] != sum(e['assistant_targets'] for e in events)
             or report['totals']['native_targets'] != 8192*n
-            or report['totals']['positive_rows'] != 128*n):
+            or report['totals']['positive_rows'] != 128*n
+            or report['totals']['x_tokens'] != sum(e['x_tokens'] for e in events)):
         raise ValueError('raw gradient/exposure sums differ')
     if not cost:
         expected = {k:sum(v['counts'][k] for v in frozen['exposure'][arm]) for k in ('x_tokens','assistant_targets','positive_rows')}
@@ -681,7 +718,7 @@ def train(arm, cost=False):
             adam.step();muon.step();updates+=1;torch.cuda.synchronize();times.append(time.perf_counter()-tick)
             totals.update(positive_rows=128,x_tokens=x_count,assistant_targets=observed,native_targets=8192)
             event=dict(update=updates,epoch=epoch+1,assistant_ce=float(ce_sum)/denominator,
-                assistant_targets=denominator,native_ce=float(native_loss.detach()),native_targets=8192,
+                assistant_targets=denominator,x_tokens=x_count,native_ce=float(native_loss.detach()),native_targets=8192,
                 gradient_norm=float(grad),clipped=bool(grad>1.),step_seconds=times[-1])
             writer.append(event);events.append(event)
             if updates<=8 or updates%32==0:
@@ -760,7 +797,7 @@ def classify_case(case,answer):
     return dict(correct=None,semantic_review='NOT_AUTOMATICALLY_ADJUDICATED')
 
 
-def recount(events,cases):
+def recount(events,cases,tokenizer=None):
     if len(events)!=len(cases) or len({v['id'] for v in events})!=len(cases):
         raise Pending('full unique1694 actual answers required')
     cells=defaultdict(Counter);finish=Counter();byid={};groups=defaultdict(list);invariance=defaultdict(list)
@@ -771,8 +808,14 @@ def recount(events,cases):
         if event['metrics']!=score:
             raise ValueError('raw answer score differs')
         g=event['generation'];proof=case['encoding']
+        if (type(g.get('generated_ids')) is not list
+                or any(type(v) is not int or not 0<=v<32768 for v in g['generated_ids'])
+                or type(g.get('terminal_ids')) is not list
+                or any(type(v) is not int or v not in (2,4) for v in g['terminal_ids'])):
+            raise ValueError('actual token IDs must be a list of real in-vocabulary integers')
         if (g.get('max_new')!=MAX_NEW or g.get('precision')!='FP32_MATH' or g.get('mtp') is not False
                 or g.get('use_cache') is not True or g.get('candidate_answers_supplied') is not False
+                or g.get('stop_token_sequences')!=[[4]]
                 or any(g.get(k)!=proof[k] for k in ('prompt_sha256','prompt_ids_sha256','prompt_tokens'))
                 or g.get('temperature')!=0. or g.get('top_k')!=1
                 or type(g.get('generated_tokens')) is not int
@@ -791,6 +834,10 @@ def recount(events,cases):
         content=g['generated_ids'][:-len(terminal)] if terminal else g['generated_ids']
         if sha(content)!=g.get('content_ids_sha256') or any(v in (2,4) for v in content):
             raise ValueError('actual content/terminal token boundary differs')
+        if tokenizer is not None:
+            if ((tokenizer.token_to_id('<eos>'),tokenizer.token_to_id('<|im_end|>'))!=(2,4)
+                    or tokenizer.decode(content,skip_special_tokens=False)!=event['answer']):
+                raise ValueError('actual content IDs do not decode to recorded full answer')
         key=(case['lane'],case.get('split','monitor'),case['family'],case['language'],str(case.get('wording','monitor')),case.get('position','monitor'))
         cells[key].update(n=1,correct=int(score['correct']) if score['correct'] is not None else 0,
             scored=int(score['correct'] is not None),empty_exact=int(event['answer']==''),generated_tokens=g['generated_tokens'])
@@ -825,15 +872,44 @@ def recount(events,cases):
     return dict(cells=[dict(zip(('lane','split','family','language','wording','position'),key),**dict(v)) for key,v in sorted(cells.items())],
         parent_group_scores=[dict(stratum=list(k),**dict(v)) for k,v in sorted(parent_cells.items())],
         query_invariance_scores=[dict(stratum=list(k),**dict(v)) for k,v in sorted(invariance_cells.items())],
+        token_body_correspondence='FROZEN_TOKENIZER_DECODE_VERIFIED' if tokenizer is not None else 'NOT_CHECKED_BY_PURE_RECOUNT',
         actual_answers=len(events),finish_reasons=dict(finish),new_training=0,automatic_adoption=False)
 
 
-def identity(endpoint):
+def identity(endpoint,frozen=None):
+    if endpoint not in ENDPOINTS:
+        raise ValueError('registered endpoint required before any checkpoint access')
     if endpoint=='parent':
         return dict(endpoint=endpoint,checkpoint=str(base.PARENT.relative_to(ROOT)),checkpoint_sha256=base.PARENT_SHA,
                     expected_core_sha256=base.PARENT_CORE)
     r=base.stage_report(EVIDENCE/('train_'+endpoint)/'report.json')
+    if r.get('checkpoint')!=str(checkpoint(endpoint).relative_to(ROOT)):
+        raise ValueError('exact owned child checkpoint path required before stat/digest/open')
+    if frozen is None:
+        frozen,_,_=read_prepared()
+    verify_training(r,endpoint,frozen,cost=False)
+    read_activity(EVIDENCE/('activity_train_'+endpoint+'.json'),mode='train',arm=endpoint,completed=True)
     return dict(endpoint=endpoint,checkpoint=r['checkpoint'],checkpoint_sha256=r['checkpoint_sha256'],expected_core_sha256=r['final_core_sha256'])
+
+
+def validate_evaluation(report,endpoint,frozen,cases,lineage):
+    if (len(cases)!=EXPECTED_ANSWERS or sha(cases)!=frozen['cases_sha256']
+            or report.get('status')!='ACTUAL_FIRST_ANSWERS_RECORDED'
+            or any(report.get(k)!=v for k,v in info().items())
+            or report.get('endpoint')!=endpoint or report.get('lineage')!=lineage
+            or report.get('corpus_sha256')!=digest(CORPUS/'report.json')
+            or report.get('cases_sha256')!=frozen['cases_sha256']
+            or report.get('core_before')!=lineage['expected_core_sha256']
+            or report.get('core_after')!=lineage['expected_core_sha256']
+            or report.get('model_training') is not False or report.get('weights_changed') is not False
+            or report.get('checkpoints_written')!=0
+            or report.get('answer_manifest',{}).get('lineage')!=dict(tag=TAG,**lineage)):
+        raise ValueError('complete owned evaluation/code/corpus/cases/body/raw lineage required')
+    native=report.get('native32_fp32',{})
+    if (native.get('targets')!=32768 or native.get('windows')!=32
+            or native.get('precision')!='FP32_MATH' or native.get('val_sha256')!=base.NATIVE_VAL_SHA
+            or not finite(native.get('ce'),True)):
+        raise ValueError('fixed32 native VAL receipt/denominator/precision differs')
 
 
 def evaluate(endpoint):
@@ -841,7 +917,7 @@ def evaluate(endpoint):
     from tinylm.infer.generate import _strip
     from scripts.diag_p101a_sft_mtp import state_fingerprint
     from scripts.p106b_gate_runtime import idle_before_gpu
-    frozen,_,_=read_prepared();lineage=identity(endpoint)
+    frozen,_,_=read_prepared();lineage=identity(endpoint,frozen)
     if digest(ROOT/lineage['checkpoint'])!=lineage['checkpoint_sha256']:
         raise ValueError('evaluated checkpoint bytes changed')
     cases=read_rows(CORPUS,frozen['manifests']['cases'],'cases',EXPECTED_ANSWERS)
@@ -876,7 +952,7 @@ def evaluate(endpoint):
             writer.append(event);events.append(event)
             if (i+1)%128==0:
                 print('[QUESTION_TRANSFER_EVAL] '+json.dumps(dict(endpoint=endpoint,responses=i+1,expected=len(cases))),flush=True)
-    summary=recount(events,cases);model.clear_quant();native=base.native_probe(model);after=state_fingerprint(model)
+    summary=recount(events,cases,tok);model.clear_quant();native=base.native_probe(model);after=state_fingerprint(model)
     if before!=after or digest(ROOT/lineage['checkpoint'])!=lineage['checkpoint_sha256']:
         raise ValueError('evaluation modified body or original checkpoint')
     manifest=writer.close(lineage=dict(tag=TAG,**lineage));verify(local,manifest)
@@ -885,6 +961,7 @@ def evaluate(endpoint):
         summary=summary,answer_manifest=manifest,answer_manifest_sha256=digest(local/'answers_shards_manifest.json'),
         native32_fp32=native,whole_seconds=time.perf_counter()-began,model_training=False,weights_changed=False,
         checkpoints_written=0,peak_reserved_mib=torch.cuda.max_memory_reserved()/2**20)
+    validate_evaluation(result,endpoint,frozen,cases,lineage)
     write(target/'report.json',result)
     byid={e['id']:e for e in events};lookup={c['id']:c for c in cases}
     for key in frozen['display_ids']:
@@ -897,10 +974,16 @@ def evaluate(endpoint):
 
 
 def readback():
+    from tokenizers import Tokenizer
     frozen,_,_=read_prepared();cases=read_rows(CORPUS,frozen['manifests']['cases'],'cases',EXPECTED_ANSWERS)
+    if sha(cases)!=frozen['cases_sha256'] or digest(natural.TOKENIZER)!=natural.TOK_SHA:
+        raise ValueError('frozen exact evaluation cases/tokenizer bytes required')
+    tok=Tokenizer.from_file(str(natural.TOKENIZER))
     models={};events_by={}
     for endpoint in ENDPOINTS:
-        r=base.stage_report(EVIDENCE/('evaluate_'+endpoint)/'report.json');link=identity(endpoint)
+        r=base.stage_report(EVIDENCE/('evaluate_'+endpoint)/'report.json');link=identity(endpoint,frozen)
+        validate_evaluation(r,endpoint,frozen,cases,link)
+        read_activity(EVIDENCE/('activity_evaluate_'+endpoint+'.json'),mode='evaluate',endpoint=endpoint,completed=True)
         if (r.get('status')!='ACTUAL_FIRST_ANSWERS_RECORDED' or r.get('code_sha256')!=info()['code_sha256']
                 or r.get('lineage')!=link or r.get('cases_sha256')!=sha(cases)
                 or r.get('core_before')!=link['expected_core_sha256'] or r.get('core_after')!=link['expected_core_sha256']
@@ -910,7 +993,7 @@ def readback():
         if digest(directory/'answers_shards_manifest.json')!=r['answer_manifest_sha256']:
             raise ValueError('actual answer manifest changed')
         events=read_rows(directory,r['answer_manifest'],'answers',EXPECTED_ANSWERS)
-        if any(e.get('lineage')!=dict(tag=TAG,**link) for e in events) or recount(events,cases)!=r['summary']:
+        if any(e.get('lineage')!=dict(tag=TAG,**link) for e in events) or recount(events,cases,tok)!=r['summary']:
             raise ValueError('independent raw answer recount differs')
         models[endpoint]=r;events_by[endpoint]={e['id']:e for e in events}
     contrasts=[]
@@ -937,6 +1020,7 @@ def activity_key(mode,arm=None,endpoint=None):
 
 
 def run_worker(mode,arm=None,endpoint=None,max_wall_sec=7200):
+    authority()
     if mode=='source':
         source_inputs();print('[QUESTION_TRANSFER_SOURCE] exact prior source verified; model/GPU NOT_RUN');return 0
     if mode=='preflight':
@@ -948,7 +1032,10 @@ def run_worker(mode,arm=None,endpoint=None,max_wall_sec=7200):
     if path.exists():
         raise FileExistsError('previous complete/partial worker activity preserved')
     reserve=RECORD_RESERVE if mode in ('evaluate','readback') else EVAL_RESERVE+RECORD_RESERVE
-    remaining=min(authority(training=mode in ('cost','train')),ACTIVE_LIMIT-spent_seconds()-reserve)
+    absolute=authority(training=mode in ('prepare','cost','train'))
+    if mode in ('evaluate','readback'):
+        absolute-=RECORD_RESERVE
+    remaining=min(absolute,ACTIVE_LIMIT-spent_seconds()-reserve)
     if max_wall_sec>remaining:
         raise Pending('requested bounded activity plus reserves does not fit current authority/budget')
     began=time.perf_counter();code=None
@@ -965,6 +1052,7 @@ def run_worker(mode,arm=None,endpoint=None,max_wall_sec=7200):
         write(path,dict(schema=SCHEMA,tag=TAG,key=key,mode=mode,arm=arm,endpoint=endpoint,
             seconds=elapsed,returncode=code,complete=code==0,limit=max_wall_sec,
             recorded_at=datetime.now(timezone.utc).isoformat(),
+            code_sha256=info()['code_sha256'],corpus_sha256=digest(CORPUS/'report.json') if (CORPUS/'report.json').is_file() else None,
             scope='actual worker wall including input verification; regression/preflight wrapper excluded'))
 
 
