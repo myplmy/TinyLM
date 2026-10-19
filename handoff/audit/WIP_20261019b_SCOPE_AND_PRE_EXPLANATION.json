@@ -1,0 +1,125 @@
+{
+  "schema": "TINYLM_AUTONOMY_20261019B_SCOPE_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority_end_utc": "2026-10-20T08:00:00Z",
+  "planned_training_stop_utc": "2026-10-20T05:00:00Z",
+  "user_explanation_completed_before_new_model_execution": true,
+  "explanation_scope": "현재 채팅의 사전설명1~6. 과거 문헌 채택·영어 실답·두75M·부모/scratch·20런처·새 실험목적을 모두 설명한 뒤 구현/CPU/GPU에 착수한다.",
+  "agent_roles": {
+    "literature": "oct20_literature gpt-6.1-sol/max",
+    "thesis": "oct20_thesis gpt-6.1-sol/max",
+    "antithesis": "기존 cpu_literature 역할 재사용; 10월17b 합성 기록의 지정 gpt-6.1-sol/max",
+    "limit": 3,
+    "initial_scope": "읽기 전용·새 모델/GPU0·파일쓰기0",
+    "spawn_note": "기존 pending_init 슬롯 때문에 셋째 신규 생성은 실패했다. 기존 미착수 역할을 중지한 뒤 반증 업무로 전환했으며 동시 역할은3개를 넘기지 않았다."
+  },
+  "file_authority": [
+    {
+      "paths": [
+        "scripts/p106b_content_objective.py",
+        "scripts/test_p106b_content_objective.py"
+      ],
+      "action": "신설·CPU시험",
+      "authority": "설명 뒤 주도적 실험에 필요한 학습방법 구현 승인",
+      "owner": "정 담당에게 두 파일만 위임 가능"
+    },
+    {
+      "paths": [
+        "scripts/diag_p106b_content_recovery.py",
+        "scripts/test_p106b_content_recovery.py"
+      ],
+      "action": "신설·같은 원형의 내용목표 대조",
+      "authority": "현재 주도 실험 승인",
+      "owner": "총괄"
+    },
+    {
+      "paths": [
+        "scripts/p106b_copy_mix.py",
+        "scripts/test_p106b_copy_mix.py"
+      ],
+      "action": "조건부 신설·실제 생성 분포 연결의 구조 시험",
+      "authority": "사전설명2단계 및 현재 주도 실험 승인",
+      "owner": "총괄 별도 F4/복사 가능성 준비 뒤"
+    },
+    {
+      "paths": [
+        "test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md",
+        "test_plan/실험계획목록.md",
+        "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "test_result/실험목록.md",
+        "docs/EXPERIMENT_BASELINES.md",
+        "docs/METHODS.md",
+        "docs/methods/03_knowledge_quality.md",
+        "docs/methods/08_paper_review2.md",
+        "handoff/COMPASS.md",
+        "experiments.tsv",
+        "checkpoints.tsv"
+      ],
+      "action": "실험 계획→실측→정본 연쇄",
+      "authority": "현재 및 기존 주기 기록·로컬 커밋 지시",
+      "owner": "총괄"
+    },
+    {
+      "paths": [
+        "handoff/audit/WIP_20261019b_*",
+        "test_result/evidence/p106b_content_recovery_v1_s1337/**",
+        "data_cache/p106b_content_recovery_v1_s1337/**",
+        "runs/eval/p106b_content_recovery_v1_s1337/**",
+        "runs/ckpt/*p106b_content_recovery_v1_s1337*"
+      ],
+      "action": "새 자기 namespace만 생성; 작고 검토된 근거만 Git",
+      "authority": "현재 실행·근거 보존 지시",
+      "owner": "총괄"
+    },
+    {
+      "paths": [
+        "기존20런처"
+      ],
+      "action": "실행/대체/보류 여부는 단계별 재검토 후 정확 경로를 별도 감사에 고정; 원형/명령 보존 후만 개명/정리",
+      "authority": "주도 실험 총괄이 알아서 조치하라는 현재 사용자 지시",
+      "owner": "총괄"
+    }
+  ],
+  "impact": {
+    "code": "기존 모델/학습/소스 읽기 API를 재사용하며 새 손실은 별도 모듈. 현재 제품 기본값·기존동결driver·공용검사기 변경0.",
+    "data": "첫 P 비교는 varied_balanced의 동일4pass·전체 y/owner/native offsets를 읽기 재사용. 무시된 과거 오답을 양성으로 되살리지 않는다. 부분 일반자료는 별도 버전·분할/출처 검증 뒤만 준비한다.",
+    "tests": "가중치 질량·dense대chunk/16micro 손실·hidden/head gradient·checkpoint on/off·EOT-only·여러turn·masked-owner·늦은 pass/DEV 거부·GPU전 source 검증.",
+    "docs": "기술·품질·미실행과 목적별 수치를 구분하고 결과/계획/기준표/방법론/COMPASS/재현 명령을 연쇄 갱신한다.",
+    "debt": "원래75M 본교육과 이번 부분자료/원인분리는 별개.20개를 무기한 사용자 실행 요청으로 복제하지 않으며 과거 성공/음성은 보존한다.",
+    "gpu": "설명 완료 뒤만 CPU/GPU. 비용 측정은 직전5분 유휴 및 대형CPU 정지; 학습·품질평가는 속도benchmark로 읽지 않는다.",
+    "ownership": "기존 HF/cache/CP/log와 타세션 interactive dirty를 보존하며 보호 TinyDataset·사전·다운로드·외부게시0.",
+    "comparison": "P 대조의 유일 목적 변경은 content 내부 위치 가중. EOT 각 위치1/N, native8192 분모·배치·부모·LR·seed·정답·평가 유지.",
+    "evidence": "CPU/정상종료/TF 점수와 실제 자유답·일반지능·Falcon비교는 분리. 새 구조도 실제 생성에 연결한 범위만 주장한다."
+  },
+  "options": [
+    {
+      "id": "A",
+      "content": "기존 토큰평균과 내용별 평균 P를 같은 자료에서 비교",
+      "benefit": "학습 표면부터 약한 내용 fitting을 작은 변경으로 분리",
+      "risk": "짧은 과제 실질 비중도 바뀌며 효과 미보장",
+      "effort": "구현/회귀·비용 뒤 두384회"
+    },
+    {
+      "id": "B",
+      "content": "본문 token-copy와 어휘의 최종 혼합 생성",
+      "benefit": "보조 head만 평가하던 범위를 넘어 실제 구조 효과 검사",
+      "risk": "ByteLevel 경계·다른 대상 복사·cache 정합·비복사 과제 저하",
+      "effort": "준비 지원율 판독 뒤 조건부 구현"
+    },
+    {
+      "id": "C",
+      "content": "기존 공개 자료의 다양한 부분 조리법과 초기화/기초교육 대조",
+      "benefit": "75M을 기다리지 않고 실제 의사소통에 더 많은 지도",
+      "risk": "자료/초기화/LR/QAT 변경을 동시에 귀속하지 않음",
+      "effort": "A 결과와 시간 실측으로 독립후속 확정"
+    }
+  ],
+  "recommendation": "A 먼저, B의 token지원율을 CPU에서 병행 준비하고 유효한 구현을 조건부로 실행한다. C는 유효 조리법으로 확대할 때 독립설계로 고정한다.",
+  "inherited_evidence": {
+    "literature": "handoff/audit/WIP_20261019_AGENT_SYNTHESIS.md; docs/methods/08_paper_review2.md §19~24",
+    "parent": "runs/logs/m100s10_ko-en_300M_dense_chat32_p090b_s1337.json; 결과092§11~12·096§9",
+    "data": "scripts/p106b_capability_corpus.py; 결과101§54~55·§297",
+    "english": "저장된 question_transfer 영어CQ32·답확인전 hash 선정8표본; broad English 미확립"
+  },
+  "preflight_warning": "이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다."
+}

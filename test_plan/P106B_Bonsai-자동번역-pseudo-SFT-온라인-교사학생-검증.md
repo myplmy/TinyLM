@@ -5907,3 +5907,69 @@ CPU≤300초, 각 GPU≤600초·합계5~10분 추정에 모델 간 유휴는 별
 2026-10-19 설계 당시: 총괄이 TF-only·TF+fresh768·TF+일부옛응답재사용을 비교하여 새768회수를 선택했다. 이후 실제 CPU는 아래와 같이 완료했고 모델은 미실행이다.
 
 **실제 CPU 완료:** 16:21:17~16:21:38KST 회귀46/선결/prepare 모두0, worker5.869562초·모델/CUDA0이다([101 §319](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 256표면/content1032/EOT256·최대prompt69를 동결했고 정확한 TRAIN T0 노출은 fixed_last4회/varied_balanced1회, 다른 표면0과 첫 target/owner 충돌0이다. 이는 검사한8개 pass의 기술 결합이며 fitting/전이 예측은 실제 모델 뒤에만 대조한다.
+
+## 2026-10-19 후속 Stage4ew — 내용 평균 P와 토큰 평균의 통제 대조
+
+### 1. 왜
+
+[101 §319~323](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 학습 표면 산수도0~4/16이며 최초 생성 경로의 불일치는 관측하지 못했다. 사용자에게 문헌 채택·부모/무부모·자료와영어의 한계를 먼저 설명했고, 그 설명 뒤 새 주도 CPU/GPU를2026-10-20 17시KST까지 허가받았다. [문헌08 §19~24](../docs/methods/08_paper_review2.md)의 P를 실제로 구현하되 과거 네팔은 수정하지 않는다.
+
+### 2. 질문과 변경축
+
+같은 varied_balanced 교과·순서·네pass·부모·seed·optimizer·native windows에서 내용 위치 가중만 바꾸면 실제 내용 선택이 개선되는가? 새 아키텍처 head·MTP·재귀·토크나이저·자료를 섞지 않는다. 부모를 버린 같은 SFT의 기존실패를 그대로 재실행하지 않으며, 초기화별 기초교육은 별도 설계다.
+
+업데이트128대화·16micro에서 대화별 content CE합/수 C_i,c_i, 전체content N_C, EOT합 E/수 N_E, N=N_C+N_E, content가있는대화수 B_+를 사용한다.
+
+```text
+token   = (sum_i C_i + E) / N + native_CE_sum / 8192
+content = N_C/(N*B_+) * sum_{c_i>0}(C_i/c_i) + E/N + native_CE_sum/8192
+```
+
+각 EOT 위치의 계수1/N과 총content계수N_C/N을 보존한다. 길이와 연관된 과제·언어의 비중, 전체gradient·clip·EOT어휘행gradient까지 동일한 것은 아니다. C2의 무시된 옛오답은 owner가양수여도 계속 무시한다. 여러assistantturn은한대화로묶고 EOT-only와전무지도update를구분한다. 이수식은총괄의통제설계이며특정논문식의그대로재현이나최적계수주장이아니다.
+
+### 3. 예측·반증
+
+짧은 정답의 내용fitting이 약한 조건에서 P가 산수·대상 선택을 도울 수 있다. 반대로 길이와과제난도는같지않아 자연QA나 JSON을 악화시키고 gradient 방향/망각만 바꿀 수도 있다. 학습손실이나 종료만 좋아지고 실제첫답이그대로면 내용개선 가설을 지지하지 않는다. seed1·이미모니터한코호트이며 통계적우위나일반지능승격을자동선언하지않는다.
+
+### 4. 단계·예산·선결
+
+| 단계 | 내용 | 선결·비용 | 초기 상태 |
+|---|---|---|---|
+| Stage4ewW0 | 전체4pass/DEV·owner·128분모와 양policy 계수실물검산 | CPU상한600초·모델0 | 코드49회귀통과; 실물NOT_RUN |
+| Stage4ewWa / Stage4ewWb | 같은부모 양팔각cost8·CP0 | W0·각GPU≤900초·직전5분유휴·큰CPU중지 | NOT_RUN |
+| Stage4ewWc | 양cost의완료activity·원시8행·예상384와평가/기록예비 | 보수예측이stage6h·학습종료목표안에들어야함 | NOT_RUN |
+| Stage4ewWd / Stage4ewWe | fresh parent에서양팔각384회·4pass | 양cost/예산완료·source/그룹불변 | NOT_RUN |
+| Stage4ewWf / Stage4ewWg | 각같은1694실제첫답·native32 | 정확자기CP/실제tokenizer/completeactivity | NOT_RUN |
+| Stage4ewWh | 총3388새실답·raw/token decode·paired 분모검산 | 양평가완료activity·원답manifest/SHA | NOT_RUN |
+
+과거384회15분은앵커이지새구현실측예측이아니다. 무인입력0·기본최상위배치별공유회귀→선결→본단계→최종영수증. 전체stage작업자는6h이내,평가1200초/기록600초예비를두고절대마감은20일17시다. 새학습은14시이후열지않으며비용측정직전5분유휴를총괄/실행자가확인한다.
+
+### 5. 측정·판정
+
+정상종료와과학채택을분리한다. 실제pass마다행·source/target/owner/순서·EOT/내용·언어/lane의계수질량과update raw·gradient L2/clip·actual optimizer group을기록한다. 한micro의평균을단순평균하거나 weighted를다시16으로나누지않는다.
+
+같은FP32-MATH greedy0/topk1/KV-on/MTP-off/max64의첫답을비교하고 coded 산수/조회/Boolean/JSON·자연alias·산수canary·사용자질문을각분모로분리한다. 원어휘head와정답/후보미제공을유지한다. 자연주석EM은의미정답확정이아니고 native32는전체언어보존이아니다. 전체TF가아닌free응답을실제로회수한다.
+
+별도새분모의TRAIN표면진단이나실제멀티턴/bench를추가할때는그계보를따로적는다. 미세한차이를승자·Falcon동급으로선언하지않고 긍정/퇴행문항과단일seed한계를함께읽는다. 보정/일반대화확대의선택은이실제결과와남은시간에따른후속판단이다.
+
+### 6. 자료·재현·보존
+
+부모는dense_chat32_p090b_s1337의같은373MB파일/coreE854…이고, m8/a16/seq1024/ckptON/compiledefault·Adam5e-5/Muon2e-4·WD0·clip1을유지한다. SFT의50,331,648패딩슬롯을실입력으로세지않는다. 원래varied_balanced의실제SFTx8,208,652·assistant302,656·별도native3,145,728은예상동일노출이며새source소비때다시검산한다. SFT4pass는기존승인된반복정책이고 native는TRAIN597.995M중동일3072창만읽어2배풀정책을우회하지않는다.
+
+새태그 `p106b_content_recovery_v1_s1337` 아래 부모/기존corpus를읽기재사용하며덮어쓰지않는다. 생성참조는data_cache, raw응답은runs/eval, 작은수치·SHA/학습events는test_result/evidence, 원로그는test_result/101_log로분리한다. 파일당20MB미만,raw/가중치/원문은Git제외다.
+
+- `run_P106B_Stage4ewW0_content_objective_cpu.sh` — `--mode prepare --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4ewWa_token_cost8.sh` — `--mode cost --arm token --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4ewWb_content_cost8.sh` — `--mode cost --arm content --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4ewWc_content_objective_budget.sh` — `--mode budget --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4ewWd_token_train384.sh` — `--mode train --arm token --max-wall-sec 3600 --execute`.
+- `run_P106B_Stage4ewWe_content_train384.sh` — `--mode train --arm content --max-wall-sec 3600 --execute`.
+- `run_P106B_Stage4ewWf_token_actual_answers.sh` — `--mode evaluate --arm token --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4ewWg_content_actual_answers.sh` — `--mode evaluate --arm content --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4ewWh_content_pair_readback.sh` — `--mode readback --max-wall-sec 600 --execute`.
+
+### 7. 현재 구현·한계·이력
+
+새순수helper/driver와49개CPU회귀가통과했다. 실제자산·모델·GPU는아직NOT_RUN이며전수정적과동결커밋뒤실물W0부터회수한다. 기존53/67원로그나19일오전44팔을새P학습의증거로합산하지않는다.
+
+본문rawtoken복사의별도CPU128검토에서는첫정답ID지원20/128과문자oracle106/128을구분했다. 단순혼합학습을먼저확대하지않고기존저장spanhead의실제추출readout을더작은후보로검토한다. 이구조/기초교육/부분일반대화는설계확정뒤별도단계로등록하며현재P에몰래추가하지않는다.

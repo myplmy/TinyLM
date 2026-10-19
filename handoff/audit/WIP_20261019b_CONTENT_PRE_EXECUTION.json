@@ -1,0 +1,38 @@
+{
+  "schema": "TINYLM_CONTENT_RECOVERY_PRE_EXECUTION_AUDIT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "stage": "P106B_Stage4ew",
+  "tag": "p106b_content_recovery_v1_s1337",
+  "authorization": "사전 설명 완료 뒤 2026-10-20 17:00 KST까지 CPU/GPU 및 필요한 구현·검증·기록·로컬 커밋",
+  "fixtures": {
+    "last_complete": 49,
+    "wall_seconds": 1.381,
+    "model_loaded": false,
+    "meaning": "순수/임시 데이터 회귀이며 실제 모델 품질 증거 아님"
+  },
+  "before_real_execution_corrections": [
+    "실제 부모 로더를 재사용하도록 미존재 클래스 import를 교정했다.",
+    "임시 경로 회귀의 ROOT 고정을 보완했다. 생산 원본 경계는 완화하지 않았다.",
+    "불완전 worker activity의 비용 게이트 통과를 막고 평가 종료/시간 예비 검증을 추가했다.",
+    "전수 정적 검사에서 직접 실행 경로 누락 2개를 찾아 새 helper와 test에 저장소 ROOT 경로를 넣었다.",
+    "이전 자체 변경의 Codex06 갱신 날짜를 실제 내용일로 교정했다. 환경/검사 의미 변경은 없다.",
+    "새 계획 색인의 잘못된 외국어 단어를 즉시 한국어로 정정했다.",
+    "계산 전용 레지스트리 조회의 --seq-len 오기를 --seq로 정정했다. 전역 레지스트리 스캔은 하지 않았다."
+  ],
+  "condition": {
+    "source": "같은 varied_balanced 네 pass, 원래 y/owners/순서/native 창/부모/optimizer/샘플링",
+    "changed": "지도 content 위치의 whole-update 계수만 token 대 content 정책",
+    "formula": "token=1/N; content=Nc/(N*Bplus*ci); EOT=1/N; native=별도8192 평균",
+    "batch": "micro8 accum16 seq1024 checkpoint-on",
+    "planned_updates_each": 384,
+    "padded_slots_each": 50331648,
+    "padded_slots_are_not_actual_x": true,
+    "actual_gpu": "NOT_RUN"
+  },
+  "sources": {
+    "failed_static": "handoff/audit/WIP_20261019b_CONTENT_PRE_STATIC.json",
+    "recheck": "handoff/audit/WIP_20261019b_CONTENT_PRE_STATIC_FIXED.json",
+    "copy_eligibility": "handoff/audit/WIP_20261019b_COPY_TOKEN_ELIGIBILITY.json"
+  },
+  "ownership": "새 data_cache/runs/eval/체크포인트 namespace만 생성. 보호 원천·기존 로그/가중치·타 원장·interactive dirty·외부 상태 변경 없음"
+}
