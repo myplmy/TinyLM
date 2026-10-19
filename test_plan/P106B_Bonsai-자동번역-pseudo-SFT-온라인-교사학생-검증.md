@@ -5862,6 +5862,8 @@ CPU 재동결은 v1의127.28초에 실제 소비 전량 검증을 더하므로 �
 
 ## Stage4ev — 학습 때 본 표면의 내용 선택·종료와 자유답 진단
 
+**완료:** 실제 CPU와 세 모델768답·원형 검산을 모두 종료0으로 마쳤다([101 §319~323](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 새 학습·CP0이며 아래 미실행 문구는 설계 당시 이력이다. 실제 학습 T0의 산수도 고정4/16·변형0/16으로 약해 새 표현만의 실패라는 해석은 불성립이다. 형식·Boolean 개선은 제한된 과제에 한정한다. 사용자 사용량 지시에 따라 새 구현/학습 없이 최종 인계한다.
+
 ### 왜·질문
 
 결과101 §318의 TRAIN평가도 새 T2/T3 표현이어서 실제 학습 질문의 최종 fitting이 확인되지 않았다. 새 학습보다 같은 상태의 T0/T2와 TEST를 TF/자유답으로 먼저 나눈다. 상세 범위·비교대안·preflight는 [범위 감사](../handoff/audit/WIP_20261019_QUESTION_CONTENT_SCOPE.md)가 소유한다.
@@ -5874,11 +5876,11 @@ CPU 재동결은 v1의127.28초에 실제 소비 전량 검증을 더하므로 �
 
 | 단계 | 동작 | 상태 |
 |---|---|---|
-| Stage4ev0W | 동결 coded/wire·실제 TRAIN prefix membership·CPU 계약256표면 | 구현됨·실물 NOT_RUN |
-| Stage4evWa | 원부모256 TF/첫logit/실제 자유답 | 구현됨·실물 NOT_RUN |
-| Stage4evWb | fixed_last256, 학습 T0-CQ4회 이력 | 구현됨·실물 NOT_RUN |
-| Stage4evWc | varied_balanced256, T0-CQ1회 이력 | 구현됨·실물 NOT_RUN |
-| Stage4evR |768원형·토큰/본문·정답·가족별 content/EOT·paired T0/T2 검산 | 구현됨·실물 NOT_RUN |
+| Stage4ev0W | 동결 coded/wire·실제 TRAIN prefix membership·CPU 계약256표면 | 완료·101 §319, 모델0 |
+| Stage4evWa | 원부모256 TF/첫logit/실제 자유답 | 완료·101 §320 |
+| Stage4evWb | fixed_last256, 학습 T0-CQ4회 이력 | 완료·101 §321 |
+| Stage4evWc | varied_balanced256, T0-CQ1회 이력 | 완료·101 §322 |
+| Stage4evR |768원형·토큰/본문·정답·가족별 content/EOT·paired T0/T2 검산 | 완료·101 §323 |
 
 split별 가족8query·KO/EN×T0/T2·CQ 고정이며 lookup/JSON은 부모 전체를 보존한다. 기존 코호트의 ID로 고르고 결과별 표본 교체는 하지 않는다. 부모와 학생의 학습 이력은 다르며 fixed_last/varied_balanced는 표현·위치 노출도 다르므로 두 모델 차이를 단일 효과로 분해하지 않는다.
 
@@ -5902,4 +5904,6 @@ CPU≤300초, 각 GPU≤600초·합계5~10분 추정에 모델 간 유휴는 별
 
 공개 진입점은 회귀→선결→본단계이며 각 worker 시간상한과 전체 wrapper 소요를 구분한다. 중첩/누락된 원형과 실패 활동은 통과로 바꾸지 않고, 완료 활동도 OS 종료 증거를 대신하지 않는다. ROOT가 실제 raw footer·pipeline returncode를 별도 확인한다.
 
-2026-10-19: 총괄이 TF-only·TF+fresh768·TF+일부옛응답재사용을 비교하여 새768회수를 선택했다. 아직 CPU준비·모델은 미실행이다. 상세 원형·마스크·target membership을 확인한 뒤에만 실제 모델 단계를 연다.
+2026-10-19 설계 당시: 총괄이 TF-only·TF+fresh768·TF+일부옛응답재사용을 비교하여 새768회수를 선택했다. 이후 실제 CPU는 아래와 같이 완료했고 모델은 미실행이다.
+
+**실제 CPU 완료:** 16:21:17~16:21:38KST 회귀46/선결/prepare 모두0, worker5.869562초·모델/CUDA0이다([101 §319](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 256표면/content1032/EOT256·최대prompt69를 동결했고 정확한 TRAIN T0 노출은 fixed_last4회/varied_balanced1회, 다른 표면0과 첫 target/owner 충돌0이다. 이는 검사한8개 pass의 기술 결합이며 fitting/전이 예측은 실제 모델 뒤에만 대조한다.
