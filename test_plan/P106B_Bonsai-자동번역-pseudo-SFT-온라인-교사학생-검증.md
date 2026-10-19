@@ -6347,7 +6347,7 @@ VAL 완결 segment는 canonical ID 해시, 양끝 partial은 uint16 정렬 subst
 | Stage4fdW0 | 전용회귀·metadata/codec source 고정 | CPU600초·모델0 | 완료54CPU·실제source·101§344 |
 | Stage4fdWa | bounded prefix 변환·현재VAL제외·바이트/토큰분모 | CPU1200초·단일스레드·GPU0 | 완료·실제635segment/105tail merge·101§345 |
 | Stage4fdWb budget | 완결segment 처리율/별도전체TRAIN SHA·fresh host 입력 | 명시 `--allow-full-scan`·600초 신선도·worker600초 | 완료·101§346 |
-| Stage4fdWc/Wd build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·worker10800/1800초 | build19일23:55부터진행, readback NOT_RUN |
+| Stage4fdWc/Wd build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·worker10800/1800초 | 완료·101§348~349·보존1191116192ID/새TRAIN전체hash·ledger재소비 |
 
 초기47 합성회귀 검토에서 발견한 시간분모·readback 예상시간/worker 상한·SIGTERM 실패activity 연결3건은 실제source/pilot 전에 수리·root재검토한다. 새코드는 실물 동결 뒤 수정하지 않는다.
 
@@ -6378,6 +6378,6 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 
 ### 9. 실행 이력
 
-읽기 전용 inventory/8KiB 표본은 별도 감사다. 초기47회귀 뒤 독립검토에서 발견한 세 예산/종료 결함을 수리했으며 root가 전체54개를 재확인했다. source는23:49:03, bounded pilot은23:49:27KST 실제 완료했다. 635완결 segment/old1048405→new1048510·tail171 oldID 제외·105희귀merge 변환·prefix VAL제외0을 관측했다. 새reserved literal분기는0이어서 실물 검증으로 올리지 않는다. 전량변환/언어품질은 아직 NOT_RUN이며 원 조건의 삼진/실수2281 대조를 바꾸지 않는다.
+읽기 전용 inventory/8KiB 표본은 별도 감사다. 초기47회귀 뒤 독립검토에서 발견한 세 예산/종료 결함을 수리했으며 root가 전체54개를 재확인했다. source는23:49:03, bounded pilot은23:49:27KST 실제 완료했다. 635완결 segment/old1048405→new1048510·tail171 oldID 제외·105희귀merge 변환·prefix VAL제외0을 관측했다. build는20일01:06:04, readback은01:07:37KST 완료했다. 1194000000 old IDs 전량 소비에서 canonical1194140597·검증 제외3024405·tail1307 oldIDs를 분리해1191116192 새TRAIN을 남겼다. ledger1444954행/30파일·각20MB미만, 전체출력SHA/범위/EOS/분모 재검산은 통과했다. readback이 원변환·검증제외를 독립 재실행한 것은 아니다. 새reserved literal분기는 전체에서도0이어서 실물 검증으로 올리지 않는다. 기계적 변환 가능 예측은 지지됐지만 고유지식/언어품질은 미확인이며 원 조건의 삼진/실수2281 대조를 바꾸지 않는다. 새meta val=0은 외부 공통VAL 계약이므로 새소비기 배선과 별도학습 preflight가 필요하다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

@@ -1,0 +1,273 @@
+CPU-only explicit build; source/pilot/code pins and actual host plus guest disk/time budget are prerequisites. No legacy VAL access, old mutation, training, GPU, repeated-data padding, or knowledge-quality claim. Worker cap10800s; build/readback must finish before05Z with600s reserve. Raw bin/ledger stays ignored data_cache; public evidence/log below20MB.
+
+==============================================================================
+[runlog] 2026-10-19 23:55:25  name=P106B_Stage4fdWc_legacy_native_build_cpu_235525
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_native_expansion.py --mode build --max-wall-sec 10800 --allow-full-build --host-free-bytes 305562685440 --host-measured-at 2026-10-19T14:55:01+00:00 --host-storage-label WSL /mnt/z host volume Z; user-declared VHDX backing location; topology NOT_AUTOVERIFIED --host-evidence-path handoff/audit/WIP_20261019b_NATIVE_EXPANSION_HOST_BUILD.json --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_canonical_new_eos_from_literal_bytes_is_boundary_error (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_changed_format_normalization_special_or_shift_is_rejected (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_invalid_complete_utf8_errors_without_replacement (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_large_segment_invalid_ids_or_multiple_eos_are_errors (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_layout_proves_shift_and_removed32_not_direct_id_compatibility (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_new_reserved_literal_becomes_canonical_special_not_old_numeric_id (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_old_pad_bos_eos_semantics_and_bytes_are_preserved (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_removed_tail_merge_occurrence_is_observed_and_split_losslessly (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_strict_multibyte_and_original_replacement_character_are_lossless (scripts.test_p106b_native_expansion.CodecTests) ... ok
+test_all_drop_reasons_are_union_not_double_token_exclusion (scripts.test_p106b_native_expansion.ConsumerTests) ... ok
+test_consumer_ledger_missing_reordered_or_changed_denominator_is_rejected (scripts.test_p106b_native_expansion.ConsumerTests) ... ok
+test_incomplete_multibyte_tail_is_counted_excluded_and_never_decoded (scripts.test_p106b_native_expansion.ConsumerTests) ... ok
+test_prefix_reader_never_reads_past_limit_and_chunk_boundaries_do_not_repair_utf8 (scripts.test_p106b_native_expansion.ConsumerTests) ... ok
+test_raw_reader_rejects_odd_or_short_extent_and_zero_reads_nothing (scripts.test_p106b_native_expansion.ConsumerTests) ... ok
+test_statistics_roundtrip_has_stable_string_counter_keys (scripts.test_p106b_native_expansion.ConsumerTests) ... ok
+test_actual_source_sha_mismatch_leaves_partial_bin_but_no_success_metadata (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_budget_readback_extrapolation_also_uses_complete_old_ids_not_long_tail (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_check_only_reads_code_not_source_and_never_launches_workers (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_completed_activity_recipe_code_sha_and_bool_types_are_bound (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_cpu_child_environment_and_timeout_kill_only_owned_group (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_deadlines_and_600_second_record_reserve (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_everything_excluded_stays_empty_without_repetition_or_threshold_relaxation (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_explicit_flags_required_before_whole_hash_or_build (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_failed_worker_records_hold_and_never_calls_real_stage (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_forecast_does_not_claim_actual_remaining_pool_or_new_information (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_fresh_root_host_measurement_has_utc_and_evidence_sha_but_no_topology_claim (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_guest_logical_and_current_host_are_independent_and_fresh_values_may_differ (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_host_fields_are_forwarded_to_each_full_phase_not_inferred_or_reused (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_insufficient_host_blocks_whole_hash_and_build_despite_large_guest_free (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_long_incomplete_tail_cannot_inflate_conversion_or_audit_extrapolation_denominator (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_phase_commands_preserve_flags_and_no_default_full_build (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_pilot_fixed_prefix_consumption_never_whole_source_hashes (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_pool2draw_uses_only_actual_retained_positions (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_powershell_utc_z_and_seven_fraction_digits_work_on_python310 (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_readback_budget_requires_estimate_cap_and_remaining_record_safe_time (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_readback_cap1200_pred1500_holds_before_any_scan_and_records_failed_activity (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_readback_preflight_rechecks_current05z_minus_record_reserve (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_readback_rejects_changed_output_hash_or_last_eos (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_real_owned_term_unwinds_main_to130_and_preserves_failure_activity_and_handlers (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_single_core_environment_restores_parent_values (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_source_change_blocks_before_codec_or_bin_consumption (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_source_stage_only_reads_small_config_and_stats_not_bins (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_termination_guard_restores_previous_handler_normally_and_on_exception (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_tiny_full_pipeline_roundtrip_preserves_originals_and_entire_consumer (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_whitelist_rejects_legacy_val_current_train_and_whole_hash_by_default (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_whole_build_cannot_reuse_or_overwrite_partial_or_complete_cache (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_writeonce_public_json_limit_and_raw_cache_ignore_guard (scripts.test_p106b_native_expansion.ControllerTests) ... ok
+test_complete_val_must_be_canonical_not_ordinary_spelling_of_new_special (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+test_duplicate_validation_segments_use_distinct_hash_count_without_new_truth_claim (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+test_empty_edges_are_not_empty_substring_patterns (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+test_full_and_both_edge_partials_are_conservative_and_disclosed (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+test_odd_byte_match_is_not_an_aligned_token_match (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+test_one_id_partial_is_not_relaxed_and_can_remove_every_segment (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+test_whole_val_without_eos_is_two_edges_not_silently_empty_filter (scripts.test_p106b_native_expansion.ExclusionTests) ... ok
+
+----------------------------------------------------------------------
+Ran 54 tests in 0.454s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[NATIVE_CPU_PREFLIGHT] CPU metadata only; bins/model/GPU NOT_RUN
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[NATIVE_CPU_BUILD] {"old_offset": 5922620, "old_ids": 141, "output_bytes": 11846938}
+[NATIVE_CPU_BUILD] {"old_offset": 11922393, "old_ids": 8512, "output_bytes": 23864764}
+[NATIVE_CPU_BUILD] {"old_offset": 17889253, "old_ids": 3269, "output_bytes": 35789654}
+[NATIVE_CPU_BUILD] {"old_offset": 24021006, "old_ids": 1976, "output_bytes": 48051940}
+[NATIVE_CPU_BUILD] {"old_offset": 29922277, "old_ids": 3881, "output_bytes": 59859676}
+[NATIVE_CPU_BUILD] {"old_offset": 35891891, "old_ids": 8914, "output_bytes": 71810478}
+[NATIVE_CPU_BUILD] {"old_offset": 42001613, "old_ids": 4214, "output_bytes": 84021940}
+[NATIVE_CPU_BUILD] {"old_offset": 47817409, "old_ids": 9024, "output_bytes": 95664546}
+[NATIVE_CPU_BUILD] {"old_offset": 53477242, "old_ids": 1824, "output_bytes": 106971172}
+[NATIVE_CPU_BUILD] {"old_offset": 59484012, "old_ids": 9295, "output_bytes": 119001224}
+[NATIVE_CPU_BUILD] {"old_offset": 65597928, "old_ids": 1267, "output_bytes": 131214214}
+[NATIVE_CPU_BUILD] {"old_offset": 71439180, "old_ids": 1572, "output_bytes": 142898684}
+[NATIVE_CPU_BUILD] {"old_offset": 77494476, "old_ids": 11657, "output_bytes": 155031114}
+[NATIVE_CPU_BUILD] {"old_offset": 83215433, "old_ids": 818, "output_bytes": 166452710}
+[NATIVE_CPU_BUILD] {"old_offset": 89193747, "old_ids": 814, "output_bytes": 178410796}
+[NATIVE_CPU_BUILD] {"old_offset": 95362581, "old_ids": 488, "output_bytes": 190749312}
+[NATIVE_CPU_BUILD] {"old_offset": 101410524, "old_ids": 984, "output_bytes": 202847826}
+[NATIVE_CPU_BUILD] {"old_offset": 107546334, "old_ids": 647, "output_bytes": 215120624}
+[NATIVE_CPU_BUILD] {"old_offset": 113716456, "old_ids": 573, "output_bytes": 227462528}
+[NATIVE_CPU_BUILD] {"old_offset": 119800804, "old_ids": 903, "output_bytes": 239633524}
+[NATIVE_CPU_BUILD] {"old_offset": 126097814, "old_ids": 1250, "output_bytes": 252229694}
+[NATIVE_CPU_BUILD] {"old_offset": 132349169, "old_ids": 451, "output_bytes": 264732380}
+[NATIVE_CPU_BUILD] {"old_offset": 138543550, "old_ids": 601, "output_bytes": 277122984}
+[NATIVE_CPU_BUILD] {"old_offset": 144211575, "old_ids": 2419, "output_bytes": 288464066}
+[NATIVE_CPU_BUILD] {"old_offset": 150570377, "old_ids": 6044, "output_bytes": 301190168}
+[NATIVE_CPU_BUILD] {"old_offset": 156520116, "old_ids": 2858, "output_bytes": 313084642}
+[NATIVE_CPU_BUILD] {"old_offset": 162608403, "old_ids": 221, "output_bytes": 325257354}
+[NATIVE_CPU_BUILD] {"old_offset": 168811951, "old_ids": 12231, "output_bytes": 337689684}
+[NATIVE_CPU_BUILD] {"old_offset": 175095239, "old_ids": 372, "output_bytes": 350233838}
+[NATIVE_CPU_BUILD] {"old_offset": 180645125, "old_ids": 5016, "output_bytes": 361344176}
+[NATIVE_CPU_BUILD] {"old_offset": 186862899, "old_ids": 1134, "output_bytes": 373773324}
+[NATIVE_CPU_BUILD] {"old_offset": 193030091, "old_ids": 4001, "output_bytes": 386114772}
+[NATIVE_CPU_BUILD] {"old_offset": 199356676, "old_ids": 739, "output_bytes": 398762960}
+[NATIVE_CPU_BUILD] {"old_offset": 205438280, "old_ids": 3670, "output_bytes": 410932752}
+[NATIVE_CPU_BUILD] {"old_offset": 211644597, "old_ids": 10433, "output_bytes": 423360374}
+[NATIVE_CPU_BUILD] {"old_offset": 217990100, "old_ids": 507, "output_bytes": 436032866}
+[NATIVE_CPU_BUILD] {"old_offset": 223827492, "old_ids": 1584, "output_bytes": 447711172}
+[NATIVE_CPU_BUILD] {"old_offset": 229891119, "old_ids": 2591, "output_bytes": 459841682}
+[NATIVE_CPU_BUILD] {"old_offset": 236124835, "old_ids": 24687, "output_bytes": 472354648}
+[NATIVE_CPU_BUILD] {"old_offset": 242533600, "old_ids": 8922, "output_bytes": 485141782}
+[NATIVE_CPU_BUILD] {"old_offset": 248762775, "old_ids": 413, "output_bytes": 497584380}
+[NATIVE_CPU_BUILD] {"old_offset": 254929540, "old_ids": 3847, "output_bytes": 509926400}
+[NATIVE_CPU_BUILD] {"old_offset": 261029083, "old_ids": 185, "output_bytes": 522119672}
+[NATIVE_CPU_BUILD] {"old_offset": 267258236, "old_ids": 16160, "output_bytes": 534611392}
+[NATIVE_CPU_BUILD] {"old_offset": 273452024, "old_ids": 14443, "output_bytes": 546996868}
+[NATIVE_CPU_BUILD] {"old_offset": 279528545, "old_ids": 2635, "output_bytes": 559126376}
+[NATIVE_CPU_BUILD] {"old_offset": 284628272, "old_ids": 376, "output_bytes": 569322540}
+[NATIVE_CPU_BUILD] {"old_offset": 290225520, "old_ids": 2596, "output_bytes": 580522896}
+[NATIVE_CPU_BUILD] {"old_offset": 296384568, "old_ids": 13320, "output_bytes": 592863920}
+[NATIVE_CPU_BUILD] {"old_offset": 302539593, "old_ids": 102, "output_bytes": 605149392}
+[NATIVE_CPU_BUILD] {"old_offset": 309049236, "old_ids": 3810, "output_bytes": 618177482}
+[NATIVE_CPU_BUILD] {"old_offset": 315423089, "old_ids": 278, "output_bytes": 630919446}
+[NATIVE_CPU_BUILD] {"old_offset": 321766873, "old_ids": 1252, "output_bytes": 643610508}
+[NATIVE_CPU_BUILD] {"old_offset": 328033855, "old_ids": 2789, "output_bytes": 656145056}
+[NATIVE_CPU_BUILD] {"old_offset": 334309927, "old_ids": 428, "output_bytes": 668693838}
+[NATIVE_CPU_BUILD] {"old_offset": 340414866, "old_ids": 1352, "output_bytes": 680907056}
+[NATIVE_CPU_BUILD] {"old_offset": 346778632, "old_ids": 1114, "output_bytes": 693635710}
+[NATIVE_CPU_BUILD] {"old_offset": 352807911, "old_ids": 302, "output_bytes": 705693908}
+[NATIVE_CPU_BUILD] {"old_offset": 359022523, "old_ids": 360, "output_bytes": 718124812}
+[NATIVE_CPU_BUILD] {"old_offset": 365359609, "old_ids": 9689, "output_bytes": 730818908}
+[NATIVE_CPU_BUILD] {"old_offset": 371448258, "old_ids": 537, "output_bytes": 742979132}
+[NATIVE_CPU_BUILD] {"old_offset": 377650805, "old_ids": 1659, "output_bytes": 755387800}
+[NATIVE_CPU_BUILD] {"old_offset": 383700659, "old_ids": 5592, "output_bytes": 767496610}
+[NATIVE_CPU_BUILD] {"old_offset": 389524100, "old_ids": 8441, "output_bytes": 779150518}
+[NATIVE_CPU_BUILD] {"old_offset": 395743712, "old_ids": 249, "output_bytes": 791573804}
+[NATIVE_CPU_BUILD] {"old_offset": 402341434, "old_ids": 979, "output_bytes": 804772348}
+[NATIVE_CPU_BUILD] {"old_offset": 408920195, "old_ids": 563, "output_bytes": 817930596}
+[NATIVE_CPU_BUILD] {"old_offset": 415271449, "old_ids": 3361, "output_bytes": 830640052}
+[NATIVE_CPU_BUILD] {"old_offset": 421469141, "old_ids": 491, "output_bytes": 843030838}
+[NATIVE_CPU_BUILD] {"old_offset": 427657998, "old_ids": 529, "output_bytes": 855410202}
+[NATIVE_CPU_BUILD] {"old_offset": 433711502, "old_ids": 8191, "output_bytes": 867533930}
+[NATIVE_CPU_BUILD] {"old_offset": 439964919, "old_ids": 867, "output_bytes": 880027462}
+[NATIVE_CPU_BUILD] {"old_offset": 446106565, "old_ids": 630, "output_bytes": 892311732}
+[NATIVE_CPU_BUILD] {"old_offset": 452177107, "old_ids": 3314, "output_bytes": 904459572}
+[NATIVE_CPU_BUILD] {"old_offset": 458475406, "old_ids": 134, "output_bytes": 917050960}
+[NATIVE_CPU_BUILD] {"old_offset": 464408794, "old_ids": 16362, "output_bytes": 928950988}
+[NATIVE_CPU_BUILD] {"old_offset": 470582540, "old_ids": 343, "output_bytes": 941267800}
+[NATIVE_CPU_BUILD] {"old_offset": 476674540, "old_ids": 515, "output_bytes": 953453510}
+[NATIVE_CPU_BUILD] {"old_offset": 482812354, "old_ids": 213, "output_bytes": 965729886}
+[NATIVE_CPU_BUILD] {"old_offset": 489069553, "old_ids": 726, "output_bytes": 978246548}
+[NATIVE_CPU_BUILD] {"old_offset": 495286825, "old_ids": 3328, "output_bytes": 990687528}
+[NATIVE_CPU_BUILD] {"old_offset": 501332227, "old_ids": 1314, "output_bytes": 1002775672}
+[NATIVE_CPU_BUILD] {"old_offset": 507642606, "old_ids": 1149, "output_bytes": 1015397560}
+[NATIVE_CPU_BUILD] {"old_offset": 513714896, "old_ids": 1046, "output_bytes": 1027543344}
+[NATIVE_CPU_BUILD] {"old_offset": 519881374, "old_ids": 1823, "output_bytes": 1039879150}
+[NATIVE_CPU_BUILD] {"old_offset": 526197749, "old_ids": 880, "output_bytes": 1052511570}
+[NATIVE_CPU_BUILD] {"old_offset": 532310920, "old_ids": 216, "output_bytes": 1064737992}
+[NATIVE_CPU_BUILD] {"old_offset": 538434853, "old_ids": 7047, "output_bytes": 1077001116}
+[NATIVE_CPU_BUILD] {"old_offset": 544656219, "old_ids": 1180, "output_bytes": 1089433550}
+[NATIVE_CPU_BUILD] {"old_offset": 550506314, "old_ids": 2106, "output_bytes": 1101136976}
+[NATIVE_CPU_BUILD] {"old_offset": 556888033, "old_ids": 814, "output_bytes": 1113899188}
+[NATIVE_CPU_BUILD] {"old_offset": 563143024, "old_ids": 5598, "output_bytes": 1126420192}
+[NATIVE_CPU_BUILD] {"old_offset": 569241565, "old_ids": 3681, "output_bytes": 1138614788}
+[NATIVE_CPU_BUILD] {"old_offset": 575574592, "old_ids": 18494, "output_bytes": 1151312278}
+[NATIVE_CPU_BUILD] {"old_offset": 581512165, "old_ids": 2608, "output_bytes": 1163155446}
+[NATIVE_CPU_BUILD] {"old_offset": 587598549, "old_ids": 912, "output_bytes": 1175326250}
+[NATIVE_CPU_BUILD] {"old_offset": 593913286, "old_ids": 3038, "output_bytes": 1187961452}
+[NATIVE_CPU_BUILD] {"old_offset": 599984197, "old_ids": 490, "output_bytes": 1195979912}
+[NATIVE_CPU_BUILD] {"old_offset": 606220548, "old_ids": 314, "output_bytes": 1206561268}
+[NATIVE_CPU_BUILD] {"old_offset": 612532684, "old_ids": 1425, "output_bytes": 1219189092}
+[NATIVE_CPU_BUILD] {"old_offset": 618733227, "old_ids": 3721, "output_bytes": 1231588086}
+[NATIVE_CPU_BUILD] {"old_offset": 625090536, "old_ids": 437, "output_bytes": 1244297428}
+[NATIVE_CPU_BUILD] {"old_offset": 631260024, "old_ids": 1419, "output_bytes": 1256639494}
+[NATIVE_CPU_BUILD] {"old_offset": 637428836, "old_ids": 15717, "output_bytes": 1269007410}
+[NATIVE_CPU_BUILD] {"old_offset": 643616226, "old_ids": 498, "output_bytes": 1281353094}
+[NATIVE_CPU_BUILD] {"old_offset": 649707120, "old_ids": 1203, "output_bytes": 1293537716}
+[NATIVE_CPU_BUILD] {"old_offset": 656059527, "old_ids": 5621, "output_bytes": 1306252858}
+[NATIVE_CPU_BUILD] {"old_offset": 661876593, "old_ids": 12759, "output_bytes": 1317902668}
+[NATIVE_CPU_BUILD] {"old_offset": 667036579, "old_ids": 4689, "output_bytes": 1328207494}
+[NATIVE_CPU_BUILD] {"old_offset": 672839178, "old_ids": 11118, "output_bytes": 1339827078}
+[NATIVE_CPU_BUILD] {"old_offset": 678543386, "old_ids": 290, "output_bytes": 1351213328}
+[NATIVE_CPU_BUILD] {"old_offset": 684688059, "old_ids": 754, "output_bytes": 1363505358}
+[NATIVE_CPU_BUILD] {"old_offset": 690720763, "old_ids": 4621, "output_bytes": 1375579846}
+[NATIVE_CPU_BUILD] {"old_offset": 696611182, "old_ids": 2240, "output_bytes": 1387356970}
+[NATIVE_CPU_BUILD] {"old_offset": 702545683, "old_ids": 602, "output_bytes": 1399223942}
+[NATIVE_CPU_BUILD] {"old_offset": 708596715, "old_ids": 642, "output_bytes": 1411327624}
+[NATIVE_CPU_BUILD] {"old_offset": 714836026, "old_ids": 926, "output_bytes": 1423808564}
+[NATIVE_CPU_BUILD] {"old_offset": 721267290, "old_ids": 361, "output_bytes": 1436671530}
+[NATIVE_CPU_BUILD] {"old_offset": 727282366, "old_ids": 1108, "output_bytes": 1448704520}
+[NATIVE_CPU_BUILD] {"old_offset": 733325010, "old_ids": 609, "output_bytes": 1460790174}
+[NATIVE_CPU_BUILD] {"old_offset": 739418827, "old_ids": 3213, "output_bytes": 1472984234}
+[NATIVE_CPU_BUILD] {"old_offset": 745310761, "old_ids": 1139, "output_bytes": 1484765376}
+[NATIVE_CPU_BUILD] {"old_offset": 751325107, "old_ids": 4015, "output_bytes": 1496801150}
+[NATIVE_CPU_BUILD] {"old_offset": 757335154, "old_ids": 792, "output_bytes": 1508816210}
+[NATIVE_CPU_BUILD] {"old_offset": 763335950, "old_ids": 2855, "output_bytes": 1520823416}
+[NATIVE_CPU_BUILD] {"old_offset": 769232897, "old_ids": 225, "output_bytes": 1532613440}
+[NATIVE_CPU_BUILD] {"old_offset": 775308230, "old_ids": 297, "output_bytes": 1544765458}
+[NATIVE_CPU_BUILD] {"old_offset": 781400523, "old_ids": 229, "output_bytes": 1556951198}
+[NATIVE_CPU_BUILD] {"old_offset": 787423271, "old_ids": 1184, "output_bytes": 1568999962}
+[NATIVE_CPU_BUILD] {"old_offset": 793234694, "old_ids": 86948, "output_bytes": 1580795868}
+[NATIVE_CPU_BUILD] {"old_offset": 799341885, "old_ids": 998, "output_bytes": 1592839552}
+[NATIVE_CPU_BUILD] {"old_offset": 805309989, "old_ids": 168, "output_bytes": 1604775224}
+[NATIVE_CPU_BUILD] {"old_offset": 811485104, "old_ids": 442, "output_bytes": 1617127232}
+[NATIVE_CPU_BUILD] {"old_offset": 817499710, "old_ids": 408, "output_bytes": 1629157574}
+[NATIVE_CPU_BUILD] {"old_offset": 823512173, "old_ids": 109, "output_bytes": 1641183126}
+[NATIVE_CPU_BUILD] {"old_offset": 829847562, "old_ids": 288, "output_bytes": 1653855524}
+[NATIVE_CPU_BUILD] {"old_offset": 835844769, "old_ids": 171, "output_bytes": 1665851026}
+[NATIVE_CPU_BUILD] {"old_offset": 841909222, "old_ids": 68, "output_bytes": 1677981092}
+[NATIVE_CPU_BUILD] {"old_offset": 847928521, "old_ids": 3500, "output_bytes": 1690027712}
+[NATIVE_CPU_BUILD] {"old_offset": 853455715, "old_ids": 82554, "output_bytes": 1701241622}
+[NATIVE_CPU_BUILD] {"old_offset": 859773543, "old_ids": 2795, "output_bytes": 1713719284}
+[NATIVE_CPU_BUILD] {"old_offset": 865707754, "old_ids": 2522, "output_bytes": 1725588944}
+[NATIVE_CPU_BUILD] {"old_offset": 871798461, "old_ids": 7267, "output_bytes": 1737781162}
+[NATIVE_CPU_BUILD] {"old_offset": 877955928, "old_ids": 483, "output_bytes": 1750084118}
+[NATIVE_CPU_BUILD] {"old_offset": 883977330, "old_ids": 7613, "output_bytes": 1762142560}
+[NATIVE_CPU_BUILD] {"old_offset": 890096487, "old_ids": 3062, "output_bytes": 1774373112}
+[NATIVE_CPU_BUILD] {"old_offset": 896157566, "old_ids": 1679, "output_bytes": 1786494122}
+[NATIVE_CPU_BUILD] {"old_offset": 902394727, "old_ids": 2806, "output_bytes": 1798972214}
+[NATIVE_CPU_BUILD] {"old_offset": 908935601, "old_ids": 2442, "output_bytes": 1812054870}
+[NATIVE_CPU_BUILD] {"old_offset": 914986162, "old_ids": 16197, "output_bytes": 1824184778}
+[NATIVE_CPU_BUILD] {"old_offset": 921084241, "old_ids": 436, "output_bytes": 1836350770}
+[NATIVE_CPU_BUILD] {"old_offset": 927008232, "old_ids": 1305, "output_bytes": 1848201654}
+[NATIVE_CPU_BUILD] {"old_offset": 933043604, "old_ids": 181, "output_bytes": 1860271540}
+[NATIVE_CPU_BUILD] {"old_offset": 939257756, "old_ids": 15863, "output_bytes": 1872732758}
+[NATIVE_CPU_BUILD] {"old_offset": 945133285, "old_ids": 2244, "output_bytes": 1884458028}
+[NATIVE_CPU_BUILD] {"old_offset": 950864748, "old_ids": 2452, "output_bytes": 1895922488}
+[NATIVE_CPU_BUILD] {"old_offset": 957057258, "old_ids": 510, "output_bytes": 1908305044}
+[NATIVE_CPU_BUILD] {"old_offset": 963126514, "old_ids": 393, "output_bytes": 1920444386}
+[NATIVE_CPU_BUILD] {"old_offset": 968957673, "old_ids": 1865, "output_bytes": 1932111320}
+[NATIVE_CPU_BUILD] {"old_offset": 975004454, "old_ids": 1359, "output_bytes": 1944208796}
+[NATIVE_CPU_BUILD] {"old_offset": 980796484, "old_ids": 940, "output_bytes": 1955796840}
+[NATIVE_CPU_BUILD] {"old_offset": 986536689, "old_ids": 2007, "output_bytes": 1967280616}
+[NATIVE_CPU_BUILD] {"old_offset": 992609395, "old_ids": 1551, "output_bytes": 1979426460}
+[NATIVE_CPU_BUILD] {"old_offset": 998616121, "old_ids": 90415, "output_bytes": 1991619054}
+[NATIVE_CPU_BUILD] {"old_offset": 1004833991, "old_ids": 7489, "output_bytes": 2003890594}
+[NATIVE_CPU_BUILD] {"old_offset": 1010745126, "old_ids": 899, "output_bytes": 2015701308}
+[NATIVE_CPU_BUILD] {"old_offset": 1016395961, "old_ids": 1548, "output_bytes": 2027005576}
+[NATIVE_CPU_BUILD] {"old_offset": 1022041709, "old_ids": 1225, "output_bytes": 2038297650}
+[NATIVE_CPU_BUILD] {"old_offset": 1028357905, "old_ids": 164, "output_bytes": 2050927832}
+[NATIVE_CPU_BUILD] {"old_offset": 1034496344, "old_ids": 827, "output_bytes": 2063197990}
+[NATIVE_CPU_BUILD] {"old_offset": 1040645518, "old_ids": 7520, "output_bytes": 2075511176}
+[NATIVE_CPU_BUILD] {"old_offset": 1046763051, "old_ids": 1457, "output_bytes": 2087735772}
+[NATIVE_CPU_BUILD] {"old_offset": 1052980011, "old_ids": 5173, "output_bytes": 2100178600}
+[NATIVE_CPU_BUILD] {"old_offset": 1059120000, "old_ids": 955, "output_bytes": 2112449932}
+[NATIVE_CPU_BUILD] {"old_offset": 1064878681, "old_ids": 41922, "output_bytes": 2124050560}
+[NATIVE_CPU_BUILD] {"old_offset": 1070438823, "old_ids": 6717, "output_bytes": 2135101632}
+[NATIVE_CPU_BUILD] {"old_offset": 1076017842, "old_ids": 552, "output_bytes": 2146248516}
+[NATIVE_CPU_BUILD] {"old_offset": 1082116388, "old_ids": 4155, "output_bytes": 2158454252}
+[NATIVE_CPU_BUILD] {"old_offset": 1088289278, "old_ids": 586, "output_bytes": 2170794302}
+[NATIVE_CPU_BUILD] {"old_offset": 1094481771, "old_ids": 864, "output_bytes": 2183181382}
+[NATIVE_CPU_BUILD] {"old_offset": 1100732209, "old_ids": 1382, "output_bytes": 2195684722}
+[NATIVE_CPU_BUILD] {"old_offset": 1106799755, "old_ids": 674, "output_bytes": 2207820088}
+[NATIVE_CPU_BUILD] {"old_offset": 1113072810, "old_ids": 1883, "output_bytes": 2220368336}
+[NATIVE_CPU_BUILD] {"old_offset": 1119343190, "old_ids": 699, "output_bytes": 2232907956}
+[NATIVE_CPU_BUILD] {"old_offset": 1125475491, "old_ids": 1016, "output_bytes": 2245174580}
+[NATIVE_CPU_BUILD] {"old_offset": 1131772530, "old_ids": 1602, "output_bytes": 2257771442}
+[NATIVE_CPU_BUILD] {"old_offset": 1137739747, "old_ids": 952, "output_bytes": 2269706000}
+[NATIVE_CPU_BUILD] {"old_offset": 1144086168, "old_ids": 230, "output_bytes": 2282398870}
+[NATIVE_CPU_BUILD] {"old_offset": 1150250992, "old_ids": 6502, "output_bytes": 2294742436}
+[NATIVE_CPU_BUILD] {"old_offset": 1156443277, "old_ids": 540, "output_bytes": 2307116816}
+[NATIVE_CPU_BUILD] {"old_offset": 1162814025, "old_ids": 407, "output_bytes": 2319857094}
+[NATIVE_CPU_BUILD] {"old_offset": 1168942874, "old_ids": 1425, "output_bytes": 2332118138}
+[NATIVE_CPU_BUILD] {"old_offset": 1175274072, "old_ids": 18469, "output_bytes": 2344815800}
+[NATIVE_CPU_BUILD] {"old_offset": 1181615651, "old_ids": 1125, "output_bytes": 2357465614}
+[NATIVE_CPU_BUILD] {"old_offset": 1187712330, "old_ids": 596, "output_bytes": 2369659390}
+[NATIVE_CPU_COMPLETE] {"mode": "build", "status": "FULL_CONVERSION_COMPLETE_NOT_TRAINING", "model_gpu_training": "NOT_RUN"}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_NATIVE_EXPANSION_CPU_build", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 70.7분  (2026-10-20 01:06:04)
+==============================================================================

@@ -450,3 +450,5 @@ ORPO−SFT의한정대응구간이양수여도부모우위/조건갱신/언어�
 [101 §§331~343](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 같은 자료·부모·배치의 내용 평균 양384회/3388실답을 완료했다. TEST637→628/1024로 전면 비채택이며 불리언 이득과 산수/JSON 계약 손상을 나눠 본다. EOT 질량은 gradient·clip·망각 불변이 아니다. 자기 span head640실답에서도 CoQA 유일부분문자열 위치의 의미결함이 있어 구조만의 효과로 해석하지 않는다. broad v1 metadata ERROR9는 원형 보존 후 v2 CPU90/같은22528 payload로 복구했고 모델0이다. 새 scratch/native 삼진·실수 경로는 양cost/기한예약 뒤 삼진2281회 진행 중이며 새 답변 품질은 아직 미확인이다.
 
 [101 §§344~347](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 원문 캐시의 CPU source/prefix·전량 SHA/host 예산과 새 scratch 삼진 native 완료를 분리한다. 실제 바이트 보존/희귀 merge 검산은 전체 retained/언어품질 증명이 아니며, 고정 native32 손실도 실제 QA/대화와 다르다. 같은 초기값의 float native와 legacy 전량 CPU build가 진행하고, 자기SFT/실제답·broad·교차·공개평가는 각 완료 선결 뒤만 연다. 시간은 UTC 달력과 perf_counter를 따로 보존한다.
+
+[101 §§348~349](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 old1194000000ID 전체 바이트 보존 변환과 새출력/ledger 재소비로1191116192ID를 확인했다. EOS 구간은 원URL 문서가 아니며 검증 exact/partial 제외를 의미near 제거로 확대하지 않는다. 기존601M을 더하거나 새75M대화/고유지식으로 계산하지 않는다. bin/ledger는ignored캐시, 공개수치/해시만20MB미만으로 보존한다. 새meta의외부VAL계약을새학습소비기에서명시해야한다.

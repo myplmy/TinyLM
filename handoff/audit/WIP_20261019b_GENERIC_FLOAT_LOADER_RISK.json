@@ -1,0 +1,27 @@
+{
+  "schema": "TINYLM_GENERIC_FLOAT_LOADER_RISK_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "status": "READONLY_CURRENT_CODE_OBSERVATION_NOT_IMPLEMENTED_GUARD",
+  "inspection_scope": [
+    "scripts/interactive_infer.py:_load_runtime",
+    "tinylm/infer/catalog.py:discover_models",
+    "tinylm/infer/generate.py:load_model",
+    "scripts/p106b_weight_route.py:generic_loader_guard and route_metadata"
+  ],
+  "observation": [
+    "현재 catalog는 runs/ckpt의 *.pt를 열거한다.",
+    "현재 대화형 runtime은 선택 CP metadata/tokenizer 확인 뒤 generic load_model을 호출한다.",
+    "이 세 파일의 해당 경로에서는 quantization_route/generic_loader_guard를 찾지 못했다.",
+    "실험 helper는 dedicated_loader_required metadata와 전용 strict loader/route context를 제공하나 공용 loader 자체를 바꾸는 기능은 아니다."
+  ],
+  "impact": "나중에 float native/SFT CP가 메뉴에 보이면 generic 도구가 삼진 forward로 읽을 위험이 있다. fp32-math는 연산 정밀도이지 float weight-route 선택이 아니다.",
+  "current_experiment": "native/SFT·cross·current benchmark는 각 전용 strict route를 사용한다. 일반 메뉴로 평가하지 않는다.",
+  "historical_causality": "사용자의 과거 interactive7 오답을 이 새 float 위험 때문이라고 소급 판정하지 않는다.",
+  "actions": {
+    "warned_user_inline": true,
+    "modified_interactive_or_product_loader": false,
+    "moved_or_deleted_checkpoints": false,
+    "new_gpu_test": false
+  },
+  "scope_boundary": "기존 interactive dirty 변경은 이번 원장의 수정 제외다. 제품용 구분/거부 또는 지원은 별도 허용 범위에서 설계해야 한다."
+}
