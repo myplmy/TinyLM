@@ -1,0 +1,237 @@
+{
+  "schema": "TINYLM_RETAINED_LAUNCHERS_DISPOSITION_V2",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authorization": "사용자가 다음 주도적 실험에서 수행/대체/조건 조치를 총괄 판단하라고 명시한 현재 지시",
+  "source": "handoff/audit/WIP_20261019_QUEUE_PROVENANCE_REVIEW.json",
+  "correction": "이전20개공통사유의75M선결은생성start/resume에적용되지않는다. 이번에는mode별로분리했다.",
+  "items": [
+    {
+      "path": "run_P106B_Stage4jWk_stream_mtp_fork_start.sh",
+      "destination": "run_P106B_Stage4jWk_stream_mtp_fork_start-hold.sh",
+      "sha256": "E5F4B54152BF99D2397251B0E8F118A7344A213221A7E2D439B720C1D723FD06",
+      "bytes": 1166,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode start --max-wall-sec 3600 --execute"
+      ],
+      "reason": "교사생성의 선결은75M이 아니다. 이 v5는 source-visible task 입력을 미채택한 literal V3 기준 경로이므로 새 생산계약·소형 게이트가 필요하다. 그대로 오래 생성하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4jWl_stream_mtp_explicit_resume.sh",
+      "destination": "run_P106B_Stage4jWl_stream_mtp_explicit_resume-hold.sh",
+      "sha256": "CB24ED4565988F579C9A4A36E55A9B8F4E62A0C8F52C44F1EA7D9CF13F11F2ED",
+      "bytes": 1152,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode resume --max-wall-sec 3600 --execute"
+      ],
+      "reason": "교사생성의 선결은75M이 아니다. 이 v5는 source-visible task 입력을 미채택한 literal V3 기준 경로이므로 새 생산계약·소형 게이트가 필요하다. 그대로 오래 생성하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4kWg_stream_completed_corpus.sh",
+      "destination": "run_P106B_Stage4kWg_stream_completed_corpus-hold.sh",
+      "sha256": "EF4FB04C9788F22277BFE565CC8A6254CC44D8E93C6EC54FDE9F910FDFA9BA40",
+      "bytes": 1141,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode finalize --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4k0Wg_stream_student_wire.sh",
+      "destination": "run_P106B_Stage4k0Wg_stream_student_wire-hold.sh",
+      "sha256": "34BAEA2C133F4406E8400F6022B661B956A687692146F1B1C6821D865979CF2D",
+      "bytes": 1140,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode wire --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4lWf_stream_chat32_repeat4.sh",
+      "destination": "run_P106B_Stage4lWf_stream_chat32_repeat4-hold.sh",
+      "sha256": "03342AB6338B5D7EE774E6C62ABB9A47C95108ED4CE7630120D77A25C5871D81",
+      "bytes": 1171,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode train --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4mWf_stream_multiaxis.sh",
+      "destination": "run_P106B_Stage4mWf_stream_multiaxis-hold.sh",
+      "sha256": "CA24956F658C3BD2E98B3CC48646A9BBF225AC8FDAB392FA45DE0D1A23F6A586",
+      "bytes": 1124,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_stream_fork.py --mode eval --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4kWf_mtp_completed_corpus.sh",
+      "destination": "run_P106B_Stage4kWf_mtp_completed_corpus-hold.sh",
+      "sha256": "AA208C8A66A5B4DCCDA37297594DE7E476D45CD81F5AFA5008894FB46714AE5C",
+      "bytes": 1233,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_mtp_resume.py --mode finalize --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4k0Wf_mtp_corpus_student_wire.sh",
+      "destination": "run_P106B_Stage4k0Wf_mtp_corpus_student_wire-hold.sh",
+      "sha256": "65B7FD2DA673EDAF366D1907A848A36DD0D624347EEC26448A3FA4457E408499",
+      "bytes": 1187,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_mtp_resume.py --mode wire --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4lWe_mtp_corpus_chat32_repeat4.sh",
+      "destination": "run_P106B_Stage4lWe_mtp_corpus_chat32_repeat4-hold.sh",
+      "sha256": "28AD9432F48710649EB1C117ADD02659FFC11C2BD2756A941E7049A28EBE38F1",
+      "bytes": 1224,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_mtp_resume.py --mode train --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4mWe_mtp_corpus_multiaxis.sh",
+      "destination": "run_P106B_Stage4mWe_mtp_corpus_multiaxis-hold.sh",
+      "sha256": "CD9ACF66EE53DC18C9A4E769D3F87AB31D8D08F1EDB8BD188F7CC1E76CFE6940",
+      "bytes": 1237,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_mtp_resume.py --mode eval --execute"
+      ],
+      "reason": "이 버전의 정확75M·언어/과제quota·학생배선/자식이 필요하다. 부분학습 자체는 별도 새 교과로 가능하며 이 옛 완료게이트를 우회 완료 처리하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4lWd_budget_literal_repeat4.sh",
+      "destination": "run_P106B_Stage4lWd_budget_literal_repeat4-hold.sh",
+      "sha256": "41D0842FC25ECB6CD41C4A7643B83F32521F92CB6E77E520012538EC94763A2F",
+      "bytes": 1147,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_literal_recovery.py --mode train --execute"
+      ],
+      "reason": "정확한 OFF 버전75M/학생 선결 미완. ON/새source 개선의 역사 대안이며 같은 자료 반복으로 완성 표시하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4mWd_budget_literal_multiaxis.sh",
+      "destination": "run_P106B_Stage4mWd_budget_literal_multiaxis-hold.sh",
+      "sha256": "0C83BC372DD169930DB6F15407976EB34ECD447AAA946CDF414C04915323F9AD",
+      "bytes": 1105,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_literal_recovery.py --mode eval --execute"
+      ],
+      "reason": "정확한 OFF 버전75M/학생 선결 미완. ON/새source 개선의 역사 대안이며 같은 자료 반복으로 완성 표시하지 않는다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4lW_gemma_chat32_repeat4.sh",
+      "destination": "run_P106B_Stage4lW_gemma_chat32_repeat4-hold.sh",
+      "sha256": "E835C20CBA93C56839021E2B876A2A52958733CEF8EE3D2E9ADC98EA3FAD163E",
+      "bytes": 1141,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_deficit_production.py --mode train --execute"
+      ],
+      "reason": "옛V2의14/16 역사 선결과 해당 완성 corpus/자식이 없다. 새 output/literal/MTP 경로가 준비됐으므로 원형만 보존하고 현재 우선 큐에서 뺀다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4mW_gemma_capability_multiaxis.sh",
+      "destination": "run_P106B_Stage4mW_gemma_capability_multiaxis-hold.sh",
+      "sha256": "9355DE6E5407403A5E41EE3D8DE6F5942D28C9B545C0DE1B69263428B7C84CDC",
+      "bytes": 1198,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_gemma_deficit_production.py --mode eval --execute"
+      ],
+      "reason": "옛V2의14/16 역사 선결과 해당 완성 corpus/자식이 없다. 새 output/literal/MTP 경로가 준비됐으므로 원형만 보존하고 현재 우선 큐에서 뺀다.",
+      "decision": "RENAME_COMPATIBLE_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4aj3W_supported_source_corpus-hold.sh",
+      "destination": "run_P106B_Stage4aj3W_supported_source_corpus-hold.sh",
+      "sha256": "C67CFE4C937D2B3216E8C75E6F4EF17D6C9BB1B28B2753C8555048A4286BF941",
+      "bytes": 756,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_source_expand.py --mode corpus --execute"
+      ],
+      "reason": "기존6보류의원형/명령을보존한다. 당시권한/완료source·공동예산선결을현재새시각/부분교과로자동개방하지않는다. 해당목적은새계획/버전에서만재검토.",
+      "decision": "KEEP_EXISTING_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4ba0Wc_joint_budget-hold.sh",
+      "destination": "run_P106B_Stage4ba0Wc_joint_budget-hold.sh",
+      "sha256": "1E043453239B94BBB1F0DE12C86B3208A9DCC5DCF867216287E8B194F00A381E",
+      "bytes": 742,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_joint_decimal.py --mode budget --execute"
+      ],
+      "reason": "기존6보류의원형/명령을보존한다. 당시권한/완료source·공동예산선결을현재새시각/부분교과로자동개방하지않는다. 해당목적은새계획/버전에서만재검토.",
+      "decision": "KEEP_EXISTING_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4baWa_state_fixed_digits_zero-hold.sh",
+      "destination": "run_P106B_Stage4baWa_state_fixed_digits_zero-hold.sh",
+      "sha256": "F51DAE8C5367FDCCEE8D415036A7453237823F213EA462E3963961F2DA45D623",
+      "bytes": 793,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_joint_decimal.py --mode train --arm digits0 --execute --max-wall-sec 3600"
+      ],
+      "reason": "기존6보류의원형/명령을보존한다. 당시권한/완료source·공동예산선결을현재새시각/부분교과로자동개방하지않는다. 해당목적은새계획/버전에서만재검토.",
+      "decision": "KEEP_EXISTING_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4baWb_state_fixed_digits_positive-hold.sh",
+      "destination": "run_P106B_Stage4baWb_state_fixed_digits_positive-hold.sh",
+      "sha256": "CC6C783F0B652DE8D65843A84FE2849D6984FD3A2D2E7D1CAFF841AD4978F9D1",
+      "bytes": 807,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_joint_decimal.py --mode train --arm digits1 --execute --max-wall-sec 3600"
+      ],
+      "reason": "기존6보류의원형/명령을보존한다. 당시권한/완료source·공동예산선결을현재새시각/부분교과로자동개방하지않는다. 해당목적은새계획/버전에서만재검토.",
+      "decision": "KEEP_EXISTING_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4bbW_joint_decimal_readback-hold.sh",
+      "destination": "run_P106B_Stage4bbW_joint_decimal_readback-hold.sh",
+      "sha256": "B3167D455039D1B14953874860F762A8D4AE76719CCF4BB3D86FE1507EDA4C84",
+      "bytes": 822,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_joint_decimal.py --mode evaluate --execute --max-wall-sec 1800"
+      ],
+      "reason": "기존6보류의원형/명령을보존한다. 당시권한/완료source·공동예산선결을현재새시각/부분교과로자동개방하지않는다. 해당목적은새계획/버전에서만재검토.",
+      "decision": "KEEP_EXISTING_HOLD"
+    },
+    {
+      "path": "run_P106B_Stage4bbWb_joint_pair_readback-hold.sh",
+      "destination": "run_P106B_Stage4bbWb_joint_pair_readback-hold.sh",
+      "sha256": "16F91C46A0746B7BA46B70884ECD2539B26E6C9D2199B987CF0A444CF03D45F6",
+      "bytes": 676,
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/summarize_p106b_structured_pair.py --tag p106b_joint_decimal_v1_s1337 --execute"
+      ],
+      "reason": "기존6보류의원형/명령을보존한다. 당시권한/완료source·공동예산선결을현재새시각/부분교과로자동개방하지않는다. 해당목적은새계획/버전에서만재검토.",
+      "decision": "KEEP_EXISTING_HOLD"
+    }
+  ],
+  "counts": {
+    "total": 20,
+    "newly_held": 14,
+    "unchanged_hold": 6
+  },
+  "no_new_gpu": true,
+  "no_old_source_or_corpus_changed": true,
+  "superseding_direction": "Stage4ew 목적함수실험과 Stage4ey 부분의사소통교과는75M무관별도실험. 새source-visible teacher생산은그소형계약과비용/효과를확인한후만확대. 기존코퍼스/실패/40h이내장기요청기준보존."
+}

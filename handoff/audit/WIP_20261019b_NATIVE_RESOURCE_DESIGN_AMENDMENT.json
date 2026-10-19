@@ -1,0 +1,27 @@
+{
+  "schema": "TINYLM_NATIVE_RESOURCE_DESIGN_AMENDMENT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "previous": "handoff/audit/WIP_20261019b_NATIVE_WEIGHT_ROUTE_F4.json",
+  "time": "2026-10-19 원형동결·실물모델·비용측정 전",
+  "reason": "과거 native 93분 두팔에1.35배 안전여유, 미측정SFT1h 및평가/기록3h를 더하면8h경계에걸릴수있다. 아직 새시험을 실행하기 전이므로 실물 뒤 음성문턱을 완화하는 대신 자원초안을 사전교정한다.",
+  "changes": {
+    "stage_active_limit_seconds": {
+      "before": 28800,
+      "after": 43200
+    },
+    "native_worker_wall_seconds": 14400
+  },
+  "unchanged": {
+    "native_updates": 2281,
+    "native_draw_tokens": 298975232,
+    "batch": "8x16x1024",
+    "paired_init_data_optimizer_schedule": true,
+    "quality_criteria_unchanged": true,
+    "finish_reserve_seconds": 10800,
+    "unmeasured_sft_reserve_seconds": 3600,
+    "authority_end_utc": "2026-10-20T08:00:00Z",
+    "training_stop_utc": "2026-10-20T05:00:00Z"
+  },
+  "admission": "각실물cost8/말기probe·같은초기화 검증 뒤 예측이각worker/총12h/현재기한안에들때만 실행. 미측정SFT를측정완료처럼취급하지않음.",
+  "still_not_run": "새native source freeze/모델/학습/실물CUDA/예산 모두 NOT_RUN"
+}

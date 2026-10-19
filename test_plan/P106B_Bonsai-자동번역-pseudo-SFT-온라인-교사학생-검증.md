@@ -6024,3 +6024,55 @@ raw token-copy는 현재128문항에서 첫 gold token ID가 source bank에 없�
 ### 병행 Stage4ew 비용·예산 이력 — 2026-10-19 20:52KST
 
 [101 §326~328](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 양 cost8/예산을 실제완료했다. 각CP0·같은분모/초기본체·원형 검산, 후속7평균2.064/2.231초와예약4,607.722초<6h를 확인했다. 토큰384팔은20:52:32 시작했고 내용384·실답은 NOT_RUN이다. 예측한 실행시간 여유는 cost상 성립했으나 아직 내용정확도 개선을 주장하지 않는다. 큰초기gradient와전8clip은 보존한다.
+
+## 2026-10-19 후속 Stage4ey — 일반 대화·근거 QA·보존 교과의 update 순서 대조
+
+### 1. 목적·자료 범위
+
+고유75M/300M 본교육의 완성을 기다리지 않고, 기존 공개 TRAIN과 문맥 QA·역할·정보 부족/충분·교정/규칙을 함께 교육한다. **원P090B를 양팔 공통**으로 새 optimizer에서 시작하며 새 P 조건 중 유리한 본체를 사후 선택하지 않는다. L0 토큰 평균을 고정하여 P와 순서 변경을 한 효과로 합치지 않는다.
+
+기존 grounded_v2 원QA8192개×두 wrapper16384행과 마스크를 보존하는 replay4096행, P090 공개 TRAIN의 고유2048대화를 사용한다. 실제 읽기 재고는 TRAIN2996 중 중복/평가 원형 충돌27을 제외한2969개(KO174/EN2795)여서2048개를 충족했고, 선정은 KO174/EN1874다. 내용 품질 문자열 필터·자동 복제·부족량 자동 축소는 없다. 전체 실제 선별과 소비는 첫 CPU 단계가 다시 검증한다.
+
+### 2. 가설·대조
+
+같은22528행/176개 고정128행 그룹을 두 pass(352update) 노출한다. 혼합 팔은 그룹의 순서를 해시 seed로 섞고, 단계 팔은 pass마다 replay32→grounded128→general16 그룹으로 진행한다. 두팔의 각 그룹 내부16micro8·정답/마스크·전체 노출·native창의 절대 update 순서를 고정한다.
+
+그룹 안의 자료 구성을 바꾸지 않은 순서 대조이며, 배경 native창은 절대update에 고정되어 어느 SFT그룹과 함께 합산되는지는 순서 변경의 일부로 달라진다. native를 제거한 상황의 순서 효과로 일반화하지 않는다. 단계별 쉬운 과제→근거→일반 대화가 마지막 과제만 과적합하거나 앞 능력을 잊게 할 수 있다는 반대 가설도 함께 둔다.
+
+### 3. 구현·분모·보호
+
+- m8a16/seq1024/ckpt-on/compile-default, Adam5e-5/Muon2e-4/all WD0/clip1·constant, MTP OFF·교사 호출0.
+- native는 기존 봉인 TRAIN597995000의 첫2816개 완전창을 양팔 같은 절대순서로 사용한다. targets2816×1024=2,883,584이며 새 고유 지식량이 아니다.
+- TRAIN 모든행/late pass·DEV를 모델 이전에 검증한다. replay는 `relation_fields.encode`를 재사용하여 C2의 옛 오답을 y=-100으로 유지한다. 일반 encoder로 덮지 않는다.
+- 공개 VAL·자체DEV/TEST는 hard 분리, 반복 관찰한 기존1694 monitor는 source/root/정확messages/원문24word 충돌을 case별 기록한다. 기술상 clean 부분도 완전한 의미 오염 제거 증명은 아니다.
+- 원래 source/CP/log/HF/cache는 읽기만 한다. 새 namespace에 참조·wire와 실제 답을 분리 보존하고20MB 미만 샤드/write-once로 쓴다. 정식 TRAIN_READY·75M 완성은 주장하지 않는다.
+
+### 4. 실제 평가
+
+원부모의 기존1694답은 정확 CP/core/case/manifest/decode를 확인해 명시 재사용한다. 새 공개VAL16대화는 부모와 두학생이 새로 답한다. 사전 해시 선정은 KO8개 단일턴, EN7개 단일턴+1개2턴으로 **16episode/17 source assistant턴**이며48답이라고 부르지 않는다. source gold는 검수용 raw에만 남기고 후속 prompt에는 모델이 실제 생성한 앞 답을 넣는다.
+
+monitor는 FP32-MATH/greedy64/KV-on/MTP-off, 자연 대화는 같은 연산의 max128로 별도 구분한다. 실제 앞답 때문에 문맥이 넘으면 해당/후속 미실행을 따로 보고하고 원형을 자르거나 gold 앞답으로 바꾸지 않는다. 실제 질문·답·종료는 사전 고정 소형 표본/대화에만 stdout 표시하며 전체raw는 runs/eval에 보존한다. 정답 alias/형식과 자유 설명의 의미 판단은 별개다.
+
+### 5. 단계·비용·선결
+
+| 단계 | 수행 | 선결·상한 | 작성 시 상태 |
+|---|---|---|---|
+| Stage4eyW0 | 전체 원형/admission·22528실제소비·DEV/평가 동결 | CPU≤900초·모델0 | NOT_RUN |
+| Stage4eyWa / Stage4eyWb | 양팔각8회·세자료군/긴general head 포함 | W0·같은parent·단독유휴·CP0, 각900초 | NOT_RUN |
+| Stage4eyWc | 양완료cost·raw·전체 보수예산 | stage3h·평가1200s/기록600s 예비 | NOT_RUN |
+| Stage4eyWp | 부모의 신규16대화·old1694 명시 재사용검산 | 정확원부모·W0·GPU≤900초 | NOT_RUN |
+| Stage4eyWd / Stage4eyWe | 각352회/2pass·새weight-only CP1 | cost/예산/부모baseline 완료·각3600초 | NOT_RUN |
+| Stage4eyWf / Stage4eyWg | 두학생 각1694 monitor+같은16대화 | 자기CP·activity/원형일치·각1800초 | NOT_RUN |
+| Stage4eyWh | 실제 답/종료/분모·오염 태그·paired 검산 | 세endpoint완료·CPU≤600초 | NOT_RUN |
+
+비용은 옛 grounded640회1593초·question384회840초가 참고일 뿐 길고 다양한 general 답을 포함한 새cost8로 다시 결정한다. 전체상한3h·20일14시 학습중단 목표와17시 승인종료를 지킨다. 과거 native계속학습/8M scratch 또는 이번자료가 아닌 데이터의 속도를 직접 비교하지 않는다.
+
+### 6. 판정·예측
+
+같은 핵심 batch/부모를 지키면서 다양한 지도·순서가 실제 원문/조건/일반 설명에 기여하는지 본다. 최종DEV TF/native32와 실제 첫답·자연대화 원형을 함께 남긴다. 원고1개seed·관찰한monitor·한국어 일반대화175개 수준의 공급 한계를 공개하고, 좁은 규칙 향상을 일반 한국어 유창성/Falcon 동등성으로 올리지 않는다.
+
+예측은 '부족75M 자체 때문에 부분교육이 불가능하지 않다', 'stage 마지막 general에서 앞 규칙이 퇴행할 수도 있다'이며 실행 뒤 대조한다. 조건문턱을 사후 완화하거나 같은 질문 반복을 고유 데이터 증가로 쓰지 않는다.
+
+### 7. 실행 이력
+
+설계/순수66회귀와 실제 읽기 source 재고만 확인했고, 첫 prepare/동결·모델/GPU/새답은 모두 NOT_RUN이다. 교과와 driver의 CPU 소비·비용 뒤만 본학습을 열며 상기과거 결과를 새완료로 재사용하지 않는다.
