@@ -1,0 +1,108 @@
+Regression then exact source/CP prerequisite then execution and final receipt. Same trained backbone; vocabulary versus two extractive span policies. No truth verifier or new training. Estimated.34h GPU=D, worker cap1200s.
+
+==============================================================================
+[runlog] 2026-10-19 21:35:32  name=P106B_Stage4exWa_span_actual_readout_213532
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_span_readout.py --mode evaluate --max-wall-sec 1200 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_bad_ids_offsets_or_order_are_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_bank_is_immutable_and_cannot_be_forged_with_missing_source_keys (scripts.test_p106b_span_readout.BankTests) ... ok
+test_declared_range_must_be_valid_unicode_character_range (scripts.test_p106b_span_readout.BankTests) ... ok
+test_duplicate_and_overlapping_bytelevel_offsets_remain_distinct_keys (scripts.test_p106b_span_readout.BankTests) ... ok
+test_duplicate_entire_reference_is_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_empty_prefix_and_empty_encoding_are_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_exact_prefix_ids_offsets_and_last_query_are_preserved (scripts.test_p106b_span_readout.BankTests) ... ok
+test_no_empty_or_zero_width_only_source_bank (scripts.test_p106b_span_readout.BankTests) ... ok
+test_non_tokenizer_or_malformed_encoding_is_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_overlapping_duplicate_reference_is_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_reference_boundary_straddles_are_excluded_without_retokenization (scripts.test_p106b_span_readout.BankTests) ... ok
+test_source_may_not_include_query_or_future_positions (scripts.test_p106b_span_readout.BankTests) ... ok
+test_token_limit_is_exact_and_invalid_limits_are_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_zero_width_offsets_never_enter_source_bank (scripts.test_p106b_span_readout.BankTests) ... ok
+test_ambient_cpu_autocast_does_not_change_fp32_scoring (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_bad_hidden_shape_size_dtype_or_nonfinite_is_rejected (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_double_hidden_uses_head_projection_dtype_then_fp32_dot (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_exact_single_batch_hidden_matches_unbatched_without_state_mutation (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_existing_head_formula_and_last_prefix_query_match_manual_math (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_missing_biased_or_mismatched_rank_head_is_rejected (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_only_bank_and_query_hidden_can_affect_scores (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_projection_overflow_is_rejected (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_both_tie_policies_choose_lexicographically_first (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_empty_outer_trim_result_is_preserved (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_english_leading_space_and_internal_layout_are_preserved (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_independent_reverse_is_invalid_and_never_repaired (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_joint_algorithm_matches_exhaustive_all_pairs (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_joint_policy_has_no_hidden_answer_length_cap (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_korean_particle_and_punctuation_spill_are_not_gold_trimmed (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_no_gold_or_metadata_inference_argument_and_gold_change_invariance (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_score_shape_dtype_nonfinite_and_policy_are_rejected (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_valid_joint_finds_global_legal_pair_not_argmax_repair (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_activity_requires_complete_finite_owned_metadata (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_case_separates_inference_and_gold (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_duplicate_source_identity_rejected (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_failure_activity_is_saved_and_blocks_downstream (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_inference_signature_rejects_gold_location_inputs (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_linked_output_rejected (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_malformed_manifest_is_rejected_before_verifier_or_file_io (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_nan_and_forged_selected_span_are_rejected (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_no_silent_context_crop (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_original_gold_annotation_must_match (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_phase_wall_and_processgroup_contract (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_prefix_must_be_single_answer_free_user (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_replay_is_not_a_readout_case (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_reversed_argmax_does_not_get_repaired (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_saved_score_reselection_and_vocab_decode (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_synthetic_prepare_evaluate_readback_pipeline (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_vocab_ids_and_protocol_are_not_just_report_strings (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_vocab_requested_budget_and_terminal_policy_cannot_be_forged (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_watchdog_signals_only_its_own_child_group (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_write_once_and_output_allowlist (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_wrong_original_label_cannot_be_frozen (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_wrong_source_sha_fails_before_old_source_consumption (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_zero_return_without_owned_result_is_not_success (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_authority_aware_and_reserved (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+test_checkpoint_payload_exact_metadata_and_saved_head (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+test_direct_script_check_only_outside_repository_has_no_model_import (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+test_inference_is_eval_prefix_only_no_kv_and_no_annotations (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+
+----------------------------------------------------------------------
+Ran 59 tests in 1.359s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[SPAN_READOUT_PREFLIGHT] exact source/reference verified; model0
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[SPAN_READOUT_PROGRESS] {"cases": 64, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "178CBEA67CB9DAB07EB1015A563DE888F6044380E714ECC13649BC1A6C9EB833", "split": "train", "language": "en", "vocabulary": "OFF THE TRACK", "independent": "Oakdale train to arrive", "valid_joint": "Oakdale train to arrive"}
+[SPAN_READOUT_PROGRESS] {"cases": 128, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "AE63B35821BA552C314476DF658FF6BBBECF355A4AF292AD407E0320A7CC963A", "split": "dev", "language": "ko", "vocabulary": "톰과 제리", "independent": "피아니스트 랭 랭에게는 톰과 제리가 최고입니다. 랭이 두 살이었을 때, 그는 톰이 피아노", "valid_joint": "피아니스트 랭 랭에게는 톰과 제리가 최고입니다. 랭이 두 살이었을 때, 그는 톰이 피아노"}
+[SPAN_READOUT_SAMPLE] {"id": "48C8A92EB9FD8C72BF040D2FD11856409F6022B41463694FA0E83AB16654BB98", "split": "dev", "language": "ko", "vocabulary": "일자리", "independent": "교통체증 속으로 뛰어들 때 사람들은 믿기 힘들게 지켜보았습니다.  누군가 \"경찰을 불러!\"라고 외치는 소리가 들렸습니다.  하지만 난 그의 뒤를 쫓았다  카일은 나보다 30cm나 더 컸어요 그리고 그는 빠르다. 그의 형들은 근처 고등학교에서 선수로 뛰었습니다. 하지만 저는 피곤하지 않고 먼 거리를 달릴 수 있었습니다. 적어도 내 눈앞에서 그를 지켜보고 그가 살아있다는 걸 알 수 있을 거야  몇 블록을 지나서 바로 반대편의 교통체증으로 달려온 카일은 속도를 늦췄습니다.  그는 날카로운 왼쪽으로 갔다. 쓰레기통 옆에 서있던 카일은 무릎에 손을 얹고 몸을 구부렸다. 웃겨보였을 거야 하지만 그의 눈빛은 두려움이 아니었다. 그의 몸이 느긋해졌어요 그는 다시 도망치려고 시도하지 않았습니다. 카일은 가만히 서서 내가 다가오는 걸 지켜봤어요. 무슨 말이나 행동을 할 지 몰랐지만 계속 가까이 걸어가고 있었습니다.  경찰차가 차에 차고 갑자기 카일과 내 사이를 채웠을 때 그는 입을 열고 말을 하기 시작했습니다. 학교장과 경찰이 빠져나왔어요 '카일'과 침착 하게 대화 를 나누자, 카일 은 기꺼이 차량 뒤 에 올라갔다. 무슨 말을 하는지 들리지 못했지만 카일의 얼굴에서 눈을 떼지 못했습니다. 그들이 차를 몰고 가면서도요.  제가 그를 실망시켰다고 느끼지 않을 수 없었습니다. 제가 더 많이 말하거나 행동했어야 했고, 상황을 바로잡았어야 했습니다.  카일 의 과거 를 잘 알고 있는 언어 치료사", "valid_joint": "교통체증 속으로 뛰어들 때 사람들은 믿기 힘들게 지켜보았습니다.  누군가 \"경찰을 불러!\"라고 외치는 소리가 들렸습니다.  하지만 난 그의 뒤를 쫓았다  카일은 나보다 30cm나 더 컸어요 그리고 그는 빠르다. 그의 형들은 근처 고등학교에서 선수로 뛰었습니다. 하지만 저는 피곤하지 않고 먼 거리를 달릴 수 있었습니다. 적어도 내 눈앞에서 그를 지켜보고 그가 살아있다는 걸 알 수 있을 거야  몇 블록을 지나서 바로 반대편의 교통체증으로 달려온 카일은 속도를 늦췄습니다.  그는 날카로운 왼쪽으로 갔다. 쓰레기통 옆에 서있던 카일은 무릎에 손을 얹고 몸을 구부렸다. 웃겨보였을 거야 하지만 그의 눈빛은 두려움이 아니었다. 그의 몸이 느긋해졌어요 그는 다시 도망치려고 시도하지 않았습니다. 카일은 가만히 서서 내가 다가오는 걸 지켜봤어요. 무슨 말이나 행동을 할 지 몰랐지만 계속 가까이 걸어가고 있었습니다.  경찰차가 차에 차고 갑자기 카일과 내 사이를 채웠을 때 그는 입을 열고 말을 하기 시작했습니다. 학교장과 경찰이 빠져나왔어요 '카일'과 침착 하게 대화 를 나누자, 카일 은 기꺼이 차량 뒤 에 올라갔다. 무슨 말을 하는지 들리지 못했지만 카일의 얼굴에서 눈을 떼지 못했습니다. 그들이 차를 몰고 가면서도요.  제가 그를 실망시켰다고 느끼지 않을 수 없었습니다. 제가 더 많이 말하거나 행동했어야 했고, 상황을 바로잡았어야 했습니다.  카일 의 과거 를 잘 알고 있는 언어 치료사"}
+[SPAN_READOUT_PROGRESS] {"cases": 192, "expected": 640}
+[SPAN_READOUT_PROGRESS] {"cases": 256, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "8009C21ED997C7CA8C4B72974C64310C94EDEF4326B01BB2B2D3648EE0C5CB10", "split": "dev", "language": "en", "vocabulary": "Fizzing with the Olympics", "independent": "Lewis Hamilton", "valid_joint": "Lewis Hamilton"}
+[SPAN_READOUT_SAMPLE] {"id": "6F6D7DC9C7DF5AE777BD9CCAADF85EEFBA0DBCD8E30103C55F50A56650FC7824", "split": "dev", "language": "en", "vocabulary": "\"Hard.\"", "independent": null, "valid_joint": "CHAPTER XXI"}
+[SPAN_READOUT_SAMPLE] {"id": "8CD216FE3C8774F89A534C3B93FF2B78908A8728EC2AF99280F41F132D9B6B05", "split": "dev", "language": "en", "vocabulary": "<<>> ). Tiny Times", "independent": "483", "valid_joint": "483"}
+[SPAN_READOUT_PROGRESS] {"cases": 320, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "8C7EA0802EDEA91BD087C3DC6699B82C238F19FA4A23B15735B4725A1BE1C47E", "split": "dev", "language": "en", "vocabulary": "Ryan's sixth century", "independent": "Paul Ryan", "valid_joint": "Paul Ryan"}
+[SPAN_READOUT_SAMPLE] {"id": "C437DFD4C061B638CF64A9566C4F6EB15E571B78C9555D9516B492DE3A3D854D", "split": "dev", "language": "en", "vocabulary": "2004", "independent": "2002", "valid_joint": "2002"}
+[SPAN_READOUT_SAMPLE] {"id": "D67375BFD1F2491A0E6D0C4ED0015A0A3582CD9D9C2A0883D40C009C90C1134B", "split": "dev", "language": "en", "vocabulary": "the night", "independent": "men, Alan and Henry", "valid_joint": "men, Alan and Henry"}
+[SPAN_READOUT_PROGRESS] {"cases": 384, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "0AAECBB351FE8F8570CBBCB08F5C22718CACBA57EC1A5FEE8CA79EA343D2A004", "split": "test", "language": "ko", "vocabulary": "영국 서인도 식민지", "independent": "카리브 해 남동부에", "valid_joint": "카리브 해 남동부에"}
+[SPAN_READOUT_SAMPLE] {"id": "C60D9B96A9EBB47D797A614D2A7D5EA6F5DCE88492BC6DB184411CCAC6640BE1", "split": "test", "language": "ko", "vocabulary": "해리", "independent": "해리는 학습 장애가 있는 아이입니다. 네 번째 생일에, 그는 밀리라는 이름의 <unk>을 받았습니다. 강아지가 도착한 지 2주 후, 그는 더 행복하고 차분해졌고, \"개\"와 \"엄마\"라는 첫 번째 말을 했습니다. 불과 두 달 후에 도둑들이 개를 훔쳐갔고, 이제 가슴이 아프던 어린 소년은 다시 시작했던 곳으로 돌아왔습니다. 그는 가장 친한 친구를 잃은 이후로 말을 거부했습니다. 그의 어머니는 걱정해서 그에게 다른 개를 줬지만, 그는 그냥 \"그 개를 밀어 버렸다\". 그의 어머니인 헤인스워스 부인은 \"내 아들은 매우 슬프다. 그놈은 그녀의 동굴로 가서 막대기를 때릴 거야 아무 소리도 나지 않지만, 그 사람은 '밀리 어디 있어'라고 외치곤 합니다. 밀리는 정말 그의 가장 친한 친구였어요. 그들은 몇 시간 동안 행복하게 함께 놀았습니다. 그 장난감들은 그토록 오랫동안 그의 관심을 끌지 못했습니다. 이제 완전히 조용해졌어요. \"해리는 말을 할 수 없고 움직일 수 없는 병을 앓고 있습니다. 하지만 그 개와 함께 있는 것이 수개월간의 언어 치료와 물리 치료보다 며칠 만에 더 많은 것을 성취했습니다. 헤인스워스 부인은 \"내 아들은 밀리를 보고 너무 행복했어요. 밀리와 함께 있는 것이 그를 변화시켰고, 2주 안에 그는 그의 첫 번째 단어를 말했고 '아빠'를 말하는 데 노력했습니다. 지난 주에 그의 선생님과 저는 밀리가 얼마나 그를 도왔는지 얘기하고 있었습니다. 그리고 이제 이것도!\" 헤인스워스 부인은 아들이 받아주길 바라고 또 다른 <unk>마를 사려고 합니다. 자선단체인 애완동물 치료 (Pets as Therapy) 의 모린 헨니스", "valid_joint": "해리는 학습 장애가 있는 아이입니다. 네 번째 생일에, 그는 밀리라는 이름의 <unk>을 받았습니다. 강아지가 도착한 지 2주 후, 그는 더 행복하고 차분해졌고, \"개\"와 \"엄마\"라는 첫 번째 말을 했습니다. 불과 두 달 후에 도둑들이 개를 훔쳐갔고, 이제 가슴이 아프던 어린 소년은 다시 시작했던 곳으로 돌아왔습니다. 그는 가장 친한 친구를 잃은 이후로 말을 거부했습니다. 그의 어머니는 걱정해서 그에게 다른 개를 줬지만, 그는 그냥 \"그 개를 밀어 버렸다\". 그의 어머니인 헤인스워스 부인은 \"내 아들은 매우 슬프다. 그놈은 그녀의 동굴로 가서 막대기를 때릴 거야 아무 소리도 나지 않지만, 그 사람은 '밀리 어디 있어'라고 외치곤 합니다. 밀리는 정말 그의 가장 친한 친구였어요. 그들은 몇 시간 동안 행복하게 함께 놀았습니다. 그 장난감들은 그토록 오랫동안 그의 관심을 끌지 못했습니다. 이제 완전히 조용해졌어요. \"해리는 말을 할 수 없고 움직일 수 없는 병을 앓고 있습니다. 하지만 그 개와 함께 있는 것이 수개월간의 언어 치료와 물리 치료보다 며칠 만에 더 많은 것을 성취했습니다. 헤인스워스 부인은 \"내 아들은 밀리를 보고 너무 행복했어요. 밀리와 함께 있는 것이 그를 변화시켰고, 2주 안에 그는 그의 첫 번째 단어를 말했고 '아빠'를 말하는 데 노력했습니다. 지난 주에 그의 선생님과 저는 밀리가 얼마나 그를 도왔는지 얘기하고 있었습니다. 그리고 이제 이것도!\" 헤인스워스 부인은 아들이 받아주길 바라고 또 다른 <unk>마를 사려고 합니다. 자선단체인 애완동물 치료 (Pets as Therapy) 의 모린 헨니스"}
+[SPAN_READOUT_SAMPLE] {"id": "A44C660279C786D24AC97BD2929D4FB93B21ECB6BB6761FC90CF315732C7EAF6", "split": "test", "language": "ko", "vocabulary": "수박은 매우 특별한 수박이었다", "independent": null, "valid_joint": "녹색이었고, 그는 줄무늬가 있었다. 그의 사촌들은 모두 씨앗을 가지고 있었지만, 그는 하나도 없었습니다. 그는 매우 외면감을 느꼈습니다. 그는 왜 다른지 알 수 없었다. 그의 어머니는 그가 아주 특별한 수박이기 때문이라고 말했습니다. 그녀는 또한 그가 있는 그대로를 사랑한다고 말한다. 하지만 시디는 그게 좋지 않다고 생각했어요. 다른 사람들처럼 되고 씨앗을 갖고 싶었어요 어느 날, 그는 잔디밭으로 나가서 정원에서 자라는 그의 새로운 사촌들을 바라보았습니다. 그는 작은 수박을 발견할 때까지 돌아다녔습니다. 그 수박도 씨앗이 없었습니다. 그는 그의 옆에 앉아 그와 이야기했다. 그는 그가 매우 특별하다고 말했고, 그가 포도나무에서 뽑히고 그의 특별한 가장 친한 친구가 될 수 있다는 것에 흥분했습니다. 그는 그를 세디 주니어"}
+[SPAN_READOUT_PROGRESS] {"cases": 448, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "61E40CB72137C1571D9001EB0FFF10A36CD42ED0B8F6BBCD778D25FC27091CEE", "split": "test", "language": "ko", "vocabulary": "7일", "independent": null, "valid_joint": "크리스마스 이브"}
+[SPAN_READOUT_SAMPLE] {"id": "9B383A3D5CFBCB15041F41515AF93FCA0A69E191601F2096979C6627706ECD1B", "split": "test", "language": "ko", "vocabulary": "코니", "independent": null, "valid_joint": "코니 라우는"}
+[SPAN_READOUT_PROGRESS] {"cases": 512, "expected": 640}
+[SPAN_READOUT_PROGRESS] {"cases": 576, "expected": 640}
+[SPAN_READOUT_SAMPLE] {"id": "8D6F7FD72BE2230D27EB590665A2290E2BF45C0FA55A851DED8E9747F5FD038E", "split": "test", "language": "en", "vocabulary": "the most common cause of death", "independent": null, "valid_joint": "addiction"}
+[SPAN_READOUT_SAMPLE] {"id": "61EDC810E01911F9D1547D064302C486398DE16B34FF239208FDDF42F5CF81A4", "split": "test", "language": "en", "vocabulary": "Woods", "independent": null, "valid_joint": "Tiger Woods"}
+[SPAN_READOUT_PROGRESS] {"cases": 640, "expected": 640}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_SPAN_READOUT_evaluate", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.4분  (2026-10-19 21:36:59)
+==============================================================================

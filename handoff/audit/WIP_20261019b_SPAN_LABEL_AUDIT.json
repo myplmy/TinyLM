@@ -1,0 +1,55 @@
+{
+  "schema": "TINYLM_SPAN_LABEL_AUDIT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "tag": "p106b_span_readout_v1_s1337",
+  "evidence": "test_result/evidence/p106b_span_readout_v1_s1337/readback/report.json",
+  "cases": 640,
+  "models_loaded_by_audit": 0,
+  "source_mutations": 0,
+  "checkpoint_mutations": 0,
+  "independent_review": {
+    "reviewer": "oct20_literature",
+    "actual_boundaries_enumerated": 574586,
+    "aggregate_fields_checked": 214,
+    "code_sha_count": 21,
+    "mismatches": 0,
+    "checkpoint_sha_checked": true,
+    "checkpoint_tensors_loaded": false
+  },
+  "root_review": {
+    "short_yes_no_labels": 11,
+    "exact_case": "C60D9B96A9EBB47D797A614D2A7D5EA6F5DCE88492BC6DB184411CCAC6640BE1",
+    "question": "뭔가 훔쳤나?",
+    "qa_gold": "네",
+    "label_prompt_character_range": [
+      109,
+      110
+    ],
+    "label_context": "학습 장애가 있는 아이입니다. 네 번째 생일에",
+    "label_issue": "네 번째의 수량 표현은 훔쳤다는 긍정답의 의미 근거가 아니다",
+    "producer": "scripts/p106b_grounded_span.py:first_pair"
+  },
+  "findings": {
+    "literal_boundary_oracle": 535,
+    "vocabulary_all": 63,
+    "independent_all": 86,
+    "valid_joint_all": 111,
+    "invalid_independent": 225,
+    "test_vocabulary": 13,
+    "test_valid_joint": 16,
+    "test_n": 256,
+    "test_gains": 13,
+    "test_losses": 10,
+    "gold_token_boundary_but_literal_mismatch": 9
+  },
+  "interpretation": [
+    "유일한 부분문자열과 의미 있는 근거 span은 다른 계약이다",
+    "QA 최종답 자체가 거짓이라는 주장과 위치라벨 오류를 구분한다",
+    "11건은 탐지한 유형의 재고일 뿐 전수 의미 결함의 상한이 아니다",
+    "535 oracle은 사후 경계 복구 가능성이지535 의미 근거의 정답성이나 head 지식이 아니다",
+    "현재 결과는 구조만의 원인으로 귀속할 수 없다",
+    "미래 새 버전은 원 extractive QA annotation offset을 쓰며 현재 원형/음성은 보존한다"
+  ],
+  "realtime_blacklist_added": false,
+  "automatic_quality_adoption": false
+}

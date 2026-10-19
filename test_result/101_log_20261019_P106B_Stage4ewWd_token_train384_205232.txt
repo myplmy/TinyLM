@@ -1,0 +1,93 @@
+Read regression, prerequisite and final receipt before judging. Paired content objective study; actual answers, EOT/content losses and native retention are separate. Technical completion is not intelligence. Estimated 0.6 hours; GPU=Y; per-worker cap 3600 seconds. Independent arms preserve failed evidence.
+
+==============================================================================
+[runlog] 2026-10-19 20:52:32  name=P106B_Stage4ewWd_token_train384_205232
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_content_recovery.py --mode train --arm token --max-wall-sec 3600 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_components_rejects_shape_dtype_and_chunk_errors (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_components_rejects_supervision_and_weight_errors (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_computation_never_loads_assets_or_initializes_cuda (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_custom_eot_components_and_fp32_bfloat16_hidden (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_deferred_backward_has_no_last_chunk_target_or_weight_capture (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_dense_loss_and_gradients_for_both_policies_and_checkpoint_modes (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_eot_only_dense_and_gradient_parity (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_head_gradients_work_with_frozen_hidden (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_ignored_micro_returns_differentiable_fp32_zero (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_ignored_positions_have_zero_hidden_gradient (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_native_term_is_separate_and_keeps_8192_denominator (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_no_grad_mode_returns_fp32_reports (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_raw_sums_do_not_change_with_policy (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_same_eot_weights_do_not_promise_same_vocabulary_row_gradient (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_token_policy_matches_existing_core_loss_and_gradients (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_whole128_conversations_in16_micros_matches_dense (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_all_ignored_row_allowed_inside_supervised_update (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_corrupted_selected_plan_weights_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_custom_eot (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_eot_only_row_stays_in_total_not_content_rows (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_eot_only_update_is_allowed (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_policy_and_eot_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_record_lengths_labels_and_owners_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_tensor_request_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_multiple_turns_are_one_conversation (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_no_supervision_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_paper_example_preserves_content_and_each_eot_mass (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_tensor_selects_order_and_zero_padding (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_token_counts_weights_and_masked_owner (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_complete_identity_passes_without_model_or_data (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_native_scope_is_not_silently_promoted (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_report_status_code_tag_and_manifest_are_bound (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_authority_separates_training_and_final_deadlines (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_check_only_cannot_start_worker_or_assets (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_checkpoint_path_rejects_undeclared_arm_before_io (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_failed_preflight_never_invokes_experiment (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_late_source_failure_precedes_parent_gpu_and_outputs (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_mode_and_arm_ownership_reject_unused_selectors (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_phase_order_includes_real_regressions_and_source_barrier (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_source_reader_rechecks_all_passes_and_dev (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_weight_mass_preserves_masked_wrong_owner (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_worker_wall_is_bounded_and_not_a_truthy_boolean (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_completed_worker_rejects_wrong_code_and_exit (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_duplicate_worker_activity_rejected_before_execution (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_eval_worker_keeps_absolute_record_reserve (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_incomplete_cost_activity_is_not_a_budget_admission (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_required_does_not_convert_missing_artifact_to_success (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_single_json_20mb_guard_precedes_file_creation (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_write_is_exclusive_and_rejects_nonfinite_before_touch (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 1.240s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[CONTENT_PREFLIGHT] exact source/weights/DEV references; model/GPU not loaded
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+W1019 20:53:28.873000 387184 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[CONTENT_UPDATE] {"arm": "token", "update": 1, "epoch": 1, "assistant_ce": 8.442531010875964, "content_ce": 4.798227595186781, "eot_ce": 17.588330488938553, "weighted_assistant_objective": 8.442531168460846, "native_ce": 3.826268196105957, "assistant_targets": 730, "content_targets": 522, "eot_targets": 208, "native_targets": 8192, "positive_rows": 128, "x_tokens": 19231, "gradient_norm": 21.844207763671875, "clipped": true, "step_seconds": 38.4543506540067}
+[CONTENT_UPDATE] {"arm": "token", "update": 2, "epoch": 1, "assistant_ce": 7.30912041143559, "content_ce": 3.705313050513174, "eot_ce": 17.6929715258927, "weighted_assistant_objective": 7.309120357036591, "native_ce": 3.3638505935668945, "assistant_targets": 687, "content_targets": 510, "eot_targets": 177, "native_targets": 8192, "positive_rows": 128, "x_tokens": 19893, "gradient_norm": 18.434587478637695, "clipped": true, "step_seconds": 2.264424095992581}
+[CONTENT_UPDATE] {"arm": "token", "update": 3, "epoch": 1, "assistant_ce": 7.0364934126751715, "content_ce": 3.8109909141303415, "eot_ce": 16.32254558362459, "weighted_assistant_objective": 7.03649365901947, "native_ce": 4.032656192779541, "assistant_targets": 737, "content_targets": 547, "eot_targets": 190, "native_targets": 8192, "positive_rows": 128, "x_tokens": 21790, "gradient_norm": 20.535614013671875, "clipped": true, "step_seconds": 2.2653172290010843}
+[CONTENT_UPDATE] {"arm": "token", "update": 4, "epoch": 1, "assistant_ce": 6.309554926250886, "content_ce": 3.6153313479846036, "eot_ce": 14.575328049150485, "weighted_assistant_objective": 6.309555023908615, "native_ce": 3.46543288230896, "assistant_targets": 838, "content_targets": 632, "eot_targets": 206, "native_targets": 8192, "positive_rows": 128, "x_tokens": 24522, "gradient_norm": 17.288921356201172, "clipped": true, "step_seconds": 2.276729477001936}
+[CONTENT_UPDATE] {"arm": "token", "update": 5, "epoch": 1, "assistant_ce": 5.717860778532416, "content_ce": 3.4822701932398106, "eot_ce": 13.265745786156986, "weighted_assistant_objective": 5.717860966920853, "native_ce": 3.5549983978271484, "assistant_targets": 884, "content_targets": 682, "eot_targets": 202, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20721, "gradient_norm": 16.090702056884766, "clipped": true, "step_seconds": 2.187476217004587}
+[CONTENT_UPDATE] {"arm": "token", "update": 6, "epoch": 1, "assistant_ce": 5.212255465161296, "content_ce": 3.319382852903554, "eot_ce": 12.360870158418695, "weighted_assistant_objective": 5.212255671620369, "native_ce": 3.8245670795440674, "assistant_targets": 898, "content_targets": 710, "eot_targets": 188, "native_targets": 8192, "positive_rows": 128, "x_tokens": 21442, "gradient_norm": 15.890785217285156, "clipped": true, "step_seconds": 2.164757362988894}
+[CONTENT_UPDATE] {"arm": "token", "update": 7, "epoch": 1, "assistant_ce": 5.389365990735559, "content_ce": 3.692825244860051, "eot_ce": 10.013098919329865, "weighted_assistant_objective": 5.389366075396538, "native_ce": 3.7355456352233887, "assistant_targets": 719, "content_targets": 526, "eot_targets": 193, "native_targets": 8192, "positive_rows": 128, "x_tokens": 19210, "gradient_norm": 20.79800796508789, "clipped": true, "step_seconds": 2.1515846120018978}
+[CONTENT_UPDATE] {"arm": "token", "update": 8, "epoch": 1, "assistant_ce": 4.838699234561336, "content_ce": 3.3514861066026174, "eot_ce": 9.251038145623813, "weighted_assistant_objective": 4.83869905769825, "native_ce": 3.623678207397461, "assistant_targets": 718, "content_targets": 537, "eot_targets": 181, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20281, "gradient_norm": 18.30446434020996, "clipped": true, "step_seconds": 2.169394846991054}
+[CONTENT_UPDATE] {"arm": "token", "update": 32, "epoch": 1, "assistant_ce": 1.7457557875110257, "content_ce": 2.1255094922822098, "eot_ce": 0.6162319525694235, "weighted_assistant_objective": 1.7457558438181877, "native_ce": 3.69659161567688, "assistant_targets": 775, "content_targets": 580, "eot_targets": 195, "native_targets": 8192, "positive_rows": 128, "x_tokens": 21490, "gradient_norm": 3.9176783561706543, "clipped": true, "step_seconds": 2.2382624899910297}
+[CONTENT_UPDATE] {"arm": "token", "update": 64, "epoch": 1, "assistant_ce": 1.350541576743126, "content_ce": 1.686323706086699, "eot_ce": 0.3706059223231004, "weighted_assistant_objective": 1.3505415990948677, "native_ce": 3.4798669815063477, "assistant_targets": 768, "content_targets": 572, "eot_targets": 196, "native_targets": 8192, "positive_rows": 128, "x_tokens": 22447, "gradient_norm": 4.331235885620117, "clipped": true, "step_seconds": 2.1771584489906672}
+[CONTENT_UPDATE] {"arm": "token", "update": 96, "epoch": 1, "assistant_ce": 1.2962823473078815, "content_ce": 1.6939258995897069, "eot_ce": 0.26282339469374466, "weighted_assistant_objective": 1.2962823584675789, "native_ce": 3.562096357345581, "assistant_targets": 691, "content_targets": 499, "eot_targets": 192, "native_targets": 8192, "positive_rows": 128, "x_tokens": 22383, "gradient_norm": 3.330437183380127, "clipped": true, "step_seconds": 2.169391850999091}
+[CONTENT_UPDATE] {"arm": "token", "update": 128, "epoch": 2, "assistant_ce": 0.655980505853129, "content_ce": 0.8206039927471643, "eot_ce": 0.0915571026632498, "weighted_assistant_objective": 0.6559804696589708, "native_ce": 3.6208114624023438, "assistant_targets": 899, "content_targets": 696, "eot_targets": 203, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20615, "gradient_norm": 2.8703997135162354, "clipped": true, "step_seconds": 2.13466323899047}
+[CONTENT_UPDATE] {"arm": "token", "update": 160, "epoch": 2, "assistant_ce": 0.9054759375175039, "content_ce": 1.198170887629191, "eot_ce": 0.03608500564673749, "weighted_assistant_objective": 0.9054759666323662, "native_ce": 3.70707368850708, "assistant_targets": 802, "content_targets": 600, "eot_targets": 202, "native_targets": 8192, "positive_rows": 128, "x_tokens": 23074, "gradient_norm": 3.1181347370147705, "clipped": true, "step_seconds": 2.195489366989932}
+[CONTENT_UPDATE] {"arm": "token", "update": 192, "epoch": 2, "assistant_ce": 0.6921804632899986, "content_ce": 0.8871931930383047, "eot_ce": 0.12199103923722497, "weighted_assistant_objective": 0.6921804659068584, "native_ce": 3.5789103507995605, "assistant_targets": 773, "content_targets": 576, "eot_targets": 197, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20638, "gradient_norm": 3.045227527618408, "clipped": true, "step_seconds": 2.3837642300059088}
+[CONTENT_UPDATE] {"arm": "token", "update": 224, "epoch": 3, "assistant_ce": 0.5996672866650269, "content_ce": 0.7735029383892004, "eot_ce": 0.014861523414172394, "weighted_assistant_objective": 0.5996672753244638, "native_ce": 3.5642874240875244, "assistant_targets": 803, "content_targets": 619, "eot_targets": 184, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20356, "gradient_norm": 3.2526447772979736, "clipped": true, "step_seconds": 2.0950678429944674}
+[CONTENT_UPDATE] {"arm": "token", "update": 256, "epoch": 3, "assistant_ce": 0.5454201830933426, "content_ce": 0.7059823253698516, "eot_ce": 0.050715216722440074, "weighted_assistant_objective": 0.5454201968386769, "native_ce": 3.6315369606018066, "assistant_targets": 755, "content_targets": 570, "eot_targets": 185, "native_targets": 8192, "positive_rows": 128, "x_tokens": 22105, "gradient_norm": 2.1857922077178955, "clipped": true, "step_seconds": 2.1910710420052055}
+[CONTENT_UPDATE] {"arm": "token", "update": 288, "epoch": 3, "assistant_ce": 0.5528154867488123, "content_ce": 0.7308618037334783, "eot_ce": 0.019575784903612326, "weighted_assistant_objective": 0.5528155080974102, "native_ce": 3.6440043449401855, "assistant_targets": 791, "content_targets": 593, "eot_targets": 198, "native_targets": 8192, "positive_rows": 128, "x_tokens": 21004, "gradient_norm": 2.7345399856567383, "clipped": true, "step_seconds": 2.084489148997818}
+[CONTENT_UPDATE] {"arm": "token", "update": 320, "epoch": 4, "assistant_ce": 0.40194367136910697, "content_ce": 0.5256138709566313, "eot_ce": 0.004127709638887071, "weighted_assistant_objective": 0.4019436612725258, "native_ce": 3.6703696250915527, "assistant_targets": 856, "content_targets": 653, "eot_targets": 203, "native_targets": 8192, "positive_rows": 128, "x_tokens": 22559, "gradient_norm": 1.8627326488494873, "clipped": true, "step_seconds": 2.3074025899986736}
+[CONTENT_UPDATE] {"arm": "token", "update": 352, "epoch": 4, "assistant_ce": 0.3872099730072829, "content_ce": 0.5193648534161704, "eot_ce": 0.009624607519517481, "weighted_assistant_objective": 0.3872099667787552, "native_ce": 3.7535312175750732, "assistant_targets": 756, "content_targets": 560, "eot_targets": 196, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20446, "gradient_norm": 1.7571632862091064, "clipped": true, "step_seconds": 2.2177849729923764}
+[CONTENT_UPDATE] {"arm": "token", "update": 384, "epoch": 4, "assistant_ce": 0.3835739392841638, "content_ce": 0.51242433979762, "eot_ce": 0.007089192202708243, "weighted_assistant_objective": 0.3835739577189088, "native_ce": 3.372927665710449, "assistant_targets": 753, "content_targets": 561, "eot_targets": 192, "native_targets": 8192, "positive_rows": 128, "x_tokens": 18750, "gradient_norm": 1.9524604082107544, "clipped": true, "step_seconds": 2.225593654002296}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_CONTENT_RECOVERY_train_token", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 16.9분  (2026-10-19 21:09:24)
+==============================================================================

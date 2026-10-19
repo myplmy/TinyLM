@@ -1,0 +1,83 @@
+Regression then exact source/CP prerequisite then execution and final receipt. Same trained backbone; vocabulary versus two extractive span policies. No truth verifier or new training. Estimated.2h GPU=N, worker cap600s.
+
+==============================================================================
+[runlog] 2026-10-19 21:04:32  name=P106B_Stage4exW0_span_readout_cpu_210432
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_span_readout.py --mode prepare --max-wall-sec 600 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_bad_ids_offsets_or_order_are_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_bank_is_immutable_and_cannot_be_forged_with_missing_source_keys (scripts.test_p106b_span_readout.BankTests) ... ok
+test_declared_range_must_be_valid_unicode_character_range (scripts.test_p106b_span_readout.BankTests) ... ok
+test_duplicate_and_overlapping_bytelevel_offsets_remain_distinct_keys (scripts.test_p106b_span_readout.BankTests) ... ok
+test_duplicate_entire_reference_is_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_empty_prefix_and_empty_encoding_are_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_exact_prefix_ids_offsets_and_last_query_are_preserved (scripts.test_p106b_span_readout.BankTests) ... ok
+test_no_empty_or_zero_width_only_source_bank (scripts.test_p106b_span_readout.BankTests) ... ok
+test_non_tokenizer_or_malformed_encoding_is_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_overlapping_duplicate_reference_is_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_reference_boundary_straddles_are_excluded_without_retokenization (scripts.test_p106b_span_readout.BankTests) ... ok
+test_source_may_not_include_query_or_future_positions (scripts.test_p106b_span_readout.BankTests) ... ok
+test_token_limit_is_exact_and_invalid_limits_are_rejected (scripts.test_p106b_span_readout.BankTests) ... ok
+test_zero_width_offsets_never_enter_source_bank (scripts.test_p106b_span_readout.BankTests) ... ok
+test_ambient_cpu_autocast_does_not_change_fp32_scoring (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_bad_hidden_shape_size_dtype_or_nonfinite_is_rejected (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_double_hidden_uses_head_projection_dtype_then_fp32_dot (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_exact_single_batch_hidden_matches_unbatched_without_state_mutation (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_existing_head_formula_and_last_prefix_query_match_manual_math (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_missing_biased_or_mismatched_rank_head_is_rejected (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_only_bank_and_query_hidden_can_affect_scores (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_projection_overflow_is_rejected (scripts.test_p106b_span_readout.ScoreTests) ... ok
+test_both_tie_policies_choose_lexicographically_first (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_empty_outer_trim_result_is_preserved (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_english_leading_space_and_internal_layout_are_preserved (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_independent_reverse_is_invalid_and_never_repaired (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_joint_algorithm_matches_exhaustive_all_pairs (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_joint_policy_has_no_hidden_answer_length_cap (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_korean_particle_and_punctuation_spill_are_not_gold_trimmed (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_no_gold_or_metadata_inference_argument_and_gold_change_invariance (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_score_shape_dtype_nonfinite_and_policy_are_rejected (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_valid_joint_finds_global_legal_pair_not_argmax_repair (scripts.test_p106b_span_readout.SelectionTests) ... ok
+test_activity_requires_complete_finite_owned_metadata (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_case_separates_inference_and_gold (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_duplicate_source_identity_rejected (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_failure_activity_is_saved_and_blocks_downstream (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_inference_signature_rejects_gold_location_inputs (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_linked_output_rejected (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_malformed_manifest_is_rejected_before_verifier_or_file_io (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_nan_and_forged_selected_span_are_rejected (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_no_silent_context_crop (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_original_gold_annotation_must_match (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_phase_wall_and_processgroup_contract (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_prefix_must_be_single_answer_free_user (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_replay_is_not_a_readout_case (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_reversed_argmax_does_not_get_repaired (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_saved_score_reselection_and_vocab_decode (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_synthetic_prepare_evaluate_readback_pipeline (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_vocab_ids_and_protocol_are_not_just_report_strings (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_vocab_requested_budget_and_terminal_policy_cannot_be_forged (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_watchdog_signals_only_its_own_child_group (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_write_once_and_output_allowlist (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_wrong_original_label_cannot_be_frozen (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_wrong_source_sha_fails_before_old_source_consumption (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_zero_return_without_owned_result_is_not_success (scripts.test_p106b_span_readout_driver.Contracts) ... ok
+test_authority_aware_and_reserved (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+test_checkpoint_payload_exact_metadata_and_saved_head (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+test_direct_script_check_only_outside_repository_has_no_model_import (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+test_inference_is_eval_prefix_only_no_kv_and_no_annotations (scripts.test_p106b_span_readout_driver.PureRuntime) ... ok
+
+----------------------------------------------------------------------
+Ran 59 tests in 1.357s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[SPAN_READOUT_PREFLIGHT] exact source/reference verified; model0
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[SPAN_READOUT_CPU] full640 natural cases frozen; model/GPU not loaded
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_SPAN_READOUT_prepare", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-10-19 21:04:42)
+==============================================================================

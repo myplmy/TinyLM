@@ -48,10 +48,20 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-23	P106B	run_P106B_Stage4ezW0_native_route_cpu.sh	N	.25	N	N	Same scratch seed and native298975232 per arm; prepare; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
-24	P106B	run_P106B_Stage4ezWa_ternary_native_cost8.sh	Y	.34	Y	Y	Same scratch seed and native298975232 per arm; cost ternary; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
-25	P106B	run_P106B_Stage4ezWb_float_native_cost8.sh	Y	.34	Y	Y	Same scratch seed and native298975232 per arm; cost float; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
-26	P106B	run_P106B_Stage4ezWc_native_route_budget.sh	N	.17	N	N	Same scratch seed and native298975232 per arm; budget native; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
+39	P106B	run_P106B_Stage4faW0_broad_recovery_course_cpu.sh	N	.25	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; prepare;22528rows/352updates, native absolute windows, separate dialogues.	8
+40	P106B	run_P106B_Stage4faWa_broad_recovery_mixed_cost8.sh	Y	.25	Y	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; cost mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
+41	P106B	run_P106B_Stage4faWb_broad_recovery_staged_cost8.sh	Y	.25	Y	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; cost staged;22528rows/352updates, native absolute windows, separate dialogues.	8
+42	P106B	run_P106B_Stage4faWc_broad_recovery_order_budget.sh	N	.17	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; budget;22528rows/352updates, native absolute windows, separate dialogues.	8
+43	P106B	run_P106B_Stage4faWp_broad_recovery_parent_dialogues.sh	D	.25	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate;22528rows/352updates, native absolute windows, separate dialogues.	8
+44	P106B	run_P106B_Stage4faWd_broad_recovery_mixed_train352.sh	Y	1	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; train mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
+45	P106B	run_P106B_Stage4faWe_broad_recovery_staged_train352.sh	Y	1	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; train staged;22528rows/352updates, native absolute windows, separate dialogues.	8
+46	P106B	run_P106B_Stage4faWf_broad_recovery_mixed_answers.sh	D	.5	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
+47	P106B	run_P106B_Stage4faWg_broad_recovery_staged_answers.sh	D	.5	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate staged;22528rows/352updates, native absolute windows, separate dialogues.	8
+48	P106B	run_P106B_Stage4faWh_broad_recovery_order_readback.sh	N	.17	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; readback;22528rows/352updates, native absolute windows, separate dialogues.	8
+# DONE 7dbbb5d run_P106B_Stage4ezW0_native_route_cpu-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ezWa_ternary_native_cost8-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ezWb_float_native_cost8-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ezWc_native_route_budget-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
 27	P106B	run_P106B_Stage4ezWd_ternary_native2281.sh	Y	4	N	Y	Same scratch seed and native298975232 per arm; train ternary; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
 28	P106B	run_P106B_Stage4ezWe_float_native2281.sh	Y	4	N	Y	Same scratch seed and native298975232 per arm; train float; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
 29	P106B	run_P106B_Stage4ezWf_ternary_sft_cost8.sh	Y	.25	Y	Y	Same scratch seed and native298975232 per arm; sft_cost ternary; route-only comparison, strict costs/budget/deadline; m8a16ckptON.	8
@@ -68,24 +78,24 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE cda4ac4 run_P106B_Stage4ewWa_token_cost8-done.sh; exact commands and closure in result101 section326 and WIP_20261019b_FIRST_FOUR_LAUNCHER_CLEANUP.json; deleted owned shell only.
 # DONE cda4ac4 run_P106B_Stage4ewWb_content_cost8-done.sh; exact commands and closure in result101 section327 and WIP_20261019b_FIRST_FOUR_LAUNCHER_CLEANUP.json; deleted owned shell only.
 # DONE cda4ac4 run_P106B_Stage4ewWc_content_objective_budget-done.sh; exact commands and closure in result101 section328 and WIP_20261019b_FIRST_FOUR_LAUNCHER_CLEANUP.json; deleted owned shell only.
-5	P106B	run_P106B_Stage4ewWd_token_train384.sh	Y	.6	N	Y	Same 12288-row four-pass course and native windows; token objective; fresh exact parent; budget receipt required.	8
-6	P106B	run_P106B_Stage4ewWe_content_train384.sh	Y	.6	N	Y	Matched content objective only; same source/order/native/parent; 384 updates; no automatic adoption.	8
-7	P106B	run_P106B_Stage4ewWf_token_actual_answers.sh	D	.5	N	Y	Exact new token checkpoint, same1694 first answers and native32; bounded raw shards.	8
-8	P106B	run_P106B_Stage4ewWg_content_actual_answers.sh	D	.5	N	Y	Exact new content checkpoint, same1694 first answers and native32; not a general-quality PASS.	8
-9	P106B	run_P106B_Stage4ewWh_content_pair_readback.sh	N	.2	N	N	Independent raw manifests/token decoding/denominator recount for3388 fresh answers; no new learning.	8
-10	P106B	run_P106B_Stage4exW0_span_readout_cpu.sh	N	.2	N	N	Exact saved span03 source/CP bytes and640 answer-free reference banks; no model load.	8
-11	P106B	run_P106B_Stage4exWa_span_actual_readout.sh	D	.34	N	Y	Same exact saved backbone;640 vocabulary answers and two gold-free span readouts; no training or checkpoint writes.	8
-12	P106B	run_P106B_Stage4exWb_span_readout_recount.sh	N	.2	N	N	Raw score selection, reference substring, vocabulary decoding, activity/CP lineage and all denominators; not truth verification.	8
-13	P106B	run_P106B_Stage4eyW0_broad_course_cpu.sh	N	.25	N	N	Broad22528 same groups and fixed native background; prepare; two-pass352 only; real dialogues are separate from old monitor.	8
-14	P106B	run_P106B_Stage4eyWa_broad_mixed_cost8.sh	Y	.25	Y	Y	Broad22528 same groups and fixed native background; cost mixed; two-pass352 only; real dialogues are separate from old monitor.	8
-15	P106B	run_P106B_Stage4eyWb_broad_staged_cost8.sh	Y	.25	Y	Y	Broad22528 same groups and fixed native background; cost staged; two-pass352 only; real dialogues are separate from old monitor.	8
-16	P106B	run_P106B_Stage4eyWc_broad_order_budget.sh	N	.17	N	N	Broad22528 same groups and fixed native background; budget; two-pass352 only; real dialogues are separate from old monitor.	8
-17	P106B	run_P106B_Stage4eyWp_broad_parent_dialogues.sh	D	.25	N	Y	Broad22528 same groups and fixed native background; evaluate; two-pass352 only; real dialogues are separate from old monitor.	8
-18	P106B	run_P106B_Stage4eyWd_broad_mixed_train352.sh	Y	1	N	Y	Broad22528 same groups and fixed native background; train mixed; two-pass352 only; real dialogues are separate from old monitor.	8
-19	P106B	run_P106B_Stage4eyWe_broad_staged_train352.sh	Y	1	N	Y	Broad22528 same groups and fixed native background; train staged; two-pass352 only; real dialogues are separate from old monitor.	8
-20	P106B	run_P106B_Stage4eyWf_broad_mixed_answers.sh	D	.5	N	Y	Broad22528 same groups and fixed native background; evaluate mixed; two-pass352 only; real dialogues are separate from old monitor.	8
-21	P106B	run_P106B_Stage4eyWg_broad_staged_answers.sh	D	.5	N	Y	Broad22528 same groups and fixed native background; evaluate staged; two-pass352 only; real dialogues are separate from old monitor.	8
-22	P106B	run_P106B_Stage4eyWh_broad_order_readback.sh	N	.17	N	N	Broad22528 same groups and fixed native background; readback; two-pass352 only; real dialogues are separate from old monitor.	8
+# DONE 7dbbb5d run_P106B_Stage4ewWd_token_train384-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ewWe_content_train384-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ewWf_token_actual_answers-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ewWg_content_actual_answers-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4ewWh_content_pair_readback-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4exW0_span_readout_cpu-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4exWa_span_actual_readout-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4exWb_span_readout_recount-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# DONE 7dbbb5d run_P106B_Stage4eyW0_broad_course_cpu-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
+# HOLD run_P106B_Stage4eyWa_broad_mixed_cost8-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWb_broad_staged_cost8-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWc_broad_order_budget-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWp_broad_parent_dialogues-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWd_broad_mixed_train352-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWe_broad_staged_train352-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWf_broad_mixed_answers-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWg_broad_staged_answers-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
+# HOLD run_P106B_Stage4eyWh_broad_order_readback-hold.sh; v1 CPU metadata ERROR9/model0. Unexecuted old alternative; replaced by Stage4fa v2 recovery, original bytes preserved.
 # 41	P106B	run_P106B_Stage4etW0_question_transfer_cpu.sh	N	.167	Y	Y	DONE CPU write and consumer HOLD preserved in result101 section302; exact shell recoverable from b46d90f.	8
 # 42	P106B	run_P106B_Stage4etCa_fixed_last_cost8-hold.sh	Y	.25	Y	Y	HOLD v1 actual consumer mask-owner mismatch; source preserved, recovery uses new namespace.	8
 # 43	P106B	run_P106B_Stage4etCb_varied_last_cost8-hold.sh	Y	.25	Y	Y	HOLD v1 actual consumer mask-owner mismatch; source preserved, recovery uses new namespace.	8

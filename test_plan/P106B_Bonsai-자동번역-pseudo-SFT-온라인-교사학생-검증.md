@@ -5935,12 +5935,12 @@ content = N_C/(N*B_+) * sum_{c_i>0}(C_i/c_i) + E/N + native_CE_sum/8192
 
 | 단계 | 내용 | 선결·비용 | 초기 상태 |
 |---|---|---|---|
-| Stage4ewW0 | 전체4pass/DEV·owner·128분모와 양policy 계수실물검산 | CPU상한600초·모델0 | 코드49회귀통과; 실물NOT_RUN |
-| Stage4ewWa / Stage4ewWb | 같은부모 양팔각cost8·CP0 | W0·각GPU≤900초·직전5분유휴·큰CPU중지 | NOT_RUN |
-| Stage4ewWc | 양cost의완료activity·원시8행·예상384와평가/기록예비 | 보수예측이stage6h·학습종료목표안에들어야함 | NOT_RUN |
-| Stage4ewWd / Stage4ewWe | fresh parent에서양팔각384회·4pass | 양cost/예산완료·source/그룹불변 | NOT_RUN |
-| Stage4ewWf / Stage4ewWg | 각같은1694실제첫답·native32 | 정확자기CP/실제tokenizer/completeactivity | NOT_RUN |
-| Stage4ewWh | 총3388새실답·raw/token decode·paired 분모검산 | 양평가완료activity·원답manifest/SHA | NOT_RUN |
+| Stage4ewW0 | 전체4pass/DEV·owner·128분모와 양policy 계수실물검산 | CPU상한600초·모델0 | 완료49/실물소비·101§324 |
+| Stage4ewWa / Stage4ewWb | 같은부모 양팔각cost8·CP0 | W0·각GPU≤900초·직전5분유휴·큰CPU중지 | 양완료·101§326~327 |
+| Stage4ewWc | 양cost의완료activity·원시8행·예상384와평가/기록예비 | 보수예측이stage6h·학습종료목표안에들어야함 | 예약통과·101§328 |
+| Stage4ewWd / Stage4ewWe | fresh parent에서양팔각384회·4pass | 양cost/예산완료·source/그룹불변 | 양완료/새CP2·101§331~332 |
+| Stage4ewWf / Stage4ewWg | 각같은1694실제첫답·native32 | 정확자기CP/실제tokenizer/completeactivity | 양3388새답완료·101§333~334 |
+| Stage4ewWh | 총3388새실답·raw/token decode·paired 분모검산 | 양평가완료activity·원답manifest/SHA | 완료오류0·일반품질비채택·101§335 |
 
 과거384회15분은앵커이지새구현실측예측이아니다. 무인입력0·기본최상위배치별공유회귀→선결→본단계→최종영수증. 전체stage작업자는6h이내,평가1200초/기록600초예비를두고절대마감은20일17시다. 새학습은14시이후열지않으며비용측정직전5분유휴를총괄/실행자가확인한다.
 
@@ -6003,9 +6003,9 @@ raw token-copy는 현재128문항에서 첫 gold token ID가 source bank에 없�
 
 | 단계 | 수행 | 선결·상한 | 작성 시 상태 |
 |---|---|---|---|
-| Stage4exW0 | 새 helper/driver 회귀·실물 source/CP byte SHA·640 prefix/bank 동결 | CPU≤600초, 모델0·새 namespace만 | NOT_RUN |
-| Stage4exWa | 같은 자기 본체의 어휘640답과 두 추출정책 | W0 완료·GPU≤1200초·같은 source/code·activity 종료 | NOT_RUN |
-| Stage4exWb | raw scores/bank/원문/어휘 token decode·분모 독립 검산 | 실제완료 activity·manifest/SHA·CPU≤600초 | NOT_RUN |
+| Stage4exW0 | 새 helper/driver 회귀·실물 source/CP byte SHA·640 prefix/bank 동결 | CPU≤600초, 모델0·새 namespace만 | CPU59/640동결완료·101§329 |
+| Stage4exWa | 같은 자기 본체의 어휘640답과 두 추출정책 | W0 완료·GPU≤1200초·같은 source/code·activity 종료 | 실제640어휘+양추출완료·101§336 |
+| Stage4exWb | raw scores/bank/원문/어휘 token decode·분모 독립 검산 | 실제완료 activity·manifest/SHA·CPU≤600초 | 검산완료·위치라벨의미결함·101§337 |
 
 총 활동 상한2400초, 승인 종료20일17시보다600초 기록 예비를 남긴다. 새 모델 학습비용은0, head196608 FP32인자는0.75MiB이며 이 수치를 모델 전체 상주/실측 peak로 대체하지 않는다. 실제 peak/속도는 이 진단에서 함께 기록하되 benchmark는 아니다.
 
@@ -6019,7 +6019,7 @@ raw token-copy는 현재128문항에서 첫 gold token ID가 source bank에 없�
 
 ### 7. 실행 이력·예측 대조
 
-계획 작성 시 순수 helper32회귀만 통과했고 실물 source/모델/새 답은 모두 NOT_RUN이다. 실제 source와 strict checkpoint를 검증한 후에만 다음 단계를 연다. 원래 음성·미사용 head 판정은 그대로 보존한다.
+계획 당시 helper32/실물 미실행은 역사다. 이후 CPU59와640실제 어휘답/양추출/독립 검산을 완료했다(101§329/336~337). TEST13→16/256·TRAIN36→77로 일반 개선은 확인하지 못했고, CoQA 자유답의 유일 부분문자열 위치가 의미근거가 아닌 결함을 발견했다. 추출 가능성을 oracle535만으로 낙관한 해석은 기각하며 새 원주석 span이 후속 선결이다. 원형/과거판정은 수정하지 않는다.
 
 ### 병행 Stage4ew 비용·예산 이력 — 2026-10-19 20:52KST
 
@@ -6057,7 +6057,7 @@ monitor는 FP32-MATH/greedy64/KV-on/MTP-off, 자연 대화는 같은 연산의 m
 
 | 단계 | 수행 | 선결·상한 | 작성 시 상태 |
 |---|---|---|---|
-| Stage4eyW0 | 전체 원형/admission·22528실제소비·DEV/평가 동결 | CPU≤900초·모델0 | NOT_RUN |
+| Stage4eyW0 | 전체 원형/admission·22528실제소비·DEV/평가 동결 | CPU≤900초·모델0 | ERROR9 metadata키충돌/모델0·101§338 |
 | Stage4eyWa / Stage4eyWb | 양팔각8회·세자료군/긴general head 포함 | W0·같은parent·단독유휴·CP0, 각900초 | NOT_RUN |
 | Stage4eyWc | 양완료cost·raw·전체 보수예산 | stage3h·평가1200s/기록600s 예비 | NOT_RUN |
 | Stage4eyWp | 부모의 신규16대화·old1694 명시 재사용검산 | 정확원부모·W0·GPU≤900초 | NOT_RUN |
@@ -6075,7 +6075,7 @@ monitor는 FP32-MATH/greedy64/KV-on/MTP-off, 자연 대화는 같은 연산의 m
 
 ### 7. 실행 이력
 
-설계/순수66회귀와 실제 읽기 source 재고만 확인했고, 첫 prepare/동결·모델/GPU/새답은 모두 NOT_RUN이다. 교과와 driver의 CPU 소비·비용 뒤만 본학습을 열며 상기과거 결과를 새완료로 재사용하지 않는다.
+v1 실제prepare는 source_admission 정책문자열/결과dict 충돌로 ERROR9였다(101§338). 자료22,528행 부분원형은 보존했으나 자기 검산을 통과하지 못했고 모델0/학습0/CP0이다. 나머지9SH는 미실행 hold이며 아래 Stage4fa v2가 대체한다. 품질 가설을 시험하기 전에 기술복구가 필요한 상태이며 옛 음성을 PASS로 바꾸지 않는다.
 
 ## 2026-10-19 후속 Stage4ez — 같은 무작위 본체에서 native 삼진 경로와 실수가중치 경로
 
@@ -6104,10 +6104,10 @@ monitor는 FP32-MATH/greedy64/KV-on/MTP-off, 자연 대화는 같은 연산의 m
 
 | 단계 | 실행 | 선결·상한 | 시작 상태 |
 |---|---|---|---|
-| Stage4ezW0 | source/offset/전체 SFT 소비 동결·CPU77회귀 | 모델0·900초 | NOT_RUN |
-| Stage4ezWa/Wb | 각 native cost8+anneal1 역전파1micro·optimizer0 추가 probe | 양팔 단독·직전5분 유휴·각1200초·CP0 | NOT_RUN |
-| Stage4ezWc | native 예산·같은 초기화·말기 유한성 검산 | 미측정 SFT3600초/마감10800초 예비 | NOT_RUN |
-| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | NOT_RUN |
+| Stage4ezW0 | source/offset/전체 SFT 소비 동결·CPU77회귀 | 모델0·900초 | CPU77/원형동결완료·101§339 |
+| Stage4ezWa/Wb | 각 native cost8+anneal1 역전파1micro·optimizer0 추가 probe | 양팔 단독·직전5분 유휴·각1200초·CP0 | 양완료/같은core·float 최초CUDA 유휴시각 미계측·101§340~341 |
+| Stage4ezWc | native 예산·같은 초기화·말기 유한성 검산 | 미측정 SFT3600초/마감10800초 예비 | 보수예약통과31,126초·101§342 |
+| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | 삼진22:10KST진행·실수미실행 |
 | Stage4ezWf/Wg/Wh | 자기 native CP로 SFT cost8씩→실측 예산 | native 양팔 완료 후만·각900초 | NOT_RUN |
 | Stage4ezWi/Wj | 각 동일 SFT384회 | 실제 SFT 예산 통과·각3600초 | NOT_RUN |
 | Stage4ezWk/Wl/Wm/Wn | native/SFT 양팔 각1694 실제 답과 native32 | 자기 route/CP/SHA/완료 activity·각1800초 | NOT_RUN |
@@ -6150,4 +6150,65 @@ monitor는 FP32-MATH/greedy64/KV-on/MTP-off, 자연 대화는 같은 연산의 m
 
 ### 9. 실행 이력
 
-helper28+driver49=77 CPU 회귀 통과를 확인했다. 새 tag의 실제 source 동결·CUDA cost·예산·학습·평가는 아직 NOT_RUN이다. 결과 회수 후 이 절과 기준표/방법론/COMPASS를 갱신한다.
+[101§339~342](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 실제CPU77/291968crop 동결·양cost8/late finite/cache·예약을 완료했다. 같은 초기본체028C46B2…와 학습가중치 미복사를 확인했다. float SH의 최초CUDA 유휴시각은 미계측이므로 속도 우열로 쓰지 않는다. 삼진본2281회는22:10KST 진행 중·실수본/SFT/최종답은 미실행이다. 실제 예측보다 늦어지면 하드기한을 우선하고 문턱을 사후 풀지 않는다.
+
+## 2026-10-19 후속 Stage4fa — broad metadata 복구·원형 대등성 우선
+
+### 1. 왜
+
+[101 §338](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 v1은 full info의 정책문자열과 결과 admission dict가 같은 키를 써 실제 CPU 준비에서 ERROR9였다. 모델0/학습0이며 자료 부족·성능 음성이 아니다. v1 코드·원형은 보존하고 새 `p106b_broad_curriculum_v2_s1337`를 사용한다.
+
+### 2. 질문
+
+메타데이터·출력 namespace만 고친 뒤 v1이 선택한 자료와 과학 조건을 그대로 재현하는가? 이를 통과하면 기존 Stage4ey의 같은22,528행·2pass352·원P090B에서 mixed/staged 순서 대조를 새 단계로 수행할 수 있는가?
+
+### 3. 예측
+
+기술 충돌은 정책키 `source_admission_policy` 분리로 회복할 수 있다. 다만 wrapper 선택/하위 worker가 v1로 새지 않는지와 모든 실제 payload가 같아야 하므로 회귀 성공만으로 실물 복구를 예측하지 않는다. 교육 순서의 품질 예측·한영/일반대화/seed 한계는 Stage4ey와 같고 조건을 완화하지 않는다.
+
+### 4. 변경·단계
+
+전용 adapter가 legacy의 TAG/CACHE/RAW/EVIDENCE/info/phase_commands와 순수 hash선택2함수만 process-local로 바꾼다. 계산·학습·source builder 상수는 동일 객체다. 대화16개(원래17개 assistant turn)와 stdout14표본은 v1선택 tag를 사용한다.
+
+실제 prepare 성공 뒤 v1 frozen/course/wire SHA·전체 encode/mask/순서/자료량을 독립 검산하고 `v1_payload_equivalence.json`을 추가한다. 추가 소요시간은 별도 activity로 기존3h 예산에 합산한다. 원 prepare activity는 수정하지 않으며 전체 복구 실패시 후속 worker가 GPU 전에 차단한다. 새 회귀는 최소 info mock만 쓰지 않고 실제 full info JSON 왕복으로 원 충돌을 재현한다.
+
+| 단계 | 내용 | 선결/비용 | 작성 시 상태 |
+|---|---|---|---|
+| Stage4faW0 | 원형재생성·회귀90·full info/payload 대등성 | CPU900초/모델0 | NOT_RUN |
+| Stage4faWa/Wb | 각8회 mixed/staged 비용 | 실제대등성완료·단독·launcher전5분 GPU유휴·각900초 | NOT_RUN |
+| Stage4faWc | 양cost·전체3h/현기한 예약 | 평가1200초·기록600초 예비 | NOT_RUN |
+| Stage4faWp | 부모16신규대화/old1694 명시재사용검산 | 원P090B 정확SHA·900초 | NOT_RUN |
+| Stage4faWd/We | 각22,528행×2pass352회 | 양cost·예산·부모완료·각3600초 | NOT_RUN |
+| Stage4faWf/Wg | 자기학생1694monitor+동일16실제이력대화 | 자기CP/계보·각1800초 | NOT_RUN |
+| Stage4faWh | 전raw·분모/오염표시·paired검산 | 세종점완료·CPU600초 | NOT_RUN |
+
+### 5. 판정
+
+v1/v2의 source선택·course·record bytes·마스크·토큰·업데이트·대화 선택이 바뀌면 복구 ERROR이며 GPU로 열지 않는다. 기술복구성공은 학생 품질이 아니다. mixed/staged의 결과는 기존 과제군별 실제 답/일반원문 손실/실제 대화 원형으로 판단하고 관찰된monitor와 선택16대화를 blind benchmark로 부르지 않는다. QA alias/형식/정답성/종료를 구분한다.
+
+### 6. 비용·한계
+
+전용모델 다운로드0·교사호출0. native route 본학습 중 독립CPU 준비/문서만 병행하고 새GPU 비용은 그 GPU를 끝낸 뒤5분 유휴 후 연다. 기존 bound3h/같은배치·같은부모·미측정사실은 변경하지 않는다. wrapper는 과거 실패원형 SHA에 의존하므로 제품용 영구adapter가 아니며 과거 오류를 PASS로 바꾸지 않는다.
+
+### 7. 실행 파일
+
+- `run_P106B_Stage4faW0_broad_recovery_course_cpu.sh` — `--mode prepare --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4faWa_broad_recovery_mixed_cost8.sh` — `--mode cost --arm mixed --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4faWb_broad_recovery_staged_cost8.sh` — `--mode cost --arm staged --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4faWc_broad_recovery_order_budget.sh` — `--mode budget --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4faWp_broad_recovery_parent_dialogues.sh` — `--mode evaluate --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4faWd_broad_recovery_mixed_train352.sh` — `--mode train --arm mixed --max-wall-sec 3600 --execute`.
+- `run_P106B_Stage4faWe_broad_recovery_staged_train352.sh` — `--mode train --arm staged --max-wall-sec 3600 --execute`.
+- `run_P106B_Stage4faWf_broad_recovery_mixed_answers.sh` — `--mode evaluate --arm mixed --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4faWg_broad_recovery_staged_answers.sh` — `--mode evaluate --arm staged --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4faWh_broad_recovery_order_readback.sh` — `--mode readback --max-wall-sec 600 --execute`.
+
+### 8. 설계 점검
+
+같은 source admission과 raw교과를 재사용하되 전체payload 재검산을 선결로 둔다. metadata string/dict의 충돌만 수리하므로 품질 문턱 변경/다른 source 혼입이 아니다. old v1 실패W0는done 이력, 미실행9SH는hold로 보존하고 새queue는v2만 등록한다. root가두파일전체를읽고90CPU를재확인했으며 실제prepare/비용은 아직 미실행이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 9. 실행 이력
+
+설계/90CPU 통과·실물GPU/새답 NOT_RUN. 첫 실제CPU에서 v1실패불변과 v2대등성 receipt까지 확인한 뒤 상태를 갱신한다.

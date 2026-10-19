@@ -1,0 +1,108 @@
+Read regression, prerequisite and final receipt before judging. Paired content objective study; actual answers, EOT/content losses and native retention are separate. Technical completion is not intelligence. Estimated 0.5 hours; GPU=D; per-worker cap 1800 seconds. Independent arms preserve failed evidence.
+
+==============================================================================
+[runlog] 2026-10-19 21:27:26  name=P106B_Stage4ewWf_token_actual_answers_212726
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_content_recovery.py --mode evaluate --arm token --max-wall-sec 1800 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_components_rejects_shape_dtype_and_chunk_errors (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_components_rejects_supervision_and_weight_errors (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_computation_never_loads_assets_or_initializes_cuda (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_custom_eot_components_and_fp32_bfloat16_hidden (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_deferred_backward_has_no_last_chunk_target_or_weight_capture (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_dense_loss_and_gradients_for_both_policies_and_checkpoint_modes (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_eot_only_dense_and_gradient_parity (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_head_gradients_work_with_frozen_hidden (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_ignored_micro_returns_differentiable_fp32_zero (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_ignored_positions_have_zero_hidden_gradient (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_native_term_is_separate_and_keeps_8192_denominator (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_no_grad_mode_returns_fp32_reports (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_raw_sums_do_not_change_with_policy (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_same_eot_weights_do_not_promise_same_vocabulary_row_gradient (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_token_policy_matches_existing_core_loss_and_gradients (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_whole128_conversations_in16_micros_matches_dense (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_all_ignored_row_allowed_inside_supervised_update (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_corrupted_selected_plan_weights_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_custom_eot (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_eot_only_row_stays_in_total_not_content_rows (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_eot_only_update_is_allowed (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_policy_and_eot_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_record_lengths_labels_and_owners_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_tensor_request_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_multiple_turns_are_one_conversation (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_no_supervision_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_paper_example_preserves_content_and_each_eot_mass (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_tensor_selects_order_and_zero_padding (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_token_counts_weights_and_masked_owner (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_complete_identity_passes_without_model_or_data (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_native_scope_is_not_silently_promoted (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_report_status_code_tag_and_manifest_are_bound (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_authority_separates_training_and_final_deadlines (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_check_only_cannot_start_worker_or_assets (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_checkpoint_path_rejects_undeclared_arm_before_io (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_failed_preflight_never_invokes_experiment (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_late_source_failure_precedes_parent_gpu_and_outputs (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_mode_and_arm_ownership_reject_unused_selectors (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_phase_order_includes_real_regressions_and_source_barrier (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_source_reader_rechecks_all_passes_and_dev (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_weight_mass_preserves_masked_wrong_owner (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_worker_wall_is_bounded_and_not_a_truthy_boolean (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_completed_worker_rejects_wrong_code_and_exit (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_duplicate_worker_activity_rejected_before_execution (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_eval_worker_keeps_absolute_record_reserve (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_incomplete_cost_activity_is_not_a_budget_admission (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_required_does_not_convert_missing_artifact_to_success (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_single_json_20mb_guard_precedes_file_creation (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_write_is_exclusive_and_rejects_nonfinite_before_touch (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 1.300s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[CONTENT_PREFLIGHT] exact source/weights/DEV references; model/GPU not loaded
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "EF1F23AF495B0541FF51D0DD2A66D9D59498EE9EA5279463FC7C7F1BF51B0985", "family": "arithmetic", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n자료:\n계산식: 13 + 29\n질문:\n주어진 계산에서 얻는 수를 정수 하나로 적으세요.", "role": "user"}], "answer": "44", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "1F1356E6CE263DC146BBBB0040D14FE5E2F7079D2A2B7CC052691C43C5C5437F", "family": "arithmetic", "question": [{"content": "Use only the given data and return only the requested answer.\nData:\nExpression: 32 + 42\nQuestion:\nGive only the integer result of the calculation.", "role": "user"}], "answer": "77", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_EVAL_PROGRESS] 256/1694
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "090B70AAF69500A43F779C3E1E6F6D0B63F04E737999E0ABB29DEF4378E3AE0A", "family": "lookup", "question": [{"content": "Use only the given data and return only the requested answer.\nQuestion:\nExtract the value of J's colour from the data.\nData:\nJ's colour: blue\nJ's object: notebook\nF's colour: red\nF's object: book", "role": "user"}], "answer": "blue", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "EE9250CC42EC4A8F6D2AD301867AAB779F69CA2DE315857A3353D8FA4DB700FA", "family": "lookup", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n질문:\n자료에서 K에 연결된 물건 값을 적으세요.\n자료:\nF의 색: 초록\nF의 물건: 공\nK의 색: 주황\nK의 물건: 책", "role": "user"}], "answer": "공", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_EVAL_PROGRESS] 512/1694
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "BB2FE8778CC00569503800441DCA8FB91E3C68FABEDC83FA4C06B0248564A6CE", "family": "boolean", "question": [{"content": "Use only the given data and return only the requested answer.\nData:\nB=true\nK=true\nQuestion:\nEvaluate B OR K using the supplied variables. Return only true or false.", "role": "user"}], "answer": "true", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "00D69F8544318945CA547B2E8662B7431ECBBB263CB7C449184472AB2DDE0845", "family": "boolean", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n자료:\nG=false\nK=false\n질문:\n주어진 변수로 G AND K을 평가한 값만 true 또는 false로 적으세요.", "role": "user"}], "answer": "false", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_EVAL_PROGRESS] 768/1694
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "6D255EA5EE665E6E9660B070FD6876A86496E112407DA71B8017E7735E280C4B", "family": "format", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n질문:\nanswer 항목 하나에 주어진 문자열 전체를 담아 JSON으로 답하세요.\n자료:\n원문 문자열(JSON 표기): \"1134\"", "role": "user"}], "answer": "{\"answer\":\"1134\"}", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "909DDFFFA146A8B9865B28788027C0EB4E0761E9DCD587D4E159C6C2190C6A89", "family": "format", "question": [{"content": "Use only the given data and return only the requested answer.\nData:\nOriginal string (JSON notation): \"9209\"\nQuestion:\nReturn only a JSON object with one answer key whose string value is the original string.", "role": "user"}], "answer": "{\"answer\":\"9209\"}", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_EVAL_PROGRESS] 1024/1694
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "7C3FFAD6DF8448A21528252BFFF40EF9323A40B6357112D643ACCD90F932EFEC", "family": "arithmetic", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n자료:\n계산식: 4 + 49\n질문:\n주어진 계산에서 얻는 수를 정수 하나로 적으세요.", "role": "user"}], "answer": "54", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "3D821CB56F6C97D1483EB3DF64DD39F8658CAE8961479385D4E8141AFF6F1711", "family": "arithmetic", "question": [{"content": "Use only the given data and return only the requested answer.\nData:\nExpression: 46 + 46\nQuestion:\nEvaluate the given calculation and return one integer only.", "role": "user"}], "answer": "88", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "11D74BE8D2C5AB1F784A5DA61DCB0D090021EC180FF8BEF1EE4F239C9AEFA48C", "family": "lookup", "question": [{"content": "Use only the given data and return only the requested answer.\nQuestion:\nThe requested attribute of F is object. State its value only.\nData:\nF's object: umbrella\nG's colour: green\nG's object: ball\nF's colour: red", "role": "user"}], "answer": "umbrella", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "275626E0E63C03F0F2481200D09AC53BD4CDCAD79BF2E14FE8D3550B938B92C2", "family": "lookup", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n질문:\nK에 대해 요청한 항목은 물건입니다. 해당 값만 쓰세요.\n자료:\nE의 색: 노랑\nE의 물건: 지도\nK의 물건: 상자\nK의 색: 초록", "role": "user"}], "answer": "상자", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_EVAL_PROGRESS] 1280/1694
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "0B0988CC815E1CAB7DB126877659BB5691B29BA2BF5F0B4AF8FB658328BBC2D7", "family": "boolean", "question": [{"content": "Use only the given data and return only the requested answer.\nData:\nA=false\nG=true\nQuestion:\nEvaluate A XOR G using the supplied variables. Return only true or false.", "role": "user"}], "answer": "true", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "88273EB7839334C0E27B42A8F65ABE19142A5585D14CA3110511DB3D8867CB95", "family": "boolean", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n질문:\n요청한 논리식은 A OR I입니다. 그 결과만 true 또는 false로 알려 주세요.\n자료:\nA=false\nI=false", "role": "user"}], "answer": "false", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "48ACF5BDBF4FD26F150D3CDF3CCF58DF71C0798E137D39E6426A43CA88316710", "family": "format", "question": [{"content": "Use only the given data and return only the requested answer.\nData:\nOriginal string (JSON notation): \"9463\"\nQuestion:\nPut the entire supplied string in the single answer field of a JSON object.", "role": "user"}], "answer": "{\"answer\":\"9463\"}", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "65D4914F4090AF4A21A10B4E5EEF4E7235FFC2BE896206E465C6F4544C8E08A8", "family": "format", "question": [{"content": "자료에 주어진 값만 사용해 요청한 답만 쓰세요.\n질문:\nanswer 항목 하나에 주어진 문자열 전체를 담아 JSON으로 답하세요.\n자료:\n원문 문자열(JSON 표기): \"3909\"", "role": "user"}], "answer": "{\"answer\":\"3909\"}", "finish": "STOP_SEQUENCE", "metrics": {"correct": true}}
+[CONTENT_EVAL_PROGRESS] 1536/1694
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "4F2DCAB70E2E93E694198260DA7DF8F74F426D5A9092BA26BDECC443CF738006", "family": "natural", "question": [{"content": "자료를 읽고 질문의 답만 짧게 쓰세요.\n질문:\nairbag 발매 후 호평을 남겼으며 타블로의 지인인 랩퍼는?\n자료:\n\"Airbag\"은 발매 직후 트위터 등을 통해 여러 연예인들에게서 호평과 동시에 큰 공감을 받았다. 피쳐링으로 참여한 나얼을 비롯해 사이먼 도미닉 같이 평소 타블로와 친분이 있었던 연예인들 뿐만 아니라 에이트의 백찬, 심은경, 비스트의 손동운, 2PM의 장우영, 2AM의 조권, 유아인 등이 호평을 남기며 이 곡을 극찬했다. 음악계의 한 관계자는 타블로와 친분이 없는 연예인들 또한 이 곡을 극찬하는 데에 대해 \"아무래도 겉으로는 화려한 삶을 살지만 알고보면 일반인들에 비해 제약이 많고 고독한 연예인들의 삶을 대변하는 듯한 가사가 가장 크게 작용한 것 같다\"라며 \"Airbag\"의 쓸쓸한 가사가 연예인들의 삶과 크게 닿아있다고 분석했다.", "role": "user"}], "answer": "사이먼 도미닉", "finish": "STOP_SEQUENCE", "metrics": {"correct": true, "em": 1.0, "f1": 1.0, "raw_exact": 1.0, "scope": "annotation/lexical metric not semantic certainty"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "64B5382F2025560CB3B9BB80BBCAF01614252474D65FD4BE596E2FF17B1E6335", "family": "natural", "question": [{"content": "자료를 읽고 질문의 답만 짧게 쓰세요.\n자료:\n그러나 선조의 나이가 어느덧 40세에 이르자 더는 왕세자 책봉을 미룰 수 없다고 생각한 의정부좌의정 정철은 건저(建儲) 문제를 제기했다. 그는 동인의 영수인 영의정 이산해와 우의정 유성룡 등과 함께 광해군의 책봉 문제로 건의하기로 했다가 이산해의 계략에 빠져 경연에서 “나라가 어려울 때 빠른 시일 내에 세자를 책봉하는 것이 현명하다.”라며 광해군을 세자로 책봉하라는 건의를 했다. 선조는 공빈 김씨가 죽은 후 인빈 김씨를 총애하여 인빈의 아들 신성군을 세자로 책봉하려 하였으나, 세자 건저 문제에서 동인 이산해의 계략에 넘어간 정철 등의 견제로 실패하였다. 이산해는 정철, 우의정 류성룡 및 다른 대신들에게 광해군을 세자로 하는 것이 적당하다고 한 뒤, 인빈 김씨의 오빠 김공량에게 달려가 서인에서 신성군을 죽이려 한다고 귀띔했다.\n질문:\n왕세자 책봉을 미룰 수 없다고 생각해 건저 문제를 제기한 사람은?", "role": "user"}], "answer": "광해군", "finish": "STOP_SEQUENCE", "metrics": {"correct": false, "em": 0.0, "f1": 0.0, "raw_exact": 0.0, "scope": "annotation/lexical metric not semantic certainty"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "65879649E297B31A83DB8FFB1E447590B3F024BDE71674FADEACABDC963E9F05", "family": "natural", "question": [{"content": "Read the reference and give only the short answer.\nQuestion:\nCubism revolutionized the way things could be seen in art how? \nReference:\nIn addition to Seurat, the roots of cubism are to be found in the two distinct tendencies of Cézanne's later work: first his breaking of the painted surface into small multifaceted areas of paint, thereby emphasizing the plural viewpoint given by binocular vision, and second his interest in the simplification of natural forms into cylinders, spheres, and cones. However, the cubists explored this concept further than Cézanne. They represented all the surfaces of depicted objects in a single picture plane, as if the objects had all their faces visible at the same time. This new kind of depiction revolutionized the way objects could be visualized in painting and art.", "role": "user"}], "answer": "cézanne", "finish": "STOP_SEQUENCE", "metrics": {"correct": false, "em": 0.0, "f1": 0.0, "raw_exact": 0.0, "scope": "annotation/lexical metric not semantic certainty"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "44F202D109ACFD83A2820ADB0E5C138268189C7A5A7F7DF7310A1D1E2F95E047", "family": "natural", "question": [{"content": "Read the reference and give only the short answer.\nQuestion:\nWho is buying PS3 clusters instead of supercomputers in order to save some money?\nReference:\nPS3's hardware has also been used to build supercomputers for high-performance computing. Fixstars Solutions sells a version of Yellow Dog Linux for PlayStation 3 (originally sold by Terra Soft Solutions). RapidMind produced a stream programming package for PS3, but were acquired by Intel in 2009. Also, on January 3, 2007, Dr. Frank Mueller, Associate Professor of Computer science at NCSU, clustered 8 PS3s. Mueller commented that the 256 MB of system RAM is a limitation for this particular application and is considering attempting to retrofit more RAM. Software includes: Fedora Core 5 Linux ppc64, MPICH2, OpenMP v 2.5, GNU Compiler Collection and CellSDK 1.1. As a more cost-effective alternative to conventional supercomputers, the U.S. military has purchased clusters of PS3 units for research purposes. Retail PS3 Slim units cannot be used for supercomputing, because PS3 Slim lacks the ability to boot into a third-party OS.", "role": "user"}], "answer": "Fixstars Solutions", "finish": "STOP_SEQUENCE", "metrics": {"correct": false, "em": 0.0, "f1": 0.0, "raw_exact": 0.0, "scope": "annotation/lexical metric not semantic certainty"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "6A10EC1BCEF48E842889415F2C499DF57F8291B85DB5AACAA39FC618A4B68B32", "family": "arithmetic", "question": [{"content": "10+9의 값은? 정수만 답하세요.", "role": "user"}], "answer": "12", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "9914BDDD6E966FA885D3C4C4B87355843F5D7F010D54A4C0075C2B1988D980BB", "family": "arithmetic", "question": [{"content": "12+6의 값은? 정수만 답하세요.", "role": "user"}], "answer": "8", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "5799C6FD7947610B6E0DEBD278B2DB71C1FEF9297FDB8BEFD3B7D46F85520436", "family": "arithmetic", "question": [{"content": "What is 3+11? Answer only the integer.", "role": "user"}], "answer": "12", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "D5C3E47F84C7C26F4F08CC17CFA22657FE2872685526E9C829C7517711BF2787", "family": "arithmetic", "question": [{"content": "What is 9+2? Answer only the integer.", "role": "user"}], "answer": "10+2", "finish": "STOP_SEQUENCE", "metrics": {"correct": false}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "6216CC8F4C4AE2C6EF0E68BAAFD9C47A2087CF0A15318CAFB6D46849AEBB6C57", "family": "user_seen", "question": [{"content": "1+1은?", "role": "user"}], "answer": "2", "finish": "STOP_SEQUENCE", "metrics": {"correct": null, "semantic_review": "NOT_AUTOMATICALLY_ADJUDICATED"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "59E35840355014C6205DB6C7F6F8A1A6261AA7D5708944E8F3EDE4F4076A3F81", "family": "user_seen", "question": [{"content": "2+2는?", "role": "user"}], "answer": "3", "finish": "STOP_SEQUENCE", "metrics": {"correct": null, "semantic_review": "NOT_AUTOMATICALLY_ADJUDICATED"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "28431F474DAEB3AD290AC9B243725561C9BA8C4DC849EB414C36D1686F8FDC6D", "family": "user_seen", "question": [{"content": "A는 사과고 B는 당근이다 B는?", "role": "user"}], "answer": "당근", "finish": "STOP_SEQUENCE", "metrics": {"correct": null, "semantic_review": "NOT_AUTOMATICALLY_ADJUDICATED"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "B4845C1A74C9F982768358640190A8BDB22A8EDE7697478F6249D5C362408578", "family": "user_seen", "question": [{"content": "문맥: 민수는 사과 3개, 영희는 사과 5개를 가지고 있습니다. 질문: 영희의 사과는 몇 개입니까? 답만 쓰세요.", "role": "user"}], "answer": "10", "finish": "STOP_SEQUENCE", "metrics": {"correct": null, "semantic_review": "NOT_AUTOMATICALLY_ADJUDICATED"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "4CE707FE72D039FFAF7D8F80362848FFD95C37E13F174AB45362AAC071106EE8", "family": "user_seen", "question": [{"content": "사과에 대해 알려줘", "role": "user"}], "answer": "", "finish": "STOP_SEQUENCE", "metrics": {"correct": null, "semantic_review": "NOT_AUTOMATICALLY_ADJUDICATED"}}
+[CONTENT_ACTUAL_ANSWER] {"arm": "token", "id": "949A44A7755349D7D64E71927DC9F4F52E6AC10A8BB771116E54CB7EDAE6C61B", "family": "user_seen", "question": [{"content": "농구란?", "role": "user"}], "answer": "농구란", "finish": "STOP_SEQUENCE", "metrics": {"correct": null, "semantic_review": "NOT_AUTOMATICALLY_ADJUDICATED"}}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_CONTENT_RECOVERY_evaluate_token", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.4분  (2026-10-19 21:29:53)
+==============================================================================
