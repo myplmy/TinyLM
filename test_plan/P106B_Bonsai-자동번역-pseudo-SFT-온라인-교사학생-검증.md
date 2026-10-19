@@ -5767,3 +5767,75 @@ SH15개와 독립4코드의 실행 전 검증을 완료했다. 실제CPU 동결 
 **실제 CPU 완료(10:57:58KST):** d216de4 원형 선보존 뒤 Stage4etW0 회귀66/선결/실물동결을 모두 종료0으로 마쳤다([101 §302](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). worker127.280441초·공개CPU56746B/CFA9214F…·16팔/pass와coded/cases/dev의19manifest다. 각pass12288/75664targets/18752EOT·한영행6144씩이며 target/turnowner·96update순서/분모가네팔에서전량동일했다. 문구변형은x/pass6272가늘며위치만변경은이번합계가같았다. 실제GPU/학습/새CP/답안0이므로설계효능은아직미판정이다. 독립파생재집계→유휴5분뒤4cost8을먼저수행하고8h예약계산을통과해야384네팔을연다. CPU SH는done으로보존한다.
 
 **독립 소비 HOLD 정정:** 위 CPU 작성 완료 뒤 실제 reader 전량 검산에서64replay/pass·16자료1024복사본의 무시라벨/양의 owner를 새 reader가 과잉 거부함을 발견했다. 원형 F728·자료·음성은 보존하고14미실행 SH를 hold로 둔다. 교정 첫 오답은 y=-100으로 계속 문맥 전용이며 잘못 학습됐다는 결과가 아니다. Stage4eu/v2의 소비복구·원형 동등성·모델 전 실제 읽기 선결을 완료하기 전 cost/GPU를 실행하지 않는다. 상세는101§302의 후속 정정과 독립 actual CPU 감사가 소유한다.
+
+## 2026-10-19 Stage4eu — 무시된 교정 턴을 보존하는 실제 소비 복구
+
+### 1. 왜
+
+[101 §302](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 작성기는 통과했지만 실제 학습 reader는64개 replay/pass의 무시라벨·양의 turn owner를 거부했다. 잘못된 첫 답을 문맥으로만 사용하는 기존 producer가 타당하므로 자료를 버리거나 마스크를 바꾸지 않고 새 독립 버전으로 복구한다. v1 원형·원로그·동결본·음성은 커밋 `b46d90f`와 원래 source `d216de4`에 보존한다.
+
+### 2. 질문
+
+| 번호 | 질문 | 이유 |
+|---|---|---|
+| Q1 | 무시된 교정 첫 답을 그대로 유지한 실제 reader가 전량 통과하는가 | 모델 적재 뒤 지연 실패 방지 |
+| Q2 | v2의 실제 x/y/owner/질문/정답·스케줄이 v1과 같은가 | 버그 수리와 자료 변경 분리 |
+| Q3 | 같은 사실·답에 질문 표현과 위치를 함께 바꾸어 학습하면 새 상태/표현의 생성이 개선되는가 | 한국어 새 표현0/64·기초 산수 실패를 겨냥 |
+
+### 3. 예측
+
+소비 호환은 회복될 것으로 예상하지만 모델 효과는 미확인이다. 첫 오답이 이미 무시 라벨이므로 해당 owner를 허용해도 직접 양성 target이 추가되지 않는다. 다만 그 문맥은 후속 정답의 조건이므로 입력 embedding을 통한 후속 gradient가 없는 것은 아니다. 자료/학습수학을 유지하므로 표현 일반화·산수·망각 실패는 그대로 남을 수 있다. 작성 완료와 학습 소비 완료를 구별한 이번 실제 음성도 보존한다.
+
+### 4. 단계 설계
+
+기존 Stage4et의 네 팔·배치·초기화·목적·384회·64토큰/1694실답·32native crop·8h 예산/평가예약은 변경하지 않는다. 새 tag/schema는 `p106b_question_transfer_v2_s1337`/`P106B_QUESTION_TRANSFER_V2`이고 과학적 자료 선택·문항 ID·표시 표본 key는 v1 그대로다. 데이터/test 두 순수 파일과 기존 producer/core는 수정하지 않는다.
+
+| 단계 | 수행 | 다음 관문 |
+|---|---|---|
+| Stage4euW0 | 회귀71·source 선결·새 CPU 동결; 모든16팔/pass와 DEV를 실제 학습 reader로 소비 | v1과 순서 있는 전체 payload·cases·표본·native·분모 동등성 독립 확인 |
+| Stage4euCa/Cb/Cc/Cd | 팔별 새 부모의8update 비용·CP0 | 네 실제 cost receipt·같은 optimizer/target/native·시간/VRAM |
+| Stage4euTa/Tb/Tc/Td | 팔별384update·4epoch·CP1 | 전체 실제 source pass/DEV가 모델 적재 전에 통과; 총8h와 허가 예약 |
+| Stage4euEp/Ea/Eb/Ec/Ed | 부모/네 학생의1694첫답 | 같은 max64/FP32 MATH/greedy/KV-on/MTP-off·원형/종료/본체 불변 |
+| Stage4euR |8470실답과원형집계·사전표본 판독 | 국소 효과/퇴행/일반화 범위 분리, 자동 채택 없음 |
+
+CPU prepare는 인코딩뿐 아니라 닫힌 샤드의 실제 `records_for`를16자료에 사용한다. 각 cost/train도 해당 팔4pass와 DEV를 모델/GPU 허가조회·출력디렉터리·optimizer보다 먼저 읽는다. 첫 오답의 y=-100·segment1은 보존하며 지도되는 토큰만 양의 owner를 요구한다.
+
+### 5. 판정 기준
+
+복구는 전량 소비 통과·v1/v2 payload 동등성·직접 무시위치 logit gradient0과 후속 정답 gradient 양성을 모두 요구한다. 소비 수리로 과거 음성이나 새 자료 불량을 PASS로 바꾸지 않는다. 비용/학습/평가는 기존 Stage4et의 명시 게이트를 유지하고 서로 대신하지 않는다. 단일 seed의 실답 변화는 관측 표본의 기술 결과이며 표준 사전학습 sigma를 이 Muon SFT에 복사하지 않는다.
+
+### 6. 비용
+
+CPU 재동결은 v1의127.28초에 실제 소비 전량 검증을 더하므로 약3~5분 예상이며 아직 실측 전이다. v1과 동일 비교의 의미가 없는 비용을 재사용하지 않고 네 cost8을 새로 잰다. 각cost 상한900초·각train7200초, 부모평가3600초·학생평가1800초다. 실제 worker 전체8h 상한, 평가2h·기록1h 예약과 사용자20일17시 권한이 별도다. 5분 유휴·GPU 단독 비용 계측과 CPU 동시부하 금지를 지킨다.
+
+### 7. 실행
+
+- `run_P106B_Stage4euW0_question_transfer_cpu.sh` — `prepare`, 상한600초.
+- `run_P106B_Stage4euCa_fixed_last_cost8.sh` — `cost fixed_last`, 상한900초.
+- `run_P106B_Stage4euCb_varied_last_cost8.sh` — `cost varied_last`, 상한900초.
+- `run_P106B_Stage4euCc_fixed_balanced_cost8.sh` — `cost fixed_balanced`, 상한900초.
+- `run_P106B_Stage4euCd_varied_balanced_cost8.sh` — `cost varied_balanced`, 상한900초.
+- `run_P106B_Stage4euTa_fixed_last_train384.sh` — `train fixed_last`, 상한7200초.
+- `run_P106B_Stage4euTb_varied_last_train384.sh` — `train varied_last`, 상한7200초.
+- `run_P106B_Stage4euTc_fixed_balanced_train384.sh` — `train fixed_balanced`, 상한7200초.
+- `run_P106B_Stage4euTd_varied_balanced_train384.sh` — `train varied_balanced`, 상한7200초.
+- `run_P106B_Stage4euEp_parent_actual_answers.sh` — `evaluate parent`, 상한3600초.
+- `run_P106B_Stage4euEa_fixed_last_actual_answers.sh` — `evaluate fixed_last`, 상한1800초.
+- `run_P106B_Stage4euEb_varied_last_actual_answers.sh` — `evaluate varied_last`, 상한1800초.
+- `run_P106B_Stage4euEc_fixed_balanced_actual_answers.sh` — `evaluate fixed_balanced`, 상한1800초.
+- `run_P106B_Stage4euEd_varied_balanced_actual_answers.sh` — `evaluate varied_balanced`, 상한1800초.
+- `run_P106B_Stage4euR_transfer_readback.sh` — `readback`, 상한600초.
+
+### 8. 한계
+
+작은 코드검증 교과는75M고유/300M본교육이 아니다. 입력한영행 수와 토큰 비율을 구별하며 반복4pass footprint를 고유지식량으로 부풀리지 않는다. 자연QA 원주석의 의미정답과 의학/일반상식 정확성은 전수 보증하지 않는다. OLD v1의14SH는 보류이며 새 code를 연결해 조용히 재실행하지 않는다. shared checker/환경·보호원천·기존CP/캐시·원본 로그·타WIP는 변경하지 않는다.
+
+### 9. 실행 이력
+
+2026-10-19 Stage4eu 복구 구현 후 합성71회귀를8.414초에 통과했다. masked-turn 왕복·직접 logit gradient·정상 target owner0 거부·늦은 pass/DEV 오염의 모델 전 중단을 포함한다. 이는 새 실제CPU·GPU·품질 결과가 아니다. 실물 동결과 원형 대조를 완료한 뒤 여기에 실제 결과를 기록한다.
+
+**설계 점검:** padded SFT는384×8×16×1024=50331648 slots/팔이다. 이는 실제 x나 지도token이 아니다. 실제 미래 x는 기존 동결본의8183564/8208652와 새 동등성으로 확인하며 native3145728target은 별도다. 4epoch 제한의 소형 SFT이므로 사전학습의 무반복2배풀 조건을 통과했다고 하지 않는다. 새 namespace/CP는 정확한 경로로 충돌을 확인하고 광범위 레거시 registry 전체 조회는 대체하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+**복구 코드 독립 검토 완료:** 감사 `WIP_20261019_QUESTION_TRANSFER_V2_INDEPENDENT_CPU_REVIEW.json`은13234B·SHA `3FE553CE7BBFB7BD0AA4261DAFB6A139C58A1A1F951CE4C72CAAA4D540E81832`다. 독립 guarded71/71·7개 dispatch fixture를 통과했고6함수의 선언된 수리 외 AST와36정의·순수data2파일이 불변이다. 실제 source/model은 아직 미실행이며 닫힌 샤드 작성 뒤 보고 전 소비검증이 실패하면 새 partial namespace를 보존/HOLD한다. 정적검사 중 보류14TSV행을 활성으로 남긴 등록 결함2건은 역사 주석으로 고쳐 재검사67PASS/기존공용smoke profile오류1/NR6을 보존했다. 공유 checker는 수정하지 않았다.

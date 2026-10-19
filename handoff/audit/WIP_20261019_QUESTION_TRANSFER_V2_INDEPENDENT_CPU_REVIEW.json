@@ -1,0 +1,354 @@
+{
+  "schema": "TINYLM_QUESTION_TRANSFER_V2_INDEPENDENT_CPU_REVIEW_V1",
+  "created_utc": "2026-10-19T02:31:11.519837+00:00",
+  "author_role": "independent thesis follow-up",
+  "disposition": "NO_BLOCKING_RECOVERY_CODE_FINDING",
+  "baseline_commit": "b46d90f63e37149f0f923afb9f126bfea7bd8a64",
+  "current_head_at_check": "b46d90f63e37149f0f923afb9f126bfea7bd8a64",
+  "artifact_policy": {
+    "sole_new_file": "handoff/audit/WIP_20261019_QUESTION_TRANSFER_V2_INDEPENDENT_CPU_REVIEW.json",
+    "initially_absent": true,
+    "rechecked_absent_before_write": true,
+    "existing_peer_artifact_overwritten": false,
+    "source_code_edits": 0,
+    "git_state_changes": 0,
+    "new_agents": 0
+  },
+  "source_pins": {
+    "baseline": {
+      "scripts/diag_p106b_question_transfer.py": {
+        "bytes": 68095,
+        "sha256": "F7284ED86A37DF86E003F28440589E9953959F6CDB6E2D7AB7AF09EE2B6944EB"
+      },
+      "scripts/test_p106b_question_transfer.py": {
+        "bytes": 31054,
+        "sha256": "2D053078863E0BCDAF0D3AA3DC296A5D25321FCDB40E01D841D56178315664AD"
+      },
+      "scripts/p106b_question_transfer_data.py": {
+        "bytes": 32742,
+        "sha256": "B80FBFDBE358287EEC61D86B521FACEFCB080EF8356B629F2EA6A101B8E90BD0"
+      },
+      "scripts/test_p106b_question_transfer_data.py": {
+        "bytes": 24930,
+        "sha256": "D0FE99B81CA7C60C6CB2A89BFB8390AFB9EB58143C390DA7A8D300B5232792EB"
+      }
+    },
+    "current": {
+      "scripts/diag_p106b_question_transfer.py": {
+        "bytes": 69940,
+        "sha256": "58035FB1896851837CDFCF51890885AE5C093F35A27CD44AEFB9089F7F8B81F9"
+      },
+      "scripts/test_p106b_question_transfer.py": {
+        "bytes": 35272,
+        "sha256": "7296F622B6940B461E00C8C7CA0CE5A7D8FD61A7F000F4E81893B4425A9F166C"
+      },
+      "scripts/p106b_question_transfer_data.py": {
+        "bytes": 32742,
+        "sha256": "B80FBFDBE358287EEC61D86B521FACEFCB080EF8356B629F2EA6A101B8E90BD0"
+      },
+      "scripts/test_p106b_question_transfer_data.py": {
+        "bytes": 24930,
+        "sha256": "D0FE99B81CA7C60C6CB2A89BFB8390AFB9EB58143C390DA7A8D300B5232792EB"
+      }
+    },
+    "pure_data_and_test_byte_identical_to_baseline": true,
+    "all_four_current_hashes_equal_at_static_test_and_prewrite": true
+  },
+  "inspected_scope": {
+    "files": [
+      "scripts/diag_p106b_question_transfer.py",
+      "scripts/test_p106b_question_transfer.py",
+      "scripts/p106b_question_transfer_data.py",
+      "scripts/test_p106b_question_transfer_data.py",
+      "tinylm/train/mtp_sft.py",
+      "tinylm/paths.py",
+      "scripts/p106b_gate_runtime.py"
+    ],
+    "comparison": "Read-only git show of the four exact source files at the pinned commit; no asset content or checkpoint metadata was followed.",
+    "actual_assets": "NOT_RUN_BY_THIS_AUDIT",
+    "actual_v1_v2_private_corpus_comparison": "NOT_RUN_BY_THIS_AUDIT",
+    "actual_dataset_reads": 0,
+    "actual_tokenizer_file_reads": 0,
+    "checkpoint_byte_or_tensor_reads": 0,
+    "native_payload_reads": 0,
+    "real_model_constructions": 0,
+    "real_model_forward_calls": 0,
+    "gpu_calls": 0,
+    "network_calls": 0
+  },
+  "exact_static_comparison": {
+    "changed_existing_definitions": [
+      "info",
+      "unwire",
+      "choose_natural",
+      "evaluation_cases",
+      "prepare",
+      "train"
+    ],
+    "added_definitions": [
+      "validate_training_inputs"
+    ],
+    "unchanged_definition_count": 36,
+    "unchanged_definitions": [
+      "BudgetExclusion",
+      "authority",
+      "finite",
+      "normalized_assistant_loss",
+      "read_rows",
+      "text",
+      "calculation",
+      "replay_calculations",
+      "source_inputs",
+      "natural_row",
+      "encode_row",
+      "wire",
+      "schedule",
+      "natural_layout",
+      "selected_natural_monitor",
+      "case_encoding",
+      "put",
+      "read_prepared",
+      "records_for",
+      "checkpoint",
+      "spent_seconds",
+      "read_activity",
+      "budget",
+      "verify_training",
+      "dev_probe",
+      "emit64",
+      "classify_case",
+      "recount",
+      "identity",
+      "validate_evaluation",
+      "evaluate",
+      "readback",
+      "activity_key",
+      "run_worker",
+      "phase_commands",
+      "main"
+    ],
+    "exact_ast_match_after_only_declared_recovery_normalizations": {
+      "info": true,
+      "unwire": true,
+      "choose_natural": true,
+      "evaluation_cases": true,
+      "prepare": true,
+      "train": true
+    },
+    "permitted_normalizations": [
+      "info: remove only the new data_selection_key metadata keyword",
+      "choose_natural/evaluation_cases/prepare: DATA_SELECTION_KEY name maps to the old TAG name; both resolve to the original v1 selection string",
+      "unwire: replace only the former masked-label iff owner-zero predicate with supervised-label requires positive owner",
+      "prepare: remove only result.actual_consumer_validation assignment for comparison",
+      "train: remove only the pre-admission validate_training_inputs(frozen,arm) call for comparison"
+    ],
+    "stable_selection_key": "p106b_question_transfer_v1_s1337",
+    "namespace_tag": "p106b_question_transfer_v2_s1337",
+    "direct_sha_calls_still_using_namespace_tag": [],
+    "scientific_sha_calls_using_stable_key": [
+      {
+        "function": "choose_natural",
+        "line": 282,
+        "expression": "sha([DATA_SELECTION_KEY, p['root']])"
+      },
+      {
+        "function": "evaluation_cases",
+        "line": 337,
+        "expression": "sha([DATA_SELECTION_KEY, 'USER_SEEN', i])"
+      },
+      {
+        "function": "evaluation_cases",
+        "line": 323,
+        "expression": "sha([DATA_SELECTION_KEY, 'NATURAL_MONITOR', p['root'], pos])"
+      },
+      {
+        "function": "evaluation_cases",
+        "line": 331,
+        "expression": "sha([DATA_SELECTION_KEY, 'MATH_MONITOR', lang, i])"
+      },
+      {
+        "function": "evaluation_cases",
+        "line": 317,
+        "expression": "sha([DATA_SELECTION_KEY, split, p['query_id'], lang, style, pos])"
+      },
+      {
+        "function": "prepare",
+        "line": 403,
+        "expression": "sha([DATA_SELECTION_KEY, 'DISPLAY', c['id']])"
+      },
+      {
+        "function": "prepare",
+        "line": 408,
+        "expression": "sha([DATA_SELECTION_KEY, 'DISPLAY', c['id']])"
+      }
+    ],
+    "learning_math": "Unchanged AST after the one admission-call insertion: whole-update assistant CE denominator, native CE/8192, backward ordering, clipping1, optimizer calls, MTPoff, schedule384 and native vector selection.",
+    "scientific_identity_limits": "Code/selection equivalence is established; equality of the actual private v1/v2 x/y/segments/id payloads must still be measured by ROOT."
+  },
+  "mask_contract": {
+    "old_rejected_valid_state": "y=-100 with a positive assistant segment owner",
+    "new_required_state": "Every supervised y!=-100 has s>0; ignored y=-100 may keep s=0 or its original positive owner.",
+    "retained_checks": "Exact wire field set, aligned lengths, vocab/ignore IDs, nonnegative integer owners, row target count>0 and complete record fingerprint.",
+    "no_repair": "unwire returns the supplied x/y/segments without changing an ignored owner to zero or adding supervision.",
+    "loss_scope": "Existing horizon1 targets and CE ignore_index=-100 exclude those positions; their leaf-logit direct gradient is zero. Conditioning input embeddings may still receive gradient through later correct targets; that is not an error.",
+    "root_reported_affected_rows_per_pass": 64,
+    "affected_rows_independently_measured_from_actual_source": false
+  },
+  "admission_boundary": {
+    "selected_implementation": "Prepare writes fresh closed shards, then exercises actual records_for for all4arms x4epochs and DEV unwire, before completed corpus/public CPU reports.",
+    "root_confirmation": "ROOT explicitly confirmed that the final Stage4eu contract is post-put closed-shard consumption, not the earlier pre-put alternative.",
+    "prepare_passes": 16,
+    "prepare_dev_rows": 384,
+    "cost_and_train_selected_arm_passes": 4,
+    "cost_and_train_dev_rows": 384,
+    "required_order": "Selected-arm reader and DEV validation precede idle_before_gpu, output-directory creation, checkpoint/model load, compilation and optimizer creation.",
+    "partial_failure": "Incomplete fresh namespace and incomplete activity evidence must be preserved/HOLD; no completed CPU/public report or model admission is granted. Do not overwrite or reuse partial source.",
+    "static_call_order_lines": {
+      "train_validation": [
+        692
+      ],
+      "idle": [
+        693
+      ],
+      "load_parent": [
+        695
+      ],
+      "optimizer": [
+        706
+      ],
+      "compile": [
+        706
+      ],
+      "prepare_validation": [
+        476
+      ],
+      "prepare_put": [
+        410,
+        411,
+        460,
+        434
+      ],
+      "prepare_write": [
+        477,
+        480
+      ]
+    }
+  },
+  "guarded_product_suite": {
+    "modules": [
+      "scripts.test_p106b_question_transfer_data",
+      "scripts.test_p106b_question_transfer"
+    ],
+    "tests": 71,
+    "failures": 0,
+    "errors": 0,
+    "successful": true,
+    "unittest_reported_seconds": 8.435,
+    "whole_guarded_seconds": 9.477760736001073,
+    "process_exit_code": 0,
+    "guard_counters": {
+      "asset_read": 0,
+      "asset_stat": 0,
+      "file_write": 0,
+      "directory_write": 0,
+      "delete": 0,
+      "network": 0,
+      "child_process": 0,
+      "cuda_init": 0
+    },
+    "torch_load_calls": 0,
+    "torch_save_calls": 0,
+    "nn_module_construction_calls": 0,
+    "nn_module_forward_calls": 0,
+    "actual_model_construction_calls": 0,
+    "actual_model_load_calls": 0,
+    "actual_tokenizer_construction_calls": 0,
+    "actual_tokenizer_file_load_calls": 0,
+    "cuda_initialized_before": false,
+    "cuda_initialized_after": false,
+    "code_sha256_before_after_equal": true,
+    "library_import_directory_initializations_intercepted_in_memory": 6,
+    "memory_only_temporary_directory_fixtures": 2,
+    "physical_temporary_directories_created": 0,
+    "guard_scope": "Filesystem/stat/write/delete/network/child guards; model/Module/tokenizer/load/save/CUDA guards installed before project imports. Torch library import and tiny CPU leaf-gradient calculations are permitted."
+  },
+  "focused_dispatch_fixtures": {
+    "cases": 7,
+    "failures": 0,
+    "observations": [
+      {
+        "arm": null,
+        "passes": 16,
+        "dev_unwire_calls": 384,
+        "synthetic_fixture_only": true
+      },
+      {
+        "arm": "fixed_last",
+        "passes": 4,
+        "dev_unwire_calls": 384,
+        "synthetic_fixture_only": true
+      },
+      {
+        "arm": "varied_last",
+        "passes": 4,
+        "dev_unwire_calls": 384,
+        "synthetic_fixture_only": true
+      },
+      {
+        "arm": "fixed_balanced",
+        "passes": 4,
+        "dev_unwire_calls": 384,
+        "synthetic_fixture_only": true
+      },
+      {
+        "arm": "varied_balanced",
+        "passes": 4,
+        "dev_unwire_calls": 384,
+        "synthetic_fixture_only": true
+      }
+    ],
+    "checks": [
+      "all16_passes_plus384_dev",
+      "each_of_four_arms_four_passes_plus384_dev",
+      "last_pass_rejected",
+      "dev_rejected"
+    ],
+    "scope": "only AST-extracted validate_training_inputs with memory stubs; no controller import"
+  },
+  "harness_attempts": [
+    {
+      "attempt": 1,
+      "status": "HARNESS_SETUP_STOPPED_BEFORE_PROJECT_TESTS",
+      "process_exit_code": 1,
+      "product_tests_started": 0,
+      "cause": "Torch imports dill, which calls tempfile.gettempdir(); stdlib attempted a physical writable-directory probe through os.open.",
+      "observed_blocked_write_probe": 1,
+      "physical_probe_file_created": false,
+      "final_exception": "AssertionError: physical file writing forbidden",
+      "failure_location": "stdlib tempfile._get_default_tempdir -> guarded os.open"
+    },
+    {
+      "attempt": 2,
+      "status": "PRODUCT_SUITE_PASSED",
+      "process_exit_code": 0,
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "adjustment": "Set process-local tempfile.tempdir='/tmp' to avoid directory discovery; keep all real-IO guards. No product source or test was altered.",
+      "physical_file_or_directory_writes": 0
+    }
+  ],
+  "upstream_claims": {
+    "root_tests": "Parent reported71 ROOT testsPASS; not substituted for this audit's independent rerun.",
+    "antithesis": "Parent relayed guarded71/71 PASS9.471s at11:21:43KST with unchanged hashes; preserved as a separate upstream report, not the source of this audit's result."
+  },
+  "blocking_findings": [],
+  "remaining_root_work": [
+    "Run the explicitly authorized actual v2 CPU preparation and freeze the new independent namespace.",
+    "Independently compare every ordered x/y/segments/id payload, schedule, targets, native offsets and source selectors with preserved private v1 artifacts.",
+    "Preserve v1 records/failed-consumption evidence and HOLD the unexecuted v1 launchers; do not treat this code audit as actual source, GPU cost, training or answer-quality completion."
+  ],
+  "actual_source_freeze_status": "NOT_RUN_BY_THIS_AUDIT",
+  "actual_model_efficacy": "NOT_RUN",
+  "automatic_adoption": false
+}

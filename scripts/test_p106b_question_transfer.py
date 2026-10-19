@@ -101,6 +101,37 @@ class ScheduleTests(unittest.TestCase):
 
 
 class WireTests(unittest.TestCase):
+    def test_masked_old_wrong_turn_keeps_owner_and_roundtrips_without_target_loss(self):
+        from tinylm.train.mtp_sft import Record, count_record
+        r=Record([8,9,12,13,14],[-100,-100,-100,7,4],[0,1,1,2,2])
+        value=d.wire(r,'repair','replay','en','graph',dict(source='masked-turn-fixture'))
+        before=copy.deepcopy(value)
+        restored=d.unwire(value)
+        self.assertEqual(restored,r);self.assertEqual(value,before)
+        self.assertEqual(d.wire(restored,'repair','replay','en','graph',value['encoding']),value)
+        self.assertEqual(restored.targets,2)
+        self.assertEqual(count_record(restored,horizons=(1,2)),{1:2,2:1})
+
+    def test_ignored_logits_have_zero_direct_gradient_but_corrected_targets_train(self):
+        import torch
+        from tinylm.train.mtp_sft import horizon_targets, ce_sum
+        y=torch.tensor([[-100,-100,7,4]]);segments=torch.tensor([[0,1,2,2]])
+        labels,valid=horizon_targets(y,segments,1)
+        self.assertEqual(labels.tolist(),y.tolist())
+        self.assertEqual(valid.tolist(),[[False,False,True,True]])
+        logits=torch.arange(64,dtype=torch.float32).reshape(1,4,16).clone().requires_grad_()
+        loss=ce_sum(logits,labels)/2;loss.backward()
+        self.assertEqual(float(logits.grad[:,:2].abs().sum()),0.)
+        self.assertGreater(float(logits.grad[:,2:].abs().sum()),0.)
+        changed=logits.detach().clone();changed[:,:2]=10000.
+        self.assertEqual(float(ce_sum(changed,labels)/2),float(loss.detach()))
+        self.assertEqual(horizon_targets(y,segments,2)[0].tolist(),[[-100,-100,4]])
+
+    def test_positive_target_owner_zero_is_rejected_even_with_fresh_hash(self):
+        from tinylm.train.mtp_sft import Record
+        value=d.wire(Record([8,9,35],[-100,35,4],[0,0,1]),'id','coded','en','parent')
+        with self.assertRaises(ValueError):d.unwire(value)
+
     def test_roundtrip_excludes_prompt_from_assistant_ce(self):
         from tinylm.train.mtp_sft import Record
         r=Record([8,9,35],[-100,35,4],[0,1,1])
@@ -130,6 +161,37 @@ class WireTests(unittest.TestCase):
 
 
 class SourceGrammarTests(unittest.TestCase):
+    def test_recovery_keeps_the_v1_scientific_selection_key(self):
+        self.assertEqual(d.TAG,'p106b_question_transfer_v2_s1337')
+        self.assertEqual(d.DATA_SELECTION_KEY,'p106b_question_transfer_v1_s1337')
+
+    def test_every_pass_and_dev_fail_before_model_or_gpu_admission(self):
+        import torch
+        from tinylm.train.mtp_sft import Record
+        good=d.wire(Record([8,9,35],[-100,35,4],[0,1,1]),'id','coded','en','p')
+        bad=copy.deepcopy(good);bad['segments']=[0,0,1]
+        bad['record_sha256']=d.sha({k:bad[k] for k in ('x','y','segments')})
+        initialized=torch.cuda.is_initialized()
+        for broken in ('late_pass','dev'):
+            with self.subTest(broken=broken),tempfile.TemporaryDirectory() as directory,ExitStack() as stack:
+                stack.enter_context(patch.object(d,'EVIDENCE',Path(directory)))
+                stack.enter_context(patch.object(d,'safe',side_effect=lambda p:p))
+                stack.enter_context(patch.object(d,'authority',return_value=100000.))
+                stack.enter_context(patch.object(d,'read_prepared',return_value=({'manifests':{'dev':{}}},None,None)))
+                stack.enter_context(patch.object(d,'digest',side_effect=[d.base.NATIVE_TRAIN_SHA,d.base.NATIVE_VAL_SHA]))
+                reads=stack.enter_context(patch.object(d,'records_for',side_effect=
+                    [[d.unwire(good)]]*3+[ValueError('late pass')] if broken=='late_pass' else
+                    [[d.unwire(good)]]*4))
+                stack.enter_context(patch.object(d,'read_rows',return_value=[bad] if broken=='dev' else [good]))
+                load=stack.enter_context(patch.object(d.base,'load_parent',side_effect=AssertionError('MODEL')))
+                optimizer=stack.enter_context(patch.object(d.base,'make_optimizers',side_effect=AssertionError('OPTIMIZER')))
+                idle=stack.enter_context(patch('scripts.p106b_gate_runtime.idle_before_gpu',side_effect=AssertionError('GPU_ADMISSION')))
+                with self.assertRaises(ValueError):d.train('fixed_last',cost=True)
+                self.assertEqual(reads.call_count,4)
+                load.assert_not_called();optimizer.assert_not_called();idle.assert_not_called()
+                self.assertFalse((Path(directory)/'cost_fixed_last').exists())
+        self.assertEqual(torch.cuda.is_initialized(),initialized)
+
     def row(self,kind,lang,questions):
         return dict(meta=dict(kind=kind,language=lang,generation_version='P106B_VISIBLE_CONTEXT_CLARIFY_V1'),
                     messages=[dict(role='user',content=q) for q in questions])

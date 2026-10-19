@@ -35,8 +35,10 @@ from scripts import p106b_question_transfer_data as data
 from scripts.p106b_shards import ShardWriter, verify
 from scripts.p106b_stage_receipt import pipeline
 
-TAG = 'p106b_question_transfer_v1_s1337'
-SCHEMA = 'P106B_QUESTION_TRANSFER_V1'
+TAG = 'p106b_question_transfer_v2_s1337'
+SCHEMA = 'P106B_QUESTION_TRANSFER_V2'
+# Keep every scientific selection/ID stable across the reader-only recovery.
+DATA_SELECTION_KEY = 'p106b_question_transfer_v1_s1337'
 ARMS = ('fixed_last', 'varied_last', 'fixed_balanced', 'varied_balanced')
 ENDPOINTS = ('parent', *ARMS)
 MODES = ('source', 'prepare', 'preflight', 'cost', 'budget', 'train', 'evaluate', 'readback')
@@ -63,7 +65,7 @@ class BudgetExclusion(ValueError):
 
 def info():
     codes = {p: digest(safe(ROOT / p)) if (ROOT / p).is_file() else 'NOT_CREATED' for p in CODE}
-    return dict(schema=SCHEMA, tag=TAG, code_sha256=codes,
+    return dict(schema=SCHEMA, tag=TAG, data_selection_key=DATA_SELECTION_KEY, code_sha256=codes,
         code_complete=all(h != 'NOT_CREATED' for h in codes.values()), arms=list(ARMS),
         parent=str(base.PARENT.relative_to(ROOT)), parent_sha256=base.PARENT_SHA,
         expected_parent_core_sha256=base.PARENT_CORE, tokenizer_sha256=natural.TOK_SHA,
@@ -254,7 +256,7 @@ def unwire(value):
     r = Record(value['x'], value['y'], value['segments'])
     if (r.x_tokens != value['x_tokens'] or r.targets != value['assistant_targets'] or r.targets <= 0
             or sha(dict(x=r.x, y=r.y, segments=r.segments)) != value['record_sha256']
-            or any((y == -100) != (s == 0) for y, s in zip(r.y, r.segments))):
+            or any(y != -100 and s == 0 for y, s in zip(r.y, r.segments))):
         raise ValueError('encoded targets/segments/record fingerprint differ')
     return r
 
@@ -277,7 +279,7 @@ def choose_natural(rows, tok):
     chosen = []
     for lang in ('ko', 'en'):
         eligible = []
-        for p in sorted((v for v in rows['train'] if v['language'] == lang), key=lambda p: sha([TAG, p['root']])):
+        for p in sorted((v for v in rows['train'] if v['language'] == lang), key=lambda p: sha([DATA_SELECTION_KEY, p['root']])):
             try:
                 a, ae = encode_row(natural_row(p, 'CQ'), tok)
                 b, be = encode_row(natural_row(p, 'QC'), tok)
@@ -312,13 +314,13 @@ def evaluation_cases(course, rows):
                 for style in styles:
                     for pos in ('CQ', 'QC'):
                         row = data.render(p, lang, style, pos)
-                        cases.append(dict(id=sha([TAG, split, p['query_id'], lang, style, pos]),
+                        cases.append(dict(id=sha([DATA_SELECTION_KEY, split, p['query_id'], lang, style, pos]),
                             lane='coded', split=split, family=p['family'], language=lang,
                             problem=p, group_id=p['parent_group_id'], wording=style, position=pos,
                             messages=row['messages'][:1], gold=p['target_by_language'][lang]))
     for p in selected_natural_monitor(rows):
         for pos in ('CQ', 'QC'):
-            cases.append(dict(id=sha([TAG, 'NATURAL_MONITOR', p['root'], pos]), lane='natural',
+            cases.append(dict(id=sha([DATA_SELECTION_KEY, 'NATURAL_MONITOR', p['root'], pos]), lane='natural',
                 split='old_test_monitor', family='natural', language=p['language'],
                 group_id=p['article_id'], root=p['root'], wording='ORIGINAL', position=pos,
                 messages=natural_row(p, pos)['messages'][:1], aliases=p['aliases'], gold=p['answers'][0]['text']))
@@ -326,13 +328,13 @@ def evaluation_cases(course, rows):
         for i in range(12):
             a, b = i + 2, (i * 7 + 3) % 17 + 1
             q = f'{a}+{b}의 값은? 정수만 답하세요.' if lang == 'ko' else f'What is {a}+{b}? Answer only the integer.'
-            cases.append(dict(id=sha([TAG, 'MATH_MONITOR', lang, i]), lane='canary', family='arithmetic',
+            cases.append(dict(id=sha([DATA_SELECTION_KEY, 'MATH_MONITOR', lang, i]), lane='canary', family='arithmetic',
                 language=lang, group_id='math_' + str(i), messages=[dict(role='user', content=q)], gold=str(a + b)))
     questions = ('1+1은?', '2+2는?', 'A는 사과고 B는 당근이다 B는?',
         '문맥: 민수는 사과 3개, 영희는 사과 5개를 가지고 있습니다. 질문: 영희의 사과는 몇 개입니까? 답만 쓰세요.',
         '사과에 대해 알려줘', '농구란?')
     for i, q in enumerate(questions):
-        cases.append(dict(id=sha([TAG, 'USER_SEEN', i]), lane='user_seen', family='user_seen',
+        cases.append(dict(id=sha([DATA_SELECTION_KEY, 'USER_SEEN', i]), lane='user_seen', family='user_seen',
             language='ko', group_id='user_seen_' + str(i), messages=[dict(role='user', content=q)],
             semantic_truth='NOT_AUTOMATICALLY_ADJUDICATED'))
     if len(cases) != EXPECTED_ANSWERS or len({c['id'] for c in cases}) != len(cases):
@@ -398,12 +400,12 @@ def prepare():
                 for lang in ('ko', 'en'):
                     for split in ('test', 'train'):
                         options = [c for c in group if c['family'] == family and c['language'] == lang and c['split'] == split]
-                        display.append(min(options, key=lambda c: sha([TAG, 'DISPLAY', c['id']]))['id'])
+                        display.append(min(options, key=lambda c: sha([DATA_SELECTION_KEY, 'DISPLAY', c['id']]))['id'])
         elif lane == 'user_seen':
             display.extend(c['id'] for c in group)
         else:
             for lang in ('ko', 'en'):
-                display.extend(c['id'] for c in sorted((c for c in group if c['language'] == lang), key=lambda c: sha([TAG, 'DISPLAY', c['id']]))[:2])
+                display.extend(c['id'] for c in sorted((c for c in group if c['language'] == lang), key=lambda c: sha([DATA_SELECTION_KEY, 'DISPLAY', c['id']]))[:2])
     CORPUS.mkdir(parents=True, exist_ok=False); manifests = {}; summaries = {}; target_baseline = {}
     manifests['coded'] = put('coded', [dict(split=s, problem=p) for s in ('train', 'dev', 'test') for p in course[s]])
     manifests['cases'] = put('cases', cases)
@@ -469,6 +471,9 @@ def prepare():
         model_loaded=False, optimizer_updates=0, checkpoints_written=0, cuda_initialized=torch.cuda.is_initialized())
     if result['cuda_initialized']:
         raise ValueError('CPU preparation initialized CUDA')
+    # Exercise the exact disk-reading consumer, not just the encoder/writer.
+    # Ignored old-wrong answers retain their original turn owners and stay ignored.
+    result['actual_consumer_validation'] = validate_training_inputs(result)
     write(CORPUS / 'report.json', result)
     public = {k:v for k,v in result.items() if k not in ('manifests','native_train_offsets','blocked')}
     public['corpus_report_sha256'] = digest(CORPUS / 'report.json')
@@ -510,6 +515,26 @@ def records_for(frozen, arm, epoch):
             or [sum(records[i].targets for m in g for i in m) for g in schedule(epoch)] != receipt['update_target_denominators']):
         raise ValueError('actual training consumer targets/order/whole-update denominators changed')
     return records
+
+
+def validate_training_inputs(frozen, arm=None):
+    """Read all declared passes and DEV before model/GPU admission; never repair rows."""
+    if arm is not None and arm not in ARMS:
+        raise ValueError('declared arm required for pre-model consumption')
+    receipts = []
+    for selected in ARMS if arm is None else (arm,):
+        for epoch in range(4):
+            records = records_for(frozen, selected, epoch)
+            receipts.append(dict(arm=selected, epoch=epoch + 1, rows=len(records),
+                targets=sum(r.targets for r in records),
+                masked_positive_owner_rows=sum(any(y == -100 and s > 0 for y, s in
+                    zip(r.y, r.segments)) for r in records)))
+    dev = read_rows(CORPUS, frozen['manifests']['dev'], 'dev', 384)
+    dev_records = [unwire(v) for v in dev]
+    return dict(status='ACTUAL_TRAINING_READER_VERIFIED', passes=receipts,
+        dev_rows=len(dev_records), dev_targets=sum(r.targets for r in dev_records),
+        positive_target_requires_positive_owner=True, ignored_labels_stay_ignored=True,
+        data_changed=False, model_loaded=False, optimizer_constructed=False)
 
 
 def checkpoint(arm):
@@ -662,6 +687,9 @@ def train(arm, cost=False):
     for name,h in (('train.bin',base.NATIVE_TRAIN_SHA),('val.bin',base.NATIVE_VAL_SHA)):
         if digest(base.NATIVE/name) != h:
             raise ValueError('native TRAIN/VAL changed')
+    # No GPU admission, checkpoint load, optimizer, or output directory before
+    # every source pass and DEV have passed the actual training reader.
+    validate_training_inputs(frozen, arm)
     idle_before_gpu(); authority(training=True); target.mkdir(parents=True,exist_ok=False)
     writer = ShardWriter(target,'updates',limit=19_999_999); began=time.perf_counter()
     torch, model, cfg, tok, initial = base.load_parent()
