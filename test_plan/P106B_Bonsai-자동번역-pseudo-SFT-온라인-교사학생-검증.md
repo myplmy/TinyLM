@@ -5655,6 +5655,103 @@ A08FA0FB…/101F4DF4… 초안의 합성36개와 독립36개는 통과했다. �
 
 ### 9. 착수전 점검
 
-2026-10-19 namespace 조회에서 기존 로그 충돌과 유사 런을 찾지 못했다. 기존 matching reader와 달리 실제 continuation SHA를 후보 ID로 역대조한다. 새 학습/draw가0이므로 풀2배·LR·batch 조건 변경은 해당없다. source/CP/토크나이저와 기존 점수는 그대로다. 코드·CPU 회귀·실물 판독은 아직 **NOT_RUN**이다. 자세한 파일 권한과 영향은 현재 WIP scope가 소유한다.
+2026-10-19 namespace 조회에서 기존 로그 충돌과 유사 런을 찾지 못했다. 기존 matching reader와 달리 실제 continuation SHA를 후보 ID로 역대조한다. 새 학습/draw가0이므로 풀2배·LR·batch 조건 변경은 해당없다. source/CP/토크나이저와 기존 점수는 그대로다. 착수 전 작성 당시 코드·CPU 회귀·실물 판독은 **NOT_RUN**이었으며, 위09:06:48~09:07:44 이력과 결과101§300이 이후 실제 완료를 소유한다. 자세한 파일 권한과 영향은 현재 WIP scope가 소유한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-19 Stage4et — 기초 교과와 질문 표현·위치의 네 팔 통제 학습
+
+### 1. 왜
+
+[101 §299~301](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 영어 관계는 일부 개선됐지만 한국어 새 표현과 자연 QA가 약했고 질문 위치에 민감했다. [104 §12](../test_result/104_20261010_P106D-규칙학습은-종료만-개선하고-교사는-라벨에-막혔다.md)의 산수는 첫답부터 약한 반면 조회는 실제 이력에서도32/32였다. 메모리나 고급 헤드부터 추가하기보다 충분한 기초 상태·정답 교육과 표현/위치 전이를 나누어 본다.
+
+| 안 | 구체 시나리오 | 장점 | 한계·비용 | 결정 |
+|---|---|---|---|---|
+| A 표현×위치 네 팔 | 같은 두 수를 문맥에 주고 ‘결과만’/‘값을 숫자로’를 교차, 질문을 문맥 앞/뒤에 배치 | 실패한 축을 현재 구조·같은 상태·같은 정답에서 분리 | 독립 자료/회귀·원형/노출검산 구현 중간; cost8 뒤 조건부 실제 약2~5h 후보 | 주도 권한 내 총괄 권장·선택 |
+| B 같은 새 교과의 학습만 확대 | 한 문구·뒤 질문 그대로 더 오래 학습 | 학습량 부족을 직접 볼 수 있음 | 문구/위치 의존성이 남고 반복 노출·망각 비용 증가 | A 결과 뒤 필요할 때만 |
+| C 추가 원문 사전학습·새 구조 | 큰 native 풀 또는 기억/복사 head 추가 | 다른 병목을 다룰 가능성 | 새 풀/권리·다운로드 선결, 구조·부모·비용 교락; 현재 실행권한과 별도 | 지금 채택하지 않음 |
+
+### 2. 질문
+
+1. 같은 코드 상태를 충분히 지도하면 최초 산수·조회·Boolean·문자열 JSON을 개선하는가?
+2. 같은 상태의 학습 질문을 T0만 반복하는 것보다 T0/T1 두 문구로 학습하면 새 T2/T3에도 이득이 있는가?
+3. 질문을 항상 지문 뒤에 두기보다 앞/뒤를 균형 있게 교육하면 새 위치에도 이득이 있는가?
+4. 국소 과제 개선과 원문 언어 손실·일반 QA/사용자6질문의 변화를 함께 유지할 수 있는가?
+
+### 3. 예측
+
+가장 먼저 틀린 기초값과 종료를 더 많이 지도하고 교차 질문을 노출하면 국소 전이는 개선될 수 있다. 하지만 소형 삼진모델/짧은 부모 학습·적은 논리 패턴·한국어 표현 학습의 한계 때문에 네 팔 모두 실패할 수 있다. 새로운 T2를 잘 맞혀도 광범위 지능·세계지식 향상은 아니다. 같은 정답의 다른 표현은 새 사실 수가 늘어난 것이 아니다. 기존768/896 연구와 자료 구성·스텝이 달라 직접 차감하지 않는다.
+
+### 4. 단계 설계
+
+새 namespace는 `p106b_question_transfer_v1_s1337`이며 기존8코드·MAIN/QPOS/D 원형은 수정하지 않는다. 독립 data/test와 driver/test만 신설하고 load_parent/make_optimizers/native_probe·현재 canonical encoder를 재사용한다. 기존 emit helper의 max128은 새 계약과 달라 별도 명명한 max64 어댑터에서 같은 precision/cache/EOT/receipt 논리를 사용한다. 기존128답의 후행 절단이나 전역 monkeypatch는 금지한다.
+
+| 네 팔 | 코드 질문 문구 | 질문 위치 | 각 코드 질의의4epoch 노출 |
+|---|---|---|---|
+| fixed_last | T0 | CQ만 | T0CQ 네 번 |
+| varied_last | T0/T1 | CQ만 | T0CQ 두 번·T1CQ 두 번 |
+| fixed_balanced | T0 | CQ/QC | T0CQ 두 번·T0QC 두 번 |
+| varied_balanced | T0/T1 | CQ/QC | T0CQ/T0QC/T1CQ/T1QC 각각 한 번 |
+
+공통 순열·사실별 회전으로 문구와 위치가 특정 epoch에만 나타나지 않게 한다. 한영 짝과 과제별 분포를 검산한다. 자연 QA는 원 질문·원 문맥·원 답을 바꾸지 않고 위치 요인만 적용하며, 기존 replay4096은 모든 팔에서 동일하다. 문구별 nonpadding 입력 길이는 달라질 수 있어 실제 길이/시간을 공개하며 같다고 주장하지 않는다. 모든 팔의 shifted assistant target IDs·종료지도·행 노출·전체 update별 지도 분모는 같아야 한다.
+
+매 pass12,288행 = 코드검증4096행 + 기존 자연 QA4096행 + 기존 replay4096행이다. 코드4096행의 중립 질의는 산수1024·조회512·Boolean256·JSON256이며 각각 한영2행이다. 산수1024는0..50의 +/−를 해시 선별하고 덧셈 교환순서를 같은 계산으로 묶는다. 이전 MAIN/D의 초기/현재/compact·replay 식과 사용자/수학 모니터를 먼저 제외한다. 후보 부족이면 중복 채우기/후행 숫자 범위 변경 대신 GPU 전에 정확히 보류하고 새 설계를 고정한다.
+
+조회는128개 표×두 대상×두 속성의4질의×한영이다. 전체 사실표가 같은 그룹이고 행순서·언어·질문 문구를 바꿔 split을 넘기지 않는다. Boolean은 이름쌍을 train24/dev6/test6으로 먼저 분리하고 train256중립 질의를 AND80/OR80/XOR96, dev/test64씩은20/20/24로 구성한다. 각 진리값 조합과 true/false를 균형화하되 세 함수/12개의 순서 있는 진리표 패턴을256개 새 논리 지식으로 부풀리지 않는다. 이름쌍·binding의 모든 valuation/operator를 같은 split에 묶으며 기존 replay와도 검산한다. JSON은128개 원문 문자열×answer/result 두 key×한영이며 같은 literal은 key/문구/언어 모두 같은 split이다. 학생에게 요구한 key와 문자열을 직접 생성시켜 검사하며 예측답을 코드가 정답 형식으로 다시 포장하지 않는다.
+
+dev/test는 별도 산수64·조회32질의(8표)·Boolean64·JSON32질의(16문자열)의192중립 질의×한영2를 준비한다. 그룹 SHA와 exact text/target/semantic identity를 렌더링 전에 분리하고, 기존 평가와의 겹침을 공개한다. 새 평가의 0/1점은 닫힌 producer 계약뿐이며 자유 설명의 오조어 목록이나 실시간 의미심사를 재도입하지 않는다.
+
+평가는 모델별1694첫답을 사전에 동결한다. TEST에서 가족별32중립 질의×한영2=256행에 T0/T2×CQ/QC 네 조건1024답, TRAIN 상태의 가족별16중립 질의×한영2=128행에 미학습 T2/T3×CQ/QC 네 조건512답, 기존 자연 모니터64질문×CQ/QC128답과 기존 수학24/사용자6을 더한다. TEST의 표4질의·JSON두 key 그룹은 완전 보존하며 각 표본은 결과 전 해시로 선정한다. TEST의 새 상태/익숙한 T0와 새 T2, TRAIN의 익숙한 상태/새 T2/T3를 분리한다. 같은 부모도 **새 max64 프로토콜로** 평가하고 과거128답과 직접 비교하지 않는다. 모든 고정 정답+EOT가64 안에 있고 전체 prompt+64가1024 안에 있는지 GPU 전에 확인한다. 부족하면 조용히 자르거나 제외해 분모를 바꾸지 않는다.
+
+| 단계 | 내용 | 다음 선결·상태 |
+|---|---|---|
+| Stage4etW0 | source/그룹/quotas/encoder/CE분모/스케줄·64토큰 회귀 및 실제CPU | 아직 미구현·실제 미실행 |
+| Stage4etCa/Cb/Cc/Cd | 네 팔 각각 같은 새 부모에서8update 비용, CP저장0 | 공통 실제 source·마스크·native와 optimizer receipts 일치 |
+| Stage4etTa/Tb/Tc/Td | 네 팔 각각384update/4epoch, 최종CP1개씩 | 네 cost8·시간상한/VRAM·실제 target분모·부모 지문 일치 시만 |
+| Stage4etEp/Ea/Eb/Ec/Ed | 부모·네 학생의1694실답/같은 원문32crop | 원답/입력/종료·CP불변·분모 정합 |
+| Stage4etR | 원형 재집계·사전 표본 실제 답 판독 | 새 모델 기본값 자동승격 없음 |
+
+### 5. 판정 기준
+
+기술선결은 기존 원P090B 본체 `E854AB4E...`·chat32 `9716F40E...`·순차4pass·384업데이트·물리 micro8×accum16·seq1024·checkpointON·compiledefault·MTPoff·teacher0·새 optimizer의 완전 일치다. 현재 정본 make_optimizers의 Adam5e-5/Muon2e-4·RMS4·모든groupWD0·clip1을 그대로 사용하며 추가 반감하지 않는다.
+
+각 update의16micro CE 합을 **그 update 전체 assistant target 수**로 정규화한다. 추가로 native8개1025token 창의 CE를8192targets로 정규화해 합하고 한 번 clip/step한다. micro 평균을 다시16으로 나누지 않는다. 네 팔의 같은 행/정답·양성target분모/EOT지도·native창 벡터가 같아야 하며 입력 token 차이는 별도 보고한다. 전수 clip전 L2 grad_max와 원문 손실을 남기며 grad>10을 안정이라고 적지 않는다.
+
+품질은 가족·언어·seen/unseen state·T0/T2/T3·CQ/QC별 실제 정답, 상태 짝의 두 답 모두정답, 종료·길이·오류유형과 실제 원답으로 판단한다. Boolean 상수/조회 첫값·대상만/속성만 기준도 병기한다. 한 seed이고 동일 조건 재현 분산/새 보편 품질문턱이 없어 통계적 확정/범용지능·배포 채택을 선언하지 않는다. 문구·위치의 주효과와 교호작용은 같은 표본쌍에서만 기술하며 다중 비교/그룹 의존을 보고한다. 반복학습의 같은 사실 노출을 고유75M 확보로 세지 않는다.
+
+### 6. 비용
+
+4×384=1536 optimizer 업데이트, 팔당384×8×16×1024=50,331,648 padded positive slots다. 실제입력/지도량은 CPU 인코딩에서 별도로 계측한다. 네 팔 각각49,152양성행 노출이며 팔당 native3072개 완전창·3,145,728target이다. 같은 창 벡터를 네 팔이 재사용하며 native풀597,995,000token 안에서 창끼리는 비겹치게 고른다. 정상 LM 새대량풀≥2배를 주장하는 실험이 아니라 기존 승인 소형 deliberate4pass 연구다.
+
+실험 전체 driver 활동 상한8h, 평가예비2h·기록예비1h를 먼저 떼고 cost8 실제 첫 compile+warm7과 epoch평가/저장 예비로 학습시간을 다시 계산한다. 네 cost 결과가 없거나 예상합계가 상한/권한잔여를 넘으면 학습은 열리지 않는다. 추정2~5h는 과거짧은 모델/학습을 참고한 후보이며 실측 보장은 아니다. 부모가 MAX_NEW를 반복하면 평가가 학생보다 훨씬 느릴 수 있어 QPOS50초를 외삽하지 않는다. 모든 모델 작업은2026-10-20 17:00KST 전 종료하고 학습은 최소3h 앞서 닫는다. 장시간 작업도60초 이상 무통신하지 않고 주기적으로 기록한다.
+
+### 7. 실행
+
+SH15개를 작성했으나 아직 독립 검토 중인 DRAFT다. 구현/회귀/실제CPU 뒤에만 네 cost8을 수행한다. cost와 본학습은 분리하고 write-once namespace/출력에 종료8보류·오류·완료를 구분한다. 모델 로딩 전 사전검사·회귀, 사용자 입력 대기 없음,20MB 미만 행 경계 샤드, 새CP만 저장, 완료 source/명령/Git 선보존 뒤 정확 삭제 원칙을 유지한다.
+
+- `run_P106B_Stage4etW0_question_transfer_cpu.sh` — `prepare`, 상한600초.
+- `run_P106B_Stage4etCa_fixed_last_cost8.sh` — `cost fixed_last`, 상한900초.
+- `run_P106B_Stage4etCb_varied_last_cost8.sh` — `cost varied_last`, 상한900초.
+- `run_P106B_Stage4etCc_fixed_balanced_cost8.sh` — `cost fixed_balanced`, 상한900초.
+- `run_P106B_Stage4etCd_varied_balanced_cost8.sh` — `cost varied_balanced`, 상한900초.
+- `run_P106B_Stage4etTa_fixed_last_train384.sh` — `train fixed_last`, 상한7200초.
+- `run_P106B_Stage4etTb_varied_last_train384.sh` — `train varied_last`, 상한7200초.
+- `run_P106B_Stage4etTc_fixed_balanced_train384.sh` — `train fixed_balanced`, 상한7200초.
+- `run_P106B_Stage4etTd_varied_balanced_train384.sh` — `train varied_balanced`, 상한7200초.
+- `run_P106B_Stage4etEp_parent_actual_answers.sh` — `evaluate parent`, 상한3600초.
+- `run_P106B_Stage4etEa_fixed_last_actual_answers.sh` — `evaluate fixed_last`, 상한1800초.
+- `run_P106B_Stage4etEb_varied_last_actual_answers.sh` — `evaluate varied_last`, 상한1800초.
+- `run_P106B_Stage4etEc_fixed_balanced_actual_answers.sh` — `evaluate fixed_balanced`, 상한1800초.
+- `run_P106B_Stage4etEd_varied_balanced_actual_answers.sh` — `evaluate varied_balanced`, 상한1800초.
+- `run_P106B_Stage4etR_transfer_readback.sh` — `readback`, 상한600초.
+
+
+### 8. 한계
+
+모델은 같은 기존부모 하나·학습 seed하나이며 새75M/300M 본교육을 대체하지 않는다. 이름 binding/수치 조합·문구 일반화와 새 논리함수·세계지식을 구별한다. 자연 QA의 기존 주석 오류 가능성도 유지하며 aliases를 후행 변경하지 않는다. 부모 사전학습 전체의 사실 미노출은 검증하지 않았다. 더 많은 새 데이터·LR·헤드·내부thinking·양자화·재귀·폭을 한 팔에 섞지 않는다. 보호 사전/TinyDataset·다운로드·공용검사기·기존CP/원본 수정·외부 상태변경은 권한 밖이다.
+
+### 9. 실행 이력 / 사전점검
+
+2026-10-19 새 Stage4et를 계획했다. CPU/GPU/새자료/학습/실제답 모두 아직 NOT_RUN이며 기존 완료결과를 승격하지 않는다. 독립 정의 검토에서 문구×위치의 완전교차·Boolean 이름쌍 split·산수 첫답 coverage·max64와 옛128 helper의 충돌을 확인해 위 계약에 반영했다. 작은 모든 필드의 실제 encoder/SHA/수는 구현 후 먼저 검증한다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

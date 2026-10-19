@@ -1,0 +1,52 @@
+{
+  "schema": "TINYLM_QUESTION_TRANSFER_TOKEN_BUDGET_PREFEASIBILITY_V1",
+  "source_binding": {
+    "natural_source_manifests_sha256": "E21F5CF8A99BEC361D90B70F28DD89969FB882A84598D436A8748FF0B1485F20",
+    "replay_rows_sha256": "8B68BD7B417C5FC0145775E7A2C1F6EBC36C013EAD74E7C7AF87CC2625411CC8",
+    "natural_train_roots_sha256": "E6FBC2924E8810EA5E71CD43BDA4D208F2762A00F2B758D17308672C28B379C0",
+    "history_cpu_report_sha256": "3E2239083AC25D4787014B31C662ED1A5E460B842FD9AE8CCCD4DDF4D25BD604",
+    "history_probe_sha256": "C5815E1790014BBE1EB466E74469F29BD5EDB1F54CC30754A592288666C38C21",
+    "exclusions_sha256": "944C2F84F5E4E7BBA6D7F773EA70971A658563A54BFE0A6A5EF6853C19D23610",
+    "scope": "known procedural monitors/replay and D initial/current; not whole parent pretraining",
+    "parser": "exact registered producer grammar, not semantic phrase detection"
+  },
+  "driver_sha256": "8DCD5C6644A82B0338F3D480F2539960D62804026ED19AC047EECAD6627FCB27",
+  "seconds": 24.78823544899933,
+  "cases": 1694,
+  "budget_failures": [],
+  "maxima": {
+    "prompt_tokens": 521,
+    "reference_targets": 27
+  },
+  "selected_natural": 4096,
+  "per_pass_T0CQ": {
+    "rows": 12288,
+    "x_tokens": 2045891,
+    "assistant_targets": 75664,
+    "eot_targets": 18752
+  },
+  "by_lane_family": {
+    "arithmetic_targets": 4618,
+    "arithmetic_eot": 2048,
+    "arithmetic_content": 2570,
+    "lookup_targets": 2732,
+    "lookup_eot": 1024,
+    "lookup_content": 1708,
+    "boolean_targets": 1536,
+    "boolean_eot": 512,
+    "boolean_content": 1024,
+    "format_targets": 6296,
+    "format_eot": 512,
+    "format_content": 5784,
+    "natural_targets": 22712,
+    "natural_eot": 4096,
+    "replay_targets": 37770,
+    "replay_eot": 10560
+  },
+  "source_namespace_written": false,
+  "learned_model_loaded": false,
+  "cuda_initialized": false,
+  "optimizer_updates": 0,
+  "evidence_scope": "structured summary of root read-only actual stdout, not a completed frozen corpus or raw runlog",
+  "read_only_reproduction_program": "from scripts import diag_p106b_question_transfer as d\nfrom tokenizers import Tokenizer\nfrom scripts.p106b_relation_fields import encode as replay_encode\nimport torch,json,time\nfrom collections import Counter\nstart=time.perf_counter(); rows,blocked,binding=d.source_inputs()\nassert d.digest(d.natural.TOKENIZER)==d.natural.TOK_SHA\ntok=Tokenizer.from_file(str(d.natural.TOKENIZER));course=d.data.build_course(blocked=blocked)\ncases=d.evaluation_cases(course,rows);bad=[];maximum=Counter()\nfor c in cases:\n try:\n  e=d.case_encoding(c,tok);maximum['prompt_tokens']=max(maximum['prompt_tokens'],e['prompt_tokens'])\n  maximum['reference_targets']=max(maximum['reference_targets'],e['gold_target_tokens'] or 0)\n except Exception as exc:bad.append(dict(id=c['id'],lane=c['lane'],error=type(exc).__name__,message=str(exc)))\nanchors=d.choose_natural(rows,tok);totals=Counter();by=Counter()\nfor p in course['train']:\n for lang in ('ko','en'):\n  r,e=d.encode_row(d.data.render(p,lang,0,'CQ'),tok);target=r.targets;eot=r.y.count(4)\n  by[p['family']+'_targets']+=target;by[p['family']+'_eot']+=eot;by[p['family']+'_content']+=target-eot\n  totals.update(rows=1,x_tokens=r.x_tokens,assistant_targets=target,eot_targets=eot)\nfor p in anchors:\n r,e=d.encode_row(d.natural_row(p,'CQ'),tok);target=r.targets;eot=r.y.count(4)\n by['natural_targets']+=target;by['natural_eot']+=eot;totals.update(rows=1,x_tokens=r.x_tokens,assistant_targets=target,eot_targets=eot)\nfor p in rows['replay']:\n r=replay_encode(p,tok)[0];target=r.targets;eot=r.y.count(4)\n by['replay_targets']+=target;by['replay_eot']+=eot;totals.update(rows=1,x_tokens=r.x_tokens,assistant_targets=target,eot_targets=eot)\nassert not torch.cuda.is_initialized()\nprint(json.dumps(dict(schema='TINYLM_QUESTION_TRANSFER_TOKEN_BUDGET_PREFEASIBILITY_V1',source_binding=binding,driver_sha256=d.digest(d.ROOT/'scripts/diag_p106b_question_transfer.py'),seconds=time.perf_counter()-start,cases=len(cases),budget_failures=bad,maxima=dict(maximum),selected_natural=len(anchors),per_pass_T0CQ=dict(totals),by_lane_family=dict(by),source_namespace_written=False,learned_model_loaded=False,cuda_initialized=False,optimizer_updates=0),ensure_ascii=False))\n"
+}
