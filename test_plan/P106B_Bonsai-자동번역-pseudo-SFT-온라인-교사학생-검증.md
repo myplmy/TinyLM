@@ -6076,3 +6076,78 @@ monitor는 FP32-MATH/greedy64/KV-on/MTP-off, 자연 대화는 같은 연산의 m
 ### 7. 실행 이력
 
 설계/순수66회귀와 실제 읽기 source 재고만 확인했고, 첫 prepare/동결·모델/GPU/새답은 모두 NOT_RUN이다. 교과와 driver의 CPU 소비·비용 뒤만 본학습을 열며 상기과거 결과를 새완료로 재사용하지 않는다.
+
+## 2026-10-19 후속 Stage4ez — 같은 무작위 본체에서 native 삼진 경로와 실수가중치 경로
+
+### 1. 왜
+
+기존 무부모 8M×4 SFT는 native 기초학습이 없고 일정한 낮은 학습률·처음부터 완전 삼진화여서 부모의 학습자료/초기화 영향과 양자화 영향을 가르지 못했다. 이번에는 보호 원천을 추가 취득하지 않고 같은 보유 native TRAIN과 정확한 새 초기화를 사용한다. 제품 본체 파일은 바꾸지 않는 인스턴스 한정 TLinear 경로다. F4와 사전 자원 설계 정정은 `WIP_20261019b_NATIVE_WEIGHT_ROUTE_F4.json`, `WIP_20261019b_NATIVE_RESOURCE_DESIGN_AMENDMENT.json`이 소유한다.
+
+### 2. 질문
+
+1. 같은 초기화·native 토큰·학습조건에서 삼진화/STE를 건너뛰면 고정 native 손실과 이후 실제 답변이 달라지는가?
+2. 각자 배운 native 부모에 같은 SFT를 붙였을 때 차이가 유지되는가?
+3. 전부 새로 학습하는 비용이 현 기한 안에 드는가? 기존 부모보다 효율적이라는 결론은 별도 비용·동일 평가 없이 내리지 않는다.
+
+### 3. 예측
+
+실수가중치 경로는 양자화 근사와 STE 제약을 제거하므로 손실이 더 낮을 수 있으나, 현재 실패가 자료/질문 관계 학습에 있다면 실제 답은 여전히 나쁠 수 있다. 두 팔 모두 원래 부모보다 좋을 것이라고 가정하지 않는다. 약299M draw가 일반 대화 지능·새75M 코퍼스·Falcon 동등성이라는 주장은 하지 않는다.
+
+### 4. 단계와 실제 조건
+
+- 새 `p106b_native_weight_route_v1_s1337`만 쓴다. 원 P090B 체크포인트는 cfg/토크나이저 계보만 읽으며 학습된 가중치는 복사하지 않는다. 같은 seed1337 초기 본체 fingerprint를 cost/본런/양팔에서 대조한다.
+- native TRAIN597,995,000, VAL3,005,000 uint16 원본 SHA를 검산한다. 2,281×8×16×1,024=`298,975,232` target/팔이고 2배597,950,464≤TRAIN(여유44,536)이다. 과거2,289회300,023,808의 정확 재현이 아니다. 새 동결 crop291,968개는 복원 추출이라 고유 지식량이 아니다.
+- dense14/d768/chat32, m8×accum16/seq1024/ckpt-on/default compile/BF16 AMP/TF32-off/MTP-off. native Adam peak1e-3/Muon RMS4 4e-3, 기존 optimizer별 WD를 보존하고 warm100/WSD decay20%/선형 anneal_end0.8의 원 P090B 계열을 쓴다. 현재 표준0.6과의 차이는 명시한 원부모 앵커이며 조용한 기본 변경이 아니다.
+- ternary는 원 annealed STE, float는 latent 실수가중치와 정상 미분을 사용한다. `quant_anneal=0`만 설정한 우회가 아니다. 둘 다 BF16 AMP이며 FP32-only 학습이나 이진 커널이라고 부르지 않는다. float CP는 전용 strict route loader로만 읽는다.
+- native 완료 후 자기 팔 CP에서 같은 `question_transfer_v2:varied_balanced` 4pass/384회 SFT. L0 토큰 평균·Adam5e-5/Muon2e-4·WD0·같은 absolute native8192/update를 유지한다. 최대 새 weight-only CP4개이며 기존 CP를 덮어쓰지 않는다.
+- 최종 네 종점은 같은1694 첫답·FP32 MATH/greedy64/KV-on으로 평가한다. 각 native32는 고정32 crop 지표이지 전체 VAL이 아니다. 네 종점·양 route를 섞어 평균 품질로 보고하지 않는다.
+
+| 단계 | 실행 | 선결·상한 | 시작 상태 |
+|---|---|---|---|
+| Stage4ezW0 | source/offset/전체 SFT 소비 동결·CPU77회귀 | 모델0·900초 | NOT_RUN |
+| Stage4ezWa/Wb | 각 native cost8+anneal1 역전파1micro·optimizer0 추가 probe | 양팔 단독·직전5분 유휴·각1200초·CP0 | NOT_RUN |
+| Stage4ezWc | native 예산·같은 초기화·말기 유한성 검산 | 미측정 SFT3600초/마감10800초 예비 | NOT_RUN |
+| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | NOT_RUN |
+| Stage4ezWf/Wg/Wh | 자기 native CP로 SFT cost8씩→실측 예산 | native 양팔 완료 후만·각900초 | NOT_RUN |
+| Stage4ezWi/Wj | 각 동일 SFT384회 | 실제 SFT 예산 통과·각3600초 | NOT_RUN |
+| Stage4ezWk/Wl/Wm/Wn | native/SFT 양팔 각1694 실제 답과 native32 | 자기 route/CP/SHA/완료 activity·각1800초 | NOT_RUN |
+| Stage4ezWo | 총6776 원답·token decode·분모/초기화/미분 경로 검산 | CPU900초·기술 성공과 품질 분리 | NOT_RUN |
+
+### 5. 판정
+
+코드/입력/route/완료 activity/실제 target/초기화 불일치·비유한 gradient는 실행 오류다. 비용 예측이 각4h·전체12h·현 권한에 안 들면 자원 보류이며 품질 음성이 아니다. 실제 양팔은 같은 평가에서 손실, 능력별 정답·질문/답·종료·계산시간·학습 안정성을 따로 보고한다. 현 새 계열의 여러 seed 재현 자가 없으므로 소폭 차이는 탐색 관측이며 기본 경로/배포를 자동 교체하지 않는다.
+
+### 6. 비용·한계
+
+실물 CUDA는 아직 NOT_RUN이다. 과거 native 약93분/팔은 참고일 뿐 새 compile/ckpt/route 속도 예측으로 승격하지 않는다. cost8의 첫회+정상7회 최대×1.35+말기 probe+300초를 사용하고 미측정 SFT1h/마감3h를 예약한다. 자원 초안8h→12h는 실물 source 동결/비용 전의 사전 정정이다. 학습 종료 목표는20일14시, 실행 권한 종료는17시이며 최종 기록600초를 worker에도 남긴다. 학습4개는 기한 내 순차 조건부 실행이며 총상한을 넘기는 암묵적 재개는 없다.
+
+한 seed, 관찰된1694 monitor, 같은 원문 crop의 겹침, native32의 좁은 범위, mixed precision에 한정된다. float로 품질이 좋아도 모바일 삼진 메모리 목표 달성은 별도다. native 직후 ChatML 답이 나쁘다는 사실만으로 언어 기초학습 실패를 확정하지 않는다.
+
+### 7. 실행 파일
+
+- `run_P106B_Stage4ezW0_native_route_cpu.sh` — `--mode prepare --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4ezWa_ternary_native_cost8.sh` — `--mode cost --arm ternary --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4ezWb_float_native_cost8.sh` — `--mode cost --arm float --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4ezWc_native_route_budget.sh` — `--mode budget --endpoint native --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4ezWd_ternary_native2281.sh` — `--mode train --arm ternary --max-wall-sec 14400 --execute`.
+- `run_P106B_Stage4ezWe_float_native2281.sh` — `--mode train --arm float --max-wall-sec 14400 --execute`.
+- `run_P106B_Stage4ezWf_ternary_sft_cost8.sh` — `--mode sft_cost --arm ternary --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4ezWg_float_sft_cost8.sh` — `--mode sft_cost --arm float --max-wall-sec 900 --execute`.
+- `run_P106B_Stage4ezWh_native_sft_budget.sh` — `--mode budget --endpoint sft --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4ezWi_ternary_sft384.sh` — `--mode sft --arm ternary --max-wall-sec 3600 --execute`.
+- `run_P106B_Stage4ezWj_float_sft384.sh` — `--mode sft --arm float --max-wall-sec 3600 --execute`.
+- `run_P106B_Stage4ezWk_ternary_native_answers.sh` — `--mode evaluate --arm ternary --endpoint native --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4ezWl_float_native_answers.sh` — `--mode evaluate --arm float --endpoint native --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4ezWm_ternary_sft_answers.sh` — `--mode evaluate --arm ternary --endpoint sft --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4ezWn_float_sft_answers.sh` — `--mode evaluate --arm float --endpoint sft --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4ezWo_native_route_readback.sh` — `--mode readback --max-wall-sec 900 --execute`.
+
+### 8. 설계 점검
+
+서로 다른 목적함수나 부모를 끼워 넣지 않으며 독립변수는 TLinear의 삼진/실수가중치 경로다. TRAIN≥2draw와 tag/CP 충돌을 첫 실행 전 확인한다. 정상16micro 누적·후기 역전파·cache 단독 계측·CPU state alias/strict route 회귀를 먼저 한다. 비용 중 큰 CPU나 다른 GPU는 돌리지 않는다. 모든 원답·JSON은20MB 미만 조각이며 raw는 ignored runs/eval에 둔다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 9. 실행 이력
+
+helper28+driver49=77 CPU 회귀 통과를 확인했다. 새 tag의 실제 source 동결·CUDA cost·예산·학습·평가는 아직 NOT_RUN이다. 결과 회수 후 이 절과 기준표/방법론/COMPASS를 갱신한다.
