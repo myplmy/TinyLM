@@ -1,0 +1,81 @@
+Read regression, prerequisite and final receipt before judging. Paired content objective study; actual answers, EOT/content losses and native retention are separate. Technical completion is not intelligence. Estimated 0.2 hours; GPU=Y; per-worker cap 900 seconds. Independent arms preserve failed evidence.
+
+==============================================================================
+[runlog] 2026-10-19 20:43:21  name=P106B_Stage4ewWa_token_cost8_204321
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_content_recovery.py --mode cost --arm token --max-wall-sec 900 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_components_rejects_shape_dtype_and_chunk_errors (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_components_rejects_supervision_and_weight_errors (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_computation_never_loads_assets_or_initializes_cuda (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_custom_eot_components_and_fp32_bfloat16_hidden (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_deferred_backward_has_no_last_chunk_target_or_weight_capture (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_dense_loss_and_gradients_for_both_policies_and_checkpoint_modes (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_eot_only_dense_and_gradient_parity (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_head_gradients_work_with_frozen_hidden (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_ignored_micro_returns_differentiable_fp32_zero (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_ignored_positions_have_zero_hidden_gradient (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_native_term_is_separate_and_keeps_8192_denominator (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_no_grad_mode_returns_fp32_reports (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_raw_sums_do_not_change_with_policy (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_same_eot_weights_do_not_promise_same_vocabulary_row_gradient (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_token_policy_matches_existing_core_loss_and_gradients (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_whole128_conversations_in16_micros_matches_dense (scripts.test_p106b_content_objective.ComponentTests) ... ok
+test_all_ignored_row_allowed_inside_supervised_update (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_corrupted_selected_plan_weights_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_custom_eot (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_eot_only_row_stays_in_total_not_content_rows (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_eot_only_update_is_allowed (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_policy_and_eot_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_record_lengths_labels_and_owners_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_invalid_tensor_request_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_multiple_turns_are_one_conversation (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_no_supervision_rejected (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_paper_example_preserves_content_and_each_eot_mass (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_tensor_selects_order_and_zero_padding (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_token_counts_weights_and_masked_owner (scripts.test_p106b_content_objective.WeightPlanTests) ... ok
+test_complete_identity_passes_without_model_or_data (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_native_scope_is_not_silently_promoted (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_report_status_code_tag_and_manifest_are_bound (scripts.test_p106b_content_recovery.EvaluationIdentity) ... ok
+test_authority_separates_training_and_final_deadlines (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_check_only_cannot_start_worker_or_assets (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_checkpoint_path_rejects_undeclared_arm_before_io (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_failed_preflight_never_invokes_experiment (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_late_source_failure_precedes_parent_gpu_and_outputs (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_mode_and_arm_ownership_reject_unused_selectors (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_phase_order_includes_real_regressions_and_source_barrier (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_source_reader_rechecks_all_passes_and_dev (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_weight_mass_preserves_masked_wrong_owner (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_worker_wall_is_bounded_and_not_a_truthy_boolean (scripts.test_p106b_content_recovery.PureContract) ... ok
+test_completed_worker_rejects_wrong_code_and_exit (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_duplicate_worker_activity_rejected_before_execution (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_eval_worker_keeps_absolute_record_reserve (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_incomplete_cost_activity_is_not_a_budget_admission (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_required_does_not_convert_missing_artifact_to_success (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_single_json_20mb_guard_precedes_file_creation (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+test_write_is_exclusive_and_rejects_nonfinite_before_touch (scripts.test_p106b_content_recovery.TemporaryFiles) ... ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 1.260s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[CONTENT_PREFLIGHT] exact source/weights/DEV references; model/GPU not loaded
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+W1019 20:44:05.401000 382875 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[CONTENT_UPDATE] {"arm": "token", "update": 1, "epoch": 1, "assistant_ce": 8.442531010875964, "content_ce": 4.798227595186781, "eot_ce": 17.588330488938553, "weighted_assistant_objective": 8.442531168460846, "native_ce": 3.826268196105957, "assistant_targets": 730, "content_targets": 522, "eot_targets": 208, "native_targets": 8192, "positive_rows": 128, "x_tokens": 19231, "gradient_norm": 21.844820022583008, "clipped": true, "step_seconds": 37.724155615011114}
+[CONTENT_UPDATE] {"arm": "token", "update": 2, "epoch": 1, "assistant_ce": 7.304978683005253, "content_ce": 3.7050480412501914, "eot_ce": 17.677660925913667, "weighted_assistant_objective": 7.304978847503662, "native_ce": 3.3637824058532715, "assistant_targets": 687, "content_targets": 510, "eot_targets": 177, "native_targets": 8192, "positive_rows": 128, "x_tokens": 19893, "gradient_norm": 18.394874572753906, "clipped": true, "step_seconds": 2.0755247899942333}
+[CONTENT_UPDATE] {"arm": "token", "update": 3, "epoch": 1, "assistant_ce": 7.042939557472757, "content_ce": 3.809291665253299, "eot_ce": 16.352441566868833, "weighted_assistant_objective": 7.04293966293335, "native_ce": 4.032771110534668, "assistant_targets": 737, "content_targets": 547, "eot_targets": 190, "native_targets": 8192, "positive_rows": 128, "x_tokens": 21790, "gradient_norm": 20.587203979492188, "clipped": true, "step_seconds": 2.0298236689995974}
+[CONTENT_UPDATE] {"arm": "token", "update": 4, "epoch": 1, "assistant_ce": 6.309061036758605, "content_ce": 3.6142437246781363, "eot_ce": 14.576655637870715, "weighted_assistant_objective": 6.309061110019684, "native_ce": 3.4652576446533203, "assistant_targets": 838, "content_targets": 632, "eot_targets": 206, "native_targets": 8192, "positive_rows": 128, "x_tokens": 24522, "gradient_norm": 17.253278732299805, "clipped": true, "step_seconds": 2.048392340002465}
+[CONTENT_UPDATE] {"arm": "token", "update": 5, "epoch": 1, "assistant_ce": 5.718337874606724, "content_ce": 3.4810065663804757, "eot_ce": 13.27210008980024, "weighted_assistant_objective": 5.718338072299957, "native_ce": 3.554443120956421, "assistant_targets": 884, "content_targets": 682, "eot_targets": 202, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20721, "gradient_norm": 16.093158721923828, "clipped": true, "step_seconds": 2.1007493189972593}
+[CONTENT_UPDATE] {"arm": "token", "update": 6, "epoch": 1, "assistant_ce": 5.212564719015346, "content_ce": 3.317342645349637, "eot_ce": 12.370052134737055, "weighted_assistant_objective": 5.2125648856163025, "native_ce": 3.8247406482696533, "assistant_targets": 898, "content_targets": 710, "eot_targets": 188, "native_targets": 8192, "positive_rows": 128, "x_tokens": 21442, "gradient_norm": 15.88833236694336, "clipped": true, "step_seconds": 2.0880791539966594}
+[CONTENT_UPDATE] {"arm": "token", "update": 7, "epoch": 1, "assistant_ce": 5.390817082475389, "content_ce": 3.6918320746476208, "eot_ce": 10.021211100365832, "weighted_assistant_objective": 5.390816956758499, "native_ce": 3.7356925010681152, "assistant_targets": 719, "content_targets": 526, "eot_targets": 193, "native_targets": 8192, "positive_rows": 128, "x_tokens": 19210, "gradient_norm": 20.714948654174805, "clipped": true, "step_seconds": 2.0583591049944516}
+[CONTENT_UPDATE] {"arm": "token", "update": 8, "epoch": 1, "assistant_ce": 4.835319264021424, "content_ce": 3.34558808736961, "eot_ce": 9.255129608660113, "weighted_assistant_objective": 4.835319146513939, "native_ce": 3.624490976333618, "assistant_targets": 718, "content_targets": 537, "eot_targets": 181, "native_targets": 8192, "positive_rows": 128, "x_tokens": 20281, "gradient_norm": 18.409677505493164, "clipped": true, "step_seconds": 2.046541989999241}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_CONTENT_RECOVERY_cost_token", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.5분  (2026-10-19 20:44:53)
+==============================================================================

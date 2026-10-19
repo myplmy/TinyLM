@@ -1,0 +1,56 @@
+{
+  "schema": "TINYLM_NATIVE_WEIGHT_ROUTE_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authorization": "현재 20일17시까지 주도적 CPU/GPU와 필요한 구현 허가에 따른 독립 원인분리 후보. 시간/비용/정합 게이트 뒤만 실제 수행.",
+  "purpose": "부모 없이 기초학습하는 효율과 삼진/QAT 경로의 한계를 구분한다. 원래 데이터나 양자화가 원인이라고 가정하지 않는다.",
+  "options": [
+    {
+      "id": "A",
+      "method": "동일 random 본체·native 298.975M·WSD/RMS4의 QAT 대 실수가중치 BF16 AMP 두 부모, 자기 모드로 같은 소형 SFT",
+      "benefit": "기존8M scratch 음성과 다른 실제 기초학습을 비교하며 변경축을 제한",
+      "limit": "사전학습과 후속 SFT의 양자화 효과가 합쳐짐",
+      "recommended": true
+    },
+    {
+      "id": "B",
+      "method": "두 부모를 두 SFT 모드로 교차해 네 후속",
+      "benefit": "전환 시점과 사전학습 효과를 더 분리",
+      "limit": "추가 학습/평가 비용; A 결과 뒤 필요할 때만"
+    },
+    {
+      "id": "C",
+      "method": "이번엔 학습하지 않고 최초분기/자료 대조만 수행",
+      "benefit": "비용 최소",
+      "limit": "무부모 기초학습·QAT의 원인 질문은 남음"
+    }
+  ],
+  "files": [
+    "scripts/p106b_weight_route.py",
+    "scripts/test_p106b_weight_route.py",
+    "scripts/diag_p106b_native_weight_route.py",
+    "scripts/test_p106b_native_weight_route.py",
+    "run_P106B_Stage4ez*.sh",
+    "data_cache/p106b_native_weight_route_v1_s1337/**",
+    "runs/eval/p106b_native_weight_route_v1_s1337/**",
+    "runs/ckpt/*p106b_native_weight_route_v1_s1337*",
+    "test_result/evidence/p106b_native_weight_route_v1_s1337/**"
+  ],
+  "decisions": {
+    "precision": "TLinear의 양자화와 STE만 실험 전용 instance 범위에서 우회. embedding/head는 원래FP32 master. 단순 anneal0은STE를남기므로 float대조로 사용하지 않음.",
+    "init": "동일 cfg/seed/초기 본체SHA; 부모학습가중치 복사0",
+    "data": "원래 TRAIN597995000/VAL3005000 불변. 2281×8×16×1024=298975232. 풀2배597950464≤597995000; 원300.024M 재현이라고 부르지 않음.",
+    "native_recipe": "micro8 accum16 seq1024 ckptON, Adam1e-3/Muon4e-3 RMS4; 원기초 WSD/anneal_end0.8을 양팔 명시. embedding WD와matrix WD 실제그룹 기록.",
+    "loader": "weight_mode 메타와 전용 strict loader가 실수 경로를 복원해야함. 일반 loader의 anneal1/freeze는 실수를 삼진화하므로 그대로 사용금지.",
+    "resource": "각cost8·초기/말기 QAT 실행점 검증과 보수적예산 뒤 본run. 기존시간근거 두native약3h이며 실제새float/SFT/평가시간은 미측정.",
+    "status": "DESIGNED; adapter/CPU/live/native모델 모두 아직 NOT_RUN"
+  },
+  "impact": {
+    "core": "tinylm 제품기본·원래클래스 파일 변경0; 별도 모듈이 새 자기 모델에만 적용",
+    "ownership": "원래 cache/모델/log/CP/registry 변경0, 새 namespace만",
+    "comparison": "같은 draw/기하/optimizer/schedule/AMP/정답/평가를 고정, seed1을 아키텍처 일반법칙으로 승격하지 않음",
+    "safety": "packed/커널/LoRA/mode/연결성 등미지원 route를 명시거부, Parameter 캐시등록·stale복원·CUDA RNG·checkpoint readout회귀 필수",
+    "memory": "실수93M weight FP32약356MiB이며저메모리 배포목표달성 아님. allocator와wholeVRAM/packed따로기록",
+    "closure": "실제자유답/원문언어손실·학습과소비정합을확인하고75M완성/Falcon동등성을주장하지않음"
+  },
+  "delegation": "문헌 담당은 순수 route/test 두파일만 가능; 총괄이 실제설계·driver·모델/계획/자원/판독 소유"
+}
