@@ -47,6 +47,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from scripts.smoke_execution_contract import modern_profiles, validate_modern_adaptation
+
 TSV = ROOT / "scripts" / "smoke_diag_contract.tsv"
 BATCH = ROOT / "scripts" / "batch" / "tool_smoke.bat"
 LOGDIR = ROOT / "smoketest_logs"
@@ -62,7 +66,7 @@ def authorized_profiles():
         (AUTHORIZED_TAG, ISOLATED_CHECKER, "P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_V1", "smoke_codex_20261016_v1"),
         ("p106b_night_final_smoke_v1_s1337", "scripts/diag_p106b_night_final_smoke.py",
          "P106B_AUTHORIZED_CODEX_COMPLETE_SMOKE_NIGHT_FINAL_V1", "smoke_codex_20261017_night_final_v1"),
-    )
+    ) + modern_profiles()
 AUTHORIZED_TAG = "p106b_authorized_validation_v1_s1337"
 CODEX_ITEMS = ("CHECK handoff/", "PASS static structure and local links",
                "SUMMARY files=1 errors=0")
@@ -149,7 +153,11 @@ def authorized_aliases(log):
                any(p[1] in cmd.replace("\\", "/") for p in authorized_profiles()) for cmd, _, _ in records):
         return {}, []
     try:
-        from smoke_module import parse_smoke_module
+        from scripts.smoke_module import parse_smoke_module
+
+        modern = validate_modern_adaptation(ROOT, BATCH, log, records)
+        if modern is not None:
+            return modern, []
 
         def regular(path):
             path = Path(path)
@@ -364,6 +372,9 @@ def main():
             if len(actual_drivers)!=1:raise ValueError('one validated field checker driver required')
             actual_driver=actual_drivers[0]
             watched += [ROOT / CODEX_HANDOFF, ROOT / actual_driver]
+            if actual_driver == "scripts/p106b_relation_smoke.py":
+                print("      [HISTORICAL_SCOPE] original synthetic before/after hashes "
+                      "were NOT_CAPTURED; this alias does not prove current/full isolation")
         newest_code = max((p.stat().st_mtime for p in watched if p.exists()), default=0)
         stale = log.stat().st_mtime < newest_code
         sink = warns if stale else fails
@@ -380,7 +391,9 @@ def main():
             if s in aliases:
                 body, code, alias_items = aliases[s]
                 items = alias_items or items
-                actual_name = CODEX_HANDOFF if s == "check_handoff.py" else actual_driver + " --mode contract"
+                actual_name = CODEX_HANDOFF if s == "check_handoff.py" else next(
+                    command for command, _, _ in log_records(log)
+                    if actual_driver in shlex.split(command.replace("\\", "/")))
                 print(f"      [ADAPTED] {s} => {actual_name} (원본 명령·SHA·전체 실행 영수증 확인)")
             else:
                 body, code = blocks[s]

@@ -15,6 +15,7 @@
 | scripts/codex_smoke.py | 신설 | 동일 정본을 실행하는 재사용 격리 실행기. 날짜별 복제 금지 |
 | scripts/test_smoke_execution_contract.py | 신설 | pure/temp fixture, 누락·실패·오염 거부와 표준 판정 보존 |
 | scripts/test_codex_smoke.py | 신설 | 가짜 프로세스로 쓰기·중단·예외·종료·동일 argv 시험 |
+| scripts/flag_whitelist.tsv | 운영 메타데이터 1행 추가 | 승인된 새 실행기의 --deadline-utc 이름/소유자를 등록. 정적 미등록 오류를 우회하지 않으며 학습옵션·합격기준은 불변 |
 | 이 감사·관련 새 audit/WIP/현재 결과·계획·COMPASS | 기록 | 범위/실제 결과와 미확인을 분리. root09/환경설정/타WIP는 제외 |
 
 run_smoke_check.bat/sh, tool_smoke.bat, check_smoke.py, summarize_smoke.py,
@@ -77,3 +78,7 @@ fake child의 비정상 종료·무출력·예외·시간 종료가 원로그/�
 구현·CPU 검증 3~5시간은 추정이다. 새 전체 격리 스모크가 필요하면 기존 모델 평가가
 끝난 뒤 별도로 실행하고, 현재 사용자20일17시의 권한/시간과 재원 예약을 다시 확인한다.
 이는 모델 품질 검증이나 현재4eu 조건 변경이 아니다.
+
+## 구현 중 확인한 선결과 최소 범위 보완
+
+전수 정적이 새 운영 옵션 --deadline-utc의 미등록을 검출하여 이름/소유자/실험 등급 한 행을 추가한다. 이는 승인된 B 실행기의 정상 구현 메타데이터이며 새 실행 권한이 아니다. registry.py/runlog.py 수정은 이 보완에 포함하지 않고 별도 사용자 회신을 기다린다. 새 공용 full은 코드 수준의 HOLD8로 차단하고, 배선 내부 시험만 모의 의존성 아래 수행한다. check/contract 조회와 기존 사용자 스모크 경로는 유지한다.

@@ -268,5 +268,71 @@ class AdaptationTests(unittest.TestCase):
         self.save(rehash=True);self.assertTrue(self.aliases()[1])
 
 
+
+class NormalizedAliasIntegration(unittest.TestCase):
+    """Public checker dispatch must fail closed with the same raw identities."""
+    def setUp(self):
+        from scripts import test_smoke_execution_contract as fixtures
+        self.fixture = fixtures.ModernReceiptTests(
+            'test_valid_normalized_receipt_and_only_two_aliases')
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.doCleanups)
+
+    def aliases(self):
+        with patch.object(check, 'ROOT', self.fixture.root), \
+                patch.object(check, 'BATCH',
+                             self.fixture.root / 'scripts/batch/tool_smoke.bat'):
+            return check.authorized_aliases(self.fixture.log)
+
+    def test_normalized_public_dispatch_accepts_exact_two_recorded_aliases(self):
+        aliases, errors = self.aliases()
+        self.assertEqual(errors, [])
+        self.assertEqual(set(aliases), {'check_handoff.py', 'check_smoke.py'})
+        self.assertEqual(aliases['check_handoff.py'][2], check.CODEX_ITEMS)
+
+    def test_namespace_import_does_not_require_bare_scripts_path_side_effect(self):
+        source_scripts = str(Path(check.__file__).resolve().parent)
+        with patch.object(sys, 'path', [p for p in sys.path if p != source_scripts]), \
+                patch.dict(sys.modules):
+            sys.modules.pop('smoke_module', None)
+            aliases, errors = self.aliases()
+        self.assertEqual(errors, [])
+        self.assertEqual(set(aliases), {'check_handoff.py', 'check_smoke.py'})
+
+    def test_missing_normalized_receipt_is_error_not_fallback_to_legacy(self):
+        self.fixture.target['report'].unlink()
+        aliases, errors = self.aliases()
+        self.assertEqual(aliases, {})
+        self.assertEqual(len(errors), 1)
+
+    def test_malformed_receipt_shapes_report_error_without_crashing(self):
+        for data in ([], None, {'schema': 'OTHER'},
+                     {**self.fixture.data, 'receipts': [None]}):
+            self.fixture.target['report'].write_text(json.dumps(data), encoding='utf-8')
+            with self.subTest(data_type=type(data).__name__):
+                aliases, errors = self.aliases()
+                self.assertEqual(aliases, {})
+                self.assertEqual(len(errors), 1)
+
+    def test_mixed_legacy_and_normalized_commands_are_not_authorized(self):
+        raw = self.fixture.log.read_text()
+        self.fixture.log.write_text(raw + '\n[runlog] cmd=python '
+            + check.ISOLATED_CHECKER + ' --mode contract'
+            + '\n[runlog] 종료코드 0 소요 0분', encoding='utf-8')
+        self.fixture.refresh_raw_hash()
+        self.fixture.save()
+        aliases, errors = self.aliases()
+        self.assertEqual(aliases, {})
+        self.assertTrue(errors)
+
+    def test_canonical_public_dispatch_keeps_original_no_alias_contract(self):
+        self.fixture.log.write_text(
+            '[runlog] cmd=python scripts/check_handoff.py\nlegacy'
+            '\n[runlog] 종료코드 0 소요 0분', encoding='utf-8')
+        self.fixture.target['report'].unlink()
+        self.assertEqual(self.aliases(), ({}, []))
+
+
+
 if __name__ == "__main__":
     unittest.main()
