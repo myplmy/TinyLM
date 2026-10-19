@@ -6344,10 +6344,10 @@ VAL 완결 segment는 canonical ID 해시, 양끝 partial은 uint16 정렬 subst
 
 | 단계 | 선결·내용 | 한도/자원 | 현재 |
 |---|---|---|---|
-| Stage4fdW0 | 전용회귀·metadata/codec source 고정 | CPU600초·모델0 | NOT_RUN |
-| Stage4fdWa | bounded prefix 변환·현재VAL제외·바이트/토큰분모 | CPU1200초·단일스레드·GPU0 | NOT_RUN |
-| 조건부 budget | 완결segment 처리율/별도전체TRAIN SHA·fresh host 입력 | 명시 `--allow-full-scan`·600초 신선도 | 런처 미작성/NOT_RUN |
-| 조건부 build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·최대6h | 런처 미작성/NOT_RUN |
+| Stage4fdW0 | 전용회귀·metadata/codec source 고정 | CPU600초·모델0 | 완료54CPU·실제source·101§344 |
+| Stage4fdWa | bounded prefix 변환·현재VAL제외·바이트/토큰분모 | CPU1200초·단일스레드·GPU0 | 완료·실제635segment/105tail merge·101§345 |
+| Stage4fdWb budget | 완결segment 처리율/별도전체TRAIN SHA·fresh host 입력 | 명시 `--allow-full-scan`·600초 신선도·worker600초 | NOT_RUN |
+| Stage4fdWc/Wd build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·worker10800/1800초 | NOT_RUN |
 
 초기47 합성회귀 검토에서 발견한 시간분모·readback 예상시간/worker 상한·SIGTERM 실패activity 연결3건은 실제source/pilot 전에 수리·root재검토한다. 새코드는 실물 동결 뒤 수정하지 않는다.
 
@@ -6364,7 +6364,13 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 - `run_P106B_Stage4fdW0_legacy_native_source_cpu.sh` — `--mode source --max-wall-sec 600 --execute`.
 - `run_P106B_Stage4fdWa_legacy_native_prefix_pilot.sh` — `--mode pilot --max-wall-sec 1200 --execute`.
 
-전체해시/build는 pilot 결과를 본 뒤 fresh host 측정과 새 명시 SH를 붙일 때만 가능하다. 이 CPU 영수증으로 새 GPU 학습을 자동 채택하지 않는다.
+추가 작성한 실행 파일은 다음과 같다. budget/build SH는 fresh root 측정의 `free_bytes UTC_timestamp storage_label evidence_json_path` 네 인자를 요구하며 stdin 대기 없이 인자가 없으면 HOLD8이다. readback에는 host 인자가 없다.
+
+- `run_P106B_Stage4fdWb_legacy_native_budget_cpu.sh` — `--mode budget --max-wall-sec 600 --allow-full-scan --execute`와 fresh host4인자.
+- `run_P106B_Stage4fdWc_legacy_native_build_cpu.sh` — `--mode build --max-wall-sec 10800 --allow-full-build --execute`와 fresh host4인자.
+- `run_P106B_Stage4fdWd_legacy_native_readback_cpu.sh` — `--mode readback --max-wall-sec 1800 --execute`.
+
+전체해시/build는 pilot 결과의 예산을 보고 root가 각각 새 host 측정을 전달할 때만 연다. 이 CPU 영수증으로 새 GPU 학습을 자동 채택하지 않는다.
 
 ### 8. 한계·보존
 
@@ -6372,6 +6378,6 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 
 ### 9. 실행 이력
 
-읽기 전용 inventory/8KiB 표본은 별도 감사이고 실제 tagged source/pilot/build는 아직 NOT_RUN이다. 초기47회귀 뒤 독립검토에서 발견한 세 예산/종료 결함을 수리했으며 root가 해당 함수와 신규7회귀를 읽고 전체54개를0.490초에 재확인했다. source나 실제 bin 변환의 PASS는 아니다. 현재 삼진/실수2281 대조는 원 조건 그대로 지속하며 새GPU 실험을 이 절에서 열지 않는다.
+읽기 전용 inventory/8KiB 표본은 별도 감사다. 초기47회귀 뒤 독립검토에서 발견한 세 예산/종료 결함을 수리했으며 root가 전체54개를 재확인했다. source는23:49:03, bounded pilot은23:49:27KST 실제 완료했다. 635완결 segment/old1048405→new1048510·tail171 oldID 제외·105희귀merge 변환·prefix VAL제외0을 관측했다. 새reserved literal분기는0이어서 실물 검증으로 올리지 않는다. 전량변환/언어품질은 아직 NOT_RUN이며 원 조건의 삼진/실수2281 대조를 바꾸지 않는다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
