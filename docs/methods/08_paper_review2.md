@@ -1049,3 +1049,15 @@ B의 한 구체식은 content CE를 C_i, 그 token 수를 c_i, EOT CE 합을 E, 
 N_C=0인 경우 content 항을0으로 두고 EOT를 유지한다. 이 식은 총 content/EOT **계수 질량**을 보존하는 총괄의 통제 설계 후보이며 인용 논문의 채택식도, 같은 gradient norm의 보장도 아니다. 정해진 미니배치의 실제 수에서 계수가 나오므로 임의 상수를 성능 정답으로 승격하지 않는다.
 
 현재 네 팔에 이 식을 몰래 넣지 않는다. 먼저 실제 target/content/EOT 통계와 같은 부모의 새 표현·위치 결과를 회수한다. 후속을 열면 같은 frozen cell·384회/4epoch·부모/순서/LR/clip/native 벡터·평가64를 유지하고 정규화만 바꾸며, 평가에서는 동일한 비가중 CE/content/EOT와 자유답·망각을 함께 본다. 재가중한 학습손실 감소나 종료만의 개선을 지능 향상으로 부르지 않는다. 새 학습·목적함수 변경은 아직 **NOT_RUN**이다.
+
+### 2026-10-19 조건부 구현 경계 보완 — 현재 네 팔에는 미적용
+
+현재 실제 교과의 pass당75664지도토큰은 content56912/EOT18752다. 산수는2048행이어도 content2570으로 전체content의4.52%다. 이 비중은 기울기 부족의 증명이 아니며 먼저 현재 네팔의 실제 답을 회수한다.
+
+후속 B를 선택한다면 고정된 한 대조 cell의 목적만 바꾼 **별도** reader/head 경로를 만든다. 현재 core.components는 CE를 scalar 합으로 즉시 줄이므로 이후 scalar를 가공해 대화별 재가중을 복구할 수 없다. 기존의 bounded vocabulary-head chunk/checkpoint 안에서 FP32 unreduced CE에 detached weight를 곱해 scalar를 반환한다. weight는 checkpoint 인자로 명시해 backward 재계산 시 loop변수의 늦은 결합을 피한다. logits목록을 보존하지 않되 transient chunk×vocab 메모리는 여전히 측정해야 한다.
+
+전체16micro의 N_C/N/N_E/B_+와 각대화 c_i를 먼저 구하고 content weight=(N_C/N)/(B_+×c_i), EOT weight=1/N, 무시위치0을 모든 chunk/micro에 동일하게 사용한다. eligibility는 양의owner **및** y!=-100이고, C2첫오답의 owner만보고무시라벨을복원하지않는다. 여러지도turn은한encoded대화로묶는다. EOT-only행은 EOT와행수를유지하고B_+에서만제외하며 N_C=0과전부무지도인경우를분리한다. native CE/8192는변경하지않고SFT의EOT재가중을native에적용하지않는다.
+
+EOT-target 손실의 계수를 보존해도 content CE에서 EOT가 경쟁하는 효과 때문에 EOT어휘행의 **전체** gradient가 같다는 보장은 없다. 같은 함수의 dense정답식 대 chunk/16micro의 loss·hidden/head gradient를 길이불균형·chunk경계·checkpoint on/off에서 맞추는 CPU시험, 무시C2/pad/여러turn/EOT-only/nativeterminal의 분모·직접gradient시험이 먼저다. 두목적 자체의gradient가같아야한다는잘못된시험은하지않는다. 이구현과새시험은아직NOT_RUN이다.
+
+저가 진단 후보는 동결 골드의 content가 한토큰인 산수만 사전선정해 첫assistant predictor에서 골드logit-최대비종료경쟁logit과 종료logit-최대비종료logit을 나누는 것이다. 실제 생성에는 정답prefix나후보를주지않고같은max64자유답을그대로평가한다. 답선택분리가개선됐는지종료압력만바뀌었는지구별할보조관찰이지온라인정답판별기나지능점수는아니다.

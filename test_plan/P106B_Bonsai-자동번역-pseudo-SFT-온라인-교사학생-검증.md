@@ -5792,7 +5792,7 @@ SH15개와 독립4코드의 실행 전 검증을 완료했다. 실제CPU 동결 
 
 | 단계 | 수행 | 다음 관문 |
 |---|---|---|
-| Stage4euW0 | 회귀71·source 선결·새 CPU 동결; 모든16팔/pass와 DEV를 실제 학습 reader로 소비 | v1과 순서 있는 전체 payload·cases·표본·native·분모 동등성 독립 확인 |
+| Stage4euW0 ✅ 완료 | 회귀71·source 선결·새 CPU151.04초; 실제16팔/pass·DEV384 소비 | 독립19manifest/35shard·3042327조건 동등성/불일치0·모델0 |
 | Stage4euCa/Cb/Cc/Cd | 팔별 새 부모의8update 비용·CP0 | 네 실제 cost receipt·같은 optimizer/target/native·시간/VRAM |
 | Stage4euTa/Tb/Tc/Td | 팔별384update·4epoch·CP1 | 전체 실제 source pass/DEV가 모델 적재 전에 통과; 총8h와 허가 예약 |
 | Stage4euEp/Ea/Eb/Ec/Ed | 부모/네 학생의1694첫답 | 같은 max64/FP32 MATH/greedy/KV-on/MTP-off·원형/종료/본체 불변 |
@@ -5839,3 +5839,5 @@ CPU 재동결은 v1의127.28초에 실제 소비 전량 검증을 더하므로 �
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 **복구 코드 독립 검토 완료:** 감사 `WIP_20261019_QUESTION_TRANSFER_V2_INDEPENDENT_CPU_REVIEW.json`은13234B·SHA `3FE553CE7BBFB7BD0AA4261DAFB6A139C58A1A1F951CE4C72CAAA4D540E81832`다. 독립 guarded71/71·7개 dispatch fixture를 통과했고6함수의 선언된 수리 외 AST와36정의·순수data2파일이 불변이다. 실제 source/model은 아직 미실행이며 닫힌 샤드 작성 뒤 보고 전 소비검증이 실패하면 새 partial namespace를 보존/HOLD한다. 정적검사 중 보류14TSV행을 활성으로 남긴 등록 결함2건은 역사 주석으로 고쳐 재검사67PASS/기존공용smoke profile오류1/NR6을 보존했다. 공유 checker는 수정하지 않았다.
+
+**실제 소비·동등성 완료:** 11:34:10~11:37:02KST Stage4euW0를회귀71/선결/본단계 모두0으로 수행했다. worker151.040185초·모델/업데이트/새CP/CUDA0, 실제16팔/pass 각12288행/75664target·64masked replay와DEV384/1626target을읽었다([101 §303](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 독립 실제19manifest/35shard 대조는버전당201118행·3042327조건/불일치0, 감사59606B/3227BACE…다. x/y/owner/id/cases/정답/선택/schedule/native가불변이며 source의새 의미정답 판정은아니다. heavyCPU11:44:47.274576KST 종료→5분뒤4cost8 선결로진행한다. 과거v1 reader음성은보존하고W0done 원형SHA84BA1B05…를8a2dfea와대조했다.
