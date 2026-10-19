@@ -5973,3 +5973,50 @@ content = N_C/(N*B_+) * sum_{c_i>0}(C_i/c_i) + E/N + native_CE_sum/8192
 새순수helper/driver와49개CPU회귀가통과했다. 실제자산·모델·GPU는아직NOT_RUN이며전수정적과동결커밋뒤실물W0부터회수한다. 기존53/67원로그나19일오전44팔을새P학습의증거로합산하지않는다.
 
 본문rawtoken복사의별도CPU128검토에서는첫정답ID지원20/128과문자oracle106/128을구분했다. 단순혼합학습을먼저확대하지않고기존저장spanhead의실제추출readout을더작은후보로검토한다. 이구조/기초교육/부분일반대화는설계확정뒤별도단계로등록하며현재P에몰래추가하지않는다.
+
+### 실제 CPU 이력 — 2026-10-19 20:31KST
+
+[101 §324](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)에서 W0를 회귀49/선결/본단계 모두0으로 완료했다. 실제4pass/DEV를 소비했고 pass마다 입력2,052,163x·지도75,664(내용56,912/EOT18,752)와 마스크를 보존했다. 원문 복사/모델/학습/CP0, 다음은 전체 스모크 뒤 단독 cost8이다. 작성 당시 NOT_RUN 표는 역사 기록이며 현재 완료는 이 절과 결과§324가 소유한다. 예측한 사전 분모 검산은 성립했고 실제 내용 개선은 아직 미확인이다.
+
+## 2026-10-19 후속 Stage4ex — 보존된 질문 조건 span head의 실제 추출 출력
+
+### 1. 목적·범위
+
+이전에 학습한 `p106b_grounded_span_exec_v3_s1337:span03`의 본체와 **그 모델 자신의** rank64 head를 함께 읽는다. 예전 보조 head는 학습 loss에만 사용했고 실제 답은 어휘 head에서만 생성했다. 이번에는 같은 prefix에서 어휘 생성과 원문 span 추출을 별도 출력으로 비교하여 대상 선택 실패와 어휘 렌더링 실패의 관측을 보완한다. 새학습·CP저장0이며 제품 생성/기본값·기존 원형 수정0이다.
+
+raw token-copy는 현재128문항에서 첫 gold token ID가 source bank에 없는108건이 있었으므로 즉시 혼합하지 않는다. 이는 문자로 답을 추출할 수 없다는 뜻이 아니다. 새 helper는 원래 token offsets로 선택한 원문 범위와 outer whitespace trim만 반환한다. 조사·문장부호를 임의로 제거하지 않는다.
+
+### 2. 가설·반대 위험
+
+질문 조건 head가 올바른 본문 위치를 알고 어휘 head만 답을 잘못 만든다면 추출 EM이 상대적으로 높을 수 있다. 반대로 기존 head의 DEV 양경계 정확도가 낮았으므로 둘 다 실패할 가능성도 크다. oracle 위치·정답을 주고 얻은 span 정확도를 head 능력으로 세지 않는다. head에 제한된 source range를 주므로 이 결과는 **extractive readout 비교**이지 자유 대화/일반 지능 개선이 아니다.
+
+### 3. 조건·입력과 누설 통제
+
+- 고정 CP SHA `E3D632CE40B549B8FC3384294850472EFEFCED8392B09DCF35FEEFF0D52B1446`; v3 자기 학습 report/source/code/토크나이저를 실제 검산한다.
+- 본체·head 전후 SHA/상태 불변, FP32-MATH/no-grad/eval. 어휘 생성은 greedy0/top-k1/KV-on/max64, head는 answer-free 전체 prefix의 no-KV hidden만 읽는다.
+- TRAIN 자연QA는 답을 보기 전 태그해시로 KO64/EN64, DEV/TEST는 자연QA 각256 전량: 총640질문. replay는 포함하지 않는다. TRAIN 노출과 DEV/TEST 성적은 따로 보고한다.
+- 실제 inference API 인자는 prefix와 원래 선언 reference 범위뿐이다. gold/답위치/labels/locations를 주지 않는다. gold는 출력 이후 별도 채점에만 사용한다.
+- 정책1 independent: start/end 독립 argmax, 끝이 앞이면 INVALID로 남긴다. 정책2 valid_joint: start≤end 전체 쌍에서 점수합 최대, gold 길이 제한 없음. 둘을 미리 고정하고 사후 좋은 정책만 남기지 않는다.
+- 원래 source의 정확24word 분할 검산과 한영 번역의 미감사 한계는 유지한다.
+
+### 4. 단계·비용·선결
+
+| 단계 | 수행 | 선결·상한 | 작성 시 상태 |
+|---|---|---|---|
+| Stage4exW0 | 새 helper/driver 회귀·실물 source/CP byte SHA·640 prefix/bank 동결 | CPU≤600초, 모델0·새 namespace만 | NOT_RUN |
+| Stage4exWa | 같은 자기 본체의 어휘640답과 두 추출정책 | W0 완료·GPU≤1200초·같은 source/code·activity 종료 | NOT_RUN |
+| Stage4exWb | raw scores/bank/원문/어휘 token decode·분모 독립 검산 | 실제완료 activity·manifest/SHA·CPU≤600초 | NOT_RUN |
+
+총 활동 상한2400초, 승인 종료20일17시보다600초 기록 예비를 남긴다. 새 모델 학습비용은0, head196608 FP32인자는0.75MiB이며 이 수치를 모델 전체 상주/실측 peak로 대체하지 않는다. 실제 peak/속도는 이 진단에서 함께 기록하되 benchmark는 아니다.
+
+### 5. 판정
+
+소형 회귀/원형·기술 closure는 의미 정확성의 보증이 아니다. 언어·분할별 어휘 EM/token-F1, 두 추출 EM/F1·역순/범위·조사/공백 경계 오류, 동일 질문 대응표·실제 표본을 보고한다. 새학습0인 구조적 readout의 효과로만 해석한다. 학습 때 본 source 성적을 미학습 일반화로 합치거나 Falcon 동등성으로 올리지 않는다.
+
+### 6. 저장·재현
+
+새 tag는 `p106b_span_readout_v1_s1337`이다. 참조는 data_cache, 실제 prompt/답/점수는 runs/eval, 작은 계약/집계는 test_result/evidence의 같은 tag에 저장한다. 전부 write-once·20MB 미만 샤드로 보존한다. SH는 입력대기 없이 회귀→선결→실행→최종판정을 출력한다. 기존 P 목적함수 대조와 소스/활동 namespace를 분리한다.
+
+### 7. 실행 이력·예측 대조
+
+계획 작성 시 순수 helper32회귀만 통과했고 실물 source/모델/새 답은 모두 NOT_RUN이다. 실제 source와 strict checkpoint를 검증한 후에만 다음 단계를 연다. 원래 음성·미사용 head 판정은 그대로 보존한다.

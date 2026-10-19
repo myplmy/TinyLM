@@ -1,0 +1,55 @@
+{
+  "schema": "TINYLM_CURRICULUM_ORDER_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authorization": "20일17시까지 실효적인 자료·학습·구조 대조를 총괄 판단하여 준비/수행",
+  "goal": "75M을 기다리지 않고 실제 일반 설명/자연 후속 대화와 근거 QA·정보 충분성·코드 정답 교과를 함께 교육",
+  "options": [
+    {
+      "id": "A",
+      "method": "새 P 두 초기화에 같은 넓은 교과",
+      "benefit": "P 이득의 전이를 본다",
+      "limit": "초기화 차이·순서 효과를 동시에 분리하지 못함"
+    },
+    {
+      "id": "B",
+      "method": "한 공통 부모에서 같은 union/update 묶음의 혼합 순서 대 기초→근거→일반 단계 순서",
+      "benefit": "같은 노출량·부모·학습조건에서 순서만 분리",
+      "limit": "같은 기존 원천이며 한국어 자연 멀티턴 부족은 해결되지 않음",
+      "recommended": true
+    },
+    {
+      "id": "C",
+      "method": "실패한 동결8M 그대로 재학습",
+      "benefit": "준비 비용 작음",
+      "limit": "NQ/CoQA 편중과 기존 실패를 반복할 위험"
+    }
+  ],
+  "scope": [
+    "scripts/p106b_broad_course.py",
+    "scripts/test_p106b_broad_course.py",
+    "scripts/diag_p106b_broad_curriculum.py",
+    "scripts/test_p106b_broad_curriculum.py",
+    "run_P106B_Stage4ey*.sh",
+    "data_cache/p106b_broad_curriculum_v1_s1337/**",
+    "runs/eval/p106b_broad_curriculum_v1_s1337/**",
+    "runs/ckpt/*p106b_broad_curriculum_v1_s1337*",
+    "test_result/evidence/p106b_broad_curriculum_v1_s1337/**"
+  ],
+  "frozen_decisions": {
+    "parent": "정확한 원 P090B를 양팔 공통 사용. 새 P 평가 결과로 서로 다른 초기화를 선택하지 않음.",
+    "course": "기존 grounded_v2 두 wrapper16384행+마스크 보존 replay4096행+P090 공개 TRAIN source그룹2048개 목표. 원형 부족/중복/길이제외는 반복으로 메우지 않음.",
+    "updates": "같은128행 update그룹을 먼저 동결하고 혼합/단계 순서만 바꿈. 22528행이면176회/pass,2pass352회.",
+    "objective": "토큰 평균 L0 고정; P 변경을 추가로 섞지 않음.",
+    "batch": "micro8 accum16 seq1024 ckptON; Adam5e-5/Muon2e-4 WD0 clip1; 동일 native8192/절대update",
+    "evaluation": "학습전/두pass뒤 같은 실제 자유답·실제이력·일반설명과 native; 고정문항/미관측문항을 분리",
+    "resource": "합성/실물 소비·각cost8→보수적3h예산 뒤만 실제 GPU"
+  },
+  "impact": {
+    "code": "제품 기본값·기존 동결 실험 변경0, 별도 새 builder/driver만",
+    "data": "기존 unprotected TRAIN/문맥자료 읽기 재사용, 보호 사전/새 취득0. 교정 첫 오답 y=-100 보존 필수.",
+    "evidence": "실제 원문 고유량/노출량/지도량/자연 대화·인공 후속을 구별. 일반 한국어 미보유를 숨기지 않음.",
+    "validation": "source/alias/root 분할, 길이·loss·owner·전량 실제 소비, whole-update 구성·순서/targets/native일치 검산.",
+    "debt": "불필요하게 모든 미실행 원형을 다시 큐에 넣지 않음.75M 목표와 부분연구 독립."
+  },
+  "delegation": "정 담당은 새 builder/test 두파일만, 총괄이 source승인·driver·계획·GPU·결과와 보존 소유"
+}

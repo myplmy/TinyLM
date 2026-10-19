@@ -1,0 +1,45 @@
+{
+  "schema": "TINYLM_SPAN_READOUT_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authorization": "설명 후 20일17시까지 필요한 구조·학습방법 대조를 주도 수행한다는 현재 지시",
+  "scope": "이미 학습·보존된 v3 span03 본체와 그 head를 정확히 함께 읽어 실제 원문 추출 출력을 진단한다. 새 학습0·기존 파일 변경0·일반 자유생성 개선과 구별.",
+  "files": [
+    "scripts/p106b_span_readout.py",
+    "scripts/test_p106b_span_readout.py",
+    "scripts/diag_p106b_span_readout.py",
+    "scripts/test_p106b_span_readout_driver.py",
+    "run_P106B_Stage4ex*.sh",
+    "test_result/evidence/p106b_span_readout_v1_s1337/**",
+    "runs/eval/p106b_span_readout_v1_s1337/**",
+    "data_cache/p106b_span_readout_v1_s1337/**"
+  ],
+  "impact": {
+    "implementation": "현 제품 생성기/캐시를 고치지 않는다. 순수 bank/select helper와 독립 진단 driver만 추가.",
+    "ownership": "기존 span03 CP/원답/원문은 읽기 전용이며 새로운 답은 새 namespace.",
+    "comparison": "동일한 자기 본체의 어휘 생성과 학습된 head의 추출 출력을 구별한다. 새 P 본체에 옛 head를 임의 부착하지 않는다.",
+    "test": "추론 API에 정답/위치 인자가 없고 선언된 source range와 prefix hidden만 사용한다. 독립 argmax/valid-joint는 별도 사전등록.",
+    "evidence": "oracle문자복사가능성과 실제head정확도는 다르다. 정답을 본 뒤 span을 고르는 시험을 금지한다.",
+    "resource": "새학습0, CPU/실물 게이트 뒤 짧은 GPU 추출 비교. 기존384회 대조 및 평가 예비를 침범하지 않는다."
+  },
+  "options": [
+    {
+      "id": "A",
+      "method": "raw token-copy 혼합",
+      "reason": "첫 정답 토큰 지원20/128로 학습가능성 제약이 확인되어 바로 확대하지 않음"
+    },
+    {
+      "id": "B",
+      "method": "기존 질문조건 span head의 실제 추출 출력",
+      "reason": "새학습 없이 실제 구조 활용 여부/대상 선택력을 먼저 가름",
+      "recommended": true
+    },
+    {
+      "id": "C",
+      "method": "처음부터 문자경계 copy 생성기 재설계",
+      "reason": "정렬·cache·학습 변경이 커서 B 이후 별도 실험으로 남김"
+    }
+  ],
+  "prior_audit": "handoff/audit/WIP_20261019b_COPY_TOKEN_ELIGIBILITY.json",
+  "delegation": "literature 담당은 순수 helper/test 두파일만, 총괄이 실물·계획·GPU·판독 소유",
+  "separate_metadata_correction": "Codex06 이전 자체 내용변경의 날짜만 2026-10-19로 맞췄다. 공용 검사기나 환경 의미 수정 없음."
+}
