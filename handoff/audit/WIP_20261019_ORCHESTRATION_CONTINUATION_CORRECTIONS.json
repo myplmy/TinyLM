@@ -1,0 +1,27 @@
+{
+  "schema": "TINYLM_ORCHESTRATION_CORRECTIONS_V1",
+  "recorded_at": "2026-10-19T05:41:23Z",
+  "events": [
+    {
+      "kind": "USER_LANGUAGE_VIOLATION",
+      "detail": "ROOT sent an initial continuation commentary in Japanese, immediately acknowledged the mistake and restated the content in Korean. User requirement was not met for that one message.",
+      "repository_effect": "None"
+    },
+    {
+      "kind": "TOOL_DRAFT_LANGUAGE_VIOLATION",
+      "detail": "A later tool-input patch draft contained a CJK character in a Korean word and stripped it before patch submission. The visible draft still violated Korean-only communication; the actual file contains the Korean correction. Do not describe this as all drafts having complied.",
+      "repository_effect": "The actual document patch contains no such character."
+    },
+    {
+      "kind": "AUDIT_WRAPPER_RETRY",
+      "detail": "Initial fixed-balanced sample identity check used the wrong case_id field, then JavaScript array reference equality. Both attempts stopped before saving an audit. Comparison by id and serialized full question content verified all30 identical questions.",
+      "scientific_data_or_model_change": 0
+    },
+    {
+      "kind": "COMPACT_VIEW_FILTER_RETRY",
+      "detail": "A broad QUESTION regex accidentally returned repeated question bodies from the final model chunk. Full raw logs were unaffected. Subsequent filters must whitelist phase/final/exit prefixes; actual answers are read separately by fixed case id.",
+      "scientific_data_or_model_change": 0
+    }
+  ],
+  "limitations": "This correction record is not a claim that earlier user-visible language violations did not occur."
+}

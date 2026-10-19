@@ -1,0 +1,42 @@
+{
+  "schema": "TINYLM_SHARED_SMOKE_REGISTRY_SCOPE_FINDING_V1",
+  "recorded_at": "2026-10-19T05:41:23Z",
+  "status": "SCOPE_EXPANSION_PERMISSION_PENDING",
+  "trigger": "User-approved six-file isolated smoke engine B; source-only review discovered another runtime write path.",
+  "source_locations": [
+    "scripts/runlog.py:_register",
+    "scripts/registry.py:ROOT,LOGS,TSV,MD,DB"
+  ],
+  "observed_source_behavior": [
+    "runlog registers successful tagged train commands after closing the raw file.",
+    "registry paths currently use repository ROOT and ignore TINYLM_DIR.",
+    "With an old matching tag JSON, auto-registration can read global old JSON and write the global registry outside the intended isolated namespace."
+  ],
+  "evidence_level": "SOURCE_CONDITIONAL_RISK_NOT_OBSERVED_CORRUPTION",
+  "old_global_registry_files_read": 0,
+  "old_global_registry_files_modified": 0,
+  "checkpoint_files_read_for_this_finding": 0,
+  "registry_or_runlog_source_modified": 0,
+  "scope_options": [
+    {
+      "id": "A",
+      "recommended": true,
+      "action": "Make registry runtime paths honor TINYLM_DIR while leaving default paths unchanged; add default/isolated CPU regressions.",
+      "needs_additional_permission": true
+    },
+    {
+      "id": "B",
+      "action": "Codex-only no-registration switch in runlog; leaves registry integration untested.",
+      "needs_additional_permission": true
+    },
+    {
+      "id": "C",
+      "action": "Keep registry/runlog unchanged and new generic full smoke HOLD.",
+      "needs_additional_permission": false
+    }
+  ],
+  "question_delivery": "A direct Korean permission question was sent before compact recovery; no answer received at this timestamp.",
+  "unaffected": "Frozen current question-transfer evaluations contain no tagged train argv through runlog and are not modified.",
+  "new_generic_full": "NOT_RUN_HOLD",
+  "old_registry_repair": "NOT_AUTHORIZED_NOT_RUN"
+}

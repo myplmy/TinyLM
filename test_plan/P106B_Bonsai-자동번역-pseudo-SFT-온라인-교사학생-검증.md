@@ -5793,10 +5793,10 @@ SH15개와 독립4코드의 실행 전 검증을 완료했다. 실제CPU 동결 
 | 단계 | 수행 | 다음 관문 |
 |---|---|---|
 | Stage4euW0 ✅ 완료 | 회귀71·source 선결·새 CPU151.04초; 실제16팔/pass·DEV384 소비 | 독립19manifest/35shard·3042327조건 동등성/불일치0·모델0 |
-| Stage4euCa/Cb/Cc/Cd | 팔별 새 부모의8update 비용·CP0 | 네 실제 cost receipt·같은 optimizer/target/native·시간/VRAM |
-| Stage4euTa/Tb/Tc/Td | 팔별384update·4epoch·CP1 | 전체 실제 source pass/DEV가 모델 적재 전에 통과; 총8h와 허가 예약 |
-| Stage4euEp/Ea/Eb/Ec/Ed | 부모/네 학생의1694첫답 | 같은 max64/FP32 MATH/greedy/KV-on/MTP-off·원형/종료/본체 불변 |
-| Stage4euR |8470실답과원형집계·사전표본 판독 | 국소 효과/퇴행/일반화 범위 분리, 자동 채택 없음 |
+| Stage4euCa/Cb/Cc/Cd ✅ 완료 | 각 새 부모8update·CP0, 4cost 종료0 | 원시32행 재검산·같은 optimizer/target/native·8h 예약 통과 |
+| Stage4euTa/Tb/Tc/Td ✅ 학습 완료 | 네 조건 각각384update·4epoch·새CP1, 총4CP 완료·원형 검산0오류 | 전체 source pass/DEV는 모델 전 통과; 실제답은 평가 전 |
+| Stage4euEp/Ea/Eb/Ec/Ed ✅ 완료 | 부모/네 학생의1694첫답씩 | 결과101 §313~317·같은 max64/FP32 MATH/greedy/KV-on/MTP-off·1694원형/본문/종료·본체 검산0불일치 |
+| Stage4euR ✅ 완료 |8470실답과원형집계·30표본/모델 판독 | 결과101 §318·위치 JSON 회복 대산수/대상 실패, 일반 assistant 비채택 |
 
 CPU prepare는 인코딩뿐 아니라 닫힌 샤드의 실제 `records_for`를16자료에 사용한다. 각 cost/train도 해당 팔4pass와 DEV를 모델/GPU 허가조회·출력디렉터리·optimizer보다 먼저 읽는다. 첫 오답의 y=-100·segment1은 보존하며 지도되는 토큰만 양의 owner를 요구한다.
 
@@ -5855,3 +5855,7 @@ CPU 재동결은 v1의127.28초에 실제 소비 전량 검증을 더하므로 �
 **두 번째 실제384회 완료:** Tb varied_last는12:53:18KST에384회/4epoch·새CP C24C4630…를완료했다([101 §310](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 실제x8208652/지도302656/native3145728·torchreserved3104MiB·gmax22.701906/clip384, raw384/CP SHA재검산0오류다. DEV.305340/native32 3.540622(+.036415)는실답이나전체언어성적이아니며Ta와작은차이를품질우열로삼지않는다. CP2개는각Ea/Eb/R현재소비자로keep, 다음Tc는12:58:19KST이후독립원부모에서시작한다.
 
 **세 번째 실제384회 완료:** Tc fixed_balanced는12:58:32~13:13:58KST에384회/4epoch와 새CP E2B53169…를 완료했다([101 §311](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 실제x8183564/지도302656/native3145728·torchreserved3104MiB·gmax21.473631/clip384이며 전384행/CP바이트/코드SHA 재검산불일치0이다. DEV.320586/native32 3.543319(+.039112)는 실제답이나 전체언어성적이 아니다. CP3개는각Ea/Eb/Ec/R 소비자로keep, 마지막Td는13:18:59KST 이후 같은 원부모에서 독립 시작한다.
+
+**네 번째 완료·전체 평가 준비:** Td varied_balanced는13:19:05~13:34:11KST 384회/4epoch·새CP10AF22B6…를 종료0으로 완료했다([101 §312](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 전384raw/새CP/코드 SHA 검산0오류, 실제x8208652/지도302656/native3145728·torchreserved3104MiB·gmax21.841431/clip384다. DEV.327295/native32 3.542127(Δ+.037920)는 실제답 정답률과 구별한다. 네 조건CP는 각 실제 평가 필수입력으로keep이고 표시ID는30개/모델이다. Ta/Tb/Tc done3771B만 Git원형/명령 선보존 뒤 정리했으며 현재 Td done은원형커밋전보존이다. 다음은13:39:12KST 이후 부모/네 학생의1694답씩·총8470 실제답과MAX_NEW 메타데이터 전량검산이다. 기존 profile 오류1을 포함한 전수 정적67PASS/6NR도 별도로 보존했다.
+
+**부모/네 학생과 종합실답 완료:** 14:36:18KST까지 Ep/Ea/Eb/Ec/Ed 각1694답과 R의8470원형 검산을 모두 종료0으로 마쳤다([101 §313~318](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). ROOT 전량 body decode/코드 정답/종료·계보 검산0불일치, 사전 고정30표본/모델의 실제 질문·답을 읽었다. ‘표면 변형과 위치 균형이 모든 과제를 올릴 것’이라는 기대는 **일반적으로 불성립**이다. 질문 앞 JSON은0/128→112/116으로 회복했지만 산수22~31/256·문맥 대상 혼동·일반 설명 실패가 남고 Boolean의 일부 조건은 감소했다. 같은 TRAIN 상태의 T2/T3 평가가 실제 학습 입력 재현은 아니므로 암기/전이는 다음 별도 진단에서 가른다. 현 네 모델은 일반 assistant 비채택, 학습 seed1/고정 native32의 한계와75M 부족은 그대로다. 완료7개(Td·Ep·Ea·Eb·Ec·Ed·R)SH는 done 처리했고 명령·Git 원형을 선보존한 뒤 정확 정리한다.

@@ -1,0 +1,44 @@
+{
+  "schema": "TINYLM_QUESTION_TRANSFER_EVALUATION_INDEPENDENT_READONLY_V1",
+  "reviewed_driver": "scripts/diag_p106b_question_transfer.py",
+  "driver_sha256": "58035FB1896851837CDFCF51890885AE5C093F35A27CD44AEFB9089F7F8B81F9",
+  "reviewers": [
+    "ROOT",
+    "oct19_antithesis"
+  ],
+  "status": "NO_NEW_P1_EVALUATION_BLOCKER",
+  "scope": "Code and frozen readiness metadata only, not actual GPU generation or numerical KV parity.",
+  "cohort": {
+    "responses_per_endpoint": 1694,
+    "endpoints": 5,
+    "total_responses": 8470,
+    "display_ids_per_endpoint": 30,
+    "display_selection_sha256": "D65732BE544CDC1B80A08A2449A085BF0C84707614FF9D8231C79CAC15A04C80",
+    "restoration_note": "Earlier compact prose said46 display IDs; current frozen report independently counts30. No source or selection changed."
+  },
+  "verified_code_paths": [
+    "Generation receives only user messages, never candidates or a gold answer prefix.",
+    "The sampler initializes past=None for every request; KV banks are local to that request.",
+    "Child state restoration precedes quantization refresh/freeze; expected body fingerprints are required.",
+    "Only actual final EOT4/EOS2 IDs are removed; official tokenizer decoding rechecks body correspondence.",
+    "TEST is new states at T0/T2; TRAIN is seen states at unseen T2/T3, not unseen knowledge."
+  ],
+  "interpretation_limits": [
+    "Six user_seen responses are not automatically adjudicated;1694 is not a homogeneous accuracy denominator.",
+    "Natural QA correctness is lexical alias EM rather than semantic truth; F1/raw-exact remain per-event metrics.",
+    "Code/cache lifecycle inspection is not a numerical cached/full-forward equivalence proof for every model/precision."
+  ],
+  "low_priority_reader_gap": {
+    "path": "recount",
+    "fact": "MAX_NEW validation does not reject non-null matched_stop_sequence; recount does not require terminal_only_removed=true.",
+    "reproducer_scope": "Independent reviewer reports a tiny in-memory counterfixture; no actual model or saved answer artifact was changed.",
+    "actual_corruption": "NOT_OBSERVED; v2 honest emitter records the consistent metadata.",
+    "current_code_policy": "Keep58035FB1 frozen through the entire existing comparison.",
+    "required_postcheck": "ROOT will independently require null matched_stop_sequence for MAX_NEW and terminal_only_removed=true on every closed actual event, in addition to existing checks.",
+    "actual_postcheck_status": "NOT_RUN_BEFORE_ACTUAL_ANSWERS"
+  },
+  "files_modified_by_reviewer": 0,
+  "model_loads": 0,
+  "gpu_calls": 0,
+  "current_study_changed": false
+}
