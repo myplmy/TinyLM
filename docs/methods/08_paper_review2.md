@@ -1128,3 +1128,26 @@ replay의 다른3712행/content26416과 자연 QA의content18616에는 더 복�
 결합 원천은 공개 메타데이터 `test_result/evidence/p106b_night_grounded_v2_s1337/corpus_report.json` 92305B, SHA `E340BCE35E0B5FA6CC0EE2F08694E584A711231BC6443C5D599D55F95D5D122B`다. 여기에 기록된 replay_literal SHA `8B68BD7B417C5FC0145775E7A2C1F6EBC36C013EAD74E7C7AF87CC2625411CC8`가 v2 결합값과 일치했다.
 
 [101 §318](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의8470실답은 질문 위치에 대한 JSON 회복을 확인했지만 산수22~31/256과 대상 혼동이 남았다. 다음 저가 진단에서는 TRAIN 상태의 **새 표현**뿐 아니라 실제 학습 때 본 표면도 포함해야 암기/전이/종료 압력을 구분할 수 있다. 현재 가중 CE·교과 순서·추가 native 반복은 계속 미실행이며 이 정정으로 기존 결과나 목적함수를 변경하지 않는다.
+
+## 23. 2026-10-19 실제 학습 표면 진단 이후의 조건부 목적함수 대조
+
+문헌 보조의 수식 검토를 총괄이 기존 학습 코드·§19~22와 대조했다. 이는 새 논문의 효과를 TinyLM에서 재현했다는 보고가 아니라 현재 전체 업데이트 손실의 대안을 명시한 설계다. 먼저 Stage4ev의 실제 TRAIN T0 내용 선택과 자유답을 확인한다. 현재 목적함수나 완료한 네 조건은 바꾸지 않는다.
+
+한 업데이트의128대화·16micro 전체에서 대화별 content CE 합/수 C_i,c_i, EOT 합/수 E,N_E, N_C=sum(c_i), N=N_C+N_E, content가 있는 대화 수 B_+, native CE 합 R을 정한다. 무시라벨과 owner0은 제외하며 C2의 옛 오답은 문맥으로만 남긴다.
+
+| 대안 | content 위치당 계수 | EOT 위치당 계수 | native 항 | 주된 질문 |
+|---|---|---|---|---|
+| 현재 기준 |1/N|1/N|R/8192|완료 결과의 기준|
+| P 대화 내용 평균 |N_C/(N B_+ c_i)|1/N|R/8192|짧은 답을 포함한 대화별 내용 선택 개선 여부|
+| F coded 가족 균형 |coded 가족 f는 n_K/(N G n_f), 다른 content는1/N|1/N|R/8192|정의된 coded 가족의 상대 비중 효과|
+| N0 native 제거 대조 |1/N|1/N|0|원문 보존 지도와 과제 fitting의 간섭 여부|
+
+F의 n_K는 해당 업데이트의 coded content 전체 수, n_f는 가족 f의 content 수, G는 실제 존재하는 coded 가족 수다. coded가 없는 업데이트는 그 항이0이다. replay의 산수까지 전부 분류한 의미 가족 균형은 아니다. 원래 coded content 계수 질량 n_K/N과 나머지 content/EOT 계수를 보존한다.
+
+P는 content 총계수 N_C/N을 보존하지만 길이와 연관된 과제·언어·turn 비중은 바뀐다. EOT-only 대화는 EOT를 유지하고 B_+에서만 제외한다. content0 업데이트는 content 항0이며 전체 무지도 업데이트는 거부한다. 분모를 micro별로 다시 평균하거나 추가 accum16 나눗셈을 하지 않는다.
+
+coded 산수의 content2570/11086은 약23.2%, Boolean1024/11086은 약9.2%다. 네 가족을 같은 비중으로 만드는 정책이 자동으로 산수 집중은 아니다. 이 pass 비율을 실제 업데이트의 gradient 비중으로 바꾸어 읽지도 않는다.8192 native target도 별도 평균항이므로8192배 가중이라는 뜻이 아니다.
+
+raw gradient의 P-기준 차이는 각 content 위치에서 [N_C/(N B_+ c_i)-1/N]을 곱한 CE gradient의 합이다. N0-기준 차이는 -grad(R/8192)다. 현재384/384회 clipping이 관측됐으므로 계수 변화가 그대로 파라미터 이동량의 변화는 아니다. 합친 gradient의 방향·clip scale·Muon/Adam 이력과 보존 효과도 달라진다.
+
+**조건부 권장:** 실제 학습 표면의 내용 선택도 약하면 P 대 기준이 가장 작은 첫 대조다. 정답보다 EOT만 잘못 앞서면 종료 보정을 먼저 검토하고, TRAIN T0는 맞는데 T2/TEST만 실패하면 표현 또는 상태 교과가 더 직접적이다. 새 대조를 열 때 원부모·같은 자료/순서/native windows·384회·LR/precision/clip을 유지하고 동일한 비가중 content/EOT·실제 자유답·원문 보존을 함께 평가한다. N0는 보존 항의 극단적 원인 분리이지 기본 채택안이 아니다. 현재 세 후보의 구현·학습은 **NOT_RUN**이다.

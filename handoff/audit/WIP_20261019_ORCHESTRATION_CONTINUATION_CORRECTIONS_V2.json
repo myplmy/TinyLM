@@ -1,0 +1,23 @@
+{
+  "schema": "TINYLM_ORCHESTRATION_CORRECTION_V2",
+  "recorded_at": "2026-10-19T06:59:39Z",
+  "timestamp_correction": "The initial draft used an estimated wall time; replaced before staging with the actual clock-tool UTC observation.",
+  "basis": "Recovered in-turn tool-input history; not a new runtime measurement.",
+  "incidents": [
+    {
+      "kind": "guard_rejected_document_draft",
+      "finding": "Another visible tool-input document draft contained non-Korean text after compact recovery. The language guard raised before apply_patch, so no file was changed by that attempt.",
+      "correction": "Reuse verified existing source text for narrow substitutions; do not regenerate whole paragraphs for tiny edits."
+    },
+    {
+      "kind": "language_in_unused_tool_literal",
+      "location": "Two prior functions.exec drafts before compact recovery",
+      "finding": "Unused scratch variables contained non-Korean CJK text visible in tool input. The literals were not applied as file edits.",
+      "scope": "Communication-policy failure, not a model or filesystem failure."
+    }
+  ],
+  "correction": "Do not generate unused draft literals. Construct only final English orchestration payloads or checked Korean document payloads before calling tools.",
+  "limitations": "The exact incident timestamps were not reconstructed; this record does not replace the earlier correction audit.",
+  "runtime_or_quality_claims": [],
+  "existing_assets_changed": 0
+}

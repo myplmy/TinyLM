@@ -5859,3 +5859,47 @@ CPU 재동결은 v1의127.28초에 실제 소비 전량 검증을 더하므로 �
 **네 번째 완료·전체 평가 준비:** Td varied_balanced는13:19:05~13:34:11KST 384회/4epoch·새CP10AF22B6…를 종료0으로 완료했다([101 §312](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). 전384raw/새CP/코드 SHA 검산0오류, 실제x8208652/지도302656/native3145728·torchreserved3104MiB·gmax21.841431/clip384다. DEV.327295/native32 3.542127(Δ+.037920)는 실제답 정답률과 구별한다. 네 조건CP는 각 실제 평가 필수입력으로keep이고 표시ID는30개/모델이다. Ta/Tb/Tc done3771B만 Git원형/명령 선보존 뒤 정리했으며 현재 Td done은원형커밋전보존이다. 다음은13:39:12KST 이후 부모/네 학생의1694답씩·총8470 실제답과MAX_NEW 메타데이터 전량검산이다. 기존 profile 오류1을 포함한 전수 정적67PASS/6NR도 별도로 보존했다.
 
 **부모/네 학생과 종합실답 완료:** 14:36:18KST까지 Ep/Ea/Eb/Ec/Ed 각1694답과 R의8470원형 검산을 모두 종료0으로 마쳤다([101 §313~318](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)). ROOT 전량 body decode/코드 정답/종료·계보 검산0불일치, 사전 고정30표본/모델의 실제 질문·답을 읽었다. ‘표면 변형과 위치 균형이 모든 과제를 올릴 것’이라는 기대는 **일반적으로 불성립**이다. 질문 앞 JSON은0/128→112/116으로 회복했지만 산수22~31/256·문맥 대상 혼동·일반 설명 실패가 남고 Boolean의 일부 조건은 감소했다. 같은 TRAIN 상태의 T2/T3 평가가 실제 학습 입력 재현은 아니므로 암기/전이는 다음 별도 진단에서 가른다. 현 네 모델은 일반 assistant 비채택, 학습 seed1/고정 native32의 한계와75M 부족은 그대로다. 완료7개(Td·Ep·Ea·Eb·Ec·Ed·R)SH는 done 처리했고 명령·Git 원형을 선보존한 뒤 정확 정리한다.
+
+## Stage4ev — 학습 때 본 표면의 내용 선택·종료와 자유답 진단
+
+### 왜·질문
+
+결과101 §318의 TRAIN평가도 새 T2/T3 표현이어서 실제 학습 질문의 최종 fitting이 확인되지 않았다. 새 학습보다 같은 상태의 T0/T2와 TEST를 TF/자유답으로 먼저 나눈다. 상세 범위·비교대안·preflight는 [범위 감사](../handoff/audit/WIP_20261019_QUESTION_CONTENT_SCOPE.md)가 소유한다.
+
+### 예측
+
+학습 때 본 T0에서 더 맞으면 표면 전이 부족 가설이 살아 있고, T0도 틀리면 새 표현만의 문제로 축소할 수 없다. 낮은 평균 CE가 쉬운 구문/EOT에 가려진 내용 실패일 수 있지만 실제로 관측해야 한다. varied_balanced의 T0-CQ는 최종 가중치 기준 과거1회 노출이므로 final failure가 never learned의 증명은 아니다.
+
+### 설계와 단계
+
+| 단계 | 동작 | 상태 |
+|---|---|---|
+| Stage4ev0W | 동결 coded/wire·실제 TRAIN prefix membership·CPU 계약256표면 | 구현됨·실물 NOT_RUN |
+| Stage4evWa | 원부모256 TF/첫logit/실제 자유답 | 구현됨·실물 NOT_RUN |
+| Stage4evWb | fixed_last256, 학습 T0-CQ4회 이력 | 구현됨·실물 NOT_RUN |
+| Stage4evWc | varied_balanced256, T0-CQ1회 이력 | 구현됨·실물 NOT_RUN |
+| Stage4evR |768원형·토큰/본문·정답·가족별 content/EOT·paired T0/T2 검산 | 구현됨·실물 NOT_RUN |
+
+split별 가족8query·KO/EN×T0/T2·CQ 고정이며 lookup/JSON은 부모 전체를 보존한다. 기존 코호트의 ID로 고르고 결과별 표본 교체는 하지 않는다. 부모와 학생의 학습 이력은 다르며 fixed_last/varied_balanced는 표현·위치 노출도 다르므로 두 모델 차이를 단일 효과로 분해하지 않는다.
+
+### 측정·판정·비용
+
+FP32-MATH의 content/EOT CE·모든 TF target argmax·첫 gold rank/tie/margin·EOT/EOS, prefix-only와 full-TF 첫 predictor, 기존 emit64 실제 응답을 연결한다. 자유생성에는 gold/candidate를 주지 않는다. JSON은 구문·키·payload와 전체 엄격 일치를 구분한다.
+
+모든 TF target이 맞고 free IDs가 다르면 경로/수치 검토 flag로 남기며 바로 구현 오류라고 부르지 않는다. 모델 오답을 technical gate 오류로 만들지 않고 이전 원답도 보존한다. 새 학습/CP0이며 old-split TEST는 탐색 진단이지 새로운 blind benchmark가 아니다.
+
+CPU≤300초, 각 GPU≤600초·합계5~10분 추정에 모델 간 유휴는 별도다. 최종 권한20일17시 전에1시간 기록 예약을 둔다. 현재75M×4epoch·micro8×accum16·checkpoint-on 본목표는 변경하지 않는다.
+
+### 실행·한계·이력
+
+드라이버·회귀와 SH5개를 작성했고 ROOT의 가드 CPU모의46개가 통과했다. 실제 CPU준비·모델은 아직 미실행이며 전수 정적과 동결 커밋 뒤 실행한다. 새 source projection만 검증하므로 원래 HF/보호 원천을 새로 감사했다고 주장하지 않는다. TF는 logged BF16 training CE 재현이 아니라 최종 가중치의 FP32 진단이다.
+
+- `run_P106B_Stage4ev0W_content_probe_cpu.sh` — prepare, worker 상한300초.
+- `run_P106B_Stage4evWa_parent_content_probe.sh` — evaluate parent, worker 상한600초.
+- `run_P106B_Stage4evWb_fixed_last_content_probe.sh` — evaluate fixed_last, worker 상한600초.
+- `run_P106B_Stage4evWc_varied_balanced_content_probe.sh` — evaluate varied_balanced, worker 상한600초.
+- `run_P106B_Stage4evR_content_probe_readback.sh` — readback, worker 상한600초.
+
+공개 진입점은 회귀→선결→본단계이며 각 worker 시간상한과 전체 wrapper 소요를 구분한다. 중첩/누락된 원형과 실패 활동은 통과로 바꾸지 않고, 완료 활동도 OS 종료 증거를 대신하지 않는다. ROOT가 실제 raw footer·pipeline returncode를 별도 확인한다.
+
+2026-10-19: 총괄이 TF-only·TF+fresh768·TF+일부옛응답재사용을 비교하여 새768회수를 선택했다. 아직 CPU준비·모델은 미실행이다. 상세 원형·마스크·target membership을 확인한 뒤에만 실제 모델 단계를 연다.

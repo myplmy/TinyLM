@@ -1,0 +1,41 @@
+{
+  "schema": "TINYLM_QUESTION_CONTENT_GUARDED_CPU_TESTS_V1",
+  "tests": 46,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 10.930817148997448,
+  "counts": {
+    "forbidden_assets": 0,
+    "children": 0,
+    "host_signals": 0,
+    "network": 0,
+    "nonfixture_writes": 0,
+    "model_imports": 0,
+    "module_construction": 0,
+    "cuda": 0,
+    "serialization": 0
+  },
+  "source_sha_before": {
+    "scripts/diag_p106b_question_content_probe.py": "9FBD00DCB18AB59CB206DCC76B23B5FB7207D00E7063C4F2F2BC8F132C631278",
+    "scripts/test_p106b_question_content_probe.py": "2485624CD3F481C9CFF73604B5828351B356CEFEE7A2B30D09B385659C7EC272"
+  },
+  "source_sha_after": {
+    "scripts/diag_p106b_question_content_probe.py": "9FBD00DCB18AB59CB206DCC76B23B5FB7207D00E7063C4F2F2BC8F132C631278",
+    "scripts/test_p106b_question_content_probe.py": "2485624CD3F481C9CFF73604B5828351B356CEFEE7A2B30D09B385659C7EC272"
+  },
+  "source_unchanged": true,
+  "cuda_initialized_before": false,
+  "cuda_initialized_after": false,
+  "model_experiment": "NOT_RUN",
+  "text": "..............................................\n----------------------------------------------------------------------\nRan 46 tests in 10.912s\n\nOK\n",
+  "recorded_at": "2026-10-19 07:16:08 UTC",
+  "evidence_level": "STATIC_ONLY",
+  "distinct_tests": 46,
+  "repeated_agent_test_count_not_added": true,
+  "guard_harness_python": "import builtins,contextlib,hashlib,importlib.abc,io,json,os,pathlib,signal,socket,subprocess,sys,time,unittest,urllib.request\nfrom unittest import mock\nimport torch\nroot=pathlib.Path(\"/home/uranus/tinyLM\")\nnames=[\"scripts/diag_p106b_question_content_probe.py\",\"scripts/test_p106b_question_content_probe.py\"]\nbefore={n:hashlib.sha256((root/n).read_bytes()).hexdigest().upper() for n in names}\ncounts=dict(forbidden_assets=0,children=0,host_signals=0,network=0,nonfixture_writes=0,model_imports=0,module_construction=0,cuda=0,serialization=0)\nprotected=[str(root/p).lower()+\"/\" for p in (\"runs\",\"HF\",\"data_cache\",\"datasets\",\"test_result/evidence\",\"smoketest_logs\")]\ndef pathcheck(p,write=False):\n try:s=os.path.abspath(os.fsdecode(os.fspath(p)))\n except TypeError:return\n low=s.lower()\n if any(low==p[:-1] or low.startswith(p) for p in protected) or low.startswith(\"/mnt/z/tinydataset\"):\n  counts[\"forbidden_assets\"]+=1;raise AssertionError(\"actual asset forbidden\")\n if write and not s.startswith(\"/tmp/\"):\n  counts[\"nonfixture_writes\"]+=1;raise AssertionError(\"nonfixture write forbidden\")\noldopen=builtins.open\ndef guarded_open(file,mode=\"r\",*args,**kwargs):\n pathcheck(file,any(x in mode for x in (\"w\",\"a\",\"x\",\"+\")))\n return oldopen(file,mode,*args,**kwargs)\noldio=io.open\ndef guarded_io(file,mode=\"r\",*args,**kwargs):\n pathcheck(file,any(x in mode for x in (\"w\",\"a\",\"x\",\"+\")))\n return oldio(file,mode,*args,**kwargs)\noldstat=pathlib.Path.stat\ndef guarded_stat(p,*a,**kw):pathcheck(p);return oldstat(p,*a,**kw)\noldscan=os.scandir\ndef guarded_scan(p):pathcheck(p);return oldscan(p)\ndef forbidden(key):\n def call(*a,**kw):counts[key]+=1;raise AssertionError(key+\" forbidden\")\n return call\nclass NoModels(importlib.abc.MetaPathFinder):\n def find_spec(self,fullname,path=None,target=None):\n  if fullname.split(\".\")[0] in (\"transformers\",\"tokenizers\",\"llama_cpp\") or fullname.startswith((\"tinylm.model\",\"tinylm.infer.generate\",\"scripts.diag_p106b_question_transfer\")):\n   counts[\"model_imports\"]+=1;raise AssertionError(\"actual model/source consumer import forbidden\")\nguard=NoModels();sys.meta_path.insert(0,guard)\nsink=io.StringIO();began=time.perf_counter();cuda_before=torch.cuda.is_initialized()\nwith contextlib.ExitStack() as s:\n for obj,name,value in ((builtins,\"open\",guarded_open),(io,\"open\",guarded_io),(pathlib.Path,\"stat\",guarded_stat),(os,\"scandir\",guarded_scan),\n    (subprocess,\"Popen\",forbidden(\"children\")),(subprocess,\"run\",forbidden(\"children\")),(os,\"kill\",forbidden(\"host_signals\")),(os,\"killpg\",forbidden(\"host_signals\")),\n    (signal,\"signal\",forbidden(\"host_signals\")),(signal,\"setitimer\",forbidden(\"host_signals\")),\n    (socket.socket,\"connect\",forbidden(\"network\")),(socket.socket,\"connect_ex\",forbidden(\"network\")),(socket,\"create_connection\",forbidden(\"network\")),(urllib.request,\"urlopen\",forbidden(\"network\")),\n    (torch.nn.Module,\"__init__\",forbidden(\"module_construction\")),(torch,\"load\",forbidden(\"serialization\")),(torch,\"save\",forbidden(\"serialization\")),\n    (torch.cuda,\"_lazy_init\",forbidden(\"cuda\")),(torch.Tensor,\"cuda\",forbidden(\"cuda\"))):\n  s.enter_context(mock.patch.object(obj,name,value))\n suite=unittest.defaultTestLoader.loadTestsFromNames([\"scripts.test_p106b_question_content_probe\"])\n r=unittest.TextTestRunner(stream=sink,verbosity=1).run(suite)\nsys.meta_path.remove(guard)\nafter={n:hashlib.sha256((root/n).read_bytes()).hexdigest().upper() for n in names}\nout=dict(schema=\"TINYLM_QUESTION_CONTENT_GUARDED_CPU_TESTS_V1\",tests=r.testsRun,failures=len(r.failures),errors=len(r.errors),seconds=time.perf_counter()-began,counts=counts,source_sha_before=before,source_sha_after=after,source_unchanged=before==after,cuda_initialized_before=cuda_before,cuda_initialized_after=torch.cuda.is_initialized(),model_experiment=\"NOT_RUN\",text=sink.getvalue())\nprint(json.dumps(out,ensure_ascii=False))\nsys.exit(0 if r.wasSuccessful() and before==after and not any(counts.values()) and not torch.cuda.is_initialized() else 1)\n",
+  "limits": [
+    "Synthetic and temp fixtures only; no actual source projection/tokenizer/checkpoint/model run.",
+    "Scalar rank consistency does not independently reconstruct unrecorded vocabulary logits.",
+    "Actual child/pipeline raw footer and process return codes must be checked separately."
+  ]
+}
