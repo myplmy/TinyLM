@@ -1,0 +1,91 @@
+{
+  "schema": "TINYLM_P070B_FULL_CHECKPOINT_CPU_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "20일17시까지 주도적 CPU+GPU 실험·필요 구현·절차 수행 승인. 이 게이트는 CPU만 사용한다.",
+  "status": "BEFORE_IMPLEMENTATION_ACTUAL_NOT_RUN",
+  "reason": "P070B의 작은 CPU17 계약과 실제 학습모델의 전체 형상 cache/gradient는 별도다. 현재 native/SFT/대화 품질 결론을 건드리지 않고 실제 체크포인트 연결을 확인한다.",
+  "files": {
+    "create": [
+      "scripts/diag_p070b_full_checkpoint_cpu.py",
+      "scripts/test_p070b_full_checkpoint_cpu.py"
+    ],
+    "root_owned_docs_and_launcher": "P070B Stage1Wa 계획·105 결과·Baselines·전용 SH/TSV·원장/작은 감사",
+    "read_only": [
+      "scripts/p070b_cla_routes.py",
+      "tinylm/model/transformer.py",
+      "scripts/diag_p106b_native_weight_route.py",
+      "scripts/p106b_weight_route.py",
+      "runs/ckpt/m100s10_ko-en_p106b_native_weight_route_v1_s1337_ternary_native.pt",
+      "data_cache/tok-ko-en-32768-chat32.json"
+    ],
+    "outputs": [
+      "data_cache/p070b_full_model_cache_v1_s1337",
+      "runs/eval/p070b_full_model_cache_v1_s1337",
+      "test_result/evidence/p070b_full_model_cache_v1_s1337"
+    ],
+    "excluded": [
+      "활성 native/확장 CODE 수정",
+      "제품·공용 loader/interactive 변경",
+      "기존 데이터/CP/log 수정·삭제",
+      "보호 TinyDataset/HF/새취득",
+      "GPU·optimizer update·checkpoint write"
+    ]
+  },
+  "method": {
+    "parent_sha256": "AF3644F5AA515AC1C5E02154582396D080B77E7CD7827F0D32A9EB947ECE747C",
+    "parent_core_sha256": "68F8E780623C7699A411A6E35EDB9809C0911CD03AF719E60DBE4DA6582B6A6D",
+    "parent": "새 scratch 삼진 R1/d768L14 dense 부모이며 R2로 이미 교육된 부모가 아니다.",
+    "cfg": "원14층/CLA2/edges/32768chat32와 FP32MATH CPU를 유지하고 fixed wrapper의 명시 train_repeat 1 또는2/infer_repeat1을 사용한다.",
+    "routes": [
+      "제품 R1",
+      "fixed uniform R1",
+      "fixed uniform R2",
+      "fixed reverse R2",
+      "fixed shuffle R2/seed0"
+    ],
+    "semantics": "현 helper는 순열화한 body를 두 cycle 모두 반복한다. 옛 P070의 첫 cycle 정순+둘째만변경 정의와 다르다. 요청 안의 경로는 고정하고 route SHA 불일치 cache는 거부한다.",
+    "comparisons": [
+      "제품R1과 wrapperR1 logits",
+      "각 fixed 경로의 full prefix와 prefill+incremental cache logits",
+      "실제 owner/visit KV 엔트리·shape·dtype",
+      "R2의 경로변경 cache 거부",
+      "한 실제 full-model backward의 유한 gradient; optimizer0/학습0"
+    ],
+    "inputs": "현재 tokenizer로 인코딩한 고정 한국어/영어 짧은 질문2개·각64token이하; 내용 정답성/생성평가 없음",
+    "tolerance": {
+      "atol": 0.00001,
+      "rtol": 0.0001,
+      "source": "기존 P070B Stage0 사전 정의를 유지하며 실행 뒤 완화하지 않는다."
+    },
+    "raw": "비교 logits 배열은 ignored runs/eval의 각20MB미만 파일; 공개evidence는hash/분모/차이·source/route/core만"
+  },
+  "alternatives": [
+    {
+      "name": "현재 학습 결과만 회수하고 구조 기능은 보류",
+      "selected": false,
+      "benefit": "새 구현0",
+      "cost": "실제 checkpoint 연결 공백 유지"
+    },
+    {
+      "name": "짧은 실제 checkpoint CPU 기능 게이트를 병행",
+      "selected": true,
+      "benefit": "GPU 작업을 바꾸지 않고 다음 구조 선결을 좁힘",
+      "cost": "전용2파일/회귀/CPU최대600초"
+    },
+    {
+      "name": "즉시 비identity 경로로 재학습",
+      "selected": false,
+      "benefit": "학습효과 접근",
+      "cost": "실물cache 검산 전에 비용/해석 위험"
+    }
+  ],
+  "impact": {
+    "code": "새 연구 전용2파일·원 helper/제품/활성CODE 불변",
+    "data": "정확CP/tokenizer 읽기·새namespace만; 데이터셋 접근0",
+    "tests": "tiny fixtures/strict metadata·shape·route/cache·lossless raw·한도/실패기록",
+    "docs": "P070B의 toy/실물CPU/학습/품질을 분리",
+    "debt": "학습router/랜덤 방문수 연결은 범위밖",
+    "resources": "CPU1thread·600초 cap·20일17시 전600초기록예비·새GPU0"
+  },
+  "adoption": "기능 성공도 실제 R2 학습·일반화나 옛 Stage1W R2-parent 계획 완료가 아니다."
+}

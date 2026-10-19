@@ -1,0 +1,64 @@
+{
+  "schema": "TINYLM_ARCHITECTURE_FRONTIER_READONLY_RECHECK_V1",
+  "recorded_at_utc": "2026-10-19 16:32:54 UTC",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "method": "Bounded current source/result review; no rerun, no model tensor load in this audit.",
+  "findings": [
+    {
+      "id": "P089",
+      "status": "HISTORICAL_ACTUAL_TRAINING_COMPLETE_NOT_ADOPTED",
+      "source": "test_result/077_20260908_P089-폭을-줄이면-같은-예산에-층을-두-배-쌓고-속도-바닥도-넘는다.md",
+      "section": "12; actual Stage2b 2026-09-14",
+      "full_val": {
+        "wide768_L14": 3.5608,
+        "narrow512_L14": 3.6625,
+        "narrow512_L28": 3.5597
+      },
+      "limitations": [
+        "Different learned parents; Jordan Muon15/checkpointOFF/old tokenizer and pool; not current scratch RMS4/checkpointON.",
+        "Full-val historical near-equivalence not held-out Korean QA or dialogue.",
+        "Old k_proj implementation failure was followed by completed repair/training; not a current blanket blocker."
+      ]
+    },
+    {
+      "id": "P070",
+      "status": "HISTORICAL_UNIFORM_AND_INPLACE_R2_TRAINING_COMPLETE",
+      "source": "test_result/047_20260814_P062-단계0-스케줄을-맞추니-0.2427이-돌아왔다.md",
+      "section": "Unnumbered Stage2b (2026-08-23), not section11 in some old cross-references",
+      "full_val": {
+        "uniform_R2": 3.6573,
+        "inplace_R2": 3.6689
+      },
+      "limitations": [
+        "Difference +0.0116 belongs to historical trained uniform/inplace family.",
+        "Not proof that every reverse, random or learned router has been executed or failed."
+      ]
+    },
+    {
+      "id": "P070B",
+      "status": "SMALL_CPU_HELPER_COMPLETE_FULL_CHECKPOINT_GATE_PREPARING",
+      "source": "test_result/105_20261016_P070B-CLA방문-기능계약은-학습효과가-아니다.md",
+      "section": "8",
+      "actual": {
+        "toy_cpu_tests": 17,
+        "full_checkpoint_at_historical_section": 0,
+        "route_training": 0,
+        "router_training": 0,
+        "random_repeat_training": 0
+      },
+      "implementation": "scripts/p070b_cla_routes.py",
+      "semantics": "FixedRouteTransformer permutes CLA-atomic body then repeats every cycle. This differs from original P070 first cycle canonical + later cycle altered. repeat_draw is deterministic RNG helper only.",
+      "next": "Stage1Wa separately uses newly trained R1 native full checkpoint for CPU route/cache/NTP-backward function, not old R2-trained Stage1W quality."
+    }
+  ],
+  "source_scope": [
+    "P089 old full-val values and currently present width presets",
+    "P070 result body at original unnumbered Stage2b",
+    "P070B plan and actual helper/cache implementation"
+  ],
+  "global_limits": [
+    "Conversation75M deficit does not block every bounded native architecture function experiment.",
+    "Frozen current native driver/helper force fixed d768L14/repeat1; shape or route training requires new driver/lineage/preflight.",
+    "No new width, route training, learned router or random-repeat training adopted by this audit."
+  ]
+}

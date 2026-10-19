@@ -1,0 +1,66 @@
+{
+  "schema": "TINYLM_P070B_FULL_CHECKPOINT_ROOT_PREFLIGHT_V1",
+  "recorded_at_utc": "2026-10-19 16:40:18 UTC",
+  "source_read": "Root reviewed full new driver/test and reused helper; post-review numerical-failure raw-preservation fix is covered by new regressions.",
+  "code_sha256": {
+    "scripts/diag_p070b_full_checkpoint_cpu.py": "F4C3422CF1752C24F918BAEC4929BD1E0A62B9CFC5F3B2DF5E1026C632740E60",
+    "scripts/test_p070b_full_checkpoint_cpu.py": "7FE7905C3C70CA002D538829DC7BAE442494B5FC306D41A8D50FB7C80ED9ED54"
+  },
+  "root_cpu": {
+    "new_tests": 43,
+    "prior_helper_tests": 17,
+    "total": 60,
+    "seconds": 8.925,
+    "status": "PASS",
+    "assets": "TEMP_SYNTHETIC_ONLY"
+  },
+  "code_only": {
+    "models": 0,
+    "real_assets": 0,
+    "writes": 0
+  },
+  "metadata_preflight": {
+    "recipe_sha256": "8A20DFC40ED1BE7D4339BC41DDE21F1C36EBBED45CED067862D0A25E8A363619",
+    "native_report_sha256": "56BA3C614A1CD0D528498A18CA9996083AFB359E23F34055417BCE98B97F249F",
+    "real_models": 0,
+    "tensor_loads": 0,
+    "tokenizer_loads": 0,
+    "writes": 0
+  },
+  "design": {
+    "independent_axis": "CPU functional coverage: same completed R1 weights across product/fixed R1 and fixed uniform/reverse/shuffle R2; not an R2 training comparison.",
+    "training_tokens": 0,
+    "optimizer_updates": 0,
+    "pool2x": "NOT_APPLICABLE_NO_TRAINING",
+    "tag_collision": "NONE",
+    "old_equal_work": "17 toy tests differ in shape and checkpoint lineage; exact full-model gate not previously run.",
+    "quality_ruler": "NOT_APPLICABLE_FUNCTION_TOLERANCE_ONLY",
+    "tolerance": {
+      "atol": 0.00001,
+      "rtol": 0.0001
+    },
+    "cpu_threads": 1,
+    "worker_cap_seconds": 600,
+    "gpu_calls": 0,
+    "new_checkpoint_writes": 0,
+    "end_utc": "2026-10-20T08:00:00Z",
+    "reserve_seconds": 600
+  },
+  "static": {
+    "before": "handoff/audit/WIP_20261020_P070B_FULL_CPU_PRE_STATIC.json",
+    "before_error": "One newly introduced --preflight flag absent from experiment metadata.",
+    "fix": "Registered exactly one exp row in scripts/flag_whitelist.tsv; no parser/common-checker behavior changed. Final row includes five TSV fields.",
+    "after": "handoff/audit/WIP_20261020_P070B_FULL_CPU_PRE_STATIC_FIXED.json",
+    "pass": 68,
+    "not_run": 6,
+    "errors": 0,
+    "queue_errors": 0,
+    "runnable": 37
+  },
+  "actual_full_checkpoint": "NOT_RUN_BEFORE_SOURCE_COMMIT",
+  "limits": [
+    "Function parity only; no language quality or R2-trained-parent Stage1W completion.",
+    "Full/cache numerical failure writes bounded NPZ+failure.json and ERROR9 activity, never COMPLETE.",
+    "No protected data/download/product/interactive/core change."
+  ]
+}
