@@ -1,0 +1,35 @@
+{
+  "schema": "TINYLM_CAUSAL_SCOPE_READONLY_RECHECK_V1",
+  "observed_at_utc": "2026-10-19T04:01:01+00:00",
+  "new_execution": "NONE_READONLY",
+  "code_observations": [
+    {
+      "path": "tinylm/model/modules.py",
+      "lines": "33-36",
+      "fact": "RMSNorm averages the feature axis(-1), not sequence axis."
+    },
+    {
+      "path": "tinylm/model/modules.py",
+      "lines": "107-124",
+      "fact": "Equal Q/KV lengths use is_causal=True; cached unequal lengths use absolute-position lower-triangular mask."
+    }
+  ],
+  "previous_actual_evidence": {
+    "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md section268",
+    "driver": "scripts/diag_p106b_night_causal_readback.py",
+    "precision": "CPU_FP32_MATH",
+    "models": 2,
+    "cells_per_model": 16,
+    "argmax_equal_each_model": 16,
+    "max_logit_delta": [
+      0.00001430511474609375,
+      0.000008106231689453125
+    ],
+    "new_asset_read": "NOT_RUN; previous documented evidence/code inspected, no old checkpoint/model loading"
+  },
+  "interpretation": "Existing sampled evidence narrows direct future-answer leakage; not a universal proof for every current GPU/BF16/compile/cache route. Joint DEV CE still does not establish free-answer accuracy.",
+  "future_diagnostic": "Only if current results warrant: predeclared first-content logit margins, plus same-shape future-token perturbation and identical-repeat controls on current actual CPs. No gold-prefix or candidate assistance in free generation.",
+  "current_study_change": false,
+  "model_or_gpu_execution": false,
+  "parameters_changed": false
+}
