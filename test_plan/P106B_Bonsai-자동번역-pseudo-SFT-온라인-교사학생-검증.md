@@ -6107,7 +6107,7 @@ v1 실제prepare는 source_admission 정책문자열/결과dict 충돌로 ERROR9
 | Stage4ezW0 | source/offset/전체 SFT 소비 동결·CPU77회귀 | 모델0·900초 | CPU77/원형동결완료·101§339 |
 | Stage4ezWa/Wb | 각 native cost8+anneal1 역전파1micro·optimizer0 추가 probe | 양팔 단독·직전5분 유휴·각1200초·CP0 | 양완료/같은core·float 최초CUDA 유휴시각 미계측·101§340~341 |
 | Stage4ezWc | native 예산·같은 초기화·말기 유한성 검산 | 미측정 SFT3600초/마감10800초 예비 | 보수예약통과31,126초·101§342 |
-| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | 삼진22:10KST진행·실수미실행 |
+| Stage4ezWd/We | native 각2281회 | 각4h·전체12h·기한20일14시 이내 예측 | 삼진19일23:59완료·101§347, 실수23:59:27부터진행 |
 | Stage4ezWf/Wg/Wh | 자기 native CP로 SFT cost8씩→실측 예산 | native 양팔 완료 후만·각900초 | NOT_RUN |
 | Stage4ezWi/Wj | 각 동일 SFT384회 | 실제 SFT 예산 통과·각3600초 | NOT_RUN |
 | Stage4ezWk/Wl/Wm/Wn | native/SFT 양팔 각1694 실제 답과 native32 | 자기 route/CP/SHA/완료 activity·각1800초 | NOT_RUN |
@@ -6150,7 +6150,7 @@ v1 실제prepare는 source_admission 정책문자열/결과dict 충돌로 ERROR9
 
 ### 9. 실행 이력
 
-[101§339~342](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 실제CPU77/291968crop 동결·양cost8/late finite/cache·예약을 완료했다. 같은 초기본체028C46B2…와 학습가중치 미복사를 확인했다. float SH의 최초CUDA 유휴시각은 미계측이므로 속도 우열로 쓰지 않는다. 삼진본2281회는22:10KST 진행 중·실수본/SFT/최종답은 미실행이다. 실제 예측보다 늦어지면 하드기한을 우선하고 문턱을 사후 풀지 않는다.
+[101§339~342와§347](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 실제CPU77/양cost/예약 뒤 삼진2281회·298975232targets·CP1을19일23:59에 완료했다. 고정32crop CE3.499512는 전체검증/실제답이 아니다. 같은 초기본체028C46B2…와 학습가중치 미복사를 확인했다. 실수2281회는23:59:27부터 진행하며 SFT/최종답은 미실행이다. cost float 최초CUDA 유휴시각 미계측과 worker UTC/perf 차이는 속도 우열로 해석하지 않는다. 하드기한과 문턱을 유지한다.
 
 ## 2026-10-19 후속 Stage4fa — broad metadata 복구·원형 대등성 우선
 
@@ -6346,8 +6346,8 @@ VAL 완결 segment는 canonical ID 해시, 양끝 partial은 uint16 정렬 subst
 |---|---|---|---|
 | Stage4fdW0 | 전용회귀·metadata/codec source 고정 | CPU600초·모델0 | 완료54CPU·실제source·101§344 |
 | Stage4fdWa | bounded prefix 변환·현재VAL제외·바이트/토큰분모 | CPU1200초·단일스레드·GPU0 | 완료·실제635segment/105tail merge·101§345 |
-| Stage4fdWb budget | 완결segment 처리율/별도전체TRAIN SHA·fresh host 입력 | 명시 `--allow-full-scan`·600초 신선도·worker600초 | NOT_RUN |
-| Stage4fdWc/Wd build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·worker10800/1800초 | NOT_RUN |
+| Stage4fdWb budget | 완결segment 처리율/별도전체TRAIN SHA·fresh host 입력 | 명시 `--allow-full-scan`·600초 신선도·worker600초 | 완료·101§346 |
+| Stage4fdWc/Wd build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·worker10800/1800초 | build19일23:55부터진행, readback NOT_RUN |
 
 초기47 합성회귀 검토에서 발견한 시간분모·readback 예상시간/worker 상한·SIGTERM 실패activity 연결3건은 실제source/pilot 전에 수리·root재검토한다. 새코드는 실물 동결 뒤 수정하지 않는다.
 

@@ -1,0 +1,464 @@
+{
+  "schema": "TINYLM_CLOCK_DOMAIN_REVIEW_V1",
+  "status": "READONLY_DISCREPANCY_CONFIRMED_CAUSE_UNRESOLVED",
+  "authored_date_kst": "2026-10-20",
+  "exact_authored_clock_reading": null,
+  "repository_root": "/home/uranus/tinyLM",
+  "purpose": "완료 활동의 UTC 경과와 기록된 seconds의 불일치를 확인하고 계측 범위·기한·활동 예산의 영향을 구분한다.",
+  "authorization": {
+    "writable_paths": [
+      "handoff/audit/WIP_20261019b_CLOCK_DOMAIN_REVIEW.json"
+    ],
+    "code_changes": 0,
+    "model_loads": 0,
+    "checkpoint_tensor_reads": 0,
+    "gpu_calls": 0,
+    "native_bin_reads": 0,
+    "cache_source_execution": 0,
+    "experiment_runs": 0,
+    "system_setting_changes": 0,
+    "downloads": 0,
+    "git_actions": 0,
+    "additional_agents": 0,
+    "protected_dataset_access": 0,
+    "test_execution": 0,
+    "answer_or_score_array_output": 0,
+    "note": "지정된 코드의 타이머 관련 부분과 작은 activity/report의 필드만 읽었다. 원본 activity·report·raw를 수정하지 않았다."
+  },
+  "source_snapshot": {
+    "current_reviewed_code_sha256": {
+      "scripts/diag_p106b_native_weight_route.py": "E51B68024CA0DC24A4994FFF51C733C05BA2773E3038A2B1CC5C127F6C736FAE",
+      "scripts/p106b_gate_runtime.py": "C65ADE90DB958F1FE8A3382A0F397A24BE8D3A34B2D2A107433FDFE5012A7D8F",
+      "scripts/runlog.py": "BC61E8957D2941097F1A5317CEEF84DD604E546F1184F3BC3E100D29511CA26A"
+    },
+    "native_completed_activity_code_pin_match_count": 3,
+    "native_completed_activity_result_sha_match_count": 3,
+    "reference_sha256_declared_by_native_activities": "265DC9E7613F7E061692E87441F9142E135E962E7A3F61D7033824CECA1B0AA9",
+    "reference_content_revalidated": false,
+    "runlog_code_is_current_snapshot_not_execution_pin": true,
+    "notes": [
+      "native 세 activity의 driver 및 gate 타이머 코드 SHA는 이번에 읽은 코드 SHA와 일치한다.",
+      "native 세 activity의 result_sha256은 이번에 읽은 작은 report 바이트 SHA와 일치한다.",
+      "frozen_reference·원천·raw event·체크포인트는 다시 열거나 검산하지 않았다.",
+      "content 두 activity에는 결과 report의 SHA를 직접 묶는 result_sha256 필드가 없으므로 같은 형태의 결합 검증은 하지 못한다."
+    ]
+  },
+  "access_scope": {
+    "unique_small_json_files": 10,
+    "unique_small_json_logical_bytes": 163278,
+    "cumulative_io_bytes_not_measured": true,
+    "read_code_paths": [
+      "scripts/diag_p106b_native_weight_route.py",
+      "scripts/p106b_gate_runtime.py",
+      "scripts/runlog.py"
+    ],
+    "activity_paths_read": [
+      "test_result/evidence/p106b_native_weight_route_v1_s1337/activity_cost_ternary.json",
+      "test_result/evidence/p106b_native_weight_route_v1_s1337/activity_cost_float.json",
+      "test_result/evidence/p106b_native_weight_route_v1_s1337/activity_train_ternary.json",
+      "test_result/evidence/p106b_content_recovery_v1_s1337/activity_train_token.json",
+      "test_result/evidence/p106b_content_recovery_v1_s1337/activity_train_content.json"
+    ],
+    "report_paths_read": [
+      "test_result/evidence/p106b_native_weight_route_v1_s1337/cost_ternary/report.json",
+      "test_result/evidence/p106b_native_weight_route_v1_s1337/cost_float/report.json",
+      "test_result/evidence/p106b_native_weight_route_v1_s1337/train_ternary/report.json",
+      "test_result/evidence/p106b_content_recovery_v1_s1337/train_token/report.json",
+      "test_result/evidence/p106b_content_recovery_v1_s1337/train_content/report.json"
+    ],
+    "field_selection": "시간·상태·식별자·연결 SHA만 추출하고 step_seconds는 개수와 math.fsum 합계로 축약했다.",
+    "directory_listing_note": "정확한 두 evidence 디렉터리에서 활동 파일명을 제한 조회했지만 지정한 다섯 activity 외 내용은 읽지 않았다.",
+    "omitted_sources": [
+      "실행 중이거나 후속인 native float 학습의 activity 및 report",
+      "그 밖의 native prepare·budget activity 내용",
+      "raw update·answer·score 파일",
+      "원본 데이터·native 캐시·frozen 자료",
+      "CP tensor·실제 모델·CUDA",
+      "호스트·게스트의 과거 시각 보정·절전·가상화 사건 로그",
+      "실제 runlog 출력 파일",
+      "content driver 코드"
+    ],
+    "tooling_note": "기본 python 명령은 없어서 한 번 종료코드 127을 받았다. 이후 기존 tlm_torch 환경의 Python을 -B로 사용하여 표준 라이브러리 JSON/AST/수치 처리만 했다."
+  },
+  "activities": [
+    {
+      "tag": "p106b_native_weight_route_v1_s1337",
+      "key": "cost_ternary",
+      "activity_path": "test_result/evidence/p106b_native_weight_route_v1_s1337/activity_cost_ternary.json",
+      "report_path": "test_result/evidence/p106b_native_weight_route_v1_s1337/cost_ternary/report.json",
+      "started_at": "2026-10-19T13:00:40.530831+00:00",
+      "ended_at": "2026-10-19T13:01:59.987312+00:00",
+      "recorded_at": null,
+      "activity_seconds": 74.69805224699667,
+      "utc_delta_seconds": 79.456481,
+      "max_wall_sec": 1200,
+      "report_whole_seconds": 60.5319432640099,
+      "step_seconds_count": 8,
+      "step_seconds_sum": 59.400427994987695,
+      "late_probe_seconds": 0.15482415800215676,
+      "cache_audit_seconds": 0.030753464001463726,
+      "activity_bytes": 3818,
+      "report_bytes": 11344,
+      "activity_sha256": "C0C2410F7D006C94FA9234CFC5461307B726A46E14C7EBB41FA31160293CED1D",
+      "report_sha256": "775D4D16242F41C9C10C3D8183C9C21E1588F7E1B82A7F254C2291832BC278F5",
+      "activity_result_sha256_matches_report": true,
+      "reported_complete": true,
+      "reported_returncode": 0,
+      "activity_minus_whole_seconds": 14.16610898298677,
+      "whole_minus_step_sum_seconds": 1.1315152690222021,
+      "utc_minus_activity_seconds": 4.758428753003329,
+      "utc_over_activity_ratio": 1.0637021797739665,
+      "native_timer_pins_match_current_reviewed_code": true
+    },
+    {
+      "tag": "p106b_native_weight_route_v1_s1337",
+      "key": "cost_float",
+      "activity_path": "test_result/evidence/p106b_native_weight_route_v1_s1337/activity_cost_float.json",
+      "report_path": "test_result/evidence/p106b_native_weight_route_v1_s1337/cost_float/report.json",
+      "started_at": "2026-10-19T13:06:52.178094+00:00",
+      "ended_at": "2026-10-19T13:08:00.612121+00:00",
+      "recorded_at": null,
+      "activity_seconds": 63.41789384500589,
+      "utc_delta_seconds": 68.434027,
+      "max_wall_sec": 1200,
+      "report_whole_seconds": 49.547694698005216,
+      "step_seconds_count": 8,
+      "step_seconds_sum": 48.23022929500439,
+      "late_probe_seconds": 0.1579003439983353,
+      "cache_audit_seconds": 0.009916721988702193,
+      "activity_bytes": 3814,
+      "report_bytes": 11275,
+      "activity_sha256": "A2908F13A012E68A258BBC87F04371CEDA7779EE67570867D6160D9985571401",
+      "report_sha256": "EC547F358C87061B19D4AC46456BB04CF1C2EF8731E091110D78E83E67AFD743",
+      "activity_result_sha256_matches_report": true,
+      "reported_complete": true,
+      "reported_returncode": 0,
+      "activity_minus_whole_seconds": 13.870199147000676,
+      "whole_minus_step_sum_seconds": 1.3174654030008242,
+      "utc_minus_activity_seconds": 5.016133154994108,
+      "utc_over_activity_ratio": 1.0790964954978417,
+      "native_timer_pins_match_current_reviewed_code": true
+    },
+    {
+      "tag": "p106b_native_weight_route_v1_s1337",
+      "key": "train_ternary",
+      "activity_path": "test_result/evidence/p106b_native_weight_route_v1_s1337/activity_train_ternary.json",
+      "report_path": "test_result/evidence/p106b_native_weight_route_v1_s1337/train_ternary/report.json",
+      "started_at": "2026-10-19T13:10:42.325978+00:00",
+      "ended_at": "2026-10-19T14:59:03.264174+00:00",
+      "recorded_at": null,
+      "activity_seconds": 6013.944732675009,
+      "utc_delta_seconds": 6500.938196,
+      "max_wall_sec": 14400,
+      "report_whole_seconds": 5987.6521094759955,
+      "step_seconds_count": 2281,
+      "step_seconds_sum": 5985.282802003858,
+      "late_probe_seconds": null,
+      "cache_audit_seconds": null,
+      "activity_bytes": 3821,
+      "report_bytes": 69569,
+      "activity_sha256": "9442FC40AE295E31F307EDEA738AB53675768FCF916D8C3B263F592667143D09",
+      "report_sha256": "56BA3C614A1CD0D528498A18CA9996083AFB359E23F34055417BCE98B97F249F",
+      "activity_result_sha256_matches_report": true,
+      "reported_complete": true,
+      "reported_returncode": 0,
+      "activity_minus_whole_seconds": 26.29262319901318,
+      "whole_minus_step_sum_seconds": 2.3693074721377343,
+      "utc_minus_activity_seconds": 486.99346332499135,
+      "utc_over_activity_ratio": 1.0809773759108652,
+      "native_timer_pins_match_current_reviewed_code": true
+    },
+    {
+      "tag": "p106b_content_recovery_v1_s1337",
+      "key": "train_token",
+      "activity_path": "test_result/evidence/p106b_content_recovery_v1_s1337/activity_train_token.json",
+      "report_path": "test_result/evidence/p106b_content_recovery_v1_s1337/train_token/report.json",
+      "started_at": null,
+      "ended_at": null,
+      "recorded_at": "2026-10-19T12:09:20.431948+00:00",
+      "activity_seconds": 939.1030406819918,
+      "max_wall_sec": 3600,
+      "report_whole_seconds": 920.8412887860031,
+      "step_seconds_count": 384,
+      "step_seconds_sum": 894.9943376970186,
+      "activity_bytes": 7315,
+      "report_bytes": 22496,
+      "activity_sha256": "03D5646EBD4E7BE719171477C09F9B3107DC21706249016475B6372FCE318E2C",
+      "report_sha256": "8360818B693FD29DB5A0E1111ACE80076A15A0772243A94E2DB4587E3D62B4F1",
+      "activity_result_sha256_matches_report": null,
+      "utc_interval_unavailable_reason": "started_at와 ended_at가 없고 recorded_at 하나만 있으므로 UTC 경과를 복원할 수 없다.",
+      "reported_complete": true,
+      "reported_returncode": 0,
+      "activity_minus_whole_seconds": 18.26175189598871,
+      "whole_minus_step_sum_seconds": 25.846951088984497,
+      "utc_delta_seconds": null,
+      "utc_minus_activity_seconds": null,
+      "utc_over_activity_ratio": null,
+      "native_timer_pins_match_current_reviewed_code": null
+    },
+    {
+      "tag": "p106b_content_recovery_v1_s1337",
+      "key": "train_content",
+      "activity_path": "test_result/evidence/p106b_content_recovery_v1_s1337/activity_train_content.json",
+      "report_path": "test_result/evidence/p106b_content_recovery_v1_s1337/train_content/report.json",
+      "started_at": null,
+      "ended_at": null,
+      "recorded_at": "2026-10-19T12:26:42.799488+00:00",
+      "activity_seconds": 950.0478677759966,
+      "max_wall_sec": 3600,
+      "report_whole_seconds": 930.1813748230052,
+      "step_seconds_count": 384,
+      "step_seconds_sum": 903.7538726451021,
+      "activity_bytes": 7319,
+      "report_bytes": 22507,
+      "activity_sha256": "04AFE97FCD46CF19FDCF23E761553C567FD41D7D70EAB91ECF564756535BAD09",
+      "report_sha256": "D67506EF887EA9735221822DCEB8985821209937570487389461562A7C08B275",
+      "activity_result_sha256_matches_report": null,
+      "utc_interval_unavailable_reason": "started_at와 ended_at가 없고 recorded_at 하나만 있으므로 UTC 경과를 복원할 수 없다.",
+      "reported_complete": true,
+      "reported_returncode": 0,
+      "activity_minus_whole_seconds": 19.866492952991393,
+      "whole_minus_step_sum_seconds": 26.42750217790308,
+      "utc_delta_seconds": null,
+      "utc_minus_activity_seconds": null,
+      "utc_over_activity_ratio": null,
+      "native_timer_pins_match_current_reviewed_code": null
+    }
+  ],
+  "aggregates": {
+    "native_nonoverlapping_selected_activities": 3,
+    "native_selected_activity_seconds_sum": 6152.060678767011,
+    "native_selected_utc_interval_seconds_sum": 6648.8287040000005,
+    "native_selected_utc_minus_activity_seconds_sum": 496.7680252329892,
+    "native_selected_difference_percent_of_43200_seconds": 1.149925984335623,
+    "native_cost_only_difference_seconds": 9.774561907997438,
+    "note": "서로 겹치지 않는 지정 세 활동의 구간 합이다. 전체 단계 소비량이나 첫 시작부터 마지막 종료까지의 달력시간이 아니며 활동 사이 대기시간은 합산하지 않았다.",
+    "content_utc_comparable_activity_count": 0
+  },
+  "timer_scope_review": {
+    "worker": {
+      "path": "scripts/diag_p106b_native_weight_route.py",
+      "lines": [
+        984,
+        1009
+      ],
+      "start": "metadata = info() 뒤에 began = time.perf_counter()와 UTC started_at를 연속으로 얻는다.",
+      "stop": "finally에서 seconds = time.perf_counter() - began과 UTC ended_at를 연속으로 얻는다.",
+      "begins_assigned_once": true,
+      "same_interval_two_clock_domains": true,
+      "exclusions_from_both": "시작 전 metadata 계산과 종료 시각을 얻은 뒤의 activity용 결과·참조 digest 및 activity 파일 쓰기는 두 경과값에 모두 포함되지 않는다.",
+      "inference": "서로 다른 시작·종료 범위를 일부러 사용해서 486.993초를 빼는 코드는 보이지 않는다. 두 시작/종료 호출 사이의 비정상 지연이나 시계 변화의 실제 발생 여부는 이 기록으로 판별할 수 없다."
+    },
+    "inner_train": {
+      "path": "scripts/diag_p106b_native_weight_route.py",
+      "lines": [
+        785,
+        787,
+        822,
+        851,
+        853,
+        860
+      ],
+      "start": "모델·optimizer 준비 이후 update 루프 직전의 함수 지역 began이다.",
+      "step": "각 update의 authority 검사 뒤 tick을 얻고 backward·optimizer·CUDA synchronize가 끝난 뒤 step_seconds를 얻는다.",
+      "whole": "루프·이벤트 기록·말기 비용 probe 또는 native32 probe·fingerprint·manifest 검산 등을 지난 뒤 whole_seconds를 얻는다.",
+      "whole_excludes": "최종 체크포인트 저장·그 SHA·report 쓰기는 whole_seconds 이후이므로 제외된다.",
+      "expected_scope_inequality": "activity seconds와 whole_seconds 및 step 합은 같은 범위의 지표가 아니다.",
+      "train_ternary_whole_minus_steps_seconds": 2.3693074721377343,
+      "train_ternary_activity_minus_whole_seconds": 26.29262319901318,
+      "inference": "작은 내부 범위 차이를 UTC 대 seconds의 486.993초 불일치와 혼동하지 않는다. 이 자료에는 매 step의 짝지어진 UTC 시각이 없어 불일치를 update·준비·저장 중 어디에 배분할 수 없다."
+    },
+    "lexical_scope_checks": {
+      "method": "허용된 세 코드의 AST와 대입·global/nonlocal·time 속성 대입 검색을 함께 검토했다.",
+      "began_assignments": [
+        {
+          "function": "late_probe",
+          "function_lines": [
+            682,
+            700
+          ],
+          "assignment_lines": [
+            685
+          ]
+        },
+        {
+          "function": "cache_audit",
+          "function_lines": [
+            703,
+            732
+          ],
+          "assignment_lines": [
+            708
+          ]
+        },
+        {
+          "function": "train",
+          "function_lines": [
+            735,
+            864
+          ],
+          "assignment_lines": [
+            785
+          ]
+        },
+        {
+          "function": "worker",
+          "function_lines": [
+            973,
+            1012
+          ],
+          "assignment_lines": [
+            984
+          ]
+        }
+      ],
+      "worker_began_reassignment_found": false,
+      "shared_global_or_nonlocal_began_found": false,
+      "time_function_rebinding_in_reviewed_code_found": false,
+      "limitation": "허용된 코드 안의 정적 검토다. 읽지 않은 의존 모듈·런타임 외부 패치 전체가 없었다는 증명은 아니다."
+    },
+    "runlog": {
+      "path": "scripts/runlog.py",
+      "lines": [
+        584,
+        585,
+        606,
+        623,
+        635,
+        637
+      ],
+      "calls": [
+        "datetime.now()",
+        "time.time()"
+      ],
+      "scope": "자식 실행 전부터 자식 종료 및 성공 시 후처리까지 포함하는 래퍼 경과다. native worker의 seconds를 생성하거나 수정하지 않는다.",
+      "inference": "래퍼와 자식의 범위 차이는 별도 문제다. 이번에는 실제 runlog 출력 파일을 읽지 않아 래퍼 경과와 UTC 구간을 추가 대조하지 않았다."
+    },
+    "gate_wall_limit": {
+      "path": "scripts/p106b_gate_runtime.py",
+      "lines": [
+        65,
+        78
+      ],
+      "implementation": "SIGALRM 처리기와 signal.setitimer(signal.ITIMER_REAL, seconds)를 사용하고 finally에서 타이머와 이전 처리기를 복원한다.",
+      "modifies_worker_began_or_time_functions": false,
+      "limitation": "현재 파일에 시간 값 재대입은 없지만, 이 코드만으로 과거 호스트/게스트 환경의 각 시계·타이머 동작을 검증할 수는 없다."
+    }
+  },
+  "budget_and_deadlines": {
+    "unchanged_contract": {
+      "activity_limit_seconds": 43200,
+      "native_worker_limit_seconds": 14400,
+      "training_stop_utc": "2026-10-20T05:00:00+00:00",
+      "training_stop_kst": "2026-10-20T14:00:00+09:00",
+      "authority_end_utc": "2026-10-20T08:00:00+00:00",
+      "authority_end_kst": "2026-10-20T17:00:00+09:00",
+      "evaluation_and_record_reserve_seconds": 10800,
+      "final_record_reserve_seconds": 600
+    },
+    "activity_limit": {
+      "code_lines": [
+        294,
+        299,
+        321,
+        329,
+        503,
+        528,
+        987
+      ],
+      "actual_rule": "spent_seconds는 유효한 activity의 seconds만 합산하고 UTC 경과와의 일치 검사를 하지 않는다.",
+      "observed_risk": "12시간이 UTC 달력 경과의 활동 합을 뜻한다면, 지정된 세 활동에서 코드상 합산과 UTC 구간 합 사이에 496.768025초 차이가 있다. 어느 쪽이 실제 호스트 경과를 정확히 나타내는지는 원인 자료 없이 확정할 수 없다.",
+      "not_a_full_ledger_reconciliation": true,
+      "uncounted_scope_note": "현재 코드의 source/preflight는 activity 기록 전에 반환하며 외부 regression·활동 간 대기도 이 합의 대상이 아니다. 이는 이번 두 시계의 차이와 별개의 범위 제한이다."
+    },
+    "historical_native_admission_sensitivity": {
+      "source": "train_ternary/report.json의 reservation 시간 필드",
+      "recorded_spent_seconds": 159.2699396359967,
+      "recorded_needed_seconds": 31126.243441578015,
+      "recorded_spent_plus_needed_seconds": 31285.51338121401,
+      "known_previous_cost_utc_gap_seconds": 9.774561907997438,
+      "subtotal_if_only_known_previous_costs_use_larger_utc_seconds": 31295.28794312201,
+      "slack_against_43200_after_that_partial_substitution_seconds": 11904.71205687799,
+      "conclusion": "당시 admission은 확인된 두 cost 차이만 보수적으로 더해도 12시간 안에 남는다. 전체 원장 정합·미래 예측·현재 후속 단계의 PASS를 뜻하지 않는다."
+    },
+    "absolute_deadline_checks": {
+      "code_lines": [
+        185,
+        198,
+        303,
+        309,
+        787,
+        987,
+        1027,
+        1039,
+        1055
+      ],
+      "entry_and_per_update": "authority는 현재 UTC를 TRAIN_STOP 또는 END와 비교하며 학습 루프는 update 시작마다 다시 검사한다.",
+      "evaluation_record_reserve": "학습 이외 execution_remaining은 END에서 600초를 빼고 입장을 제한한다. evaluate/readback의 반복 입장에도 같은 함수를 쓴다.",
+      "parent_timeout": "각 phase 시작 시 UTC 잔여를 계산하여 자식 timeout의 상한으로 전달한다. 이 코드에는 phase 중 독립적으로 계속 UTC를 표본하는 별도 감시 루프는 없다.",
+      "receipt_tolerance_seconds": 30,
+      "receipt_note": "validate_activity는 시작·끝 UTC 순서를 보고 학습/종료 경계 뒤 30초까지 허용하는 기록 검사를 둔다. 연속적인 시계 변화나 실행 중 C/CUDA 구간에서 즉시 중단됨을 증명하지 않는다.",
+      "selected_native_recorded_absolute_deadline_breach": false,
+      "train_ternary_recorded_end_before_train_stop_seconds": 50456.735826,
+      "train_ternary_recorded_end_before_authority_end_seconds": 61256.735826,
+      "train_ternary_recorded_utc_interval_below_worker_limit_seconds": 7899.061804,
+      "conclusion": "지정 완료 기록에는 14시/17시 또는 worker 상한을 넘은 사례가 없다. UTC와 seconds의 불일치가 절대기한을 없애는 것은 아니지만, 과거 UTC 시계 자체의 정확성이나 앞으로의 강제 중단 신뢰성을 이 자료만으로 확정하지 않는다."
+    },
+    "policy_boundary": "기존 한도·기한·계수·실험판정·raw를 바꾸지 않았다. UTC 경과를 보수 원장으로 병기하거나 후속 입장에 사용할지는 총괄의 명시적 판단 대상이다. 1.35 예측 여유가 있다는 사실은 시간 영역 불일치의 원인 검증을 대신하지 않는다."
+  },
+  "cause_assessment": {
+    "observed": "train_ternary 한 번만이 아니라 읽은 native 완료 세 활동 모두 UTC 경과가 seconds보다 크다.",
+    "reported_by_parent_not_independently_measured_here": {
+      "perf_counter_implementation": "clock_gettime(CLOCK_MONOTONIC)",
+      "current_boottime_minus_monotonic_approximately_zero": true,
+      "interpretation": "현재 시점의 단일 측정은 과거 활동 동안 두 시계의 관계·변화 이력을 복원하지 못한다."
+    },
+    "root_cause": "미확정",
+    "unsupported_attributions": [
+      "호스트 절전 또는 재개가 원인이라는 단정",
+      "NTP 또는 수동 시각 조정이 원인이라는 단정",
+      "가상화 시계 보정 또는 CPU 부하가 원인이라는 단정",
+      "time.perf_counter의 재대입이 원인이라는 단정",
+      "관측된 비율 하나로 모든 step·과거 실험 시간을 일괄 보정",
+      "이 시간 차이가 모델 품질이나 삼진/실수 속도 차이를 설명한다는 주장"
+    ],
+    "discriminating_evidence_missing": [
+      "동일 활동 중 반복해서 짝지은 실시간 시각·단조시각 표본",
+      "과거 호스트·게스트의 독립 시각 이력과 시각 보정/중단 사건 자료",
+      "실제 runlog 래퍼의 시간 기록과 동일 구간의 독립 호스트 경과"
+    ],
+    "non_execution_recommendation": "기존 숫자 두 종류를 모두 보존하고 경과 기준을 명시한다. 원인 확인 전에는 UTC를 실제 소비량으로 단정하거나 perf 값을 틀린 값으로 덮어쓰지 않는다. 추가 시각 표본이나 시스템 로그 확인·계측 코드 변경은 별도 허가 후에만 수행한다."
+  },
+  "reproducibility": {
+    "python_executable": "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+    "python_flags": [
+      "-B"
+    ],
+    "imported_project_modules": [],
+    "method": [
+      "경로를 고정한 작은 JSON 10개만 읽는다. 실행용 스크립트는 import하거나 실행하지 않는다.",
+      "a = json.loads(activity_path.read_text(encoding='utf-8')); r = json.loads(report_path.read_text(encoding='utf-8'))",
+      "utc_delta = (datetime.fromisoformat(a['ended_at']) - datetime.fromisoformat(a['started_at'])).total_seconds()",
+      "gap = utc_delta - a['seconds']",
+      "step_sum = math.fsum(r['step_seconds']); inner_gap = r['whole_seconds'] - step_sum",
+      "outer_gap = a['seconds'] - r['whole_seconds']",
+      "started_at 또는 ended_at가 없는 activity의 utc_delta와 gap은 None으로 둔다.",
+      "sha = hashlib.sha256(path.read_bytes()).hexdigest().upper()",
+      "ast.parse로 각 함수의 began 대입 위치를 수집한다. 모델·실험 모듈은 import하지 않는다.",
+      "stdout에는 선택된 시간 필드·합계·키 이름·작은 입력 SHA만 출력하고 답변·점수 배열은 출력하지 않는다."
+    ],
+    "code_sha_command": "sha256sum scripts/diag_p106b_native_weight_route.py scripts/p106b_gate_runtime.py scripts/runlog.py",
+    "relative_tolerance_for_reported_derived_float_comparisons": 1e-12,
+    "absolute_tolerance_seconds_for_rounded_comparisons": 0.000001,
+    "no_runtime_clock_sampling_by_this_auditor": true,
+    "final_artifact_validation_scope": "새 감사 JSON 자체의 파싱·지정 합계·SHA만 확인한다. 모델/실험/공용 검사기는 실행하지 않는다."
+  },
+  "limitations": [
+    "실제 읽은 완료 활동은 native 세 개와 content 두 개다. 전체 과거 활동을 대표하는 표본이 아니다.",
+    "content 활동은 UTC 시작·끝이 없어 두 시계 차이의 존재 또는 부재를 판단할 수 없다.",
+    "다섯 report의 전체 답변·점수 배열은 출력하지 않았고 품질 수치는 검토하지 않았다.",
+    "code pin 및 작은 report SHA 일치는 타이머 산식의 계보 근거일 뿐 플랫폼 시계 정확성 증명이 아니다.",
+    "CP·raw update·원천 데이터의 무결성 또는 전체 연구 closure를 이번 시간 감사로 재인증하지 않는다.",
+    "이 감사는 속도 우열·품질 인과·학습량 변경·새 실험 승인 근거가 아니다."
+  ]
+}
