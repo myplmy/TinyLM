@@ -1,0 +1,71 @@
+{
+  "schema": "TINYLM_NATIVE_EXPANSION_CPU_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "현재20일17시까지 주도적 CPU+GPU 연구·필요구현 허가. 이 단계 자체는CPU만.",
+  "status": "구현 전 범위 고정·실제 pilot/build NOT_RUN",
+  "reason": "현재native2배풀 제한은299M draw다. 보유legacy1.2B는현재601M과동일prefix이며단순합산/ID직결/현재VAL재유입을허용할수없다.",
+  "files": {
+    "create": [
+      "scripts/diag_p106b_native_expansion.py",
+      "scripts/test_p106b_native_expansion.py",
+      "root의신규계획/SH/감사"
+    ],
+    "read_only": [
+      "data_cache/ko-en_1200000000/train.bin",
+      "data_cache/ko-en_1200000000/meta.json",
+      "data_cache/tok-ko-en-32768.json",
+      "data_cache/ko-en_601000000_chat32/val.bin",
+      "data_cache/ko-en_601000000_chat32/meta.json",
+      "data_cache/tok-ko-en-32768-chat32.json"
+    ],
+    "new_outputs": [
+      "data_cache/p106b_native_expansion_v1_s1337",
+      "test_result/evidence/p106b_native_expansion_v1_s1337"
+    ],
+    "excluded": [
+      "원본cache/기존native code수정",
+      "legacyVAL훈련혼입",
+      "datasets/TinyDataset/사전/HF추가취득",
+      "모델/GPU/새학습/CP",
+      "현native대조의조건/태그변경"
+    ]
+  },
+  "method": {
+    "input": "원legacy TRAIN만EOS2 경계의segment로streaming. 원URL/documentID는없어원문문서분할이라고주장하지않음.",
+    "canonicalization": "old byte-level 원바이트→strictUTF8→current chat32 canonical encode를segment별로실행한다. old/new byte복원동일을확인하고UTF8 replacement를삽입하지않는다. 같은special0/1/2 의미와새32reserved literal의canonical처리 검사.",
+    "validation_exclusion": "현재chat32VAL의완전EOSsegment canonical IDs hash와양끝partial ID substring을새segment에서제외한다. byte검색은uint16 alignment를검사하며shortpartial도공개한다. semantic/near오염없음은별도미확인.",
+    "tail_policy": "원TRAIN끝의EOS미종결segment는불완전원문가능성을명시하고TRAIN에쓰지않음. 큰segment/invalidUTF8/형식불일치는조용한수정없이오류로정지.",
+    "pilot": "첫최대1048576legacy IDs만소비·CPU처리율/바이트보존/후미merge/예약문자열분기/VAL제외량·최고메모리집계. 전체build시간은외삽/불확실성으로만보고.",
+    "build": "별도명시실행만새uint16cache를write-once생성. 원형SHA/변환코드/제외/토큰count를보존. 실제남은풀로2draw조건을계산하며기존601M과합산하지않음.",
+    "storage": "sourcebin은ignored data_cache의생성캐시로20MB결과제한과구분. 공개JSON/원로그는20MB미만; raw문서/Git추가0."
+  },
+  "alternatives": [
+    {
+      "name": "현재601M 결과만회수",
+      "selected": false,
+      "benefit": "추가CPU0",
+      "cost": "더긴native사용근거없음"
+    },
+    {
+      "name": "legacy의canonical변환·VAL제외CPUpilot만먼저",
+      "selected": true,
+      "benefit": "추가취득없이현실적후속가능성을실측",
+      "cost": "원URL/언어메타약함·canonicaldecode/encode비용"
+    },
+    {
+      "name": "더큰외부원문취득",
+      "selected": false,
+      "benefit": "새1B~2Bdraw가능성",
+      "cost": "현재다운로드권한/로컬보유근거없어범위밖"
+    }
+  ],
+  "impact": {
+    "code": "새CPU전용2파일, 실제native/route와공용도구불변",
+    "data": "정확한legacyTRAIN/현재VAL읽기와새namespace만. oldmeta비율을실제TRAIN/관측draw비율로부르지않음",
+    "test": "byte-level/다중바이트경계·reservedliteral·EOSTAIL·동일/partialVALalignment·writeonce·기한·고정prefixpilot분모·문서중복과토큰노출분리",
+    "docs": "새CPU준비와향후학습을구분, pool/WSD/언어구성동시변경의교락기록",
+    "debt": "원문revision/문서ID/semantic오염정보를회복했다고주장할수없음",
+    "resources": "pilot상한1200초; fullbuild는실측예산과20일14시이전완료여유를root확인한뒤만실행"
+  },
+  "adoption": "실물pilot통과전새GPU학습런처/긴native채택없음. 현299M쌍은변경하지않는다."
+}

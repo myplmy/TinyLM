@@ -1,0 +1,66 @@
+{
+  "schema": "TINYLM_WEIGHT_ROUTE_CROSS_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "사용자20일17시까지 CPU+GPU 독립연구/필요구현 허가",
+  "timing": "새 구현 위임 전의 범위/예측 고정. 실물 모델과 출력은 모두 NOT_RUN.",
+  "reason": "native/SFT 각자 삼진 또는 float에서 배운 대각선만으로 학습경로와 최종추론경로 효과를 분리할 수 없다.",
+  "files": {
+    "create": [
+      "scripts/diag_p106b_route_cross_readout.py",
+      "scripts/test_p106b_route_cross_readout.py",
+      "root가 후속 계획/SH/정본을 명시 작성"
+    ],
+    "new_data": [
+      "data_cache/p106b_route_cross_v1_s1337",
+      "runs/eval/p106b_route_cross_v1_s1337",
+      "test_result/evidence/p106b_route_cross_v1_s1337"
+    ],
+    "read_only": [
+      "현재 native route v1 source/참조/완료 activity/report/자기 CP4개",
+      "같은1694 평가 원형/원nativeVAL"
+    ],
+    "excluded": [
+      "기존 n/helper/모델 구현 수정",
+      "기존 CP/원형 덮어쓰기",
+      "보호 TinyDataset/외부취득",
+      "학습/새 CP/teacher",
+      "제품 기본loader의 mode 안전검사 완화"
+    ]
+  },
+  "design": {
+    "diagonals": "현재 native study의 ternary→ternary/float→float 결과를 엄격한 원형·SHA로 명시 재사용",
+    "off_diagonals": "native와SFT에서 ternary-trained→float-forward 및 float-trained→ternary-forward 각1694 실제 첫답+native32",
+    "loader": "원CP의 학습route/cfg/tokenizer/keys/dtype/alias/가중치 SHA를 먼저 원훈련route에서 strict load한다. 그 context를 종료한 뒤에만 명시된 다른추론route를 새 context로 연다. generic loader는 계속거부.",
+    "quality_protocol": "FP32 MATH/greedy64/KV-on/MTP-off/EOT-stop·같은 ordered1694, native32별도. gold를 inference 인자로 넣지 않는다.",
+    "mutations": "새 raw/작은 계약만. 전후 core/cfg/CP SHA 동일·파라미터requires_grad를 영구변경하지 않음."
+  },
+  "alternatives": [
+    {
+      "name": "같은가중치 추론경로 교차",
+      "selected": true,
+      "benefit": "추가학습0으로 훈련과추론 효과를 가를 수 있음",
+      "cost": "전용 strict 교차loader/네 off-diagonal 평가"
+    },
+    {
+      "name": "양화 학습률/스케줄 새 grid",
+      "selected": false,
+      "benefit": "수렴처방 직접탐색",
+      "cost": "여러시간 추가학습·여러변경축"
+    },
+    {
+      "name": "양대각선만 비교",
+      "selected": false,
+      "benefit": "구현추가0",
+      "cost": "훈련/추론의귀속미분리"
+    }
+  ],
+  "impact": {
+    "code": "전용 두파일만, 기존 경로코드 불변",
+    "data": "새참조/출력샤드<20MB, 원형읽기만",
+    "tests": "tiny CPU full-state/context복구·오류mode/후기cast·같은FP32출력·참조손상검산",
+    "documents": "같은계열새단계로원대각선과추가6776답의분모분리",
+    "resources": "root실물GPU15분예비·학습0/CP0·기한전만",
+    "debt": "오직counterfactual진단이며float를일반loader로읽게하는우회아님"
+  },
+  "prediction": "float forward가 답을 개선할 수도 있으나 가중치학습/자료 문제가 크면 효과가 없거나 더 나빠질 수 있다. 반복/CE만으로 정답성 채택하지 않는다."
+}
