@@ -1,0 +1,26 @@
+{
+  "schema": "TINYLM_QPOS_REPORT_SIGNATURE_CORRECTION_V1",
+  "observed_at_kst": "2026-10-19T09:27:07+09:00",
+  "scope": "result101 new eight QPOS condition-signature rows only",
+  "initial_checker": {
+    "files": 2,
+    "signatures": 112,
+    "errors": 20,
+    "exit_code": 1,
+    "causes": [
+      "actual_pool_tokens and sequential_epoch_claim omitted from matched classification",
+      "unmeasured attention_mechanism/learning_seed_uncertainty named without their own rows",
+      "equal CQ/QC and QCQ/CQQ prompt token counts wrongly classified changed"
+    ]
+  },
+  "repair": "Declare unmeasured rows, include all axes, and classify actual_draw_tokens matched exactly when its two recorded values are equal. No model/raw/scorer/checker source changes.",
+  "final_checker": {
+    "chunk_id": "3d671b",
+    "wall_time_seconds": 0.698908124,
+    "exit_code": 0,
+    "original_token_count": 9,
+    "output": "RESULT PASS files=2 signatures=112\n"
+  },
+  "root_source_data_or_model_changed": false,
+  "classification_claim": "DESCRIPTIVE_ONLY unchanged"
+}

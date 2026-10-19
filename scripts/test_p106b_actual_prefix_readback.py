@@ -476,11 +476,97 @@ class CorpusAndCensusTests(unittest.TestCase):
 
 
 class SourceAndOutputTests(unittest.TestCase):
-    def source(self, main):
+    def source(self, main, *, symlink_check=None):
         with patch.object(d, 'dependencies', return_value=main), patch.object(d, 'required', side_effect=main.required), \
              patch.object(d, 'digest', side_effect=main.digest), \
+             patch.object(Path, 'is_symlink', autospec=True, side_effect=symlink_check or (lambda path: False)), \
              patch.dict(sys.modules, {'tokenizers': NS(Tokenizer=NS(from_file=Mock(return_value=main.tok)))}):
             return d.load_source(lambda: None)
+
+    def resign_raw_manifest(self, main, stem, change):
+        field = 'answer' if stem == 'answers' else 'rank'
+        directory = main.LOCAL / 'evaluate_ce'
+        report = main.docs[str(main.EVIDENCE / 'evaluate_ce/report.json')]
+        manifest = copy.deepcopy(report[field + '_manifest']); change(manifest)
+        report[field + '_manifest'] = manifest
+        report[field + '_manifest_sha256'] = d.sha(manifest)
+        main.docs[str(directory / (stem + '_shards_manifest.json'))] = copy.deepcopy(manifest)
+        main.docs[str(main.EVIDENCE / 'readback.json')] = main.expected_gate()
+        return directory
+
+    def test_exact_raw_names_and_complete_lexical_pass_precede_safe(self):
+        directory = d.LOCAL / 'synthetic'
+        for stem in ('answers', 'rank'):
+            manifest = dict(shards=[dict(path=f'{stem}_{i:06d}.jsonl') for i in range(2)])
+            with patch.object(d, 'safe', side_effect=lambda path: path) as checked:
+                paths = d.raw_shard_paths(directory, manifest, stem)
+            self.assertEqual(paths, [directory / part['path'] for part in manifest['shards']])
+            self.assertEqual([c.args[0] for c in checked.call_args_list], paths)
+            # 두 번째 이름이 위험해도 첫 정상 이름의 stat/link 검사를 먼저 하지 않는다.
+            manifest['shards'][1]['path'] = '/protected-like/never-open.jsonl'
+            with patch.object(d, 'safe', side_effect=AssertionError('이름 전체 검증이 먼저')) as checked:
+                with self.assertRaises(ValueError): d.raw_shard_paths(directory, manifest, stem)
+                checked.assert_not_called()
+
+    def test_resigned_absolute_nested_parent_and_wrong_stem_never_reach_digest_or_stat(self):
+        for stem in ('answers', 'rank'):
+            other = 'rank' if stem == 'answers' else 'answers'
+            bad_names = (str(ROOT / 'datasets/TinyDataset/PREFIX_FIXTURE_DO_NOT_OPEN.jsonl'),
+                         '/protected-like/never-open.jsonl', f'nested/{stem}_000000.jsonl',
+                         f'../{stem}_000000.jsonl', f'./{stem}_000000.jsonl',
+                         f'nested\\{stem}_000000.jsonl', f'{other}_000000.jsonl',
+                         f'{stem}_000001.jsonl')
+            for name in bad_names:
+                with self.subTest(stem=stem, name=name):
+                    main = MainFixture()
+                    directory = self.resign_raw_manifest(main, stem,
+                        lambda manifest: manifest['shards'][0].update(path=name))
+                    original_digest, digest_paths = main.digest, []
+                    def traced_digest(path):
+                        digest_paths.append(str(path)); return original_digest(path)
+                    with patch.object(main, 'digest', side_effect=traced_digest), \
+                         patch.object(Path, 'stat', side_effect=AssertionError('실물 stat 금지')) as stat, \
+                         patch.object(Path, 'open', side_effect=AssertionError('실물 open 금지')) as opened:
+                        with self.assertRaisesRegex(ValueError, 'main raw shard'):
+                            self.source(main)
+                    manifest_path = str(directory / (stem + '_shards_manifest.json'))
+                    raw_attempts = digest_paths[digest_paths.index(manifest_path) + 1:]
+                    # rank에 위조한 answers 이름은 앞의 정상 answers 단계와 구분한다.
+                    self.assertEqual(digest_paths[-1], manifest_path)
+                    self.assertNotIn(str(directory / name), raw_attempts)
+                    self.assertNotIn(str(ROOT / 'datasets/TinyDataset/PREFIX_FIXTURE_DO_NOT_OPEN.jsonl'), digest_paths)
+                    stat.assert_not_called(); opened.assert_not_called()
+                    main.readback.assert_not_called()
+
+    def test_resigned_duplicate_raw_names_rejected_before_any_raw_digest(self):
+        for stem in ('answers', 'rank'):
+            main = MainFixture()
+            directory = self.resign_raw_manifest(main, stem,
+                lambda manifest: manifest['shards'].append(copy.deepcopy(manifest['shards'][0])))
+            raw_path = str(directory / (stem + '_000000.jsonl'))
+            original_digest, digest_paths = main.digest, []
+            def traced_digest(path):
+                digest_paths.append(str(path)); return original_digest(path)
+            with patch.object(main, 'digest', side_effect=traced_digest):
+                with self.assertRaisesRegex(ValueError, 'main raw shard'): self.source(main)
+            self.assertNotIn(raw_path, digest_paths)
+
+    def test_valid_raw_file_or_ancestor_symlink_rejected_before_raw_digest(self):
+        for linked in ('file', 'directory'):
+            main = MainFixture(); directory = main.LOCAL / 'evaluate_ce'
+            raw_path = directory / 'answers_000000.jsonl'
+            linked_path = raw_path if linked == 'file' else directory
+            original_digest, digest_paths = main.digest, []
+            def traced_digest(path):
+                digest_paths.append(str(path)); return original_digest(path)
+            # 메모리 link 관측만 사용하고 실제 symlink/stat/open은 만들거나 읽지 않는다.
+            with patch.object(main, 'digest', side_effect=traced_digest), \
+                 patch.object(Path, 'stat', side_effect=AssertionError('실물 stat 금지')) as stat, \
+                 patch.object(Path, 'open', side_effect=AssertionError('실물 open 금지')) as opened:
+                with self.assertRaisesRegex(ValueError, '심볼릭 링크'):
+                    self.source(main, symlink_check=lambda path: path == linked_path)
+            self.assertNotIn(str(raw_path), digest_paths)
+            stat.assert_not_called(); opened.assert_not_called()
 
     def test_complete_r_is_reconstructed_with_only_nonwriting_helpers(self):
         main = MainFixture(); source = self.source(main)

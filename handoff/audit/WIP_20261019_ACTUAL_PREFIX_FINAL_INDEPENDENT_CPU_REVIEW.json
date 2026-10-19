@@ -1,0 +1,440 @@
+{
+  "schema": "P106B_ACTUAL_PREFIX_FINAL_INDEPENDENT_CPU_REVIEW_V1",
+  "reviewer": "/root/oct19_antithesis",
+  "scope": {
+    "승인": "총괄이지정한최종1F08/133D두파일의읽기·guarded40·기존P1메모리반례재검산과이새감사JSON한파일작성",
+    "target": "handoff/audit/WIP_20261019_ACTUAL_PREFIX_FINAL_INDEPENDENT_CPU_REVIEW.json",
+    "source_code_edits": 0,
+    "other_file_edits": 0,
+    "source_boundary": "실제main1758×3/R·실물prefix원형은읽지않았다. 원source와CP/Torch/tok는메모리fixture로만치환한다.",
+    "시점": "모든검산·반례당시물리쓰기0. 이후승인된이감사1파일만apply_patch로생성. 실제R/Stage4erS실행·최종판정·Git은총괄소유.",
+    "금지": "실제source/HF/tokenizer/CP/native/가중치·nn.Module/forward·GPU/CUDA·네트워크·설치·새agent·Git·기존code/docs/SH/감사변경0"
+  },
+  "outcome": {
+    "tests": 40,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "unittest_seconds": 24.826,
+    "guarded_wrapper_seconds": 24.848436691001552,
+    "new_independent_harness_failures": [],
+    "before_after_sha_bytes_equal": true,
+    "prior_P1_blocked_in_memory": true,
+    "unchanged_original36_semantics": true,
+    "reviewed_new_blockers_confirmed": 0,
+    "판정": "지정경로guard수리와원36인증·분기·집계계약을독립합성으로확인. 실제source/model/GPU나정답품질을검증한것이아님.",
+    "한계": "기존P1을재현한경계는차단되었으나모든파일시스템경쟁조건·범용sandbox무결성에대한증명은아니다."
+  },
+  "frozen_source_receipts": {
+    "before": {
+      "scripts/diag_p106b_actual_prefix_readback.py": {
+        "bytes": 40945,
+        "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+      },
+      "scripts/test_p106b_actual_prefix_readback.py": {
+        "bytes": 47861,
+        "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+      }
+    },
+    "after40": {
+      "scripts/diag_p106b_actual_prefix_readback.py": {
+        "bytes": 40945,
+        "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+      },
+      "scripts/test_p106b_actual_prefix_readback.py": {
+        "bytes": 47861,
+        "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+      }
+    },
+    "after_extra": {
+      "scripts/diag_p106b_actual_prefix_readback.py": {
+        "bytes": 40945,
+        "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+      },
+      "scripts/test_p106b_actual_prefix_readback.py": {
+        "bytes": 47861,
+        "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+      }
+    },
+    "expected_driver": {
+      "bytes": 40945,
+      "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+    },
+    "expected_test": {
+      "bytes": 47861,
+      "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+    },
+    "baseline": {
+      "root_reported_preservation_commit": "8f777879b479632ee89dad29e234829239f1d1cf",
+      "driver_sha256": "A08FA0FB250228F11C0BCF56A09520AB7C39125180FC87BF3847267F6F694516",
+      "test_sha256": "101F4DF4B553066976CD0A91D510E8E6D137BE14EDE68A127F3D2DA9AA201500",
+      "audit_path": "handoff/audit/WIP_20261019_ACTUAL_PREFIX_INDEPENDENT_CPU_REVIEW.json",
+      "audit_recorded_bytes": 75138,
+      "audit_recorded_sha256": "8D2551608FC1C510BE0FEEC6B89803B6057F7B3AC8C938247C96294254085701",
+      "attribution": "커밋은총괄이보존했다고전달한값이다. 이번에는Git/이전감사파일을읽지않았고이전자가검증receipt와제공된동결SHA만사용."
+    }
+  },
+  "inverse_patch_equivalence": {
+    "command": "/usr/bin/python3 -B - <<'PY'\nimport ast,hashlib,json\nfrom pathlib import Path\nroot=Path('/home/uranus/tinyLM')\nmain_path=root/'scripts/diag_p106b_actual_prefix_readback.py';test_path=root/'scripts/test_p106b_actual_prefix_readback.py'\nmain=main_path.read_text(encoding='utf-8');test=test_path.read_text(encoding='utf-8')\nsha=lambda value:hashlib.sha256(value.encode('utf-8')).hexdigest().upper()\nstart=main.index('\\ndef raw_shard_paths(');end=main.index('\\ndef load_source(',start)\nhelper=main[start+1:end]\nrestored_main=main[:start]+main[end:]\nnew_loop=\"            manifest = report[field + '_manifest']\\n            paths = raw_shard_paths(directory, manifest, stem)\\n            for shard, raw_path in zip(manifest['shards'], paths):\\n                bind(raw_path, shard['sha256'])\"\nold_loop=\"            for shard in report[field + '_manifest']['shards']:\\n                bind(directory / shard['path'], shard['sha256'])\"\nassert restored_main.count(new_loop)==1\nrestored_main=restored_main.replace(new_loop,old_loop)\nassert sha(restored_main)=='A08FA0FB250228F11C0BCF56A09520AB7C39125180FC87BF3847267F6F694516'\nstart=test.index('    def source(self, main, *, symlink_check=None):');end=test.index('    def test_complete_r_is_reconstructed',start)\nadded_test_region=test[start:end]\nold_helper=\"    def source(self, main):\\n        with patch.object(d, 'dependencies', return_value=main), patch.object(d, 'required', side_effect=main.required), \\\\\\n             patch.object(d, 'digest', side_effect=main.digest), \\\\\\n             patch.dict(sys.modules, {'tokenizers': NS(Tokenizer=NS(from_file=Mock(return_value=main.tok)))}):\\n            return d.load_source(lambda: None)\\n\\n\"\nrestored_test=test[:start]+old_helper+test[end:]\nassert sha(restored_test)=='101F4DF4B553066976CD0A91D510E8E6D137BE14EDE68A127F3D2DA9AA201500'\nclasses=ast.parse(test);test_names=[n.name for n in ast.walk(classes) if isinstance(n,ast.FunctionDef) and n.name.startswith('test_')]\nnew_names=[n.name for n in ast.walk(ast.parse('class Added:\\n'+added_test_region)) if isinstance(n,ast.FunctionDef) and n.name.startswith('test_')]\nprint(json.dumps(dict(new_main_sha256=sha(main),new_test_sha256=sha(test),inverse_patch_main_sha256=sha(restored_main),inverse_patch_test_sha256=sha(restored_test),exact_draft_restoration=True,unchanged_original36_semantics=True,tests_total=len(test_names),added_test_names=new_names,changes_only_new_path_helper_loop_and_test_mock_region=True,path_helper_source=helper,git_used=False,files_written=0),ensure_ascii=False,indent=2))\nPY",
+    "raw_stdout": "{\n  \"new_main_sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\",\n  \"new_test_sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\",\n  \"inverse_patch_main_sha256\": \"A08FA0FB250228F11C0BCF56A09520AB7C39125180FC87BF3847267F6F694516\",\n  \"inverse_patch_test_sha256\": \"101F4DF4B553066976CD0A91D510E8E6D137BE14EDE68A127F3D2DA9AA201500\",\n  \"exact_draft_restoration\": true,\n  \"unchanged_original36_semantics\": true,\n  \"tests_total\": 40,\n  \"added_test_names\": [\n    \"test_exact_raw_names_and_complete_lexical_pass_precede_safe\",\n    \"test_resigned_absolute_nested_parent_and_wrong_stem_never_reach_digest_or_stat\",\n    \"test_resigned_duplicate_raw_names_rejected_before_any_raw_digest\",\n    \"test_valid_raw_file_or_ancestor_symlink_rejected_before_raw_digest\"\n  ],\n  \"changes_only_new_path_helper_loop_and_test_mock_region\": true,\n  \"path_helper_source\": \"def raw_shard_paths(directory, manifest, stem):\\n    \\\"\\\"\\\"전체 이름을 먼저 닫은 뒤에만 링크 검사와 byteSHA 입력을 허용한다.\\\"\\\"\\\"\\n    if stem not in ('answers', 'rank') or not isinstance(manifest, dict):\\n        raise ValueError('정확한 main raw manifest/stem 필요')\\n    shards = manifest.get('shards')\\n    if not isinstance(shards, list) or not shards:\\n        raise ValueError('비어 있지 않은 main raw shard 목록 필요')\\n    names, seen = [], set()\\n    for index, shard in enumerate(shards):\\n        name = shard.get('path') if isinstance(shard, dict) else None\\n        if (not isinstance(name, str) or Path(name).is_absolute()\\n                or '/' in name or '\\\\\\\\' in name or '..' in Path(name).parts\\n                or name != f'{stem}_{index:06d}.jsonl' or name in seen):\\n            raise ValueError('main raw shard의 중복 없는 정확한 순서/basename 필요')\\n        names.append(name); seen.add(name)\\n    # 잘못된 이름은 safe()의 is_symlink/stat에도 전달하지 않는다.\\n    return [safe(directory / name) for name in names]\\n\\n\",\n  \"git_used\": false,\n  \"files_written\": 0\n}\n",
+    "runner_result": {
+      "chunk_id": "5cb004",
+      "wall_time_seconds": 0.000012243,
+      "exit_code": 0,
+      "original_token_count": 514,
+      "output": "{\n  \"new_main_sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\",\n  \"new_test_sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\",\n  \"inverse_patch_main_sha256\": \"A08FA0FB250228F11C0BCF56A09520AB7C39125180FC87BF3847267F6F694516\",\n  \"inverse_patch_test_sha256\": \"101F4DF4B553066976CD0A91D510E8E6D137BE14EDE68A127F3D2DA9AA201500\",\n  \"exact_draft_restoration\": true,\n  \"unchanged_original36_semantics\": true,\n  \"tests_total\": 40,\n  \"added_test_names\": [\n    \"test_exact_raw_names_and_complete_lexical_pass_precede_safe\",\n    \"test_resigned_absolute_nested_parent_and_wrong_stem_never_reach_digest_or_stat\",\n    \"test_resigned_duplicate_raw_names_rejected_before_any_raw_digest\",\n    \"test_valid_raw_file_or_ancestor_symlink_rejected_before_raw_digest\"\n  ],\n  \"changes_only_new_path_helper_loop_and_test_mock_region\": true,\n  \"path_helper_source\": \"def raw_shard_paths(directory, manifest, stem):\\n    \\\"\\\"\\\"전체 이름을 먼저 닫은 뒤에만 링크 검사와 byteSHA 입력을 허용한다.\\\"\\\"\\\"\\n    if stem not in ('answers', 'rank') or not isinstance(manifest, dict):\\n        raise ValueError('정확한 main raw manifest/stem 필요')\\n    shards = manifest.get('shards')\\n    if not isinstance(shards, list) or not shards:\\n        raise ValueError('비어 있지 않은 main raw shard 목록 필요')\\n    names, seen = [], set()\\n    for index, shard in enumerate(shards):\\n        name = shard.get('path') if isinstance(shard, dict) else None\\n        if (not isinstance(name, str) or Path(name).is_absolute()\\n                or '/' in name or '\\\\\\\\' in name or '..' in Path(name).parts\\n                or name != f'{stem}_{index:06d}.jsonl' or name in seen):\\n            raise ValueError('main raw shard의 중복 없는 정확한 순서/basename 필요')\\n        names.append(name); seen.add(name)\\n    # 잘못된 이름은 safe()의 is_symlink/stat에도 전달하지 않는다.\\n    return [safe(directory / name) for name in names]\\n\\n\",\n  \"git_used\": false,\n  \"files_written\": 0\n}\n"
+    },
+    "parsed_result": {
+      "new_main_sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52",
+      "new_test_sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274",
+      "inverse_patch_main_sha256": "A08FA0FB250228F11C0BCF56A09520AB7C39125180FC87BF3847267F6F694516",
+      "inverse_patch_test_sha256": "101F4DF4B553066976CD0A91D510E8E6D137BE14EDE68A127F3D2DA9AA201500",
+      "exact_draft_restoration": true,
+      "unchanged_original36_semantics": true,
+      "tests_total": 40,
+      "added_test_names": [
+        "test_exact_raw_names_and_complete_lexical_pass_precede_safe",
+        "test_resigned_absolute_nested_parent_and_wrong_stem_never_reach_digest_or_stat",
+        "test_resigned_duplicate_raw_names_rejected_before_any_raw_digest",
+        "test_valid_raw_file_or_ancestor_symlink_rejected_before_raw_digest"
+      ],
+      "changes_only_new_path_helper_loop_and_test_mock_region": true,
+      "path_helper_source": "def raw_shard_paths(directory, manifest, stem):\n    \"\"\"전체 이름을 먼저 닫은 뒤에만 링크 검사와 byteSHA 입력을 허용한다.\"\"\"\n    if stem not in ('answers', 'rank') or not isinstance(manifest, dict):\n        raise ValueError('정확한 main raw manifest/stem 필요')\n    shards = manifest.get('shards')\n    if not isinstance(shards, list) or not shards:\n        raise ValueError('비어 있지 않은 main raw shard 목록 필요')\n    names, seen = [], set()\n    for index, shard in enumerate(shards):\n        name = shard.get('path') if isinstance(shard, dict) else None\n        if (not isinstance(name, str) or Path(name).is_absolute()\n                or '/' in name or '\\\\' in name or '..' in Path(name).parts\n                or name != f'{stem}_{index:06d}.jsonl' or name in seen):\n            raise ValueError('main raw shard의 중복 없는 정확한 순서/basename 필요')\n        names.append(name); seen.add(name)\n    # 잘못된 이름은 safe()의 is_symlink/stat에도 전달하지 않는다.\n    return [safe(directory / name) for name in names]\n\n",
+      "git_used": false,
+      "files_written": 0
+    },
+    "방법": "새파일문자열에서raw_shard_paths정의와raw bind의3노드수리를메모리로역변환하고test의새source mock/helper/4시험영역만원source helper로되돌리면기존A08/101바이트SHA와정확일치한다. 파일을되돌리거나쓰지않았고Git도사용하지않음.",
+    "결론": "raw-exact/STOP/EOS/MAX·EOT/shift/BPE/분기d/reach·conditional gap·1536/4608원집계·R의비기록재구성등기존36의실행코드와기존test본문은불변. 변경은검토한신규경로검사/호출순서와합성fixture symlink mock/추가4시험뿐."
+  },
+  "guarded40": {
+    "command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nBOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\\n# Import only the package's path declarations, with its exact six mkdir calls mocked.\\n# No real directory is queried, created, or permitted by the physical-write guard.\\nfrom unittest.mock import patch as _guard_patch\\n_path_root=pathlib.Path(os.environ.get('TINYLM_DIR',_ROOT))\\n_path_hf=pathlib.Path(os.environ.get('TINYLM_HF',_path_root/'HF'))\\n_path_import_dirs={str(p) for p in (_path_hf,_path_hf/'hub',_path_root/'data_cache',_path_root/'runs',_path_root/'runs/ckpt',_path_root/'runs/logs')}\\n_COUNTS['path_import_mkdir_mock_calls']=0\\ndef _memory_path_import_mkdir(path,*args,**kwargs):\\n    if str(path) not in _path_import_dirs or args or kwargs!={'parents':True,'exist_ok':True}:\\n        raise AssertionError('GUARD unexpected path import mkdir')\\n    _COUNTS['path_import_mkdir_mock_calls']+=1\\nwith _guard_patch.object(pathlib.Path,'mkdir',_memory_path_import_mkdir):\\n    import tinylm.paths\\nassert _COUNTS['path_import_mkdir_mock_calls']==6\\n\"\nCHILD_BOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\"\nexec(BOOT)\nimport copy, runpy, unittest\nfrom pathlib import Path\nstarted=time.perf_counter()\nowned=[Path(_ROOT)/'scripts/diag_p106b_actual_prefix_readback.py',Path(_ROOT)/'scripts/test_p106b_actual_prefix_readback.py']\ndef identity():\n    return {str(p.relative_to(_ROOT)):{'bytes':len(p.read_bytes()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()} for p in owned}\nbefore=identity()\nexpected={'scripts/diag_p106b_actual_prefix_readback.py':{'bytes':40945,'sha256':'1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52'},'scripts/test_p106b_actual_prefix_readback.py':{'bytes':47861,'sha256':'133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274'}}\nassert before==expected\n_original_run=subprocess.run\nchild_receipts=[]\ndef _guarded_cli_run(command,*args,**kwargs):\n    if not isinstance(command,(tuple,list)):\n        raise AssertionError('GUARD explicit CLI argv needed')\n    argv=list(command)\n    driver=str(owned[0])\n    if argv[:5]!=[sys.executable,'-B','-X','utf8',driver]:\n        raise AssertionError('GUARD only exact frozen driver CLI allowed '+repr(argv))\n    tail=argv[5:]\n    allowed=(tail==['--help'] or (len(tail)>=3 and tail[0]=='--mode' and tail[1] in ('prepare','preflight','evaluate','readback') and '--check-only' in tail and '--execute' not in tail))\n    if not allowed or kwargs.get('cwd')!='/tmp':\n        raise AssertionError('GUARD source-free CLI selectors only')\n    extra=\"\\nimport runpy\\nsys.argv=\"+repr([driver,*tail])+\"\\ntry:\\n    runpy.run_path(\"+repr(driver)+\",run_name='__main__')\\nfinally:\\n    print('[CHILD_GUARD] '+json.dumps(_COUNTS,sort_keys=True),file=sys.stderr)\\n\"\n    guarded=[sys.executable,'-B','-X','utf8','-c',CHILD_BOOT+extra]\n    _ALLOWED_CHILDREN.add(tuple(guarded));_COUNTS['source_free_children']+=1\n    result=_original_run(guarded,*args,**kwargs)\n    receipt=[line for line in result.stderr.splitlines() if line.startswith('[CHILD_GUARD] ')]\n    if len(receipt)!=1:\n        raise AssertionError('GUARD child receipt missing '+result.stderr)\n    counts=json.loads(receipt[0].split('] ',1)[1]);child_receipts.append(dict(original_argv=argv,returncode=result.returncode,counts=counts))\n    if any(v for k,v in counts.items() if k not in ('source_free_children','path_import_mkdir_mock_calls')):\n        raise AssertionError('GUARD child attempted forbidden operation')\n    return result\nsubprocess.run=_guarded_cli_run\nsuite=unittest.defaultTestLoader.loadTestsFromName('scripts.test_p106b_actual_prefix_readback')\nresult=unittest.TextTestRunner(stream=sys.stdout,verbosity=2).run(suite)\nafter=identity()\nassert after==before\ncounts=copy.deepcopy(_COUNTS)\nfinal=dict(tests=result.testsRun,failures=len(result.failures),errors=len(result.errors),skipped=len(result.skipped),successful=result.wasSuccessful(),before=before,after=after,counts=counts,child_receipts=child_receipts,cuda_initialized=torch.cuda.is_initialized(),elapsed_seconds=time.perf_counter()-started)\nprint('[INDEPENDENT_GUARDED_RESULT] '+json.dumps(final,ensure_ascii=False,sort_keys=True))\nraise SystemExit(0 if result.wasSuccessful() and all(v==0 for k,v in counts.items() if k not in ('source_free_children','path_import_mkdir_mock_calls')) else 1)\nPY",
+    "raw_stdout": "test_ambiguous_raw_name_and_outside_answer_are_not_model_or_tool_failures (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_eos_never_guesses_an_eot_even_with_matching_name_and_hash (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_invalid_frozen_content_list_is_source_error (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_max_new_uses_only_content_vector_exact_count_and_hash (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_normal_max128_does_not_authenticate_short_canonical_name (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_raw_exact_only_whitespace_nfkc_casefold_and_punctuation_remain_unresolved (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_stop_includes_exactly_one_real_eot_and_compact_int_list_hash (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_stop_mismatch_and_bool_terminal_are_unresolved_not_fabricated_authentication (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_unknown_finish_missing_or_bad_hash_count_and_noncanonical_segmentation_unresolved (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_complete_record_real_encoder_fixture_and_header_bpe_straddle_rejection (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_detailed_denominator_join_and_unmatched_decision_interpretation_tamper_rejected (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_full1536_question4608_edge_closure_and_old_scores_unchanged (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_partial_duplicate_case_or_rank_and_corrupt_prompt_protocol_fail_closed (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_record_mask_shift_prefix_boolean_token_and_cpu_hash_tamper_rejected (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_unresolved_closes_all_three_edges_without_quality_zero (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_actual_third_name_has_mismatch_match_and_not_reached_per_edge (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_different_negative_branch_positions_are_not_shared_one_diag_score (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_eot_prefix_branch_both_directions_and_other_token_category (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_reached_requires_d_less_than_g_length_even_when_truncated_prefix_matches (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_source_score_sign_is_bound_only_to_exact_edge_and_no_argmax_inferred (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_absolute_deadline_bounds_parser_mutual_exclusion_and_error_classification (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_absolute_help_and_check_only_from_other_cwd (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_both_modes_use_shared_three_phase_pipeline_with_actual_worker_adapters (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_check_only_all_modes_source_free_and_actual_requested_bounds_displayed (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_pipeline_fail_hold_interrupt_and_timeout_keep_remaining_not_run (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_worker_elapsed_limit_is_enforced_without_sleep_or_global_ledger_claim (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_worker_preflight_read_only_readback_separate_and_wall_bound300 (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_complete_r_is_reconstructed_with_only_nonwriting_helpers (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_consumer_original_readback_function_is_never_used (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_corrupt_r_report_manifest_checkpoint_or_frozen_spec_is_tool_error (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_exact_raw_names_and_complete_lexical_pass_precede_safe (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_existing_namespace_or_symlink_is_not_overwritten (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_missing_r_blocks_tokenizer_and_endpoint_before_any_assets (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_new_detail_json_wire_roundtrip_bounded_shards_and_corruption (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_partial_actual1758_is_hold_not_invented_complete (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_readback_fresh_memory_namespace_only_and_no_old_write (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_resigned_absolute_nested_parent_and_wrong_stem_never_reach_digest_or_stat (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_resigned_duplicate_raw_names_rejected_before_any_raw_digest (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_source_byte_change_after_snapshot_is_rejected (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_valid_raw_file_or_ancestor_symlink_rejected_before_raw_digest (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\n\n----------------------------------------------------------------------\nRan 40 tests in 24.826s\n\nOK\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106b_actual_prefix_readback.py\": {\"bytes\": 40945, \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"}, \"scripts/test_p106b_actual_prefix_readback.py\": {\"bytes\": 47861, \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"}}, \"before\": {\"scripts/diag_p106b_actual_prefix_readback.py\": {\"bytes\": 40945, \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"}, \"scripts/test_p106b_actual_prefix_readback.py\": {\"bytes\": 47861, \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"}}, \"child_receipts\": [{\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py\", \"--help\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py\", \"--mode\", \"preflight\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py\", \"--mode\", \"readback\", \"--check-only\"], \"returncode\": 0}], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"path_import_mkdir_mock_calls\": 6, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 3, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 24.848436691001552, \"errors\": 0, \"failures\": 0, \"skipped\": 0, \"successful\": true, \"tests\": 40}\n",
+    "tool_chunks": [
+      {
+        "chunk_id": "4dbd26",
+        "wall_time_seconds": 1.001702927,
+        "session_id": 5865,
+        "original_token_count": 0,
+        "output": ""
+      },
+      {
+        "chunk_id": "1dbf3e",
+        "wall_time_seconds": 0.000009055,
+        "exit_code": 0,
+        "original_token_count": 2051,
+        "output": "test_ambiguous_raw_name_and_outside_answer_are_not_model_or_tool_failures (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_eos_never_guesses_an_eot_even_with_matching_name_and_hash (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_invalid_frozen_content_list_is_source_error (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_max_new_uses_only_content_vector_exact_count_and_hash (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_normal_max128_does_not_authenticate_short_canonical_name (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_raw_exact_only_whitespace_nfkc_casefold_and_punctuation_remain_unresolved (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_stop_includes_exactly_one_real_eot_and_compact_int_list_hash (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_stop_mismatch_and_bool_terminal_are_unresolved_not_fabricated_authentication (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_unknown_finish_missing_or_bad_hash_count_and_noncanonical_segmentation_unresolved (scripts.test_p106b_actual_prefix_readback.AuthenticationTests) ... ok\ntest_complete_record_real_encoder_fixture_and_header_bpe_straddle_rejection (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_detailed_denominator_join_and_unmatched_decision_interpretation_tamper_rejected (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_full1536_question4608_edge_closure_and_old_scores_unchanged (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_partial_duplicate_case_or_rank_and_corrupt_prompt_protocol_fail_closed (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_record_mask_shift_prefix_boolean_token_and_cpu_hash_tamper_rejected (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_unresolved_closes_all_three_edges_without_quality_zero (scripts.test_p106b_actual_prefix_readback.CorpusAndCensusTests) ... ok\ntest_actual_third_name_has_mismatch_match_and_not_reached_per_edge (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_different_negative_branch_positions_are_not_shared_one_diag_score (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_eot_prefix_branch_both_directions_and_other_token_category (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_reached_requires_d_less_than_g_length_even_when_truncated_prefix_matches (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_source_score_sign_is_bound_only_to_exact_edge_and_no_argmax_inferred (scripts.test_p106b_actual_prefix_readback.EdgeTests) ... ok\ntest_absolute_deadline_bounds_parser_mutual_exclusion_and_error_classification (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_absolute_help_and_check_only_from_other_cwd (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_both_modes_use_shared_three_phase_pipeline_with_actual_worker_adapters (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_check_only_all_modes_source_free_and_actual_requested_bounds_displayed (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_pipeline_fail_hold_interrupt_and_timeout_keep_remaining_not_run (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_worker_elapsed_limit_is_enforced_without_sleep_or_global_ledger_claim (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_worker_preflight_read_only_readback_separate_and_wall_bound300 (scripts.test_p106b_actual_prefix_readback.PipelineTests) ... ok\ntest_complete_r_is_reconstructed_with_only_nonwriting_helpers (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_consumer_original_readback_function_is_never_used (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_corrupt_r_report_manifest_checkpoint_or_frozen_spec_is_tool_error (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_exact_raw_names_and_complete_lexical_pass_precede_safe (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_existing_namespace_or_symlink_is_not_overwritten (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_missing_r_blocks_tokenizer_and_endpoint_before_any_assets (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_new_detail_json_wire_roundtrip_bounded_shards_and_corruption (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_partial_actual1758_is_hold_not_invented_complete (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_readback_fresh_memory_namespace_only_and_no_old_write (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_resigned_absolute_nested_parent_and_wrong_stem_never_reach_digest_or_stat (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_resigned_duplicate_raw_names_rejected_before_any_raw_digest (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_source_byte_change_after_snapshot_is_rejected (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\ntest_valid_raw_file_or_ancestor_symlink_rejected_before_raw_digest (scripts.test_p106b_actual_prefix_readback.SourceAndOutputTests) ... ok\n\n----------------------------------------------------------------------\nRan 40 tests in 24.826s\n\nOK\n[INDEPENDENT_GUARDED_RESULT] {\"after\": {\"scripts/diag_p106b_actual_prefix_readback.py\": {\"bytes\": 40945, \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"}, \"scripts/test_p106b_actual_prefix_readback.py\": {\"bytes\": 47861, \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"}}, \"before\": {\"scripts/diag_p106b_actual_prefix_readback.py\": {\"bytes\": 40945, \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"}, \"scripts/test_p106b_actual_prefix_readback.py\": {\"bytes\": 47861, \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"}}, \"child_receipts\": [{\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py\", \"--help\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py\", \"--mode\", \"preflight\", \"--check-only\"], \"returncode\": 0}, {\"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 0, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"original_argv\": [\"/home/uranus/miniforge3/envs/tlm_torch/bin/python\", \"-B\", \"-X\", \"utf8\", \"/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py\", \"--mode\", \"readback\", \"--check-only\"], \"returncode\": 0}], \"counts\": {\"cuda_initialization_calls\": 0, \"forbidden_data_reads\": 0, \"network_calls\": 0, \"nn_module_construction_calls\": 0, \"nn_module_forward_calls\": 0, \"path_import_mkdir_mock_calls\": 6, \"physical_write_attempts\": 0, \"real_tokenizer_creation_calls\": 0, \"source_free_children\": 3, \"torch_load_calls\": 0, \"torch_save_calls\": 0}, \"cuda_initialized\": false, \"elapsed_seconds\": 24.848436691001552, \"errors\": 0, \"failures\": 0, \"skipped\": 0, \"successful\": true, \"tests\": 40}\n"
+      }
+    ],
+    "parsed_result": {
+      "after": {
+        "scripts/diag_p106b_actual_prefix_readback.py": {
+          "bytes": 40945,
+          "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+        },
+        "scripts/test_p106b_actual_prefix_readback.py": {
+          "bytes": 47861,
+          "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+        }
+      },
+      "before": {
+        "scripts/diag_p106b_actual_prefix_readback.py": {
+          "bytes": 40945,
+          "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+        },
+        "scripts/test_p106b_actual_prefix_readback.py": {
+          "bytes": 47861,
+          "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+        }
+      },
+      "child_receipts": [
+        {
+          "counts": {
+            "cuda_initialization_calls": 0,
+            "forbidden_data_reads": 0,
+            "network_calls": 0,
+            "nn_module_construction_calls": 0,
+            "nn_module_forward_calls": 0,
+            "physical_write_attempts": 0,
+            "real_tokenizer_creation_calls": 0,
+            "source_free_children": 0,
+            "torch_load_calls": 0,
+            "torch_save_calls": 0
+          },
+          "original_argv": [
+            "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+            "-B",
+            "-X",
+            "utf8",
+            "/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py",
+            "--help"
+          ],
+          "returncode": 0
+        },
+        {
+          "counts": {
+            "cuda_initialization_calls": 0,
+            "forbidden_data_reads": 0,
+            "network_calls": 0,
+            "nn_module_construction_calls": 0,
+            "nn_module_forward_calls": 0,
+            "physical_write_attempts": 0,
+            "real_tokenizer_creation_calls": 0,
+            "source_free_children": 0,
+            "torch_load_calls": 0,
+            "torch_save_calls": 0
+          },
+          "original_argv": [
+            "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+            "-B",
+            "-X",
+            "utf8",
+            "/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py",
+            "--mode",
+            "preflight",
+            "--check-only"
+          ],
+          "returncode": 0
+        },
+        {
+          "counts": {
+            "cuda_initialization_calls": 0,
+            "forbidden_data_reads": 0,
+            "network_calls": 0,
+            "nn_module_construction_calls": 0,
+            "nn_module_forward_calls": 0,
+            "physical_write_attempts": 0,
+            "real_tokenizer_creation_calls": 0,
+            "source_free_children": 0,
+            "torch_load_calls": 0,
+            "torch_save_calls": 0
+          },
+          "original_argv": [
+            "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+            "-B",
+            "-X",
+            "utf8",
+            "/home/uranus/tinyLM/scripts/diag_p106b_actual_prefix_readback.py",
+            "--mode",
+            "readback",
+            "--check-only"
+          ],
+          "returncode": 0
+        }
+      ],
+      "counts": {
+        "cuda_initialization_calls": 0,
+        "forbidden_data_reads": 0,
+        "network_calls": 0,
+        "nn_module_construction_calls": 0,
+        "nn_module_forward_calls": 0,
+        "path_import_mkdir_mock_calls": 6,
+        "physical_write_attempts": 0,
+        "real_tokenizer_creation_calls": 0,
+        "source_free_children": 3,
+        "torch_load_calls": 0,
+        "torch_save_calls": 0
+      },
+      "cuda_initialized": false,
+      "elapsed_seconds": 24.848436691001552,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "successful": true,
+      "tests": 40
+    },
+    "environment": "CUDA_VISIBLE_DEVICES=빈값,OMP/MKL/OPENBLAS/NUMEXPR2,PYTHONDONTWRITEBYTECODE=1,python-B-Xutf8",
+    "guard": "실자료경로의open/enumeration·물리쓰기/mkdir/remove/rename/link등·network를audit hook으로차단. 실제torch.load/save·nn.Module생성/forward·CUDA초기화·realTokenizer생성은금지함수. /dev/null은stdin만허용.",
+    "package_import": "부모tinylm.paths의정확6mkdir를최초import동안메모리no-op로치환한뒤Path.mkdir를복구.공용환경/guard/원코드변경0.",
+    "cli_children": "임의cwd의help/preflight-check-only/readback-check-only3개도각자식guard하에실행되었고모두exit0·금지호출0.",
+    "operations": {
+      "cuda_initialization_calls": 0,
+      "forbidden_data_reads": 0,
+      "network_calls": 0,
+      "nn_module_construction_calls": 0,
+      "nn_module_forward_calls": 0,
+      "path_import_mkdir_mock_calls": 6,
+      "physical_write_attempts": 0,
+      "real_tokenizer_creation_calls": 0,
+      "source_free_children": 3,
+      "torch_load_calls": 0,
+      "torch_save_calls": 0
+    },
+    "cuda_initialized": false,
+    "물리쓰기": "이40시험실행에는실제물리쓰기0. fakeTokenizer/메모리SHA/Mockwriter와실제자료/모델호출을혼동하지않는다."
+  },
+  "independent_P1_reproduction_and_semantics": {
+    "command": "env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 NUMEXPR_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 - <<'PY'\nBOOT = \"import atexit, builtins, hashlib, io, json, os, pathlib, socket, subprocess, sys, tempfile, time\\ntempfile.tempdir='/tmp'\\nsys.dont_write_bytecode=True\\n_ROOT='/home/uranus/tinyLM'\\n_COUNTS={'physical_write_attempts':0,'forbidden_data_reads':0,'torch_load_calls':0,'torch_save_calls':0,'nn_module_construction_calls':0,'nn_module_forward_calls':0,'cuda_initialization_calls':0,'network_calls':0,'real_tokenizer_creation_calls':0,'source_free_children':0}\\n_ALLOWED_CHILDREN=set()\\n_PROTECTED=tuple(_ROOT+'/'+s for s in ('HF','data_cache','runs/ckpt','datasets/TinyDataset','test_result','tokenizer','tokenizers','models'))\\ndef _protected(path):\\n    if isinstance(path,(str,bytes,os.PathLike)):\\n        p=os.path.abspath(os.fsdecode(path))\\n        return any(p==r or p.startswith(r+'/') for r in _PROTECTED)\\n    return False\\ndef _audit(event,args):\\n    if event=='open':\\n        p,mode,flags=args\\n        if isinstance(p,(str,bytes,os.PathLike)):\\n            name=os.path.abspath(os.fsdecode(p))\\n            if name!='/dev/null' and flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND):\\n                _COUNTS['physical_write_attempts']+=1\\n                raise AssertionError('GUARD physical write '+name)\\n            if _protected(name):\\n                _COUNTS['forbidden_data_reads']+=1\\n                raise AssertionError('GUARD real data read '+name)\\n    elif event in ('os.mkdir','os.remove','os.rmdir','os.rename','os.link','os.symlink','os.truncate','os.chmod','os.chown'):\\n        _COUNTS['physical_write_attempts']+=1\\n        raise AssertionError('GUARD physical mutation '+event)\\n    elif event in ('os.listdir','os.scandir'):\\n        if _protected(args[0]):\\n            _COUNTS['forbidden_data_reads']+=1\\n            raise AssertionError('GUARD real data enumeration')\\n    elif event in ('socket.__new__','socket.connect','socket.bind','socket.getaddrinfo'):\\n        _COUNTS['network_calls']+=1\\n        raise AssertionError('GUARD networking')\\n    elif event=='subprocess.Popen':\\n        executable,argv,cwd,env=args\\n        if tuple(argv) not in _ALLOWED_CHILDREN:\\n            raise AssertionError('GUARD unapproved subprocess')\\n    elif event in ('os.system','os.posix_spawn','os.exec','os.fork'):\\n        raise AssertionError('GUARD external execution '+event)\\nsys.addaudithook(_audit)\\nimport torch\\ntorch.set_num_threads(2)\\ndef _deny(key):\\n    def fail(*args,**kwargs):\\n        _COUNTS[key]+=1\\n        raise AssertionError('GUARD '+key)\\n    return fail\\ntorch.load=_deny('torch_load_calls')\\ntorch.save=_deny('torch_save_calls')\\ntorch.nn.Module.__init__=_deny('nn_module_construction_calls')\\ntorch.nn.Module._call_impl=_deny('nn_module_forward_calls')\\ntorch.nn.Module.forward=_deny('nn_module_forward_calls')\\nfor _name in ('init','_lazy_init','is_available','device_count','current_device','synchronize','reset_peak_memory_stats','max_memory_allocated','max_memory_reserved','empty_cache'):\\n    if hasattr(torch.cuda,_name):\\n        setattr(torch.cuda,_name,_deny('cuda_initialization_calls'))\\nif hasattr(torch._C,'_cuda_init'):\\n    torch._C._cuda_init=_deny('cuda_initialization_calls')\\nimport tokenizers\\nclass _ForbiddenTokenizer:\\n    def __new__(cls,*args,**kwargs):\\n        return _deny('real_tokenizer_creation_calls')()\\n    from_file=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_str=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_buffer=staticmethod(_deny('real_tokenizer_creation_calls'))\\n    from_pretrained=staticmethod(_deny('real_tokenizer_creation_calls'))\\ntokenizers.Tokenizer=_ForbiddenTokenizer\\n\\n# Import only the package's path declarations, with its exact six mkdir calls mocked.\\n# No real directory is queried, created, or permitted by the physical-write guard.\\nfrom unittest.mock import patch as _guard_patch\\n_path_root=pathlib.Path(os.environ.get('TINYLM_DIR',_ROOT))\\n_path_hf=pathlib.Path(os.environ.get('TINYLM_HF',_path_root/'HF'))\\n_path_import_dirs={str(p) for p in (_path_hf,_path_hf/'hub',_path_root/'data_cache',_path_root/'runs',_path_root/'runs/ckpt',_path_root/'runs/logs')}\\n_COUNTS['path_import_mkdir_mock_calls']=0\\ndef _memory_path_import_mkdir(path,*args,**kwargs):\\n    if str(path) not in _path_import_dirs or args or kwargs!={'parents':True,'exist_ok':True}:\\n        raise AssertionError('GUARD unexpected path import mkdir')\\n    _COUNTS['path_import_mkdir_mock_calls']+=1\\nwith _guard_patch.object(pathlib.Path,'mkdir',_memory_path_import_mkdir):\\n    import tinylm.paths\\nassert _COUNTS['path_import_mkdir_mock_calls']==6\\n\"\nexec(BOOT)\nimport ast,copy\nfrom unittest.mock import Mock,patch\nfrom types import SimpleNamespace as NS\nfrom pathlib import Path\nfrom scripts import diag_p106b_actual_prefix_readback as d\nfrom scripts.test_p106b_actual_prefix_readback import MainFixture,fixture,CONTENTS\nbegan=time.perf_counter()\nowned=[Path(_ROOT)/'scripts/diag_p106b_actual_prefix_readback.py',Path(_ROOT)/'scripts/test_p106b_actual_prefix_readback.py']\ndef identities():\n    return {str(p.relative_to(_ROOT)):{'bytes':len(p.read_bytes()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest().upper()} for p in owned}\nbefore=identities();main=MainFixture()\ntree=ast.parse((Path(_ROOT)/'scripts/diag_p106b_subject_role.py').read_text(encoding='utf-8'))\nreal_eval_node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='validate_evaluation')\nreal_read_node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='read_shards')\nfor endpoint in d.ENDPOINTS:\n    report=main.docs[str(main.EVIDENCE/('evaluate_'+endpoint)/'report.json')]\n    identity=main.endpoint_identity(endpoint)\n    report.update(code_sha256=main.info()['code_sha256'],corpus_sha256=main.digest(main.CORPUS/'report.json'),\n                  cases_sha256=d.sha(main.cases),core_before=identity['expected_core_sha256'],\n                  core_after=identity['expected_core_sha256'],model_training=False,weights_changed=False)\nenv_eval=dict(TAG=main.TAG,info=main.info,digest=main.digest,CORPUS=main.CORPUS,natural_data=main.natural_data)\nexec(compile(ast.Module(body=[real_eval_node],type_ignores=[]),'<frozen_real_validate_evaluation>','exec'),env_eval)\nmain.validate_evaluation=env_eval['validate_evaluation']\nvalidation_steps=[]\ndef memory_safe(path):\n    validation_steps.append('read_shards.safe')\n    return path\nenv_read=dict(safe=memory_safe,required=main.required,Pending=d.Pending,\n              verify=Mock(side_effect=AssertionError('unexpected post-path verification')),json=json)\nexec(compile(ast.Module(body=[real_read_node],type_ignores=[]),'<frozen_real_read_shards>','exec'),env_read)\nmain.read_shards=env_read['read_shards']\nprotected=d.ROOT/'datasets/TinyDataset/__UNOPENED_SYNTHETIC_STAGE4ERS_HASH_TARGET__.jsonl'\nreport=main.docs[str(main.EVIDENCE/'evaluate_ce/report.json')]\npart=report['answer_manifest']['shards'][0];part['path']=str(protected)\nmain.files[str(protected)]=part['sha256']\nreport['answer_manifest_sha256']=d.sha(report['answer_manifest'])\nmain.docs[str(main.EVIDENCE/'readback.json')]=main.expected_gate()\nseen=[];symlink_paths=[]\ndef memory_digest(path):\n    seen.append(str(path))\n    return main.digest(path)\ndef memory_symlink(path):\n    symlink_paths.append(str(path))\n    return False\nwith patch.object(Path,'is_symlink',autospec=True,side_effect=memory_symlink),\\\n     patch.object(Path,'stat',side_effect=AssertionError('actual stat forbidden')) as stat,\\\n     patch.object(Path,'open',side_effect=AssertionError('actual open forbidden')) as opened:\n    try:\n        with patch.object(d,'dependencies',return_value=main),patch.object(d,'required',side_effect=main.required),\\\n             patch.object(d,'digest',side_effect=memory_digest),\\\n             patch.dict(sys.modules,{'tokenizers':NS(Tokenizer=NS(from_file=Mock(return_value=main.tok)))}):\n            d.load_source(lambda:None)\n        raise AssertionError('expected new early raw-name rejection')\n    except ValueError as exc:\n        rejection={'type':type(exc).__name__,'message':str(exc)}\n    assert str(protected) not in seen and str(protected) not in symlink_paths\n    assert validation_steps==[]\n    stat.assert_not_called();opened.assert_not_called()\n    stat_calls=stat.call_count;open_calls=opened.call_count\nassert 'main raw shard' in rejection['message']\npath_counterexample=dict(absolute_path=str(protected),original_P1_reproduction_now_blocked=True,\n    actual_protected_stat_or_open=False,mocked_digest_reached=False,\n    malicious_path_symlink_check_reached=False,stat_calls=stat_calls,open_calls=open_calls,\n    digest_calls_before_rejection=len(seen),last_digest_was_manifest=seen[-1].endswith('answers_shards_manifest.json'),\n    new_early_path_rejection=rejection,original_read_shards_entered=False,\n    original_validate_evaluation_used=True,original_read_shards_installed_with_memory_io=True,\n    reports_and_R_resigned_in_memory=True,actual_main_source_was_not_modified=True)\n# Exhaust all four selected candidates versus all three edges for the first four queries.\nfmain,questions=fixture();states=collections.Counter() if False else None\nfrom collections import Counter\nstates=Counter();relations=Counter()\nfor qi in range(4):\n    question=questions[qi];rank=fmain.ranks['ce'][0]\n    for ai in range(4):\n        auth=d.authenticate(question,fmain.event(fmain.cases[qi],ai))\n        assert auth['status']=='AUTHENTICATED'\n        generated=CONTENTS[ai]+[4]\n        for branch in question['branches']:\n            index=branch['branch_index']\n            original=next(e for e in rank['first_divergence'] if e['question_index']==qi and e['candidate_index']==branch['candidate_index'])\n            result=d.edge_result(question,auth,branch,original)\n            expected='NOT_REACHED' if index>=len(generated) else 'MATCH' if generated[:index]==(CONTENTS[qi]+[4])[:index] else 'MISMATCH'\n            assert result['status']==expected\n            assert (result['tf_gap_at_actual_decision'] is not None)==(expected=='MATCH')\n            states[expected]+=1\n            if expected=='MATCH':\n                token=generated[index]\n                category='GOLD' if token==branch['correct_token'] else 'WRONG' if token==branch['crossed_token'] else 'OTHER'\n                assert result['selected_token_relation']==category\n                relations[category]+=1\n            else:assert result['selected_token_relation'] is None\nassert sum(states.values())==48\n# Exercise unchanged real complete_record with a synthetic offset tokenizer and ignored trailing newline.\nfrom scripts.p106b_relation_bind_data import complete_record\nfrom tinylm.chat.canonical import normalize,validate\nfrom tinylm.chat.serialize import serialize\nclass OffsetTokenizer:\n    def __init__(self,straddle=False):self.straddle=straddle\n    def token_to_id(self,token):return {'<|im_start|>':3,'<|im_end|>':4,'<pad>':0}.get(token)\n    def encode(self,value):\n        ids=[];offsets=[];i=0;header='<|im_start|>assistant\\n'\n        boundary=value.find(header)+len(header) if header in value else len(value)\n        while i<len(value):\n            special=next((s for s in ('<|im_start|>','<|im_end|>') if value.startswith(s,i)),None)\n            if special:\n                ids.append(self.token_to_id(special));offsets.append((i,i+len(special)));i+=len(special)\n            elif self.straddle and i==boundary-1 and boundary<len(value):\n                ids.append(998);offsets.append((i,i+2));i+=2\n            else:ids.append(1000+ord(value[i]));offsets.append((i,i+1));i+=1\n        return NS(ids=ids,offsets=offsets)\nrow=validate(normalize(dict(messages=[dict(role='user',content='synthetic boundary'),dict(role='assistant',content='Alpha')])))\ntok=OffsetTokenizer();record=complete_record(row,tok)\nprefix=tok.encode(serialize(dict(messages=row['messages'][:1]),'chatml',add_generation_prompt=True)).ids\ncontract=d.record_contract(record,prefix,4)\nassert record.y[-1]==-100 and contract['positions'][-1]==len(record.y)-2\nassert contract['positions'][0]==len(prefix)-1\ntry:complete_record(row,OffsetTokenizer(True));raise AssertionError('straddle must fail')\nexcept ValueError:straddle_rejected=True\nafter=identities();assert before==after\nprint(json.dumps(dict(path_boundary_counterexample=path_counterexample,edge_exhaustive=dict(combinations=48,states=dict(states),relations_on_match=dict(relations)),\n    real_complete_record_fixture=dict(prefix_tokens=len(prefix),record_x_tokens=len(record.x),first_predictor=contract['positions'][0],\n        terminal_eot_predictor=contract['positions'][-1],ignored_trailing_y_positions=1,last_y_ignored=True,\n        canonical_content_plus_eot=len(contract['targets']),header_straddle_rejected=straddle_rejected),\n    before=before,after=after,guard=_COUNTS,cuda_initialized=torch.cuda.is_initialized(),elapsed_seconds=time.perf_counter()-began),ensure_ascii=False,indent=2))\nPY",
+    "raw_stdout": "{\n  \"path_boundary_counterexample\": {\n    \"absolute_path\": \"/home/uranus/tinyLM/datasets/TinyDataset/__UNOPENED_SYNTHETIC_STAGE4ERS_HASH_TARGET__.jsonl\",\n    \"original_P1_reproduction_now_blocked\": true,\n    \"actual_protected_stat_or_open\": false,\n    \"mocked_digest_reached\": false,\n    \"malicious_path_symlink_check_reached\": false,\n    \"stat_calls\": 0,\n    \"open_calls\": 0,\n    \"digest_calls_before_rejection\": 30,\n    \"last_digest_was_manifest\": true,\n    \"new_early_path_rejection\": {\n      \"type\": \"ValueError\",\n      \"message\": \"main raw shard의 중복 없는 정확한 순서/basename 필요\"\n    },\n    \"original_read_shards_entered\": false,\n    \"original_validate_evaluation_used\": true,\n    \"original_read_shards_installed_with_memory_io\": true,\n    \"reports_and_R_resigned_in_memory\": true,\n    \"actual_main_source_was_not_modified\": true\n  },\n  \"edge_exhaustive\": {\n    \"combinations\": 48,\n    \"states\": {\n      \"MATCH\": 40,\n      \"MISMATCH\": 6,\n      \"NOT_REACHED\": 2\n    },\n    \"relations_on_match\": {\n      \"GOLD\": 20,\n      \"WRONG\": 20\n    }\n  },\n  \"real_complete_record_fixture\": {\n    \"prefix_tokens\": 37,\n    \"record_x_tokens\": 43,\n    \"first_predictor\": 36,\n    \"terminal_eot_predictor\": 41,\n    \"ignored_trailing_y_positions\": 1,\n    \"last_y_ignored\": true,\n    \"canonical_content_plus_eot\": 6,\n    \"header_straddle_rejected\": true\n  },\n  \"before\": {\n    \"scripts/diag_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 40945,\n      \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"\n    },\n    \"scripts/test_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 47861,\n      \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"\n    }\n  },\n  \"after\": {\n    \"scripts/diag_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 40945,\n      \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"\n    },\n    \"scripts/test_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 47861,\n      \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"\n    }\n  },\n  \"guard\": {\n    \"physical_write_attempts\": 0,\n    \"forbidden_data_reads\": 0,\n    \"torch_load_calls\": 0,\n    \"torch_save_calls\": 0,\n    \"nn_module_construction_calls\": 0,\n    \"nn_module_forward_calls\": 0,\n    \"cuda_initialization_calls\": 0,\n    \"network_calls\": 0,\n    \"real_tokenizer_creation_calls\": 0,\n    \"source_free_children\": 0,\n    \"path_import_mkdir_mock_calls\": 6\n  },\n  \"cuda_initialized\": false,\n  \"elapsed_seconds\": 0.9813923429974238\n}\n",
+    "tool_chunks": [
+      {
+        "chunk_id": "c99ea3",
+        "wall_time_seconds": 1.001043321,
+        "session_id": 78781,
+        "original_token_count": 0,
+        "output": ""
+      },
+      {
+        "chunk_id": "85c7eb",
+        "wall_time_seconds": 0.000011333,
+        "exit_code": 0,
+        "original_token_count": 628,
+        "output": "{\n  \"path_boundary_counterexample\": {\n    \"absolute_path\": \"/home/uranus/tinyLM/datasets/TinyDataset/__UNOPENED_SYNTHETIC_STAGE4ERS_HASH_TARGET__.jsonl\",\n    \"original_P1_reproduction_now_blocked\": true,\n    \"actual_protected_stat_or_open\": false,\n    \"mocked_digest_reached\": false,\n    \"malicious_path_symlink_check_reached\": false,\n    \"stat_calls\": 0,\n    \"open_calls\": 0,\n    \"digest_calls_before_rejection\": 30,\n    \"last_digest_was_manifest\": true,\n    \"new_early_path_rejection\": {\n      \"type\": \"ValueError\",\n      \"message\": \"main raw shard의 중복 없는 정확한 순서/basename 필요\"\n    },\n    \"original_read_shards_entered\": false,\n    \"original_validate_evaluation_used\": true,\n    \"original_read_shards_installed_with_memory_io\": true,\n    \"reports_and_R_resigned_in_memory\": true,\n    \"actual_main_source_was_not_modified\": true\n  },\n  \"edge_exhaustive\": {\n    \"combinations\": 48,\n    \"states\": {\n      \"MATCH\": 40,\n      \"MISMATCH\": 6,\n      \"NOT_REACHED\": 2\n    },\n    \"relations_on_match\": {\n      \"GOLD\": 20,\n      \"WRONG\": 20\n    }\n  },\n  \"real_complete_record_fixture\": {\n    \"prefix_tokens\": 37,\n    \"record_x_tokens\": 43,\n    \"first_predictor\": 36,\n    \"terminal_eot_predictor\": 41,\n    \"ignored_trailing_y_positions\": 1,\n    \"last_y_ignored\": true,\n    \"canonical_content_plus_eot\": 6,\n    \"header_straddle_rejected\": true\n  },\n  \"before\": {\n    \"scripts/diag_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 40945,\n      \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"\n    },\n    \"scripts/test_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 47861,\n      \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"\n    }\n  },\n  \"after\": {\n    \"scripts/diag_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 40945,\n      \"sha256\": \"1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52\"\n    },\n    \"scripts/test_p106b_actual_prefix_readback.py\": {\n      \"bytes\": 47861,\n      \"sha256\": \"133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274\"\n    }\n  },\n  \"guard\": {\n    \"physical_write_attempts\": 0,\n    \"forbidden_data_reads\": 0,\n    \"torch_load_calls\": 0,\n    \"torch_save_calls\": 0,\n    \"nn_module_construction_calls\": 0,\n    \"nn_module_forward_calls\": 0,\n    \"cuda_initialization_calls\": 0,\n    \"network_calls\": 0,\n    \"real_tokenizer_creation_calls\": 0,\n    \"source_free_children\": 0,\n    \"path_import_mkdir_mock_calls\": 6\n  },\n  \"cuda_initialized\": false,\n  \"elapsed_seconds\": 0.9813923429974238\n}\n"
+      }
+    ],
+    "exit_code": 0,
+    "parsed_result": {
+      "path_boundary_counterexample": {
+        "absolute_path": "/home/uranus/tinyLM/datasets/TinyDataset/__UNOPENED_SYNTHETIC_STAGE4ERS_HASH_TARGET__.jsonl",
+        "original_P1_reproduction_now_blocked": true,
+        "actual_protected_stat_or_open": false,
+        "mocked_digest_reached": false,
+        "malicious_path_symlink_check_reached": false,
+        "stat_calls": 0,
+        "open_calls": 0,
+        "digest_calls_before_rejection": 30,
+        "last_digest_was_manifest": true,
+        "new_early_path_rejection": {
+          "type": "ValueError",
+          "message": "main raw shard의 중복 없는 정확한 순서/basename 필요"
+        },
+        "original_read_shards_entered": false,
+        "original_validate_evaluation_used": true,
+        "original_read_shards_installed_with_memory_io": true,
+        "reports_and_R_resigned_in_memory": true,
+        "actual_main_source_was_not_modified": true
+      },
+      "edge_exhaustive": {
+        "combinations": 48,
+        "states": {
+          "MATCH": 40,
+          "MISMATCH": 6,
+          "NOT_REACHED": 2
+        },
+        "relations_on_match": {
+          "GOLD": 20,
+          "WRONG": 20
+        }
+      },
+      "real_complete_record_fixture": {
+        "prefix_tokens": 37,
+        "record_x_tokens": 43,
+        "first_predictor": 36,
+        "terminal_eot_predictor": 41,
+        "ignored_trailing_y_positions": 1,
+        "last_y_ignored": true,
+        "canonical_content_plus_eot": 6,
+        "header_straddle_rejected": true
+      },
+      "before": {
+        "scripts/diag_p106b_actual_prefix_readback.py": {
+          "bytes": 40945,
+          "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+        },
+        "scripts/test_p106b_actual_prefix_readback.py": {
+          "bytes": 47861,
+          "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+        }
+      },
+      "after": {
+        "scripts/diag_p106b_actual_prefix_readback.py": {
+          "bytes": 40945,
+          "sha256": "1F08BFE02E798F267E0EEE3B7181FA68658028BD0192B393CB4E54E3D1A7EE52"
+        },
+        "scripts/test_p106b_actual_prefix_readback.py": {
+          "bytes": 47861,
+          "sha256": "133D203A0A6542BAB5593692F6A17D2880FC3699A7D21A1C125B7AC7D19D6274"
+        }
+      },
+      "guard": {
+        "physical_write_attempts": 0,
+        "forbidden_data_reads": 0,
+        "torch_load_calls": 0,
+        "torch_save_calls": 0,
+        "nn_module_construction_calls": 0,
+        "nn_module_forward_calls": 0,
+        "cuda_initialization_calls": 0,
+        "network_calls": 0,
+        "real_tokenizer_creation_calls": 0,
+        "source_free_children": 0,
+        "path_import_mkdir_mock_calls": 6
+      },
+      "cuda_initialized": false,
+      "elapsed_seconds": 0.9813923429974238
+    },
+    "validator": "동결main.validate_evaluation/read_shards의실제함수AST만별도namespace에compile해메모리IO와연결. maincontroller나원main.readback()을호출/수정하지않았다.",
+    "prior_P1": {
+      "adversarial_fixture": "CEanswers manifest를ROOT안보호유사absolute경로로변조하고메모리report/R를재서명. 신뢰된실제source·GPU실패가아닌이전과같은adversarial조건.",
+      "old_observation": "A08초안에서는그문자열이mocked digest에전달된뒤원read_shards의exactstem검사에서실패했다.",
+      "new_observation": {
+        "absolute_path": "/home/uranus/tinyLM/datasets/TinyDataset/__UNOPENED_SYNTHETIC_STAGE4ERS_HASH_TARGET__.jsonl",
+        "original_P1_reproduction_now_blocked": true,
+        "actual_protected_stat_or_open": false,
+        "mocked_digest_reached": false,
+        "malicious_path_symlink_check_reached": false,
+        "stat_calls": 0,
+        "open_calls": 0,
+        "digest_calls_before_rejection": 30,
+        "last_digest_was_manifest": true,
+        "new_early_path_rejection": {
+          "type": "ValueError",
+          "message": "main raw shard의 중복 없는 정확한 순서/basename 필요"
+        },
+        "original_read_shards_entered": false,
+        "original_validate_evaluation_used": true,
+        "original_read_shards_installed_with_memory_io": true,
+        "reports_and_R_resigned_in_memory": true,
+        "actual_main_source_was_not_modified": true
+      },
+      "판단": "최종guard가원read_shards진입전에ValueError로거부. maliciouspath의mockdigest/symlink조회0,전체실물stat/open spy0. 실제보호경로접근0.",
+      "보호": "보호경로는문자열로만구성했다. 파일이존재한다고가정하거나실제내용/SHA/metadata를열지않음."
+    },
+    "edges": {
+      "combinations": 48,
+      "states": {
+        "MATCH": 40,
+        "MISMATCH": 6,
+        "NOT_REACHED": 2
+      },
+      "relations_on_match": {
+        "GOLD": 20,
+        "WRONG": 20
+      },
+      "범위": "4질문×4실제선택후보×3음성=48개합성조합. 이전과같은MATCH40/MISMATCH6/NOT_REACHED2·MATCH상의GOLD20/WRONG20이며비MATCH에실제decision gap을붙이지않음."
+    },
+    "real_complete_record_synthetic": {
+      "prefix_tokens": 37,
+      "record_x_tokens": 43,
+      "first_predictor": 36,
+      "terminal_eot_predictor": 41,
+      "ignored_trailing_y_positions": 1,
+      "last_y_ignored": true,
+      "canonical_content_plus_eot": 6,
+      "header_straddle_rejected": true
+    },
+    "BPEnewline": "합성offset tokenizer로원complete_record를실행해content+EOT6개,firstpredictor36/prefix37,terminalEOTpredictor41/recordx43,lasty=-100의합법적ignorednewline1개를확인. headerstraddle는거부되며newline을continuation해시에추가하지않음.",
+    "미검증": "실제source/실tokenizer/실모델의prefix인증률·수치정합은NOT_RUN."
+  },
+  "path_fix_assessment": {
+    "lexical_first": "모든shard이름을먼저검사한다:허용stem answers/rank,비어있지않은list,dict/path문자열,비절대·separator/parent금지,정확stem_순차index.jsonl·중복금지.",
+    "symlink_before_hash": "모든이름검증이끝난뒤각파일/조상safe검사를수행한list가완성되어야bind/digest루프에진입한다. 잘못된두번째이름때도첫파일의safe/stat를먼저하지않는회귀를확인.",
+    "scope": "정확 raw source manifest 이름에대한좁은수리이며source행·후보token·점수·모델·추론·기존R는변경하지않음.",
+    "remaining_trust": "기존frozen/source비변경신뢰와파일시스템비동시변조전제는유지된다. 이검사가atomic open/no-follow/전반TOCTOU방어를증명하지는않음."
+  },
+  "producer_reported_initial_added_test_failure": {
+    "attribution": "thesis가최종동결신호로전달한시험이력이며이agent가그실패를재실행하거나원stdout을직접회수한것은아님.",
+    "내용": "신규경로시험의초기oracle가rank에위조된answers경로를앞단정상answers해시와혼동해1회실패했다고보고했다. 해당manifest이후digest호출만검사하도록oracle를고친뒤생산자40개통과.",
+    "판독": "시험oracle의시점구분문제이지제품/source/모델실패나이번독립40의실패로합산하지않는다.",
+    "original_command_or_raw_stdout": "NOT_PROVIDED_TO_THIS_AGENT",
+    "corroboration": "최종추가test는manifest path 이후의raw_attempts만확인하고앞단정상answers단계와구분한다. 해당최종코드는읽어확인했다."
+  },
+  "boundaries": [
+    "raw exact 이름부분집합의토큰열해시인증과실제도달prefix비교만수행한다. 정규화문자일치·암묵EOT추정·EOS해결·정답0점강제를도입하지않는다.",
+    "MAX128은canonicalcontent<=127과인증되지않으며짧은MAX단위fixture는기록해시만인증한다. finish_reason_semantics_verified=false는유지.",
+    "d<len(G)이고prefixMATCH일때만원TFgap을실제prefix의비교로붙인다. 제3후보의늦은분기MISMATCH/NOT_REACHED는해석하지않는다.",
+    "전체1536질문/4608edge·미해결과누락분모를유지한다. 실제인증coverage/품질수치는실행전이므로없다.",
+    "동일tokenprefix는cached/full-forward logit수치동등성·전어휘argmax·gradient/cache효능·인과메커니즘·일반지능의증명이아니다.",
+    "전체SFT EOT비율은미계측이며다중감독replay때문에positive행수로EOT개수를대체하지않는다.",
+    "승인된새감사1파일외수정0. 실제main/R/Stage4erS·source/tok/CP/native/model/GPU/Git접근0."
+  ]
+}

@@ -438,6 +438,25 @@ def bind_source_manifests(main, frozen, bind):
               lambda name: 'replay' if name == 'replay' else 'natural_' + name)
 
 
+def raw_shard_paths(directory, manifest, stem):
+    """전체 이름을 먼저 닫은 뒤에만 링크 검사와 byteSHA 입력을 허용한다."""
+    if stem not in ('answers', 'rank') or not isinstance(manifest, dict):
+        raise ValueError('정확한 main raw manifest/stem 필요')
+    shards = manifest.get('shards')
+    if not isinstance(shards, list) or not shards:
+        raise ValueError('비어 있지 않은 main raw shard 목록 필요')
+    names, seen = [], set()
+    for index, shard in enumerate(shards):
+        name = shard.get('path') if isinstance(shard, dict) else None
+        if (not isinstance(name, str) or Path(name).is_absolute()
+                or '/' in name or '\\' in name or '..' in Path(name).parts
+                or name != f'{stem}_{index:06d}.jsonl' or name in seen):
+            raise ValueError('main raw shard의 중복 없는 정확한 순서/basename 필요')
+        names.append(name); seen.add(name)
+    # 잘못된 이름은 safe()의 is_symlink/stat에도 전달하지 않는다.
+    return [safe(directory / name) for name in names]
+
+
 def load_source(guard):
     """총괄 actual worker 전용; 기존 readback(write)는 절대 호출하지 않는다."""
     main = dependencies(); gate_path = main.EVIDENCE / 'readback.json'
@@ -479,8 +498,10 @@ def load_source(guard):
             bind(path, report[field + '_manifest_sha256'])
             if required(path) != report[field + '_manifest']:
                 raise ValueError('main raw manifest/report 불일치')
-            for shard in report[field + '_manifest']['shards']:
-                bind(directory / shard['path'], shard['sha256'])
+            manifest = report[field + '_manifest']
+            paths = raw_shard_paths(directory, manifest, stem)
+            for shard, raw_path in zip(manifest['shards'], paths):
+                bind(raw_path, shard['sha256'])
         events = main.read_shards(directory, report['answer_manifest'], 'answers', MAIN_CASES)
         rank = main.read_shards(directory, report['rank_manifest'], 'rank', BUNDLES)
         if (main.summarize_answers(events, cases, bundles['test'], tok) != report['summary']
