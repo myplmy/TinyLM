@@ -6212,3 +6212,166 @@ v1/v2의 source선택·course·record bytes·마스크·토큰·업데이트·�
 ### 9. 실행 이력
 
 [101§343](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의90CPU/실제교과 재생성/독립 대등성검사를22:23:47KST 완료했다. 정책키 충돌 회복이라는 기술예측은 적중했고22528행·course·wire·16대화/17턴이 바이트/계수 동일하다. v1 실패는 불변이며 모델0/학습0/CP0이다. 현재native 본학습 뒤5분유휴/cost/예산/부모실답을 수행하며 교육순서의 품질가설은 아직 미실행이다.
+
+## 2026-10-20 후속 Stage4fb — 같은 가중치에서 훈련/추론 route를 교차하는 무학습 진단
+
+### 1. 왜
+
+Stage4ez의 삼진→삼진/실수→실수 대각선만으로는 차이가 학습 과정인지 최종 추론 양자화인지 나눌 수 없다. 같은 완성 가중치를 보존한 채 추론 경로만 바꾸고, 같은 추론 경로에서 훈련된 가중치도 비교한다. F4는 `WIP_20261019b_WEIGHT_ROUTE_CROSS_F4.json`이고 주석/단계 소유권은 새 연구로 한정한다.
+
+### 2. 질문
+
+1. 같은 삼진 학습 가중치를 float로 읽으면 native32·정답/형식·반복이 달라지는가?
+2. 같은 float 학습 가중치를 기존 삼진 매핑으로 읽으면 얼마가 손상되는가?
+3. native와 자기 SFT 후의 반응이 같은가? 이를 단독 정답 판정기나 배포 채택 근거로 올리지 않는다.
+
+### 3. 예측
+
+float 추론이 일부 양자화 손실을 회복할 수도 있으나, 삼진에 적응한 가중치에서는 오히려 나빠질 수 있다. float 학습을 그대로 PTQ하면 손상이 클 수 있으며 그 경우 정밀한 후속 보정이 필요한지 판단할 자료가 된다. CE가 낮아지거나 반복만 줄어도 실제 정답을 개선하지 못하면 지능 개선으로 쓰지 않는다.
+
+### 4. 단계·통제
+
+원 n/helper/일반 loader를 수정하지 않는다. 원 훈련 route의 CPU context에서 원 CP/cfg/tokenizer/키·dtype·alias·core를 strict load한 뒤 context를 완전히 닫고, CUDA에서 다른 route만 연다. 전후 가중치·CP·cfg·requires_grad 불변을 검산한다. float를 generic loader에 통과시키는 우회가 아니다.
+
+같은1694 prompt/greedy64/FP32 MATH/KV-on/MTP-off/EOT, 각 native32는 별도 지표다. gold를 생성 인자로 주지 않는다. 원 대각선4×1694=6776은 명시 재사용, 네 off-diagonal의6776만 새 답이다. 네 원 CP와 네 원 대각선 report/activity/raw가 모두 완료돼야 source/prepare를 연다. 일부만 있는 지금 준비 완료를 강제로 만들지 않는다.
+
+| 단계 | 수행 | 비용·선결 | 시작 상태 |
+|---|---|---|---|
+| Stage4fbW0 | full info/원형·네CP/대각선 검산·새참조 | CPU600초·모델0 | 코드28CPU·실물NOT_RUN |
+| Stage4fbWa/Wb | native의 ternary→float / float→ternary | 각1694실답+native32·각GPU1800초 | NOT_RUN |
+| Stage4fbWc/Wd | SFT의 같은 두 교차 | 각1694실답+native32·각GPU1800초 | NOT_RUN |
+| Stage4fbWe | 새6776/재사용6776와두대응축 raw검산 | CPU600초·모델0 | NOT_RUN |
+
+### 5. 판정
+
+source/route/core/조건·raw decode 불일치와 비유한 수치는 실행 오류다. 미완 원 CP나 권한/시간 부족은 선결 보류이며 품질 음성이 아니다. 실제 결과는 native/SFT·같은 훈련가중치의 추론효과·같은 추론경로의 훈련효과를 각각 보고한다. 한 seed·같은 관측 monitor라 일반적인 최적 경로·어휘/구조 단독 인과·Falcon 동등성은 미확인으로 남긴다.
+
+### 6. 자원·한계
+
+초기15분 예비는 실제값이 아니며 손상된 경로가 모두64토큰까지 생성하면 길어질 수 있다. 실물 전 `WIP_20261019b_ROUTE_CROSS_RESOURCE_NOTE.json`로 각 GPU1800초/CPU600초·네셀 전체worker 상한8400초를 고정했다. 원 네 대각선 activity가 생기면 root가 현재 남은 시간과 재계산하고,20일17시-600초 기록예비 이전에만 연다. 전체 모드가 각자 write-once라 같은 셀의 암묵적 재시도/선택 변경은 없다. inference-only 진단은 새학습/CP0이다.
+
+참고로 원1694의 최대 prefix는521토큰이고+64가1024를 넘는0건을 읽기 전용으로 재확인했다. 이는 새 평가 성공이나 문맥 충분성의 의미 판정이 아니다. 모델간 코드/같은 CP를 읽어도 fp32 수치와 실제 출력은 실물에서만 확정한다.
+
+### 7. 실행
+
+- `run_P106B_Stage4fbW0_route_cross_cpu.sh` — `--mode prepare --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4fbWa_native_ternary_to_float.sh` — `--mode evaluate --trained-mode ternary --inference-mode float --endpoint native --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4fbWb_native_float_to_ternary.sh` — `--mode evaluate --trained-mode float --inference-mode ternary --endpoint native --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4fbWc_sft_ternary_to_float.sh` — `--mode evaluate --trained-mode ternary --inference-mode float --endpoint sft --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4fbWd_sft_float_to_ternary.sh` — `--mode evaluate --trained-mode float --inference-mode ternary --endpoint sft --max-wall-sec 1800 --execute`.
+- `run_P106B_Stage4fbWe_route_cross_readback.sh` — `--mode readback --max-wall-sec 600 --execute`.
+
+### 8. 보존
+
+참조는 data_cache, 실제 prompt/답/생성ID는 ignored runs/eval, 작은계약은test_result/evidence의새 `p106b_route_cross_v1_s1337`에 보존한다. 모두write-once·공개파일/샤드20MB미만. 고정hash12와사용자6질문의 실제 질문/답/끝을 stdout에 보여주되 전량원형은 파일로 보존한다. 온라인 의미 blacklist/교사재생성0·기존 CP 변경0이다.
+
+### 9. 실행 이력
+
+root가 전체 driver와관련 tiny회귀를 읽고 원상복구·CPU두context·원형재집계를 검토했다. 회귀27에 실제 production full info의 prepare 직렬화왕복1개를 보강해28을 재확인했다. 새 source/prepare/실물GPU/새답은 모두 NOT_RUN이며 원 Stage4ez를 완료하기 전 실행하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-20 후속 Stage4fc — 현재 여섯 가중치의 동일 공개팩 평가
+
+### 1. 왜
+
+작은 합성·관측 monitor의 정답 증가를 일반 대화나 Falcon 수준으로 읽지 않는다. 현재 native 삼진/실수와 각 SFT, 원부모에서 broad mixed/staged를 학습한 여섯 모델을 이미 보존된 공개팩에 넣어 영어·한국어와 선택형·실제 생성의 한계를 구분한다. 기존 Falcon을 다시 돌리거나 자료를 새로 받지 않는다. 사전 영향도는 `WIP_20261019b_CURRENT_BENCHMARK_F4.json`에 보존했다.
+
+### 2. 질문
+
+같은 영어 MC768개에서 native와 SFT의 변화 및 기존 Falcon398/768과의 관측 격차는 얼마인가? 최종 네 학생이 한국어 선택형1024개·KorQuAD64·GSM64에서 실제로 무엇을 답하는가? 이 평가를 일반 assistant 품질·학습예산을 맞춘 구조 인과로 승격하지 않는다.
+
+### 3. 예측
+
+SFT가 일부 지시 형식이나 근거 회수를 개선할 수 있지만 좁은 교과·약300M native 노출로 광범위한 상식·논리를 확보하지 못했을 가능성이 크다. 선택형 우도가 좋아도 자유 생성은 실패할 수 있다. 영어가 한국어보다 강하다는 가정 없이 둘을 별도 집계한다.
+
+### 4. 단계·통제
+
+원 public1920·Falcon896 raw와 보고서/ordered ID/hash·원 scorer 코드를 검산한다. 전체6개에는 PIQA/HellaSwag/ARC-easy 각256=768을, 최종학생4개에는 나머지1152개를 추가해 요청9216/실채점9212다. KorQuAD 길이초과1행/학생만 같은 이유로 제외하며 모델 오류를 제외로 바꾸지 않는다.
+
+primary는 기존 후보 합 NLL argmin, 글자수 정규화는 별도, PMI는 미계산이다. prefix와 continuation의 분리 토큰화 경계를 바꾸지 않는다. 자유 생성은 기존 greedy128·문맥1024·FP32 MATH·KV-on·MTP-off·기존 답 추출과 NFKC/숫자 검산을 보존한다. 실제 generated ID/body/종료를 함께 기록한다.
+
+native4개는 원 훈련 route의 strict loader, broad2개는 v2 원 activity·352update·2pass·cfg/tokenizer/alias/dtype/core를 검산한다. float의 generic loader 우회나 영구 requires_grad=False는 없다. 전후 가중치·CP/플래그 불변을 검사한다.
+
+### 5. 판정 기준
+
+CP/원형/ID·토큰경계·분모·실제 decode·route 불일치는 실행 오류다. 미완 여섯 CP나 시간예산 부족은 선결 보류이지 품질 실패가 아니다. 과제별 정답/오답과 길이제외·모델예외를 분리하고 영어 공통768을 cached Falcon과 비교한다. 같은 토크나이저가 아닌 CE·속도나 다른 학습예산을 구조효과로 비교하지 않는다.
+
+### 6. 비용
+
+기존1920 학생179~191초·원부모376초는 참고값이며 새 가중치/route의 예측이 아니다. 여섯 단계의 전체 launcher·회귀·preflight·실패 활동을 합쳐3600초, 절대권한20일17시에서 기록600초를 예약한다. 각 eval cap1200초, prepare/readback600초이며 전체 예산이 부족하면 사전 보류한다. 새 Falcon 모델호출0·학습0·CP0이다.
+
+### 7. 실행
+
+- `run_P106B_Stage4fcW0_current_benchmark_cpu.sh` — `--mode prepare --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4fcWa_current_native_ternary_mc.sh` — `--mode evaluate --model-id native_ternary --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4fcWb_current_native_float_mc.sh` — `--mode evaluate --model-id native_float --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4fcWc_current_sft_ternary_public.sh` — `--mode evaluate --model-id sft_ternary --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4fcWd_current_sft_float_public.sh` — `--mode evaluate --model-id sft_float --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4fcWe_current_broad_mixed_public.sh` — `--mode evaluate --model-id broad_mixed --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4fcWf_current_broad_staged_public.sh` — `--mode evaluate --model-id broad_staged --max-wall-sec 1200 --execute`.
+- `run_P106B_Stage4fcWg_current_benchmark_readback.sh` — `--mode readback --max-wall-sec 600 --execute`.
+
+### 8. 한계·보존
+
+공개팩은 한정된 관측과제이고 pretraining 오염 전수감사가 없다. Falcon은 Base의 과거 같은 MC768 원형을 검산해 명시 재사용하며 새 실행이라고 쓰지 않는다. GSM64의 과거 두 형식128행을 독립128문제로 세지 않는다. 선택형 수치만으로 실제 대화·Falcon 동등성을 주장하지 않는다. 원팩·원가중치는 읽기 전용, 새 raw는 runs/eval의 ignored namespace, 작은 계약은 test_result/evidence, 모든 공개 JSON/샤드는20MB 미만이다.
+
+### 9. 실행 이력
+
+root가 드라이버800줄을 읽고 초기34회귀 뒤 production full info를 최소 mock으로 덮지 않는 메모리 prepare 왕복을 추가해35개를 재확인했다. info.models 목록과 binding.models 사전은 별도 층이며 전후 직렬화도 확인했다. source/prepare·여섯 모델 평가·readback은 NOT_RUN이다. 새 native/SFT·broad가 완료된 뒤만 준비한다. 외부 참고자료의 학습 방법론이 검증되었다는 기록이 아니다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-20 후속 Stage4fd — 보유 legacy TRAIN의 canonical chat32 CPU 준비
+
+### 1. 왜
+
+현재597,995,000 TRAIN 풀의2배 조건에서 한 native draw는298,975,232다. 보유legacy TRAIN은1,194,000,000 old IDs지만 현재601M과 동일 원천/앞부분을 재사용하므로 독립적으로 합산하지 않는다. 원 URL/문서 revision을 복원했다고 주장하지 않으며, 현재 검증자료를 재유입하지 않는 새 캐시를 CPU로 준비할 수 있는지만 먼저 본다. F4는 `WIP_20261019b_NATIVE_EXPANSION_CPU_F4.json`이다.
+
+### 2. 질문
+
+old ByteLevel BPE 캐시를 원문 바이트 그대로 현재 chat32로 canonical 재인코딩할 수 있는가? 현재 VAL의 완결 EOS segment와 양끝 미완 segment가 새 TRAIN에 들어가지 않는가? 작은 실제 prefix의 시간·RSS·분기 관측으로 전체변환의 시간/디스크 예산을 열 수 있는가?
+
+### 3. 예측
+
+old32개 마지막 merge를 분해하고 일반ID에32를 더하는 관계를 읽기 전용 표본에서 확인했지만 전체를 단순 ID 이동해서는 안 된다. 바이트→strict UTF-8→현 tokenizer 재인코딩으로 더 넓은 분기를 확인해야 한다. 희귀 merge/새reserved literal이 prefix에0이면 실물 검증된 분기로 쓰지 않는다. 큰 EOS segment·잘린 UTF-8·VAL partial 과잉 제외로 실패할 가능성도 유지한다.
+
+### 4. 단계·통제
+
+원 legacy TRAIN만 읽고 legacy VAL은 읽지 않는다. old/current meta·두 tokenizer·current VAL 정확SHA를 묶는다. source는 작은 설정/codec 구조와 bin stat만, pilot은 첫1,048,576 old IDs와 current VAL3,005,000 IDs 전체만 소비한다. raw 원문을 Git에 복제하지 않는다. tokenizer의 same0/1/2 의미, 새reserved literal, bytes/library decode/canonical encode/idempotence를 함께 검사한다.
+
+VAL 완결 segment는 canonical ID 해시, 양끝 partial은 uint16 정렬 substring으로 새 segment에서 제외한다. 홀수바이트 우연일치는 무시하고 짧은 partial도 명시한다. 완결VAL이 더 큰 문서 안에 포함된 모든 경우나 near-duplicate/의미 오염을 전수 제거한 것은 아니다. EOS 미종결 TRAIN tail은 원형 ID/바이트 SHA와 count만 보존해 제외하며 replacement나 EOS 강제추가가 없다.
+
+| 단계 | 선결·내용 | 한도/자원 | 현재 |
+|---|---|---|---|
+| Stage4fdW0 | 전용회귀·metadata/codec source 고정 | CPU600초·모델0 | NOT_RUN |
+| Stage4fdWa | bounded prefix 변환·현재VAL제외·바이트/토큰분모 | CPU1200초·단일스레드·GPU0 | NOT_RUN |
+| 조건부 budget | 완결segment 처리율/별도전체TRAIN SHA·fresh host 입력 | 명시 `--allow-full-scan`·600초 신선도 | 런처 미작성/NOT_RUN |
+| 조건부 build/readback | 새ignored uint16/ledger·전체소비/hash/count/끝EOS | 명시 `--allow-full-build`·05Z-600초 예비·최대6h | 런처 미작성/NOT_RUN |
+
+초기47 합성회귀 검토에서 발견한 시간분모·readback 예상시간/worker 상한·SIGTERM 실패activity 연결3건은 실제source/pilot 전에 수리·root재검토한다. 새코드는 실물 동결 뒤 수정하지 않는다.
+
+### 5. 판정
+
+바이트/ID·tokenizer·원형SHA/계수·출력scope 불일치는 CPU 오류다. 사전예산/host물리여유 부족은 보류이며 품질 음성이나 학생 실패가 아니다. 성공시 실제 retained canonical 위치 수로만2draw 최대치를 계산한다. 위치 수가 고유 문장/지식량이거나 전체75M 대화가 확보됐다는 뜻은 아니다.
+
+### 6. 비용
+
+pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은 미완tail을 제외한 완결ID 분모로 보수적으로 계산하고2배 예비를 둔다. build는 guest 논리여유와 root가 별도로 잰 host물리여유를 둘 다 확인한다. WSL root의 큰 가용공간을 Z호스트의 실제여유로 부르지 않는다. budget/build마다600초 내 host측정/근거를 요구하며 실행 도중 host여유 지속보장은 없다. readback도 예상시간·worker cap·남은05Z 예산을 먼저 대조한다. TERM은 예외/130과 finally기록을 유도하지만 SIGKILL 기록은 보장하지 않는다.
+
+### 7. 실행
+
+- `run_P106B_Stage4fdW0_legacy_native_source_cpu.sh` — `--mode source --max-wall-sec 600 --execute`.
+- `run_P106B_Stage4fdWa_legacy_native_prefix_pilot.sh` — `--mode pilot --max-wall-sec 1200 --execute`.
+
+전체해시/build는 pilot 결과를 본 뒤 fresh host 측정과 새 명시 SH를 붙일 때만 가능하다. 이 CPU 영수증으로 새 GPU 학습을 자동 채택하지 않는다.
+
+### 8. 한계·보존
+
+원 source/oldcache/VAL/기존native 코드·가중치는 불변이다. 출력bin은 재생성 캐시인 ignored data_cache에만 두어20MB Git결과 상한과 구분한다. 공개 JSON/ledger샤드/원로그는20MB 미만이다. source revision/URL·정확언어구성·near오염·새지식량은 미확인으로 남긴다. 실제 source와 sampling/WSD horizon·언어구성이 달라지는 향후 큰학습은 현재299M과 학습량 단독 인과로 비교하지 않는다.
+
+### 9. 실행 이력
+
+읽기 전용 inventory/8KiB 표본은 별도 감사이고 실제 tagged source/pilot/build는 아직 NOT_RUN이다. 초기47회귀 뒤 독립검토에서 발견한 세 예산/종료 결함을 수리했으며 root가 해당 함수와 신규7회귀를 읽고 전체54개를0.490초에 재확인했다. source나 실제 bin 변환의 PASS는 아니다. 현재 삼진/실수2281 대조는 원 조건 그대로 지속하며 새GPU 실험을 이 절에서 열지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

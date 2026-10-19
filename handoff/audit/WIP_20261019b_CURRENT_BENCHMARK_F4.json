@@ -1,0 +1,95 @@
+{
+  "schema": "TINYLM_CURRENT_WEIGHTS_BENCH_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "20일17시까지 주도적 CPU+GPU 실제 발전 평가·필요 구현 허가",
+  "status": "새 구현/실물bench NOT_RUN. 읽기전용 기존팩/scorer 재고를 먼저 수행했다.",
+  "files": {
+    "create": [
+      "scripts/diag_p106b_current_benchmark.py",
+      "scripts/test_p106b_current_benchmark.py"
+    ],
+    "read_only": [
+      "scripts/diag_p106b_authorized_benchmark.py",
+      "scripts/eval_bench_suite.py",
+      "scripts/diag_p106b_night_falcon.py 또는 실제 frozen에 기록된 Falcon driver",
+      "현재native/broad v2 원형/코드/학습·평가완료보고/CP",
+      "HF/sft_ready/p106b_authorized_validation_v1_s1337/public_benchmark",
+      "HF/sft_ready/p106b_night_falcon_v2_s1337/corpus",
+      "기존Falcon cached report/raw"
+    ],
+    "new_outputs": [
+      "data_cache/p106b_current_benchmark_v1_s1337",
+      "runs/eval/p106b_current_benchmark_v1_s1337",
+      "test_result/evidence/p106b_current_benchmark_v1_s1337"
+    ],
+    "excluded": [
+      "원생산/공용scorer/기존팩/가중치수정",
+      "보호TinyDataset/추가취득",
+      "Falcon 새모델실행",
+      "학습/새checkpoint"
+    ]
+  },
+  "selection": {
+    "adopted": "B 단계형",
+    "models": [
+      "native_ternary",
+      "native_float",
+      "sft_ternary",
+      "sft_float",
+      "broad_mixed",
+      "broad_staged"
+    ],
+    "all6": "Falcon과같은 영어PIQA/HellaSwag/ARC-easy 각256=768 MC",
+    "students4": "기존공개1920팩 중 나머지한국어1024MC+KorQuAD64+GSM64=1152행 추가",
+    "requested_rows": 9216,
+    "expected_scored_rows": 9212,
+    "length_exclusion": "원래KorQuAD 길이초과1행/학생을동일정책으로제외. 사전제외/모델예외/오답분리.",
+    "cached_reference": "기존Falcon398/768(170/89/139); 같은GSM64의두형식128행은독립128문제가아니다."
+  },
+  "method": {
+    "loaders": "native4개는n.routed_runtime의정식훈련route를유지. broad2개는v2 runtime_scope/완료activity/report·352/2pass/cfg/tokenizer/core의원strictload를재사용. float에generic loader/영구requires_gradFalse금지.",
+    "scoring": "기존MC후보합NLL argmin 주지표·char-normalized별도·기존prefix/continuation분리encode경계·길이초과정책그대로. no_pmi=True로PMI는미계산이라고명시.",
+    "precision": "PrecisionForward fp32_math로내부scorer/sampler의BF16autocast를명시해제. context1024, studentfree greedy128/KV-on/MTP-off/EOT계약.",
+    "generation": "원requested/effective/maxNew/종료/실제ID/body와기존public답추출·NFKC/숫자parser를별도보존. emit64로대체금지.",
+    "evidence": "같은고정public원형/oldcodeSHA를검산, 선택형우도와실제자유답·MCchance/label분포·KO/EN과제를분리. actualhistory16대화와섞지않음.",
+    "cached_falcon": "원팩/원raw와768 ID/SHA를검산해명시재사용. 새Falcon GPU0, novo점수로쓰지않음."
+  },
+  "alternatives": [
+    {
+      "name": "영어MC768만6개",
+      "rows": 4608,
+      "selected": false,
+      "benefit": "저렴한Falcon공통격차",
+      "cost": "한국어/실제자유답미측정"
+    },
+    {
+      "name": "단계형영어MC+최종학생전체팩",
+      "rows": 9216,
+      "selected": true,
+      "benefit": "native기초와학생한영/산수한계를분리",
+      "cost": "추가raw·strictloader/CPU회귀/GPU약15~30분참고"
+    },
+    {
+      "name": "6개전체팩+plainGSM추가",
+      "rows": 11904,
+      "selected": false,
+      "benefit": "두형식세부비교",
+      "cost": "base긴생성/추가해석부담"
+    }
+  ],
+  "resource": {
+    "prior_observed": "영어MC약66~70초/모델,전체1920교육학생179~191초·원부모376초는참고뿐",
+    "new_stage_limit_seconds": 3600,
+    "record_reserve_seconds": 600,
+    "authority_end_utc": "2026-10-20T08:00:00Z",
+    "forecast": "새가중치/float/동시CPU의경과시간은자원계획이며속도benchmark아님"
+  },
+  "impact": {
+    "code": "전용2파일·원API불변",
+    "data": "고정팩읽기·새<20MB rawshards, 원문팩복제/staging0",
+    "tests": "정확공통ID/요청9216·실채점분모·format/길이·FP32wrapper/후기cast·floatloader·corruptreceipts·완료/기한/복원",
+    "docs": "새phase명/정본연쇄·캐시비교수준과범위명시",
+    "debt": "관찰한public팩 재사용·사전학습오염미감사·어휘/구조/훈련량다르므로구조단독인과금지"
+  },
+  "adoption": "실제bench점수는모델품질자료이며일반assistant/한국어대화/Falcon동등성자동채택아님"
+}

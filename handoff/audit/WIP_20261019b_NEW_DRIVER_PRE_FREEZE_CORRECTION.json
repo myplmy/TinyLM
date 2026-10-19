@@ -1,0 +1,45 @@
+{
+  "schema": "TINYLM_NEW_DRIVER_PRE_FREEZE_CORRECTION_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "stage": "실제 source/prepare 동결 이전",
+  "initial_static": "handoff/audit/WIP_20261019b_CROSS_BENCH_EXPANSION_PRE_STATIC.json",
+  "corrected_static": "handoff/audit/WIP_20261019b_CROSS_BENCH_EXPANSION_PRE_STATIC_FIXED.json",
+  "errors": 0,
+  "pass": 68,
+  "not_run": 6,
+  "total": 74,
+  "changes": [
+    {
+      "path": "scripts/diag_p106b_native_expansion.py",
+      "change": "tokenizer 사전의 config 이름을 codec_spec으로 변경해 TMTConfig 속성 검사와 구별했다. 첫 변경의 잔여 참조2개는 CPU회귀에서 NameError로 검출돼 실물 전에 고쳤다.",
+      "final_sha256": "882738C52731B6E667E3F0984C8F74D2B978D28067A24831192888B2F0E763D1"
+    },
+    {
+      "path": "scripts/flag_whitelist.tsv",
+      "change": "converter7개와 cross/benchmark4개, 신규 CLI 인자11개를 exp로 명시 등록했다. 파서가 소유하는 인자 목록이나 공용 검사기 코드는 바꾸지 않았다."
+    },
+    {
+      "path": "scripts/test_p106b_current_benchmark.py",
+      "change": "full production info를 사용하는 메모리 prepare/직렬화 왕복1개를 추가했다. 첫 fixture의 exists mock이 code까지 NOT_CREATED로 만든 실패는 코드 경로의 원래 존재성만 쓰도록 수정했다.",
+      "final_sha256": "4F7F2A6578E4E840E287649A9EC0F797B15048AE1A17A17DC1FA04853A842B3D"
+    }
+  ],
+  "root_final_regression": {
+    "command": "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_current_benchmark scripts.test_p106b_native_expansion scripts.test_p106b_route_cross_readout -q",
+    "tests": 117,
+    "seconds": 1.165,
+    "breakdown": {
+      "benchmark": 35,
+      "expansion": 54,
+      "cross": 28
+    },
+    "returncode": 0
+  },
+  "queue": {
+    "errors": 0,
+    "runnable": 39
+  },
+  "actual_new_namespaces": "NOT_RUN",
+  "models_or_gpu_from_this_audit": 0,
+  "common_checker_changes": 0
+}

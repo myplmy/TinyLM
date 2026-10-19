@@ -1,0 +1,47 @@
+{
+  "schema": "TINYLM_NEW_DRIVER_ROOT_REVIEW_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "review": "실제 namespace 생성 전 원형과 신규 함수를 검토했다. source/prepare/GPU는 별도 증거다.",
+  "drivers": [
+    {
+      "file": "scripts/diag_p106b_route_cross_readout.py",
+      "tests": 28,
+      "root_test_seconds": 0.255,
+      "root_added": "production full info를 최소 mock으로 덮지 않는 prepare 직렬화 왕복",
+      "state": "CPU_PASS_ACTUAL_NOT_RUN"
+    },
+    {
+      "file": "scripts/diag_p106b_current_benchmark.py",
+      "driver_sha256": "9D44B42F59987B5980C45C2309615D133D7713E079CFC343F317B643BE9DE73B",
+      "test_sha256": "59E954B4967768DEA84EA8FFDB346631AC5A8A5B0E0A17DC75F08ADF527ACF80",
+      "tests": 34,
+      "root_test_seconds": 0.306,
+      "review": "전체800줄·기존 점수/분리토큰화·FP32 실제 forward·strict route·cached Falcon/분모·활동예산 검토",
+      "state": "CPU_PASS_ACTUAL_NOT_RUN"
+    },
+    {
+      "file": "scripts/diag_p106b_native_expansion.py",
+      "driver_sha256": "5621B576A13A7E51B19A3F80F5654E2CD3541F7D9B21CDB282DBBC9024DE1F1D",
+      "test_sha256": "5377A796AC36B4CA5BC107103922558C33F9D40DDB122BDE68C3D79D45646235",
+      "tests": 54,
+      "root_test_seconds": 0.49,
+      "initial_tests": 47,
+      "root_review": "초기 전체코드와 후속 세 수정함수/신규7회귀를 검토했다.",
+      "repairs": [
+        "시간·audit bytes·readback 외삽은 old_complete_ids 분모",
+        "readback 예상초·worker cap·현재05Z-600 예산 동시검사",
+        "worker TERM→130→finally activity·handler 복원, SIGKILL은 보장하지 않음"
+      ],
+      "state": "CPU_PASS_ACTUAL_NOT_RUN"
+    }
+  ],
+  "old_source_changes": 0,
+  "models_or_checkpoint_tensor_loads": 0,
+  "new_gpu_execution": 0,
+  "notes": [
+    "회귀는 합성/tiny fixture를 포함하며 실물 전량 변환/모델 품질을 증명하지 않는다.",
+    "최초 bare python 실행은 명령이 없어127로 끝났고 환경의 정확한 Python 절대경로로34회귀를 실행했다.",
+    "없는 check_plan_format.py 호출은2로 끝났으며 실제 존재하는 check_experiment_plan_index.py와 check_plan_numbers.py를 찾아0을 확인했다.",
+    "각 소스가 실제 prepare에 동결된 뒤 변경하지 않는다."
+  ]
+}
