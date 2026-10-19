@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Superseded v1 driver was frozen in git d216de4; original commands are historical only.
+printf '%s\n' '[HOLD] Superseded v1 launcher; use the separately versioned Stage4eu plan. No child/model started.' >&2
+exit 8
 # HOLD v1: preserved CPU corpus has a consumer mask-owner incompatibility. Use the separately versioned recovery.
 # Question wording x position study; original P090B parent, same targets and native windows.
 # micro8 accum16 seq1024 checkpointON compile-default; CE-only; no teacher or MTP.

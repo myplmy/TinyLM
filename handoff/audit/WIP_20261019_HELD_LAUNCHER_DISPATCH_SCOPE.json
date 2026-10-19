@@ -1,0 +1,30 @@
+{
+  "schema": "TINYLM_EXPERIMENTAL_HELD_LAUNCHER_DISPATCH_GUARD_V1",
+  "authority": "User autonomous experimental launcher maintenance through2026-10-20 17KST",
+  "observed": "14 v1 hold files are excluded byqueue, but direct bash could otherwise call same-path current v2 driver under old stage names.",
+  "options": [
+    {
+      "option": "A",
+      "selected": true,
+      "action": "Explicit inert HOLD exit8 before environment/source/child invocation; original command text remains unreachable and recovered in gitb46d90f.",
+      "benefit": "No runtime/model/source ambiguity; tiny shell-only change",
+      "risk": "Unholding now also requires a consciously versioned launcher, as intended for superseded invalid v1 reader."
+    },
+    {
+      "option": "B",
+      "selected": false,
+      "action": "Start Python to assert old driver version first",
+      "risk": "Unnecessary execution and a larger guard surface"
+    },
+    {
+      "option": "C",
+      "selected": false,
+      "action": "Filename-only hold",
+      "risk": "Queue excludes but direct execution may dispatch a new controller under old stage identity"
+    }
+  ],
+  "code_scope": "14 experimental hold SH only, not core/active controller/queue/checkers",
+  "data_model_effect": "NONE; old inputs/CP/log unchanged",
+  "active_training": "Unaffected, source pins unchanged",
+  "verification": "bash -n and explicit direct held-shell returns8 before any child; no actual experiment rerun"
+}
