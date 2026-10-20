@@ -29,4 +29,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWa_native595_ternary_cost8_"$run_stamp" --num 101 --note 'Native595 conditional study:4543x8x16x1024 main targets595460096, pool1191116192/externalVAL3005000/scratch028C46. Native Adam/Muon/WSD/anneal/clip1 retained. Cost8 main1048576 plus separate late8192 backward-only/cache checks; no cost CP or quality claim. Actual-worker43200, train cap18000, native stop21st11:30KST/global train14KST/authority17KST. Followup7200/eval1200/record600 reserved; new measured paired budget and fresh300s full-code-map proof before cost. Stage cost cap900s. All public files below20MB; old source/CP/raw unchanged.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWa_native595_ternary_cost8_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_native595.py --mode cost --arm ternary --max-wall-sec 900 --execute --idle-proof "$idle_proof"
-

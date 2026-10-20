@@ -29,4 +29,3 @@ if [[ -e "$log" || -L "$log" ]]; then
 fi
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4flWb_native_broad4_recovery_float_cost8_"$run_stamp" --num 101 --note 'Recovery-v2 isolated namespace; old failed proof/activity/source untouched. Same original22528/native QF/704/continuous optimizer; actual-worker14400/eval1200/record600,21st17KST authority/train14KST. No stdin. Root fresh300s UTC/monotonic idle and complete info code-map per cost route; never a single-file SHA. Current cost worker cap900s. Actual train/cost require closed worker then readonly verification. Every public file below20MB; technical completion is not intelligence.'
 "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4flWb_native_broad4_recovery_float_cost8_"$run_stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_native_broad4_recovery.py --mode cost --arm float --max-wall-sec 900 --execute --idle-proof "$idle_proof"
-
