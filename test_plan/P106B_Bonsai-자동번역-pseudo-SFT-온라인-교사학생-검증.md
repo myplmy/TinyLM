@@ -6409,8 +6409,8 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 |Stage4feWa|float SFTcost8|단독GPU900초·5분유휴·CP0|완료·101§353/종료0·실제8회|
 |Stage4feWb|원Qcost/새Fcost의384자원예산|CPU600초|완료·101§354/fits true|
 |Stage4feWc/Wd|각자native부모의동일SFT384|각GPU3600초·CP각1|양팔완료101§355/357·각CP1 keep|
-|Stage4feWe/Wf/Wg/Wh|native/SFT×삼진/실수각1694첫답·native32|각GPU1800초|We/Wg/Wh완료101§358~360; Wf수집중|
-|Stage4feWi|6776원답/token/분모/계보재검산|CPU900초·model0|NOT_RUN|
+|Stage4feWe/Wf/Wg/Wh|native/SFT×삼진/실수각1694첫답·native32|각GPU1800초|완료101§358~361·각1694|
+|Stage4feWi|6776원답/token/분모/계보재검산|CPU900초·model0|완료101§362·모델0|
 
 ### 5. 판정
 
@@ -6432,7 +6432,7 @@ A는정확소스의독립namespace와명시bridge로계산본문을보존한다.
 
 원프로세스/로그/기한을재조회하고native2/Qcost완료를계승했다. 새F4/계획을먼저작성한뒤독립재개제어기를구현했다. root가19개계산본문·5개경계함수의원bytecode/참조보존과원모듈불변·부모계보·원Qcost재사용·기한/종료회귀를검사했다. 감사는 `handoff/audit/WIP_20261020_NATIVE_RESUME_ROOT_PREFLIGHT.json`이다. 신규GPU실행은NOT_RUN이다.
 
-이후CPU bridge/Fcost/예산과양SFT384를실제로완료했다(101§352~357). 남은네독립평가는A의원표순서유지, B의학생출력우선, C의GPU병렬중B를선택해nativeQ→SFTQ→SFTF→nativeF순서로수행한다. A는관행대로이나학생피드백이늦고,C는GPU경합/상주위험이늘어난다. B는질문/가중치/seed/생성파라미터/전량분모를바꾸지않으며실행순서의속도인과를주장하지않는다. 교차준비는순서와무관하게네평가모두완료뒤만연다.
+이후CPU bridge/Fcost/예산과양SFT384를실제로완료했다(101§352~357). 네독립평가는A의원표순서유지, B의학생출력우선, C의GPU병렬중B를선택해nativeQ→SFTQ→SFTF→nativeF순서로완료했다(101§358~361). A는관행대로이나학생피드백이늦고,C는GPU경합/상주위험이늘어난다. B는질문/가중치/seed/생성파라미터/전량분모를바꾸지않으며실행순서의속도인과를주장하지않는다. 19:21최종readback의6776전량검산뒤에만교차CPU를열었다(101§362~363).
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
@@ -6519,7 +6519,7 @@ A는명시종점provider의얇은private 경계, B는평가본문전체복제, C
 
 ### 7. 실행
 
-새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT는 완료했고 대각선은 native삼진→SFT삼진→SFT실수까지 완료, native실수 수집 중이다. 소스커밋과 네 대각선 완료 뒤에만 prepare→네off-diagonal→readback을 연다. 새교차 실물 실행은 NOT_RUN이다.
+새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT/네대각선 완료와 소스커밋dd1b6e6·SH실행권한정정8ee6895 뒤 CPU prepare를완료했다(101§363). 현재첫 off-diagonal인 native삼진→실수추론을수집중이며나머지는NOT_RUN이다.
 
 ### 8. 한계
 
@@ -6569,5 +6569,58 @@ A의명시private provider 경계가계산드리프트/과거변경이가장작�
 ### 9. 실행 이력
 
 원model_reference/model_runtime과 새Broad의 course 간접참조를 다시 읽었다. 실제 같은 프로세스에서 엄격하게 검증한 model_reference만 loader가 허용하며 원계산/9216요청·9212채점/길이제외/기존Falcon원형/시간회계는 보존한다. root 검토·CPU·정적은 완료했지만 실물 공개평가/원답품질은 NOT_RUN이다. 감사는 `WIP_20261020_CURRENT_BENCHMARK_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
+
+
+## 2026-10-20 후속 Stage4fi — Q/K head별 Muon 직교화의 소형 독립 대조
+
+### 1. 왜
+
+문헌 agent의 DeepSeek-V4.1 §2.5 확인과 root의 원문/현 Muon 대조에서 head별 Q/K 업데이트는 추론 가중치를 추가하지 않는 후보였다. 현재 실수 SFT의 낮은 원문 CE와 JSON/종료 성공에도 대상·산수 오류가 남았다(101§360). 이것을 고친다는 가정 대신 같은 부모/자료/업데이트에서 변경축 하나만 시험한다.
+
+### 2. 질문
+
+같은 실수 native 부모와 동결4pass SFT384에서 Q/K의 Newton–Schulz 단위만 head별로 바꾸면, 보지 않은 상태·질문대상·표현/위치와 실제 사용자 답이 개선되는가? 이 SFT 실험으로 사전학습부터 적용하는 모든 head-wise 방법의 우열을 확정하지 않는다.
+
+### 3. 예측
+
+Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 있지만, 부모의 지식량·자료 규모가 주제약이라면 효과가 없을 수 있다. 내용 능력은 나아지지 않고 종료/형식만 변할 가능성도 명시한다. 논문의 전체 DeepSeek 훈련법 재현은 아니며 Sinkhorn·새 RMS0.18·WD0.1을 함께 도입하지 않는다.
+
+### 4. 단계·통제
+
+- 코드/CPU 선결: 원 제품 Muon·모델·실행중 소스는 수정하지 않는 새 전용 driver/test 두 파일만 구현한다. 실수 native CP SHA FBC0AF70…/core BE1DB168…와 기존 실수 SFT baseline SHA4B47B119…/core352A66D9…를 정확히 잠근다. 실제 cfg의 d768/L14/Q12/KV3/hd64/CLA2·cla_edges/attn_group를 확인한다.
+- 대상은 등록 이름과 Parameter identity로 정한 Q14행렬/K owner7행렬뿐이다. Q[768,768]→[12,64,768], K[192,768]→[3,64,768]. 다른 V/O/MLP/emb_up·임베딩·norm은 제외하고 owner 중복 업데이트를 금지한다.
+- 기존 micro8×accum16·전체gradient clip1·FP32 master/BF16AMP·checkpoint-on·compile-default·LR/NS반복·RMS 규약/WD·seed/reset·native replay/자료순서를 보존한다. momentum/Nesterov 뒤에 대상만 head별 BF16 NS를 적용하고 기존2D형상으로 되돌린다. 비대상은 원2D NS 그대로다. 3D 텐서를 현2D .T/전체norm 함수에 넘기지 않는다.
+- prepare/비대상 bit동일·head독립성/단일owner·mask/token·source/CP/계보 변조 회귀→단독cost8/CP0→자원예산→384학습/새CP1→같은1694첫답·native32→baseline 원답과 독립 재검산 순이다. 비용 앞 UTC·monotonic 모두5분유휴를 확인한다.
+- 생성 greedy64/FP32-MATH/KV-on/MTP-off와 실제 수락/정답 분모를 바꾸지 않는다. 기존 baseline을 retag하거나 다시 학습한 것처럼 보고하지 않는다. 원형/원답·현재75M 목표/학습배치는 불변이다.
+
+### 5. 판정
+
+소스/부모/초기 가중치/자료·순서/실제tokens/마스크·배치·LR·optimizer 소유권이 달라지면 ERROR다. 기존 source의 엄격 검사 우회·실수 generic loader 사용은 금지한다. 종료0·낮은CE·형식성공과 실제 정답성/사용자 대화는 분리한다. 같은 1694 raw ID/조건을 재채점하며 언어·가족·query 단위의 결과와 실패 예시를 남긴다. 단일seed라 보편 우위를 주장하지 않는다.
+
+### 6. 비용·대안
+
+|안|내용|장점|단점·비용|
+|---|---|---|---|
+|A·선택|같은float native에서 Q/K headwise SFT384 대조|추가 추론메모리0·변경축이 좁음|새팔 약20~30분은 기존실측 외삽일 뿐이며 cost8 후 확정; 구현/회귀 필요|
+|B|준비된1.191B 원문 풀의 더 긴 기본학습|기초 지식/언어량 제약을 직접 겨냥|새소비기/더 긴수시간 학습·같은SFT가 필요하고 새풀/지평 교락이 남음|
+|C|고정byte 소형Engram 추가|조건부기억의 별도 가능성|table/투영/optimizer/캐시 회귀·동일byte 용량대조 필요; 지금은후순위|
+
+사용자의21일17시까지 자율실험 위임 안에서 A의 준비를 우선한다. 이미 준비한 Broad/교차/공개평가와 GPU를 동시에 쓰지 않는다. 새가족 활동상한3600초·기록예비600초, 학습종료21일14시/전체17시를 넘지 않는다. 실제비용이나 구현선결이 안 맞으면 미실행 사유와40시간 이내 후속 SH로 남긴다.
+
+### 7. 실행
+
+전용 두파일 구현 전이며 런처는 아직 미작성이다. CPU/code/정적/소스커밋·자료/부모 선결 뒤에만 새 실행파일을 작성·사용한다. 현재 실물모델/새학습/새CP는 NOT_RUN이다.
+
+### 8. 한계·근거
+
+[DeepSeek 공식 §2.5](https://arxiv.org/html/2609.19969v1#S2.SS5)는 Q/K head-wise Muon을 말하지만 정확한 공식 training optimizer 코드는 확보하지 못했다. [Muon 저자의 batched NS](https://github.com/KellerJordan/Muon/blob/master/muon.py)의 마지막 두 축 norm/transpose 원리와 우리의 momentum·scale를 구분한다. 작은SFT에서 실패해도 사전학습 적용 전체를 기각하지 않는다. 저장/추론 파라미터 불변은 실제 CPU속도/상주 개선 증거가 아니다.
+
+### 9. 실행 이력
+
+문헌검토와 제품 Muon/Attention/CLA owner 경계를 읽고 A/B/C를 비교했다. 시작라벨/질문내용 원형과 보호 원천·기존CP·공용검사기·대화유틸리티는 쓰기 대상에서 제외한다. 다음은 전용2파일 구현과 CPU검산이며 현재 신규 GPU는 NOT_RUN이다.
+
+구현 전 agent 교차검토에서 초안의 clip8 오기를 발견해 실제 frozen train의 `clip_grad_norm_(...,1.)`과 reader의 `gradient_norm>1`에 맞춰 clip1로 정정했다. 기존 기록에서 비용8회의 `clip8`은 clipping 횟수일 수 있으므로 상한8로 해석하지 않는다. 이 정정 전에 새 optimizer/worker/모델/GPU 실행은0이며 기존 baseline/코드/실험조건 변경은0이다. 감사는 `WIP_20261020_HEADWISE_CLIP_CORRECTION.json`이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

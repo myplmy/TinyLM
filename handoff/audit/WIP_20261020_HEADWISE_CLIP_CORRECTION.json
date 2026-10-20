@@ -1,0 +1,18 @@
+{
+  "schema": "TINYLM_HEADWISE_PREIMPLEMENTATION_CORRECTION_V1",
+  "before": "Stage4fi and root delegation mistakenly said preserve clipping threshold8",
+  "after": "preserve actual clipping threshold1",
+  "source": "scripts/diag_p106b_native_weight_route.py",
+  "source_sha256": "E51B68024CA0DC24A4994FFF51C733C05BA2773E3038A2B1CC5C127F6C736FAE",
+  "evidence": [
+    "info.clip=1",
+    "train clip_grad_norm_(model.parameters(),1.)",
+    "train/readback event clipped == gradient_norm>1"
+  ],
+  "count_threshold_distinction": "cost clip8 can mean eight clipped steps, not clipping threshold8",
+  "new_implementation_before_correction": 0,
+  "new_model_runs_before_correction": 0,
+  "old_source_or_baseline_changed": false,
+  "user_threshold_changed": false,
+  "authority": "autonomous delegated planning; factual correction to retain existing baseline, not a new user-owned threshold"
+}
