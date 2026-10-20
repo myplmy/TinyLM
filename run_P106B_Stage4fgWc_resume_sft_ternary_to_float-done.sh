@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# COMPLETE: raw verdict0 and result101 section366 recorded; preserve commands, no automatic rerun.
 # P106B_Stage4fgWc_resume_sft_ternary_to_float: new private cross provenance; same frozen evaluation computation.
 # Original native training, resume SFT training and resume four diagonals are distinct providers.
 set -euo pipefail

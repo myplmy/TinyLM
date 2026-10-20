@@ -6519,7 +6519,7 @@ A는명시종점provider의얇은private 경계, B는평가본문전체복제, C
 
 ### 7. 실행
 
-새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT/네대각선 완료와 소스커밋dd1b6e6·SH실행권한정정8ee6895 뒤 CPU prepare를완료했다(101§363). 현재첫 off-diagonal인 native삼진→실수추론을수집중이며나머지는NOT_RUN이다.
+새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT/네대각선 완료와 소스커밋dd1b6e6·SH실행권한정정8ee6895 뒤 CPU prepare를완료했다(101§363). 세 off-diagonal5082답을 완료/전량검산해101§364~366에기록했다. 현재마지막실수SFT→삼진추론만수집중이며전체교차판정은후속이다.
 
 ### 8. 한계
 
@@ -6609,7 +6609,7 @@ Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 �
 
 ### 7. 실행
 
-전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 현재 실물 prepare·모델 로딩·GPU·새CP는 NOT_RUN이며 전수정적/소스커밋 뒤에만 실행한다.
+전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 전수정적68PASS/6NOT_RUN·소스커밋1226029 뒤 실제 CPU prepare worker를 완료했다(101§367). 이 단계의 모델/CP tensor 로딩·GPU·새CP는0이며 실제 cost8 뒤 예산으로만 학습을 연다.
 
 | 런처 | 역할 | 단계 상한 |
 |---|---|---|
