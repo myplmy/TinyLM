@@ -1,0 +1,91 @@
+{
+  "schema": "P106B_EXPANSION_VAL_AUDIT_F4_V1",
+  "wip_item": "7/9 autonomous preparation; not reference item12 adoption",
+  "authority": "CPU+GPU autonomous permission until2026-10-21T08:00:00Z; this stage CPU only",
+  "tag": "p106b_expansion_val_audit_v1_s1337",
+  "write_allowlist": [
+    "scripts/diag_p106b_expansion_val_audit.py",
+    "scripts/test_p106b_expansion_val_audit.py",
+    "handoff/audit/WIP_20261020_EXPANSION_VAL_AUDIT_F4.json",
+    "test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md",
+    "docs/EXPERIMENT_BASELINES.md",
+    "experiments.tsv",
+    "test_result/evidence/p106b_expansion_val_audit_v1_s1337/",
+    "runs/logs/p106b_expansion_val_audit_v1_s1337/",
+    "run_P106B_Stage4fkW0_expansion_val_overlap_cpu.sh",
+    "scripts/flag_whitelist.tsv"
+  ],
+  "agent_write_allowlist": [
+    "scripts/diag_p106b_expansion_val_audit.py",
+    "scripts/test_p106b_expansion_val_audit.py"
+  ],
+  "read_only_inputs": {
+    "scripts/diag_p106b_native_expansion.py": "882738C52731B6E667E3F0984C8F74D2B978D28067A24831192888B2F0E763D1",
+    "scripts/test_p106b_native_expansion.py": "5377A796AC36B4CA5BC107103922558C33F9D40DDB122BDE68C3D79D45646235",
+    "data_cache/p106b_native_expansion_v1_s1337/meta.json": "059617A670A6333B2E8F68A34CF7865DE70C5576537C42C74B45857935602089",
+    "test_result/evidence/p106b_native_expansion_v1_s1337/build/report.json": "103C9DFBDF45171E13F70ADFB8D3E4443ABFBDF4E982FD0A839720E02F44B5FD",
+    "test_result/evidence/p106b_native_expansion_v1_s1337/readback/report.json": "9B897BDD0C9216625EC79F49F6AE62CA4DA71130B749B4C1CE98F691AF6357C1",
+    "test_result/evidence/p106b_native_expansion_v1_s1337/activity_build.json": "5301922DAB60F5D268B165C0E829C5F7B67E8D34683BC9FE3482F93E44D06CCA",
+    "test_result/evidence/p106b_native_expansion_v1_s1337/activity_readback.json": "EF82F45AA1E420E3F0638E388B4C225627DB8E335541CB94351D231145A51028"
+  },
+  "binary_inputs_execute_only": [
+    {
+      "path": "data_cache/p106b_native_expansion_v1_s1337/train.bin",
+      "ids": 1191116192,
+      "sha256": "6DB291329CB1562E127A2D753F879C8ED8D3AB46789A3EF2B4BC3C4258846138"
+    },
+    {
+      "path": "data_cache/ko-en_601000000_chat32/val.bin",
+      "ids": 3005000,
+      "sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C"
+    }
+  ],
+  "tokenizer": {
+    "path": "data_cache/tok-ko-en-32768-chat32.json",
+    "sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E"
+  },
+  "contracts": [
+    "Independent direct uint16-little-endian scanner over exact preserved output; no original globals/authority/metadata mutation or retag",
+    "Reproduce exact same-rule full-EOS segment hash matching and aligned prefix/suffix VAL partial matching from direct pinned VAL IDs; preserve first-fragment and empty-pattern policies",
+    "Separately mmap-search all32 fixed native probe target windows of1025IDs at starts i*1024 for i0..31 across whole output with uint16 even-offset validation; do not print/store token IDs",
+    "Finite chunks and maximum segment bound; validate SHA/count/range/EOS/last-ID and bound reports to20000000bytes",
+    "Actual hits produce explicit negative/ineligible evidence, never filter/rewrite input or silently change future updates",
+    "Check-only reads code/F4 only, never bin/CP/model/GPU; explicit execute and regression→preflight→scan final receipt required",
+    "Same-rule0-hit and32full-window0-hit are separate measured claims, not arbitrary-substring/near/semantic decontamination or student training admission",
+    "New namespace/write-once report and closed worker activity with explicit deadline/time accounting; model/GPU/CP0"
+  ],
+  "resource": {
+    "end_utc": "2026-10-21T08:00:00Z",
+    "max_worker_seconds": 600,
+    "record_reserve_seconds": 600,
+    "measured_cpu_seconds": null,
+    "bytes_scan": 2382232384,
+    "probe32_search_work_note": "32 full-window searches over same readonly mmap; actual time unknown",
+    "gpu": 0
+  },
+  "alternatives": [
+    {
+      "option": "A",
+      "method": "Use previous build/readback only",
+      "benefit": "No extra scan",
+      "risk": "Independent output0-hit absent"
+    },
+    {
+      "option": "B",
+      "method": "Independent same-rule full-output scan plus exact32probe-window search",
+      "benefit": "Close mechanical validation gap without modifying source",
+      "risk": "Extra CPU/IO and still no arbitrary semantic decontamination",
+      "selected_for_preparation": true
+    },
+    {
+      "option": "C",
+      "method": "Stronger whole-VAL arbitrary inclusion scan and new filtered corpus version",
+      "benefit": "Stronger exact-inclusion coverage",
+      "risk": "New data version/effective pool and cost; currently not adopted"
+    }
+  ],
+  "long_native_training_adopted": false,
+  "protected_access": false,
+  "original_inputs_mutated": false,
+  "common_checker_or_environment_changes": false
+}

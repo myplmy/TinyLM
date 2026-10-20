@@ -236,6 +236,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
+| `p106b_expansion_val_audit_v1_s1337` | Stage4fk 보존확장 TRAIN의 동일EOS/양끝·실제native32창 독립CPU검사 | source2파일·root전량검토/35fixtures/check-only·실제metadata선결0완료. bin 전체scan·GPU/학습은NOT_RUN이며0-hit도 의미중복 제거/학습허가가 아니다. |
 | `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | CPUprepare·실제cost8/21행렬카운터8·strict VERIFY·예산완료(101§367/374~375). clip1·원계산보존. 학습384·새CP·실제답은 NOT_RUN이며 기본optimizer 승격 아님. |
 | `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | root56CPU/정적68PASS·6NOT_RUN·소스7f21b07 뒤 실제CPU source/prepare완료(101§371). 양cost/704/GPU/새CP는 NOT_RUN. QT와는 자료/감독량/재생 패키지 비교이며 예정노출을 실소비로 오인하지 않는다. |
 

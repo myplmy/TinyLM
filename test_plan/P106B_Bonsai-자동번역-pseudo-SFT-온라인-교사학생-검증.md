@@ -6690,7 +6690,9 @@ General은 Aya1070/OASST1 978행이며 KO174/EN1874다. 기존 적격 KO174는 �
 | `run_P106B_Stage4fjWb_native_broad4_float_cost8.sh` | cost float | 900초 |
 | `run_P106B_Stage4fjWc_native_broad4_budget.sh` | budget | 600초 |
 
-native 부모의 기존1694 단일턴 답은 보존돼 있지만 이 새 부모 두 개의 실제 이력16대화는 NOT_RUN이다. 옛 P090B 부모16답을 새 native 부모의 대화 기준선으로 재사용하지 않는다. 새 학생16대화의 실제 답과 부모 단일턴·동일32crop은 각각 다른 축으로 보고한다.
+native 부모의 기존1694 단일턴 답은 보존돼 있지만 이 새 부모 두 개의 실제 이력16대화는 NOT_RUN이다. 옛 P090B 부모16원천/17답(15단일턴+영어1두턴)을 새 native 부모의 대화 기준선으로 재사용하지 않는다. 새 학생16대화의 실제 답과 부모 단일턴·동일32crop은 각각 다른 축으로 보고한다.
+
+**23시 후 원형 정정/판정 제한:** 이 고정16패널의 최대3턴은 상한일 뿐 최소3턴 계약이 아니다. 원P090B와 두 Broad 실답을 원형으로 확인했을 때 모두15단일턴+영어1두턴·17실답·문맥중단0이었다. 한국어 후속턴0·영어두번째턴1·세번째턴0이므로 이 패널만으로 일반 한영 다중턴/3턴 개선 질문에는 답할 수 없다. 새 native Broad4도 같은 source16을 쓰므로 원천상 최대17답이며 실제 생성 수·중단은 새 결과에서 따로 관측한다. 현재 고정 입력/모델 코드/판정은 바꾸지 않고 이 능력 축을 NOT_RUN으로 남긴다.
 
 ### 8. 한계
 
@@ -6699,6 +6701,46 @@ native 부모의 기존1694 단일턴 답은 보존돼 있지만 이 새 부모 
 ### 9. 실행 이력
 
 문헌역할이 metadata와 builder/reader를 읽어4pass704 산식, 기존2pass 고정 API, optimizer 반환형 차이, 새 native vector/strict loader 선결과 한국어 감독량 부족을 지적했다. root가 원 `train_updates`의 given-model/optimizer API와 두cycle 재사용 가능성·원 native window reader를 직접 읽었다. F4는 `WIP_20261020_NATIVE_BROAD4_F4.json`이며 새2파일 외 원형·공용·보호자료·대화유틸리티는 변경하지 않는다.
+
+## 2026-10-20 후속 Stage4fk — 보존 확장 TRAIN의 VAL 경계를 독립 CPU 재검사한다
+
+### 1. 왜
+
+기존1.191B 확장 TRAIN은 원 큰 TRAIN에 겹쳐 있던 외부 VAL의 동일 EOS 구간·양끝 패턴을 제외했고, 최종 출력의 SHA/EOS/원장 계수를 검산했다. 그러나 완성 출력에 다시 matcher를 적용한0-hit는 확인하지 않았다. meta의 val0이나 외부 VAL 경로만으로 비포함을 증명할 수 없다. 긴 native 후보를 실제 채택하기 전에 이 입력 선결부터 구분한다. 사용자 전달 시각화 자료의 구현안 채택이 아니라 기존 WIP7/9 자율 연구의 데이터 검증이다.
+
+### 2. 질문
+
+같은 pinned TRAIN1191116192 IDs/외부 VAL3005000 IDs에서 기존 규칙의 잔존 hit가0인가? 실제 native32평가에 쓰는32개1025-ID 입력/target창이 더 긴 TRAIN 구간 내부를 포함해 그대로 남아 있는가? 후자는 같은 규칙의 EOS 경계 검사와 별도 지표다.
+
+### 3. 예측
+
+기존 producer가 일치 구간을 실제 제외했으므로 같은 규칙의0-hit를 예상하지만 독립 재검사는 아직 없다. 완전 VAL 구간이 더 긴 TRAIN 구간 안에 들어가면 기존 전체길이+hash 규칙은 놓칠 수 있다. 작은 fixture 반례를 실제 잔존 관측으로 바꾸지 않는다.32창의0-hit도 다른 모든 부분/의미 중복 제거를 뜻하지 않는다.
+
+### 4. 단계·통제
+
+전용2파일만 추가하고 원 builder/보고/cache/날짜/공용/모델 코드는 불변이다. source·meta·build/readback/activity·tokenizer pin을 닫고, execute 때에만 TRAIN/VAL을 읽는다. little-endian uint16·ID범위·전량SHA·count/EOS/last-ID를 검산하며 bounded chunk/segment를 사용한다. 직접 VAL로 만든 독립 EOS index와 양끝의 짝수 byte-offset 검색을 적용한다. 별도로 시작0,1024,…,31744의1025-ID 패턴32개를 보존 TRAIN 전체에서 찾는다. 실제 token 배열·질문·원문을 공개보고에 복사하지 않는다.
+
+### 5. 판정
+
+SHA/계보·구조 불일치는 오류, 잔존 hit는 명시적인 부적격/음성 근거다. 어떤 경우도 원 cache를 고치지 않고 조용히 제외·draw·steps를 바꾸지 않는다. 같은규칙0-hit와32창0-hit는 각각 표시하며 자동 학습허가·품질 PASS를 만들지 않는다. 기존1191M/옛VAL·다른 SFT/replay 원천에 이 증거를 전용하지 않는다.
+
+### 6. 비용·대안
+
+A는 기존 metadata만 사용해 가장 작지만 독립 output 검증이 없다. B는 전량 약2.38GB 입력을 읽고 같은규칙·실제32창을 검사해 원형 변경 없이 직접 선결을 좁힌다. C는 모든 VAL 구간의 임의 내부 포함/새제외자료까지 다뤄 더 강하지만 출력 버전·가용풀·예산을 다시 정해야 한다. 현재는 B의 준비를 권장/선택한다. CPU 실시간은 미측정·worker상한600초/기록예비600초, GPU/모델/CP0이며21일17시 안에서만 수행한다. 잔존을 새 버전에서 제외하게 되면4543회의 풀2배 여유196000 IDs도 다시 검산해야 한다.
+
+### 7. 실행
+
+태그 `p106b_expansion_val_audit_v1_s1337`는 registry 조회에서 충돌0이다. 전용driver477행/test380행과 `run_P106B_Stage4fkW0_expansion_val_overlap_cpu.sh`를 작성했고 F4 `WIP_20261020_EXPANSION_VAL_AUDIT_F4.json`에 정확한 쓰기2파일/읽기 pin/범위를 고정했다. root가 두파일 전량·35 CPU회귀(0.578초)/check-only·실제 metadata선결(bin0)을 확인하고 전수정적68PASS/6NOT_RUN/오류0을 마쳤다. 소스보존 뒤에만 실제 CPU scan을 연다. 기존 Broad실답/공개벤치·Headwise·native Broad4 큐를 대체하거나 추가 장기 GPU 학습을 확정하지 않는다.
+
+### 8. 한계
+
+원천 기계 검증이지 QA 지능·신규 지식량·전체 의미 중복 제거가 아니다. 비교에서 긴 native는 풀/draw/WSD/anneal 지평이 함께 달라지는 별도 패키지일 수 있으며 이전299M과 토큰량 단독 인과로 읽지 않는다. 현재 긴 native의 코드·런처·GPU 실행은 아직 채택하지 않았다.
+
+### 9. 실행 이력
+
+문헌/정 역할이 원 builder/VAL matcher/readback과 보존 보고를 읽었고 root가 해당 관련 본문을 직접 대조했다. 완전 EOS3776+양끝1/1,3778구간·3024405변환ID 제외 기록을 확인했지만 독립 output0-hit는 NOT_RUN이다. 원 코드의 suffix 포함 반례는 보장 한계이며 실제 오염 판정이 아니다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 

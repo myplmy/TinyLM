@@ -1,0 +1,101 @@
+{
+  "schema": "TINYLM_EXPANSION_VAL_AUDIT_ROOT_PREFLIGHT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "source_info": {
+    "schema": "P106B_EXPANSION_VAL_AUDIT_V1",
+    "tag": "p106b_expansion_val_audit_v1_s1337",
+    "code_sha256": {
+      "scripts/diag_p106b_expansion_val_audit.py": "CDE32A565DE664CAAF827819CC37B71F9D48149783594E5DA025EB4CED020F28",
+      "scripts/test_p106b_expansion_val_audit.py": "99D9BAFF12B4E09A03829C66631F371DBB640AAD81B3090E73E7AADDA69D66DB",
+      "scripts/p106b_stage_receipt.py": "334FBD2B9031DA7E58E43762BCFD4CD9902BD972165D953E3D7D385C3B8709B9",
+      "scripts/diag_p106b_native_expansion.py": "882738C52731B6E667E3F0984C8F74D2B978D28067A24831192888B2F0E763D1",
+      "scripts/test_p106b_native_expansion.py": "5377A796AC36B4CA5BC107103922558C33F9D40DDB122BDE68C3D79D45646235"
+    },
+    "code_complete": true,
+    "f4_sha256": "28CBFFCE20760D7EF40D50A005E5A9E25AE9BC58FBD05E68665E440C1FBBA581",
+    "binary_inputs": [
+      {
+        "path": "data_cache/p106b_native_expansion_v1_s1337/train.bin",
+        "ids": 1191116192,
+        "sha256": "6DB291329CB1562E127A2D753F879C8ED8D3AB46789A3EF2B4BC3C4258846138"
+      },
+      {
+        "path": "data_cache/ko-en_601000000_chat32/val.bin",
+        "ids": 3005000,
+        "sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C"
+      }
+    ],
+    "tokenizer": {
+      "path": "data_cache/tok-ko-en-32768-chat32.json",
+      "sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E"
+    },
+    "source_metadata_pins": {
+      "scripts/diag_p106b_native_expansion.py": "882738C52731B6E667E3F0984C8F74D2B978D28067A24831192888B2F0E763D1",
+      "scripts/test_p106b_native_expansion.py": "5377A796AC36B4CA5BC107103922558C33F9D40DDB122BDE68C3D79D45646235",
+      "data_cache/p106b_native_expansion_v1_s1337/meta.json": "059617A670A6333B2E8F68A34CF7865DE70C5576537C42C74B45857935602089",
+      "test_result/evidence/p106b_native_expansion_v1_s1337/build/report.json": "103C9DFBDF45171E13F70ADFB8D3E4443ABFBDF4E982FD0A839720E02F44B5FD",
+      "test_result/evidence/p106b_native_expansion_v1_s1337/readback/report.json": "9B897BDD0C9216625EC79F49F6AE62CA4DA71130B749B4C1CE98F691AF6357C1",
+      "test_result/evidence/p106b_native_expansion_v1_s1337/activity_build.json": "5301922DAB60F5D268B165C0E829C5F7B67E8D34683BC9FE3482F93E44D06CCA",
+      "test_result/evidence/p106b_native_expansion_v1_s1337/activity_readback.json": "EF82F45AA1E420E3F0638E388B4C225627DB8E335541CB94351D231145A51028"
+    },
+    "expected_index": {
+      "total_ids": 3005000,
+      "complete_eos_segments": 3758,
+      "unique_complete_id_hashes": 3758,
+      "prefix_partial_ids": 412,
+      "suffix_partial_ids": 43,
+      "prefix_partial_sha256": "4DE752FB91A0D9BA376511E6A38CD592152850CC75A3360AC6E6B8865D5E6B0D",
+      "suffix_partial_sha256": "E074DD81AE56E05FCCCCDA69710C8F0AE0B66E7E8C4516BA14230492FA719F8E"
+    },
+    "max_worker_seconds": 600,
+    "authority_end_utc": "2026-10-21T08:00:00+00:00",
+    "record_reserve_seconds": 600,
+    "chunk_ids": 4194304,
+    "maximum_segment_ids": 16777217,
+    "vocab": 32768,
+    "probe_count": 32,
+    "probe_stride_ids": 1024,
+    "probe_window_ids": 1025,
+    "scan_scope": "same full-EOS hash and both aligned edge partials; separate32 exact full-window search",
+    "semantic_decontamination": "NOT_ESTABLISHED",
+    "arbitrary_full_val_substring_scan": false,
+    "training_admission": false,
+    "model_loading": false,
+    "checkpoint_tensor_loading": false,
+    "gpu": false,
+    "termination": "own SIGTERM ->130 with finally; SIGKILL cannot guarantee activity"
+  },
+  "root_read_entire_files": {
+    "scripts/diag_p106b_expansion_val_audit.py": 477,
+    "scripts/test_p106b_expansion_val_audit.py": 380
+  },
+  "tests": {
+    "runner": "/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_expansion_val_audit -q",
+    "count": 35,
+    "seconds": 0.578,
+    "returncode": 0
+  },
+  "check_only": {
+    "returncode": 0,
+    "scope": "code/F4 only; no numpy/torch import or physical bin access"
+  },
+  "actual_metadata_preflight": {
+    "returncode": 0,
+    "scope": "pinned small metadata/code/tokenizer SHA; no binary/model/GPU load"
+  },
+  "full_static": {
+    "artifact": "handoff/audit/WIP_20261020_EXPANSION_VAL_AUDIT_STATIC.json",
+    "pass": 68,
+    "not_run": 6,
+    "errors": 0
+  },
+  "maximum_segment_bound_derivation": "old source raw body<=16777216bytes plus EOS; canonical byte-level BPE IDs cannot exceed bodybytes+1; bounded hash uses memoryview and source mmap",
+  "new_cli_mode_argument": false,
+  "actual_large_scan": "NOT_RUN",
+  "original_inputs_changed": false,
+  "gpu_calls_for_this_audit": 0,
+  "background_gpu_is_separate_headwise": true,
+  "source_original_deadline_preserved": "2026-10-20T08:00:00+00:00",
+  "new_cpu_authority_end": "2026-10-21T08:00:00+00:00",
+  "training_admission": false
+}
