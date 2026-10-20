@@ -6381,3 +6381,55 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 읽기 전용 inventory/8KiB 표본은 별도 감사다. 초기47회귀 뒤 독립검토에서 발견한 세 예산/종료 결함을 수리했으며 root가 전체54개를 재확인했다. source는23:49:03, bounded pilot은23:49:27KST 실제 완료했다. 635완결 segment/old1048405→new1048510·tail171 oldID 제외·105희귀merge 변환·prefix VAL제외0을 관측했다. build는20일01:06:04, readback은01:07:37KST 완료했다. 1194000000 old IDs 전량 소비에서 canonical1194140597·검증 제외3024405·tail1307 oldIDs를 분리해1191116192 새TRAIN을 남겼다. ledger1444954행/30파일·각20MB미만, 전체출력SHA/범위/EOS/분모 재검산은 통과했다. readback이 원변환·검증제외를 독립 재실행한 것은 아니다. 새reserved literal분기는 전체에서도0이어서 실물 검증으로 올리지 않는다. 기계적 변환 가능 예측은 지지됐지만 고유지식/언어품질은 미확인이며 원 조건의 삼진/실수2281 대조를 바꾸지 않는다. 새meta val=0은 외부 공통VAL 계약이므로 새소비기 배선과 별도학습 preflight가 필요하다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## 2026-10-20 후속 Stage4fe — 연장된 허가 기간의 독립 재개 계보
+
+### 1. 왜
+
+중단 뒤20일16:28에재개했고사용자는21일17시까지CPU/GPU주도실험을연장했다. 양native2281과삼진SFTcost8은완료했지만옛학습종료20일14시는이미지났다. 완료된학습을반복하거나원소스/과거날짜를바꾸지않고남은단계를새실행계보로연결한다. 사전권한/영향/3안은 `WIP_20261020_NATIVE_RESUME_DEADLINE_F4.json`이다.
+
+### 2. 질문
+
+같은완료native부모·동결SFT4pass·micro8/accum16/ckptON·LR/마스크/native replay를보존하고남은cost/양384/4종1694첫답을회수할수있는가? 기한/출력태그변경이실제학습계산을바꾸지않는가?
+
+### 3. 예측
+
+원학습본문을유지하므로원계획계승이가능하지만옛/새CP·activity·참조검증을혼동하면실행오류가날수있다. 고정원문32crop의float이득이실제QA로이어진다고예측하지않는다.
+
+### 4. 단계·통제
+
+원제어기SHA E51B6802…의소스를독립private namespace에읽고새태그/기한/경로·출처bridge/호출부만명시교체한다. 원import모듈·제품globals/원형은변경하지않는다. train/evaluate/gradient/optimizer본문bytecode동일과교체allowlist를검사하고새driver/test SHA를보고한다. 시계를속이지않는다.
+
+원 `prepared()`와정확native CP2는원엄격reader/loader로읽는다. 새bridge참조가원source/report/ref와새조건을묶고새SFT CP만새tag를쓴다. 완료Qcost는원SHA/시각의자원외삽에만계승한다. 새native재학습모드는금지한다.
+
+| 단계 | 내용 | 한도 | 현재 |
+|---|---|---|---|
+|Stage4feW0|회귀/출처bridge CPU준비|900초·model0|준비중|
+|Stage4feWa|float SFTcost8|단독GPU900초·5분유휴·CP0|NOT_RUN|
+|Stage4feWb|원Qcost/새Fcost의384자원예산|CPU600초|NOT_RUN|
+|Stage4feWc/Wd|각자native부모의동일SFT384|각GPU3600초·CP각1|NOT_RUN|
+|Stage4feWe/Wf/Wg/Wh|native/SFT×삼진/실수각1694첫답·native32|각GPU1800초|NOT_RUN|
+|Stage4feWi|6776원답/token/분모/계보재검산|CPU900초·model0|NOT_RUN|
+
+### 5. 판정
+
+원source/부모/본문/마스크가달라지면STOP/ERROR다. 새권한종료21일17시·학습종료목표21일14시·최종기록600초예비를둔다. 검증된원native활동과새활동을합쳐원family12시간활동상한을유지한다. 과거결과를retag하지않고기술완료·고정원문손실·실제TRAIN/DEV/TEST/한영첫답을구분한다. 옛Qcost/새Fcost를동일시점속도인과로쓰지않는다.
+
+### 6. 비용·대안
+
+A는정확소스의독립namespace와명시bridge로계산본문을보존한다. B는약1000줄의새복사본으로본문드리프트/중복유지가늘어난다. C는사용자실행으로남겨도옛절대기한때문에막혀현재위임을이어가지못한다. 교체목록/불변성을검증하는A를선택한다. 원Qcost first48.93/steady7평균1.923초와새Fcost로전체비용을재산정한다. 실측전완주/품질은보장하지않는다.
+
+### 7. 실행
+
+새tag `p106b_native_resume_v2_s1337`. 전용2파일과 SH10개를작성했다. root가 새31+기존77=108개 CPU 회귀와 check-only를 확인했고 전수정적은68PASS/6NOT_RUN/오류0이다. 실제자산 bridge·모델 loader·GPU compile은아직NOT_RUN이며소스커밋뒤만연다. 옛기한/원SFT미생성CP를요구하는9개런처는내용을보존한 -hold.sh로바꾸고대체사유를큐에기록했다.
+
+### 8. 한계
+
+기한/실행계보복구이지새학습방법채택이아니다. 훈련/최종추론경로분해·Broad/공개벤치는각새기한/CP출처bridge이후별도다. 원문1.191B와대화75M부족·기존CPU수치음성을보존한다. 보호데이터/원본삭제/외부취득/제품·공용검사기변경은여전히금지다.
+
+### 9. 실행 이력
+
+원프로세스/로그/기한을재조회하고native2/Qcost완료를계승했다. 새F4/계획을먼저작성한뒤독립재개제어기를구현했다. root가19개계산본문·5개경계함수의원bytecode/참조보존과원모듈불변·부모계보·원Qcost재사용·기한/종료회귀를검사했다. 감사는 `handoff/audit/WIP_20261020_NATIVE_RESUME_ROOT_PREFLIGHT.json`이다. 신규GPU실행은NOT_RUN이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

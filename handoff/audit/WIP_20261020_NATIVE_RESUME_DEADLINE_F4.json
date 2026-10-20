@@ -1,0 +1,107 @@
+{
+  "schema": "TINYLM_NATIVE_DEADLINE_RESUME_F4_V1",
+  "recorded_at_utc": "2026-10-20 07:39:20 UTC",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "Current user explicitly extended autonomous CPU+GPU to 2026-10-21T08:00:00Z. No protected-data/download/original-overwrite permission added.",
+  "reason": "Interruption left native parents complete and ternary SFTcost complete. Frozen controller training stop20261020T05Z has expired; do not edit historical deadlines or rerun completed native pretraining.",
+  "selected_method": "Create an isolated private module namespace from the exact pinned frozen controller source, with explicit reviewed bindings for new execution dates/namespaces and old-native provenance bridges. Never mutate the original imported module or product code.",
+  "alternatives": [
+    {
+      "id": "A",
+      "method": "Explicit isolated frozen-source resume family",
+      "benefit": "Reuse unchanged training/eval function bodies and strict original parent readers; smallest algorithm drift",
+      "cost": "Private namespace/binding map must be transparent and tested; cannot rely on implicit monkeypatch",
+      "selected": true
+    },
+    {
+      "id": "B",
+      "method": "Copy full training/eval controller into new source",
+      "benefit": "No dynamic namespace",
+      "cost": "Roughly1000 duplicated lines and ongoing semantic divergence",
+      "selected": false
+    },
+    {
+      "id": "C",
+      "method": "Leave all pending stages for manual user rerun",
+      "benefit": "No new runtime adapter",
+      "cost": "Old absolute stop still blocks them; wastes delegated interval and does not resume work",
+      "selected": false
+    }
+  ],
+  "files": {
+    "create": [
+      "scripts/diag_p106b_native_resume.py",
+      "scripts/test_p106b_native_resume.py"
+    ],
+    "root_owned": "P106B Stage4fe plan, own launchers/TSV, explicit tag/Baselines, result101, WIP/audits/commits.",
+    "read_only": [
+      "scripts/diag_p106b_native_weight_route.py",
+      "scripts/p106b_weight_route.py",
+      "all existing product/runtime helpers and producer reports"
+    ],
+    "excluded": [
+      "Original source/module globals/date metadata mutation",
+      "New native pretraining or exact original rerun",
+      "Product/common-checker/environment/interactive changes",
+      "Original data/CP/log overwrite/delete, external acquisition, GPU/model by subagent"
+    ]
+  },
+  "frozen_source": {
+    "path": "scripts/diag_p106b_native_weight_route.py",
+    "sha256": "E51B68024CA0DC24A4994FFF51C733C05BA2773E3038A2B1CC5C127F6C736FAE"
+  },
+  "runtime": {
+    "tag": "p106b_native_resume_v2_s1337",
+    "end_utc": "2026-10-21T08:00:00Z",
+    "train_stop_utc": "2026-10-21T05:00:00Z",
+    "record_reserve_seconds": 600,
+    "active_limit_seconds": 43200,
+    "count_prior_native_activity_seconds": true,
+    "native_pretraining_modes_forbidden": true,
+    "new_namespace": "data_cache/runs-eval/test_result-evidence own resume tag only",
+    "allowed_modes": [
+      "prepare",
+      "source",
+      "preflight",
+      "sft_cost",
+      "budget",
+      "sft",
+      "evaluate",
+      "readback"
+    ]
+  },
+  "bridges": {
+    "original_module": "Remain original import untouched; validate current n.info() against snapshot before/after factory and operations.",
+    "native_parents": "original.train_report('train',arm) validates original code/activity/CP exactly. original.routed_runtime(arm,'native') used only under new authorization. Original CP paths/metadata remain old tag.",
+    "reused_cost": "Original completed ternary SFTcost8 may be reused for resource forecasting via original strict reader, with its original report SHA/time bounds; no new quality or isolated current-day speed claim. Float SFTcost is new own namespace.",
+    "prepared_inputs": "Reuse original.prepared() exact source/masks/crops/cases. New bridge reference pins original reference/native report/cost/code SHAs; do not pretend new corpus or new native training.",
+    "owned_sft": "Own reports/CP/tag and original strict function bodies. cp_experiment for own SFT uses own tag; native loader bridge keeps original cp_experiment. No parent/metadata promotion.",
+    "body_parity": "Original train/evaluate/readback/gradient/optimizer function source/bytecode unchanged in private namespace. Only explicit orchestration/boundary/provenance bindings differ. No global datetime spoof."
+  },
+  "binding_contract": [
+    "Private namespace never replaces values on original native module or tinylm modules.",
+    "New info includes adapter/test SHA and bridge/version/date map.",
+    "New phase commands call new driver/tests; no old expired child execution.",
+    "Own prepare writes fresh bridge metadata; own prepared validates it plus original prepared inputs.",
+    "Own train_report delegates only original native and explicitly reused original ternary cost; own SFT/float-cost uses unchanged native validator against new info and bridge.",
+    "Own checkpoint maps native to original, SFT to new tag. Own routed_runtime delegates native load only; own SFT runtime uses original cloned function and own strict report.",
+    "Spent time includes original validated native activities plus new own activity once.",
+    "Old artifacts remain byte-identical; new actual modes cannot overwrite an existing partial or complete path."
+  ],
+  "tests": [
+    "Original module globals/info unchanged and two private instances independent",
+    "Pinned source mismatch rejection before execution",
+    "Unchanged computational function bytecodes and explicit binding allowlist",
+    "Original native/cost provenance stays old; own SFT provenance stays new; wrong parent/source/date rejected",
+    "Complete production-info JSON roundtrip and actual raw/readback contract fixtures",
+    "Deadline/record reserve/active budget/worker cap; native modes forbidden; stdin/own-PGID/TERM; no model/GPU calls in preparation tests"
+  ],
+  "impact": {
+    "code": "Two research files and isolated module bindings only; product/old source unchanged",
+    "data": "Reuse exactly existing frozen corpus/crops/parents, write own paths; no new protected access",
+    "resources": "CPU tests/source preflight first; single GPU costs/SFT/evals after source commit and idle gates",
+    "documents": "New deadline evidence clearly separate from completed original-date records",
+    "debt": "Experimental isolated factory must remain explicit and bounded; not a generic bypass API"
+  },
+  "actual_status": "BEFORE_IMPLEMENTATION_NEW_RUNTIME_NOT_RUN"
+}

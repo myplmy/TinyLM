@@ -1,0 +1,110 @@
+Regression, exact source and final receipt required. Same seed/body/native crop vector; native peak Adam1e-3 Muon4e-3 WSD; own-route SFT m8a16ckptON. Read native and SFT endpoints separately. Costs require five-minute idle. Estimated upper bound .25h GPU=Y; worker cap900s. CPU prepare and resource forecast are not quality PASS. No automatic float deployment.
+
+==============================================================================
+[runlog] 2026-10-20 01:56:55  name=P106B_Stage4ezWf_ternary_sft_cost8_015655
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_native_weight_route.py --mode sft_cost --arm ternary --max-wall-sec 900 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_bad_metadata_keys_shapes_dtypes_are_rejected_before_any_copy (scripts.test_p106b_weight_route.LoaderTests) ... ok
+test_float_strict_reload_requires_active_matching_route_and_preserves_outputs (scripts.test_p106b_weight_route.LoaderTests) ... ok
+test_generic_loader_refuses_float_and_missing_route (scripts.test_p106b_weight_route.LoaderTests) ... ok
+test_metadata_is_exact_explicit_and_does_not_default_to_anneal (scripts.test_p106b_weight_route.LoaderTests) ... ok
+test_shared_parameter_checkpoint_aliases_must_agree_before_copy (scripts.test_p106b_weight_route.LoaderTests) ... ok
+test_ambient_bf16_amp_is_preserved_and_matches_plain_linear (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_anneal_zero_still_has_ste_and_is_not_float_gradient (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_different_models_are_independent_and_class_is_unchanged (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_eager_backend_compilation_keeps_float_route_across_updates (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_eval_freeze_clear_and_prefix_cache_match_full_float_computation (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_exception_restores_methods_flags_anneal_and_unchanged_cache (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_exception_restores_unsupported_cfg_and_update_cache_flags (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_float_forward_and_input_weight_gradients_equal_plain_linear (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_invalid_mode_and_inactive_guard_are_errors (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_keys_aliases_parameter_and_optimizer_identity_do_not_change (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_missing_refresh_is_error_and_cannot_fall_back_to_ternary (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_nonreentrant_checkpoint_backward_keeps_identity_route (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_packed_latent_drop_connectivity_and_special_model_states_are_rejected (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_parameter_cache_registration_and_incomplete_cache_are_rejected (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_rng_unchanged_by_route_entry_projection_and_exit (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_runtime_unsupported_centering_mode_arena_and_update_cache_are_errors (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_same_model_and_shared_tlinear_nesting_are_rejected (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_sixteen_micro_accumulation_matches_direct_linear (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_stale_frozen_cache_and_training_with_frozen_cache_are_errors (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_state_identity_change_is_reported_after_method_restoration (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_ternary_route_reproduces_original_forward_and_gradients (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_unsupported_cfg_features_are_rejected_before_mutation (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_weight_update_invalidates_old_frozen_cache_on_exit (scripts.test_p106b_weight_route.RouteTests) ... ok
+test_backward_micro_rejects_bad_count_and_nonfinite (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_backward_micro_uses_sum_over_whole_update_denominator (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_cpu_cp_shape_dtype_and_alias_conflict_rejected_without_copy (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_late_probe_has_no_optimizer_update_and_restores_anneal (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_late_probe_nonfinite_gradient_fails_and_restores (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_learned_parent_fingerprint_refused_as_scratch (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_native_cost_loop_eight_updates_sixteen_micro_and_no_checkpoint (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_optimizer_scaling_preserves_groups_and_native_embedding_decay (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_real_tiny_route_cost_lifecycle_train8_late_cache_without_quality_forward (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_scratch_runtime_never_loads_trained_state (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_unsupported_route_cfg_is_cpu_rejected_before_cuda (scripts.test_p106b_native_weight_route.ComputeFixtureTests) ... ok
+test_four_endpoints_actual_receipt_readback_and_no_gold_inference (scripts.test_p106b_native_weight_route.EvaluationFixtureTests) ... ok
+test_activity_success_and_failure_are_distinct (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_bad_activity_clocks_types_and_deadline (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_bad_wall_refused_before_source_or_activity (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_closed_cost_report_recounts_all_actual_updates (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_complete_activity_requires_report_and_reference_hash (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_cost_rejects_bad_route_initial_weights_or_late_probe (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_exit_zero_without_report_is_failure (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_failed_same_code_source_is_before_idle_or_model (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_long_train_requires_completed_budget_and_fit_before_gpu (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_native32_receipt_is_not_full_validation_claim (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_native_budget_has_unmeasured_sft_reserve_no_circular_cost (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_native_wall_above_four_hours_refused_before_source (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_own_sigterm_preserves_failure_activity_and_restores_handler (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_raw_event_denominator_schedule_and_totals_are_not_report_only (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_record_reserve_blocks_worker_evaluate_and_readback (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_resource_cap_is_not_silently_relaxed (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_safe_namespace_and_write_once (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_sft_budget_uses_actual_own_parent_costs (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_sft_cost_budget_requires_both_native_first (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_strict_checkpoint_recipe_and_no_implicit_route (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_symlink_target_refused (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_update_manifest_traversal_refused_before_verify (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_worker_failure_finally_records_once_and_no_retry (scripts.test_p106b_native_weight_route.EvidenceTests) ... ok
+test_error9_preserves_traceback_in_stderr (scripts.test_p106b_native_weight_route.ProcessTests) ... ok
+test_regression_preflight_execute_pipeline_and_explicit_selectors (scripts.test_p106b_native_weight_route.ProcessTests) ... ok
+test_watchdog_does_not_signal_other_process_group (scripts.test_p106b_native_weight_route.ProcessTests) ... ok
+test_watchdog_signals_own_process_group_only (scripts.test_p106b_native_weight_route.ProcessTests) ... ok
+test_aware_absolute_authority_and_three_hour_reserve (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_crop_vector_rng_and_legal_last_start (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_direct_exec_check_only_outside_repository (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_every_nontraining_operation_preserves_final_ten_minutes (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_exact_draw_and_pool_arithmetic (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_native_record_shift_and_extent (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_native_update_contract_and_sft_absolute_384 (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_original_schedule_and_zero_based_steps (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_phase_selectors_are_used_or_rejected (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+test_small_pool_refused_not_repaired (scripts.test_p106b_native_weight_route.RecipeTests) ... ok
+
+----------------------------------------------------------------------
+Ran 77 tests in 2.513s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[NATIVE_ROUTE_PREFLIGHT] 정확한 원천·조건·CPU reader 검산, 모델0
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+W1020 01:58:08.306000 485713 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 1, "targets": 730, "x_tokens": 19231, "ce": 8.812984267979452, "native_replay_ce": 3.805530071258545, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 16.952180862426758, "clipped": true, "step_seconds": 48.92776821300504}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 2, "targets": 687, "x_tokens": 19893, "ce": 7.566926781267058, "native_replay_ce": 3.3347082138061523, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 17.9122314453125, "clipped": true, "step_seconds": 1.9573166199988918}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 3, "targets": 737, "x_tokens": 21790, "ce": 7.241969239275038, "native_replay_ce": 4.026905059814453, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 18.479877471923828, "clipped": true, "step_seconds": 1.8746339720091783}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 4, "targets": 838, "x_tokens": 24522, "ce": 6.5436861497974625, "native_replay_ce": 3.473780870437622, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 15.606390953063965, "clipped": true, "step_seconds": 1.9026131399878068}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 5, "targets": 884, "x_tokens": 20721, "ce": 6.092033351708322, "native_replay_ce": 3.5652740001678467, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.6151762008667, "clipped": true, "step_seconds": 1.9191052809910616}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 6, "targets": 898, "x_tokens": 21442, "ce": 5.460016484249939, "native_replay_ce": 3.825150966644287, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 14.352355003356934, "clipped": true, "step_seconds": 1.9309065129928058}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 7, "targets": 719, "x_tokens": 19210, "ce": 5.823792840907239, "native_replay_ce": 3.7570509910583496, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 18.149580001831055, "clipped": true, "step_seconds": 1.9508125819993438}
+[NATIVE_ROUTE_UPDATE] {"arm": "ternary", "endpoint": "sft", "update": 8, "targets": 718, "x_tokens": 20281, "ce": 5.3358237391394825, "native_replay_ce": 3.6147611141204834, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.34253978729248, "clipped": true, "step_seconds": 1.9257333620043937}
+[NATIVE_ROUTE_FINAL] {"arm": "ternary", "endpoint": "sft", "cost": true, "updates": 8}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_NATIVE_ROUTE_sft_cost_ternary", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 2.1분  (2026-10-20 01:59:01)
+==============================================================================
