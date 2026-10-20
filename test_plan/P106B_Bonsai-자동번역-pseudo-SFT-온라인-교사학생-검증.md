@@ -6903,7 +6903,7 @@ A의 같은팩/원scorer+새strictprovider를 선택한다. B의 새문항/새sc
 
 ### 7. 실행
 
-F4 WIP_20261021_NATIVE595_PUBLIC_F4.json으로 새driver/test2파일 범위를 먼저 고정했다. 정 역할이 구현/작은fakeprovider 회귀를 준비 중이며 root의 source/수학경계 검토·전수정적·소스커밋 뒤에만 실제 준비와 평가를 수행한다. SH는 아직 미작성이고 실제CP/팩 소비·모델/GPU 평가도 NOT_RUN이다.
+F4 WIP_20261021_NATIVE595_PUBLIC_F4.json으로 새driver401행/test559행을 준비했다. root가 전체2파일과원evaluator 경계를 읽었고 새32CPU39.299초·원35+새32 통합67CPU39.673초·check-only0/107source-map·38원본문/6captured/FP32class 보존을 확인했다. 독립 읽기검토에서 차단 결함은 발견하지 못했다. prepare600/여섯evaluate900/readback600초의8SH를 작성했으며 실제6종점완료·전수정적·소스보존 뒤에만 실행한다. 이 단위회귀의9216/9212는 합성검산이지 실제 평가가 아니다. 현재 실제팩/CP 소비·GPU평가는 NOT_RUN이다.
 
 ### 8. 한계
 

@@ -1,0 +1,52 @@
+{
+  "schema": "P106B_EMBEDDING_RANK_FEASIBILITY_REVIEW_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "source_scope": "문헌역할읽기보고+root현재생성/input/head/저장/NS/이식/결과030 관련절과primary원문검토",
+  "calculations": {
+    "extra_parameters": 8585216,
+    "fp32_mib": 32.75,
+    "fp16_bf16_mib": 16.375,
+    "assumed_both_int8_values_mib": 8.1875,
+    "actual_embedding_int8_up_fp32_delta_mib": 8.75,
+    "packed_accounting_g128_delta_mib": 1.750039746831808,
+    "training_persistent_parameter_grad_moments_mib": 130.25
+  },
+  "assumptions": {
+    "vocab": 32768,
+    "hidden": 768,
+    "old_E": 256,
+    "new_E": 512,
+    "packed_group_assumed": 128,
+    "new_matrices": "A_new0/U_newR; notboth0",
+    "literal_vocab_unchanged": true
+  },
+  "sources": [
+    "tinylm/model/transformer.py",
+    "tinylm/train/init_utils.py _svd_emb_init",
+    "tinylm/train/muon.py update_scale and split_params",
+    "test_result/030_20260807_P046-무KD-E128은-분해능의-20배-랭크축은-볼록하다.md section11"
+  ],
+  "primary_read": [
+    {
+      "url": "https://arxiv.org/html/1511.05641v4",
+      "sections": "2.2~2.3"
+    },
+    {
+      "url": "https://arxiv.org/html/1711.03953v4",
+      "sections": "2.1~2.2"
+    },
+    {
+      "url": "https://arxiv.org/html/1909.11942v6",
+      "sections": "4.4/Table3"
+    }
+  ],
+  "adoption": "현재A E256 원형/실답부터회수. B/C설계후보뿐",
+  "not_run": [
+    "초기parity",
+    "새행렬gradient/첫optimizer",
+    "변환/strictCP구현",
+    "모델/GPU/학습",
+    "실제packed·peak·latency/정답품질"
+  ],
+  "live_source_and_f4_changed": false
+}

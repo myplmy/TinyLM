@@ -1,0 +1,66 @@
+{
+  "schema": "P106B_STE_VJP_REVIEW_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "scope": "현재Q/F국소경로와과거계약/원문검토. livecode수정·학습/CP저장0",
+  "synthetic_cpu": {
+    "scope": "synthetic CPU 2x2 VJP, no actual asset/model checkpoint/GPU/training/CP writes",
+    "rows": [
+      {
+        "anneal": 0,
+        "input_vjp_max_abs_error": 0,
+        "weight_vjp_max_abs_error": 0,
+        "weight_vjp_identity_difference": 0.020218372344970703,
+        "input_vjp_uses_interpolated_values": true,
+        "parameters_unchanged": true
+      },
+      {
+        "anneal": 0.37,
+        "input_vjp_max_abs_error": 0,
+        "weight_vjp_max_abs_error": 0,
+        "weight_vjp_identity_difference": 0.020218372344970703,
+        "input_vjp_uses_interpolated_values": true,
+        "parameters_unchanged": true
+      },
+      {
+        "anneal": 1,
+        "input_vjp_max_abs_error": 0,
+        "weight_vjp_max_abs_error": 0,
+        "weight_vjp_identity_difference": 0.020218372344970703,
+        "input_vjp_uses_interpolated_values": true,
+        "parameters_unchanged": true
+      }
+    ],
+    "float_identity_exact": true,
+    "returncode": 0,
+    "wall_time_seconds": 1.516463911,
+    "script": "import json, torch\nfrom scripts.test_p106b_weight_route import Mini\nfrom scripts import p106b_weight_route as r\ntorch.set_num_threads(1)\nrows=[]\ng=torch.tensor([[.7,-.2],[.3,.5]])\nx0=torch.tensor([[.2,.9],[-.4,.6]])\nfor anneal in (0.,.37,1.):\n m=Mini(); m.set_anneal(anneal); w=m.a.weight.detach().clone(); x=x0.clone().requires_grad_(); m.refresh_quant(); effective=m.a._wq.detach().clone()\n (m.a(x)*g).sum().backward()\n aw=w.reshape(2,1,2).abs(); mask=(aw>=m.cfg.twn_thr_ratio*aw.mean(2,keepdim=True)).to(w.dtype); alpha=(aw*mask).sum(2,keepdim=True)/mask.sum(2,keepdim=True).clamp_min(1)\n window=(1/(1+(aw/(m.cfg.ste_clip*alpha).clamp_min(1e-8)).pow(4))).reshape_as(w)\n raw=g.T@x0; gx=g@effective; gw=raw*window\n torch.testing.assert_close(x.grad,gx,rtol=1e-6,atol=1e-7); torch.testing.assert_close(m.a.weight.grad,gw,rtol=1e-6,atol=1e-7)\n assert torch.equal(w,m.a.weight.detach())\n rows.append(dict(anneal=anneal,input_vjp_max_abs_error=float((x.grad-gx).abs().max()),weight_vjp_max_abs_error=float((m.a.weight.grad-gw).abs().max()),weight_vjp_identity_difference=float((m.a.weight.grad-raw).abs().max()),input_vjp_uses_interpolated_values=True,parameters_unchanged=True))\nm=Mini(); x=x0.clone().requires_grad_(); w=m.a.weight.detach().clone()\nwith r.weight_route(m,'float'):\n m.refresh_quant(); (m.a(x)*g).sum().backward(); torch.testing.assert_close(x.grad,g@w,rtol=0,atol=0); torch.testing.assert_close(m.a.weight.grad,g.T@x0,rtol=0,atol=0)\nprint(json.dumps(dict(scope='synthetic CPU 2x2 VJP, no actual asset/model checkpoint/GPU/training/CP writes',rows=rows,float_identity_exact=True),ensure_ascii=False))\n"
+  },
+  "local_evidence": [
+    "tinylm/model/ternary.py _TernarySTE.backward and refresh_quant",
+    "scripts/p106b_weight_route.py metadata and float route",
+    "scripts/test_p106b_weight_route.py RouteTests.test_anneal_zero_still_has_ste_and_is_not_float_gradient",
+    "results003/022/084/019 related sections"
+  ],
+  "primary_read": [
+    {
+      "url": "https://arxiv.org/html/1308.3432v1",
+      "sections": "4"
+    },
+    {
+      "url": "https://arxiv.org/html/1903.05662v4",
+      "sections": "1.2/3.3 and stated assumptions"
+    },
+    {
+      "url": "https://arxiv.org/html/2601.07892v1",
+      "sections": "2.2 Eq2/3.2 Eq7-8"
+    }
+  ],
+  "adoption": "현재A기존계약유지. Banneal-aware/Cidentity STE는미구현/학습0이며current595에삽입하지않음",
+  "independent_literature_read": "oct20_literature의읽기보고를회수했고root가위소스/원문관련절/합성VJP를직접대조했다.",
+  "not_established": [
+    "현재window의최적성",
+    "TinyLM지능/품질개선",
+    "전체양자화Jacobian동일",
+    "새하드웨어/전체모델일반성"
+  ]
+}

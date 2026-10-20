@@ -236,7 +236,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_native595_public_v1_s1337` | Stage4fo 새native2/old·new Broad4의 같은공개팩9216요청·9212채점 | F4/계획과 새2파일 구현 범위만 준비. 모든6종점완료 후 실제 refs/CPUprepare가 선결이며 현재 코드검증·실물팩/CP소비·모델/GPU평가는 NOT_RUN이다. |
+| `p106b_native595_public_v1_s1337` | Stage4fo 새native2/old·new Broad4의 같은공개팩9216요청·9212채점 | source401/test559·root전체리뷰/새32·통합67CPU39.673초·107map/원38본문·6captured·FP32class/독립검토와8SH 준비. 실제6종점완료 후 refs/CPUprepare·현재예산이 선결이고 실물팩/CP소비·모델/GPU평가는 NOT_RUN이다. |
 | `p106b_native595_broad_v1_s1337` | Stage4fn 실제595M 부모→원22528행/4pass704·옛5632 replay | 새1222/936행과88source-map·원C2 44AST/원core9본문 보존을 확인했고root67CPU26.856초·check-only0·독립검토를 마쳤다. 양cost/두pending 예산필수로 문구를 정정했으며9SH를 준비했다. 실제 양부모4543 완료 전 CPUprepare/비용/704/CP/실답은 NOT_RUN이다. |
 | `p106b_native595_v1_s1337` | Stage4fm 명시4543·확장pool1191116192·fresh028C46 Q/F | 실제 CPU 준비·양cost8/late/cache·닫힌 VERIFY/예산 완료(101§399~402). Q/F 예상15842.144/15468.143초·총예약40497.702초에서 Q15900/F15600 cap의9SH를 보존했다. 01:43:35KST 삼진4543 진행 중, 실수4543/양CP/완성595460096targets·품질은 미완료다. Q는anneal0도STE window/F는identity backward. 이전299M과tokens-only인과 아님. |
 | `p106b_expansion_val_audit_v1_s1337` | Stage4fk 보존확장 TRAIN의 동일EOS/양끝·실제native32창 독립CPU검사 | 실제1,191,116,192 IDs scan43.514806초·선언동일EOS/양끝/32창 모두0hit(101§391). 모델/CP/GPU0·원입력불변. 의미중복제거/모든부분중복/학습허가 아님. |

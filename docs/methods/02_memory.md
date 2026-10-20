@@ -99,6 +99,8 @@ Fine-grained Sparsification* (arXiv:2601.07892, Tencent AngelSlim).
 **어느 것도 실현되지 않는다.** 실행 명령은 결과 008 §5. 감사 재현은 `scripts/batch/run_P034_sparse34.bat`.
 Sparse-BitNet(arXiv:2603.05168)은 "삼진 LLM은 준정형 희소에 친화" 근거로 유지.
 
+**2026-10-21 상태·해석 정정:** 위 ‘Arenas 미구현’은 초판 당시 기록이지 현재 상태가 아니다. 이후 P036 구현과300M on/off는 [결과019 §9](../../test_result/019_20260802100000_P036-Arenas종결-trapping은실재하나회복불가.md)에서 완료·개선 미검출로 기록됐다. 이번에는 현재5비트 커널 전부를 다시 검증하지 않았다. 어닐의 input/weight VJP 차이와 과거 detach 설명의 정정은 [논문리뷰08 §30](08_paper_review2.md)이 소유하며 live code/과거 수치·판정은 바꾸지 않는다.
+
 ---
 
 # ★★실측 정본 표 (2026-08-19 신설) — **저장(packed) / 상주(runtime) 전 모델**

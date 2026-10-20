@@ -1,0 +1,151 @@
+{
+  "schema": "P106B_NATIVE595_PUBLIC_ROOT_PREFLIGHT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "session_id": "01a0b33b-d14e-7c40-ada8-229a1f97eabd",
+  "source": {
+    "scripts/diag_p106b_native595_public.py": {
+      "lines": 401,
+      "sha256": "D4C4C388A02EEABF6A0C361F8842B141CD5017C08D081742011F698F5DC3F053"
+    },
+    "scripts/test_p106b_native595_public.py": {
+      "lines": 559,
+      "sha256": "8BD40BE10E30C2F8FE7D006DB56BF358C2F0AF79B890F3D22D663D534B8D0C92"
+    }
+  },
+  "root_read": "새401/559행전체·원public38본문/6캡처/FP32 wrapper·원cohort/info/strict C2 부모descriptor 실제키를읽고대조. source/원parent/raw수정0",
+  "cpu": {
+    "new_tests": 32,
+    "new_seconds": 39.299,
+    "combined_tests": 67,
+    "combined_seconds": 39.673,
+    "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES='' /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_current_benchmark scripts.test_p106b_native595_public",
+    "returncode": 0,
+    "scope": "합성provider/메모리원형/작은Torchfixture. 실제팩/CP/전체TinyLM/GPU0"
+  },
+  "code_only": {
+    "returncode": 0,
+    "pins": 107,
+    "bodies": 38,
+    "captured": 6,
+    "fp32_class_methods": 3,
+    "tag_collision": 0
+  },
+  "semantics": {
+    "models": [
+      "native595_ternary",
+      "native595_float",
+      "oldbroad_ternary",
+      "oldbroad_float",
+      "newbroad_ternary",
+      "newbroad_float"
+    ],
+    "requested": 9216,
+    "scored": 9212,
+    "length_excluded": 4,
+    "synthetic_recount_only": true,
+    "actual_six_endpoints_required": true,
+    "family_field": "TRAINED_WEIGHT_ROUTE_LOADER_CONTRACT; provider_role records actual curriculum",
+    "partial_set_fallback": false,
+    "valid_failed_upstream": "HOLD8 after original validator",
+    "damaged_evidence": "ERROR9 preserved"
+  },
+  "independent_review": {
+    "agent": "oct20_antithesis",
+    "scope": "읽기/SHA확인·실행0",
+    "blocking_findings": [],
+    "tested_by_root_not_peer": true
+  },
+  "resource": {
+    "actual_worker_family_seconds": 3600,
+    "record_reserve_seconds": 600,
+    "max_worker_seconds": 1800,
+    "sh_evaluate_cap": 900,
+    "source_prepare_cap": 600,
+    "readback_cap": 600,
+    "authority_end": "2026-10-21T08:00:00+00:00",
+    "performance_guaranteed": false,
+    "old_public_worker_sum_seconds": 913.443650323,
+    "warning": "새Broad strict prepared는더많은CPU검산을하므로옛비용의직접보장아님. 실제각입장/현재시간/활동예산을확인해야함."
+  },
+  "launchers": [
+    {
+      "path": "run_P106B_Stage4foW0_native595_public_cpu.sh",
+      "name": "P106B_Stage4foW0_native595_public_cpu",
+      "mode": "prepare",
+      "model": null,
+      "cap": 600,
+      "gpu": "N",
+      "hours": 0.17
+    },
+    {
+      "path": "run_P106B_Stage4foWa_native595_ternary_public.sh",
+      "name": "P106B_Stage4foWa_native595_ternary_public",
+      "mode": "evaluate",
+      "model": "native595_ternary",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4foWb_native595_float_public.sh",
+      "name": "P106B_Stage4foWb_native595_float_public",
+      "mode": "evaluate",
+      "model": "native595_float",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4foWc_oldbroad_ternary_public.sh",
+      "name": "P106B_Stage4foWc_oldbroad_ternary_public",
+      "mode": "evaluate",
+      "model": "oldbroad_ternary",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4foWd_oldbroad_float_public.sh",
+      "name": "P106B_Stage4foWd_oldbroad_float_public",
+      "mode": "evaluate",
+      "model": "oldbroad_float",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4foWe_newbroad_ternary_public.sh",
+      "name": "P106B_Stage4foWe_newbroad_ternary_public",
+      "mode": "evaluate",
+      "model": "newbroad_ternary",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4foWf_newbroad_float_public.sh",
+      "name": "P106B_Stage4foWf_newbroad_float_public",
+      "mode": "evaluate",
+      "model": "newbroad_float",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4foWg_native595_public_readback.sh",
+      "name": "P106B_Stage4foWg_native595_public_readback",
+      "mode": "readback",
+      "model": null,
+      "cap": 600,
+      "gpu": "N",
+      "hours": 0.17
+    }
+  ],
+  "not_run": [
+    "모든6실제완료종점",
+    "새실제CPUprepare/팩검산",
+    "새모델/GPU평가",
+    "일반지능/공식harness/전체오염제거/구조단독인과"
+  ],
+  "live_invariant": "Native595진행중source/test/F4/cache/raw/log/CP불변, 제품/공용검사기/보호원천/무관dirty보존"
+}

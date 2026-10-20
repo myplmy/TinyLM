@@ -1320,3 +1320,99 @@ ProSparse/PowerInfer2·EasySteer의 배수, CRANE의 개별 표, OpenMOSS crossc
 추천은 현재 학생들의 실답을 먼저 회수한 뒤 A의 작은 진단을 검토하는 순서다. 이는 현재 실행 큐나 연구 우선순위의 변경이 아니다. 사전 확인된 정답/오답 조건, 같은 CP 안의 대응, no-op 정합·개입범위·후크/quant/KV 복원·CP/core/cfg 불변, 최종 독립 행동평가가 선결이다. 학습 rollback은 weight-only CP만으로 되지 않으며 optimizer/scheduler/RNG/마스크/진행 위치까지 필요하다.
 
 큰 activation·높은 Attention·낮은 entropy·높은 CKA를 자동 삭제/정답 판정으로 쓰거나, 마스크/방문 생략을 저장 압축으로 부르는 해석은 채택하지 않는다. GUI·자동 구조 탐색·언어 뉴런 편집·새 분석모델의 TinyLM 효과는 여전히 NOT_RUN이다.
+
+## 30. 2026-10-21 — 삼진 어닐의 forward와 weight VJP를 분리한 후속 검토
+
+### 30.1 검토 범위와 기존 근거
+
+현재 장기 Native595를 바꾸기 위한 결함 선언이 아니다. 문헌 역할의 읽기 보고를 회수하고 총괄이 현재 ternary.py/weight_route.py, 결과003·022·084·019 관련절과 원문을 대조했다. 모든 과거 원로그·실행·판정과 live source/F4는 불변이다.
+
+- [결과003](../../test_result/003_20260725001000_P014-커널-어닐버그.md)은 이미 어닐과 무관한 STE window 유지를 명시했다. 현재 관측은 새 우발 동작으로 보기 어렵다.
+- [결과022](../../test_result/022_20260801100000_P035-어닐형태-효과없음-P026과함께종결.md)은 같은 STE 아래 linear/step·전이점의 네 조건을 비교했다. 과거 검출 실패를 모든 backward 규칙의 무효나 identity-gradient FP 학습 검증으로 확대하지 않는다. 당시 분해능을 새595M에 복사하지 않는다.
+- [결과084](../../test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md)의250step 세 팔은 계측/후반 궤적 대조이며 QA·새 VJP 선택의 증거가 아니다.
+- [결과019 §9](../../test_result/019_20260802100000_P036-Arenas종결-trapping은실재하나회복불가.md)은 tied·부모·KD k4·300M에서 Arenas on/off3.6583/3.6578을 기록했다. forward도 바뀌는 이 대조는 같은 forward의 backward만 바꾸는 실험이 아니다.
+
+### 30.2 현재 코드의 정확한 국소식
+
+PyTorch 선형층의 행렬 방향을 사용한다. Q(W)는 현재 그룹 삼진화, a는 anneal, sg는 detach이며,
+
+\[
+W_a=Q(W)+(1-a)\operatorname{sg}(W-Q(W))
+     \quad\text{(값은 }aQ(W)+(1-a)W\text{)}.
+\]
+
+현재 _TernarySTE.backward의 원소별 배율은
+
+\[
+S(W)=\frac{1}{1+(|W|/\max(c\alpha,10^{-8}))^4}.
+\]
+
+Y=XW_a^T, 상위 gradient G를 고정하면 국소 VJP는
+
+\[
+\bar W=(G^TX)\odot S(W),\qquad \bar X=GW_a.
+\]
+
+어닐과 무관한 것은 weight 쪽의 surrogate 배율 S이지 전체 모델 gradient가 아니다. 실제 G와 활성값은 forward·학습 상태에 따라 달라진다. a=0은 수학적 forward가 실수 값이어도 weight VJP는 window를 통과한다. 유한정밀도의 bitwise forward 동일성과도 구별한다.
+
+detach는 보간 행렬의 **값을 삭제하지 않는다**. 따라서 P036 계획·현재 코드의 과거 설명 중 “detach 때문에 입력 gradient에 latent W가 들어가지 않는다”는 문구는 weight/input 미분 대상을 혼동한다. Arenas는 W_a에 별도 λW를 더하므로 forward·입력 VJP도 바꾸며, 비-detach 가산은 weight VJP에 λ 항도 더한다. 이 차이를 없애거나 Arenas를 현재 어닐과 같다고 할 수는 없다.
+
+총괄은 현재 원형을 수정하지 않고 기존 Mini의2×2 CPU 합성 계산을 수행했다. a=0/.37/1에서 위 수동식 대비 input/weight VJP 최대오차는 모두0, identity weight VJP와는0.0202183723 차이가 있었고 파라미터는 불변이었다. 별도 float route는 plain-linear input/weight VJP와 정확히 일치했다. 이는 작은 수학 계약 검산이지 실제595M·일반 지능·품질 검증이 아니다. 코드·입력·출력은 WIP_20261021_STE_VJP_REVIEW.json에 보존한다.
+
+### 30.3 외부 근거의 적용 한계
+
+[Bengio 등 §4](https://arxiv.org/html/1308.3432v1)는 STE를 편향된 근사로 다루며 다층에서 보편적인 방향 보장을 주지 않는다. [Yin 등 §1.2·3.1~3.3](https://arxiv.org/html/1903.05662v4)의 이론은 두 선형층·이진 activation·Gaussian 입력 조건이다. 부적절한 STE의 불안정 사례를 현재 TWN weight/4차 window/Muon의 실패 증명으로 옮기지 않는다. 이 문헌은 선택할 surrogate가 중요할 수 있다는 근거이지 현재 window나 identity 중 하나의 승리 보장이 아니다.
+
+[Sherry 식2·§3.2 식7~8](https://arxiv.org/html/2601.07892v1)은 STE와 latent residual을 다룬다. 현재 soft window의 최적성이나 새 TinyLM에서의 이득을 입증하지 않으며, 외부 비트/속도/정확도 배수를 현재 모델에 적용하지 않는다. 총괄의 위 VJP식은 실제 코드에서 직접 유도한 것이지 논문이 현재 코드를 검증했다는 뜻이 아니다.
+
+### 30.4 세 후속 후보 — 현재 새 학습에 적용하지 않음
+
+|후보|같은 forward에서의 weight VJP 배율|시나리오·비용·한계|
+|---|---|---|
+|A·현재 선택|S(W)|이미 진행하는595M Q/F 원형을 끝까지 보존한다. 새 학습비0이며 Q/F를 forward+backward 경로 묶음으로 판독한다. 최적성이 검증됐다는 뜻은 아니다.|
+|B·후속 후보|(1-a)+aS(W)|a=0은identity·a=1은현window. 초기/중간 surrogate를 분리하려면 a<1의 fresh native 학습이 필요하다. a=1 고정 Broad/SFT만 다시 돌리면 A와 같아 이 질문을 시험하지 못한다. 구현·회귀와 추가 native 시간이 필요하며 아직 미계측이다.|
+|C·후속 후보|1|완전삼진에서도 weight window를 없애는 별도 대조다. 같은 Q 부모의 짧은 SFT로 그 국면을 볼 수 있지만 초기 native 효과와 다르다. code flip·안정성·clip/Muon 이력·망각과 실답을 확인해야 한다.|
+
+B/C는 forward GEMM을 추가할 필요가 없을 수 있지만 runtime·compile/캐시·metadata/strict loader·수동 VJP·16micro/clip·optimizer 검산이 새로 필요하다. STE는 의도적으로 실제 양자화 미분과 다르므로 일반 finite-difference gradcheck를 정답 게이트로 삼지 않는다.
+
+현재는 A를 유지하며 실제595M과 동일 Broad704/실답을 우선 회수한다. B/C의 코드·GPU 학습·교체·새 큐 추가는0이다. 같은 forward의 input-gradient 지표만으로 weight VJP 후보의 효용을 판단할 수 없다.
+
+## 31. 2026-10-21 — E256 입출력 병목의 함수보존 확장 가능성, 아직 미채택
+
+문헌 역할의 별도 가설을 회수하고 총괄이 transformer.py의 생성부·입력/헤드·INT8/packed 회계, init_utils.py, Muon, 결과030 §11과 관련 원문을 읽었다. 모델·CP·GPU·새 초기화/학습·큐 변경은0이다. 현재 Native595와 동일 Broad704의 원형을 우선 회수한다.
+
+### 31.1 가능한 변환과 불가능한 추론
+
+현재 A=[32768,256], U=emb_up.weight=[768,256]이며 입력은 A_t U^T, 출력 logits는 h U A^T다. E축 RMS나 sqrt(E) 배율은 없고 U는 TLinear가 아닌 일반 Linear다. 따라서 A'=[A,0], U'=[U,R]의 **새 열** 확장은 실수 수학에서 양쪽 초기 함수를 보존할 수 있다. 새 A의 gradient는 일반적으로 살아 있고, 새 U는 첫 역전파0이어도 A가 움직이면 열린다. 둘 다0으로 붙이면 죽은 경로다.
+
+R의 규모는 첫 forward에는 영향을 주지 않지만 새 gradient 크기에 영향을 주므로 아직 정해지지 않았다. GEMM 형상·BF16 누산이 바뀌어 bitwise 보존은 보장하지 않는다. 기존 SVD 이식은 축소 전용이어서 단순 emb-rank512 옵션으로 이 변환이 구현되는 것도 아니다. 별도 변환/loader·계보와 초기 logits/생성·공유·RNG·gradient 검산이 필요하며 아직 NOT_RUN이다.
+
+[Net2Net §2.2~2.3](https://arxiv.org/html/1511.05641v4)은 함수 보존 확장의 개념을 뒷받침하지만 위 tied bilinear 변환은 실제 TinyLM 식에서 도출한 것이지 해당 CNN 실험의 재현이 아니다. [Softmax bottleneck §2.1~2.2](https://arxiv.org/html/1711.03953v4)의 논의는 현재 logit 행렬의 랭크 상한을 연구할 이유이지 ‘256개 개념만 이해한다’는 결론이 아니다. [ALBERT §4.4/Table3](https://arxiv.org/html/1909.11942v6)도 embedding 확대의 보편적 단조 이득을 보이지 않는다.
+
+[결과030 §11](../../test_result/030_20260807_P046-무KD-E128은-분해능의-20배-랭크축은-볼록하다.md)의 E256/192/128 손실3.6776/3.6931/3.7450은 당시 축소 비용의 근거다. 이를 뒤집어 E512 이득을 예측하거나 current14층 QA의 원인으로 확정하지 않는다.
+
+### 31.2 정확한 추가량과 optimizer 한계
+
+E256→512의 추가량은 (32768+768)×256=8,585,216 인자다.
+
+|조건|추가량|해석|
+|---|---:|---|
+|A/U FP32|32.750MiB|고유 parameter tensor만|
+|A/U FP16/BF16|16.375MiB|모두 해당 dtype으로 저장한다는 계산|
+|두 인자 모두 INT8 값만이라는 가정|8.1875MiB|현재 저장경로가 아님|
+|실제 A INT8·U FP32 경로|8.750MiB|행당 scale32768개는 그대로. 복원 scratch/전체 peak 제외|
+|packed 회계·g128 가정|약1.7500MiB|추가인자×(log2(3)+16/128)/8. 실물 packed 파일이나 INT8 상주 증거가 아님|
+
+파라미터+gradient와 A의 Adam 두 moment/U의 Muon momentum만 계산하면 지속 학습 tensor 증가량은130.250MiB다. AMP·활성값·NS workspace·allocator·속도는 미측정이다. KV 형상은 그대로지만 E축 연산·복원 scratch는 증가할 수 있다.
+
+현재 U [768,256]→[768,512]에서 Muon rms 계수0.2sqrt(max(out,in))는 둘 다 max768로 같다. ‘행렬이 커졌으니 이 배율부터 달라진다’는 설명은 이 형상에 맞지 않는다. 이상적 [G_old,0]와0 momentum의 NS도 실수 수학에서는 기존 블록을 보존할 수 있다. 그러나 새 A gradient는 global clip norm과 이후 optimizer 이력을 바꿀 수 있고 BF16·eps·GEMM 차이도 남는다. 따라서 **초기 함수 보존과 학습 궤적 보존은 다르다.**
+
+### 31.3 후속 선택지와 반증
+
+|안|목적|비용·한계|
+|---|---|---|
+|A·현재 권장|E256과 현재 same-Broad704를 먼저 완료|추가 구조비0. 실제 과제·공개 답을 먼저 확인한다.|
+|B·후보|A_new0/U_new별도난수로 tied E512를 명시 확장|위 추가 메모리·변환/strict loader·초기 parity/gradient·비용8·새학습이 필요하다. 표현·초기화/새gradient 패키지 대조이며 이득 보장은 없다.|
+|C·후보|입력 E256은 두고 출력에 rank256 잔차만 추가|입력/출력 효과를 더 분리하지만 같은8.585M 추가인자·새head/저장/optimizer 경계로 구현비가 B보다 크다.|
+
+초기 parity 실패는 용량 가설 반증이 아니라 이식 실패로 구분한다. CE만 줄고 대상 연결·산수·자연QA가 그대로면 일반 답변 개선으로 보지 않는다. 현재 외부 비교모델과의 훈련 노출·언어·자료·구조 차이가 크므로 격차를 E256 하나로 설명하지 않는다. B/C의 구현·실물 비용·배포 메모리/latency·품질은 모두 NOT_RUN이다.

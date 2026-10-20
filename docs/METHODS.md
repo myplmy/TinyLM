@@ -472,3 +472,5 @@ ORPO−SFT의한정대응구간이양수여도부모우위/조건갱신/언어�
 원 native Broad4의 Qcost는 root 유휴 영수증의 전체source map 필드 오기로 모델로딩 전에 실패했으며 원형은 보존했다. 새Stage4fl은 계산·부모·교과·기한을 그대로 두고 새경로에서 복구한다. 일반3턴 대화는 고정16원천 패널의 관측범위 밖이고, 온라인 오조어 blacklist·새thinking/GUI/프루닝 구현은 추가하지 않았다.
 
 [101 §§395~402](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 C2의 실제 CPU·양cost/현재예산과 Native595의 실제 CPU·양cost8/late/cache·현재예산을 구분한다. Native595는01:43:35KST 삼진4543을 열었지만 완료 토큰·CP·품질은 회수 전이다. F identity와 Q soft-window STE는 anneal0에서도 backward가 다르므로 순수 반올림 인과로 읽지 않는다. 원source/F4·crop·스케줄은 실행 중 고정하며, 향후595M 부모의 SFT도 원 교과와 옛5632 replay창을 따로 보존해야 한다.
+
+Stage4fn의 같은Broad704 새부모 연결과Stage4fo의 같은공개팩6종점 연결은 각각root67CPU·68전수정적과독립검토를마친준비단계다. 실제양native/교과/6종CP가완료되기전모델품질로집계하지않는다. [리뷰08 §30~31](methods/08_paper_review2.md)은국소input/weight VJP와과거설명정정·함수보존E확장후보를분리했다. 작은2×2검산·수식/메모리계산은새QAT/구조학습의성능검증이아니며현재가중치/경로/기한을바꾸지않는다.
