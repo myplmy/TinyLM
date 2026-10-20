@@ -1,0 +1,115 @@
+{
+  "schema": "P106B_GUEST_CLOCK_DIVERGENCE_AUDIT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "observed_at": "2026-10-21T08:18:00+09:00",
+  "standalone": {
+    "scope": "standalone Python clock read/sleep only; no Torch/model/GPU/files/config changes",
+    "before": {
+      "utc": "2026-10-20T23:05:56.111307+00:00",
+      "realtime": 1792537556.1113148,
+      "perf": 54098.524245417,
+      "monotonic": 54098.52424564,
+      "CLOCK_BOOTTIME": 54098.524247016,
+      "CLOCK_MONOTONIC_RAW": 56433.066963427
+    },
+    "after": {
+      "utc": "2026-10-20T23:06:28.731741+00:00",
+      "realtime": 1792537588.73176,
+      "perf": 54128.552059881,
+      "monotonic": 54128.552060402,
+      "CLOCK_BOOTTIME": 54128.552065117,
+      "CLOCK_MONOTONIC_RAW": 56465.51860773
+    },
+    "deltas": {
+      "realtime": 32.620445251464844,
+      "perf": 30.027814464003313,
+      "monotonic": 30.027814761997433,
+      "CLOCK_BOOTTIME": 30.027818100999866,
+      "CLOCK_MONOTONIC_RAW": 32.45164430300065
+    },
+    "perf_info": "namespace(implementation='clock_gettime(CLOCK_MONOTONIC)', monotonic=True, adjustable=False, resolution=1e-09)",
+    "monotonic_info": "namespace(implementation='clock_gettime(CLOCK_MONOTONIC)', monotonic=True, adjustable=False, resolution=1e-09)"
+  },
+  "standalone_code": "import time,json,datetime\ndef sample():\n d=dict(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),realtime=time.time(),perf=time.perf_counter(),monotonic=time.monotonic())\n for name in ('CLOCK_BOOTTIME','CLOCK_MONOTONIC_RAW'):\n  if hasattr(time,name):d[name]=time.clock_gettime(getattr(time,name))\n return d\na=sample();time.sleep(30);b=sample()\nprint(json.dumps(dict(scope='standalone Python clock read/sleep only; no Torch/model/GPU/files/config changes',before=a,after=b,deltas={k:b[k]-a[k]for k in a if k!='utc'},perf_info=str(time.get_clock_info('perf_counter')),monotonic_info=str(time.get_clock_info('monotonic')))))\n",
+  "scope": "기존학습의시간해석읽기검토+무모델30초시계관측. 현재학습코드/F4/OS설정변경0.",
+  "workers": {
+    "ternary": {
+      "utc_interval_seconds": 11512.334,
+      "perf_counter_seconds": 10880.398204297999,
+      "utc_minus_perf_seconds": 631.935795702002
+    },
+    "float": {
+      "utc_interval_seconds": 11235.934066,
+      "perf_counter_seconds": 10609.282470972,
+      "utc_minus_perf_seconds": 626.651595028
+    }
+  },
+  "clocksource": {
+    "current": "tsc",
+    "available": "tsc hyperv_clocksource_tsc_page hyperv_clocksource_msr acpi_pm",
+    "scope": "기존read-only sysfs관측이며설정변경0"
+  },
+  "cause": "NOT_ESTABLISHED",
+  "interpretation": {
+    "confirmed": "Torch/GPU없는독립Python에서도서로다른시계간경과차이재현. perf와monotonic의일치는독립정확성증거아님.",
+    "not_claimed": [
+      "상수비율소급보정",
+      "순수GPU시간",
+      "Q/F절대벽시계속도우열",
+      "외부기준UTC정확성",
+      "우리환경의NTP/서비스중복원인확정",
+      "TSC자체결함확정"
+    ],
+    "valid_training_scope": "실제고정4543단계/토큰/step기반스케줄·닫힌원형/CP SHA검산은별개이며시계차이자체로무효화하지않음.",
+    "budget_limitation": "현재원장은perf초를더하고UTC잔여초와비교하므로fits는UTC마감보장아님. 원값/원상한을바꾸지않고현재UTC/충분한여유를별도확인.",
+    "deadlines": "native11:30/후속학습14/전체17KST의UTC협력검사를유지. 긴C/CUDA/compile/저장중정확한시각강제kill보장아님. 상대ITIMER_REAL/상위wait와종료후UTC+30검사는별개.",
+    "idle": "UTC와monotonic각300초이상·각fresh600초이내를요구하며동일경과는요구하지않음."
+  },
+  "reviews": {
+    "literature_agent": "oct20_literature: Python/Linux/Hyper-V/WSL원문읽기. 실행/파일/설정변경0.",
+    "antithesis_agent": "oct20_antithesis: Native595/C2/새Broad/runtime/launch직접읽기. 즉시중단필수의새P1근거는못찾았지만hardfence/예산보장해석제한.",
+    "root": "Python time/signal·커널timekeeping·WSL#12583본문과09-14/10-08/10-15댓글을직접읽음. 댓글은공급자보증된수리나우리환경재현이아님."
+  },
+  "references": [
+    {
+      "url": "https://docs.python.org/3/library/time.html#time.perf_counter",
+      "read_scope": "perf_counter/monotonic 정의"
+    },
+    {
+      "url": "https://docs.python.org/3/library/signal.html#execution-of-python-signal-handlers",
+      "read_scope": "C계산중Python handler지연"
+    },
+    {
+      "url": "https://www.kernel.org/doc/html/latest/core-api/timekeeping.html",
+      "read_scope": "MONOTONIC/BOOTTIME/REALTIME/RAW 정의"
+    },
+    {
+      "url": "https://github.com/microsoft/WSL/issues/12583",
+      "read_scope": "원사용자재현과댓글. 09-14중지무효·10-08개별해소·10-15중지후불일치지속도함께보존."
+    }
+  ],
+  "options": [
+    {
+      "id": "A",
+      "choice": "현재고정step실험을계속하고원시간을분리보존",
+      "recommended": true,
+      "tradeoff": "OS변경/모델중단없음. 절대속도원인은미확정."
+    },
+    {
+      "id": "B",
+      "choice": "모델종료뒤별도무모델시계/호스트동시진단",
+      "recommended": false,
+      "tradeoff": "원인분리에유용하나현재미실행이며서비스/tick조정은포함하지않음."
+    },
+    {
+      "id": "C",
+      "choice": "진단뒤사용자별도승인으로환경정비대조",
+      "recommended": false,
+      "tradeoff": "재시작/구성변경가능. 현실험중에는수행하지않음."
+    }
+  ],
+  "forbidden_actions_done": [],
+  "original_source_f4_changed": false,
+  "os_config_changed": false,
+  "retroactive_time_conversion": false
+}

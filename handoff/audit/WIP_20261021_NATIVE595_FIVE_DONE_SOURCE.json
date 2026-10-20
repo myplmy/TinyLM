@@ -1,0 +1,91 @@
+{
+  "schema": "P106B_FIVE_DONE_SOURCE_PRESERVATION_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "사용자 주도실험 완료SH -done·명령/Git 보존후 삭제허가",
+  "input_logs": [
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fmWe_native595_float4543_045622.txt",
+      "bytes": 27931,
+      "sha256": "3562D3CF878B6E8CCE27BC38A8F0E55151C6BB7ACAF2389427CA78C404DB07CB"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fmWf_native595_ternary_native32_080429.txt",
+      "bytes": 5326,
+      "sha256": "CD796F8208FF780DD9E45D60C38A9D2D50EE804810AA9B35921D42DE12EF0E88"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fmWg_native595_float_native32_080620.txt",
+      "bytes": 5321,
+      "sha256": "F041661A3261B694432E977CC1888E2F68D7EA32055E5E0605BD94CB90EE387A"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fmWh_native595_pair_readback_080711.txt",
+      "bytes": 5302,
+      "sha256": "33178ABEE3DBFD54B87428FCA67BBCFA693A449F1A3E9FF3FECDCAB95C522EC7"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fnW0_native595_broad_cpu_080813.txt",
+      "bytes": 9182,
+      "sha256": "A4921A28286329DF72B70820095B7F8D7C762D23902660E34CE4622FC61F428A"
+    }
+  ],
+  "launchers": [
+    {
+      "original": "run_P106B_Stage4fmWe_native595_float4543.sh",
+      "done": "run_P106B_Stage4fmWe_native595_float4543-done.sh",
+      "bytes": 1835,
+      "sha256": "90121B7FE71E39B5FB5C547660C02CEB634BD4B25355B268A789BC00AE3BD27F",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fmWe_native595_float4543: measured-admission native595 matched Q/F pair, not a tokens-only old299M contrast.\n# Explicit4543x8x16x1024, same scratch/source/crops, original native WSD/Muon/clip1/grad-checkpoint.\n# Worker cap from actual paired8 costs; no stdin/download/old overwrite or semantic auto-adoption.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fmWe_native595_float4543_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWe_native595_float4543_\"$run_stamp\" --num 101 --note 'Native595 closed paired-cost budget required and recalculated before each train. Main595460096 targets/crops581504 in exact1191116192 pool; same fresh028C46. Original Q uses original STE window even at anneal0; F uses identity gradients, so route package is not pure rounding-only. Original AdamW/Muon2D RMS/clip1/ckpt-on/BF16/default compile. Native end21st11:30KST/followup7200/eval1200/record600/global14KST train/17KST authority; active43200, max native18000. Mode train cap15600s. Closed actual worker then readonly VERIFY required for train; weight-only is not exact resume. Native32 is not wholeVAL, conversation or Falcon parity. Public files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWe_native595_float4543_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode train --arm float --max-wall-sec 15600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode train --arm float --max-wall-sec 15600 --execute"
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fmWf_native595_ternary_native32.sh",
+      "done": "run_P106B_Stage4fmWf_native595_ternary_native32-done.sh",
+      "bytes": 1867,
+      "sha256": "BB484893A8AFFF26C6ED1232DF8CE25692C38A181B8D110F2CA6EE7C53D7EAA6",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fmWf_native595_ternary_native32: measured-admission native595 matched Q/F pair, not a tokens-only old299M contrast.\n# Explicit4543x8x16x1024, same scratch/source/crops, original native WSD/Muon/clip1/grad-checkpoint.\n# Worker cap from actual paired8 costs; no stdin/download/old overwrite or semantic auto-adoption.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fmWf_native595_ternary_native32_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWf_native595_ternary_native32_\"$run_stamp\" --num 101 --note 'Native595 closed paired-cost budget required and recalculated before each train. Main595460096 targets/crops581504 in exact1191116192 pool; same fresh028C46. Original Q uses original STE window even at anneal0; F uses identity gradients, so route package is not pure rounding-only. Original AdamW/Muon2D RMS/clip1/ckpt-on/BF16/default compile. Native end21st11:30KST/followup7200/eval1200/record600/global14KST train/17KST authority; active43200, max native18000. Mode evaluate cap600s. Closed actual worker then readonly VERIFY required for train; weight-only is not exact resume. Native32 is not wholeVAL, conversation or Falcon parity. Public files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWf_native595_ternary_native32_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode evaluate --arm ternary --max-wall-sec 600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode evaluate --arm ternary --max-wall-sec 600 --execute"
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fmWg_native595_float_native32.sh",
+      "done": "run_P106B_Stage4fmWg_native595_float_native32-done.sh",
+      "bytes": 1857,
+      "sha256": "1C4106D028F5323575AC420457AC286747DAF8D1D6E5B473BEBA262F4FF73824",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fmWg_native595_float_native32: measured-admission native595 matched Q/F pair, not a tokens-only old299M contrast.\n# Explicit4543x8x16x1024, same scratch/source/crops, original native WSD/Muon/clip1/grad-checkpoint.\n# Worker cap from actual paired8 costs; no stdin/download/old overwrite or semantic auto-adoption.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fmWg_native595_float_native32_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWg_native595_float_native32_\"$run_stamp\" --num 101 --note 'Native595 closed paired-cost budget required and recalculated before each train. Main595460096 targets/crops581504 in exact1191116192 pool; same fresh028C46. Original Q uses original STE window even at anneal0; F uses identity gradients, so route package is not pure rounding-only. Original AdamW/Muon2D RMS/clip1/ckpt-on/BF16/default compile. Native end21st11:30KST/followup7200/eval1200/record600/global14KST train/17KST authority; active43200, max native18000. Mode evaluate cap600s. Closed actual worker then readonly VERIFY required for train; weight-only is not exact resume. Native32 is not wholeVAL, conversation or Falcon parity. Public files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWg_native595_float_native32_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode evaluate --arm float --max-wall-sec 600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode evaluate --arm float --max-wall-sec 600 --execute"
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fmWh_native595_pair_readback.sh",
+      "done": "run_P106B_Stage4fmWh_native595_pair_readback-done.sh",
+      "bytes": 1841,
+      "sha256": "490B1C92D67EF1616E1454400657E084694272FCF97E650928EB5B9097699F62",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fmWh_native595_pair_readback: measured-admission native595 matched Q/F pair, not a tokens-only old299M contrast.\n# Explicit4543x8x16x1024, same scratch/source/crops, original native WSD/Muon/clip1/grad-checkpoint.\n# Worker cap from actual paired8 costs; no stdin/download/old overwrite or semantic auto-adoption.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fmWh_native595_pair_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWh_native595_pair_readback_\"$run_stamp\" --num 101 --note 'Native595 closed paired-cost budget required and recalculated before each train. Main595460096 targets/crops581504 in exact1191116192 pool; same fresh028C46. Original Q uses original STE window even at anneal0; F uses identity gradients, so route package is not pure rounding-only. Original AdamW/Muon2D RMS/clip1/ckpt-on/BF16/default compile. Native end21st11:30KST/followup7200/eval1200/record600/global14KST train/17KST authority; active43200, max native18000. Mode readback cap900s. Closed actual worker then readonly VERIFY required for train; weight-only is not exact resume. Native32 is not wholeVAL, conversation or Falcon parity. Public files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWh_native595_pair_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode readback --max-wall-sec 900 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode readback --max-wall-sec 900 --execute"
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fnW0_native595_broad_cpu.sh",
+      "done": "run_P106B_Stage4fnW0_native595_broad_cpu-done.sh",
+      "bytes": 1834,
+      "sha256": "5094971074E06DE598CCF99DD20F24901C1A6A49118FDAE727AE80464B033192",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fnW0_native595_broad_cpu: same frozen22528/four passes704; actual completed Native595 parent only.\n# Original SFT math/replay5632/optimizer retained. No assets downloaded, stdin, retag or old overwrite.\n# Costs and both pending arms must fit before training; child PASS is not answer quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no positional arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fnW0_native595_broad_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw is preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnW0_native595_broad_cpu_\"$run_stamp\" --num 101 --note 'Actual595 parent completed4543 only; same Broad22528/4pass704 and old597995000 TRAIN/replay5632. micro8 accum16 seq1024 checkpoint-on/L0/Adam5e-5/Muon2e-4 WD0 clip1/default compile. Parent report and normalized descriptor SHA are separate. Original44 controller/core9 bodies retained; active14400/eval3600/record600, train21st14KST/authority17KST. Both costs and all pending estimates required; no float-only budget fallback. Mode prepare cap600s; train cap is bounded but no timing guarantee, current budget rechecked. Closed worker plus readonly verifier required for cost/train. All public files below20MB; source16/max17 history answers are not general3turn proof.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnW0_native595_broad_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode prepare --max-wall-sec 600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode prepare --max-wall-sec 600 --execute"
+      ]
+    }
+  ],
+  "scope": "완료4개Native595와새Broad CPU1만. liveoldF704/미실행SH/CP/raw/캐시보존.",
+  "deleted": false
+}
