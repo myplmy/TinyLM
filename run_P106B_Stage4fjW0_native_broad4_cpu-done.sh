@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# COMPLETE: closed raw verdict0 and result101 section371 recorded; preserve commands, no automatic rerun.
 # P106B_Stage4fjW0_native_broad4_cpu: native Q/F parents with original Broad2pass schedule repeated as two continuous cycles.
 # Same core/Muon/L0/clip1/micro8 accum16; no old source mutation, downloads, stdin or semantic auto-PASS.
 set -euo pipefail

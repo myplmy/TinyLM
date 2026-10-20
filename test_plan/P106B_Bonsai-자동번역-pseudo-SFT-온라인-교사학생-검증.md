@@ -6470,12 +6470,12 @@ A의명시private adapter는계산드리프트가작지만독립namespace/captur
 |단계|실험용 SH|worker 한도|실행|
 |---|---|---|---|
 |Stage4ffW0|`run_P106B_Stage4ffW0_broad_resume_bridge_cpu.sh`|900초|완료101§356/model0|
-|Stage4ffWa|`run_P106B_Stage4ffWa_broad_resume_mixed_cost8.sh`|900초|NOT_RUN|
-|Stage4ffWb|`run_P106B_Stage4ffWb_broad_resume_staged_cost8.sh`|900초|NOT_RUN|
-|Stage4ffWc|`run_P106B_Stage4ffWc_broad_resume_order_budget.sh`|600초|NOT_RUN|
-|Stage4ffWp|`run_P106B_Stage4ffWp_broad_resume_parent_dialogues.sh`|1800초|NOT_RUN|
-|Stage4ffWd|`run_P106B_Stage4ffWd_broad_resume_mixed_train352.sh`|3600초|NOT_RUN|
-|Stage4ffWe|`run_P106B_Stage4ffWe_broad_resume_staged_train352.sh`|3600초|NOT_RUN|
+|Stage4ffWa|`run_P106B_Stage4ffWa_broad_resume_mixed_cost8.sh`|900초|완료101§370/비용만|
+|Stage4ffWb|`run_P106B_Stage4ffWb_broad_resume_staged_cost8.sh`|900초|완료101§372/비용만|
+|Stage4ffWc|`run_P106B_Stage4ffWc_broad_resume_order_budget.sh`|600초|완료101§373/자원예측|
+|Stage4ffWp|`run_P106B_Stage4ffWp_broad_resume_parent_dialogues.sh`|1800초|완료101§376/실제16대화17답|
+|Stage4ffWd|`run_P106B_Stage4ffWd_broad_resume_mixed_train352.sh`|3600초|완료101§377/새CP·실답평가대기|
+|Stage4ffWe|`run_P106B_Stage4ffWe_broad_resume_staged_train352.sh`|3600초|완료101§378/새CP·실답평가대기|
 |Stage4ffWf|`run_P106B_Stage4ffWf_broad_resume_mixed_answers.sh`|1800초|NOT_RUN|
 |Stage4ffWg|`run_P106B_Stage4ffWg_broad_resume_staged_answers.sh`|1800초|NOT_RUN|
 |Stage4ffWh|`run_P106B_Stage4ffWh_broad_resume_order_readback.sh`|900초|NOT_RUN|
@@ -6519,7 +6519,7 @@ A는명시종점provider의얇은private 경계, B는평가본문전체복제, C
 
 ### 7. 실행
 
-새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT/네대각선 완료와 소스커밋dd1b6e6·SH실행권한정정8ee6895 뒤 CPU prepare를완료했다(101§363). 세 off-diagonal5082답을 완료/전량검산해101§364~366에기록했다. 현재마지막실수SFT→삼진추론만수집중이며전체교차판정은후속이다.
+새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT/네대각선 완료와 소스커밋dd1b6e6·SH실행권한정정8ee6895 뒤 CPU prepare를완료했다(101§363). 세 off-diagonal5082답과 마지막실수SFT→삼진추론까지 완료했고 최종 readback이 네교차6776·기존대각선6776을 전량검산했다(101§364~369). 고정CP의 보정없는 route전환 효과와 일반적인 사후복원 가능성은 구분한다.
 
 ### 8. 한계
 
@@ -6527,7 +6527,7 @@ A는명시종점provider의얇은private 경계, B는평가본문전체복제, C
 
 ### 9. 실행 이력
 
-원교차source_state/cross_runtime을 다시 읽고 단일namespace 가정 세 곳의 불일치를 명시 provider로 분리했다. 원metadata를 retag하지 않고 native원태그/SFT재개태그/대각선재개태그를 검산한다. root 검토·CPU·정적은 완료했지만 이 교차의 실제 모델 평가는 NOT_RUN이다. 감사는 `WIP_20261020_ROUTE_CROSS_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
+원교차source_state/cross_runtime을 다시 읽고 단일namespace 가정 세 곳의 불일치를 명시 provider로 분리했다. 원metadata를 retag하지 않고 native원태그/SFT재개태그/대각선재개태그를 검산한다. 준비 뒤 실제 네교차와13,552답 재검산까지 완료했다. 당시의 NOT_RUN은 해당 시점 기록이며 최종 조건서명과 수치는101§369가 소유한다. 감사는 `WIP_20261020_ROUTE_CROSS_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
@@ -6609,7 +6609,7 @@ Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 �
 
 ### 7. 실행
 
-전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 전수정적68PASS/6NOT_RUN·소스커밋1226029 뒤 실제 CPU prepare worker를 완료했다(101§367). 이 단계의 모델/CP tensor 로딩·GPU·새CP는0이며 실제 cost8 뒤 예산으로만 학습을 연다.
+전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 전수정적68PASS/6NOT_RUN·소스커밋1226029 뒤 실제 CPU prepare worker를 완료했다(101§367). 이 CPU 단계의 모델/CP tensor 로딩·GPU·새CP는0이다. 이후 새유휴 뒤 실제cost8·21행렬의8회 갱신·strict VERIFY와 예산을 완료했다(101§374~375). 새384학습·실제답 품질은 아직 NOT_RUN이다.
 
 | 런처 | 역할 | 단계 상한 |
 |---|---|---|
@@ -6681,7 +6681,7 @@ General은 Aya1070/OASST1 978행이며 KO174/EN1874다. 기존 적격 KO174는 �
 
 ### 7. 실행
 
-새태그 `p106b_native_broad4_v1_s1337`의 전용 driver1070행/test712행을 동결했다. root가 원9개 계산본문·두cycle 연속 optimizer·704절대창·전용자식 loader와 전량코드를 읽고56 CPU회귀(19.488초)·check-only67필드/종료0을 확인했다. info의 예정/실제 키 충돌, 유휴근거 보호경로와 시간영수증 경계 결함을 실제 모델 전에 찾아 수리했으며 원본/공용파일은 불변이다. 아래4개SH만 준비했고 전수정적·소스커밋 뒤 CPU prepare와 양 cost로 진행한다. 본학습·평가·readback의5개SH는 자기 cost 실측 뒤 worker상한을 확정해 작성한다. 현재 실제 source/prepare·모델/GPU/새CP·4pass 실소비는 NOT_RUN이다.
+새태그 `p106b_native_broad4_v1_s1337`의 전용 driver1070행/test712행을 동결했다. root가 원9개 계산본문·두cycle 연속 optimizer·704절대창·전용자식 loader와 전량코드를 읽고56 CPU회귀(19.488초)·check-only67필드/종료0을 확인했다. info의 예정/실제 키 충돌, 유휴근거 보호경로와 시간영수증 경계 결함을 실제 모델 전에 찾아 수리했으며 원본/공용파일은 불변이다. 아래4개SH만 준비했고 전수정적·소스커밋 뒤 CPU prepare와 양 cost로 진행한다. 본학습·평가·readback의5개SH는 자기 cost 실측 뒤 worker상한을 확정해 작성한다. 전수정적68PASS/6NOT_RUN·소스7f21b07 뒤 실제CPU source/prepare까지 완료했다(101§371). 모델/GPU/새CP·4pass 실소비는 NOT_RUN이다.
 
 | 런처 | 역할 | 상한 |
 |---|---|---|

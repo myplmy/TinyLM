@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# COMPLETE: closed raw verdict0 and result101 section373 recorded; preserve commands, no automatic rerun.
 # P106B_Stage4ffWc_broad_resume_order_budget: explicit private deadline resume; original P090B and v2 payload preserved.
 # No new native/SFT parent substitution, stdin, downloads, old overwrite, or semantic auto-approval.
 set -euo pipefail

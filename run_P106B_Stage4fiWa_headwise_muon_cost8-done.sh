@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# COMPLETE: closed raw verdict0 and result101 section374 recorded; preserve commands, no automatic rerun.
 # P106B_Stage4fiWa_headwise_muon_cost8: one isolated Q/K head-wise NS-unit contrast, not full DeepSeek training.
 # Same completed float-native parent and frozen SFT384; old Muon/data/CP/code stay unchanged.
 # Actual-worker3600/record600; absolute21st17KST and training14KST. No stdin/download.

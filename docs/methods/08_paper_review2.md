@@ -1276,3 +1276,47 @@ A가 현재 오류를 가장 작은 계약으로 검산할 수 있어 우선 검
 Falcon 공식 Base는800GT 누적학습, 별도 Instruct는 SFT25%를 섞은800GT 학습 뒤 후학습이다. 같은90M대라는 이유로 현재299M 기본학습/302k assistant 감독과 같은 조건으로 놓지 않는다. 해당 반복·혼합비·학습량을 TinyLM의 최적값이나 반드시 필요한 최소량으로 복사하지 않는다. 공급자 성과와 로컬 동일문항 벤치도 별개다.
 
 따라서 Q/K headwise 소형대조(A의 optimizer 후보)와 실제 assistant 감독/일반QA 확대(C의 자료 후보)를 섞지 않고, 긴 기본학습은 별도 한 팔 후보로 남긴다. 이 문헌검토는 신규 thinking·latent·RL 실행 승인이나 효과확정이 아니다.
+
+## 29. 2026-10-20 사용자 전달 참고자료 — 시각화·개입·비교·프루닝의 검증 경계
+
+### 29.1 요청과 실제 수행
+
+사용자는 다른 세션의 조사 정리를 기존 문헌·아이디어 에이전트에게 전달해 분석·추가 아이디어의 참고로 쓰되, 효과·성과 예측은 별도 검증하도록 요청했다. 이 전달문 안의 GUI·자동 교정·프루닝 권장안은 신규 구현·실험 지시가 아니다. 기존 문헌 역할이 읽기/웹 조사만 했고 root가 핵심 원문 관련 절과 현재 코드·기존 결과를 대조했다. 새 도구 설치·GUI·관찰 flag 완화·가중치 편집·프루닝·분석모델 학습·새 모델 실행은0이며 진행 중 Broad/Headwise/native Broad4의 순서를 바꾸지 않았다.
+
+이번 검토는 논문 전체·모든 도구의 재현이 아니다. 아래 출처의 방법/제약 및 지정 수치를 확인한 범위를 기록하며 외부 속도를 TinyLM 실측으로 승격하지 않는다. 감사는 `handoff/audit/WIP_20261020_VISUAL_INTERVENTION_REFERENCE_REVIEW.json`이다.
+
+### 29.2 확인한 주장과 제한
+
+|항목|관련 원문/현재 코드에서 확인한 사실|현재 TinyLM에 대한 판단|
+|---|---|---|
+|관찰 도구|NNsight의 trace/edit·생성 반복·edit 소유 범위가 다르다. 예시의 단순 edit는 prefill만 바꾸며 루트 clear가 하위 edit까지 지우지 않을 수 있다.|설치된 TinyLM 호환 기능을 확인한 것이 아니다. 복원 버튼/후크 해제만 믿지 않고 범위·no-op·복원 전후를 검산해야 한다. [공식 Model Editing](https://nnsight.net/features/7_model_editing/)|
+|직접 개입/근사|AtP*는 gradient 근사의 포화·상쇄에 따른 누락을 다룬다. §5.1은 짧은 문맥의 전체층 같은 거친 단위에서는 직접 patch 비용이 충분히 작아 근사 이득이 없을 수 있다고 명시한다.|14층이라는 이유만으로 무조건 저비용인 것은 아니지만, 처음부터 뉴런 전수·근사 탐색기를 만들 선결은 아니다. 실제 개입과 downstream 보상 효과를 구분한다. [AtP* §3·5.1](https://arxiv.org/html/2403.00745v1)|
+|표현 비교|CKA의 통계적 대응과 학습 연결층을 쓰는 stitching은 서로 다른 시험이다. 이 축은 문헌 역할이 관련 방법을 확인했고 root가 독립 실험을 하지는 않았다.|같은 번호 뉴런·큰 cosine·높은 CKA를 같은 의미/교체 안전성/정답성으로 읽지 않는다. [CKA](https://proceedings.mlr.press/v97/kornblith19a/kornblith19a.pdf), [stitching](https://papers.nips.cc/paper/2021/file/01ded4259d101feb739b06c399e9cd9c-Paper.pdf)|
+|Wanda 가속|§4.3/Table5의 A6000/CUTLASS·LLaMA65B/batch1 선형 GEMM은1.54~1.63배, 별도7B 전체 latency는312→251ms(약1.24배)다. 논문도 가속을 지원 희소 연산에 귀속한다.|중요도 점수 자체의 가속이나93M CPU 속도로 복사하지 않는다. 삼진 effective W의 같은 그룹 비영 절댓값은 동점이 많고 latent W는 실제 연산과 다르다는 점은 구조에 대한 추론이지 새 프루닝 실측이 아니다. [Wanda](https://arxiv.org/pdf/2306.11695)|
+|2:4 표현|공식2.10 문서의 FP16/BF16 56.25%·INT8 62.5%는 값+metadata를 포함한 해당 행렬의 sparse/dense 크기다. CUDA/dtype/shape 제약도 있다.|전체 모델·master/gradient/optimizer·KV/RSS·삼진 packed 크기의 비율이 아니다. [PyTorch2.10](https://docs.pytorch.org/docs/2.10/sparse.html)|
+|실제 형상 축소|SliceGPT는 회전·PCA·잔차 변환 뒤 행/열을 삭제한다. Table2의70B/RTX6000/batch1/128생성은252→215ms/token·7→5GPU다. 이는 약1.17배 속도/14.7% wall 감소다. 표 GPUms1075/1764는 약60.9%라 본문64%와 산술상 불일치한다.|dense 축소의 근거지만 삼진 격자를 일반 직교회전이 보존하지 않으므로 재삼진화/복원은 새 문제다. 작은 TinyLM의 품질·시간 이득은 미측정이다. [SliceGPT §3·Table2](https://arxiv.org/pdf/2401.15024)|
+|언어별 뉴런|LAPE의 방법은 언어별 FFN 활성 확률의 entropy와 언어당100M calibration·하위1% 뉴런 선택이다. 언어 연관성의 지표이지 전체 파라미터1% 삭제 허가가 아니다.|정답/논리 능력을 언어별 뉴런 몇 개로 환원하지 않는다. 후속 음성 연구의 결론은 문헌 역할이 확인했지만 세부 언어별 표는 미확인이다. [LAPE §2](https://arxiv.org/html/2402.16438), [후속 ACL 기록](https://aclanthology.org/2025.insights-1.6/)|
+
+ProSparse/PowerInfer2·EasySteer의 배수, CRANE의 개별 표, OpenMOSS crosscoder/CRM,2026 표기 연구와 LLM Vis의 PNG 출력은 이번에 다시 검증하지 않았다. 해당 자료는 서지 후보로만 남긴다. Graphviz PNG 가능성도 TinyLM 유틸리티 구현/실행 완료와 별개다.
+
+### 29.3 현재 모델에 그대로 붙일 수 없는 이유
+
+현재 연구는 untied14·Q14·K/V owner7·CLA2/GQA·E256 출력 병목이다. 과거 r64 공유 MLP 조건을 현재 모델의 원인으로 승계하지 않는다. 한 K/V head가 여러 Q head와 두 논리층에 사용될 수 있어 개입키에는 파라미터/논리층/owner/방문/토큰/캐시 상태가 필요하다.
+
+`scripts/p106b_weight_route.py`는 return_probs·LoRA·반복/재사용 등 미지원 조합을 차단한다. `tinylm/model/modules.py`는 Q/K projection 뒤 QK-norm→RoPE, GQA와 실제 causal mask를 적용하며, 기존 확률 관찰 경로도 이 내부 q/k/mask를 재사용한다. 따라서 외부 후크에서 Attention을 따로 흉내 낸 수치를 실제 경로로 취급하거나 guard를 꺼서는 안 된다.
+
+`TinyLM._head_logits`는 별도 lm_head 모듈이 아니라 `emb_up.weight.T`로768→256을 투영한 뒤 어휘 행렬로 보낸다. 전체 hidden cosine과 출력에서 보이는 차이는 다른 양이다. 각 층의 hidden을 최종 헤드로 읽는 값도 실제 그 층에서 답을 생성한 결과가 아니라 진단용 대리값이며, 학습된 중간층 정렬을 보증하지 않는다. 모델 간 좌표 대응도 자동으로 성립하지 않는다.
+
+과거 [103 §13·16](../../test_result/103_20261010_P093B-MLP잔차와-삼진보정은-실행됐지만-복원문턱에-미달.md)은 반복 이력 개입·cosine 비필수 통제·FP32/MATH 캐시 일치 뒤 남는 반복을 기록했다. 이번에 같은 반복 재현을 다시 하는 것보다 새 학생의 대상/속성·숫자 오류가 처음 갈리는 지점을 구분할 정보가 더 크다는 판단은 가설이다. 기존 [083](../../test_result/083_20260913_P092-import-실패로-DST-계약은-미실행이다.md)의678.92→759.64MiB는 중복 제거한 모델 보유 텐서이며 RSS/peak가 아니다. [082](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md)의 GPU-event 가속과 동기 wall 음성도 배포 가속으로 합치지 않는다.
+
+### 29.4 추가 아이디어와 반증 — 아직 채택하지 않음
+
+|후보|예시·얻을 정보|비용·반증·한계|
+|---|---|---|
+|A·우선 검토|같은 모델에서 ‘B의 색/물건’처럼 조건만 바꾼 입력의 첫 내용 분기를 찾고 작은 잔차 개입과 실제 출력 병목의 변화를 함께 본다. 공통 생성 이력 비교와 각자의 자연 생성은 구분한다.|학습0이지만 forward가 추가된다. 예를 들어16문항×14층×2방향이면448개 개입 forward에 기준/no-op/자유생성이 더해지며 실제 시간은 미측정이다. 조건별 국소 회복이 없으면 가설 약화. 마지막 출력을 정답 표현으로 강제해 회복시킨 것은 앞선 오류의 원인 증명이 아니다.|
+|B|A가 좁힌 질문 대상·속성·숫자 실패에 실제 교과가 충분한 대비 정답을 주는지 확인한 뒤 별도 교육 대조를 검토한다.|자료/마스크 검산·새 학습·동일 평가가 필요하다. 기존 role/query-transfer를 새 이름으로 재포장하지 않는다. 원래 추론 경로의 새 문항 정답이 개선되지 않으면 교정 효과 가설을 기각한다.|
+|C|중복 기능이 별도 평가에서 확인됐을 때 MLP gate/up 출력행·down 입력열을 함께 줄인 실제 형상 축소를 연구한다.|구현비용이 가장 크다. 삼진 group/커널/cfg/strict loader·필요 복원학습이 별도다. 마스크만 추가되거나 실제 bytes/동기 wall/기능 보존이 나쁘면 채택하지 않는다.|
+
+추천은 현재 학생들의 실답을 먼저 회수한 뒤 A의 작은 진단을 검토하는 순서다. 이는 현재 실행 큐나 연구 우선순위의 변경이 아니다. 사전 확인된 정답/오답 조건, 같은 CP 안의 대응, no-op 정합·개입범위·후크/quant/KV 복원·CP/core/cfg 불변, 최종 독립 행동평가가 선결이다. 학습 rollback은 weight-only CP만으로 되지 않으며 optimizer/scheduler/RNG/마스크/진행 위치까지 필요하다.
+
+큰 activation·높은 Attention·낮은 entropy·높은 CKA를 자동 삭제/정답 판정으로 쓰거나, 마스크/방문 생략을 저장 압축으로 부르는 해석은 채택하지 않는다. GUI·자동 구조 탐색·언어 뉴런 편집·새 분석모델의 TinyLM 효과는 여전히 NOT_RUN이다.

@@ -236,16 +236,16 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | root CPU157·정적68PASS/6NOT_RUN·실제 CPUprepare완료(101§367). clip1·21행렬·원계산15/captured20 보존. 실제 cost/학습/CP는 NOT_RUN. |
-| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | 전용2파일/원9본문보존·root56CPU/check-only통과, 준비·비용용SH4개작성·실물소비 NOT_RUN. QT와는 자료/학습량/재생 패키지 비교이며 한국어 assistant319808/영어1890628 예정노출을 실제소비로 오인하지 않는다. |
+| `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | CPUprepare·실제cost8/21행렬카운터8·strict VERIFY·예산완료(101§367/374~375). clip1·원계산보존. 학습384·새CP·실제답은 NOT_RUN이며 기본optimizer 승격 아님. |
+| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | root56CPU/정적68PASS·6NOT_RUN·소스7f21b07 뒤 실제CPU source/prepare완료(101§371). 양cost/704/GPU/새CP는 NOT_RUN. QT와는 자료/감독량/재생 패키지 비교이며 예정노출을 실소비로 오인하지 않는다. |
 
 | 교차 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_route_cross_resume_v2_s1337` | Stage4fg endpoint별원native/새SFT·새대각선출처를분리 | 신규35+기존28=63CPU·실물CPU prepare 완료(101§363). native 교차2팔은실제완료·후속SFT교차수집중이며아직전체교차판정 전이다. 원계산25/경계5개·CPU훈련route 로드후추론route전환보존,6776신규/6776재사용구분. |
+| `p106b_route_cross_resume_v2_s1337` | Stage4fg endpoint별원native/새SFT·새대각선출처를분리 | 실제네교차6776·재사용6776 전량검산완료(101§364~369). 같은CP의보정없는최종route전환으로 SFT TEST653/613→0/1·자연EM6/10→0/0. 고정CP 추론개입만 분리하며 일반 사후복원 불가능/일반지능을 주장하지 않는다. |
 
 | Broad 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 신규42+기존90=132CPU/정적68PASS·실물CPU prepare 완료(101§356), GPU/새CP는 NOT_RUN. 계산본문34개/원부모·원선택불변,양cost→예산→양352/실답후만품질판단. |
+| `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 양cost/원예산·원부모16대화17답·양352/새CP2 완료(101§370/372~373/376~378). 학생실답평가 회수중. 실제각 입력10.811M/assistant1.105M/native2.884M은 새고유75M이 아니다. |
 
 | 재개 태그 | 범위 | 상태 |
 |---|---|---|

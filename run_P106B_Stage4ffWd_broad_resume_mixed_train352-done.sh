@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# COMPLETE: closed raw verdict0 and result101 section377 recorded; preserve commands, no automatic rerun.
 # P106B_Stage4ffWd_broad_resume_mixed_train352: explicit private deadline resume; original P090B and v2 payload preserved.
 # No new native/SFT parent substitution, stdin, downloads, old overwrite, or semantic auto-approval.
 set -euo pipefail
