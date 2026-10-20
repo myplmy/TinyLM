@@ -6799,6 +6799,8 @@ root는 원본/기계diff 전체와 신규회귀를 읽고62CPU회귀18.556초�
 
 원문loss가개선될수있으나실제한국어대화·정답성을보장하지않는다. 비용과timefit가안맞으면GPU입장없이NOT_RUN/HOLD로남기고기한을늘려통과시키지않는다.
 
+**Q팔 회수:** 21일04:55:50KST 삼진4543/595460096targets·새CP/닫힌 검산을 완료했다(101§403). 같은32crop CE3.499511838→3.357963562로 원문손실 감소 관측은 지지됐지만 pool·구성·일정 지평도 달라 토큰량 하나의 효과가 아니다. QA/대화·실수595M과의 차이는 아직 후속이다.
+
 ### 4. 단계·통제
 
 새 NativeRecipe에4543×8×16×1024=595460096 optimizer targets·pool1191116192·2배여유196000IDs를명시한다. 원schedule(updates=4543)와make_offsets(pool_tokens=1191116192,updates=4543,micro8,accum16,seq1024,seed1337)를명시호출하며captured default2281/597995000를전역치환하지않는다. 원native_records/backward_micro/optimizer/route/probe수학만재사용하고원train/controller/CPmetadata/olddeadline을수정하지않는다. native maxAdam1e-3/Muon4e-3·warm100/WSDdecay.2·linear quant ramp·clip1/행렬WD0/비행렬원WD·기존2D Muon을유지한다. cost8 뒤anneal1 late backward-only/캐시별도검사를보존한다.
@@ -6813,7 +6815,7 @@ A의기존native Broad4는Stage4fl에서병행준비한다. B의595M 기초학�
 
 ### 7. 실행
 
-F4 WIP_20261021_NATIVE595_F4.json과새676/448행을 root가 전량 검토했다. 31CPU회귀11.280초·Torch2.10.0+cu130·태그충돌0/원default 불변·전수68PASS/6NOT_RUN 뒤 source0995C650…/test2D21EF2E…를df2b558에 보존했다. 실제 전체원천/SHA·581504offsets CPU 준비와 양cost8·분리late/cache·닫힌 VERIFY/현재예산까지 완료했다(101§399~402). 예상 Q15842.144/F15468.143초에서 train cap15900/15600·양native32평가600/readback900초의 후속5SH를6fdb446에 보존했다. 01:43:35KST 삼진4543 착수·실수4543/양CP/완성토큰/품질은 후속이다. live source/F4는 고정한다.
+F4 WIP_20261021_NATIVE595_F4.json과 새676/448행·31회귀/68정적·source df2b558/6fdb446을 먼저 보존했다. CPU/양cost8/분리late/cache·현재예산 뒤 삼진4543을01:43:35~04:55:50KST에 실제 완료했다(101§399~403). 전체raw4543/CP373134277B·SHA C0610452/core C8F2A682 검산은0불일치다. fixed32 CE3.357963562이며 일반QA/전체VAL은미확립이다. 실제maxgrad2.703108/clip146·allocated2528.836/reserved3102MiB다. worker UTC11512.334초 대perf10880.398초 차이631.936초는원인미확인으로분리보존했다. 04:56:22KST 실수4543을같은frozen recipe/현재예산에서착수했다. 실수완료/외부양native32/readback/동일교과/실답은후속이며live source/F4고정이다.
 
 ### 8. 한계
 
