@@ -6609,7 +6609,16 @@ Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 �
 
 ### 7. 실행
 
-전용 두파일 구현 전이며 런처는 아직 미작성이다. CPU/code/정적/소스커밋·자료/부모 선결 뒤에만 새 실행파일을 작성·사용한다. 현재 실물모델/새학습/새CP는 NOT_RUN이다.
+전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 현재 실물 prepare·모델 로딩·GPU·새CP는 NOT_RUN이며 전수정적/소스커밋 뒤에만 실행한다.
+
+| 런처 | 역할 | 단계 상한 |
+|---|---|---|
+| `run_P106B_Stage4fiW0_headwise_muon_cpu.sh` | prepare | 600초 |
+| `run_P106B_Stage4fiWa_headwise_muon_cost8.sh` | cost | 900초 |
+| `run_P106B_Stage4fiWb_headwise_muon_budget.sh` | budget | 600초 |
+| `run_P106B_Stage4fiWc_headwise_muon_sft384.sh` | train | 1800초 |
+| `run_P106B_Stage4fiWd_headwise_muon_answers.sh` | evaluate | 900초 |
+| `run_P106B_Stage4fiWe_headwise_muon_readback.sh` | readback | 600초 |
 
 ### 8. 한계·근거
 
@@ -6617,9 +6626,73 @@ Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 �
 
 ### 9. 실행 이력
 
-문헌검토와 제품 Muon/Attention/CLA owner 경계를 읽고 A/B/C를 비교했다. 시작라벨/질문내용 원형과 보호 원천·기존CP·공용검사기·대화유틸리티는 쓰기 대상에서 제외한다. 다음은 전용2파일 구현과 CPU검산이며 현재 신규 GPU는 NOT_RUN이다.
+문헌검토와 제품 Muon/Attention/CLA owner 경계를 읽고 A/B/C를 비교했다. 시작라벨/질문내용 원형과 보호 원천·기존CP·공용검사기·대화유틸리티는 쓰기 대상에서 제외한다. 전용2파일 구현 뒤 root157회귀와 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 최초 전수정적은 새 idle-proof/verify-only의 허용표 미등록을 검출했으며 실험등급2행만 등록해 재검사했다. 검사기 판정본문은 바꾸지 않았다. 감사는 HEADWISE_ROOT_PREFLIGHT와 두 차례 FINAL_PRE_STATIC JSON이며 소스커밋 뒤 실제 prepare/cost로 진행한다. 현재 신규 GPU는 NOT_RUN이다.
 
 구현 전 agent 교차검토에서 초안의 clip8 오기를 발견해 실제 frozen train의 `clip_grad_norm_(...,1.)`과 reader의 `gradient_norm>1`에 맞춰 clip1로 정정했다. 기존 기록에서 비용8회의 `clip8`은 clipping 횟수일 수 있으므로 상한8로 해석하지 않는다. 이 정정 전에 새 optimizer/worker/모델/GPU 실행은0이며 기존 baseline/코드/실험조건 변경은0이다. 감사는 `WIP_20261020_HEADWISE_CLIP_CORRECTION.json`이다.
+
+
+## 2026-10-20 후속 Stage4fj — 같은 새 native 부모에서 더 넓은 교과의 실제 감독량을 늘린다
+
+### 1. 왜
+
+현재 QT4pass의 실제 assistant targets는302,656이고 일반 자연QA를 충분히 교육한 교과가 아니다. 형식/종료와 기초답변의 실패가 분리됐다(101§359~362). 원 Broad 교과는 실제22528행과1pass552,609 assistant targets가 준비되어 있지만 기존P090B 부모/2pass로 고정되어 있다. 원형을 바꾸지 않고 새 native 양부모에 같은 더 넓은 교과를 적용할 실용 대조를 준비한다.
+
+### 2. 질문
+
+새 삼진/실수 native 부모 각각에서 기존 Muon·L0·micro8×accum16·checkpoint-on을 유지하고 더 넓은 교과4pass를 학습하면 실제 새 질문·지문조회·일반응답/다중턴이 개선되는가? QT384와의 비교는 자료·감독량·업데이트·native replay가 함께 바뀌는 자료 패키지 비교이지 감독량 한 축의 인과가 아니다.
+
+### 3. 예측
+
+현재보다 실제 내용 감독이 늘어 대상·내용 연결이 개선될 수 있지만, 같은 공개 원문 반복만으로 일반대화/산수 능력이 생긴다고 보장하지 않는다. 언어 불균형과 원문 품질·기본학습 부족이 남을 수 있다. 실패도 raw와 함께 보존하고 75M/300M 완성을 주장하지 않는다.
+
+### 4. 단계·통제
+
+1. 원 course를 읽는 CPU adapter만 먼저 구현한다. 원2pass 제한을 완화하지 않는다. 176개 그룹과 실제 record/target·기존 두 schedule을 원형대로 참조하고, **원 pass0/1 순서를 두 번 소비하는 두 cycle**로 네 pass를 명시한다. Mixed만 사전 선택해 새로운 순서 선택효과를 섞지 않는다. source_epoch0/1·cycle0/1·absolute_update0..703을 구분한다.
+2. 원 수치 train_updates를 같은 모델·같은 optimizer 인스턴스로 두 번 호출하는 방식의 실현가능성을 우선 검증한다. 각 cycle352의 원문/마스크/forward/backward/clip/step 본문을 유지하고 optimizer를 중간에 재초기화하지 않는다. 원 expected_group/2pass domain은 해당 cycle 안에서만 사용하며 원 metadata를4pass라고 고치지 않는다. 별도 local body가 필요하면 변경부를 정확히 선언·회귀한다.
+3. Native replay는5632개의 명시 in-bounds/disjoint1025-ID 창을 새 vector로 봉인한다. 첫2816은 원 Broad vector를 그대로 유지하고 추가2816은 같은 TRAIN의1025-block universe에서 seed1337 순열로 고르되 기존/새창과 겹치는 후보를 제외한다. 이 새 선택은 QT와의 changed axis이며 새 지식량/검증 의미 near 제거를 뜻하지 않는다. 각 cycle의2816-view를 원 core에 전달하고 실제 absolute index와 offset을 외부 영수증으로 검산한다. cache 복제·VAL 수정은 없다.
+4. 시작 가중치는 원 native 삼진 AF3644F5…/core68F8E780…와 실수 FBC0AF70…/coreBE1DB168…의 엄격 loader다. 같은 train route context를 전체 교육에서 유지한다. 기존 P090B는 geometry/source 이력일 뿐 초기 가중치로 다시 쓰지 않는다. 새 C 체크포인트는 자기 metadata/route/704·4pass·source/각 parent와 strict 결합하고 generic float loader를 쓰지 않는다.
+5. 기존 실제 Adam5e-5/Muon2e-4·RMS·WD0·clip1·fresh reset·BF16AMP·default compile·seq1024·MTPoff를 유지한다. native 손실8192와 assistant L0 분모를 따로 보존한다. **Headwise·새 thinking·ORPO를 이 팔에 추가하지 않는다.** 기존 일반자료에 설명문이 전혀 없다고 주장하지 않는다.
+6. CPU회귀/원형·모든 materialized token/마스크·4pass/두cycle의 optimizer 연속성/부분실패·새namespace/계보/704 raw 집계→소스커밋→실제CPU prepare→각 route의 단독cost8·5분유휴→예산→각704회/CP1→같은1694첫답·16실제이력대화·원문손실→전량/부모/기존QT와 별도 재검산이다. 후행 strict reader는 실제 완료activity가 닫힌 뒤 읽고 공용3phase 최종판정과 모순되지 않게 한다.
+
+### 5. 자료량·언어·평가 경계
+
+|항목|기존 봉인1pass|4pass 예상·실소비 전|
+|---|---:|---:|
+|행 노출|22528|90112|
+|입력|5405444|21621776|
+|assistant targets|552609|2210436|
+|content /EOT targets|523053 /29556|2092212 /118224|
+|한국어 /영어 assistant targets|79952 /472657|319808 /1890628|
+|업데이트 /native targets|176 /1441792|704 /5767168|
+
+General은 Aya1070/OASST1 978행이며 KO174/EN1874다. 기존 적격 KO174는 이미 전부 사용하여 원 public만으로 고유 한국어 일반대화를 더 만들 수는 없다. 이 교과를 한영50:50이나 의미 전수 검증 완료라고 하지 않는다. 출력은 같은 자료의4회 노출이고 고유75M 완성이 아니다.
+
+기존 공개VAL158·자체heldout7424·dialogue16 제외와 source/mask/role 계약은 그대로 검산한다. 원1694 monitor는 이미 반복 관찰했으므로 blind/unseen 전체평가라고 하지 않는다. 원문 TF·정확정답/형식·실제 자유답·실제이력 대화와 한국어/영어를 분리한다. 새 원천을 추가하지 않으므로 기존 충돌 근거는 동일 record SHA가 확인될 때만 계승하고 의미/번역 중복까지 제거했다고 하지 않는다. root의 제한된 후행 표본 판독은 자료 전체 정답성의 자동 gate가 아니다.
+
+### 6. 비용·대안
+
+|안|내용|이점|비용/한계|
+|---|---|---|---|
+|1·선택|원 Broad 자료와 두 schedule cycle을 재사용해 새 Q/F 부모에서4pass|새 교사/다운로드 없이 실제감독 증가; 원형·학습배치 보존|영어 비중 큼·새 adapter/route cost 필요; 자료량/노출/업데이트가 동시 변화|
+|2|한국어 일반대화 source 확대/번역/교사 보완부터 준비|한국어 목표에 더 가까움|적격 원천/권리·오염·의미 검토/교사 비용 미확정; 원 public KO 여유0|
+|3|새1.191B 풀에서 더 긴 기본학습 뒤 동일SFT|기본학습 부족을 별도로 분리|한600M급 약3.6~4h는 기존실측 외삽·새pool/optimizer일정·후속SFT 추가비용|
+
+현재1의 준비를 우선하되 기존 Broad 순서대조/Headwise 소형대조와 GPU를 겹치지 않는다. 704회 양팔은 기존15~16분/384의 단순 외삽으로 대략1시간 안팎 가능성이 있으나 긴 General head 계산/route 비용은 cost8 실측 전 미확인이다. 새family actual-worker14400초·평가예비1200·최종기록600을 두고 회귀/읽기선결/root유휴는 별도 기록한다. 절대21일17시/학습14시를 유지하며 budget 초과는 품질 음성이 아닌 보류다.
+
+### 7. 실행
+
+새태그 `p106b_native_broad4_v1_s1337`은 레지스트리 충돌0을 확인했다. 전용 `scripts/diag_p106b_native_broad4.py`와 `scripts/test_p106b_native_broad4.py` 두 파일의 구현 준비다. 런처는 아직 미작성이고 코드/CPU/정적/소스보존 뒤 작성한다. 현재 새 학습·GPU/새CP·4pass 실소비는 NOT_RUN이다.
+
+### 8. 한계
+
+새Q/F끼리는 source/order/노출을 맞출 수 있지만 부모의 학습 route와 최종 route도 다르므로 가중치와 추론 양자화의 단독 분리는 기존 교차와 구별한다. 기존QT/옛P090B Broad와의 비교는 partial/descriptive 자료 패키지다. 원문75M 부족·반복 trap·영구 배포메모리/CPU속도/학습되지 않은 지식 일반화는 이 준비로 해결됐다고 하지 않는다.
+
+### 9. 실행 이력
+
+문헌역할이 metadata와 builder/reader를 읽어4pass704 산식, 기존2pass 고정 API, optimizer 반환형 차이, 새 native vector/strict loader 선결과 한국어 감독량 부족을 지적했다. root가 원 `train_updates`의 given-model/optimizer API와 두cycle 재사용 가능성·원 native window reader를 직접 읽었다. F4는 `WIP_20261020_NATIVE_BROAD4_F4.json`이며 새2파일 외 원형·공용·보호자료·대화유틸리티는 변경하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 

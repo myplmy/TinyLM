@@ -1,0 +1,27 @@
+{
+  "schema": "TINYLM_HEADWISE_PRE_FIX_CPU_REVIEW_V1",
+  "driver_sha256": "C8FCEF0DE7F8B425ABE0D42EF27E37ECBF9D16E6E5041716DF53F177ED14A5AD",
+  "test_sha256": "630D2CE86658391438AFE7B776C0D46087F68314660943B01C43CD21A61C9B30",
+  "root_cpu_output": "...................................................................................................................................................\n----------------------------------------------------------------------\nRan 147 tests in 6.105s\n\nOK\n",
+  "root_cpu_passed": 147,
+  "actual_headwise_model_runs": 0,
+  "independent_findings": [
+    {
+      "priority": "P1",
+      "finding": "finish_training calls strict reader before worker finally writes required completed activity; Pending despite numeric work",
+      "action": "pre-GPU fix required; preserve strict reader and verify only after actual activity closes"
+    },
+    {
+      "priority": "P2",
+      "finding": "query_strata mixed split/subject/key/operator",
+      "action": "preserve canonical query ID/split/op in supplemental strata"
+    },
+    {
+      "priority": "P2",
+      "finding": "readonly preflight subject to excluded family activity residual causing false HOLD",
+      "action": "readonly uses absolute authority and own cap; actual worker retains family/record reserve"
+    }
+  ],
+  "pipeline_constraint": "shared pipeline permits exactly REGRESSION/PREFLIGHT/EXECUTE; do not modify common source",
+  "status": "PRE_FIX_CPU_PASS_NOT_RUNTIME_PASS; REAL_HEADWISE_EXECUTION_NOT_RUN"
+}

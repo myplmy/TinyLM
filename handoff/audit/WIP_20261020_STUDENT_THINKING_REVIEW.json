@@ -1,0 +1,53 @@
+{
+  "schema": "TINYLM_STUDENT_THINKING_REVIEW_V1",
+  "directive": "기존 아이디어 및 계획에 thinking 이나 내부 추론 관련 기존 실험계획 및 선행연구 관련 고려사항 없는지 참고바람.",
+  "artifact": "docs/methods/08_paper_review2.md §28",
+  "tokenizer": {
+    "path": "data_cache/tok-ko-en-32768-chat32.json",
+    "sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "vocab": 32768,
+    "ids": {
+      "<|im_start|>": 3,
+      "<|im_end|>": 4,
+      "<|think|>": 5,
+      "<|/think|>": 6
+    },
+    "source_max_context": 1024,
+    "models_created": 0,
+    "gpu_runs": 0
+  },
+  "local_sources": [
+    "test_plan/P082_Qwen-Gemma-교사-지능향상-KD-후속실험.md",
+    "test_plan/P090_SFT-경로.md",
+    "test_plan/P101A_M0-U2-QK-MTP-기능계약.md",
+    "test_plan/P070B_재귀-방문순서-셔플과-조건부-라우터-반복노출-게이트.md",
+    "tinylm/chat/tokens.py",
+    "tinylm/chat/serialize.py",
+    "tinylm/train/mtp_sft.py",
+    "scripts/diag_p106b_native_weight_route.py"
+  ],
+  "primary_urls": [
+    "https://arxiv.org/abs/2112.00114",
+    "https://arxiv.org/html/2501.12948v1",
+    "https://arxiv.org/html/2412.06769v2",
+    "https://arxiv.org/html/2403.09629v2",
+    "https://tiiuae-tiny-h1-blogpost.hf.space/"
+  ],
+  "facts": [
+    "chat32 has thinking IDs5/6",
+    "current reader explicitly rejects reasoning blocks pending separate contract",
+    "selective exclusion of thinking span not implemented for such rows",
+    "current controller max context1024",
+    "MTP and layer recurrence are not a trained linguistic rationale"
+  ],
+  "adoption": "NOT_ADOPTED",
+  "new_reasoning_code": 0,
+  "new_reasoning_model_runs": 0,
+  "new_checkpoints": 0,
+  "agent_scope": "read-only literature/local-source review; no model/CP/data/GPU/file/Git work",
+  "limitations": [
+    "selected sections/cards/code inspected, not independent paper reproduction",
+    "no ideal thinking-length or efficacy claim for93M",
+    "strict tokenization/schema existence not reasoning capability"
+  ]
+}

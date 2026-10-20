@@ -1,0 +1,256 @@
+{
+  "schema": "TINYLM_TWELVE_COMPLETED_SH_CLEANUP_V1",
+  "authority": "사용자완료런처명령보존후done정리위임",
+  "source_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+  "files": [
+    {
+      "path": "run_P106B_Stage4feW0_resume_bridge_cpu-done.sh",
+      "bytes": 1391,
+      "sha256": "B6CD8668D23AEC297CBEBE380DBEACBB2584C8533C9DA2397EB649126EA4C7AB",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feW0_resume_bridge_cpu: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feW0_resume_bridge_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feW0_resume_bridge_cpu_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap900s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feW0_resume_bridge_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode prepare --max-wall-sec 900 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode prepare --max-wall-sec 900 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feW0_resume_bridge_cpu_172848.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 352. 2026-10-20 Stage4feW0 — 원형을 바꾸지 않은 새 기한의 실물 출처 연결",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWa_resume_float_sft_cost8-done.sh",
+      "bytes": 1424,
+      "sha256": "82B3101213AB23728EEBA5222DE281F567AD6C2F7C09D902F734578632D4CF1F",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWa_resume_float_sft_cost8: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWa_resume_float_sft_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWa_resume_float_sft_cost8_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap900s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWa_resume_float_sft_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft_cost --arm float --max-wall-sec 900 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft_cost --arm float --max-wall-sec 900 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWa_resume_float_sft_cost8_173524.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 353. 2026-10-20 Stage4feWa — 실수 native 부모의 단독 SFTcost8 완료",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWb_resume_sft_budget-done.sh",
+      "bytes": 1405,
+      "sha256": "599AA215A3DEDDCC72CCD6D32F6E3FF96D63DCBC96B10EDB8F71C5853A6C8801",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWb_resume_sft_budget: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWb_resume_sft_budget_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWb_resume_sft_budget_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap600s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWb_resume_sft_budget_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode budget --endpoint sft --max-wall-sec 600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode budget --endpoint sft --max-wall-sec 600 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWb_resume_sft_budget_173739.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 354. 2026-10-20 Stage4feWb — 남은 SFT양팔·실답을 위한 예산 통과",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWc_resume_ternary_sft384-done.sh",
+      "bytes": 1419,
+      "sha256": "63383847A9B9820CA0D48B23792602E1E4A5B617C85CE7300D4973BD24F09594",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWc_resume_ternary_sft384: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWc_resume_ternary_sft384_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWc_resume_ternary_sft384_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap3600s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWc_resume_ternary_sft384_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft --arm ternary --max-wall-sec 3600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft --arm ternary --max-wall-sec 3600 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWc_resume_ternary_sft384_173852.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 355. 2026-10-20 Stage4feWc — 자기 삼진 native 부모의 SFT384를 완료했다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWd_resume_float_sft384-done.sh",
+      "bytes": 1409,
+      "sha256": "7CEECFC9C5AC53CFEA8B8C980DCC6C97670FE2CABC58AB5AAF15FB150E441AAC",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWd_resume_float_sft384: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWd_resume_float_sft384_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWd_resume_float_sft384_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap3600s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWd_resume_float_sft384_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft --arm float --max-wall-sec 3600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft --arm float --max-wall-sec 3600 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWd_resume_float_sft384_175628.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 357. 2026-10-20 Stage4feWd — 자기 실수 native 부모의 같은 SFT384를 완료했다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWe_resume_ternary_native_answers-done.sh",
+      "bytes": 1474,
+      "sha256": "352B714584279965114DFE963008E8C7B92C2E3F6072AF3669A766B8AEB59430",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWe_resume_ternary_native_answers: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWe_resume_ternary_native_answers_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWe_resume_ternary_native_answers_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap1800s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWe_resume_ternary_native_answers_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm ternary --endpoint native --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm ternary --endpoint native --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWe_resume_ternary_native_answers_181308.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 358. 2026-10-20 Stage4feWe — 삼진 native의 실제1694첫답은 대화형 정답을 회복하지 못했다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWf_resume_float_native_answers-done.sh",
+      "bytes": 1464,
+      "sha256": "2F4C2C7B9FC8404808A2BC006B988CDFB73FFFD72BBEABA18F2CEC38F72CF5EE",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWf_resume_float_native_answers: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWf_resume_float_native_answers_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWf_resume_float_native_answers_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap1800s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWf_resume_float_native_answers_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm float --endpoint native --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm float --endpoint native --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWf_resume_float_native_answers_185327.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 361. 2026-10-20 Stage4feWf — 실수 native도 실제1694 지시답변을 회복하지 못했다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWg_resume_ternary_sft_answers-done.sh",
+      "bytes": 1459,
+      "sha256": "F7FA163ED1F1709C4D764707062969D763A1D7F6773F03794CBE178159B98BC1",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWg_resume_ternary_sft_answers: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWg_resume_ternary_sft_answers_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWg_resume_ternary_sft_answers_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap1800s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWg_resume_ternary_sft_answers_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm ternary --endpoint sft --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm ternary --endpoint sft --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWg_resume_ternary_sft_answers_183909.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 359. 2026-10-20 Stage4feWg — 삼진 SFT는 종료와 제한 과제를 배웠지만 새 실제 질문은 부족했다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWh_resume_float_sft_answers-done.sh",
+      "bytes": 1449,
+      "sha256": "FCAB16772EA38E596E2202A4DFB6CAAA2CA62C51F63775F23EDF628E21ADC6EA",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWh_resume_float_sft_answers: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWh_resume_float_sft_answers_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWh_resume_float_sft_answers_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap1800s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWh_resume_float_sft_answers_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm float --endpoint sft --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode evaluate --arm float --endpoint sft --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWh_resume_float_sft_answers_184456.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 360. 2026-10-20 Stage4feWh — 실수 SFT의 JSON·종료 성공은 산수와 일반답변 성공이 아니었다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4feWi_resume_route_readback-done.sh",
+      "bytes": 1408,
+      "sha256": "B57A0844613BDBAB5B3B835C95155E4CFB89539ADD45F862FFDB6BC328A1FC21",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4feWi_resume_route_readback: own resume namespace; original parents/source/dates stay read-only.\n# User authority ends20261021T08Z; training stop05Z; no native pretraining rerun.\n# CPU prepare is not model quality. No stdin/download/old overwrite or generic float loader.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4feWi_resume_route_readback_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWi_resume_route_readback_\"$run_stamp\" --num 101 --note 'Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap900s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4feWi_resume_route_readback_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode readback --max-wall-sec 900 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_resume.py --mode readback --max-wall-sec 900 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4feWi_resume_route_readback_192020.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 362. 2026-10-20 Stage4feWi — 네 종점6776원답을 전량 재검산하고 품질 한계를 확정했다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4ffW0_broad_resume_bridge_cpu-done.sh",
+      "bytes": 1416,
+      "sha256": "8AB852478C9F1CDF4F93C2A8C7B2AE2A13EDCB236BA1DD113A27572D67A7949E",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4ffW0_broad_resume_bridge_cpu: explicit private deadline resume; original P090B and v2 payload preserved.\n# No new native/SFT parent substitution, stdin, downloads, old overwrite, or semantic auto-approval.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ffW0_broad_resume_bridge_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ffW0_broad_resume_bridge_cpu_\"$run_stamp\" --num 101 --note 'Private Broad v3 resume. Exact original P090B E854 parent and v2 22528 rows; v1 hash selection, mixed/staged352, token L0 and absolute native windows unchanged. Original source/globals/payload/raw stay read-only. Own bridge/outputs, same active10800/eval1200/record600 reserves. User authority ends20261021T08Z, training stop05Z; worker cap900s. Isolated five-minute idle before GPU cost. Stage completion is not semantic quality; public files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ffW0_broad_resume_bridge_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_broad_resume.py --mode prepare --max-wall-sec 900 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_broad_resume.py --mode prepare --max-wall-sec 900 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4ffW0_broad_resume_bridge_cpu_180033.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 356. 2026-10-20 Stage4ffW0 — Broad 원자료·부모를 보존한 실물 CPU bridge 완료",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4fgW0_resume_route_cross_cpu-done.sh",
+      "bytes": 1418,
+      "sha256": "F94D08CE81FDC70F4C342381D57DC7F6F64479E431D896214D697453718B1B3B",
+      "git_commit": "b57a2355c9da5825a35017c331aa7b548e838f1d",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4fgW0_resume_route_cross_cpu: new private cross provenance; same frozen evaluation computation.\n# Original native training, resume SFT training and resume four diagonals are distinct providers.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fgW0_resume_route_cross_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgW0_resume_route_cross_cpu_\"$run_stamp\" --num 101 --note 'Cross resume21KST: exact original native CP and resume SFT CP; four resume diagonal evaluations must be complete. Strict CPU training-route load, context closed before CUDA, explicit other inference route. No learning/checkpoint write/retag/generic float loader. Same ordered1694/FP32-MATH/greedy64/KV-on/MTP-off; family8400 record600, worker cap600s. Four new6776 answers stay distinct from reused6776. Technical completion is not semantic quality; files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgW0_resume_route_cross_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode prepare --max-wall-sec 600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode prepare --max-wall-sec 600 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4fgW0_resume_route_cross_cpu_192242.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 363. 2026-10-20 Stage4fgW0 — 네 대각선과 실제 훈련출처를 잠근 교차 CPU 선결 완료",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    }
+  ],
+  "total_bytes": 17136,
+  "excluded": [
+    {
+      "path": "run_P106B_Stage4u1W_public_source_deck-done.sh",
+      "reason": "실제NOT_RUN이므로기계삭제가능표시와무관하게보존"
+    }
+  ],
+  "model_checkpoint_raw_log_deleted": 0,
+  "unexecuted_launchers_deleted": 0
+}

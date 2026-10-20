@@ -234,13 +234,18 @@ fp32 상주와 int8 상주가 갈린다.**
 |---|---|---|
 | `p106b_current_benchmark_resume_v2_s1337` | Stage4fh 여섯종점/동일공개팩/보존Falcon·원점수식 | 신규27+기존35=62CPU/metadata통과·실물NOT_RUN. 수치본문40·FP32 wrapper3·aux이중합산방지보존, 원native/새SFT/새Broad엄격provider. |
 
+| 새 독립 태그 | 범위 | 상태 |
+|---|---|---|
+| `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | root CPU157·check-only 통과, clip1·21행렬·원계산15/captured20 보존. 실물 prepare/학습/CP는 NOT_RUN. |
+| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | 설계/F4·충돌0, 전용2파일 구현 전·실소비 NOT_RUN. QT와는 자료/학습량/재생 패키지 비교이며 한국어 assistant319808/영어1890628 예상노출을 실제소비로 오인하지 않는다. |
+
 | 교차 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_route_cross_resume_v2_s1337` | Stage4fg endpoint별원native/새SFT·새대각선출처를분리 | 신규35+기존28=63CPU/metadata선결통과·실물NOT_RUN. 원계산25/경계5개·CPU훈련route 로드후추론route전환보존,6776신규/6776재사용구분. |
+| `p106b_route_cross_resume_v2_s1337` | Stage4fg endpoint별원native/새SFT·새대각선출처를분리 | 신규35+기존28=63CPU·실물CPU prepare 완료(101§363). native 교차2팔은실제완료·후속SFT교차수집중이며아직전체교차판정 전이다. 원계산25/경계5개·CPU훈련route 로드후추론route전환보존,6776신규/6776재사용구분. |
 
 | Broad 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 신규42+기존90=132CPU/정적68PASS·실물NOT_RUN. 계산본문34개/원부모·원선택불변,source/bridge→양cost→예산→양352/실답후만품질판단. |
+| `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 신규42+기존90=132CPU/정적68PASS·실물CPU prepare 완료(101§356), GPU/새CP는 NOT_RUN. 계산본문34개/원부모·원선택불변,양cost→예산→양352/실답후만품질판단. |
 
 | 재개 태그 | 범위 | 상태 |
 |---|---|---|
