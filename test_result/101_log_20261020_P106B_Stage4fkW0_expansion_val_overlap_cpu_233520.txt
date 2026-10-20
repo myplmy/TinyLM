@@ -1,0 +1,69 @@
+CPU-only independent readonly scan of exact retained1191116192 TRAIN IDs and external3005000 VAL IDs. Same full-EOS/edge patterns plus separate32x1025 exact windows, uint16 alignment, all-byte SHA/count/EOS. No original source/cache changes, model/CP/GPU, automatic training admission or semantic decontamination claim. Regression, metadata preflight, complete scan then closed-activity verification. Worker cap600s and record reserve600s; authority ends20261021T08Z. Files below20MB; actual hits are recorded separately from scan failure.
+
+==============================================================================
+[runlog] 2026-10-20 23:35:20  name=P106B_Stage4fkW0_expansion_val_overlap_cpu_233520
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_expansion_val_audit.py --execute --max-wall-sec 600
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_budget_deadline_and_three_phase (scripts.test_p106b_expansion_val_audit.MetadataTests) ... ok
+test_check_only_never_opens_bin_or_tokenizer_or_numpy (scripts.test_p106b_expansion_val_audit.MetadataTests) ... ok
+test_fixed_paths_protected_escape_absolute_and_symlink (scripts.test_p106b_expansion_val_audit.MetadataTests) ... ok
+test_full_metadata_serialization_and_no_original_import (scripts.test_p106b_expansion_val_audit.MetadataTests) ... ok
+test_metadata_lineage_positive_and_tamper (scripts.test_p106b_expansion_val_audit.MetadataTests) ... ok
+test_closed_reader_requires_activity_and_binds_report (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_corrupted_activity_not_promoted (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_measurement_forgery_count_hash_and_false_zero_rejected (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_successful_scan_negative_is_not_unrun (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_three_phase_completed_negative_is_hold8 (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_three_phase_post_worker_uses_real_closed_reader (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_three_phase_worker0_strict_failure_is_not_complete (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_write_once_20mb_and_wrong_namespace (scripts.test_p106b_expansion_val_audit.ReceiptTests) ... ok
+test_duplicate_full_val_segments_do_not_expand_hash_population (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_duplicate_probe_counts_are_declared_per_probe (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_empty_edges_do_not_match_everything (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_full_and_both_partial_rules (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_id_range_byte_alignment_and_probe_extent (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_incomplete_tail_and_segment_bounds_rejected (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_independent_index_matches_original_policy (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_normal_same_rule_zero (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_odd_byte_is_not_a_token_match (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_one_id_partial_is_not_relaxed (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_probe_search_boundary_no_double_count_and_odd_rejected (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_probe_window_inside_longer_train_section (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_suffix_inclusion_is_intentional_same_rule_limit (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_tiny_file_scan_readonly_sha_and_separate_flags (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_train_partial_across_chunk_boundary (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_val_without_eos_keeps_both_partials (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_wrong_sha_count_index_eos_and_symlink_rejected (scripts.test_p106b_expansion_val_audit.ScannerTests) ... ok
+test_completed_negative_final_is8 (scripts.test_p106b_expansion_val_audit.WorkerTests) ... ok
+test_existing_namespace_rejected_without_overwrite (scripts.test_p106b_expansion_val_audit.WorkerTests) ... ok
+test_real_own_worker_closed_activity_then_strict_reader (scripts.test_p106b_expansion_val_audit.WorkerTests) ... ok
+test_signal_handlers_restored (scripts.test_p106b_expansion_val_audit.WorkerTests) ... ok
+test_term_timeout_error_recorded (scripts.test_p106b_expansion_val_audit.WorkerTests) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.627s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[VAL_AUDIT_PREFLIGHT] metadata only; bin/model/GPU0
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+[VAL_AUDIT_PROGRESS] {"stage": "TRAIN_CHUNK", "ids_consumed": 4194304, "eos_segments": 2329}
+[VAL_AUDIT_PROGRESS] {"stage": "TRAIN_CHUNK", "ids_consumed": 1191116192, "eos_segments": 1441175}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 4, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 8, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 12, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 16, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 20, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 24, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 28, "windows": 32}
+[VAL_AUDIT_PROGRESS] {"stage": "PROBE_SEARCH", "windows_consumed": 32, "windows": 32}
+[VAL_AUDIT_FINAL] {"scan_completed": true, "returncode": 0, "status": "ZERO_HITS_AT_DECLARED_SCOPE", "training_admission": false}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_EXPANSION_VAL_AUDIT", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.8분  (2026-10-20 23:36:08)
+==============================================================================

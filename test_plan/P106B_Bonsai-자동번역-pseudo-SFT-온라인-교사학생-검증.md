@@ -6560,7 +6560,7 @@ A의명시private provider 경계가계산드리프트/과거변경이가장작�
 
 ### 7. 실행
 
-새태그 `p106b_current_benchmark_resume_v2_s1337`의 전용driver/test와 SH8개를 동결했다. root가 신규27+기존35=62 CPU 회귀(7.079초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 40계산본문·4captured경계·3FP32 wrapper 본문을 보존했다. 소스커밋과 6종점 완료 뒤 prepare→여섯평가→readback을 수행한다. 현재 native/SFT4CP는 완료했지만 Broad2개와 실제 공개평가는 NOT_RUN이다.
+새태그 `p106b_current_benchmark_resume_v2_s1337`의 전용driver/test와 SH8개를 동결했다. root가 신규27+기존35=62 CPU 회귀(7.079초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 40계산본문·4captured경계·3FP32 wrapper 본문을 보존했다. 소스커밋과 6종점 완료 뒤 prepare→여섯평가→readback을 수행한다. 작성당시 native/SFT4CP만 완료였다. 이후 Broad2종점과6종공개9216요청/9212채점·원형재검산까지 실제완료했다(101§381~389). 공통영어307~324/768 대보존Falcon398로일반지능동등성은미확립이다.
 
 ### 8. 한계
 
@@ -6568,7 +6568,7 @@ A의명시private provider 경계가계산드리프트/과거변경이가장작�
 
 ### 9. 실행 이력
 
-원model_reference/model_runtime과 새Broad의 course 간접참조를 다시 읽었다. 실제 같은 프로세스에서 엄격하게 검증한 model_reference만 loader가 허용하며 원계산/9216요청·9212채점/길이제외/기존Falcon원형/시간회계는 보존한다. root 검토·CPU·정적은 완료했지만 실물 공개평가/원답품질은 NOT_RUN이다. 감사는 `WIP_20261020_CURRENT_BENCHMARK_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
+원model_reference/model_runtime과 새Broad의 course 간접참조를 다시 읽었다. 실제 같은 프로세스에서 엄격하게 검증한 model_reference만 loader가 허용하며 원계산/9216요청·9212채점/길이제외/기존Falcon원형/시간회계는 보존한다. 작성당시 root검토/CPU/정적만완료였으며10월20일23:22 실제6종공개/원형재검산까지완료했다(101§389). 감사는 `WIP_20261020_CURRENT_BENCHMARK_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
 
 
 ## 2026-10-20 후속 Stage4fi — Q/K head별 Muon 직교화의 소형 독립 대조
@@ -6609,7 +6609,7 @@ Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 �
 
 ### 7. 실행
 
-전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 전수정적68PASS/6NOT_RUN·소스커밋1226029 뒤 실제 CPU prepare worker를 완료했다(101§367). 이 CPU 단계의 모델/CP tensor 로딩·GPU·새CP는0이다. 이후 새유휴 뒤 실제cost8·21행렬의8회 갱신·strict VERIFY와 예산을 완료했다(101§374~375). 새384학습·실제답 품질은 아직 NOT_RUN이다.
+전용 driver826행/test789행과 SH6개를 작성했다. 수정 전 CPU147회귀 통과에도 self-completion 선결 순환과 query 집계·읽기전용 예산 결함을 발견해 고쳤으며, root가 수정 후157 CPU회귀(8.003초)·check-only95필드·15계산/20captured/5과학본문 보존을 확인했다. 전수정적68PASS/6NOT_RUN·소스커밋1226029 뒤 실제 CPU prepare worker를 완료했다(101§367). 이 CPU 단계의 모델/CP tensor 로딩·GPU·새CP는0이다. 이후 새유휴 뒤 실제cost8·21행렬의8회 갱신·strict VERIFY와 예산을 완료했다(101§374~375). 이후384회/새CP9BBB10F0·실제1694답/재검산을완료했다(101§390/392~393). baseline대비TEST613→612/1024·자연EM10→10/128로뚜렷한이득이없어비채택했다.
 
 | 런처 | 역할 | 단계 상한 |
 |---|---|---|
@@ -6626,7 +6626,7 @@ Q/K head 간 이질성에 따른 업데이트 간섭이 줄어들 가능성이 �
 
 ### 9. 실행 이력
 
-문헌검토와 제품 Muon/Attention/CLA owner 경계를 읽고 A/B/C를 비교했다. 시작라벨/질문내용 원형과 보호 원천·기존CP·공용검사기·대화유틸리티는 쓰기 대상에서 제외한다. 전용2파일 구현 뒤 root157회귀와 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 최초 전수정적은 새 idle-proof/verify-only의 허용표 미등록을 검출했으며 실험등급2행만 등록해 재검사했다. 검사기 판정본문은 바꾸지 않았다. 감사는 HEADWISE_ROOT_PREFLIGHT와 두 차례 FINAL_PRE_STATIC JSON이며 소스커밋 뒤 실제 prepare/cost로 진행한다. 현재 신규 GPU는 NOT_RUN이다.
+문헌검토와 제품 Muon/Attention/CLA owner 경계를 읽고 A/B/C를 비교했다. 시작라벨/질문내용 원형과 보호 원천·기존CP·공용검사기·대화유틸리티는 쓰기 대상에서 제외한다. 전용2파일 구현 뒤 root157회귀와 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 최초 전수정적은 새 idle-proof/verify-only의 허용표 미등록을 검출했으며 실험등급2행만 등록해 재검사했다. 검사기 판정본문은 바꾸지 않았다. 감사는 HEADWISE_ROOT_PREFLIGHT와 두 차례 FINAL_PRE_STATIC JSON이며 소스커밋 뒤 실제 prepare/cost로 진행한다. 이절작성당시의신규GPU는NOT_RUN이었고이후새384/실제1694답을완료했다. §390/392~393이최신실측을소유한다.
 
 구현 전 agent 교차검토에서 초안의 clip8 오기를 발견해 실제 frozen train의 `clip_grad_norm_(...,1.)`과 reader의 `gradient_norm>1`에 맞춰 clip1로 정정했다. 기존 기록에서 비용8회의 `clip8`은 clipping 횟수일 수 있으므로 상한8로 해석하지 않는다. 이 정정 전에 새 optimizer/worker/모델/GPU 실행은0이며 기존 baseline/코드/실험조건 변경은0이다. 감사는 `WIP_20261020_HEADWISE_CLIP_CORRECTION.json`이다.
 
@@ -6738,11 +6738,93 @@ A는 기존 metadata만 사용해 가장 작지만 독립 output 검증이 없�
 
 ### 9. 실행 이력
 
-문헌/정 역할이 원 builder/VAL matcher/readback과 보존 보고를 읽었고 root가 해당 관련 본문을 직접 대조했다. 완전 EOS3776+양끝1/1,3778구간·3024405변환ID 제외 기록을 확인했지만 독립 output0-hit는 NOT_RUN이다. 원 코드의 suffix 포함 반례는 보장 한계이며 실제 오염 판정이 아니다.
+문헌/정 역할이 원 builder/VAL matcher/readback과 보존 보고를 읽었고 root가 해당 관련 본문을 직접 대조했다. 완전 EOS3776+양끝1/1,3778구간·3024405변환ID 제외 기록을 확인했다. 이후 실제43.514806초 전량scan에서 선언규칙/양끝/32평가창0hit를확인했다(101§391). 임의부분·의미오염제거나학습허가는아니다. 원 코드의 suffix 포함 반례는 보장 한계이며 실제 오염 판정이 아니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## 2026-10-21 후속 Stage4fl — root 비용 영수증 오류를 새 경로에서 복구한다
+
+### 1. 왜
+
+원Stage4fj Qcost는56회귀/원천 선결 뒤 root가 만든 idle-proof의 code_sha256에 전체map 대신 단일SHA를 넣어 GPU모델로딩 전에 오류9로 중단했다(101§394). 품질음성이 아니며 원형을 바꾸지 않는다.
+
+### 2. 질문
+
+원 native Q/F와22528행·연속optimizer2cycle/4pass704·같은5632replay창·L0/Muon/clip1을 유지한 실용 교과 대조를 실제로 완료하고 내용·종료·반복을 확인할 수 있는가?
+
+### 3. 예측
+
+단순 영수증 문제의 복구가 정확도를 높인다는 예측은 없다. 옛문턱을완화하지 않고 원형과새시도계보를분리하면 실제비용을측정할수있다는 기술가설만 확인한다.
+
+### 4. 단계·통제
+
+새태그 p106b_native_broad4_recovery_v2_s1337·driver/test의 정확한 기계분기만 만든다. 원1070행driver는SCRIPT/TEST/F4/TAG/SCHEMA/private모듈명6묶음만 바뀌고 원수학/부모/원천/5632/704/시간상한은 동일하다. 원56회귀와6개원형/치환동등성·실제전체map proof수락/단일SHA거부 회귀를검증한다. 새CPU source/prepare→각300초새유휴/전체code-map cost8→현재시간예산→각704/새CP1→같은1694·native32/실제원천16이력→원형재계수다. 실제16원천은최대17답이지48답이아니며일반3턴은미검증이다.
+
+### 5. 판정
+
+원실패activity/proof/log와원source를덮거나삭제하지않는다. 비용과학습은닫힌worker 뒤readonly verifier가통과해야완료다. 4pass노출은실제x21,621,776/assistant2,210,436/native5,767,168 예정이며완료전실소비로적지않는다. QT384와는자료/감독량/업데이트/재생이동시에달라지는패키지비교다. 고정질문/공개평가의분모·한영·실답과종료를구분한다.
+
+### 6. 비용·대안
+
+A의새태그기계분기를선택한다. 원실패를지우는B는계보혼동으로기각, C의보류는원대조미완을남긴다. 가족실제worker14400/평가1200/기록600·maxworker7200·cost900초와21일17시/학습14시를유지한다. 양실측cost가완료되기전704시간을보장하지않는다. F4는 WIP_20261021_NATIVE_BROAD4_RECOVERY_F4.json이다.
+
+### 7. 실행
+
+root는원본/기계diff전체와신규회귀71행을읽고62CPU회귀18.556초를통과했다. 원driver/test SHA04524742…/50E4A10F… 불변, 신규2292EDFF…/B4A535FA…이다. 현재SH4개(prepare·양cost·budget)만준비했고양704/evaluate/readback5SH는실측후worker상한확정뒤작성한다. 전수정적/소스보존/실제준비는각완료시추가한다.
+
+### 8. 한계
+
+추가복구경로유지비가생기지만원실패를성공으로retag하지않는다. genericfloat보호·제품·공용검사기·보호자료는그대로다. 모델품질향상·교과완성75M·Falcon동등성은새실제평가로만판단한다.
+
+### 9. 실행 이력
+
+101§394와원실패감사에원인과정확한map계약을남겼다. 원유휴시작/끝311.214초관측은불변이며새경로에서는새코드map/새유휴를다시확인한다. source는 root 검증·정적·한국어커밋 뒤실제로소비한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-21 조건부 Stage4fm — 명시 recipe의595M 기초학습 쌍을 준비한다
+
+### 1. 왜
+
+현재299M native와작은SFT에서자유산수/일반QA가부족하고QK headwise만으로개선되지않았다(101§389/393). 확장원천1.191B는보존되어있고독립선언VAL검사도0hit지만학습허가는별도다(§391). 토큰량만으로성능을보장하지않으면서기초학습패키지를늘려볼근거다.
+
+### 2. 질문
+
+같은fresh scratch core028C46…·같은1191116192 TRAIN/외부VAL3005000·같은581504crop/seed1337·4543 WSD에서삼진Q와실수F의native loss/후속답변학습은어떤가? 현재299M과는pool/draw/source비율/절대WSD·anneal지평이함께달라지는패키지이며길이단독인과가아니다.
+
+### 3. 예측
+
+원문loss가개선될수있으나실제한국어대화·정답성을보장하지않는다. 비용과timefit가안맞으면GPU입장없이NOT_RUN/HOLD로남기고기한을늘려통과시키지않는다.
+
+### 4. 단계·통제
+
+새 NativeRecipe에4543×8×16×1024=595460096 optimizer targets·pool1191116192·2배여유196000IDs를명시한다. 원schedule(updates=4543)와make_offsets(pool_tokens=1191116192,updates=4543,micro8,accum16,seq1024,seed1337)를명시호출하며captured default2281/597995000를전역치환하지않는다. 원native_records/backward_micro/optimizer/route/probe수학만재사용하고원train/controller/CPmetadata/olddeadline을수정하지않는다. native maxAdam1e-3/Muon4e-3·warm100/WSDdecay.2·linear quant ramp·clip1/행렬WD0/비행렬원WD·기존2D Muon을유지한다. cost8 뒤anneal1 late backward-only/캐시별도검사를보존한다.
+
+### 5. 판정
+
+새CPU 원천/metadata bridge·원VAL-audit report/activity/입력SHA·새태그·새strictCPUstate/cfg/route/CP reader·동일crop가선결이다. cost8 임시CP0→양팔보수예산→각4543/weight-onlyCP1→닫힌실제활동/readonly검산→native32 FP32·event재계수순이다. 새native후속Broad를열더라도replay는옛597995000 TRAIN의5632창이며새native pool과혼합하지않는다. 고정32crop는전체VAL/일반지능이아니다. 공개/실답후속은root가별도로드연결을검토한다.
+
+### 6. 비용·대안
+
+A의기존native Broad4는Stage4fl에서병행준비한다. B의595M 기초학습은조건부준비를선택, C의새Engram/프루닝은이번미채택이다. 예상수시간/팔은외삽일뿐이며새cost에서 firststep+maxwarm×4542의1.35배를양팔각계산한다. 가족실제worker43200·nativeworker18000·평가1200/기록600·후속훈련7200초예약, native종료21일11:30KST/전체훈련14시/보고17시를모두만족해야실행한다. 기존worker cap/옛deadline을완화하지않는다.
+
+### 7. 실행
+
+F4 WIP_20261021_NATIVE595_F4.json으로새2파일구현범위를먼저고정했다. 실제metadata/bin검사·GPU/학습·새CP·소스완료·SH작성은아직NOT_RUN이며자원실측전최종비용을확정하지않는다.
+
+### 8. 한계
+
+확장Wiki/FineWeb 선택비율도이전풀과다르다. 실제crop언어비율은미계측이며파일선택비율을언어지도량으로대체하지않는다. 새구조·MTP/headwise/thinking/ORPO·다운로드/보호자료접근0이다.
+
+### 9. 실행 이력
+
+root가원native학습loop·late_probe/optimizer그룹·명시default경계를확인하고정역할에독립recipe/controller 2파일만구현하도록할당했다. 기존Stage4fl복구/실답은이장기후보의가짜완료로합산하지않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

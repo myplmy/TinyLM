@@ -1,0 +1,124 @@
+{
+  "schema": "P106B_NATIVE595_F4_V1",
+  "tag": "p106b_native595_v1_s1337",
+  "authority": "사용자의10월21일17시CPU+GPU자율실험·필요구현/검증/기록·장기학습권한. 연구자율선택이며새외부원천/보호자료허가아님.",
+  "allowed_agent_new_sources": [
+    "scripts/diag_p106b_native595.py",
+    "scripts/test_p106b_native595.py"
+  ],
+  "root_allowed_paths": [
+    "run_P106B_Stage4fm*.sh",
+    "handoff/audit/WIP_20261021_NATIVE595*",
+    "test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md",
+    "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+    "test_plan/실험계획목록.md",
+    "test_result/실험목록.md",
+    "docs/EXPERIMENT_BASELINES.md",
+    "docs/METHODS.md",
+    "docs/methods/03_knowledge_quality.md",
+    "handoff/COMPASS.md",
+    "experiments.tsv",
+    "scripts/flag_whitelist.tsv",
+    "checkpoints.tsv"
+  ],
+  "excluded": [
+    "기존source/제품/옵티마이저/공용검사기/환경/대화메뉴변경",
+    "TinyDataset/사전",
+    "원HF/cache/bin/CP/raw 덮기·삭제·이동",
+    "다운로드/외부서비스/설치/cloud",
+    "타WIP/interactive",
+    "push/PR"
+  ],
+  "alternatives": [
+    {
+      "id": "A",
+      "scope": "기존299M native부모의Broad4만",
+      "benefit": "기초학습추가없이준비된교과효과를빠르게확인",
+      "cost": "현재일반언어/지식학습량한계는남음",
+      "status": "기존Stage4fl에서별도진행"
+    },
+    {
+      "id": "B",
+      "scope": "새595460096 native Q/F·같은freshcore·같은확장원천/crop의쌍",
+      "benefit": "기초학습량/풀/지평패키지와추론삼진경로차이를별도비교",
+      "cost": "추정수시간/팔·새recipe/strictloader/회귀/실제cost필요,길이단독효과분리아님",
+      "status": "조건부준비선택;실측시간불충족시NOT_RUN"
+    },
+    {
+      "id": "C",
+      "scope": "Engram/readout/pruning 등새구조",
+      "benefit": "메모리/표현의별도가설",
+      "cost": "새용량대조/커널/캐시·학습/개입검증비용높음",
+      "status": "이번미채택"
+    }
+  ],
+  "recipe": {
+    "updates": 4543,
+    "micro": 8,
+    "accum": 16,
+    "seq": 1024,
+    "crops": 581504,
+    "actual_targets": 595460096,
+    "pool_train_ids": 1191116192,
+    "external_val_ids": 3005000,
+    "pool_twice_margin_ids": 196000,
+    "scratch_core_sha256": "028C46B232D6D4C5205CAF15A7C259E3B1687347FC4838D00B3F3CB938C0D1C5",
+    "pool_sha256": "6DB291329CB1562E127A2D753F879C8ED8D3AB46789A3EF2B4BC3C4258846138",
+    "val_sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C",
+    "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E",
+    "seed": 1337,
+    "arms": [
+      "ternary",
+      "float"
+    ],
+    "native_max_adam_lr": 0.001,
+    "native_max_muon_lr": 0.004,
+    "warmup_updates": 100,
+    "decay_fraction": 0.2,
+    "quant_ramp_start": "100/4543+0.05",
+    "quant_linear_end": 0.8,
+    "muon": "original2D RMS/momentum.95/Nesterov/NS5",
+    "matrix_weight_decay": 0,
+    "other_weight_decay": "preserve original native AdamW groups; not global0",
+    "clip": 1,
+    "grad_checkpoint": true,
+    "compile": "default",
+    "train_amp": "bf16",
+    "eval_math": "fp32",
+    "mtp": false,
+    "headwise": false,
+    "orpo": false,
+    "thinking": false
+  },
+  "method": "새명시적NativeRecipe와given-model loop. 원 schedule(updates=4543),make_offsets(pool_tokens=1191116192,updates=4543,micro8,accum16,seq1024,seed1337)를명시호출. 원default2281/597995000캡처를전역재바인딩으로우회하지않음. native_records/backward_micro/optimizer/route/native_probe 순수계산만재사용. 원train/prepared/update_contract/train_report/CPmetadata/controller/deadline은호출/변경하지않음.",
+  "source_bridge": "새확장 TRAIN와원외부VAL을별도검산. 독립VAL-audit report3301C835C25ECCFD5C08D78EACFA5A67883E088F22572778B30D3C18800B0D40의실제닫힌activity/입력SHA연결. 원cache metadata val0을3M으로retag하지않음.",
+  "stage_contract": "root소스보존→CPU source/prepare→팔별새5분유휴cost8(임시CP0)→양팔/현재절대시간예산→native각4543/weight-onlyCP1→엄격closedworker/readonly검산→고정native32 FP32/원형event재검산. native32는전체VAL/일반QA아님. 후속Broad교과연결/공개벤치loader는root가별도검토.",
+  "followup_separation": "새native부모를Broad에연결하더라도replay는원597995000 TRAIN의원5632창. native확장원천provider/VALprovider/Broad교과와replayprovider/부모provider분리. 이번2파일에Broad훈련루프는넣지않음.",
+  "comparison": "동일초기화·같은확장pool·같은581504croplist·같은4543WSD의Q/F비교. 이전299M 대비는풀/추출위치·source비율·절대WSD/anneal지평까지함께달라져data/length/schedule package이며tokens-only인과아님.",
+  "limits": {
+    "authority_end_utc": "2026-10-21T08:00:00+00:00",
+    "native_training_stop_utc": "2026-10-21T02:30:00+00:00",
+    "final_training_stop_utc": "2026-10-21T05:00:00+00:00",
+    "family_actual_worker_seconds": 43200,
+    "maximum_native_worker_seconds": 18000,
+    "eval_reserve_seconds": 1200,
+    "record_reserve_seconds": 600,
+    "followup_training_reserved_seconds": 7200,
+    "cost_worker_seconds": 900,
+    "forecast_factor": 1.35,
+    "idle_min_seconds": 300,
+    "idle_fresh_seconds": 600
+  },
+  "admission": "cost회귀/metadata/부모cfg/source/preflight와wholeSTEP8실측이선결. firststep+maxwarm*4542 기반1.35를두팔각계산하고현재시간+원형검산/고정평가/기록+후속훈련7200을모두예약. native11시30분종료/전체학습14시/최종17시를넘으면STOP/HOLD. 기존원worker한도나옛기한을완화해통과시키지않음. 보고서는일시적인fits이며각실제단계직전다시검산.",
+  "cpu_tests": "작은합성/temp만:정확한4543/crop/경계/schedule명시/토큰수·seed동일/pool2배·wrong source/map/CP cfg shape dtype alias route metadata/adamWD·행렬WD·owner·step event/cost8와본문동일·weight-only/부분실패보존/활동PGID/UTC·cap/모든실제worker시간1회/timeout SIGTERM finally/childreadonlyverify/예산의slowcost거부. 실제CP/bin/model/GPU0.",
+  "axes": {
+    "code": "새2파일명시recipe/controller/strictloader;원제품/기존실험순수본문불변",
+    "data": "새cache/raw/evidence/tag/가중치경로;원확장source불변·source별선택비율변경은계측한계",
+    "tests": "root전량리뷰·기능CPUfixture·메타/태그/계산registry·정적;모델실행별도",
+    "docs": "계획/결과/기준표/METHODS/COMPASS/WIP/registry연쇄",
+    "resources": "595M팔별수시간예상일뿐. 새실측과현재시각으로만입장",
+    "debt": "native와후속SFT sourceprovider를분리하고genericfloatguard완화0",
+    "quality": "CE/native32하락을일반한국어대화/새질문추론/Falcon동등성으로승격하지않음"
+  },
+  "cost_auxiliary": "원 native cost8 뒤 late_probe의 anneal1/1micro8192target backward-only(optimizer0·core불변·grad/anneal복원)와 cache_audit의 최종route 캐시 검산을 보존한다. optimizer예정draw1048576와 late targets8192·각시간/peak·캐시별도최고값을합치지않는다. 이 probe로말기정상속도/전체quality를주장하지않음."
+}

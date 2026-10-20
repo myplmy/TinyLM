@@ -232,13 +232,14 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 공개 벤치 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_current_benchmark_resume_v2_s1337` | Stage4fh 여섯종점/동일공개팩/보존Falcon·원점수식 | 신규27+기존35=62CPU/metadata통과·실물NOT_RUN. 수치본문40·FP32 wrapper3·aux이중합산방지보존, 원native/새SFT/새Broad엄격provider. |
+| `p106b_current_benchmark_resume_v2_s1337` | Stage4fh 여섯종점/동일공개팩/보존Falcon·원점수식 | 실물6종9216요청/9212채점·원형재검산완료(101§381~389). 공통영어768은native Q308/F323·SFT Q310/F324·Broad313/307 대보존Falcon398. 공식harness정합·전체오염통제·일반대화성공은아님. |
 
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_expansion_val_audit_v1_s1337` | Stage4fk 보존확장 TRAIN의 동일EOS/양끝·실제native32창 독립CPU검사 | source2파일·root전량검토/35fixtures/check-only·실제metadata선결0완료. bin 전체scan·GPU/학습은NOT_RUN이며0-hit도 의미중복 제거/학습허가가 아니다. |
-| `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | CPUprepare·실제cost8/21행렬카운터8·strict VERIFY·예산완료(101§367/374~375). clip1·원계산보존. 학습384·새CP·실제답은 NOT_RUN이며 기본optimizer 승격 아님. |
-| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | root56CPU/정적68PASS·6NOT_RUN·소스7f21b07 뒤 실제CPU source/prepare완료(101§371). 양cost/704/GPU/새CP는 NOT_RUN. QT와는 자료/감독량/재생 패키지 비교이며 예정노출을 실소비로 오인하지 않는다. |
+| `p106b_expansion_val_audit_v1_s1337` | Stage4fk 보존확장 TRAIN의 동일EOS/양끝·실제native32창 독립CPU검사 | 실제1,191,116,192 IDs scan43.514806초·선언동일EOS/양끝/32창 모두0hit(101§391). 모델/CP/GPU0·원입력불변. 의미중복제거/모든부분중복/학습허가 아님. |
+| `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | 실제384·새CP9BBB10F0·1694답/재검산완료(101§390/392~393). TEST613→612/1024·자연EM10→10/128·native32 CE3.402745→3.402509. 단일시드·기본optimizer비채택이며모든headwise사전학습무효라는뜻아님. |
+| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | CPU source/prepare완료 후 root가전체code-map 대신단일SHA의idle-proof를작성해실제Qcost는GPU로딩전오류9(101§394). 원실패보존·실제비용/704/새CP는NOT_RUN. 원형을덮지않는Stage4fl 새경로복구준비. |
+| `p106b_native_broad4_recovery_v2_s1337` | Stage4fl 원계산·부모·교과·704·기한을보존한실패후독립경로 | F4/새태그충돌0·기계분기/전체code-map proof회귀준비. 원실패/옛source불변. 새CPU/비용/704/새CP는완료후별도기록한다. |
 
 | 교차 재개 태그 | 범위 | 상태 |
 |---|---|---|
@@ -246,7 +247,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | Broad 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 양cost/원예산·원부모16대화17답·양352/새CP2 완료(101§370/372~373/376~378). 학생실답평가 회수중. 실제각 입력10.811M/assistant1.105M/native2.884M은 새고유75M이 아니다. |
+| `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 양352/새CP2·실제양1694/각16원천17이력답/원형재검산완료(101§377~382). TEST219/138·자연7/1/128·MAX_NEW73/741로mixed가나았으나기초산수/일반답실패보존. 같은총노출이며새고유75M아님. |
 
 | 재개 태그 | 범위 | 상태 |
 |---|---|---|
