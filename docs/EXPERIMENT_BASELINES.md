@@ -237,7 +237,7 @@ fp32 상주와 int8 상주가 갈린다.**
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
 | `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | root CPU157·정적68PASS/6NOT_RUN·실제 CPUprepare완료(101§367). clip1·21행렬·원계산15/captured20 보존. 실제 cost/학습/CP는 NOT_RUN. |
-| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | 설계/F4·충돌0, 전용2파일 구현 전·실소비 NOT_RUN. QT와는 자료/학습량/재생 패키지 비교이며 한국어 assistant319808/영어1890628 예상노출을 실제소비로 오인하지 않는다. |
+| `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | 전용2파일/원9본문보존·root56CPU/check-only통과, 준비·비용용SH4개작성·실물소비 NOT_RUN. QT와는 자료/학습량/재생 패키지 비교이며 한국어 assistant319808/영어1890628 예정노출을 실제소비로 오인하지 않는다. |
 
 | 교차 재개 태그 | 범위 | 상태 |
 |---|---|---|

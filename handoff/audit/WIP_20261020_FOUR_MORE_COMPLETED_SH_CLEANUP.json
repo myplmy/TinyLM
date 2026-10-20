@@ -1,0 +1,89 @@
+{
+  "schema": "TINYLM_FOUR_COMPLETED_SH_CLEANUP_V1",
+  "files": [
+    {
+      "path": "run_P106B_Stage4fgWa_resume_native_ternary_to_float-done.sh",
+      "bytes": 1616,
+      "sha256": "7016393C6732F19C57CDABE8393AB2D40B14C441185B5E37C200E1958315EC5E",
+      "git_commit": "dbdb679f4490523ed50e8a3066efb7aa21275bbc",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# COMPLETE: raw verdict0 and result101 section364 recorded; preserve commands, no automatic rerun.\n# P106B_Stage4fgWa_resume_native_ternary_to_float: new private cross provenance; same frozen evaluation computation.\n# Original native training, resume SFT training and resume four diagonals are distinct providers.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fgWa_resume_native_ternary_to_float_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWa_resume_native_ternary_to_float_\"$run_stamp\" --num 101 --note 'Cross resume21KST: exact original native CP and resume SFT CP; four resume diagonal evaluations must be complete. Strict CPU training-route load, context closed before CUDA, explicit other inference route. No learning/checkpoint write/retag/generic float loader. Same ordered1694/FP32-MATH/greedy64/KV-on/MTP-off; family8400 record600, worker cap1800s. Four new6776 answers stay distinct from reused6776. Technical completion is not semantic quality; files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWa_resume_native_ternary_to_float_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode evaluate --trained-mode ternary --inference-mode float --endpoint native --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWa_resume_native_ternary_to_float_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode evaluate --trained-mode ternary --inference-mode float --endpoint native --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4fgWa_resume_native_ternary_to_float_192454.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 364. 2026-10-20 Stage4fgWa — 삼진 native를 실수 경로로 읽어도 지시 답변은 회복되지 않았다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4fgWb_resume_native_float_to_ternary-done.sh",
+      "bytes": 1616,
+      "sha256": "0B057CB8D1B1CD22F4174669F4015506FBC660CFFDE79B8FE411B68CC6A4B6EA",
+      "git_commit": "dbdb679f4490523ed50e8a3066efb7aa21275bbc",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# COMPLETE: raw verdict0 and result101 section365 recorded; preserve commands, no automatic rerun.\n# P106B_Stage4fgWb_resume_native_float_to_ternary: new private cross provenance; same frozen evaluation computation.\n# Original native training, resume SFT training and resume four diagonals are distinct providers.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fgWb_resume_native_float_to_ternary_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWb_resume_native_float_to_ternary_\"$run_stamp\" --num 101 --note 'Cross resume21KST: exact original native CP and resume SFT CP; four resume diagonal evaluations must be complete. Strict CPU training-route load, context closed before CUDA, explicit other inference route. No learning/checkpoint write/retag/generic float loader. Same ordered1694/FP32-MATH/greedy64/KV-on/MTP-off; family8400 record600, worker cap1800s. Four new6776 answers stay distinct from reused6776. Technical completion is not semantic quality; files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWb_resume_native_float_to_ternary_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode evaluate --trained-mode float --inference-mode ternary --endpoint native --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWb_resume_native_float_to_ternary_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode evaluate --trained-mode float --inference-mode ternary --endpoint native --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4fgWb_resume_native_float_to_ternary_194918.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 365. 2026-10-20 Stage4fgWb — 실수 native에 사후 삼진 경로를 적용한 실제 교차 원답",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4fgWc_resume_sft_ternary_to_float-done.sh",
+      "bytes": 1601,
+      "sha256": "ED097B629D9637AD3778CE9F4205EBC6D64E9E98D2A9D948F728152596B8FDED",
+      "git_commit": "dbdb679f4490523ed50e8a3066efb7aa21275bbc",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# COMPLETE: raw verdict0 and result101 section366 recorded; preserve commands, no automatic rerun.\n# P106B_Stage4fgWc_resume_sft_ternary_to_float: new private cross provenance; same frozen evaluation computation.\n# Original native training, resume SFT training and resume four diagonals are distinct providers.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fgWc_resume_sft_ternary_to_float_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWc_resume_sft_ternary_to_float_\"$run_stamp\" --num 101 --note 'Cross resume21KST: exact original native CP and resume SFT CP; four resume diagonal evaluations must be complete. Strict CPU training-route load, context closed before CUDA, explicit other inference route. No learning/checkpoint write/retag/generic float loader. Same ordered1694/FP32-MATH/greedy64/KV-on/MTP-off; family8400 record600, worker cap1800s. Four new6776 answers stay distinct from reused6776. Technical completion is not semantic quality; files below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWc_resume_sft_ternary_to_float_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode evaluate --trained-mode ternary --inference-mode float --endpoint sft --max-wall-sec 1800 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fgWc_resume_sft_ternary_to_float_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_route_cross_resume.py --mode evaluate --trained-mode ternary --inference-mode float --endpoint sft --max-wall-sec 1800 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4fgWc_resume_sft_ternary_to_float_201550.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 366. 2026-10-20 Stage4fgWc — 삼진 SFT의 실수 추론 전환에서 내용·종료 실패가 남았다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    },
+    {
+      "path": "run_P106B_Stage4fiW0_headwise_muon_cpu-done.sh",
+      "bytes": 1674,
+      "sha256": "F6B995261E8808EE1B76AB35B3BD3FE8103E56EF4C34FC92F4CC4C08E31BD178",
+      "git_commit": "dbdb679f4490523ed50e8a3066efb7aa21275bbc",
+      "git_mode": "100755",
+      "source_text": "#!/usr/bin/env bash\n# COMPLETE: raw verdict0 and result101 section367 recorded; preserve commands, no automatic rerun.\n# P106B_Stage4fiW0_headwise_muon_cpu: one isolated Q/K head-wise NS-unit contrast, not full DeepSeek training.\n# Same completed float-native parent and frozen SFT384; old Muon/data/CP/code stay unchanged.\n# Actual-worker3600/record600; absolute21st17KST and training14KST. No stdin/download.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This launcher takes no arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fiW0_headwise_muon_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fiW0_headwise_muon_cpu_\"$run_stamp\" --num 101 --note 'Same float native parent, unchanged L0/SFT4passes384/micro8 accum16/clip1/AMP/default compile/RMS/WD0. Q14/K-owner7 NS unit only. Cost8 requires matching UTC and monotonic300s root idle proof, end fresh600s; no continuous peak/OOM claim. No source retag or generic float loader. Execution worker closes activity before readonly strict VERIFY child and final three-phase verdict. Files below20MB. Worker cap600s; technical completion is not answer quality.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fiW0_headwise_muon_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_headwise_muon.py --mode prepare --max-wall-sec 600 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fiW0_headwise_muon_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_headwise_muon.py --mode prepare --max-wall-sec 600 --execute"
+      ],
+      "result": {
+        "log": "test_result/101_log_20261020_P106B_Stage4fiW0_headwise_muon_cpu_204455.txt",
+        "result": "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+        "section": "## 367. 2026-10-20 Stage4fiW0 — head별 Muon의 실제 CPU 연결은 완료했고 새 학습은 아직 없다",
+        "status": "RECORDED"
+      },
+      "final_status": "COMPLETE",
+      "queued_rerun": false,
+      "eligible_for_exact_shell_only_deletion": true
+    }
+  ],
+  "bytes": 6507,
+  "checkpoints_deleted": 0,
+  "raw_deleted": 0,
+  "unexecuted_deleted": 0
+}

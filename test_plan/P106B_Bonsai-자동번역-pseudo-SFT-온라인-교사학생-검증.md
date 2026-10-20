@@ -6681,7 +6681,16 @@ General은 Aya1070/OASST1 978행이며 KO174/EN1874다. 기존 적격 KO174는 �
 
 ### 7. 실행
 
-새태그 `p106b_native_broad4_v1_s1337`은 레지스트리 충돌0을 확인했다. 전용 `scripts/diag_p106b_native_broad4.py`와 `scripts/test_p106b_native_broad4.py` 두 파일의 구현 준비다. 런처는 아직 미작성이고 코드/CPU/정적/소스보존 뒤 작성한다. 현재 새 학습·GPU/새CP·4pass 실소비는 NOT_RUN이다.
+새태그 `p106b_native_broad4_v1_s1337`의 전용 driver1070행/test712행을 동결했다. root가 원9개 계산본문·두cycle 연속 optimizer·704절대창·전용자식 loader와 전량코드를 읽고56 CPU회귀(19.488초)·check-only67필드/종료0을 확인했다. info의 예정/실제 키 충돌, 유휴근거 보호경로와 시간영수증 경계 결함을 실제 모델 전에 찾아 수리했으며 원본/공용파일은 불변이다. 아래4개SH만 준비했고 전수정적·소스커밋 뒤 CPU prepare와 양 cost로 진행한다. 본학습·평가·readback의5개SH는 자기 cost 실측 뒤 worker상한을 확정해 작성한다. 현재 실제 source/prepare·모델/GPU/새CP·4pass 실소비는 NOT_RUN이다.
+
+| 런처 | 역할 | 상한 |
+|---|---|---|
+| `run_P106B_Stage4fjW0_native_broad4_cpu.sh` | prepare | 600초 |
+| `run_P106B_Stage4fjWa_native_broad4_ternary_cost8.sh` | cost ternary | 900초 |
+| `run_P106B_Stage4fjWb_native_broad4_float_cost8.sh` | cost float | 900초 |
+| `run_P106B_Stage4fjWc_native_broad4_budget.sh` | budget | 600초 |
+
+native 부모의 기존1694 단일턴 답은 보존돼 있지만 이 새 부모 두 개의 실제 이력16대화는 NOT_RUN이다. 옛 P090B 부모16답을 새 native 부모의 대화 기준선으로 재사용하지 않는다. 새 학생16대화의 실제 답과 부모 단일턴·동일32crop은 각각 다른 축으로 보고한다.
 
 ### 8. 한계
 

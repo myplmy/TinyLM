@@ -7,7 +7,17 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 source scripts/shell/tinylm_env.sh
 python_bin="$(tinylm_python)"
 idle_proof="${1:-handoff/audit/WIP_20261020_HEADWISE_COST_IDLE_PROOF.json}"
-if [[ $# -gt 1 || ! -f "$idle_proof" || -L "$idle_proof" ]]; then
+if [[ $# -gt 1 || "$idle_proof" != "handoff/audit/WIP_20261020_HEADWISE_COST_IDLE_PROOF.json" ]]; then
+    printf '%s\n' '[HOLD] Only the exact root audit proof is accepted; no path is inspected.' >&2
+    exit 8
+fi
+for proof_path in handoff handoff/audit "$idle_proof"; do
+    if [[ -L "$proof_path" ]]; then
+        printf '%s\n' '[HOLD] Symlink proof paths are refused before file lookup.' >&2
+        exit 8
+    fi
+done
+if [[ ! -f "$idle_proof" ]]; then
     printf '%s\n' '[HOLD] A fresh root idle-proof JSON is required; no stdin is read.' >&2
     exit 8
 fi
