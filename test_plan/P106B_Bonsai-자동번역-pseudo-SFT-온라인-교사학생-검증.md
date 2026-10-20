@@ -6813,7 +6813,7 @@ A의기존native Broad4는Stage4fl에서병행준비한다. B의595M 기초학�
 
 ### 7. 실행
 
-F4 WIP_20261021_NATIVE595_F4.json으로새2파일구현범위를먼저고정했다. 실제metadata/bin검사·GPU/학습·새CP·소스완료·SH작성은아직NOT_RUN이며자원실측전최종비용을확정하지않는다.
+F4 WIP_20261021_NATIVE595_F4.json으로새2파일구현범위를먼저고정했다. driver676행/test448행을root가전량읽고31CPU회귀11.280초·source metadata/info·Torch2.10.0+cu130·태그충돌0을확인했다. 원default2281/597995000가불변이고새recipe4543/1191116192는명시전달된다. sourceSHA0995C650…/test2D21EF2E…·실제작은meta의val0/외부VAL분리를검산했다. 전수정적68PASS/6NOT_RUN·SH초기4개(prepare/양cost/budget)와루트감사를준비했다. 실제대형bin/source준비·GPU/학습·새CP는NOT_RUN이며소스보존뒤에만실제 CPU prepare를연다. 양cost 뒤 train/evaluate/readback5SH의상한을확정하며아직준비됐다고하지않는다.
 
 ### 8. 한계
 

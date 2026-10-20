@@ -236,6 +236,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
+| `p106b_native595_v1_s1337` | Stage4fm 명시4543·확장pool1191116192·fresh028C46 Q/F | 새676/448행·root전량리뷰·31CPU11.280초/actual작은meta/태그·전수68PASS6NOT_RUN·초기4SH완료. source36pin·Torch2.10.0+cu130. 실제source/prepare·양cost/595460096 targets·새CP는NOT_RUN이며11:30/14시/17시·후속7200예약을비용실측후판단. 이전299M과tokens-only인과아님. |
 | `p106b_expansion_val_audit_v1_s1337` | Stage4fk 보존확장 TRAIN의 동일EOS/양끝·실제native32창 독립CPU검사 | 실제1,191,116,192 IDs scan43.514806초·선언동일EOS/양끝/32창 모두0hit(101§391). 모델/CP/GPU0·원입력불변. 의미중복제거/모든부분중복/학습허가 아님. |
 | `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | 실제384·새CP9BBB10F0·1694답/재검산완료(101§390/392~393). TEST613→612/1024·자연EM10→10/128·native32 CE3.402745→3.402509. 단일시드·기본optimizer비채택이며모든headwise사전학습무효라는뜻아님. |
 | `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | CPU source/prepare완료 후 root가전체code-map 대신단일SHA의idle-proof를작성해실제Qcost는GPU로딩전오류9(101§394). 원실패보존·실제비용/704/새CP는NOT_RUN. 원형을덮지않는Stage4fl 새경로복구준비. |
