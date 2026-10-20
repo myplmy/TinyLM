@@ -1,0 +1,47 @@
+{
+  "schema": "TINYLM_CURRENT_BENCHMARK_RESUME_F4_V1",
+  "tag": "p106b_current_benchmark_resume_v2_s1337",
+  "authority_end_utc": "2026-10-21T08:00:00Z",
+  "files": [
+    "scripts/diag_p106b_current_benchmark_resume.py",
+    "scripts/test_p106b_current_benchmark_resume.py"
+  ],
+  "frozen_benchmark_source": {
+    "path": "scripts/diag_p106b_current_benchmark.py",
+    "sha256": "9D44B42F59987B5980C45C2309615D133D7713E079CFC343F317B643BE9DE73B"
+  },
+  "selection": {
+    "A": "Private frozen evaluator plus explicit six-model provenance/runtime boundaries; selected",
+    "B": "Copy numerical evaluator and scorers; rejected for drift/review size",
+    "C": "Retag original reports or mutate common recovery globals; rejected for invalid lineage"
+  },
+  "providers": {
+    "native": "Original native_weight_route_v1 per trained arm",
+    "sft": "native_resume_v2 per trained arm",
+    "broad": "broad_resume_v3, original P090B E854 and unchanged352/token/passes2; use actual prepared bundle/course reference, not new CACHE/course.json"
+  },
+  "invariants": [
+    "all six named models required before prepare; never omit unavailable Broad quietly",
+    "same fixed public rows/candidate boundaries/scoring/evaluate/readback/Falcon caches/source SHA",
+    "9216 requested,9212 scored; original per-student KorQuAD length exclusion; GSM64 in two formats not128 independent",
+    "primary SUM_NLL, secondary char-normalized; retain every answer/candidate score",
+    "no new Falcon/model download, no new training or checkpoint writes",
+    "same FP32-MATH/greedy128/KV-on/MTP-off where source declares them",
+    "same active3600/record600/worker cap boundaries and original aux/worker no-double-count accounting",
+    "original source/modules/globals/old dates/raw/CP immutable"
+  ],
+  "validation": [
+    "explicit source/parent/code pin and boundary allowlist",
+    "original numerical/scoring/evaluate/readback bytecode/refs unchanged",
+    "wrong endpoint/native-vs-SFT-vs-Broad tag/core/step/route/old raw/date rejected before model call",
+    "strict original training-route loader for native/SFT, private Broad parent+child loader and exact new tag",
+    "root actual prepare only after six endpoints are complete",
+    "agent code/metadata/tiny fixtures only; root source/CPU/static commit before actual"
+  ],
+  "claims_excluded": [
+    "official harness parity",
+    "architecture-only or training-volume-only causal comparison across different Broad/native parents",
+    "full decontamination or independent Falcon reproduction",
+    "general intelligence or Korean fluency from MC accuracy alone"
+  ]
+}

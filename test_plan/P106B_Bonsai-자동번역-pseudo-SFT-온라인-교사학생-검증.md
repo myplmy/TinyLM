@@ -6408,8 +6408,8 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 |Stage4feW0|회귀/출처bridge CPU준비|900초·model0|완료·101§352/worker17.411초·model0|
 |Stage4feWa|float SFTcost8|단독GPU900초·5분유휴·CP0|완료·101§353/종료0·실제8회|
 |Stage4feWb|원Qcost/새Fcost의384자원예산|CPU600초|완료·101§354/fits true|
-|Stage4feWc/Wd|각자native부모의동일SFT384|각GPU3600초·CP각1|삼진팔진행/실수팔NOT_RUN|
-|Stage4feWe/Wf/Wg/Wh|native/SFT×삼진/실수각1694첫답·native32|각GPU1800초|NOT_RUN|
+|Stage4feWc/Wd|각자native부모의동일SFT384|각GPU3600초·CP각1|양팔완료101§355/357·각CP1 keep|
+|Stage4feWe/Wf/Wg/Wh|native/SFT×삼진/실수각1694첫답·native32|각GPU1800초|We/Wg/Wh완료101§358~360; Wf수집중|
 |Stage4feWi|6776원답/token/분모/계보재검산|CPU900초·model0|NOT_RUN|
 
 ### 5. 판정
@@ -6431,6 +6431,8 @@ A는정확소스의독립namespace와명시bridge로계산본문을보존한다.
 ### 9. 실행 이력
 
 원프로세스/로그/기한을재조회하고native2/Qcost완료를계승했다. 새F4/계획을먼저작성한뒤독립재개제어기를구현했다. root가19개계산본문·5개경계함수의원bytecode/참조보존과원모듈불변·부모계보·원Qcost재사용·기한/종료회귀를검사했다. 감사는 `handoff/audit/WIP_20261020_NATIVE_RESUME_ROOT_PREFLIGHT.json`이다. 신규GPU실행은NOT_RUN이다.
+
+이후CPU bridge/Fcost/예산과양SFT384를실제로완료했다(101§352~357). 남은네독립평가는A의원표순서유지, B의학생출력우선, C의GPU병렬중B를선택해nativeQ→SFTQ→SFTF→nativeF순서로수행한다. A는관행대로이나학생피드백이늦고,C는GPU경합/상주위험이늘어난다. B는질문/가중치/seed/생성파라미터/전량분모를바꾸지않으며실행순서의속도인과를주장하지않는다. 교차준비는순서와무관하게네평가모두완료뒤만연다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
@@ -6467,7 +6469,7 @@ A의명시private adapter는계산드리프트가작지만독립namespace/captur
 
 |단계|실험용 SH|worker 한도|실행|
 |---|---|---|---|
-|Stage4ffW0|`run_P106B_Stage4ffW0_broad_resume_bridge_cpu.sh`|900초|NOT_RUN|
+|Stage4ffW0|`run_P106B_Stage4ffW0_broad_resume_bridge_cpu.sh`|900초|완료101§356/model0|
 |Stage4ffWa|`run_P106B_Stage4ffWa_broad_resume_mixed_cost8.sh`|900초|NOT_RUN|
 |Stage4ffWb|`run_P106B_Stage4ffWb_broad_resume_staged_cost8.sh`|900초|NOT_RUN|
 |Stage4ffWc|`run_P106B_Stage4ffWc_broad_resume_order_budget.sh`|600초|NOT_RUN|
@@ -6485,5 +6487,87 @@ A의명시private adapter는계산드리프트가작지만독립namespace/captur
 ### 9. 실행 이력
 
 원source/provider의읽기전용의존성분석뒤새private controller를동결했다. 계산본문34개·경계6개·원전역/중첩metadata불변·원v2와새활동각1회합산·실패/TERM영수증을회귀로검사했다. 실물loader/compile/원payload연결은별도이며CPU소형회귀를그실물PASS로승격하지않는다. root감사는 `WIP_20261020_BROAD_RESUME_ROOT_PREFLIGHT.json`이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## 2026-10-20 후속 Stage4fg — 종점별 출처를 분리한 무학습 경로 교차 재개
+
+### 1. 왜
+
+원 교차제어기는원태그한곳의native/SFT/대각선보고를가정하지만완료native와새SFT의실제출처는분리됐다. 만료날짜를원본에서수정하거나옛보고를retag하지않고새private경계로연결한다.
+
+### 2. 질문
+
+네동결가중치에서훈련경로와추론경로를나눠보면품질차이가학습된가중치/삼진추론중어느쪽과연결되는가? 자기경로대각선과다른경로off-diagonal을별도검산한다.
+
+### 3. 예측
+
+실수가중치를즉시삼진화하면손실이커질수있지만실답은미확인이다. 기존CE차이를답변개선이나최적배포경로로예단하지않는다.
+
+### 4. 단계·통제
+
+원교차source SHA 2162B620…를private namespace에서읽는다. native훈련report/activity/CP실험계약은원태그, SFT훈련과사전완료대각선은새native-resume태그를명시한다. binding키이름차이를동일개념해시로검산하되옛문서를바꾸지않는다. 원CPU strict훈련route로로드한context를완전히닫고CUDA에서명시추론route만연다. 같은1694·FP32-MATH/greedy64/KV-on/MTP-off·고정native32·채점/재계수본문은유지한다.
+
+### 5. 판정
+
+CPU준비는네실제대각선/CP/원형/ordered cases가완료되어야연다. 다른태그/부모/본문/토큰/계보면STOP/ERROR다. 새6776 off-diagonal과재사용6776을구분하며기존음성을PASS로고치지않는다. 일반assistant/Falcon동등성은별도다.
+
+### 6. 비용·대안
+
+A는명시종점provider의얇은private 경계, B는평가본문전체복제, C는원보고retag/전역교체다. 계산드리프트와과거변경을피하는A를선택한다. 원기록예비600·worker최대7200·계획가족8400초한도를유지하고각GPU단계1800초/CPU600초이내로준비한다. 실제소요는완료전미확인이다. F4는 `WIP_20261020_ROUTE_CROSS_RESUME_F4.json`이다.
+
+### 7. 실행
+
+새태그 `p106b_route_cross_resume_v2_s1337`의 전용driver/test와 SH6개를 동결했다. root가 신규35+기존28=63 CPU 회귀(5.647초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 25계산본문·5captured경계·29facade binding을 검토했고 원형은 불변이다. 양SFT는 완료했고 대각선은 native삼진→SFT삼진→SFT실수까지 완료, native실수 수집 중이다. 소스커밋과 네 대각선 완료 뒤에만 prepare→네off-diagonal→readback을 연다. 새교차 실물 실행은 NOT_RUN이다.
+
+### 8. 한계
+
+가중치/optimizer를바꾸지않는사후분해다. 기존quantization이력과종점별가중치차이를숨기지않는다. source facade는출처를선택하는경계이며계산본문/옛metadata를재작성하는수단이아니다. 공용/제품/대화유틸리티·보호원천·외부취득은제외다.
+
+### 9. 실행 이력
+
+원교차source_state/cross_runtime을 다시 읽고 단일namespace 가정 세 곳의 불일치를 명시 provider로 분리했다. 원metadata를 retag하지 않고 native원태그/SFT재개태그/대각선재개태그를 검산한다. root 검토·CPU·정적은 완료했지만 이 교차의 실제 모델 평가는 NOT_RUN이다. 감사는 `WIP_20261020_ROUTE_CROSS_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## 2026-10-20 후속 Stage4fh — 여섯 실제 종점의 공개 벤치 출처 재개
+
+### 1. 왜
+
+원 공개벤치는옛native/SFT단일태그와옛Broad v2를가정한다. 새SFT/Broad가독립재개태그에저장되므로숫자계산은유지하고훈련/로드출처만정확히연결한다.
+
+### 2. 질문
+
+native양팔·SFT양팔·Broad양팔의같은공개문항/실답은어떤차이가있으며보존Falcon결과와같은ID/지표에서어느수준인가? 서로다른부모/교과를구조단독인과로주장하지않는다.
+
+### 3. 예측
+
+native CE와SFT고정질문이득이MC/새지문/산수/한국어로옮겨간다고가정하지않는다. 미완Broad를누락한채전체평가완료로보고하지않는다.
+
+### 4. 단계·통제
+
+원source SHA9D44B42F…의private 복제에서model_reference/model_runtime/출처경계만새로연결한다. native원태그·SFT resume_v2·Broad resume_v3를명시하고Broad는실제원course bundle/bridge를사용한다. 새로운CACHE/course가있다고가정하지않는다. 원공개문항/캐시/채점/숫자평가/원형재계수본문을유지한다. 요청9216·예상채점9212·KorQuAD길이제외·GSM동일64문항의두형식·주지표SUM_NLL/보조char정규화·greedy128/KV-on/MTP-off를보존한다.
+
+### 5. 판정
+
+여섯모델의완료CP/훈련계보/동결공개문항/기존Falcon원형이선결이다. 불일치면STOP/ERROR,원음성/미실행은보존한다. MC정답수·자유답정답/형식/종료·한영·원문손실을별도보고하고개별실제답을읽는다.
+
+### 6. 비용·대안
+
+A의명시private provider 경계가계산드리프트/과거변경이가장작아선택했다. B의전체채점복제는중복유지, C의원전역/보고retag는잘못된계보다. 원활동3600/기록600초와aux/worker이중합산방지를유지하며실제시간은각최대1200초/CPU600초및권한종료에의해제한한다. 비용초과를정답성음성으로보지않는다. F4는 `WIP_20261020_CURRENT_BENCHMARK_RESUME_F4.json`이다.
+
+### 7. 실행
+
+새태그 `p106b_current_benchmark_resume_v2_s1337`의 전용driver/test와 SH8개를 동결했다. root가 신규27+기존35=62 CPU 회귀(7.079초), check-only 종료0, 전수정적68PASS/6NOT_RUN/오류0을 확인했다. 40계산본문·4captured경계·3FP32 wrapper 본문을 보존했다. 소스커밋과 6종점 완료 뒤 prepare→여섯평가→readback을 수행한다. 현재 native/SFT4CP는 완료했지만 Broad2개와 실제 공개평가는 NOT_RUN이다.
+
+### 8. 한계
+
+보존Falcon의같은768 MC정답398은재실행/공식harness정합이아니다. 학습출처/토크나이저/데이터양·오염여부를통제한동일아키텍처인과도아니다. 교사다운로드/모델추가취득/새학습/CP저장/제품·공용수정은없다.
+
+### 9. 실행 이력
+
+원model_reference/model_runtime과 새Broad의 course 간접참조를 다시 읽었다. 실제 같은 프로세스에서 엄격하게 검증한 model_reference만 loader가 허용하며 원계산/9216요청·9212채점/길이제외/기존Falcon원형/시간회계는 보존한다. root 검토·CPU·정적은 완료했지만 실물 공개평가/원답품질은 NOT_RUN이다. 감사는 `WIP_20261020_CURRENT_BENCHMARK_RESUME_ROOT_PREFLIGHT.json`과 `WIP_20261020_CROSS_BENCH_PRE_STATIC.json`이다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

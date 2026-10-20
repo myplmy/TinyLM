@@ -230,6 +230,14 @@ fp32 상주와 int8 상주가 갈린다.**
 
 ### 2.6 예약·사용중 태그 네임스페이스 (충돌 금지)
 
+| 공개 벤치 재개 태그 | 범위 | 상태 |
+|---|---|---|
+| `p106b_current_benchmark_resume_v2_s1337` | Stage4fh 여섯종점/동일공개팩/보존Falcon·원점수식 | 신규27+기존35=62CPU/metadata통과·실물NOT_RUN. 수치본문40·FP32 wrapper3·aux이중합산방지보존, 원native/새SFT/새Broad엄격provider. |
+
+| 교차 재개 태그 | 범위 | 상태 |
+|---|---|---|
+| `p106b_route_cross_resume_v2_s1337` | Stage4fg endpoint별원native/새SFT·새대각선출처를분리 | 신규35+기존28=63CPU/metadata선결통과·실물NOT_RUN. 원계산25/경계5개·CPU훈련route 로드후추론route전환보존,6776신규/6776재사용구분. |
+
 | Broad 재개 태그 | 범위 | 상태 |
 |---|---|---|
 | `p106b_broad_resume_v3_s1337` | Stage4ff 원P090B/원v2 교과22528행·mixed/staged352 | 신규42+기존90=132CPU/정적68PASS·실물NOT_RUN. 계산본문34개/원부모·원선택불변,source/bridge→양cost→예산→양352/실답후만품질판단. |
