@@ -1,0 +1,109 @@
+{
+  "schema": "P106B_NATIVE595_PUBLIC_F4_V1",
+  "tag": "p106b_native595_public_v1_s1337",
+  "authority": "사용자21일17시까지CPU+GPU주도작업권한. 장기native와같은후속교과의공개질문품질평가를준비하며새외부취득·학습이아니다.",
+  "allowed_agent_new_sources": [
+    "scripts/diag_p106b_native595_public.py",
+    "scripts/test_p106b_native595_public.py"
+  ],
+  "root_owned": "F4/계획/SH/원장·문서연쇄/정적/실물prepare·모델GPU/산출물·Git",
+  "source_pins": {
+    "scripts/diag_p106b_current_benchmark.py": "9D44B42F59987B5980C45C2309615D133D7713E079CFC343F317B643BE9DE73B",
+    "scripts/test_p106b_current_benchmark.py": "4F7F2A6578E4E840E287649A9EC0F797B15048AE1A17A17DC1FA04853A842B3D",
+    "scripts/diag_p106b_current_benchmark_resume.py": "B75BA699B427EF703B60E5AA306F12C4666FDC9E6D1355290A4E6B8883558BD9",
+    "scripts/diag_p106b_native595.py": "0995C650D5FF0CEDC841F0C5C3CAC8BC55E78A63E8A0FB6C6B1BCBBBBF8BF7B3",
+    "scripts/test_p106b_native595.py": "2D21EF2E0CB5E830F57B7A454DBC749826444BC7B86A48269F1923B5C3AB4F8A",
+    "scripts/diag_p106b_native_broad4_recovery.py": "2292EDFFEBCCF3DA46EB97773EAB3FD68FE4AE6BA0DE3961A3431EA610B9F74C",
+    "scripts/test_p106b_native_broad4_recovery.py": "B4A535FACC42BFD89630C8B4C2FC13D99CE7DD6A5A70B45B1916FE2D55A76151",
+    "scripts/diag_p106b_native595_broad.py": "8155767CB3D56E551A224C27F11F42F194E5D663B25847009F92DB8B930A80BB",
+    "scripts/test_p106b_native595_broad.py": "951C57ED222C5358FEF8B31CBF60562CA012EF8D01D21D675339444808485925"
+  },
+  "method": "원 benchmark evaluator private instance와 계산본문/FP32 wrapper/공개pack/Falcon/점수·분모를보존한다. provider/reference/strictloader/info/model목록/새phase경계만명시한다. 원모듈globals변경·원source/report retag0.",
+  "models": [
+    {
+      "model_id": "native595_ternary",
+      "provider": "p106b_native595_v1_s1337",
+      "arm": "ternary",
+      "cohort": "ENGLISH_MC768"
+    },
+    {
+      "model_id": "native595_float",
+      "provider": "p106b_native595_v1_s1337",
+      "arm": "float",
+      "cohort": "ENGLISH_MC768"
+    },
+    {
+      "model_id": "oldbroad_ternary",
+      "provider": "p106b_native_broad4_recovery_v2_s1337",
+      "arm": "ternary",
+      "cohort": "FULL_PUBLIC1919_scored_requested1920"
+    },
+    {
+      "model_id": "oldbroad_float",
+      "provider": "p106b_native_broad4_recovery_v2_s1337",
+      "arm": "float",
+      "cohort": "FULL_PUBLIC1919_scored_requested1920"
+    },
+    {
+      "model_id": "newbroad_ternary",
+      "provider": "p106b_native595_broad_v1_s1337",
+      "arm": "ternary",
+      "cohort": "FULL_PUBLIC1919_scored_requested1920"
+    },
+    {
+      "model_id": "newbroad_float",
+      "provider": "p106b_native595_broad_v1_s1337",
+      "arm": "float",
+      "cohort": "FULL_PUBLIC1919_scored_requested1920"
+    }
+  ],
+  "counts": {
+    "requested": 9216,
+    "scored": 9212,
+    "native_each": 768,
+    "student_requested_each": 1920,
+    "student_scored_each": 1919,
+    "length_excluded_total": 4
+  },
+  "evaluation": {
+    "precision": "FP32_MATH",
+    "tf32": false,
+    "kv": true,
+    "mtp": false,
+    "greedy": true,
+    "context": 1024,
+    "max_new_tokens": 128,
+    "mc_primary": "SUM_NLL",
+    "mc_secondary": "CHAR_NORMALIZED_DIAGNOSTIC",
+    "pmi": false,
+    "gsm": "same64problems/twoformats,not128independent",
+    "cached_falcon": "398/768 prior score/raw reused only; no freshFalcon/download/API"
+  },
+  "prepare_policy": "모든6실제완료CP/report/core/strictref가선결. actual모델refs는완료후CPUprepare에서만동결하며없는hash추측0. 일부미완료면현6종평가HOLD/NOT_RUN. 부분6종인것처럼보고하지않음.",
+  "providers": "Native595 completed/read_training/loaded_runtime 3tuple는cfg/tokenizer bridge명시. C2와새Broad각build_runtime/read_training(cost=False)/child_runtime 5tuple로selfstrictroute/cfg/CP/core를검증한다. 모두oldnative의고정reference로retag하지않고원보고SHA/원recipe를spec에보존.",
+  "limits": {
+    "active_seconds": 3600,
+    "record_reserve_seconds": 600,
+    "max_worker_seconds": 1800,
+    "authority_end_utc": "2026-10-21T08:00:00+00:00"
+  },
+  "choices": {
+    "A": "동일공개팩과원scorer/FP32본문을새strictprovider에연결·선택",
+    "B": "새평가데이터/새scorer부터작성·비교조건변경과검증비용때문에보류",
+    "C": "native32/훈련DEV만보고assistant품질추정·실제정답성증거부족으로기각"
+  },
+  "scope_impact": {
+    "code": "새2파일·private경계만. 원public본문/source/loader 보호불변",
+    "data": "공개소형evidence/별도ignoredcache/raw; 원frozen공개팩보존",
+    "tests": "작은fakeprovider와본문동등성/strictCP·부모/route/3→5tuple/활동/미완료거부/check-only자산0",
+    "docs": "계획·결과·기준표·인덱스·METHODS·COMPASS·WIP·최종인계",
+    "resources": "native/SFT와GPU동시실행0·actual-worker/17시/기록600동시제약",
+    "claims": "기술완료·후보점수는일반대화·공식harness·구조인과/전체오염통제아님"
+  },
+  "forbidden": [
+    "실제bin/CP/원천/prepare/model/GPU·테스트(작은fixture제외)/Git의agent실행",
+    "기존source/F4/log/CP/제품/공용검사기/환경/타WIP/interactive수정",
+    "보호TinyDataset/사전/HF추가접근·설치/다운로드/외부서비스",
+    "추가하위agent"
+  ]
+}

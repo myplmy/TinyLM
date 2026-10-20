@@ -1,0 +1,21 @@
+{
+  "schema": "P106B_RESULT_SECTION_ORDER_CORRECTION_V1",
+  "reason": "최근 세 결과 절이 첫 재현부록 fence 내부에 잘못 삽입됨. 원문 3절을 그대로 마지막397 뒤로 이동; 원source/수치/로그 불변",
+  "moved_sections": [
+    398,
+    399,
+    400
+  ],
+  "moved_text": "## 398. 2026-10-21 Stage4flWc — 양704회는 비용예산을 통과했지만 학습은 아직 미실행이다\n\n원로그 `101_log_20261021_P106B_Stage4flWc_native_broad4_recovery_budget_005750.txt`는00:57:50~00:59:17KST/종료0·8867B/SHA`E293EF6F1AD7C518B03CD2C07E1BA853133AA354B18721CE0EF62068D0FBCDA3`다. 62회귀/원천선결 뒤 실제 양cost8/닫힌원형을 읽어 계산했다. 보수적 train 예측은 Q2473.955850초/F2375.189807초이고 actual-worker사용212.147840초·총예약6934.000161초로 가족14400초/평가1200/기록600 및 실제UTC 조건을 통과했다.\n\n공개보고14855B/SHA`E99386EA714BD2B5C900182CE5D4BA94B0A470386F77AA53AA6A41D6119A937F`의 fits=true는 완료된704회나 정답성을 뜻하지 않는다. root는 이를 올림한 Q2700/F2400초와 실제답 각1800/재계수900초의 후속SH5개를 새로 작성했다. 실제 단계 직전 현재시간/완료원형을 다시 확인한다. 원v1 오류를 수정한 성공으로 덮지 않았고 새C2 namespace에서만 계측했다.\n\n```bash\n./run_P106B_Stage4flWc_native_broad4_recovery_budget.sh\n\n```\n\n## 399. 2026-10-21 Stage4fmW0 —595M 명시 recipe의 원천·offset CPU 준비를 마쳤다\n\n원로그 `101_log_20261021_P106B_Stage4fmW0_native595_cpu_011100.txt`는01:11:00~01:11:22KST/종료0·5174B/SHA`48B1E04BA88420E2A8D4C885F97899792649609B3CEC64806D135365D4348F60`다. 실제31회귀13.349초와source검사 뒤 원확장TRAIN1191116192/외부VAL3005000·tokenizer9716F40E/독립감사3301C835의 닫힌원형과SHA를 검산했다. 원meta의 val0을 외부VAL3M으로 retag하지 않았다.\n\n명시4543×8×16×1024=595460096 target·seed1337의581504 offset을 새cache에 준비했고2배풀여유는196000 IDs다. cpu_consumer_seconds1.294946·offsets.npy SHA`42DA2734E02D1DD6A910D0455E91CB8C2AA0A665038B2AAA1B45D554BC25A260`·reference SHA`A812E337E4EEE7DCC00E9EBACDD3EDB45A9385FB8C38FAF5F8DE4F3FDB9C6CFA`다. 모델/CP tensor 로딩·optimizer 업데이트·GPU·새CP0으로 아직595M을 처리한 것이 아니다. 원P090B는 cfg 기하 출처일 뿐 learned weights를 부모로 복사하지 않는다.\n\n보고7340B/SHA`55B9811E75F6CD74E7713C66F1128AB8C3533FF32F41A36D6693C45EFF261076`와 source커밋 df2b558을 보존했다. 같은fresh028C46의 양cost8/late/cache·현재UTC 예산을 먼저 수행하며 native11:30/후속7200초·전체학습14시/보고17시를 넘으면학습하지않는다. 첫32crop의낮은손실을일반지능/새대화75M완료로보지않는다.\n\n```bash\n./run_P106B_Stage4fmW0_native595_cpu.sh\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmW0_native595_cpu_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode prepare --max-wall-sec 600 --execute\n```\n\n## 400. 2026-10-21 Stage4fmWa — 새원천 삼진native 비용8과late/cache를 분리 측정했다\n\n원로그 `101_log_20261021_P106B_Stage4fmWa_native595_ternary_cost8_012016.txt`는01:20:16~01:21:52KST/종료0·9381B/SHA`BAE2D4FA4B5CFF6302D67450E54D29116530008C892555FF9458AD8FC1F334FC`다. 별도유휴332.846초/전체36source map을실제idle reader로GPU전에검증했고같은scratch028C46에서명시4543 schedule/1191116192 pool의첫8회를수행했다. 각131072targets로optimizer총1048576이며학습완성595M이나8epoch가아니다.\n\n첫step44.615549초·나머지2.247662~2.527409초·합61.227964초/본체내부62.515755초다. grad_max2.703090·clip8/8, Torch allocated2528.836MiB/reserved3062MiB였다. warm7은quantanneal0이고말기정상속도를직접측정했다고하지않는다.\n\n별도anneal1 late는8192target/역전파만/optimizer0·0.149080초·allocated2173.037MiB다. cache검산은forward0/optimizer0·0.064642초/allocated1093.647MiB이며각reserved3062MiB와분리한다. 이것을예정optimizer토큰이나연속whole-device peak/OOM안전·내용품질에합산하지않는다. CP쓰기0·native32품질평가0이다.\n\n닫힌worker 뒤readonly VERIFY도종료0이며보고17741B/SHA`34FECBE36354A1B769DA6EBA67BBBB809AF4228B57790F0CBC43A807AF199234`를보존했다. 실제실수비용·현재시간/후속7200예약을검산해야새4543학습을열수있다.\n\n```bash\n./run_P106B_Stage4fmWa_native595_ternary_cost8.sh\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fmWa_native595_ternary_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595.py --mode cost --arm ternary --max-wall-sec 900 --execute --idle-proof \"$idle_proof\"\n```",
+  "original_logs_changed": false,
+  "models_changed": false,
+  "closure_after": {
+    "logs": 79,
+    "errors": 0
+  },
+  "conditions": {
+    "result101": 125,
+    "other_results_previously": 6
+  },
+  "tool_environment_note": "node_repl read helper was unavailable due sandboxCwd URI rejection; no environment change. Structured read used existingPython instead."
+}

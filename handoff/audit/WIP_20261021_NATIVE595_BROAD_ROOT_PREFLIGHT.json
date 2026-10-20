@@ -1,0 +1,152 @@
+{
+  "schema": "P106B_NATIVE595_BROAD_ROOT_PREFLIGHT_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "session_id": "01a0b33b-d14e-7c40-ada8-229a1f97eabd",
+  "authority_end_kst": "2026-10-21T17:00:00+09:00",
+  "source": {
+    "scripts/diag_p106b_native595_broad.py": {
+      "lines": 1222,
+      "sha256": "8155767CB3D56E551A224C27F11F42F194E5D663B25847009F92DB8B930A80BB"
+    },
+    "scripts/test_p106b_native595_broad.py": {
+      "lines": 936,
+      "sha256": "951C57ED222C5358FEF8B31CBF60562CA012EF8D01D21D675339444808485925"
+    }
+  },
+  "root_read": "원C2를읽은현재논리작업에서전체기계diff와신규부모·snapshot/descriptor·3→6tuple·strict CP/closed VERIFY/새fixture를직접대조했다. 원44AST/9core본문보존.",
+  "cpu": {
+    "command": "OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES='' /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/test_p106b_native595_broad.py",
+    "tests": 67,
+    "seconds": 26.856,
+    "returncode": 0,
+    "scope": "작은CPU/temp fixture·합성CP바이트만. 실제CP/model/bin/GPU0"
+  },
+  "source_check_only": {
+    "returncode": 0,
+    "code_pin_count": 88,
+    "controller_preserved_ast_count": 44,
+    "core_bodies": 9,
+    "actual_assets_read": false
+  },
+  "independent_review": {
+    "agent": "oct20_antithesis",
+    "scope": "읽기만·실행0",
+    "blocking_findings": [],
+    "p2": "float-only입장표현과원양팔budget의차이. root는문서/F4만지원범위로좁힘",
+    "resolved_by": "원계산/원limits보존·양cost/두pending필수의문서정정"
+  },
+  "fallback_doc_correction": {
+    "schema": "P106B_BROAD_FALLBACK_SCOPE_CORRECTION_V1",
+    "before_f4": {
+      "path": "handoff/audit/WIP_20261021_NATIVE595_BROAD_F4.json",
+      "bytes": 6281,
+      "sha256": "F9D0E18C5C7F51319B38ADB0FDD6DD0A3819AE31CCEAB345F02D3567E0D7F8F8",
+      "priority": "기한충족시양Q/F를모두준비하되실제양native완료→새CPU→새단독cost/현재예산→704→1694/native32/실제16원천17이력답→닫힌원형재계수. 실제시간이모자라면float의old/newmatchedSFT부터열고미실행Q는명확히NOT_RUN. 양팔완료없이pair완료라고하지않음."
+    },
+    "after_priority": "양native4543 완료→새CPU→양cost/현재양pending예산→704/1694/native32/실제16원천17이력답→닫힌원형재계수. float old/new matchedSFT의 실행순서를 우선할 수 있지만 양cost와 두pending 예약을 모두 통과해야 한다. 시간부족의 float-only 입장은 현재 미구현이므로 그때는 현가족HOLD 또는 별도 새분기/회귀/태그가 필요하다. 양팔완료 없이pair완료라고하지 않는다.",
+    "reason": "독립 반증검토 P2: 원 C2 budget/행동본문은 항상 양cost와두pending을예약하므로 'float-only fallback'을지원한다고표현할수없음",
+    "source_changed": false,
+    "training_or_test_math_changed": false,
+    "actual_prepare_not_run": true
+  },
+  "not_run": [
+    "실제양Native595 완료",
+    "실제새CPUprepare/원천검산",
+    "새비용/704학습/새CP/정답품질"
+  ],
+  "live_invariants": "진행중Native595 source/test/F4/cache/raw/CP/log 수정0. 원C2 source/F4/원실패불변.",
+  "model_quality": "NOT_ESTABLISHED",
+  "launchers": [
+    {
+      "path": "run_P106B_Stage4fnW0_native595_broad_cpu.sh",
+      "name": "P106B_Stage4fnW0_native595_broad_cpu",
+      "stage": "4fnW0",
+      "mode": "prepare",
+      "arm": null,
+      "cap": 600,
+      "gpu": "N",
+      "hours": 0.17
+    },
+    {
+      "path": "run_P106B_Stage4fnWa_native595_broad_ternary_cost8.sh",
+      "name": "P106B_Stage4fnWa_native595_broad_ternary_cost8",
+      "stage": "4fnWa",
+      "mode": "cost",
+      "arm": "ternary",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4fnWb_native595_broad_float_cost8.sh",
+      "name": "P106B_Stage4fnWb_native595_broad_float_cost8",
+      "stage": "4fnWb",
+      "mode": "cost",
+      "arm": "float",
+      "cap": 900,
+      "gpu": "D",
+      "hours": 0.25
+    },
+    {
+      "path": "run_P106B_Stage4fnWc_native595_broad_budget.sh",
+      "name": "P106B_Stage4fnWc_native595_broad_budget",
+      "stage": "4fnWc",
+      "mode": "budget",
+      "arm": null,
+      "cap": 300,
+      "gpu": "N",
+      "hours": 0.1
+    },
+    {
+      "path": "run_P106B_Stage4fnWd_native595_broad_ternary704.sh",
+      "name": "P106B_Stage4fnWd_native595_broad_ternary704",
+      "stage": "4fnWd",
+      "mode": "train",
+      "arm": "ternary",
+      "cap": 3600,
+      "gpu": "Y",
+      "hours": 1
+    },
+    {
+      "path": "run_P106B_Stage4fnWe_native595_broad_float704.sh",
+      "name": "P106B_Stage4fnWe_native595_broad_float704",
+      "stage": "4fnWe",
+      "mode": "train",
+      "arm": "float",
+      "cap": 3600,
+      "gpu": "Y",
+      "hours": 1
+    },
+    {
+      "path": "run_P106B_Stage4fnWf_native595_broad_ternary_answers.sh",
+      "name": "P106B_Stage4fnWf_native595_broad_ternary_answers",
+      "stage": "4fnWf",
+      "mode": "evaluate",
+      "arm": "ternary",
+      "cap": 1800,
+      "gpu": "D",
+      "hours": 0.5
+    },
+    {
+      "path": "run_P106B_Stage4fnWg_native595_broad_float_answers.sh",
+      "name": "P106B_Stage4fnWg_native595_broad_float_answers",
+      "stage": "4fnWg",
+      "mode": "evaluate",
+      "arm": "float",
+      "cap": 1800,
+      "gpu": "D",
+      "hours": 0.5
+    },
+    {
+      "path": "run_P106B_Stage4fnWh_native595_broad_readback.sh",
+      "name": "P106B_Stage4fnWh_native595_broad_readback",
+      "stage": "4fnWh",
+      "mode": "readback",
+      "arm": null,
+      "cap": 900,
+      "gpu": "N",
+      "hours": 0.25
+    }
+  ],
+  "followup_public": "별도F4/새2source만구현중. 현재88map/native595live에후행file추가없음."
+}

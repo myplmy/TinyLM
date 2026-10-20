@@ -1,0 +1,65 @@
+Native595 conditional study:4543x8x16x1024 main targets595460096, pool1191116192/externalVAL3005000/scratch028C46. Native Adam/Muon/WSD/anneal/clip1 retained. Cost8 main1048576 plus separate late8192 backward-only/cache checks; no cost CP or quality claim. Actual-worker43200, train cap18000, native stop21st11:30KST/global train14KST/authority17KST. Followup7200/eval1200/record600 reserved; new measured paired budget and fresh300s full-code-map proof before cost. Stage cost cap900s. All public files below20MB; old source/CP/raw unchanged.
+
+==============================================================================
+[runlog] 2026-10-21 01:33:22  name=P106B_Stage4fmWb_native595_float_cost8_013322
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_native595.py --mode cost --arm float --max-wall-sec 900 --execute --idle-proof handoff/audit/p106b_native595_v1_s1337/idle_float.json
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_activity_cap_and_stop_tamper (scripts.test_p106b_native595.FixtureTests) ... ok
+test_actual4543_raw_counts_and_schedule_recount (scripts.test_p106b_native595.FixtureTests) ... ok
+test_budget_slow_cost_holds_and_reserves_followup (scripts.test_p106b_native595.FixtureTests) ... ok
+test_cost_auxiliary_is_separate_and_core_bound (scripts.test_p106b_native595.FixtureTests) ... ok
+test_failed_activity_counted_once_and_not_complete (scripts.test_p106b_native595.FixtureTests) ... ok
+test_header_wrong_source_tag_parent_and_step_rejected (scripts.test_p106b_native595.FixtureTests) ... ok
+test_real_cost_reader_requires_closed_activity (scripts.test_p106b_native595.FixtureTests) ... ok
+test_source_reference_and_writeonce (scripts.test_p106b_native595.FixtureTests) ... ok
+test_cost_auxiliary_original_order_and_exact_source_arguments (scripts.test_p106b_native595.NumericTests) ... ok
+test_given_model_cost8_updates16micro_and_lr (scripts.test_p106b_native595.NumericTests) ... ok
+test_original_cache_audit_restores_without_forward_or_step (scripts.test_p106b_native595.NumericTests) ... ok
+test_original_late_probe_restores_anneal_zero_grad_and_no_step (scripts.test_p106b_native595.NumericTests) ... ok
+test_original_native_optimizer_matrix_units_and_wd (scripts.test_p106b_native595.NumericTests) ... ok
+test_cpu_state_dtype_shape_and_alias (scripts.test_p106b_native595.PayloadIdleTests) ... ok
+test_idle_full_map_and_protected_paths_before_read (scripts.test_p106b_native595.PayloadIdleTests) ... ok
+test_idle_proof_path_rejected_before_json_or_hash (scripts.test_p106b_native595.PayloadIdleTests) ... ok
+test_strict_cp_step_tag_route_and_optimizer (scripts.test_p106b_native595.PayloadIdleTests) ... ok
+test_cost_worker_closes_then_real_strict_reader (scripts.test_p106b_native595.ProcessTests) ... ok
+test_term_failed_activity_preserved (scripts.test_p106b_native595.ProcessTests) ... ok
+test_three_phase_verify_failure_and_no_duplicate (scripts.test_p106b_native595.ProcessTests) ... ok
+test_train4543_worker_closes_then_real_strict_reader (scripts.test_p106b_native595.ProcessTests) ... ok
+test_check_only_assets_forbidden (scripts.test_p106b_native595.RecipeTests) ... ok
+test_exact_geometry_source_and_no_controller_rebind (scripts.test_p106b_native595.RecipeTests) ... ok
+test_explicit_captured_defaults_are_overridden_by_arguments (scripts.test_p106b_native595.RecipeTests) ... ok
+test_full_info_json_no_planned_actual_collision (scripts.test_p106b_native595.RecipeTests) ... ok
+test_full_offset_count_seed_bounds_and_pool2x (scripts.test_p106b_native595.RecipeTests) ... ok
+test_modes_caps_and_unused_arm (scripts.test_p106b_native595.RecipeTests) ... ok
+test_native_and_global_deadlines (scripts.test_p106b_native595.RecipeTests) ... ok
+test_schedule_boundary_wsd_and_quant (scripts.test_p106b_native595.RecipeTests) ... ok
+test_source_auditor_wrong_hash_or_nonzero_result_before_binary (scripts.test_p106b_native595.RecipeTests) ... ok
+test_source_meta_val0_and_exact_pool_checked_before_binary (scripts.test_p106b_native595.RecipeTests) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 13.113s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+W1021 01:33:57.810000 153190 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[NATIVE595_UPDATE] {"arm": "float", "update": 1, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 0, "schedule": {"lr_factor": 0.01, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.413364231586456, "crop_offsets_sha256": "AB6C302027BEA6D692404735B170C4AED06BE868FE4FDB5A11D5CD5797B1EAEB", "actual_lrs": [[1e-05, 1e-05], [4e-05]], "gradient_norm": 2.771430253982544, "clipped": true, "step_seconds": 31.024632926000777}
+[NATIVE595_UPDATE] {"arm": "float", "update": 2, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 128, "schedule": {"lr_factor": 0.02, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.397984504699707, "crop_offsets_sha256": "BA3634383CBAE46F567D1AF076AEC54D210B7ECDFF36F351BDB6AF44F056D2B9", "actual_lrs": [[2e-05, 2e-05], [8e-05]], "gradient_norm": 2.738868474960327, "clipped": true, "step_seconds": 2.2748628800000006}
+[NATIVE595_UPDATE] {"arm": "float", "update": 3, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 256, "schedule": {"lr_factor": 0.03, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.367630541324615, "crop_offsets_sha256": "039888C8737C524D5139536A4A1978F55E2F558FB006896FE718E3E6FD44839C", "actual_lrs": [[3e-05, 3e-05], [0.00012]], "gradient_norm": 2.320843458175659, "clipped": true, "step_seconds": 2.3002577999977802}
+[NATIVE595_UPDATE] {"arm": "float", "update": 4, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 384, "schedule": {"lr_factor": 0.04, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.324368238449097, "crop_offsets_sha256": "5DE16D1C9D684CD884C0E2E13658993A7450A4B67AAFD06EBF4B92D5C89A0D99", "actual_lrs": [[4e-05, 4e-05], [0.00016]], "gradient_norm": 2.103424549102783, "clipped": true, "step_seconds": 2.326284079001198}
+[NATIVE595_UPDATE] {"arm": "float", "update": 5, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 512, "schedule": {"lr_factor": 0.05, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.279701292514801, "crop_offsets_sha256": "E726A08FEF4EB054B8452A2EC1561FD2BF2279073126604FEBE116E30F106A54", "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 1.7008216381072998, "clipped": true, "step_seconds": 2.3271152900015295}
+[NATIVE595_UPDATE] {"arm": "float", "update": 6, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 640, "schedule": {"lr_factor": 0.06, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.228515803813934, "crop_offsets_sha256": "6FBD4323E4E7EBCEF717F5FA3EC0481B11D064765B9D97E1F7F3050350B4AD67", "actual_lrs": [[6e-05, 6e-05], [0.00024]], "gradient_norm": 1.6654706001281738, "clipped": true, "step_seconds": 2.3327897579983983}
+[NATIVE595_UPDATE] {"arm": "float", "update": 7, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 768, "schedule": {"lr_factor": 0.07, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.179592549800873, "crop_offsets_sha256": "E3256661402584A27C90A9F5CC4B60E17DD789DCBAB11F4EFC700723C05F717A", "actual_lrs": [[7.000000000000001e-05, 7.000000000000001e-05], [0.00028000000000000003]], "gradient_norm": 1.4863613843917847, "clipped": true, "step_seconds": 2.468640836999839}
+[NATIVE595_UPDATE] {"arm": "float", "update": 8, "targets": 131072, "x_tokens": 131072, "native_replay_targets": 0, "crop_start": 896, "schedule": {"lr_factor": 0.08, "anneal": 0.0, "quant_start": 0.07201188641866609}, "ce": 10.14946460723877, "crop_offsets_sha256": "AF5337E35803437C981C2EF34DC1E6D378E87D75321F6F19482FFA3742D0AB92", "actual_lrs": [[8e-05, 8e-05], [0.00032]], "gradient_norm": 1.6371026039123535, "clipped": true, "step_seconds": 2.363837215998501}
+[VERIFY_BEGIN] cost_float
+[NATIVE595_VERIFY] {"mode": "cost", "arm": "float", "updates": 8, "status": "CLOSED_WORKER_VERIFIED"}
+[VERIFY_END] cost_float rc=0; worker already executed
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_NATIVE595_cost_float", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.4분  (2026-10-21 01:34:44)
+==============================================================================

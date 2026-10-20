@@ -470,3 +470,5 @@ ORPO−SFT의한정대응구간이양수여도부모우위/조건갱신/언어�
 [101 §§379~394](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 Broad 양1694첫답/원천16개17실제이력답·공개6종9212채점·Headwise384/1694/재검산·확장TRAIN 독립CPU scan을 기록한다. Broad mixed는 staged보다 종료/규칙 점수가 나았지만 산수·일반 질문의 실패가 남았다. 공개 영어 공통768의307~324 대Falcon398은 훈련량/토크나이저를 통제한 구조 인과나 공식harness가 아니다. QK head별NS는 같은384에서TEST613→612/1024·자연EM10→10/128이라 기본채택하지 않는다. 작은native32 CE 차이나0-hit도 지능·학습허가로 승격하지 않는다.
 
 원 native Broad4의 Qcost는 root 유휴 영수증의 전체source map 필드 오기로 모델로딩 전에 실패했으며 원형은 보존했다. 새Stage4fl은 계산·부모·교과·기한을 그대로 두고 새경로에서 복구한다. 일반3턴 대화는 고정16원천 패널의 관측범위 밖이고, 온라인 오조어 blacklist·새thinking/GUI/프루닝 구현은 추가하지 않았다.
+
+[101 §§395~402](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은 C2의 실제 CPU·양cost/현재예산과 Native595의 실제 CPU·양cost8/late/cache·현재예산을 구분한다. Native595는01:43:35KST 삼진4543을 열었지만 완료 토큰·CP·품질은 회수 전이다. F identity와 Q soft-window STE는 anneal0에서도 backward가 다르므로 순수 반올림 인과로 읽지 않는다. 원source/F4·crop·스케줄은 실행 중 고정하며, 향후595M 부모의 SFT도 원 교과와 옛5632 replay창을 따로 보존해야 한다.

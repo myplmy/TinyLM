@@ -6773,7 +6773,7 @@ A의새태그기계분기를선택한다. 원실패를지우는B는계보혼동�
 
 ### 7. 실행
 
-root는원본/기계diff전체와신규회귀71행을읽고62CPU회귀18.556초를통과했다. 원driver/test SHA04524742…/50E4A10F… 불변, 신규2292EDFF…/B4A535FA…이다. 현재SH4개(prepare·양cost·budget)만준비했고양704/evaluate/readback5SH는실측후worker상한확정뒤작성한다. 전수정적/소스보존/실제준비는각완료시추가한다.
+root는 원본/기계diff 전체와 신규회귀를 읽고62CPU회귀18.556초를 통과했다. 원source 불변·신규2292EDFF…/B4A535FA…를2aee4ab에 보존했다. 이후 실제 CPU 준비·양cost8·닫힌 VERIFY/현재예산까지 완료했다(101§395~398). 예상 Q2473.956/F2375.190초를 바탕으로 train cap2700/2400·양평가1800/readback900초의 후속5SH를 보존했다. 실제704/새CP·실답은 아직 NOT_RUN이며595M native 쌍 다음 남은 예산에서 연다.
 
 ### 8. 한계
 
@@ -6781,7 +6781,7 @@ root는원본/기계diff전체와신규회귀71행을읽고62CPU회귀18.556초�
 
 ### 9. 실행 이력
 
-101§394와원실패감사에원인과정확한map계약을남겼다. 원유휴시작/끝311.214초관측은불변이며새경로에서는새코드map/새유휴를다시확인한다. source는 root 검증·정적·한국어커밋 뒤실제로소비한다.
+101§394와 원실패감사에 정확한map계약을 남겼다. 원유휴311.214초는 불변이다. 새경로는 전체82 source map과 별도 유휴350.177/309.407초를 실제 reader로 확인했고, 원형·새시도·원실패를 구분해 보존한다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
@@ -6813,7 +6813,7 @@ A의기존native Broad4는Stage4fl에서병행준비한다. B의595M 기초학�
 
 ### 7. 실행
 
-F4 WIP_20261021_NATIVE595_F4.json으로새2파일구현범위를먼저고정했다. driver676행/test448행을root가전량읽고31CPU회귀11.280초·source metadata/info·Torch2.10.0+cu130·태그충돌0을확인했다. 원default2281/597995000가불변이고새recipe4543/1191116192는명시전달된다. sourceSHA0995C650…/test2D21EF2E…·실제작은meta의val0/외부VAL분리를검산했다. 전수정적68PASS/6NOT_RUN·SH초기4개(prepare/양cost/budget)와루트감사를준비했다. 실제대형bin/source준비·GPU/학습·새CP는NOT_RUN이며소스보존뒤에만실제 CPU prepare를연다. 양cost 뒤 train/evaluate/readback5SH의상한을확정하며아직준비됐다고하지않는다.
+F4 WIP_20261021_NATIVE595_F4.json과새676/448행을 root가 전량 검토했다. 31CPU회귀11.280초·Torch2.10.0+cu130·태그충돌0/원default 불변·전수68PASS/6NOT_RUN 뒤 source0995C650…/test2D21EF2E…를df2b558에 보존했다. 실제 전체원천/SHA·581504offsets CPU 준비와 양cost8·분리late/cache·닫힌 VERIFY/현재예산까지 완료했다(101§399~402). 예상 Q15842.144/F15468.143초에서 train cap15900/15600·양native32평가600/readback900초의 후속5SH를6fdb446에 보존했다. 01:43:35KST 삼진4543 착수·실수4543/양CP/완성토큰/품질은 후속이다. live source/F4는 고정한다.
 
 ### 8. 한계
 
@@ -6821,7 +6821,101 @@ F4 WIP_20261021_NATIVE595_F4.json으로새2파일구현범위를먼저고정했�
 
 ### 9. 실행 이력
 
-root가원native학습loop·late_probe/optimizer그룹·명시default경계를확인하고정역할에독립recipe/controller 2파일만구현하도록할당했다. 기존Stage4fl복구/실답은이장기후보의가짜완료로합산하지않는다.
+root가 원native 학습loop·late_probe/optimizer그룹·명시default 경계를 확인했다. Q는 anneal0에서도 soft-window STE backward이고 F는 identity backward인 기존 계약이다. 따라서 단순 반올림 하나의 인과로 해석하지 않으며 현재 학습 도중 derivative·목적함수·crop·스케줄을 바꾸지 않는다. 결과398~400절은 앞쪽 코드펜스의 편집오기를 발견해 수치·본문 그대로 시간순 끝으로 옮겼다.
+
+## 2026-10-21 후속 Stage4fn — 새595M 부모와 원 Broad4 교과를 명시적으로 연결한다
+
+### 1. 왜
+
+새 native만 학습하고 QA를 가르치지 않은 상태를 최종 assistant로 평가하면 기초학습 패키지가 답변 학습에 기여했는지 분리하기 어렵다. 이미 동결한 C2의 같은 교과/704회와 같은 replay를 새595M 부모에도 적용하는 후속을 준비한다. 새595M 부모가 실제 완료되지 않으면 준비 소비도 보류한다.
+
+### 2. 질문
+
+같은 float 경로의299M native→Broad704와595M native→같은Broad704에서 실제 첫답·내용·종료·일반 원문 손실은 어떻게 다른가? 자원이 맞으면 삼진도 같은 절차를 적용한다. native 단계의 원천 pool/draw/구성/WSD·anneal 지평까지 다르므로 학습량만의 단일 인과나 구조 우열로 주장하지 않는다.
+
+### 3. 예측
+
+595M의 원문 손실이 개선돼도 대상 연결·산수·한국어 대화가 반드시 개선되는 것은 아니다. 같은 후속 교과를 주어 비교 해석을 좁히되, 효과가 없거나 특정 축을 손상하는 결과도 그대로 보존한다.
+
+### 4. 단계·통제
+
+새 p106b_native595_broad_v1_s1337 태그·driver/test2파일에 부모 provider만 분리한다. upstream Native595의 completed/read_training(cost=False)/strict loaded_runtime로 실제4543/닫힌 원형·cfg/state/route/CP/core를 검사한다. upstream 원보고를 retag하거나 original globals를 바꾸지 않는다.
+
+원 C2의22528행·pass0/1을2cycles 반복한4pass704·한optimizer state·L0·micro8×accum16/seq1024/ckpt-on/Adam5e-5·Muon2e-4/WD0·clip1·BF16/defaultcompile을 유지한다. replay는 확장1.191B가 아니라 옛597995000 TRAIN의 원5632창·원순서다. upstream initial_core 키와 bridge 소유 scratch_core 키는 명시적 descriptor로만 연결하고 원보고SHA/descriptorSHA를 따로 보존한다. 아직 없는 CP 해시를 추측해 입력으로 선언하지 않는다.
+
+### 5. 판정
+
+양 native4543의 닫힌 완료가 CPUprepare의 선결이다. CPUprepare 때 실제 부모 refs를 동결한 뒤, 새유휴300초/전체source-map 비용8→현재시간 예산→각704/새CP1→같은1694/native32·원천16개17실제이력답→닫힌 원형 재계수를 수행한다. 기존 reader·generic float 보호·단계 판정 기준은 완화하지 않는다. 1694는 규칙/자연/비채점사용자표본을 섞은 관측 묶음이지1694개의 검증된 독립 지식이 아니다.
+
+### 6. 비용·대안
+
+| 안 | 방식 | 장점 | 한계·비용 |
+|---|---|---|---|
+| A·선택 | 같은 C2 계산을 새 부모 provider/새 provenance와 연결 | 교과·replay·optimizer 계산을 유지하고 실제 부모만 검증해 바꿈 | 새 descriptor/loader·회귀 검증 필요. 실제 GPU 비용은 새 부모cost 이후 확정 |
+| B | 새 부모용 교과·학습 계산까지 다시 작성 | 수정 자유도는 큼 | 원 대조와 계산 드리프트가 생기며 구현/재검증 부담이 더 큼 |
+| C | 원 native report/tag를 새 부모처럼 교체 | 연결 코드는 짧아질 수 있음 | 원형과 계보를 혼동하므로 기각. 기존 원본 변경 불가 |
+
+가족 실제worker14400초·최대worker7200초·cost900초/평가예비3600초/기록600초, 전역 학습14시·허가17시를 동시에 적용한다. 평가예비는 원 C2의1200초보다 보수적인 새가족 예약이며 원 C2 기한을 바꾸지 않는다. float old/new의 실행순서를 우선할 수 있지만 양cost와 두pending 예산은 먼저 통과해야 한다. 독립검토에서 float-only 입장은 현재 제어기가 지원하지 않음을 확인해 표현을 좁혔다. 양pending 예약이 안 맞으면 현가족HOLD 또는 별도 새분기/회귀/태그가 필요하며 문서만으로 우회하지 않는다.
+
+### 7. 실행
+
+F4 WIP_20261021_NATIVE595_BROAD_F4.json을 먼저 고정했고 새driver1222행/test936행을 준비했다. root는 원C2와 전체diff·새부모/descriptor/context/loader/phase·신규fixture 본문을 읽고67CPU26.856초·check-only0/88source-map·원44AST/9core본문 동등성을 확인했다. 독립 반증검토의 float-only 표현 P2는 코드가 지원하는 양cost/두pending 예약으로 좁혔으며 계산 변경은0이다. source8155767C…/test951C57ED…와9SH(prepare/양cost/budget/양704/양실답/readback)를 준비했다. 실제 소비는 전수정적·소스커밋과 양native4543 완료 뒤이며 아직 NOT_RUN이다.
+
+### 8. 한계
+
+단일seed·기초학습 패키지 교락·한영 지도량의 비대칭은 남는다. 현재 교과의 General lane 비중이나 업데이트 묶음을 바꾸는 새 방법론은 적용하지 않는다. 고유 대화75M/300M 본목표·보호 원천·제품구조·원live source/F4·원실패 로그는 그대로다.
+
+### 9. 실행 이력
+
+이 후속은 현재 장기 native 학습 중 별도 source로 준비하는 단계다. 아직 부모4543 쌍이 완료되지 않았고 실제 CPUprepare/비용·704·새CP·실답은 NOT_RUN이다. 모델로딩 직전에도 해당 부모와 기한을 다시 검사한다.
+
+## 2026-10-21 후속 Stage4fo — 새 기초학습과 같은 교과 종점의 공개 평가
+
+### 1. 왜
+
+작은 native32·학습 DEV 손실만으로 사용자의 실제 QA 문제나 Falcon과의 격차를 설명할 수 없다. 이전에 실제 회수한 공개팩을 그대로 사용해 새 Native595와 동일 Broad704의 old/new 부모 종점을 비교한다.
+
+### 2. 질문
+
+새 native Q/F의 영어 공통MC768과, old/new native→같은Broad704 네 학생의 한영 공개 질문·자유QA 성능은 어떠한가? 기존 native299M/SFT384/oldP090B Broad352의 결과 및 보존Falcon398/768과는 조건을 붙인 관측 비교로만 연결한다.
+
+### 3. 예측
+
+원문 학습 확대로 원문 손실이나 일부 선택형 점수가 개선될 수 있지만 일반 산수·한국어 질문·대상 연결·자유 대화가 반드시 개선된다고 예측하지 않는다. 점수 변화가 작거나 손상이 생겨도 원답을 보존한다.
+
+### 4. 단계·통제
+
+새 p106b_native595_public_v1_s1337 태그에서 원 evaluator의 수치본문/FP32 wrapper와 같은 frozen 공개팩·SUM_NLL 주점수/문자정규화 보조·길이 제외·greedy128/KV-on/MTP-off/context1024를 유지한다. 모델 이름은 native595_ternary/float, oldbroad_ternary/float, newbroad_ternary/float로 명시한다. 옛 mixed/staged라고 위장하지 않는다.
+
+Native595의 read_training/loaded_runtime와 두 Broad의 각 read_training/child_runtime strict provider만 새 로더 경계에 연결한다. parent/model refs는 실제6종점 완료 뒤 CPUprepare에서만 동결하며, 없는 CP SHA를 추측하지 않는다. 옛 report/tag/global과 현재 실행 중 source/F4를 바꾸지 않는다.
+
+### 5. 판정
+
+두 native는 영어768씩, 네 학생은 각1920요청/1919채점으로 총9216요청/9212채점·길이제외4개다. 원모델별 분모·raw/본문·CP/core/route·닫힌activity를 재계수한다. GSM64문제의 두형식을128개 독립문제로 세지 않는다. 기술완료·후보점수·strict 문자열 EM을 일반 의미 정답이나 대화능력으로 바꾸지 않는다.
+
+모든6CP 완료가 준비의 선결이다. 일부 미완료면 이6종 설계는 HOLD/NOT_RUN이며, 일부만 수행하고 전체 완료라고 하지 않는다. 공식 harness 동등성·전체학습 오염제거·구조 단독인과·다중시드 유의성은 판정하지 않는다.
+
+### 6. 비용·대안
+
+A의 같은팩/원scorer+새strictprovider를 선택한다. B의 새문항/새scorer는 비교조건·검증비용이 늘어 이번에는 보류한다. C의 native32/훈련손실만으로 assistant 품질을 추정하는 방식은 실제 정답 근거가 부족해 기각한다.
+
+새가족 실제worker3600초·단계최대1800초·기록600초·21일17시를 모두 적용한다. 실제GPU 비용은 미계측이며 기초학습/SFT와 동시 실행하지 않는다. 새Falcon·교사·외부API·다운로드는0이다.
+
+### 7. 실행
+
+F4 WIP_20261021_NATIVE595_PUBLIC_F4.json으로 새driver/test2파일 범위를 먼저 고정했다. 정 역할이 구현/작은fakeprovider 회귀를 준비 중이며 root의 source/수학경계 검토·전수정적·소스커밋 뒤에만 실제 준비와 평가를 수행한다. SH는 아직 미작성이고 실제CP/팩 소비·모델/GPU 평가도 NOT_RUN이다.
+
+### 8. 한계
+
+제한 공개 표본·과거 학습과의 오염 미통제·토크나이저/훈련량이 다른 보존Falcon과의 차이는 남는다. 원공개팩을 반복 관찰했으므로 독립 blind 평가라고 하지 않는다. 별도의 사용자 실제질문·대화 원형은 Broad 평가에서 구분해 읽어야 한다.
+
+### 9. 실행 이력
+
+현재 장기Native595 삼진 학습 중 별도 source로만 준비한다. 실제6종점 완료·현재시간 예산·strictrefs가 없으면 실행을 열지 않는다. 준비/공개 원답과 훈련/정답품질은 분리한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
