@@ -6405,10 +6405,10 @@ pilot 실측 전 전체시간을 확정하지 않는다. 시간/ledger 외삽은
 
 | 단계 | 내용 | 한도 | 현재 |
 |---|---|---|---|
-|Stage4feW0|회귀/출처bridge CPU준비|900초·model0|준비중|
-|Stage4feWa|float SFTcost8|단독GPU900초·5분유휴·CP0|NOT_RUN|
-|Stage4feWb|원Qcost/새Fcost의384자원예산|CPU600초|NOT_RUN|
-|Stage4feWc/Wd|각자native부모의동일SFT384|각GPU3600초·CP각1|NOT_RUN|
+|Stage4feW0|회귀/출처bridge CPU준비|900초·model0|완료·101§352/worker17.411초·model0|
+|Stage4feWa|float SFTcost8|단독GPU900초·5분유휴·CP0|완료·101§353/종료0·실제8회|
+|Stage4feWb|원Qcost/새Fcost의384자원예산|CPU600초|완료·101§354/fits true|
+|Stage4feWc/Wd|각자native부모의동일SFT384|각GPU3600초·CP각1|삼진팔진행/실수팔NOT_RUN|
 |Stage4feWe/Wf/Wg/Wh|native/SFT×삼진/실수각1694첫답·native32|각GPU1800초|NOT_RUN|
 |Stage4feWi|6776원답/token/분모/계보재검산|CPU900초·model0|NOT_RUN|
 
@@ -6431,5 +6431,46 @@ A는정확소스의독립namespace와명시bridge로계산본문을보존한다.
 ### 9. 실행 이력
 
 원프로세스/로그/기한을재조회하고native2/Qcost완료를계승했다. 새F4/계획을먼저작성한뒤독립재개제어기를구현했다. root가19개계산본문·5개경계함수의원bytecode/참조보존과원모듈불변·부모계보·원Qcost재사용·기한/종료회귀를검사했다. 감사는 `handoff/audit/WIP_20261020_NATIVE_RESUME_ROOT_PREFLIGHT.json`이다. 신규GPU실행은NOT_RUN이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## 2026-10-20 후속 Stage4ff — 원 Broad 교과의 독립 기한 재개
+
+### 1. 왜
+
+원 Broad v2의 실제 CPU 교과는완료됐지만학습/평가의20일기한이만료됐다. 연장된21일기한으로기존자료순서대조를이어가며완료원형/전역은변경하지않는다.
+
+### 2. 질문
+
+원 P090B 부모·동일22528행·같은352회에서혼합순서와단계순서의실답차이가있는가? 새native/SFT부모를대입하지않는다.
+
+### 3. 예측
+
+자료를바꿔도질문대상혼동이남을수있다. 자료순서효과는실제답과일반언어손실을함께회수하기전에는미확인이다.
+
+### 4. 단계·통제
+
+동결legacy/recovery소스를각private namespace에읽고새기한/출력/info/provider bridge만교체한다. 원import모듈전역·원payload·선택TAG 의미·학습/평가본문은불변이다. 원v2 prepared/대등성receipt를검증한뒤새CPU bridge→양cost8→예산→같은352양팔→부모/학생1694첫답과별도16대화→readback순서다. 새태그는 `p106b_broad_resume_v3_s1337`이며활동10800/평가예비1200/기록예비600초를유지한다.
+
+### 5. 판정
+
+출처/부모/본문/마스크가다르면STOP/ERROR다. 종료0·교과완결과실제QA/대화품질은분리한다. 원기한실패나정적통과를새모델PASS로바꾸지않는다.
+
+### 6. 비용·대안
+
+A의명시private adapter는계산드리프트가작지만독립namespace/captured참조검증이필요하다. B의전체본문복제는중복유지와검토량이늘며C의원기한/전역변경은원형불변에어긋난다. A를선택했고GPU비용은양cost8뒤기존예산식으로확인한다. F4는 `WIP_20261020_BROAD_RESUME_F4.json`이다.
+
+### 7. 실행
+
+신규전용driver/test두파일만먼저구현한다. root 코드검토·CPU회귀·정적·소스커밋뒤SH를작성해실행하며현재신규실물NOT_RUN이다. 원23개후속런처는만료기한/옛SFT계보사유를명시하고새소비기완료에맞춰대체한다.
+
+### 8. 한계
+
+부모/자료/학습방법을바꾸는실험이아니라기존대조의기한/계보재개다. native와Broad의서로다른부모를숨기지않는다. 후속cross/공개벤치는각새provider연결후별도이며미완Broad를조용히빼고전체벤치로보고하지않는다.
+
+### 9. 실행 이력
+
+원source/provider의읽기전용의존성분석을마쳤다. 새private controller를준비하며새GPU·학습·품질은NOT_RUN이다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

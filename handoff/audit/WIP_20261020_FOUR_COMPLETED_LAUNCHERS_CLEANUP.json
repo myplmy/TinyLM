@@ -1,0 +1,52 @@
+{
+  "schema": "TINYLM_COMPLETED_OWN_LAUNCHER_DELETE_V1",
+  "scope": "ONLY_FOUR_OWN_EXECUTED_LAUNCHERS",
+  "unexecuted_u1_excluded": true,
+  "original_logs_and_checkpoints_untouched": true,
+  "files": [
+    {
+      "path": "run_P106B_Stage4ezWe_float_native2281-done.sh",
+      "source_commit": "7dbbb5d",
+      "done_commit": "e2e02d2",
+      "sha256": "0C49FF7B25DA30003FFE2C108C7002687F56C4BCDF18DFC804075082C75EE9FB",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4ezWe_float_native2281: same scratch initialization and data, ternary versus latent-float TLinear.\n# Native m8a16seq1024ckptON, 2281 updates; own-route SFT384. Fail dependent stage only.\n# No stdin, download, old mutation, or automatic model-quality verdict.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ezWe_float_native2281_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ezWe_float_native2281_\"$run_stamp\" --num 101 --note 'Regression, exact source and final receipt required. Same seed/body/native crop vector; native peak Adam1e-3 Muon4e-3 WSD; own-route SFT m8a16ckptON. Read native and SFT endpoints separately. Costs require five-minute idle. Estimated upper bound 4h GPU=Y; worker cap14400s. CPU prepare and resource forecast are not quality PASS. No automatic float deployment.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ezWe_float_native2281_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_weight_route.py --mode train --arm float --max-wall-sec 14400 --execute\n",
+      "result_section": "101§350",
+      "executed": true,
+      "rerun_planned": false,
+      "recoverable_from_git": true
+    },
+    {
+      "path": "run_P070B_Stage1Wa_full_checkpoint_cache_cpu-done.sh",
+      "source_commit": "cd84b02",
+      "done_commit": "e2e02d2",
+      "sha256": "82F4EF0BAE7BC4462B221EC5FE8AF9A268B2420A7CC4DA9E19D070A6BC86029F",
+      "source_text": "#!/usr/bin/env bash\n# P070B Stage1Wa: actual pinned R1 checkpoint CPU function gate, not R2 training.\n# No GPU, optimizer update, checkpoint write, stdin, downloads or product changes.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/105_log_$(date +%Y%m%d)_P070B_Stage1Wa_full_checkpoint_cache_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P070B_Stage1Wa_full_checkpoint_cache_cpu_\"$run_stamp\" --num 105 --note 'CPU1 FP32-MATH: same pinned full R1 native checkpoint, product/fixed R1 and fixed uniform/reverse/shuffle R2 cache parity, KV/route binding and one NTP backward. No optimizer/GPU/checkpoint save, semantic grading, p95 adoption or R2 training. Worker cap600s; fixed tolerance; raw arrays ignored and public reports below20MB.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P070B_Stage1Wa_full_checkpoint_cache_cpu_\"$run_stamp\" --num 105 -- \"$python_bin\" -B -X utf8 scripts/diag_p070b_full_checkpoint_cpu.py --max-wall-sec 600 --execute\n",
+      "result_section": "105§9",
+      "executed": true,
+      "rerun_planned": false,
+      "recoverable_from_git": true
+    },
+    {
+      "path": "run_P106B_Stage4ezWf_ternary_sft_cost8-done.sh",
+      "source_commit": "7dbbb5d",
+      "done_commit": "2e309c4",
+      "sha256": "E6481E4B6D3FD91026668DB3C322363A15D10641B58E69948EE5A4FCB4191D45",
+      "source_text": "#!/usr/bin/env bash\n# P106B_Stage4ezWf_ternary_sft_cost8: same scratch initialization and data, ternary versus latent-float TLinear.\n# Native m8a16seq1024ckptON, 2281 updates; own-route SFT384. Fail dependent stage only.\n# No stdin, download, old mutation, or automatic model-quality verdict.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4ezWf_ternary_sft_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ezWf_ternary_sft_cost8_\"$run_stamp\" --num 101 --note 'Regression, exact source and final receipt required. Same seed/body/native crop vector; native peak Adam1e-3 Muon4e-3 WSD; own-route SFT m8a16ckptON. Read native and SFT endpoints separately. Costs require five-minute idle. Estimated upper bound .25h GPU=Y; worker cap900s. CPU prepare and resource forecast are not quality PASS. No automatic float deployment.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4ezWf_ternary_sft_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_weight_route.py --mode sft_cost --arm ternary --max-wall-sec 900 --execute\n",
+      "result_section": "101§351",
+      "executed": true,
+      "rerun_planned": false,
+      "recoverable_from_git": true
+    },
+    {
+      "path": "run_P070B_Stage1Wb_prefill_shape_cause_cpu-done.sh",
+      "source_commit": "371fa31",
+      "done_commit": "2e309c4",
+      "sha256": "143CDAC192E68B32F05881C6ECA1863B7BFF2F69F97D557A9F3F4E321E3D7CB0",
+      "source_text": "#!/usr/bin/env bash\n# P070B Stage1Wb: CPU counterfactual observation, not a new acceptance threshold.\n# Preserve old ERROR9. No GPU, optimizer, checkpoint write, stdin or old mutation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/105_log_$(date +%Y%m%d)_P070B_Stage1Wb_prefill_shape_cause_cpu_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P070B_Stage1Wb_prefill_shape_cause_cpu_\"$run_stamp\" --num 105 --note 'CPU1 FP32-MATH same reverse-R2 weights and old failure9IDs. Observe full9/prefix3, equal-shape cache flags and changed future IDs separately. Six raw arrays/seven contrasts; fixed original1e-5/1e-4 tolerance. Observation completion is NOT old gate PASS or language quality. Worker120s within original600s ceiling and end08Z with600s reserve; no GPU/update/CP write.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P070B_Stage1Wb_prefill_shape_cause_cpu_\"$run_stamp\" --num 105 -- \"$python_bin\" -B -X utf8 scripts/diag_p070b_prefill_shape_cause.py --max-wall-sec 120 --execute\n",
+      "result_section": "105§10",
+      "executed": true,
+      "rerun_planned": false,
+      "recoverable_from_git": true
+    }
+  ]
+}

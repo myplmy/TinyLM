@@ -232,7 +232,7 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 재개 태그 | 범위 | 상태 |
 |---|---|---|
-| `p106b_native_resume_v2_s1337` | Stage4fe 원native2/동결SFT교과를새21일기한으로연결 | 준비/신규실물NOT_RUN. 원모듈/계산본문/과거기한불변·엄격원native loader·원Qcost자원만계승·새SFT/평가계보. 대화75M/의미품질승격0. |
+| `p106b_native_resume_v2_s1337` | Stage4fe 원native2/동결SFT교과를새21일기한으로연결 | [101§352~354](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): CPU bridge/Fcost8/예산완료·삼진384진행. 원계산/날짜/CP불변·엄격부모계보·원Qcost자원만계승. 실제QA/대화75M/일반품질미승격. |
 
 2026-10-14 회수·새별도 namespace(기존원형/기본 recipe 불변):
 

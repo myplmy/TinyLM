@@ -1,0 +1,63 @@
+Explicit frozen-source resume family. Original native CPs and ternary SFTcost are validated under their original provenance. Same SFT384/body/optimizer/masks; new output/date metadata only. Single GPU, CPU preflight before actual, five-minute idle before cost. Worker cap900s, no old mutation or automatic quality verdict. Native/SFT first answers separate; each public file below20MB.
+
+==============================================================================
+[runlog] 2026-10-20 17:35:24  name=P106B_Stage4feWa_resume_float_sft_cost8_173524
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_native_resume.py --mode sft_cost --arm float --max-wall-sec 900 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_bridge_damage_and_changed_old_source_are_rejected (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_four_endpoint_raw_count_damage_is_rejected (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_four_endpoint_raw_readback_body_without_models_or_real_tokenizer (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_metadata_worker_term_writes_failure_activity_and_restores_handler (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_native_and_owned_sft_checkpoint_metadata_are_separate (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_native_loader_keeps_original_context_and_rejects_random_endpoint (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_new_deadline_record_reserve_and_active_cap (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_original_qcost_is_resource_only_and_returned_without_retagging (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_owned_cost_cannot_accept_old_info_or_foreign_native_parent (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_owned_cost_raw_byte_damage_is_rejected (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_owned_cost_strict_body_consumes_real_temporary_raw_shards (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_owned_sft_payload_does_not_accept_original_tag_even_with_same_shape (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_prepare_is_write_once_and_does_not_mutate_origin (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_prepare_worker_and_prepared_readback_use_new_bridge_and_same_old_inputs (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_prior_and_owned_activity_seconds_are_counted_once (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_wrong_old_parent_or_original_date_is_rejected (scripts.test_p106b_native_resume.BridgeTests) ... ok
+test_allowlist_is_exact_and_extra_binding_is_rejected (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_code_only_cli_does_not_touch_original_namespaces (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_new_phase_commands_never_launch_expired_source_or_duplicate_qcost (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_original_deadline_mutation_detected_on_fixture_not_real_module (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_production_info_json_roundtrip_includes_all_legacy_axes_and_new_pins (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_public_entrypoint_pin_failure_is_error9_without_original_import (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_public_factory_rejects_bad_source_before_original_import (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_real_factory_is_metadata_only_and_preserves_original_globals_info (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_same_body_with_original_globals_cannot_replace_private_reference (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_source_mismatch_rejected_before_namespace_execution (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_unchanged_computational_and_captured_body_bytecodes (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_unlisted_private_global_replacement_is_rejected (scripts.test_p106b_native_resume.FactoryTests) ... ok
+test_forecast_uses_each_eight_costs_without_native_retraining (scripts.test_p106b_native_resume.ResourceTests) ... ok
+test_no_cuda_or_model_initialization_in_metadata_suite (scripts.test_p106b_native_resume.ResourceTests) ... ok
+test_original_launch_body_keeps_stdin0_own_session_and_targeted_term (scripts.test_p106b_native_resume.ResourceTests) ... ok
+
+----------------------------------------------------------------------
+Ran 31 tests in 1.926s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+W1020 17:36:20.508000 24692 site-packages/torch/_inductor/utils.py:1679] [0/0] Not enough SMs to use max_autotune_gemm mode
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 1, "targets": 730, "x_tokens": 19231, "ce": 8.705204292192851, "native_replay_ce": 3.671713352203369, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 14.958660125732422, "clipped": true, "step_seconds": 32.64201968799989}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 2, "targets": 687, "x_tokens": 19893, "ce": 7.814947092203421, "native_replay_ce": 3.1597132682800293, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.509455680847168, "clipped": true, "step_seconds": 2.13309859400033}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 3, "targets": 737, "x_tokens": 21790, "ce": 7.772175761705499, "native_replay_ce": 3.85278582572937, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 15.72402286529541, "clipped": true, "step_seconds": 2.1315050789999077}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 4, "targets": 838, "x_tokens": 24522, "ce": 7.4222997697270285, "native_replay_ce": 3.3431925773620605, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.356061935424805, "clipped": true, "step_seconds": 2.1146292869998433}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 5, "targets": 884, "x_tokens": 20721, "ce": 7.120881197139688, "native_replay_ce": 3.427156448364258, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.035411834716797, "clipped": true, "step_seconds": 2.1288401770007113}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 6, "targets": 898, "x_tokens": 21442, "ce": 6.685357210630829, "native_replay_ce": 3.680039167404175, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 10.813673973083496, "clipped": true, "step_seconds": 2.1726101180001933}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 7, "targets": 719, "x_tokens": 19210, "ce": 7.621058032973585, "native_replay_ce": 3.6019794940948486, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.106535911560059, "clipped": true, "step_seconds": 2.1635429839998324}
+[NATIVE_ROUTE_UPDATE] {"arm": "float", "endpoint": "sft", "update": 8, "targets": 718, "x_tokens": 20281, "ce": 7.239503844534786, "native_replay_ce": 3.453888177871704, "native_replay_targets": 8192, "crop_start": null, "schedule": {"lr_factor": 1.0, "anneal": 1.0}, "actual_lrs": [[5e-05, 5e-05], [0.0002]], "gradient_norm": 13.598916053771973, "clipped": true, "step_seconds": 2.129193908000161}
+[NATIVE_ROUTE_FINAL] {"arm": "float", "endpoint": "sft", "cost": true, "updates": 8}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_NATIVE_ROUTE_sft_cost_float", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.6분  (2026-10-20 17:37:01)
+==============================================================================

@@ -60,35 +60,12 @@
 #   gate 탈락으로 남는 시간은 중복·저가치 팔로 자동 충전하지 않는다.
 #
 prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
-49	P106B	run_P106B_Stage4fbW0_route_cross_cpu.sh	N	.17	N	N	Frozen weights cross-readout; prepare; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
-50	P106B	run_P106B_Stage4fbWa_native_ternary_to_float.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate native ternary to float; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
-51	P106B	run_P106B_Stage4fbWb_native_float_to_ternary.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate native float to ternary; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
-52	P106B	run_P106B_Stage4fbWc_sft_ternary_to_float.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate sft ternary to float; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
-53	P106B	run_P106B_Stage4fbWd_sft_float_to_ternary.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate sft float to ternary; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
-54	P106B	run_P106B_Stage4fbWe_route_cross_readback.sh	N	.17	N	N	Frozen weights cross-readout; readback; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
-55	P106B	run_P106B_Stage4fcW0_current_benchmark_cpu.sh	N	.17	N	N	Current fixed public benchmark; prepare; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-56	P106B	run_P106B_Stage4fcWa_current_native_ternary_mc.sh	D	.34	N	Y	Current fixed public benchmark; evaluate native_ternary; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-57	P106B	run_P106B_Stage4fcWb_current_native_float_mc.sh	D	.34	N	Y	Current fixed public benchmark; evaluate native_float; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-58	P106B	run_P106B_Stage4fcWc_current_sft_ternary_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate sft_ternary; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-59	P106B	run_P106B_Stage4fcWd_current_sft_float_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate sft_float; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-60	P106B	run_P106B_Stage4fcWe_current_broad_mixed_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate broad_mixed; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-61	P106B	run_P106B_Stage4fcWf_current_broad_staged_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate broad_staged; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
-62	P106B	run_P106B_Stage4fcWg_current_benchmark_readback.sh	N	.17	N	N	Current fixed public benchmark; readback; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
 # DONE 6b65635 run_P106B_Stage4fdW0_legacy_native_source_cpu-done.sh; actual source metadata pinned, zero bin/model/GPU; exact command and source SHA preserved in lifecycle.
 # DONE 6b65635 run_P106B_Stage4fdWa_legacy_native_prefix_pilot-done.sh; actual bounded prefix conversion complete, zero model/GPU; exact command and source SHA preserved in lifecycle.
 # DONE daeeec3 run_P106B_Stage4fdWb_legacy_native_budget_cpu-done.sh; actual full-source SHA and budget complete, host freshness preserved; source/command kept for recovery.
 # DONE daeeec3 run_P106B_Stage4fdWc_legacy_native_build_cpu-done.sh; full canonical conversion complete; exact host arguments and command preserved in result101 sec348/lifecycle.
 # DONE daeeec3 run_P106B_Stage4fdWd_legacy_native_readback_cpu-done.sh; full output and ledger reread complete; exact command preserved in result101 sec349/lifecycle.
 # DONE 394c601 run_P106B_Stage4faW0_broad_recovery_course_cpu-done.sh; actual CPU90/payload equality complete; source12e5692 and exact command preserved before cleanup.
-40	P106B	run_P106B_Stage4faWa_broad_recovery_mixed_cost8.sh	Y	.25	Y	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; cost mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
-41	P106B	run_P106B_Stage4faWb_broad_recovery_staged_cost8.sh	Y	.25	Y	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; cost staged;22528rows/352updates, native absolute windows, separate dialogues.	8
-42	P106B	run_P106B_Stage4faWc_broad_recovery_order_budget.sh	N	.17	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; budget;22528rows/352updates, native absolute windows, separate dialogues.	8
-43	P106B	run_P106B_Stage4faWp_broad_recovery_parent_dialogues.sh	D	.25	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate;22528rows/352updates, native absolute windows, separate dialogues.	8
-44	P106B	run_P106B_Stage4faWd_broad_recovery_mixed_train352.sh	Y	1	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; train mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
-45	P106B	run_P106B_Stage4faWe_broad_recovery_staged_train352.sh	Y	1	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; train staged;22528rows/352updates, native absolute windows, separate dialogues.	8
-46	P106B	run_P106B_Stage4faWf_broad_recovery_mixed_answers.sh	D	.5	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
-47	P106B	run_P106B_Stage4faWg_broad_recovery_staged_answers.sh	D	.5	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate staged;22528rows/352updates, native absolute windows, separate dialogues.	8
-48	P106B	run_P106B_Stage4faWh_broad_recovery_order_readback.sh	N	.17	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; readback;22528rows/352updates, native absolute windows, separate dialogues.	8
 # DONE 7dbbb5d run_P106B_Stage4ezW0_native_route_cpu-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
 # DONE 7dbbb5d run_P106B_Stage4ezWa_ternary_native_cost8-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
 # DONE 7dbbb5d run_P106B_Stage4ezWb_float_native_cost8-done.sh; command/SHA/source preserved in WIP_20261019b_COMPLETED13_LIFECYCLE.json; actual execution recorded, scientific outcome separate.
@@ -1207,6 +1184,32 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 #   35	P106D	run_P106D_Stage5Wc_views_history_scope.sh	D	.333	Y	Y	GATED CPU; old views128 student546cases, C1 state versus C3 string	8
 #   36	P106D	run_P106D_Stage5Wd_history_scope_readback.sh	N	.167	N	N	GATED three endpoints; expected1638 versus generated/not-run; no automatic adoption	8
 
+#
+# ★사용자가 -done 을 삭제해 표에서 옮긴 행 (sync_experiments_tsv.py --apply):
+#   49	P106B	run_P106B_Stage4fbW0_route_cross_cpu.sh	N	.17	N	N	Frozen weights cross-readout; prepare; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
+#   50	P106B	run_P106B_Stage4fbWa_native_ternary_to_float.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate native ternary to float; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
+#   51	P106B	run_P106B_Stage4fbWb_native_float_to_ternary.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate native float to ternary; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
+#   52	P106B	run_P106B_Stage4fbWc_sft_ternary_to_float.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate sft ternary to float; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
+#   53	P106B	run_P106B_Stage4fbWd_sft_float_to_ternary.sh	D	.5	N	Y	Frozen weights cross-readout; evaluate sft float to ternary; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
+#   54	P106B	run_P106B_Stage4fbWe_route_cross_readback.sh	N	.17	N	N	Frozen weights cross-readout; readback; zero training, strict original-loader route then explicit other route; raw6776 distinct from reused6776.	8
+#   55	P106B	run_P106B_Stage4fcW0_current_benchmark_cpu.sh	N	.17	N	N	Current fixed public benchmark; prepare; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   56	P106B	run_P106B_Stage4fcWa_current_native_ternary_mc.sh	D	.34	N	Y	Current fixed public benchmark; evaluate native_ternary; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   57	P106B	run_P106B_Stage4fcWb_current_native_float_mc.sh	D	.34	N	Y	Current fixed public benchmark; evaluate native_float; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   58	P106B	run_P106B_Stage4fcWc_current_sft_ternary_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate sft_ternary; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   59	P106B	run_P106B_Stage4fcWd_current_sft_float_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate sft_float; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   60	P106B	run_P106B_Stage4fcWe_current_broad_mixed_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate broad_mixed; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   61	P106B	run_P106B_Stage4fcWf_current_broad_staged_public.sh	D	.34	N	Y	Current fixed public benchmark; evaluate broad_staged; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   62	P106B	run_P106B_Stage4fcWg_current_benchmark_readback.sh	N	.17	N	N	Current fixed public benchmark; readback; no training/CP/new Falcon; total3600s, exact primary SUM_NLL, free128.	8
+#   40	P106B	run_P106B_Stage4faWa_broad_recovery_mixed_cost8.sh	Y	.25	Y	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; cost mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   41	P106B	run_P106B_Stage4faWb_broad_recovery_staged_cost8.sh	Y	.25	Y	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; cost staged;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   42	P106B	run_P106B_Stage4faWc_broad_recovery_order_budget.sh	N	.17	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; budget;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   43	P106B	run_P106B_Stage4faWp_broad_recovery_parent_dialogues.sh	D	.25	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   44	P106B	run_P106B_Stage4faWd_broad_recovery_mixed_train352.sh	Y	1	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; train mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   45	P106B	run_P106B_Stage4faWe_broad_recovery_staged_train352.sh	Y	1	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; train staged;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   46	P106B	run_P106B_Stage4faWf_broad_recovery_mixed_answers.sh	D	.5	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate mixed;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   47	P106B	run_P106B_Stage4faWg_broad_recovery_staged_answers.sh	D	.5	N	Y	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; evaluate staged;22528rows/352updates, native absolute windows, separate dialogues.	8
+#   48	P106B	run_P106B_Stage4faWh_broad_recovery_order_readback.sh	N	.17	N	N	Broad v2 metadata-only recovery; exact v1 payload/equivalence required; readback;22528rows/352updates, native absolute windows, separate dialogues.	8
+
 # ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):
 #     P062 단계1 무KD 재귀   -> P055 단계1 + REVIEW2 결정① 이후 (047 §10.6)
 #     ★P062 R 곡선 -> **작성 완료**(run_P062_stage0c_r_curve.bat). 선결이 없었다 — 의사결정함정 D15
@@ -1501,3 +1504,27 @@ prio	plan	batch	gpu	hours	alone	watch	note	negative_rc
 # DONE bb12d7b run_P106B_Stage4eh0Wc_question_bundles_lifecycle_cpu-done.sh; closed raw and machine-extracted commands preserved; exact source recoverable before deletion.
 # DONE bb12d7b run_P106B_Stage4ehWb_question_bundles_shards_readback-done.sh; closed raw and machine-extracted commands preserved; exact source recoverable before deletion.
 # DONE bb12d7b run_P106B_Stage4ehWc_question_bundles_lifecycle_readback-done.sh; closed raw and machine-extracted commands preserved; exact source recoverable before deletion.
+# HOLD run_P106B_Stage4faWa_broad_recovery_mixed_cost8-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWb_broad_recovery_staged_cost8-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWc_broad_recovery_order_budget-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWd_broad_recovery_mixed_train352-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWe_broad_recovery_staged_train352-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWf_broad_recovery_mixed_answers-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWg_broad_recovery_staged_answers-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWh_broad_recovery_order_readback-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4faWp_broad_recovery_parent_dialogues-hold.sh; EXPIRED_ORIGINAL_DEADLINE; replacement P106B Stage4ff private Broad controller; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fbW0_route_cross_cpu-hold.sh; EXPIRED_DEADLINE_AND_OLD_SINGLE_NAMESPACE_SFT_PROVIDER; replacement New original-native/resume-SFT endpoint provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fbWa_native_ternary_to_float-hold.sh; EXPIRED_DEADLINE_AND_OLD_SINGLE_NAMESPACE_SFT_PROVIDER; replacement New original-native/resume-SFT endpoint provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fbWb_native_float_to_ternary-hold.sh; EXPIRED_DEADLINE_AND_OLD_SINGLE_NAMESPACE_SFT_PROVIDER; replacement New original-native/resume-SFT endpoint provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fbWc_sft_ternary_to_float-hold.sh; EXPIRED_DEADLINE_AND_OLD_SINGLE_NAMESPACE_SFT_PROVIDER; replacement New original-native/resume-SFT endpoint provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fbWd_sft_float_to_ternary-hold.sh; EXPIRED_DEADLINE_AND_OLD_SINGLE_NAMESPACE_SFT_PROVIDER; replacement New original-native/resume-SFT endpoint provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fbWe_route_cross_readback-hold.sh; EXPIRED_DEADLINE_AND_OLD_SINGLE_NAMESPACE_SFT_PROVIDER; replacement New original-native/resume-SFT endpoint provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcW0_current_benchmark_cpu-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWa_current_native_ternary_mc-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWb_current_native_float_mc-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWc_current_sft_ternary_public-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWd_current_sft_float_public-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWe_current_broad_mixed_public-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWf_current_broad_staged_public-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# HOLD run_P106B_Stage4fcWg_current_benchmark_readback-hold.sh; EXPIRED_DEADLINE_AND_OLD_ENDPOINT_PROVIDERS; replacement New explicit six-model provider bridge; audit WIP_20261020_PENDING23_HOLD.json; no 75M-data inference.
+# DONE own native-float and P070B CPU gates: four exact commands/source/done revisions preserved in WIP_20261020_FOUR_COMPLETED_LAUNCHERS_CLEANUP.json before deletion.
