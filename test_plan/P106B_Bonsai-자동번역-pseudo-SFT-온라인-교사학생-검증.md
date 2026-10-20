@@ -6463,7 +6463,20 @@ A의명시private adapter는계산드리프트가작지만독립namespace/captur
 
 ### 7. 실행
 
-신규전용driver/test두파일만먼저구현한다. root 코드검토·CPU회귀·정적·소스커밋뒤SH를작성해실행하며현재신규실물NOT_RUN이다. 원23개후속런처는만료기한/옛SFT계보사유를명시하고새소비기완료에맞춰대체한다.
+신규전용driver/test두파일과아래SH10개를작성했다. root가42신규+90기존=132CPU회귀/3.545초와check-only·정적68PASS/6NOT_RUN을확인했다. 소스커밋뒤실물CPU부터실행하며현재신규실물NOT_RUN이다. 원23개후속런처는만료기한/옛SFT계보사유로내용불변hold했고새소비기완료에맞춰대체한다.
+
+|단계|실험용 SH|worker 한도|실행|
+|---|---|---|---|
+|Stage4ffW0|`run_P106B_Stage4ffW0_broad_resume_bridge_cpu.sh`|900초|NOT_RUN|
+|Stage4ffWa|`run_P106B_Stage4ffWa_broad_resume_mixed_cost8.sh`|900초|NOT_RUN|
+|Stage4ffWb|`run_P106B_Stage4ffWb_broad_resume_staged_cost8.sh`|900초|NOT_RUN|
+|Stage4ffWc|`run_P106B_Stage4ffWc_broad_resume_order_budget.sh`|600초|NOT_RUN|
+|Stage4ffWp|`run_P106B_Stage4ffWp_broad_resume_parent_dialogues.sh`|1800초|NOT_RUN|
+|Stage4ffWd|`run_P106B_Stage4ffWd_broad_resume_mixed_train352.sh`|3600초|NOT_RUN|
+|Stage4ffWe|`run_P106B_Stage4ffWe_broad_resume_staged_train352.sh`|3600초|NOT_RUN|
+|Stage4ffWf|`run_P106B_Stage4ffWf_broad_resume_mixed_answers.sh`|1800초|NOT_RUN|
+|Stage4ffWg|`run_P106B_Stage4ffWg_broad_resume_staged_answers.sh`|1800초|NOT_RUN|
+|Stage4ffWh|`run_P106B_Stage4ffWh_broad_resume_order_readback.sh`|900초|NOT_RUN|
 
 ### 8. 한계
 
@@ -6471,6 +6484,6 @@ A의명시private adapter는계산드리프트가작지만독립namespace/captur
 
 ### 9. 실행 이력
 
-원source/provider의읽기전용의존성분석을마쳤다. 새private controller를준비하며새GPU·학습·품질은NOT_RUN이다.
+원source/provider의읽기전용의존성분석뒤새private controller를동결했다. 계산본문34개·경계6개·원전역/중첩metadata불변·원v2와새활동각1회합산·실패/TERM영수증을회귀로검사했다. 실물loader/compile/원payload연결은별도이며CPU소형회귀를그실물PASS로승격하지않는다. root감사는 `WIP_20261020_BROAD_RESUME_ROOT_PREFLIGHT.json`이다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
