@@ -6773,7 +6773,7 @@ A의새태그기계분기를선택한다. 원실패를지우는B는계보혼동�
 
 ### 7. 실행
 
-root는 원본/기계diff 전체와 신규회귀를 읽고62CPU회귀18.556초를 통과했다. 원source 불변·신규2292EDFF…/B4A535FA…를2aee4ab에 보존했다. 이후 실제 CPU 준비·양cost8·닫힌 VERIFY/현재예산까지 완료했다(101§395~398). 예상 Q2473.956/F2375.190초를 바탕으로 train cap2700/2400·양평가1800/readback900초의 후속5SH를 보존했다. 실제704/새CP·실답은 아직 NOT_RUN이며595M native 쌍 다음 남은 예산에서 연다.
+root는 원본/기계diff 전체와 신규회귀를 읽고62CPU회귀18.556초를 통과했다. 원source 불변·신규2292EDFF…/B4A535FA…를2aee4ab에 보존했다. 실제 CPU/양cost8/닫힌VERIFY/예산(101§395~398) 뒤 cap2700/2400을유지해 F704를08:08:15~08:38:25KST 완료했다(§409). 실제x21621776/assistant2210436/native5767168·CP357D2EA6·전체clip704를검산했다. DEV 감소는실제자유답정답성이아니며Q704/양실답·공개는후속이다. 완료F는가중치·명령/원형을보존하고미실행Q를완료로세지않는다.
 
 ### 8. 한계
 
@@ -6861,7 +6861,7 @@ root가 원native 학습loop·late_probe/optimizer그룹·명시default 경계�
 
 ### 7. 실행
 
-F4 WIP_20261021_NATIVE595_BROAD_F4.json을 먼저 고정했고 새driver1222행/test936행을 준비했다. root는 원C2와 전체diff·새부모/descriptor/context/loader/phase·신규fixture 본문을 읽고67CPU26.856초·check-only0/88source-map·원44AST/9core본문 동등성을 확인했다. 독립 반증검토의 float-only 표현 P2는 코드가 지원하는 양cost/두pending 예약으로 좁혔으며 계산 변경은0이다. source8155767C…/test951C57ED…와9SH(prepare/양cost/budget/양704/양실답/readback)를 준비했다. 실제 소비는 전수정적·소스커밋과 양native4543 완료 뒤이며 아직 NOT_RUN이다.
+F4 WIP_20261021_NATIVE595_BROAD_F4.json과새driver1222/test936행·원44AST/9core본문을먼저고정하고root67CPU/88map·전수정적과독립검토뒤9SH를보존했다. 실제양native완료후CPU refs를동결했고(101§408),별도실수301.516850/삼진301.450012초유휴에서원고정8비용묶음·닫힌검산을완료했다(§410~411). 두pending을모두포함한현재예산은총9372.337초/fit=true(§412)이며달력보장이아니다. 원3600초cap과학습14시를유지해새F704를09:04:13KST착수했다. 아직새704/실답품질은미확립이며원source/F4변경0이다.
 
 ### 8. 한계
 
@@ -6869,7 +6869,7 @@ F4 WIP_20261021_NATIVE595_BROAD_F4.json을 먼저 고정했고 새driver1222행/
 
 ### 9. 실행 이력
 
-이 후속은 native 학습 중 별도source로 준비했고 실제양4543 완료뒤08:08:13~08:10:07KST CPUprepare/원보고·양CP refs 동결을 완료했다(101§408). 67회귀와CPU소비는기술선결이며 양새유휴cost/두pending예산·704/새CP·실답은 아직후속이다. 모델로딩 직전에도 해당부모와UTC기한·추가여유를다시확인하며 perf예측을달력마감보장으로쓰지않는다.
+이 후속은native학습중준비했고실제양4543 완료후CPU refs·양새유휴cost/두pending예산을완료했다(101§408/410~412). 새F704를적용중이며이후oldQ/newQ704와각실답을회수한다. 먼저완료한old/new 실수두팔의실답을우선확인할수있지만공개6종의전CP완료선결은완화하지않는다. 각모델로딩직전부모·UTC기한을다시확인하며고정32/DEV/비용/정답품질·시계단위를분리한다.
 
 ## 2026-10-21 후속 Stage4fo — 새 기초학습과 같은 교과 종점의 공개 평가
 

@@ -1,0 +1,75 @@
+{
+  "schema": "P106B_FOUR_DONE_SOURCE_PRESERVATION_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "사용자 주도실험 완료SH -done·명령/Git보존후삭제허가",
+  "launchers": [
+    {
+      "original": "run_P106B_Stage4flWe_native_broad4_float704.sh",
+      "done": "run_P106B_Stage4flWe_native_broad4_float704-done.sh",
+      "bytes": 1740,
+      "sha256": "04EF188F6CC4EF90283B19470D74D8F59B186A88D4B735A6E68B1AE7B036392B",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4flWe_native_broad4_float704: exact C2 native-parent Broad4 experiment; no new source/weights/semantics.\n# Train caps from closed paired cost and measured budget; continuous optimizer across two cycles.\n# Original raw/CP stay immutable. Child PASS is not answer quality; no stdin or downloads.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4flWe_native_broad4_float704_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4flWe_native_broad4_float704_\"$run_stamp\" --num 101 --note 'C2 original22528 records/native QF parents. Same micro8 accum16/seq1024/checkpoint-on/L0/Muon/clip1/default compile. Four passes704 and5632 native windows; optimizer retained across cycles. Closed Q/F cost and fresh current-time budget required; active14400/eval1200/record600 and21st14KST training/17KST authority unchanged. Mode train, worker cap2400s; after actual train closed-worker readonly VERIFY is mandatory. Actual1694 first answers and source16/max17 dialogue answers are separate from general3turn ability. Files below20MB; no quality auto-adoption.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4flWe_native_broad4_float704_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native_broad4_recovery.py --mode train --arm float --max-wall-sec 2400 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native_broad4_recovery.py --mode train --arm float --max-wall-sec 2400 --execute"
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fnWb_native595_broad_float_cost8.sh",
+      "done": "run_P106B_Stage4fnWb_native595_broad_float_cost8-done.sh",
+      "bytes": 2457,
+      "sha256": "86D4EA3F9BCA32DA984CB51573A642D4316AB1EA1003BA614F7E79EE07278048",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fnWb_native595_broad_float_cost8: same frozen22528/four passes704; actual completed Native595 parent only.\n# Original SFT math/replay5632/optimizer retained. No assets downloaded, stdin, retag or old overwrite.\n# Costs and both pending arms must fit before training; child PASS is not answer quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nidle_proof=\"${1:-handoff/audit/p106b_native595_broad_v1_s1337/idle_float.json}\"\nif [[ $# -gt 1 || \"$idle_proof\" != \"handoff/audit/p106b_native595_broad_v1_s1337/idle_float.json\" ]]; then\n    printf '%s\\n' '[HOLD] Own exact fresh idle proof is required; no path is inspected.' >&2\n    exit 8\nfi\nfor proof_path in handoff handoff/audit handoff/audit/p106b_native595_broad_v1_s1337 \"$idle_proof\"; do\n    if [[ -L \"$proof_path\" ]]; then\n        printf '%s\\n' '[HOLD] Symlink proof paths are refused before file lookup.' >&2\n        exit 8\n    fi\ndone\nif [[ ! -f \"$idle_proof\" ]]; then\n    printf '%s\\n' '[HOLD] Fresh300s complete-code-map proof is absent; no stdin.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fnWb_native595_broad_float_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw is preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnWb_native595_broad_float_cost8_\"$run_stamp\" --num 101 --note 'Actual595 parent completed4543 only; same Broad22528/4pass704 and old597995000 TRAIN/replay5632. micro8 accum16 seq1024 checkpoint-on/L0/Adam5e-5/Muon2e-4 WD0 clip1/default compile. Parent report and normalized descriptor SHA are separate. Original44 controller/core9 bodies retained; active14400/eval3600/record600, train21st14KST/authority17KST. Both costs and all pending estimates required; no float-only budget fallback. Mode cost cap900s; train cap is bounded but no timing guarantee, current budget rechecked. Closed worker plus readonly verifier required for cost/train. All public files below20MB; source16/max17 history answers are not general3turn proof.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnWb_native595_broad_float_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode cost --arm float --max-wall-sec 900 --execute --idle-proof \"$idle_proof\"\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode cost --arm float --max-wall-sec 900 --execute --idle-proof \"$idle_proof\""
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fnWa_native595_broad_ternary_cost8.sh",
+      "done": "run_P106B_Stage4fnWa_native595_broad_ternary_cost8-done.sh",
+      "bytes": 2471,
+      "sha256": "7FB7C915E2742A49AB18D7717AA7D637C6D20FF76A21CCF96C150C7C15933180",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fnWa_native595_broad_ternary_cost8: same frozen22528/four passes704; actual completed Native595 parent only.\n# Original SFT math/replay5632/optimizer retained. No assets downloaded, stdin, retag or old overwrite.\n# Costs and both pending arms must fit before training; child PASS is not answer quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nidle_proof=\"${1:-handoff/audit/p106b_native595_broad_v1_s1337/idle_ternary.json}\"\nif [[ $# -gt 1 || \"$idle_proof\" != \"handoff/audit/p106b_native595_broad_v1_s1337/idle_ternary.json\" ]]; then\n    printf '%s\\n' '[HOLD] Own exact fresh idle proof is required; no path is inspected.' >&2\n    exit 8\nfi\nfor proof_path in handoff handoff/audit handoff/audit/p106b_native595_broad_v1_s1337 \"$idle_proof\"; do\n    if [[ -L \"$proof_path\" ]]; then\n        printf '%s\\n' '[HOLD] Symlink proof paths are refused before file lookup.' >&2\n        exit 8\n    fi\ndone\nif [[ ! -f \"$idle_proof\" ]]; then\n    printf '%s\\n' '[HOLD] Fresh300s complete-code-map proof is absent; no stdin.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fnWa_native595_broad_ternary_cost8_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw is preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnWa_native595_broad_ternary_cost8_\"$run_stamp\" --num 101 --note 'Actual595 parent completed4543 only; same Broad22528/4pass704 and old597995000 TRAIN/replay5632. micro8 accum16 seq1024 checkpoint-on/L0/Adam5e-5/Muon2e-4 WD0 clip1/default compile. Parent report and normalized descriptor SHA are separate. Original44 controller/core9 bodies retained; active14400/eval3600/record600, train21st14KST/authority17KST. Both costs and all pending estimates required; no float-only budget fallback. Mode cost cap900s; train cap is bounded but no timing guarantee, current budget rechecked. Closed worker plus readonly verifier required for cost/train. All public files below20MB; source16/max17 history answers are not general3turn proof.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnWa_native595_broad_ternary_cost8_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode cost --arm ternary --max-wall-sec 900 --execute --idle-proof \"$idle_proof\"\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode cost --arm ternary --max-wall-sec 900 --execute --idle-proof \"$idle_proof\""
+      ]
+    },
+    {
+      "original": "run_P106B_Stage4fnWc_native595_broad_budget.sh",
+      "done": "run_P106B_Stage4fnWc_native595_broad_budget-done.sh",
+      "bytes": 1844,
+      "sha256": "F25EB2A42D290FEDAC93BC2924A8DCFD50B8069CCD8FF5866F123EACE7EA2C81",
+      "mode": "0o755",
+      "source_utf8": "#!/usr/bin/env bash\n# P106B_Stage4fnWc_native595_broad_budget: same frozen22528/four passes704; actual completed Native595 parent only.\n# Original SFT math/replay5632/optimizer retained. No assets downloaded, stdin, retag or old overwrite.\n# Costs and both pending arms must fit before training; child PASS is not answer quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nif [[ $# -ne 0 ]]; then\n    printf '%s\\n' '[STOP] This immutable stage accepts no positional arguments.' >&2\n    exit 8\nfi\nrun_stamp=\"$(date +%H%M%S)\"\nlog=\"test_result/101_log_$(date +%Y%m%d)_P106B_Stage4fnWc_native595_broad_budget_${run_stamp}.txt\"\nif [[ -e \"$log\" || -L \"$log\" ]]; then\n    printf '%s\\n' '[STOP] Existing raw is preserved; use a new stage.' >&2\n    exit 8\nfi\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnWc_native595_broad_budget_\"$run_stamp\" --num 101 --note 'Actual595 parent completed4543 only; same Broad22528/4pass704 and old597995000 TRAIN/replay5632. micro8 accum16 seq1024 checkpoint-on/L0/Adam5e-5/Muon2e-4 WD0 clip1/default compile. Parent report and normalized descriptor SHA are separate. Original44 controller/core9 bodies retained; active14400/eval3600/record600, train21st14KST/authority17KST. Both costs and all pending estimates required; no float-only budget fallback. Mode budget cap300s; train cap is bounded but no timing guarantee, current budget rechecked. Closed worker plus readonly verifier required for cost/train. All public files below20MB; source16/max17 history answers are not general3turn proof.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fnWc_native595_broad_budget_\"$run_stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode budget --max-wall-sec 300 --execute\n",
+      "commands": [
+        "\"$python_bin\" -B -X utf8 scripts/diag_p106b_native595_broad.py --mode budget --max-wall-sec 300 --execute"
+      ]
+    }
+  ],
+  "raw_pins": [
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4flWe_native_broad4_float704_080815.txt",
+      "bytes": 28794,
+      "sha256": "1DB2A13B709234C4AB35BC7546796CD87208F7619597473488EAE9E95FA15202"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fnWb_native595_broad_float_cost8_084623.txt",
+      "bytes": 13817,
+      "sha256": "5BDF09CCD7F1231C8B30F2632B9DF4F70CA778A6D9D5933C21F594C2DAD45E07"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fnWa_native595_broad_ternary_cost8_085631.txt",
+      "bytes": 13817,
+      "sha256": "F464874A47B586EF1395A967A1923A356837C4F0054D04717CBAE06712E0AEDF"
+    },
+    {
+      "path": "test_result/101_log_20261021_P106B_Stage4fnWc_native595_broad_budget_090118.txt",
+      "bytes": 9182,
+      "sha256": "D76CEEA0D1D5535C8A2D10425E58725A6BF3862404D170713B7920E2DC268841"
+    }
+  ],
+  "scope": "409~412 실제완료4개만. live newF704/미실행Q·실답/공개·CP/raw보존",
+  "deleted": false
+}
