@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# DONE: actual CPU16 root launcher run20261021T221548; source07dc7e2.
 # P078 Stage2: real tiny CPU route/backward/session regressions only.
 # Estimated seconds, not a language-quality or real-parent/GPU measurement.
 # Stop on any failed prerequisite; preserve all original data and checkpoints.

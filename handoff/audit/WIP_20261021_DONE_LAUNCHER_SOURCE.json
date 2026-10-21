@@ -1,0 +1,62 @@
+{
+  "schema": "TINYLM_EXACT_DONE_LAUNCHER_SOURCE_V1",
+  "authority": "사용자의주도적실험절차:완료SH -done·명령보존후삭제가능판정",
+  "excluded": [
+    "run_P106B_Stage4u1W_public_source_deck-done.sh"
+  ],
+  "excluded_reason": "원래실행완료/현재소유증거부족·보존",
+  "checkpoint_deletions": 0,
+  "original_log_deletions": 0,
+  "launchers": [
+    {
+      "path": "run_P106B_Stage4fsWa_supported_teacher_pilot-done.sh",
+      "git_source": "914b218:run_P106B_Stage4fsWa_supported_teacher_pilot-done.sh",
+      "source": "#!/usr/bin/env bash\n# New visible-source/MTP teacher pilot. Four generated groups, max10min.\n# Same parser/sampler/thinking; no student, download, old overwrite or stdin.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_supported_production8h\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWa_supported_teacher_pilot_\"$stamp\" --num 101 --note 'Visible-source pilot only. Old4473 preserved but not admitted; original source cursor retained. Complete quoted evidence in student first question, no truncation/semantic blacklist. >=4 accepted new candidates required before8h production. Exit8 can mean bounded pause, not student failure.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWa_supported_teacher_pilot_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_supported_production8h.py --mode pilot --max-wall-sec 600 --execute\n",
+      "done_sha256": "C2D54943C53874F6C6F3CDC82DEF94E7349C650FB265249C924102822B0243C8",
+      "raw_log": "test_result/101_log_20261021_P106B_Stage4fsWa_supported_teacher_pilot_203349.txt",
+      "status": "NVML권한오류로실행종료·생성0",
+      "disposition": "DELETE_AFTER_ARCHIVE_COMMIT",
+      "recoverable": true
+    },
+    {
+      "path": "run_P106B_Stage4fsWab_supported_teacher_pilot_recovery-done.sh",
+      "git_source": "914b218:run_P106B_Stage4fsWab_supported_teacher_pilot_recovery-done.sh",
+      "source": "#!/usr/bin/env bash\n# Recovery of Wa: original sandbox NVML blocked before teacher/model; raw kept.\n# V2 adds actual8h wall connection, successful-pilot shard verification and UTC recheck.\n# Four groups max600sec. Technical completion is not semantic quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_supported_production8h\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWab_supported_teacher_pilot_recovery_\"$stamp\" --num 101 --note 'V1 failure preserved: sandbox NVML blocked before model. New V2 source and destination, actual8h clock/pilot shard success/UTC recheck covered by regression. Same MTP/sampling/thinking,4groups cap; technical pause8 is not negative student quality.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWab_supported_teacher_pilot_recovery_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_supported_production8h.py --mode pilot --max-wall-sec 600 --execute\n",
+      "done_sha256": "96C2755A617E1703EB10CC38F954C280BC618C9BA638C7CCFF6EA238F841EE68",
+      "raw_log": "test_result/101_log_20261021_P106B_Stage4fsWab_supported_teacher_pilot_recovery_203945.txt",
+      "status": "4후보저장뒤명시TERM·제어중단",
+      "disposition": "DELETE_AFTER_ARCHIVE_COMMIT",
+      "recoverable": true
+    },
+    {
+      "path": "run_P106B_Stage4fsWac_supported_teacher_bounded_pilot-done.sh",
+      "git_source": "914b218:run_P106B_Stage4fsWac_supported_teacher_bounded_pilot.sh",
+      "source": "#!/usr/bin/env bash\n# V3 recovery: V2 collected4 groups then scanned7.29M ineligible rows until owned TERM.\n# Move pilot cap/STOP check ahead of quota filtering. V1/V2 raw remains immutable.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"$python_bin\" -B -X utf8 -m unittest scripts.test_p106b_supported_production8h\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWac_supported_teacher_bounded_pilot_\"$stamp\" --num 101 --note 'V3 source-filter cap recovery; old4 accepted/943train tokens and controlled TERM preserved. New cap and STOP run before eligibility,4generated groups/600sec. Same teacher/MTP/sampling/thinking, full visible source and exact raw/candidate gate. Not semantic or75M PASS.'\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWac_supported_teacher_bounded_pilot_\"$stamp\" --num 101 -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_supported_production8h.py --mode pilot --max-wall-sec 600 --execute\n",
+      "done_sha256": "67829D0B7F8109FCA9A62C47DC6853F070EDD4487286EA423F2C091838BF3553",
+      "raw_log": "test_result/101_log_20261021_P106B_Stage4fsWac_supported_teacher_bounded_pilot_205234.txt",
+      "status": "4후보상한정상제어중단",
+      "disposition": "DELETE_AFTER_ARCHIVE_COMMIT",
+      "recoverable": true
+    },
+    {
+      "path": "run_P078_Stage2Wa_route_training_cpu-done.sh",
+      "git_source": "914b218:run_P078_Stage2Wa_route_training_cpu.sh",
+      "source": "#!/usr/bin/env bash\n# P078 Stage2: real tiny CPU route/backward/session regressions only.\n# Estimated seconds, not a language-quality or real-parent/GPU measurement.\n# Stop on any failed prerequisite; preserve all original data and checkpoints.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"${python_bin}\" -B -X utf8 scripts/runlog.py --name P078_Stage2Wa_route_training_cpu_\"${stamp}\" --num 066 --note 'New P078 CPU toy contracts only. Original P078 closure/P070B numerical tolerance stay unchanged. Real corpus/checkpoint/GPU/router training are not run by this launcher.'\nexec \"${python_bin}\" -B -X utf8 scripts/runlog.py --name P078_Stage2Wa_route_training_cpu_\"${stamp}\" --num 066 -- \"${python_bin}\" -B -X utf8 scripts/diag_p078_route_training.py --mode toy --execute\n",
+      "done_sha256": "3607ACBB70C257E90F29B76AB039FC2FA810C36C6B565D41EB5BD482E854377F",
+      "raw_log": "test_result/066_log_20261021_P078_Stage2Wa_route_training_cpu_221548.txt",
+      "status": "CPU16실제런처완료",
+      "disposition": "DELETE_AFTER_ARCHIVE_COMMIT",
+      "recoverable": true
+    },
+    {
+      "path": "run_P078_Stage2Wb_route_training-done.sh",
+      "git_source": "914b218:run_P078_Stage2Wb_route_training.sh",
+      "source": "#!/usr/bin/env bash\n# P078 Stage2: independent real eager route-SFT controller, MTP off.\n# Supply mode/arm, exact frozen-corpus SHA and separately approved authority.\n# Four cost32 runs precede fresh all-pending budget and four-pass training.\n# No implied GPU grant; READY false or missing inputs is HOLD/nonzero.\n# Actual wall/VRAM is unmeasured until cost32; family forecast must fit40h.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\n\"${python_bin}\" -B -X utf8 scripts/runlog.py --name P078_Stage2Wb_route_training_\"${stamp}\" --num 066 --note 'Separate explicit authorization/corpus SHA required. Four actual cost32 receipts precede fresh family40h budget; four-pass count derived from frozen manifest. MTP off, eager common shape, primary matched training policy, common-uniform is mismatch secondary only. No learned-router or quality claim from check-only/toy.'\nexec \"${python_bin}\" -B -X utf8 scripts/runlog.py --name P078_Stage2Wb_route_training_\"${stamp}\" --num 066 -- \"${python_bin}\" -B -X utf8 scripts/diag_p078_route_training.py \"$@\"\n",
+      "done_sha256": "6D83E8790DB820DFF0E4753AAD3CA21A10259D3A46DC0DF2C1128D621F6730F3",
+      "raw_log": "test_result/066_log_20261021_P078_Stage2Wb_route_training_211729.txt",
+      "status": "4팔cost32완료·본704미실행",
+      "disposition": "DELETE_AFTER_ARCHIVE_COMMIT",
+      "recoverable": true
+    }
+  ]
+}

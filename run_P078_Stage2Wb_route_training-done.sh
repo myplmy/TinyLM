@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# DONE: four actual cost32 invocations only. Full704 is NOT_RUN; useStage2Wc.
 # P078 Stage2: independent real eager route-SFT controller, MTP off.
 # Supply mode/arm, exact frozen-corpus SHA and separately approved authority.
 # Four cost32 runs precede fresh all-pending budget and four-pass training.

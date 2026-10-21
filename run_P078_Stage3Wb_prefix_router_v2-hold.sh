@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD: single-stage manual wrapper, not an automatic queue entry. UseStage3Wc full.
 # P078 V2: fresh official-TRAIN holdout groups, original body TRAIN and four-arm cost unchanged.
 # Fixed seed1337 and128 rows per language/split; no teacher or official evaluation gold.
 # Root-pinned V3 corpus and V2 holdout SHA plus current authorization required.

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# HOLD: V1 old VAL512 split shortage; original wrapper source1e63c6d.
 # P078 Stage3 learned prefix-router pilot; original Stage2 and old negative gates stay intact.
 # Separate root authorization and actual V3 balanced704 body are prerequisites.
 # Cost8 and all-pending 40h/current UTC budget must close before labels/fit/test.
