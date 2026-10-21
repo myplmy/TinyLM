@@ -7069,3 +7069,52 @@ A의 비학습 형식대조를 선택한다. B의 새학습/구조개입은별�
 A의더엄격한cap을선택한다. B의원가족상한변경은기각, C의5종만마감은A도예산에안맞으면적용한다. 이전학생worker386.68/340.17초와회귀/선결약190초를근거로삼지만미래완료를보장하지않는다. 기존worker/result가생성되지않았으므로동일미실행endpoint를허용된새런처로시도하며old결과를덮지않는다.
 
 정규readback의고정600선결은잔량에들지않을수있으므로원readback은HOLD로남기고사용자17시허가안의별도600초CPU 원답감사를설계한다. 원가족완결/1시간내전체작업이라고속이지않는다. 추가CPU감사는기존 prepared/read_model/validate_event/recount의읽기전용검산만사용하며원writer/worker/readback을직접우회호출하지않는다. 모델·CP tensor·새Falcon0이며실제별도비용을기록한다. F4는WIP_20261021_PUBLIC_BOUNDED_COMPLETION_F4.json이다.
+
+## 2026-10-21 재지시 — Stage4fs: 전처리·번역과 근거가 보이는8h 증분 생산
+
+### 1. 왜
+
+사용자가 기존 방법 반복, benchmark 오답 지도,595M의 원천 누락 설명, 영문SFT 번역·재표현 미완을 지적했다. 기존 주도 실험과 다른 새 알고리즘이라고 주장하지 않는다. 이번에는 원형을 보존한 자료계약 수리와 실제 준비를 먼저 한다. 권한은이번 작업 CPU+GPU에한해21:00KST까지이며8h 본생산은다음 사용자/주도실행용이다.
+
+### 2. 질문
+
+|질문|확인 방법|
+|---|---|
+|native 원문에 무슨 전처리가 있었는가|prepare.py의text필드/선택적spam필터,실제meta doc_filter=false,상류추출카드와완전EOS구간표본을분리|
+|학생도 교사의 근거를 보는가|새후보 첫질문에 원public context를명시 인용하고 SHA/원교사질문을보존|
+|8h/중단/재개가 실제 증분인가|새batch·원cursor·재시도한도·원manifest검산·STOP/TERM/Ctrl+C 최종화,미완결batch는거부|
+|번역·재표현을 실제 작성했는가|지정gpt-6-luna/max의원문16개→48초안과1874개출처작업목록.미검수초안은학습승격0|
+
+### 3. 예측
+
+상류Wikipedia/FineWeb는이미text추출본이므로명확한HTML잔여가드물수있다. markup정리만으로질문이해가개선된다는예측은하지않는다. 완전근거를붙이면기존문맥누락은기술적으로줄지만1024토큰초과·생산속도·내용오류는남을수있다.8h창은75M완성약속이아니다.
+
+### 4. 단계
+
+1. Stage4fs0W:원형보존정리/지원문맥/8h회귀.CPU만.
+2. Stage4fsWa:새지원문맥교사pilot,기존MTP ON·sampling/thinking/최초포함3시도유지.상한600초/4생성군까지.최소4기술수락후에만본생산.
+3. Stage4fsWb:최대28800초생산.기존public29.022M를재검산하되문맥누락가능옛4473교사후보는이번분모에자동합산하지않는다.원4473은삭제하지않고원cursor이후부터새로생산한다.
+4. Stage4fsWc:명시resume.입력/소스/코드/manifest가달라지면중단한다. STOP파일이나SIGTERM은현재batch를보존하고멈춘다.SIGKILL/전원중단의불완전batch 자동복구는미구현으로정직하게거부한다.
+
+### 5. 판정
+
+회귀/4후보/완전문맥·마스크통과는기술연결만의판정이다. 정답성·번역품질·일반지능은별도후행검수다.총75M/언어·과제·출처·별도val quota가모두차야학생본교육을연결하며고유root를반복해량을부풀리지않는다.과거gate음성을수정하지않는다.
+
+### 6. 비용
+
+CPU표본은64 EOS구간·수초이내실측;전체1.191B정제시간은미계측.교사pilot최대10분,각생산창8h상한.기존ON공급5.12~6.26x/s는짧은창관측이며새지원문맥속도를보장하지않는다.기존5.4M SFT와595M원문을75M재고에더하지않는다.
+
+### 7. 실행
+
+`scripts/diag_p106b_supported_production8h.py --mode pilot|produce|resume --max-wall-sec 600|28800 --execute`.
+새SH는`run_P106B_Stage4fsWa_supported_teacher_pilot.sh`, `run_P106B_Stage4fsWb_supported_teacher8h.sh`, `run_P106B_Stage4fsWc_supported_teacher_resume8h.sh`다.운영중STOP파일은새OUTPUT/STOP에만두고재개전사용자가이동한다.기존old런처는자동복구하지않는다.
+
+### 8. 한계
+
+새생산물은pseudo-unverified이며public기초29M도전량의미검수를새로완료한것이아니다.인용문맥은학생에게정답을직접label로노출한것이아니라읽을자료이지만,출처·학습/평가분할과정답성은별도로검증한다.잘못된문구blacklist/온라인정답판별/유사도자동배제는추가하지않는다.
+
+### 9. 실행 이력
+
+CPU15회귀와64개실제EOS구간정리완료:변경0·정의한경고0.전량clean/비오염PASS는아니다.Luna48초안에서root가2의미변형을찾아수정했으며여전히PENDING이다.상세는결과101의이번신규절을따른다.새모델pilot/본생산여부는실제로그로추가한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
