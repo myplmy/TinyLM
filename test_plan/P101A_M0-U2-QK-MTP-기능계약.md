@@ -281,7 +281,9 @@ CPU/GPU에서 실측 전 무손실을 주장하지 않는다.
 
 ### 4. 단계 설계
 
-Stage3iW0 CPU회귀→3iWa 새문맥코퍼스→3iWb/c 직접/trace코퍼스. MTP학습은각32update비용후4pass704update;reasoning은각32update비용후4pass128update.다음주도실행에서이두본대조를우선한다.부모는고정P090B chat32/SHA12E18658…이며이는새595M float부모가아니다.미검수Luna는자동편입하지않고후속검수된새자료버전으로연결한다.
+Stage3iW0 CPU 회귀 뒤 V2 준비본을 만들었으나, 평가 정답과 공식 TRAIN 정답을 구분하는 metadata가 모호해 V3(3iWd/e/f)로 별도 준비했다. 원형 V2는 보존하며 학습에 사용하지 않는다. MTP는 각32업데이트 비용 뒤4pass704업데이트, 직접답/검산풀이 대조는 각32비용 뒤4pass128업데이트다. 다음 주도 실행에서 이 두 본대조를 우선한다. 부모는 P090B chat32/SHA12E18658…이며 새595M float 부모가 아니다. 미검수 Luna 초안은 자동 편입하지 않는다.
+
+MTP22,528행은 **기존 Broad 명시문맥 교과를 재사용**한 것이며 새로운22,528개 원천을 확보했다는 뜻이 아니다. 기존 NTP 팔과는 본체 부모·native replay 목적·LR이 다를 수 있어, 같은 목적함수 아래 NTP 대조를 새로 두어야 한다. 새 namespace나 마스크 연결을 새로운 일반지능 방법론으로 포장하지 않는다.
 
 공통m8×a16·seq1024·checkpointON·compiledefault·Adam5e-5/Muon2e-4·clip1·4pass를명시한다.옛8M의LR1e-4에서이번LR도바뀌므로옛8M과의차이는묶음비교이며새네팔내MTP효과만대응비교한다.최종test/development문항을교사/GPT로고쳐train에넣지않는다.
 
@@ -304,7 +306,7 @@ slot은실제지도토큰이나고유지식량이아니다.기존동형704회약
 ### 7. 실행
 
 `scripts/diag_p101a_clean_bilingual.py --family mtp|direct|trace --mode prepare|calibrate|train --arm parent_ntp|parent_mtp|scratch_ntp|scratch_mtp --execute`.
-Reasoning은parent_ntp만허용한다.새준비디렉터리는`p101a_sft_mtp_cleanbilingual_v2_s1337`, `p101a_sft_mtp_verified_direct_v2_s1337`, `p101a_sft_mtp_verified_trace_v2_s1337`로분리한다.4팔MTP와직접/trace는서로다른SH에둔다.
+Reasoning은 parent_ntp만 허용한다. 현재 준비 디렉터리는 `p101a_sft_mtp_cleanbilingual_v3_s1337`, `p101a_sft_mtp_verified_direct_v3_s1337`, `p101a_sft_mtp_verified_trace_v3_s1337`로 분리한다. 네 팔 MTP와 직접답/검산풀이는 서로 다른 SH에 둔다. V2는 metadata 정정 전의 준비 이력으로만 남긴다.
 
 ### 8. 한계
 
@@ -312,4 +314,8 @@ Reasoning은읽을수있는짧은코드검산풀이이며학습된잠재thinking
 
 ### 9. 실제 준비
 
-Stage3i CPU4회귀와세코퍼스의실제tokenizer/assistant/EOT/mask준비를완료했다.루트분할은기존검산producer가언어·표현·교환형을같은root에묶고원질문은정답trace를포함하지않는다.각본학습·새벤치마크는아직NOT_RUN이며결과092§15이실제준비로그를소유한다.
+Stage3i CPU4회귀와 세 코퍼스의 실제 tokenizer/assistant/EOT/mask 준비를 완료했다. 루트 분할은 기존 검산 producer가 언어·표현·교환형을 같은 root에 묶고 원질문은 정답 trace를 포함하지 않는다. 별도 첫답 평가기는 CPU5회귀를 통과했다. MTP는512 DEV의 annotation 문자일치(내용 진실성 아님), Reasoning은 별도1024 TEST의 코드 검산 최종값을 주지표로 기록한다. trace 문법 준수는 최종값 정오와 분리하고 첫답만 저장하며, 검수용 질문·기준답·실제답은 `review_request`의 읽기 쉬운 문서로 내보낸다. 각 본학습·새 벤치마크는 아직 NOT_RUN이며 결과092§15이 실제 준비 로그를 소유한다.
+
+### 2026-10-21 실제 비용 회수와 다음 실행
+
+[결과092§16](../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md): 부모MTP/직접답/풀이의32회 비용을 실제 완료했다. 각각 본업데이트만 약1642/282/314초 외삽이며 전체 평가·저장/나머지 세MTP팔은 아직 미측정이다. 실제 모델 환경은 기존 tinylm_env.sh를 source해야 하며 누락한 직접명령의 compile 실패는 따로 보존했다. 새 cost 읽기 검산 helper로 같은 코드·자료·팔·배치·LR의 성공 report만 재사용한다. 없음은 최초측정, 불일치는 해당본학습 HOLD이며 기존report를 지우지 않는다. SH두개는 본실행 NOT_RUN이므로 활성 상태를 유지한다.

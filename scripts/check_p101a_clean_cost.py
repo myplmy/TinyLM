@@ -42,6 +42,7 @@ def main():
     parser.add_argument("--arm", choices=("scratch_ntp", "scratch_mtp", "parent_ntp", "parent_mtp"), required=True)
     parser.add_argument("--check-only", action="store_true", required=True)
     args = parser.parse_args()
+    if not args.check_only: parser.error("읽기 검산 플래그가 필요하다")
     if args.family != "mtp" and args.arm != "parent_ntp": parser.error("추론 대조는 parent_ntp만 사용한다")
     from scripts import diag_p101a_clean_bilingual as clean
     from scripts import diag_p101a_sft_mtp as engine

@@ -1,0 +1,50 @@
+
+==============================================================================
+[runlog] 2026-10-21 21:22:58  name=P101A_Stage3jW0_parent_mtp_cost
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family mtp --mode calibrate --arm parent_mtp --max-wall-sec 1200 --execute
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p101a_clean_bilingual.py", line 191, in <module>
+    try: raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p101a_clean_bilingual.py", line 187, in main
+    return engine.train_arm(args, corpus, evidence, metadata, calibrate=args.mode == "calibrate")
+  File "/home/uranus/tinyLM/scripts/diag_p101a_sft_mtp.py", line 244, in train_arm
+    hidden=model(x,return_hidden=True)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py", line 465, in __call__
+    return super().__call__(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py", line 967, in compile_wrapper
+    raise e.remove_dynamo_frames() from None  # see TORCHDYNAMO_VERBOSE=1
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_inductor/compile_fx.py", line 992, in _compile_fx_inner
+    raise InductorError(e, currentframe()).with_traceback(
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_inductor/compile_fx.py", line 988, in _compile_fx_inner
+    mb_compiled_graph = fx_codegen_and_compile(
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_inductor/compile_fx.py", line 1766, in fx_codegen_and_compile
+    return scheme.codegen_and_compile(gm, example_inputs, inputs_to_check, graph_kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_inductor/compile_fx.py", line 1241, in codegen_and_compile
+    torch._dynamo.repro.after_aot.save_graph_repro(
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_dynamo/repro/after_aot.py", line 541, in save_graph_repro
+    generate_compiler_repro_string(
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_dynamo/repro/after_aot.py", line 378, in generate_compiler_repro_string
+    model_str += _cuda_system_info_comment()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/_dynamo/debug_utils.py", line 265, in _cuda_system_info_comment
+    cuda_version_out = subprocess.check_output(["nvcc", "--version"])
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py", line 421, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py", line 503, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py", line 971, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/subprocess.py", line 1863, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+torch._inductor.exc.InductorError: PermissionError: [Errno 13] Permission denied: 'nvcc'
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.7분  (2026-10-21 21:23:40)
+==============================================================================

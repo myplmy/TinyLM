@@ -1,0 +1,36 @@
+
+==============================================================================
+[runlog] 2026-10-21 21:50:06  name=P078_Stage3W1_real_prefix_split_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c import json,hashlib,time
+from pathlib import Path
+from collections import Counter
+from types import SimpleNamespace
+from tokenizers import Tokenizer
+from scripts import diag_p101a_clean_bilingual as course
+from scripts import p078_prefix_router as router
+from scripts.p101a_sft_mtp_data import stream_rows
+from scripts import diag_p101a_sft_mtp as engine
+started=time.perf_counter()
+corpus,_=engine.paths(course.TAGS["mtp"]); report=engine.corpus_report(corpus)
+tok=Tokenizer.from_file(str(engine.data.TOKENIZER))
+rows={s:list(stream_rows(corpus,report["manifests"][s])) for s in ("train","val")}
+manifest=router.split_manifest(rows["val"])
+owners=Counter(); max_prefix=Counter(); tested=0; too_long=Counter()
+for split,values in rows.items():
+ for row in values:
+  record=course.masked_record(row,tok); prefix=router.validate_prefix(row,record,tok)
+  owner=record.segments[len(prefix.token_ids)-1]; owners[str(owner)]+=1
+  max_prefix[split]=max(max_prefix[split],len(prefix.token_ids)); too_long[split]+=int(len(prefix.token_ids)+128>1024); tested+=1
+result=dict(schema="P078_PREFIX_REAL_CORPUS_CPU_AUDIT_V1",status="ALL_PREFIXES_VERIFIED",tested_rows=tested,owner_counts=dict(owners),max_prefix_tokens=dict(max_prefix),plus128_exceeds_context=dict(too_long),router_split_counts=manifest["counts"],router_groups=manifest["groups"],split_manifest_sha256=manifest["manifest_sha256"],helper_sha256=course.digest(router.__file__),corpus_sha256=course.digest(corpus/"report.json"),models_loaded=0,checkpoint_tensor_loads=0,tokenizer_loads=1,gpu_initialized=__import__("torch").cuda.is_initialized(),seconds=time.perf_counter()-started,semantic_truth="NOT_VERIFIED",whole_pipeline_blind=False)
+engine.write(Path("test_result/evidence/p078_prefix_real_corpus_cpu_v1_s1337/report.json"),result)
+print(json.dumps(result,ensure_ascii=False))
+==============================================================================
+Traceback (most recent call last):
+  File "<string>", line 14, in <module>
+  File "/home/uranus/tinyLM/scripts/p078_prefix_router.py", line 137, in split_manifest
+    raise ValueError('HOLD_SPLIT_MINIMA: no seed search, row deletion or threshold reduction')
+ValueError: HOLD_SPLIT_MINIMA: no seed search, row deletion or threshold reduction
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-10-21 21:50:07)
+==============================================================================

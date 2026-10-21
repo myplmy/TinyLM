@@ -236,6 +236,10 @@ fp32 상주와 int8 상주가 갈린다.**
 
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
+| `p106b_supported_production8h_v3_s1337` | 근거문맥 생산/8h·STOP·동일계보 재개 | 파일럿4KOQA/943입력/99target·정상cap중단만 완료. 옛4473행 자동편입0·8h본생산/새75M NOT_RUN. 결과101§434. |
+| `p101a_sft_mtp_cleanbilingual_v3_s1337` | 기존Broad22528을MTP마스크 엔진에 연결한704회×4팔 | 부모MTP 비용32/각headgradient32만 완료. 원native replay gradient없음·LR5e-5/2e-4·MuonWD0/Adam원그룹0.1/0. 결과092§15~16. |
+| `p101a_sft_mtp_verified_direct_v3_s1337` / `p101a_sft_mtp_verified_trace_v3_s1337` | 같은4096root/128회 직접답 대 검산풀이 | 양비용32완료/CP0. 풀이target6.44배,본128회/TEST1024 개선 NOT_RUN. |
+| `p078_route_training_v1_s1337_cleanv3` / `p078_route_protocol_v2_s1337` | 같은22528의R2·고정셔플·업데이트셔플·방문수균형 학습 | 네비용32만 완료·실제답 오류/반복 유지. 원소스불변/JSON검산adapter·후속8.619h 시간HOLD,본704×4/learnedrouter미측정. 결과066§9. |
 | `p106b_native595_public_v1_s1337` | Stage4fo 새native2/old·new Broad4의 같은공개팩9216요청·9212채점 | 6종 실제 평가 완료. 원가족3457.321초/3600이며900상한 사전HOLD 뒤 마지막만420상한으로 완료했다. 정규readback은잔량HOLD, 별도600초CPU감사에서165.119초로9216/9212 원형/점수를 재검산했다. EN MC nativeQ324/F345·oldBroadQ308/F325·newBroadQ312/F333 대 기존Falcon398/768. 후보우도≠일반대화; 원가족전체readback완료로승격하지않는다. 상세 결과회수 중. |
 | `p106b_prompt_access_v1_s1337` | Stage4fr 같은6CP·24probe·4고정입력형식의576첫답, 비학습대조 | [101§431](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md): 실제363.937초/6CP576답·0.193초 CPU 검산·stdout96/24 원답 투영 일치·가중치 불변. 주/공백 보조8/384는 책 색상 한 root의 반복 조건, 일반192조건은 자동 의미점수 null이다. 최대prefix150+64≤1024·FP32/KVon/MTPoff 고정. 네 형식만으로 실패가 회복되지 않았으나 지식 부재나 전체 프롬프트 실패를 증명하지는 않는다. 새학습/교사/CP저장0. |
 | `p106b_native595_broad_v1_s1337` | Stage4fn 실제595M 부모→원22528행/4pass704·옛5632 replay | 양704/CP F3D1F0FB·2630B4C2와1694/17실제답·닫힌대조완료(101§413/415/417/419~420). Q/F TEST199/157·natural12/3·기초1/0 of24로 일반대화는미회복. Q grad34.663982/clip704·DEV1.996248/native32 3.407805. 전용수동6종정합완료·공개후속;원코드/기한불변. |

@@ -236,6 +236,9 @@ def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
     try:
         driver = load_driver(); args = parser_for(driver).parse_args(argv)
+        if args.corpus not in driver.CORPORA: raise ValueError('고정한 원 코퍼스 경로만 허용한다')
+        if bool(args.authorization) != bool(args.authorization_sha256):
+            raise ValueError('권한 경로와 정확 SHA를 함께 전달해야 한다')
         if args.check_only:
             forwarded = list(argv)
             if args.mode == 'budget-preview':

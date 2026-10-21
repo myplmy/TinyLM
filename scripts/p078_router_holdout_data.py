@@ -25,7 +25,7 @@ if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from scripts import p078_prefix_router as router
 from scripts import diag_p078_route_training as base
 SCHEMA = 'P078_ROUTER_HOLDOUT_DATA_V2'
-DIRECTORY = 'data_cache/p078_router_holdout_v2_s1337'
+DIRECTORY = 'data_cache/p078_router_holdout_bootstrap_v3_s1337'
 SEED = 1337
 TARGET = 128
 END = datetime.fromisoformat('2026-10-21T14:00:00+00:00')

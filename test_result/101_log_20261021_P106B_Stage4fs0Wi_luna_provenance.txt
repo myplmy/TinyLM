@@ -1,0 +1,45 @@
+
+==============================================================================
+[runlog] 2026-10-21 21:25:03  name=P106B_Stage4fs0Wi_luna_provenance
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c import hashlib,json
+from pathlib import Path
+from collections import Counter
+from scripts import p106b_broad_course as b
+root=Path.cwd()
+inputs=[root/"HF/sft_ready/p106b_luna_augmentation_v1_s1337/authoring.jsonl",root/"HF/sft_ready/p106b_luna_augmentation_v1_s1337/batch_000001/authoring.jsonl"]
+rows=[json.loads(line) for p in inputs for line in p.read_text(encoding="utf-8").splitlines()]
+wanted={row["source_index"] for row in rows}
+path=root/"HF/sft_ready/p090_public_v3_train.canonical.jsonl"
+h=hashlib.sha256(); selected={}
+with path.open("rb") as stream:
+ for i,line in enumerate(stream):
+  h.update(line)
+  if i in wanted: selected[i]=(json.loads(line),hashlib.sha256(line.rstrip(b"\r\n")).hexdigest())
+assert h.hexdigest()=="96a3507344fefca5072887ab4664dbb9bedbd37bcd0d01a564220c1008d4f836"
+course_path=root/"data_cache/p106b_broad_curriculum_v2_s1337/course.json"
+assert hashlib.sha256(course_path.read_bytes()).hexdigest()=="107746b68c7ae0a2945a97700bbaa883e118ce245f003feae95e72661b215957"
+course=json.loads(course_path.read_text()); membership=set(course["general_admission"]["selected_source_indices"])
+def text(value): return value if isinstance(value,str) else "".join(block["text"] for block in value)
+pairs=set(); variants={}; split_keys=set()
+for row in rows:
+ i=row["source_index"]; source,line_sha=selected[i]; identity=b._identity(source)
+ expected=source["meta"].get("neutral_root") or source["meta"].get("semantic_root_id") or source["meta"].get("root")
+ expected=str(expected) if expected is not None else b.sha([sorted(identity["source_id"]),sorted(identity["first_user"])])
+ assert i in membership and row["root_id"]==expected
+ assert row["source_id"]==source["meta"]["source_id"] and row["split"]=="train"
+ assert row["source_evidence"]["source_line_sha256_excluding_line_ending"]==line_sha
+ assert row["original_question"]==text(source["messages"][0]["content"])
+ assert row["original_answer"]==text(source["messages"][-1]["content"])
+ assert row["status"]=="DRAFT_NOT_TRAIN_READY" and row["semantic_review"]=="PENDING"
+ key=(i,row["variant_kind"]); assert key not in pairs; pairs.add(key)
+ variants.setdefault(i,set()).add(row["variant_kind"]); split_keys.update(identity["first_user"])
+assert len(rows)==144 and len(variants)==48
+assert all(v=={"ko_translation","ko_rephrase","en_rephrase"} for v in variants.values())
+print(json.dumps(dict(status="PROVENANCE_AND_VARIANT_CONTRACT_PASS",source_roots=48,draft_rows=144,original_qa_exact=True,course_root_exact=True,source_line_sha_exact=True,distinct_first_user_keys=len(split_keys),counts=dict(Counter(r["language"] for r in rows)),semantic_truth="NOT_VERIFIED",human_review="PENDING",models_loaded=0,gpu_calls=0,source_writes=0),ensure_ascii=False))
+
+==============================================================================
+{"status": "PROVENANCE_AND_VARIANT_CONTRACT_PASS", "source_roots": 48, "draft_rows": 144, "original_qa_exact": true, "course_root_exact": true, "source_line_sha_exact": true, "distinct_first_user_keys": 48, "counts": {"ko": 96, "en": 48}, "semantic_truth": "NOT_VERIFIED", "human_review": "PENDING", "models_loaded": 0, "gpu_calls": 0, "source_writes": 0}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-21 21:25:05)
+==============================================================================

@@ -1,0 +1,112 @@
+{
+  "schema": "p106b_luna_augmentation_job_manifest_v1",
+  "created_date": "2026-10-21",
+  "status": "JOB_LIST_PREPARED_FULL_AUGMENTATION_NOT_DONE",
+  "full_scope_complete": false,
+  "source_scope": {
+    "canonical_file": "HF/sft_ready/p090_public_v3_train.canonical.jsonl",
+    "canonical_file_sha256": "96a3507344fefca5072887ab4664dbb9bedbd37bcd0d01a564220c1008d4f836",
+    "source_split": "train",
+    "selection_file": "data_cache/p106b_broad_curriculum_v2_s1337/course.json",
+    "selection_file_sha256": "107746b68c7ae0a2945a97700bbaa883e118ce245f003feae95e72661b215957",
+    "selection_key": "general_admission.selected_source_indices",
+    "selection_record_language_basis": "canonical meta.language == en",
+    "selected_index_population": 2048,
+    "selected_meta_english_jobs": 1874,
+    "source_index_is_zero_based_line_offset_for_jobs": true,
+    "all_job_source_ids_resolve_to_canonical": true,
+    "distinct_job_source_ids": 1874,
+    "distinct_root_ids": 1874
+  },
+  "progress": {
+    "authored_pilot_source_count": 16,
+    "authored_pilot_new_qa_drafts": 48,
+    "authored_pilot_state": "DRAFT_AUTHORED_PENDING_HUMAN_REVIEW",
+    "remaining_unfinished_source_jobs": 1858,
+    "remaining_unfinished_breakdown": {
+      "not_started": 1841,
+      "pilot_screened_scope_triage_required": 17
+    },
+    "full_augmentation_complete": false,
+    "human_semantic_review": "PENDING",
+    "source_answer_correctness_independently_verified": false,
+    "job_state_counts": {
+      "NOT_STARTED": 1841,
+      "DRAFT_AUTHORED_PENDING_HUMAN_REVIEW": 16,
+      "PILOT_SCREENED_SCOPE_TRIAGE_REQUIRED": 17
+    },
+    "content_language_status_counts": {
+      "PENDING": 1841,
+      "MANUALLY_READ_ENGLISH": 28,
+      "NON_ENGLISH_OBSERVED_DESPITE_EN_META": 5
+    },
+    "known_non_english_despite_meta_en_observed_in_pilot": 5,
+    "language_caveat": "The 1,874 count is canonical meta.language=en. Only the 16 authored rows plus 12 pilot-screened English candidates were manually read as English; five pilot candidates were visibly non-English despite the metadata, and the remaining rows still need content-language screening."
+  },
+  "files": {
+    "jobs_jsonl": "HF/sft_ready/p106b_luna_augmentation_v1_s1337/jobs.jsonl",
+    "jobs_jsonl_sha256": "fe3bf9db00b8de7393970c378aebba9322017f854a28555dae54bd8785ba87aa",
+    "pilot_authoring_jsonl": "HF/sft_ready/p106b_luna_augmentation_v1_s1337/authoring.jsonl",
+    "pilot_authoring_jsonl_sha256": "53476bfe979f327b87435cce4c10c7a067fcd65546f1bba1f4ce3e966adf00ff",
+    "pilot_review_request": "review_request/20261021_Luna_영어SFT_한영증강_검수요청.md",
+    "pilot_review_request_sha256": "f44502d0b101029be3b8ba43bf988e76dc21e1e672c647eb862216f7725cb796",
+    "pilot_manifest": "HF/sft_ready/p106b_luna_augmentation_v1_s1337/manifest.json"
+  },
+  "required_variants": [
+    "ko_translation",
+    "ko_rephrase",
+    "en_rephrase"
+  ],
+  "job_schema_note": "Each jobs.jsonl row is one original root. Source Q/A is referenced by canonical line and SHA, not duplicated. Existing pilot rows list all three variants as drafts pending human review.",
+  "cursor_contract": {
+    "ordering": "job_order is zero-based and sorted by source_index ascending.",
+    "cursor_rule": "Recompute next_cursor as the lowest job_order whose state is not DRAFT_AUTHORED_PENDING_HUMAN_REVIEW. Skip those authored drafts; do not advance on partial variants.",
+    "next_cursor_job_order": 0,
+    "next_cursor_source_index": 177,
+    "last_contiguous_authored_job_order": -1,
+    "increment_boundary": "Record status after each complete source (all three variants). For resumable batches, target at most 16 source jobs per batch; the operator may stop earlier at a complete-source boundary. No time-per-source estimate is recorded.",
+    "scope_triage_rule": "The 17 pilot-screened rows are not globally deleted from the 1,874-source population; resolve their screening notes in the pilot manifest before authoring them for the full job."
+  },
+  "pilot_screening_reference": {
+    "manifest": "HF/sft_ready/p106b_luna_augmentation_v1_s1337/manifest.json",
+    "key": "screened_exclusions",
+    "screened_source_indices": [
+      1122,
+      1373,
+      1957,
+      1456,
+      2038,
+      717,
+      1113,
+      1520,
+      1714,
+      2025,
+      2940,
+      1662,
+      795,
+      2077,
+      1747,
+      1210,
+      1037
+    ],
+    "note": "These are pilot exclusions/triage flags, not silently removed from the full 1,874-job population."
+  },
+  "execution_boundary": {
+    "model_calls_made": false,
+    "gpu_used": false,
+    "installation_or_download": false,
+    "external_api_calls": false,
+    "subagents_used": false,
+    "git_operations": false
+  },
+  "row_sha256_definition": "SHA-256 of the canonical JSONL raw line after stripping only its trailing LF or CRLF; same definition as the pilot manifest.",
+  "job_file_revision_history": [
+    {
+      "revision_id": "20261021_jobs_row_sha_correction_r1",
+      "prior_jobs_jsonl_sha256": "f77a964285af81cf90af043a27bb617dc560d77748844bec90c3bfda122ce0ad",
+      "current_jobs_jsonl_sha256": "fe3bf9db00b8de7393970c378aebba9322017f854a28555dae54bd8785ba87aa",
+      "reason": "The initial generated per-row hashes included the line ending despite the declared source-row hash definition. All 1,874 job row hashes were regenerated to exclude LF/CRLF consistently with the pilot manifest.",
+      "source_file_modified": false
+    }
+  ]
+}

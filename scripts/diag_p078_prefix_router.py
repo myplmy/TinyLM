@@ -27,7 +27,7 @@ from scripts import p078_prefix_router as router
 from scripts import diag_p078_route_training as base
 
 READY = True  # Root reviewed source; real assets/cost/budget/authority still fail closed.
-TAG = 'p078_prefix_router_v2_s1337'
+TAG = 'p078_prefix_router_bootstrap_v3_s1337'
 MODES = ('toy', 'prepare', 'cost', 'budget', 'labels', 'fit', 'evaluate', 'readback')
 CODE = tuple(dict.fromkeys(('scripts/p078_prefix_router.py', 'scripts/test_p078_prefix_router.py',
     'scripts/diag_p078_prefix_router.py', 'scripts/p078_router_holdout_data.py', 'scripts/p106b_night_qa_data.py', *base.CODE)))
@@ -60,7 +60,7 @@ def write(args, relative, value):
 def signature(args):
     return dict(schema=router.SCHEMA, tag=namespace(args), source_sha256={v: base.digest(root_path(v)) for v in CODE},
         corpus=base.CLEAN_CORPUS, corpus_report_sha256=args.corpus_sha256, tokenizer_sha256=base.TOK_SHA,
-        router_holdout_report='data_cache/p078_router_holdout_v2_s1337/report.json', router_holdout_sha256=args.holdout_sha256,
+        router_holdout_report='data_cache/p078_router_holdout_bootstrap_v3_s1337/report.json', router_holdout_sha256=args.holdout_sha256,
         frozen_body=base.PARENT if args.resource_only_r1 else base.cp_name('balanced_count', args),
         body_source_signature_sha256=sha(base.signature(args)), body_training='V3_BALANCED_COUNT_4PASS_704_ONLY',
         resource_only_r1=args.resource_only_r1, body_training_here=False, mtp=False, teacher=False,
