@@ -19,8 +19,8 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
-VERSION = "GEMMA_SUPPORTED_SOURCE_8H_V2"
-TAG = "p106b_supported_production8h_v2_s1337"
+VERSION = "GEMMA_SUPPORTED_SOURCE_8H_V3"
+TAG = "p106b_supported_production8h_v3_s1337"
 OUTPUT = ROOT / "HF/sft_ready" / TAG
 PILOT = ROOT / "HF/sft_ready" / (TAG + "_pilot")
 
@@ -144,6 +144,23 @@ def require_pilot(info, destination=PILOT):
     return report
 
 
+def checkpoint_quota(quota_type, produced, stop_file=None, groups_limit=None):
+    """Check stop/cap even while eligibility filtering makes no teacher calls."""
+    class BoundedQuota(quota_type):
+        def report(self):
+            return dict(super().report(), teacher_production_fork=VERSION,
+                teacher_profiles=["PUBLIC_BASE_ONLY", "ON_NEW_VISIBLE_SOURCE"],
+                ancestor_candidate_rows_admitted=0)
+        def profile(self, *args, **kwargs):
+            from scripts.diag_p106b_gemma_budget_resume import ProductionBudgetPause
+            if stop_file and stop_file.exists():
+                raise ProductionBudgetPause("explicit stop file while source filtering; incremental batch retained")
+            if groups_limit and produced[0] >= groups_limit:
+                raise ProductionBudgetPause("pilot group cap reached before further source filtering")
+            return super().profile(*args, **kwargs)
+    return BoundedQuota
+
+
 @contextmanager
 def scope(destination, stop_file=None, groups_limit=None):
     from scripts import diag_p106b_gemma_mtp_resume as old
@@ -165,6 +182,7 @@ def scope(destination, stop_file=None, groups_limit=None):
         original_group, original_payload = producer.produce_group, producer.tasks.payload
         original_disposition = producer.disposition
         produced = [0]
+        quota_type = checkpoint_quota(producer.control.Quotas, produced, stop_file, groups_limit)
 
         def payload(*args, **kwargs):
             result = original_payload(*args, **kwargs)
@@ -200,6 +218,7 @@ def scope(destination, stop_file=None, groups_limit=None):
                 (producer, "produce_group", group),
                 (producer, "disposition", disposition),
                 (producer, "wall_limit", supported_wall_limit),
+                (producer.control, "Quotas", quota_type),
                 (producer, "state_from_saved", lambda tok, base: replay(producer.control, tok, base, destination, initial_cursor)),
                 (producer.control, "batch_reports", lambda: batches(producer.control, destination)),
                 (producer.control, "OUTPUT", destination), (producer.control, "TAG", TAG)):

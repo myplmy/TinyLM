@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Same4096ROOT/128updates: direct answer versus code-verified short trace.
+# Trace targets are6.44x direct; do not claim reasoning-only/token-efficiency gain.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+stamp="$(date +%H%M%S)"
+failed=0
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_parent_baseline_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_eval.py --family direct --arm parent_baseline --max-wall-sec 1800 --execute || failed=1
+for family in direct trace; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 --note 'Same P090B parent,4096canonicalROOT/m8a16/ckptON/seq1024/LR5e-5/Muon2e-4/4passes128updates. Code-owned intermediate-state supervision, not hidden thinking head. DEV/TEST roots separate from TRAIN, official benchmark answers not inputs. Cost32 is not quality. Final first answers and retention must be read, not just CE.'
+    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family "$family" --mode calibrate --arm parent_ntp --max-wall-sec 1200 --execute; then
+        failed=1
+        continue
+    fi
+    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family "$family" --mode train --arm parent_ntp --max-wall-sec 3600 --execute; then
+        failed=1
+        continue
+    fi
+    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_eval.py --family "$family" --arm parent_ntp --max-wall-sec 1800 --execute; then
+        failed=1
+    fi
+done
+exit "$failed"

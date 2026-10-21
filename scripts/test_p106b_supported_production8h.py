@@ -11,13 +11,34 @@ from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from scripts.diag_p106b_supported_production8h import (
     ROOT, VERSION, attach_visible_source, batches, limit_window, replay, scope,
-    supported_wall_limit, require_pilot, execute, visible_source)
+    supported_wall_limit, require_pilot, execute, checkpoint_quota, visible_source)
 
 
 class SupportedProductionTests(unittest.TestCase):
     def test_eight_hours(self):
         self.assertEqual(limit_window(28800), 28800)
         with self.assertRaises(ValueError): limit_window(28801)
+
+    def test_pilot_cap_stops_even_if_next_source_is_ineligible(self):
+        from scripts.diag_p106b_gemma_budget_resume import ProductionBudgetPause
+        class AlwaysIneligible:
+            def profile(self, *args): return None
+        count = [3]
+        quota = checkpoint_quota(AlwaysIneligible, count, groups_limit=4)()
+        self.assertIsNone(quota.profile("irrelevant"))
+        count[0] = 4
+        with self.assertRaises(ProductionBudgetPause): quota.profile("irrelevant")
+
+    def test_stop_file_interrupts_filtering_without_new_teacher_call(self):
+        from scripts.diag_p106b_gemma_budget_resume import ProductionBudgetPause
+        class AlwaysIneligible:
+            def profile(self, *args): return None
+        with tempfile.TemporaryDirectory() as temp:
+            stop = Path(temp) / "STOP"
+            quota = checkpoint_quota(AlwaysIneligible, [0], stop_file=stop)()
+            self.assertIsNone(quota.profile())
+            stop.touch()
+            with self.assertRaises(ProductionBudgetPause): quota.profile()
 
     def test_real_producer_uses_new_eight_hour_timer_only_in_scope(self):
         from scripts import diag_p106b_gemma_mtp_resume as old

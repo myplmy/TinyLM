@@ -262,3 +262,54 @@ CPU/GPU에서 실측 전 무손실을 주장하지 않는다.
 동일 source·saved body·tokenizer·seed·max_new64·greedy·stop sequence를 유지한다.
 코드 시그니처와 회귀·새 원답은 결과092에 연결하고 원본 Stage4b를 덮어쓰지 않는다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## 2026-10-21 신규 준비 — Stage3i/3j/3k: 문맥교과 MTP와 검산풀이 본대조
+
+### 1. 왜
+
+과거8M×4epoch 네팔은실제로완료됐다.같은실험을새방법처럼재실행하지않는다.이번독립변수는명시문맥/교정턴마스크를고정한교과에서의MTP보조목적과,다른독립교과에서의직접답/검산trace다.원8M·부모·코드는불변이며기존부모영향제거선택을존중해MTP는scratch/parent×NTP/MTP네팔을지원한다.
+
+### 2. 질문
+
+1. 지문이있는같은22528행에서NTP/MTP의실제답·손실·시간·망각은어떻게다른가?
+2. 동일4096root/128updates에서정답만지도한경우와코드로검산한중간단계를지도한경우가어떻게다른가?
+3. 잘못된옛assistant턴이CE/MTP목표에들어가지않는가?
+
+### 3. 예측
+
+명시문맥이과거교사전용근거결손을피하지만추출QA편중을해결하지는않는다.MTP의작은CE개선이일반대화개선으로전이되지않을수있다.trace는중간계산을지도하지만목표토큰이6.44배여서계산·표현효과를단독귀속할수없다.모델이훈련문항도못맞히면같은처방을확대하지않는다.
+
+### 4. 단계 설계
+
+Stage3iW0 CPU회귀→3iWa 새문맥코퍼스→3iWb/c 직접/trace코퍼스. MTP학습은각32update비용후4pass704update;reasoning은각32update비용후4pass128update.다음주도실행에서이두본대조를우선한다.부모는고정P090B chat32/SHA12E18658…이며이는새595M float부모가아니다.미검수Luna는자동편입하지않고후속검수된새자료버전으로연결한다.
+
+공통m8×a16·seq1024·checkpointON·compiledefault·Adam5e-5/Muon2e-4·clip1·4pass를명시한다.옛8M의LR1e-4에서이번LR도바뀌므로옛8M과의차이는묶음비교이며새네팔내MTP효과만대응비교한다.최종test/development문항을교사/GPT로고쳐train에넣지않는다.
+
+### 5. 판정
+
+마스크/턴경계/분모/실제row순회가실패하면학습금지.비용표본을품질점수로세지않는다.주판정은첫자유답의내용·종료·조건교환과원문보존이며고정8질문은canary다.새특정상대분해능은미측정이므로다중seed전일반효과확정금지. MTP추론은과거숫자경로음성을유지하고별도정합측정이필요하다.
+
+### 6. 비용
+
+|교과|고유train 실제x|assistant/pass|행/pass|4pass update|계산slot상한|
+|---|---:|---:|---:|---:|---:|
+|문맥MTP|5405444|552609|22528|704|92274688|
+|직접답|199563|19880|4096|128|16777216|
+|검산풀이|307799|128116|4096|128|16777216|
+
+slot은실제지도토큰이나고유지식량이아니다.기존동형704회약25.5분을참고하되MTP/초기compile/새교과시간은cost32실측뒤재산정한다.각본런상한4h·네MTP팔최대16h,reasoning두팔각1h상한으로40h이내편성을목표로하되미측정완료시간을보장하지않는다.
+
+이번 대조는 기존 P101A SFT/MTP 학습기를 재사용하며, native 원문 CE는 전후 평가에만 사용한다. Broad 교과의 추가 native replay gradient를 넣은 목적함수와는 다르므로, 두 결과를 자료만 바뀐 동일 조건으로 비교하지 않는다.
+
+### 7. 실행
+
+`scripts/diag_p101a_clean_bilingual.py --family mtp|direct|trace --mode prepare|calibrate|train --arm parent_ntp|parent_mtp|scratch_ntp|scratch_mtp --execute`.
+Reasoning은parent_ntp만허용한다.새준비디렉터리는`p101a_sft_mtp_cleanbilingual_v2_s1337`, `p101a_sft_mtp_verified_direct_v2_s1337`, `p101a_sft_mtp_verified_trace_v2_s1337`로분리한다.4팔MTP와직접/trace는서로다른SH에둔다.
+
+### 8. 한계
+
+Reasoning은읽을수있는짧은코드검산풀이이며학습된잠재thinking/자율진위판정기능이아니다.문맥교과는일반대화전량이나75M완성이아니다.기존검증된SFT엔진을재사용하되기능추가를한것과지능효과를관측한것을구분한다.
+
+### 9. 실제 준비
+
+Stage3i CPU4회귀와세코퍼스의실제tokenizer/assistant/EOT/mask준비를완료했다.루트분할은기존검산producer가언어·표현·교환형을같은root에묶고원질문은정답trace를포함하지않는다.각본학습·새벤치마크는아직NOT_RUN이며결과092§15이실제준비로그를소유한다.
