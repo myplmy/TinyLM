@@ -1,0 +1,52 @@
+{
+  "schema": "TINYLM_PROMPT_ACCESS_ROOT_PREFLIGHT_V1",
+  "recorded_at_utc": "2026-10-21T04:05:36+00:00",
+  "stage": "P106B_Stage4fr",
+  "authority": "current user CPU+GPU until2026-10-21T08:00UTC; inference-only600cap, oldtrace12deadline unchanged",
+  "design": {
+    "models": [
+      "native595-q",
+      "native595-f",
+      "old299-broad-q",
+      "old299-broad-f",
+      "new595-broad-q",
+      "new595-broad-f"
+    ],
+    "formats": [
+      "chat_bare",
+      "chat_contract",
+      "chat_fewshot",
+      "raw_qa"
+    ],
+    "cases": 24,
+    "oracle_cases": 16,
+    "qualitative_cases": 8,
+    "requests": 576,
+    "max_new": 64,
+    "precision": "FP32_MATH",
+    "tf32": false,
+    "kv": true,
+    "mtp": false,
+    "greedy": true,
+    "temperature": 0,
+    "top_k": 1,
+    "weight_updates": 0,
+    "checkpoint_writes": 0,
+    "teacher_calls": 0
+  },
+  "impact": "Existing strict six-model loader unchanged. New read-only evaluation sources and own namespace only. No oldCP/raw/cache/dirty changes; no training/teacher/checkpointwrites.",
+  "independent_variables": "Four fixed prompt packages on the same24 probes and6 checkpoints; package effects not pure tag causality.",
+  "baseline": "Same immutable6 trained CP/route/core. Each is its own input-condition comparator. Known16 literal probes and8qualitative, no blind generalization claim.",
+  "registry_tag_check": "No prior saved logs for p106b_prompt_access_v1_s1337",
+  "N_A": [
+    "Training tokens/pool/micro/accum: inference-only, no learning",
+    "New teacher/data/tokenizer acquisition: none"
+  ],
+  "root_tests_before_ready": "25 pure CPU tests passed0.754seconds; no real models/tensors",
+  "root_metadata_after_ready": "576requests/source28/torch imports0/models0/checkpoint tensor0",
+  "antithesis": "Final SHA-matched review: no P1. External stdout96/24 must be counted separately from report counters.",
+  "metric_declaration": "Strict raw literal primary; strip-only secondary; general bothnull; substringwarning not semantic error",
+  "limits": "worker600/wrapper630, evaluation16:40KST/readback17KST; serial GPU",
+  "verification_boundary": "This preflight catches known design errors, not actual scientific success.",
+  "initial_patch_error": "An invalid plan context caused one patch to be rejected; applied corrected exact-context patch. No experiment executed from failed patch."
+}

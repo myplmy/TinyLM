@@ -106,5 +106,24 @@
       "read_scope": "root abstract; instruction finetuning evidence separate from inference-only prompting"
     }
   ],
-  "status": "DESIGNED_NOT_RUN"
+  "scoring": {
+    "primary": "answer == oracle; raw exact literal, not semantic correctness",
+    "secondary": "answer.strip() == oracle; remove only leading/trailing whitespace",
+    "general_questions": "HUMAN_REVIEW; both automatic metrics null",
+    "question_substring_present": "warning only; no regeneration/exclusion/correctness judgment",
+    "no_best_of_selection": true
+  },
+  "stdout_contract": {
+    "fixed_case_ids": [
+      "add_1_1_ko",
+      "younghee_5_ko",
+      "apple_general_ko",
+      "greeting_general_en"
+    ],
+    "samples": 96,
+    "progress": 24,
+    "all_raw": 576,
+    "log_recovery": "root verifies external raw contains96 samples/24progress separately from internal counters"
+  },
+  "status": "ROOT_REVIEWED_CPU25_PASS_ACTUAL_NOT_RUN"
 }

@@ -7039,7 +7039,9 @@ Native595 F의 영어MC345/768·Q324/768과 Broad704 뒤의 자유답 실패를 
 
 ### 5. 판정
 
-실제문자답/생성IDs/종료·원CP/core/source와형식별16개 strict literal 일치를 재합산한다. 확장된 올바른 문장의 의미정답 여부는 literal 불일치와 구분해 수동 판독한다. 가장 좋은 형식만 골라 원모델의 성능인 것처럼 보고하지 않는다. 현재소수문항은 반복관찰된probe이지 blind일반화benchmark가아니다.
+실제문자답/생성IDs/종료·원CP/core/source와형식별16개 strict literal 일치를 재합산한다. 13시 실제 실행 전 사전 고정한 보조 지표는 answer.strip()==oracle이며 양끝 공백만 제거하고 원답·주 지표를 바꾸지 않는다. 일반8문항은 두 자동 지표 모두 null이다. question_substring_present는 문자 포함 경고일 뿐 오류/정답 판정이 아니다. 확장된 올바른 문장의 의미정답 여부는 literal 불일치와 구분해 수동 판독한다. 가장 좋은 형식만 골라 원모델의 성능인 것처럼 보고하지 않는다. 현재소수문항은 반복관찰된probe이지 blind일반화benchmark가아니다.
+
+콘솔에도 사전 고정한 add_1_1_ko·younghee_5_ko·apple_general_ko·greeting_general_en의 실제 질문/전체 입력/답/종료를 6모델×4형식으로96개 보여 준다. 형식 완료24행과 전체576원답은 별도다. 회수 시 외부 raw 로그의 실제96/24행도 직접 대조하며 report 내부 카운터만으로 로그 완전성을 주장하지 않는다.
 
 ### 6. 비용·대안
 
