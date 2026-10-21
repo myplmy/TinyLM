@@ -68,6 +68,27 @@ def limit_window(seconds, deadline_utc=None):
     return seconds
 
 
+@contextmanager
+def supported_wall_limit(seconds):
+    """Own eight-hour timer; never relax the original six-hour runtime guard."""
+    from scripts.diag_p106b_gemma_budget_resume import ProductionBudgetPause
+    if not 0 < seconds <= 28800:
+        raise ValueError("supported production wall window must be positive and at most8h")
+    previous = signal.getsignal(signal.SIGALRM)
+    previous_timer = signal.getitimer(signal.ITIMER_REAL)
+    if previous_timer != (0.0, 0.0):
+        raise ValueError("another active wall timer cannot be silently replaced")
+    def expired(*_):
+        raise ProductionBudgetPause("owned8h production window expired; immutable incremental batch retained")
+    signal.signal(signal.SIGALRM, expired)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous)
+
+
 def batches(control, destination):
     dirs = sorted(destination.glob("batch_*")) if destination.exists() else []
     for i, directory in enumerate(dirs):
@@ -153,6 +174,7 @@ def scope(destination, stop_file=None, groups_limit=None):
                 (producer, "require_pilots", lambda: info), (producer.tasks, "payload", payload),
                 (producer, "produce_group", group),
                 (producer, "disposition", disposition),
+                (producer, "wall_limit", supported_wall_limit),
                 (producer, "state_from_saved", lambda tok, base: replay(producer.control, tok, base, destination, initial_cursor)),
                 (producer.control, "batch_reports", lambda: batches(producer.control, destination)),
                 (producer.control, "OUTPUT", destination), (producer.control, "TAG", TAG)):
@@ -164,7 +186,7 @@ def execute(args):
     from scripts.p106b_source_cleanup import safe
     from scripts.p106b_memory_stream import PersistentMemory, stream_session_scope
     from scripts.diag_p106b_gemma_telemetry_resume import RetryingMemoryReader
-    from scripts.diag_p106b_gemma_budget_resume import production_budget_scope, ProductionBudgetPause
+    from scripts.diag_p106b_gemma_budget_resume import ProductionBudgetPause
     destination = PILOT if args.mode == "pilot" else OUTPUT
     stop = safe(args.stop_file) if args.stop_file else destination / "STOP"
     if stop.exists(): raise FileExistsError("stop file still present; user must move it before resume")
@@ -178,12 +200,11 @@ def execute(args):
                 raise FileNotFoundError("same-code successful4-candidate support pilot required")
         with PersistentMemory() as memory:
             reader = RetryingMemoryReader(memory, emit=lambda value: print(value, flush=True))
-            budget = {"expired": False}
             previous = signal.getsignal(signal.SIGTERM)
             def terminate(*_): raise ProductionBudgetPause("SIGTERM requested; published batch is incremental")
             signal.signal(signal.SIGTERM, terminate)
             try:
-                with stream_session_scope(reader), production_budget_scope(budget):
+                with stream_session_scope(reader):
                     return producer.production(resume=args.mode == "resume", max_wall_sec=seconds)
             finally:
                 signal.signal(signal.SIGTERM, previous)

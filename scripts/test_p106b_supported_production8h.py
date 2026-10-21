@@ -5,16 +5,37 @@ if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 import unittest
 import json
 import tempfile
+from contextlib import nullcontext
 from types import SimpleNamespace
+from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from scripts.diag_p106b_supported_production8h import (
-    VERSION, attach_visible_source, batches, limit_window, replay, visible_source)
+    ROOT, VERSION, attach_visible_source, batches, limit_window, replay, scope,
+    supported_wall_limit, visible_source)
 
 
 class SupportedProductionTests(unittest.TestCase):
     def test_eight_hours(self):
         self.assertEqual(limit_window(28800), 28800)
         with self.assertRaises(ValueError): limit_window(28801)
+
+    def test_real_producer_uses_new_eight_hour_timer_only_in_scope(self):
+        from scripts import diag_p106b_gemma_mtp_resume as old
+        from scripts import diag_p106b_gemma_deficit_production as producer
+        from scripts import diag_p106b_gemma_stream_fork as streaming
+        original = producer.wall_limit
+        with patch.object(old, "on_scope", return_value=nullcontext()), \
+             patch.object(old, "pinned_ancestors", return_value=[(None, {"cursor": [1, 3]})]), \
+             patch.object(streaming, "pinned_on_reports", return_value=[]), \
+             patch.object(producer, "require_pilots", return_value={}):
+            with scope(ROOT / "runs/eval/uncreated_supported8h_cpu_fixture") as (actual, _):
+                self.assertIs(actual.wall_limit, supported_wall_limit)
+                with patch("signal.getsignal", return_value=None), \
+                     patch("signal.getitimer", return_value=(0.0, 0.0)), \
+                     patch("signal.signal"), patch("signal.setitimer") as timer:
+                    with actual.wall_limit(28799.5): pass
+                    self.assertEqual(timer.call_args_list[0].args[1], 28799.5)
+        self.assertIs(producer.wall_limit, original)
 
     def test_expired_authority(self):
         with self.assertRaises(ValueError): limit_window(28800, "2000-01-01T00:00:00Z")
