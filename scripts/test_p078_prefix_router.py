@@ -45,6 +45,7 @@ def fixture_rows(n=96):
 
 def args(**kw):
     values = dict(resource_only_r1=False, corpus=d.base.CLEAN_CORPUS, corpus_sha256='A' * 64,
+        holdout_sha256='B' * 64,
         adam_lr=5e-5, muon_lr=2e-4, authorization='handoff/audit/toy_router.json', authorization_sha256=None,
         max_wall_sec=600, mode='prepare')
     values.update(kw); return SimpleNamespace(**values)
@@ -493,6 +494,49 @@ class RouterTests(unittest.TestCase):
         self.assertIn('scripts/test_p078_prefix_router.py', d.CODE); self.assertEqual(len(d.CODE), len(set(d.CODE)))
         info = d.signature(args()); self.assertEqual(len(info['source_sha256']), len(d.CODE)); self.assertFalse(info['fully_blind'] if 'fully_blind' in info else info['split']['fully_blind'])
         self.assertEqual(info['head']['dev_epochs'], [1, 3, 5]); self.assertEqual(info['body_source_signature_sha256'], r.route.sha(d.base.signature(args())))
+
+    def test_v2_official_train_fixture_excludes_all_old_aliases_and_does_not_mutate_documents(self):
+        from scripts import p078_router_holdout_data as h
+        values,tools=h.source_tools(); documents={}
+        for language in ('ko','en'):
+            articles=[]
+            for i in range(16):
+                context=language+' context '+str(i)+' answer'; articles.append(dict(title=language+' article '+str(i),paragraphs=[dict(context=context,
+                    qas=[dict(id=language+str(i),question=language+' question '+str(i),answers=[dict(text='answer',answer_start=context.index('answer'))])])]))
+            documents[language]=dict(path='fixture/'+language,sha256='A'*64,document=dict(data=articles))
+        before=copy.deepcopy(documents); pairs,_=h.candidates(documents,set(),tools,values['VERSION'])
+        self.assertEqual(len(pairs),32); blocked=h.evidence_keys(pairs[0]['row'])
+        filtered,reasons=h.candidates(documents,blocked,tools,values['VERSION'])
+        self.assertEqual(len(filtered),31); self.assertTrue(all(not set(p['keys'])&blocked for p in filtered))
+        self.assertEqual(documents,before); self.assertEqual(sum(reasons.values()),1)
+        self.assertIn('raw_question:',next(k for k in blocked if k.startswith('raw_question:')))
+
+    def test_v2_connected_groups_fixed_bucket_exact_quota_and_shortage_hold(self):
+        from scripts import p078_router_holdout_data as h
+        values,tools=h.source_tools(); pairs=[]
+        for language in ('ko','en'):
+            for i in range(64):
+                pair=dict(root=language+'-root-'+str(i),language=language,article_id=language+'-article-'+str(i),context_id=language+'-context-'+str(i),
+                    article_title='fixture',qa_id=str(i),source_path='fixture',source_sha256='A'*64,question=language+' question '+str(i),
+                    context=language+' context '+str(i)+' answer',answers=[dict(text='answer',answer_start=0)])
+                pair['row']=h.row_from_pair(pair,tools['_user']); pair['keys']=sorted(h.evidence_keys(pair['row'])); pairs.append(pair)
+        # A raw-question alias links two otherwise independent source articles.
+        pairs[1]['keys'].append(next(k for k in pairs[0]['keys'] if k.startswith('raw_question:')))
+        first=h.group_inventory(pairs); second=h.group_inventory(copy.deepcopy(pairs)); self.assertEqual(first,second)
+        self.assertEqual(pairs[0]['group_sha256'],pairs[1]['group_sha256']); self.assertEqual(pairs[0]['split'],pairs[1]['split'])
+        selected,rejected=h.select(pairs,set(),tools,lambda row:(row,None),target=2)
+        self.assertFalse(rejected)
+        for split in ('dev','test'):
+            self.assertEqual(len(selected[split]),4)
+            self.assertEqual({lang:sum(p['language']==lang for p,row in selected[split]) for lang in ('ko','en')},dict(ko=2,en=2))
+        self.assertFalse({k for p,row in selected['dev'] for k in p['keys']} & {k for p,row in selected['test'] for k in p['keys']})
+        with self.assertRaisesRegex(ValueError,'HOLD_SUPPLY'): h.select(pairs[:1],set(),tools,lambda row:(row,None),target=2)
+        self.assertEqual(h.SEED,1337); self.assertEqual(h.TARGET,128)
+
+    def test_v2_source_metadata_inventory_fresh_process_imports_no_torch_or_model(self):
+        code="from scripts import p078_router_holdout_data as h; import sys; h.source_tools(); assert 'torch' not in sys.modules; assert h.main(['--mode','inventory','--check-only'])==0; assert 'torch' not in sys.modules"
+        result=subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,capture_output=True,text=True,timeout=15)
+        self.assertEqual(result.returncode,0,result.stderr); self.assertIn('STATIC_ONLY',result.stdout)
 
 
 if __name__ == '__main__': unittest.main()

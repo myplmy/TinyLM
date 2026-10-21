@@ -18,7 +18,8 @@ from types import SimpleNamespace
 import unicodedata
 from scripts import p078_route_training as route
 
-SCHEMA = 'P078_PREFIX_ROUTER_V1'
+SCHEMA = 'P078_PREFIX_ROUTER_V2'
+LEGACY_SPLIT_SCHEMA = 'P078_PREFIX_ROUTER_V1'  # Preserve the old512 failure; V2 uses its separate source manifest.
 FEATURE_SPEC = dict(schema=SCHEMA, pooling=['mean', 'position_weighted_mean', 'last_token'],
     scalars=['log1p_prefix_tokens', 'prefix_tokens/1024'], embedding='FROZEN_BODY_EMB_ROWS_FP32',
     boundary='x[:first_actual_supervised_target+1]; known-past correction allowed; future gold excluded',
@@ -118,14 +119,14 @@ def split_manifest(rows, *, seed=1337, min_rows=128, min_language=64):
             else: key_owner[key] = i
     components = {}
     for i in range(len(rows)): components.setdefault(find(i), []).append(i)
-    result = dict(schema=SCHEMA, seed=seed, min_rows=min_rows, min_language=min_language,
+    result = dict(schema=SCHEMA, split_hash_schema=LEGACY_SPLIT_SCHEMA, seed=seed, min_rows=min_rows, min_language=min_language,
         rows=len(rows), groups=len(components), splits={'dev': [], 'test': []},
         body_validation_reused=True, fully_pipeline_blind=False,
         claim='TEST unused by router fitting/selection only; body already validated on original VAL',
         future_fresh_roots='NOT_IMPLEMENTED; separate fresh-source contract required')
     for members in components.values():
         group = route.sha(sorted({key for i in members for key in keys[i]}))
-        split = 'dev' if int(route.sha([SCHEMA, seed, group])[:16], 16) % 2 == 0 else 'test'
+        split = 'dev' if int(route.sha([LEGACY_SPLIT_SCHEMA, seed, group])[:16], 16) % 2 == 0 else 'test'
         for i in members:
             result['splits'][split].append(dict(index=i, row_sha256=row_sha(rows[i]),
                 language=rows[i]['meta']['language'], group_sha256=group, keys=keys[i], case_order_sha256=case_order_sha(rows[i], seed)))

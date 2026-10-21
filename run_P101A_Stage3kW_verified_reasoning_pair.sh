@@ -10,7 +10,13 @@ failed=0
 "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_parent_baseline_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_eval.py --family direct --arm parent_baseline --max-wall-sec 1800 --execute || failed=1
 for family in direct trace; do
     "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 --note 'Same P090B parent,4096canonicalROOT/m8a16/ckptON/seq1024/LR5e-5/Muon2e-4/4passes128updates. Code-owned intermediate-state supervision, not hidden thinking head. DEV/TEST roots separate from TRAIN, official benchmark answers not inputs. Cost32 is not quality. Final first answers and retention must be read, not just CE.'
-    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family "$family" --mode calibrate --arm parent_ntp --max-wall-sec 1200 --execute; then
+    cost_rc=0
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/check_p101a_clean_cost.py --family "$family" --arm parent_ntp --check-only || cost_rc=$?
+    if [[ "$cost_rc" == 8 ]]; then
+        "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3kW_"$family"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family "$family" --mode calibrate --arm parent_ntp --max-wall-sec 1200 --execute || cost_rc=9
+        [[ "$cost_rc" == 8 ]] && cost_rc=0
+    fi
+    if [[ "$cost_rc" != 0 ]]; then
         failed=1
         continue
     fi

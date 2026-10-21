@@ -9,7 +9,13 @@ stamp="$(date +%H%M%S)"
 failed=0
 for arm in scratch_ntp scratch_mtp parent_ntp parent_mtp; do
     "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3jW_"$arm"_"$stamp" --num 092 --note 'New22528TRAIN/512DEV corpus; actual5.405M x/pass,552609targets/pass,4passes704updates, m8a16/ckptON/seq1024, LR5e-5/Muon2e-4, correction-turn masks. Official TRAIN annotations used; official evaluation gold not trained. Not old8M rerun or75M completion. Cost32 is resource only; same-code cost required. Independent arms continue after failure.'
-    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3jW_"$arm"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family mtp --mode calibrate --arm "$arm" --max-wall-sec 1200 --execute; then
+    cost_rc=0
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3jW_"$arm"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/check_p101a_clean_cost.py --family mtp --arm "$arm" --check-only || cost_rc=$?
+    if [[ "$cost_rc" == 8 ]]; then
+        "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3jW_"$arm"_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_bilingual.py --family mtp --mode calibrate --arm "$arm" --max-wall-sec 1200 --execute || cost_rc=9
+        [[ "$cost_rc" == 8 ]] && cost_rc=0
+    fi
+    if [[ "$cost_rc" != 0 ]]; then
         failed=1
         continue
     fi

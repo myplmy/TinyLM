@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent P078 Stage3 learned prefix-router pilot (READY=False).
+"""Independent P078 Stage3 learned prefix-router pilot (implementation reviewed).
 
 Closed balanced_count V3 body only. R1 parent is explicitly resource-only.
 No old Runtime/authority/clock override. check-only opens source bytes only.
@@ -26,11 +26,11 @@ if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from scripts import p078_prefix_router as router
 from scripts import diag_p078_route_training as base
 
-READY = False
-TAG = 'p078_prefix_router_v1_s1337'
+READY = True  # Root reviewed source; real assets/cost/budget/authority still fail closed.
+TAG = 'p078_prefix_router_v2_s1337'
 MODES = ('toy', 'prepare', 'cost', 'budget', 'labels', 'fit', 'evaluate', 'readback')
 CODE = tuple(dict.fromkeys(('scripts/p078_prefix_router.py', 'scripts/test_p078_prefix_router.py',
-    'scripts/diag_p078_prefix_router.py', *base.CODE)))
+    'scripts/diag_p078_prefix_router.py', 'scripts/p078_router_holdout_data.py', 'scripts/p106b_night_qa_data.py', *base.CODE)))
 MAX_FAMILY = 144000
 sha = router.route.sha
 Hold = base.Hold
@@ -60,12 +60,14 @@ def write(args, relative, value):
 def signature(args):
     return dict(schema=router.SCHEMA, tag=namespace(args), source_sha256={v: base.digest(root_path(v)) for v in CODE},
         corpus=base.CLEAN_CORPUS, corpus_report_sha256=args.corpus_sha256, tokenizer_sha256=base.TOK_SHA,
+        router_holdout_report='data_cache/p078_router_holdout_v2_s1337/report.json', router_holdout_sha256=args.holdout_sha256,
         frozen_body=base.PARENT if args.resource_only_r1 else base.cp_name('balanced_count', args),
         body_source_signature_sha256=sha(base.signature(args)), body_training='V3_BALANCED_COUNT_4PASS_704_ONLY',
         resource_only_r1=args.resource_only_r1, body_training_here=False, mtp=False, teacher=False,
         head=router.HEAD, feature=router.FEATURE_SPEC, actions=[1, 2, 3],
         split=dict(seed=1337, min_rows=128, min_language=64, unit='CONNECTED_ARTICLE_CONTEXT_ROOT_COMPONENT',
-            seed_search=False, body_VAL_already_used=True, fully_blind=False),
+            seed_search=False, body_validation='ORIGINAL_V3_VAL512_UNCHANGED',
+            router_holdout='UNUSED_OFFICIAL_TRAIN_GROUPS_DISJOINT_FROM_ORIGINAL_TRAIN_AND_VAL', fully_blind=False),
         policy='ONLINE_PREFIX_ONLY_ARGMIN_PREDICTED_RELATIVE_CE_UNDER_FIXED_QUOTA_1_2_2_3',
         controls=list(router.POLICIES), primary='MATCHED_CHOSEN_ACTION_CE_AND_ACTUAL_FIRST_ANSWER',
         generation=dict(precision='FP32_MATH', tf32=False, cache=False, max_new=128, top_k=1, temperature=0., mtp=False),
@@ -89,10 +91,13 @@ def corpus_rows(args):
 
 
 def prepare(args):
-    corpus, rows = corpus_rows(args); manifest = router.split_manifest(rows['val'])
+    from scripts import p078_router_holdout_data as holdout
+    corpus, rows = corpus_rows(args); frozen, fresh = holdout.read_prepared(args.holdout_sha256,args.corpus_sha256)
+    manifest = frozen['split_manifest']
     return dict(status='ROUTER_SPLIT_PREPARED_BODY_NOT_LOADED', split_manifest=manifest,
         train_rows=len(rows['train']), train_rows_sha256=sha([router.row_sha(r) for r in rows['train']]),
-        val_rows_sha256=sha([router.row_sha(r) for r in rows['val']]), corpus_manifests=corpus['manifests'],
+        val_rows_sha256=sha([router.row_sha(r) for r in fresh]), corpus_manifests=corpus['manifests'],
+        original_body_val_rows_sha256=sha([router.row_sha(r) for r in rows['val']]), holdout_report_sha256=args.holdout_sha256,
         corpus_counts=corpus['counts'], actual_unique_train_x_tokens=corpus['actual_unique_train_x_tokens'],
         model_loads=0, checkpoint_tensor_loads=0, tokenizer_loads=0,
         feature_labels='NOT_RUN', root_scope='explicit source lineage and normalized exact context/question, not semantic translation equivalence')
@@ -204,6 +209,10 @@ def frozen_body(args):
 
 def records_and_rows(args, tok):
     report, rows = corpus_rows(args); records = base.encoded(args, report, tok)
+    from scripts import p078_router_holdout_data as holdout
+    from scripts.diag_p101a_clean_bilingual import masked_record
+    frozen, fresh = holdout.read_prepared(args.holdout_sha256,args.corpus_sha256)
+    rows['val']=fresh; records['val']=[masked_record(row,tok) for row in fresh]
     for split in ('train', 'val'):
         if len(records[split]) != len(rows[split]): raise ValueError('record/row alignment differs')
         for row, record in zip(rows[split], records[split]):
@@ -657,7 +666,7 @@ def worker(args):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__); p.add_argument('--mode', choices=MODES, required=True)
-    p.add_argument('--corpus-sha256'); p.add_argument('--authorization'); p.add_argument('--authorization-sha256')
+    p.add_argument('--corpus-sha256'); p.add_argument('--holdout-sha256'); p.add_argument('--authorization'); p.add_argument('--authorization-sha256')
     p.add_argument('--resource-only-r1', action='store_true'); p.add_argument('--max-wall-sec', type=int, default=1800)
     p.add_argument('--worker', action='store_true'); choice = p.add_mutually_exclusive_group(required=True)
     choice.add_argument('--execute', action='store_true'); choice.add_argument('--check-only', action='store_true'); args = p.parse_args(argv)
@@ -674,6 +683,7 @@ def main(argv=None):
             return 0 if unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(tests)).wasSuccessful() else 9
         if not READY: raise Hold('root source review/real input/cost pending; router implementation gate closed')
         if not isinstance(args.corpus_sha256, str) or len(args.corpus_sha256) != 64: raise Hold('exact root-pinned V3 corpus report SHA required')
+        if not isinstance(args.holdout_sha256,str) or len(args.holdout_sha256)!=64: raise Hold('exact independent V2 holdout report SHA required')
         if not 60 <= args.max_wall_sec <= MAX_FAMILY: raise ValueError('bounded explicit worker cap required')
         if args.worker: return worker(args)
         invocation = sys.argv[1:] if argv is None else argv
