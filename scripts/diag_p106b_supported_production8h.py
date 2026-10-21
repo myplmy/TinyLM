@@ -19,8 +19,8 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
-VERSION = "GEMMA_SUPPORTED_SOURCE_8H_V1"
-TAG = "p106b_supported_production8h_v1_s1337"
+VERSION = "GEMMA_SUPPORTED_SOURCE_8H_V2"
+TAG = "p106b_supported_production8h_v2_s1337"
 OUTPUT = ROOT / "HF/sft_ready" / TAG
 PILOT = ROOT / "HF/sft_ready" / (TAG + "_pilot")
 
@@ -119,6 +119,31 @@ def replay(control, tok, base, destination, initial_cursor):
     return state, cursor, count
 
 
+def require_pilot(info, destination=PILOT):
+    """A failed/corrupt pilot cannot become permission for long production."""
+    from scripts.p106b_shards import verify
+    from scripts import diag_p106b_gemma_deficit_production as producer
+    directory = destination / "batch_000000"
+    report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
+    if (report.get("input") != info or report.get("status") != "PRODUCTION_PAUSED"
+            or report.get("returncode") != 8 or report.get("error_type") != "ProductionBudgetPause"
+            or report.get("accepted_groups", 0) < 4):
+        raise FileNotFoundError("same-code controlled-pause successful4-candidate pilot required")
+    for key in ("raw_manifest", "candidate_manifest"):
+        if key not in report: raise FileNotFoundError("pilot raw and candidate manifests required")
+        verify(directory, report[key])
+    rows = list(producer.control.rows(directory, report["candidate_manifest"]))
+    if len(rows) != report["candidate_manifest"]["rows"] or len(rows) < 4:
+        raise ValueError("pilot candidate row count differs")
+    for row in rows:
+        meta = row.get("meta", {})
+        if (meta.get("visible_source_contract") != VERSION
+                or len(meta.get("visible_source_sha256", "")) != 64
+                or not meta.get("original_teacher_question")):
+            raise ValueError("pilot lacks complete visible-source provenance")
+    return report
+
+
 @contextmanager
 def scope(destination, stop_file=None, groups_limit=None):
     from scripts import diag_p106b_gemma_mtp_resume as old
@@ -192,12 +217,11 @@ def execute(args):
     if stop.exists(): raise FileExistsError("stop file still present; user must move it before resume")
     seconds = limit_window(args.max_wall_sec, args.deadline_utc)
     with scope(destination, stop, 4 if args.mode == "pilot" else None) as (producer, info):
-        if args.mode != "pilot" and not (PILOT / "batch_000000/report.json").is_file():
-            raise FileNotFoundError("new visible-support pilot required before8h production")
         if args.mode != "pilot":
-            report = json.loads((PILOT / "batch_000000/report.json").read_text())
-            if report.get("input") != info or report.get("candidate_manifest", {}).get("rows", 0) < 4:
-                raise FileNotFoundError("same-code successful4-candidate support pilot required")
+            require_pilot(info)
+        # Ancestor verification may be slow. Charge that elapsed time against
+        # an absolute deadline before starting any monitor/teacher process.
+        seconds = limit_window(args.max_wall_sec, args.deadline_utc)
         with PersistentMemory() as memory:
             reader = RetryingMemoryReader(memory, emit=lambda value: print(value, flush=True))
             previous = signal.getsignal(signal.SIGTERM)

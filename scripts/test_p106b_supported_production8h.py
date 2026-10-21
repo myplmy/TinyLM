@@ -11,7 +11,7 @@ from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from scripts.diag_p106b_supported_production8h import (
     ROOT, VERSION, attach_visible_source, batches, limit_window, replay, scope,
-    supported_wall_limit, visible_source)
+    supported_wall_limit, require_pilot, execute, visible_source)
 
 
 class SupportedProductionTests(unittest.TestCase):
@@ -39,6 +39,38 @@ class SupportedProductionTests(unittest.TestCase):
 
     def test_expired_authority(self):
         with self.assertRaises(ValueError): limit_window(28800, "2000-01-01T00:00:00Z")
+
+    def test_failed_pilot_cannot_open_bulk_even_with_four_claimed_rows(self):
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp) / "batch_000000"
+            directory.mkdir()
+            (directory / "report.json").write_text(json.dumps(dict(input={},
+                status="TOOL_FAILURE", returncode=9, accepted_groups=4,
+                candidate_manifest={"rows": 4})), encoding="utf-8")
+            with self.assertRaises(FileNotFoundError): require_pilot({}, Path(temp))
+
+    def test_missing_pilot_shard_cannot_open_bulk(self):
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp) / "batch_000000"
+            directory.mkdir()
+            (directory / "report.json").write_text(json.dumps(dict(input={},
+                status="PRODUCTION_PAUSED", returncode=8, error_type="ProductionBudgetPause",
+                accepted_groups=4, raw_manifest={"rows": 4}, candidate_manifest={"rows": 4})), encoding="utf-8")
+            with self.assertRaises((ValueError, KeyError, FileNotFoundError)):
+                require_pilot({}, Path(temp))
+
+    def test_deadline_rechecked_after_scope_verification(self):
+        from scripts import diag_p106b_supported_production8h as module
+        memory = SimpleNamespace(snapshot=lambda: {})
+        production = SimpleNamespace(production=lambda **kwargs: kwargs["max_wall_sec"])
+        args = SimpleNamespace(mode="pilot", stop_file=None, max_wall_sec=600,
+                               deadline_utc="2026-10-21T14:00:00Z")
+        with patch.object(module, "scope", return_value=nullcontext((production, {}))), \
+             patch.object(module, "limit_window", side_effect=[600, 90]) as limit, \
+             patch("scripts.p106b_memory_stream.PersistentMemory", return_value=nullcontext(memory)), \
+             patch("scripts.p106b_memory_stream.stream_session_scope", return_value=nullcontext()):
+            self.assertEqual(execute(args), 90)
+            self.assertEqual(limit.call_count, 2)
 
     def test_deadline_caps_window(self):
         end = (datetime.now(timezone.utc) + timedelta(seconds=300)).isoformat()
