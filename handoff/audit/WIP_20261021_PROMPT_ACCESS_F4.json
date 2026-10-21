@@ -1,0 +1,110 @@
+{
+  "schema": "TINYLM_PROMPT_ACCESS_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "tag": "p106b_prompt_access_v1_s1337",
+  "stage": "P106B_Stage4frW",
+  "authority": "사용자의21일17시CPU+GPU주도실험허가. 신규비학습진단은기존trace학습분기의12시HOLD를우회하지않으며원분기의source/F4/data/clock불변.",
+  "observation": "Native595 F EnglishMC345/768 and Q324/768; Broad704 actual first answers still fail/repeat. Native vs same-parent student has real matched lineage only for595 pair.",
+  "alternatives": [
+    {
+      "id": "A",
+      "selected": true,
+      "method": "동일6CP/24질문에사전고정4입력형식의첫답576개를한번씩수집",
+      "benefit": "추가학습없이입력조건민감성을분리",
+      "cost": "새runner/test/2SH·CPU검증·직렬GPU최대600초;의미적정답성은별도",
+      "scope": "프롬프트패키지효과만관측;fewshot은정보추가라순수표지인과아님"
+    },
+    {
+      "id": "B",
+      "selected": false,
+      "method": "추가fine-tuning·새head/구조변경",
+      "benefit": "가중치수준행동을바꿀가능성",
+      "cost": "새학습자료/초기화/양cost/시간·품질검증이필요;이번진단으로채택하지않음"
+    },
+    {
+      "id": "C",
+      "selected": false,
+      "method": "공개평가/스모크회수만마무리",
+      "benefit": "새코드/GPU추가0",
+      "cost": "현재MC와자유답사이입력형식의영향은미계측"
+    }
+  ],
+  "write_allowlist": [
+    "scripts/diag_p106b_prompt_access.py",
+    "scripts/test_p106b_prompt_access.py",
+    "run_P106B_Stage4frWa_prompt_access_six.sh",
+    "run_P106B_Stage4frWb_prompt_access_readback.sh",
+    "test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md",
+    "current result/registries/COMPASS/METHODS/WIP/audit",
+    "new runs/eval and test_result/evidence under own tag"
+  ],
+  "excluded_writes": [
+    "all old scripts/F4/checkpoints/raw/cache",
+    "dirty old interactive utilities",
+    "protected TinyDataset/HF/download/environment/root09",
+    "all training/optimizer/checkpoint creation"
+  ],
+  "domain_impact": {
+    "code": "Reuse actual strict independent six-model UI loader and pinned FP32 precision/capture; add input renderer, bounded evaluator/raw regrade only.",
+    "data": "No training corpus or new knowledge.24fixed probes16known oracle/8qualitative;all inputs/raw preserved,20MBshards.",
+    "tests": "Pure fixture cases/renderers/scoring/counts/namespace/timing/readback; no fixtures touch real report paths.",
+    "canonical_docs": "Plan/result/baseline/method/COMPASS/TSV/flags/WIP/source commit linked.",
+    "debt": "Bounded six-model research utility, no general model loader or deployment claim.",
+    "authority": "Explicit current17KST user grant; independent inference only, not old training Runtime/clock facade.",
+    "ownership": "Known manifest6CP/tokenizer read only; no old data/checkpoint overwrite/delete; serial GPU.",
+    "validity": "Same24cases and exact6CP,4predeclared prompt packages;no best-of selection. Raw QA versus ChatML also changes serialization;fewshot adds correct examples.",
+    "evidence": "exact_literal_match for16oracle probes only;unknown/general8 no automatic semantic correctness. Finish≠correct;target answer never supplied as demonstration for same problem."
+  },
+  "design": {
+    "models": [
+      "native595-q",
+      "native595-f",
+      "old299-broad-q",
+      "old299-broad-f",
+      "new595-broad-q",
+      "new595-broad-f"
+    ],
+    "formats": [
+      "chat_bare",
+      "chat_contract",
+      "chat_fewshot",
+      "raw_qa"
+    ],
+    "cases": 24,
+    "oracle_cases": 16,
+    "qualitative_cases": 8,
+    "requests": 576,
+    "max_new": 64,
+    "precision": "FP32_MATH",
+    "tf32": false,
+    "kv": true,
+    "mtp": false,
+    "greedy": true,
+    "temperature": 0,
+    "top_k": 1,
+    "weight_updates": 0,
+    "checkpoint_writes": 0,
+    "teacher_calls": 0
+  },
+  "limits": {
+    "end_utc": "2026-10-21T07:40:00+00:00",
+    "worker_cap_seconds": 600,
+    "wrapper_cap_seconds": 630,
+    "record_before_user17KST": true
+  },
+  "primary_sources": [
+    {
+      "url": "https://arxiv.org/abs/2310.11324",
+      "read_scope": "root abstract; prompt-format sensitivity, not effect-size transfer toTinyLM"
+    },
+    {
+      "url": "https://arxiv.org/abs/2202.12837",
+      "read_scope": "root abstract; demonstrations also supply task/label/format information, not arithmetic guarantee"
+    },
+    {
+      "url": "https://arxiv.org/abs/2210.11416",
+      "read_scope": "root abstract; instruction finetuning evidence separate from inference-only prompting"
+    }
+  ],
+  "status": "DESIGNED_NOT_RUN"
+}

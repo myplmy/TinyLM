@@ -1,0 +1,26 @@
+Verified short trace pilot: same actual newF704 initializer,4096 canonical roots/four passes128 updates/micro8 accum16/ckptON/BF16/default compile; common SFT pad128/native1024. Direct versus trace target masses79520/512464 and native1048576 each: not reasoning-only or token-efficiency causality. Own prepare12KST/train14KST/end17KST on20261021; active10800, both cost8/all-pending train/eval/record budget mandatory. TEST1024+TRAIN32+USER6 per endpoint, raw IDs/strict final and trace separate. No stdin/download/teacher/new heads/MTP/old overwrite; closed readonly recount required, not quality adoption; public files below20MB. Modecost_direct cap900s.
+
+==============================================================================
+[runlog] 2026-10-21 11:52:08  name=P106B_Stage4fpWa_verified_direct_cost8_115207
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_verified_trace.py --mode cost --arm direct --max-wall-sec 900 --execute
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+.................................F.............
+======================================================================
+FAIL: test_worker_sigterm_is_130_and_closes_failed_activity_without_success_report (scripts.test_p106b_verified_trace.DriverFixtureTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p106b_verified_trace.py", line 693, in test_worker_sigterm_is_130_and_closes_failed_activity_without_success_report
+    self.assertEqual(writes[0][1]['returncode'], 130); self.assertIsNone(writes[0][1]['result_sha256'])
+AssertionError: '5EF7954A41684301EE4DD93F6362AE98E8EE56EE7BAE4B67E880E858624072E0' is not None
+
+----------------------------------------------------------------------
+Ran 47 tests in 0.325s
+
+FAILED (failures=1)
+[PHASE_END] 1/3 REGRESSION; rc=1; status=ERROR
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "cost_direct", "failed_phase": "REGRESSION", "main_experiment_invoked": false, "phases": [{"phase": "REGRESSION", "returncode": 1, "status": "ERROR"}, {"phase": "PREFLIGHT", "returncode": null, "status": "NOT_RUN"}, {"phase": "EXECUTE", "returncode": null, "status": "NOT_RUN"}], "returncode": 1, "schema": "P106B_STAGE_RECEIPT_V1", "status": "ERROR"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-10-21 11:52:08)
+==============================================================================
