@@ -1,0 +1,76 @@
+{
+  "schema": "TINYLM_RESEARCH_MANUAL_INFER_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "authority": "사용자가21일17시까지허가한주도적CPU+GPU·필요구현/검증/기록범위. 현재연구모델의올바른수동검증을위한독립유틸리티준비.",
+  "observation": {
+    "existing_menu": "scripts/interactive_infer.py::_load_runtime calls tinylm.infer.generate.load_model",
+    "dropped_metadata": "tinylm/infer/dialogue.py::selected_metadata does not retain quantization_route",
+    "generic_loader": "tinylm/infer/generate.py::load_model always set_anneal(1.0)/eval/freeze_quant; no float metadata dispatch",
+    "claim_level": "정적코드경로확인. 신규실수CP의범용메뉴출력은아직실측하지않음.",
+    "not_claimed": "현재전용실험평가의오류·과거사용자7질문전체원인·유틸리티수리만으로학생지능개선"
+  },
+  "alternatives": [
+    {
+      "id": "A",
+      "selected": true,
+      "description": "현재연구6종의닫힌실물에서root가export한독립manifest를엄격검증하는새GPU 수동메뉴/비대화CLI",
+      "benefit": "진행중source/hash·무관dirty를보존하면서올바른route/context를즉시검증가능",
+      "cost": "새구현2파일+전용회귀1·root실제동일prompt검증필요;일반유틸리티전체대체아님"
+    },
+    {
+      "id": "B",
+      "selected": false,
+      "description": "공용추론로더/기존메뉴에전체route metadata 지원통합",
+      "benefit": "단일메뉴로합칠수있음",
+      "cost": "현재generate.py의live source-pin과다른작업자의dirty를건드려현파이프라인종료/별도이관·넓은회귀가선결"
+    },
+    {
+      "id": "C",
+      "selected": false,
+      "description": "실수CP를범용메뉴에넣지말라는설명만남김",
+      "benefit": "코드변경0",
+      "cost": "사용자가현실수모델에임의질문하는올바른간편경로는남지않음"
+    }
+  ],
+  "allowed_new_files": [
+    "scripts/interactive_research_infer.py",
+    "scripts/test_interactive_research_infer.py",
+    "research_infer.sh"
+  ],
+  "excluded_existing_writes": [
+    "scripts/interactive_infer.py",
+    "tinylm/infer/dialogue.py",
+    "tinylm/infer/catalog.py",
+    "tinylm/infer/generate.py",
+    "all live experiment sources/F4",
+    "all checkpoint/raw/cache files",
+    "datasets/TinyDataset",
+    "HF raw",
+    "shared checkers",
+    ".agents",
+    ".codex"
+  ],
+  "contract": {
+    "models": "explicit stable six native595 Q/F, oldBroad Q/F, newBroad Q/F; no arbitrary metadata guessing",
+    "load": "root export binds all six completed report/activity/checkpoint bytes, full checkpoint header, cfg, core, tokenizer and inference source SHA. Manual loader checks this independent manifest and explicit route for the entire session; no experiment Runtime/authority import, override, facade, monkeypatch, time spoof or generic fallback",
+    "manifest": "handoff/audit/WIP_20261021_RESEARCH_INFER_MANIFEST.json; root-owned export after six actual checkpoints and strict experiment readbacks; TINYLM_RESEARCH_MANUAL_INFER_MANIFEST_V1; all six COMPLETE mandatory",
+    "authority_separation": "manual user inference is a separate read-only interface, not an extension of the historical experiment deadline or a permanent Codex GPU authorization. Original experiment guards, reports and F4 remain unchanged",
+    "available_listing": "small metadata only, not CP tensor/model/GPU; pending displayed honestly",
+    "inference": "FP32 MATH/TF32off/KVon/MTPoff/greedy128 defaults matching study; actual user text/optional actual history; no gold, training, CP writes",
+    "device": "independent strict manifest GPU loader only; no unimplemented CPU support claim",
+    "stdin": "manual TTY only; nonTTY without --model/--prompt fails before model; utility not experiments.tsv or run_queue entry",
+    "asset_policy": "pinned local chat32 tokenizer and six known checkpoints only; no download; selection validates source/cfg/state/core/route",
+    "resource": "before selected GPU model, fail closed on other compute process/query error; point query not continuous peak guarantee",
+    "output": "answer/finish reason/token counts plus actual CP/core/route identity; stop not correctness"
+  },
+  "impact": {
+    "code": "3 new isolated files; no active pinned code or dirty utility mutation",
+    "data": "read-only known reports/CP/tokenizer after explicit selection; no persistent output by default",
+    "tests": "pure CPU fixtures/menu/metadata/path/guard/route selection and shell syntax, then root authorized actual prompt parity after main model free",
+    "docs": "result/plan/method/COMPASS/WIP and final handoff usage; no root09/environment changes",
+    "priorities": "does not replace main6CP/SFT/public comparison; UI runtime smoke serial after science GPU jobs or safe gap",
+    "risks": "manifest loader is limited to six explicit research checkpoints; future model/route changes deliberately reject old pins. Historical training validation belongs to the root export, not reexecution of training under a manual interface. No universal deployment loader claim"
+  },
+  "implementation_state": "INDEPENDENT_MANIFEST_LOADER_CPU_IMPLEMENTATION; root actual export and GPU parity pending",
+  "source_frozen_math_study": "READ_ONLY_REVIEW_ONLY; no CoT/extrahead/pause/architecture implementation by this authorization"
+}

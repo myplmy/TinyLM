@@ -1,0 +1,157 @@
+{
+  "schema": "TINYLM_VERIFIED_SHORT_TRACE_F4_V1",
+  "wip": "handoff/WIP_20261019b_작업원장.md",
+  "tag": "p106b_verified_trace_v1_s1337",
+  "stage": "P106B_Stage4fpW",
+  "authority": "사용자가2026-10-21 17:00KST까지허가한CPU+GPU 주도실험과필요구현/검증·기록. 현재음성결과101§415·문헌/가설리뷰32에근거한별도소형원인분리이며사용자참고자료전달을승인근거로삼지않는다.",
+  "alternatives": [
+    {
+      "id": "A",
+      "selected": true,
+      "description": "같은4096 의미root/부모/128update에서 직접답과코드검산짧은trace 감독패키지를비교",
+      "benefit": "덧셈carry와질문대상·값읽기를구체적으로감독,추가헤드불필요",
+      "cost": "새3파일·독립회귀/자료/비용/예산/실답확인,답토큰·분모·시간증가;일반지능보장0"
+    },
+    {
+      "id": "B",
+      "selected": false,
+      "description": "한영/과제별목적기여또는행묶음재설계",
+      "benefit": "실측계수비대칭을겨냥",
+      "cost": "최적계수미정·언어와과제비중/길이/gradient교락. 이번원형계산변경안함"
+    },
+    {
+      "id": "C",
+      "selected": false,
+      "description": "pause/재귀/추가표현헤드개입",
+      "benefit": "별도계산/표현가능성연구",
+      "cost": "현재입력조건읽기실패해결보장없고구조·캐시·새토큰/마스크·학습비용증가;미구현유지"
+    }
+  ],
+  "allowed_new_implementation_files": [
+    "scripts/p106b_verified_trace_data.py",
+    "scripts/diag_p106b_verified_trace.py",
+    "scripts/test_p106b_verified_trace.py"
+  ],
+  "root_owned_documents": [
+    "test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md",
+    "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
+    "docs/EXPERIMENT_BASELINES.md",
+    "docs/METHODS.md",
+    "docs/methods/03_knowledge_quality.md",
+    "handoff/COMPASS.md",
+    "test_plan/실험계획목록.md",
+    "test_result/실험목록.md",
+    "experiments.tsv",
+    "checkpoints.tsv"
+  ],
+  "planned_root_owned_launchers": [
+    "run_P106B_Stage4fpW0_verified_trace_cpu.sh",
+    "run_P106B_Stage4fpWa_verified_direct_cost8.sh",
+    "run_P106B_Stage4fpWb_verified_trace_cost8.sh",
+    "run_P106B_Stage4fpWc_verified_trace_budget.sh",
+    "run_P106B_Stage4fpWd_verified_direct128.sh",
+    "run_P106B_Stage4fpWe_verified_trace128.sh",
+    "run_P106B_Stage4fpWf_verified_parent_answers.sh",
+    "run_P106B_Stage4fpWg_verified_direct_answers.sh",
+    "run_P106B_Stage4fpWh_verified_trace_answers.sh",
+    "run_P106B_Stage4fpWi_verified_trace_readback.sh"
+  ],
+  "excluded_writes": [
+    "all existing model/train/runtime/source/F4",
+    "other dirty interactive utilities",
+    "datasets/TinyDataset",
+    "HF raw",
+    "original checkpoint/log/cache",
+    "environment and shared checkers",
+    "root09",
+    "git push or PR"
+  ],
+  "data_contract": {
+    "families": [
+      "integer addition with independently verified digit sums/carry",
+      "two-subject integer-value lookup",
+      "one integer-value update then asked-subject lookup"
+    ],
+    "train": "4096 canonical fact roots:2048addition/1024lookup/1024update; one fixed language/question row perroot, KO2048 EN2048. Fourpasses128updates, not256.",
+    "split": "canonical before language/wording/order/asked subject; unordered operands for commutative addition and full sorted subject/value fact table forlookup. Samefact askedA/B/order/lang is one split. No inference/goldtrace in question. Frozen heldout train/dev/test roots. Preserve user6 exactquestions as out-of-training probes.",
+    "zero_one": "0/1 must occur in training as operands on other roots; reserve entire canonical roots for1+1/2+2 and exact userfact/prompt, not all0/1 numerals. No future claim allsameprompt unseen.",
+    "answers": "both policies use identical generic question/output requirement with exactly one final Answer:/답: line. Direct has final line only;trace has short code-verified digit/carry or subject/value selection steps plus the same final line. No thinking specialtokens, hiddenhead or literal arbitraryJSONwrapping.",
+    "evaluation": "parent/direct/trace on128heldout roots ×KO/EN ×four independentviews =1024TEST answers perendpoint/3072three endpoints. lookup/update use factorder ×askedsubject Cartesian4; addition uses operandorder ×wording4. Same-context/different-asked pairs mandatory. Parent/direct/trace also preserve32fixedone-row TRAIN observations+user6 separately, not in TEST denominator. No goldtrace input; exact final-line contract/step validity/IDs/EOT/body separate.",
+    "presentation": "Canonical sorted/min representation only owns root/split, never forces raw A=min/B=max. Raw mapping orientation, asked A/B, context first A/B and language must be independently counterbalanced and reported. Fixed always-first/always-max/stale-value baselines and samecontext target-change counterexamples required before CPU freeze."
+  },
+  "training_contract": {
+    "parent": "actual completed new595 F→Broad704 CP SHA2630B4C2862A41CB677AC9CAA89B0F2DD03234C4FD540FCCA6205AA847CF1C71/core00262611800E81BB117DB68F8053ED0A15A8454FBD9D34AFEFE44DB9A0D21B0D",
+    "source": "root actual CPU-exported training-initializer descriptor WIP_20261021_VERIFIED_TRACE_PARENT.json binds fixedCP2630B4C2/header/core/report/activity/evaluate/source88. Newdriver may independently construct matchingmodel from sealedcfg andstrictstate underexplicitfloat route; no family prepared/HF raw replay or manualinference_only runtime/manifest. Own14/17 authority and budgets mandatory.",
+    "batch": "micro8 accum16 cfg.max_seq_len1024/grad_ckpt-on; fixed common SFT execution width128 for both policies andnative1024 separately. Full4passes128updates: SFT paddedslots2097152/arm, old16777216 is only the1024-config maximum ceiling; actualx/assistant/native counters reported separately.",
+    "optimizer": "fresh relation_bind.make_optimizers lowercase3tuple; Adam5e-5/Muon2D RMS2e-4,WD0,clip1,BF16/defaultcompile,wholeupdate L0 assistant-token mean+native8192 mean coefficient1",
+    "replay": "same first1024 windows from old native replay provider,8192targets/update ->1048576 perarm; disjoint windowswithinpilot, not novel knowledge or disjoint fromhistoricalparents",
+    "controls": "MTP/ORPO/headwise/recursion/newsource/teacher0. Floatidentity route heldactive. Cost8temporary model discarded/CP0. train128CP1 perarm,optimizer notsaved. Retain actual raw/counters/gradient/step/model/optimizer continuity."
+  },
+  "execution_gates": {
+    "priority": "existing6CP/public comparison andmanualloader remain first. CPUprep may overlap maintraining; GPUserialonly. No newstudy if implementation/CPU/static/sourcepreservation/cost/budget arelate.",
+    "implementation_stop": "2026-10-21T03:00:00+00:00",
+    "training_stop": "2026-10-21T05:00:00+00:00",
+    "authority_end": "2026-10-21T08:00:00+00:00",
+    "family_actual_worker_seconds": 10800,
+    "train_worker_cap_seconds": 1800,
+    "cost_worker_cap_seconds": 900,
+    "evaluation_reserve_seconds": 3600,
+    "record_reserve_seconds": 600,
+    "evaluation_worker_cap_seconds": 1200,
+    "costs": "separate fixed8 groups perpolicy fromsame4k order, declaredshape/targets; bothcosts plus allpending train/eval +record mustfit freshUTC. Idle thermal provenance ifspeedclaim, no speedclaim fromuncontrolledcost.",
+    "mandatory": "realCPUcontracts/strict parent closedrefs and sourceSHA, allrecords fit1024 no truncation, no duplicates/splitleak, masks/EOT/IGNORE/gradient denominator verified. Allwindows/fourpass counters/readback required. Deadline/SIGTERM/mid-failure neverPASS. No budgetlimit or gate reduction after failure.",
+    "cpu_freeze_target": "2026-10-21T02:45:00+00:00",
+    "both_cost_budget_target": "2026-10-21T03:10:00+00:00"
+  },
+  "acceptance": "measure final answer correctness andcode-verifiable trace steps onheldoutroots, unseenorder/subject andunprompted user6; independentlyreadrepresentative fullanswers. Comparefixedrows/updates as output-supervision package withtoken/time/EOT/countdifferences explicit; not pureextra-reasoning causality, fullassistant/Falconproof orreplacement for75M×4.",
+  "impact": {
+    "code": "3 isolated implementationfiles, existingloophelper only, no live-core edits",
+    "data": "deterministic code-owned synthetic newnamespace withsourceids/hashes, no HF orprotectednewdata",
+    "tests": "pure fixtures plusCPU realtokenizer/data contract; actualGPU afterrootreview/preflight",
+    "docs": "sameP106B newstage and101chronological newresult/conditionclosure, registry/checkpointmetadata, methods/COMPASS/WIP",
+    "debt": "pilot bounded128/fixedparent, newfiles clearlimitedpurpose; NOTRUN iflate, no default orproductionpolicyadoption"
+  },
+  "state": "DATA_TEST_AND_DRIVER_IMPLEMENTATION; pre-GPU generator shortcut correction inprogress;4view evaluation budgetmustbe rechecked; no conditionalpilot GPU yet",
+  "root_owned_metadata": [
+    "handoff/audit/WIP_20261021_VERIFIED_TRACE_PARENT.json"
+  ],
+  "parent_export_boundary": "root may read the one exact own newF704 CP on CPU to bind bytes/header/core and closed train/evaluate reports/activity plus current source pins. No model construction/GPU/HF raw or other checkpoint enumeration in export. Actual CPU tensor read is distinct from prior model-free static tests.",
+  "pre_gpu_design_correction": {
+    "observation": "initial pure-stdlib18 tests validated structure/truth but root and agent found rawA=min/B=max and asked=firstfact shortcuts in generator/views. No actual tokenizer/course/GPU used from that draft.",
+    "decision": "preserve TRAIN4096/DEV128/TEST128 roots; expand2to4 Cartesian views before freeze; do not shrink test roots to fit runtime. Recount code-owned shortcut baselines; allnewfull-contract tests and cost/totalbudget needed.",
+    "scope": "data/test draft changed before immutable corpus/actual execution; never rewrites historicalmodel results"
+  },
+  "actual_root_cpu_admission": {
+    "full_stdlib_report": "handoff/audit/WIP_20261021_VERIFIED_TRACE_FULL_STDLIB.json",
+    "tokenizer_mask_report": "handoff/audit/WIP_20261021_VERIFIED_TRACE_TOKENIZER_MASKS.json",
+    "data_sha256": "1B1464F606529679720778F7D74DD93A2EF358BB7A09338895D58A8FDABDB9FE",
+    "train_direct": {
+      "rows": 4096,
+      "x_tokens": 199563,
+      "assistant_targets": 19880,
+      "eot_targets": 4096,
+      "max_record_length": 64
+    },
+    "train_trace": {
+      "rows": 4096,
+      "x_tokens": 307799,
+      "assistant_targets": 128116,
+      "eot_targets": 4096,
+      "max_record_length": 85
+    },
+    "prefix_owner_mismatches": 0,
+    "models": 0,
+    "checkpoint_loads": 0,
+    "gpu_calls": 0,
+    "limits": "independent root CPU materialization/tokenizer only; driver/cost/readback NOT_RUN"
+  },
+  "parent_descriptor_sha256": "4F97C1B724F95E11D1E45660AA4777E2FBDC14D300F428DE277D9D0F56D336EB",
+  "root_metadata_serialization_repair": "Before any actual prepare/model, root retained exact original Python JSON bytes rather than JS JSON number normalization. Original bad A140 seal preserved in WIP_20261021_PARENT_EXPORT_SERIALIZATION_REPAIR.json; no source/cfg normalization, CP/guard changes.",
+  "implementation_state": "SOURCE_FROZEN_ROOT_REVIEW_AND47_CPU_PASS; REAL_PREPARE_COST_MODEL_NOT_RUN",
+  "root_final_source_sha256": {
+    "scripts/p106b_verified_trace_data.py": "1B1464F606529679720778F7D74DD93A2EF358BB7A09338895D58A8FDABDB9FE",
+    "scripts/diag_p106b_verified_trace.py": "F5C12F004F17B3C0A0F0E22A64AF147B30516E6FF9662CB8380E7B87134784AE",
+    "scripts/test_p106b_verified_trace.py": "3EDE490F560D5132199D56711EAC8EDEAB027EC7D12CDA0F8047F1BA480FFBBB"
+  },
+  "frozen_before_actual_prepare": true
+}

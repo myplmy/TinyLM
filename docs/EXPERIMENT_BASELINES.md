@@ -237,12 +237,13 @@ fp32 상주와 int8 상주가 갈린다.**
 | 새 독립 태그 | 범위 | 상태 |
 |---|---|---|
 | `p106b_native595_public_v1_s1337` | Stage4fo 새native2/old·new Broad4의 같은공개팩9216요청·9212채점 | source401/test559·root전체리뷰/새32·통합67CPU39.673초·107map/원38본문·6captured·FP32class/독립검토와8SH 준비. 실제6종점완료 후 refs/CPUprepare·현재예산이 선결이고 실물팩/CP소비·모델/GPU평가는 NOT_RUN이다. |
-| `p106b_native595_broad_v1_s1337` | Stage4fn 실제595M 부모→원22528행/4pass704·옛5632 replay | F704/CP2630B4C2·닫힌검산과1694/17실제답을완료했다(101§413/415). TEST157/1024·natural3/128·기초0/24·사용자6답은실패다. grad30.58033/clip704·DEV1.945729/native32 3.236836은대화성공아님. Q704/공개는후속·원코드/기한불변이다. |
+| `p106b_native595_broad_v1_s1337` | Stage4fn 실제595M 부모→원22528행/4pass704·옛5632 replay | 양704/CP F3D1F0FB·2630B4C2와1694/17실제답·닫힌대조완료(101§413/415/417/419~420). Q/F TEST199/157·natural12/3·기초1/0 of24로 일반대화는미회복. Q grad34.663982/clip704·DEV1.996248/native32 3.407805. 전용수동6종정합완료·공개후속;원코드/기한불변. |
+| `p106b_verified_trace_v1_s1337` | Stage4fp 새595M F704에서 direct/짧은검산trace·4096root/4pass128·공통SFT128/native1024 | STATIC_ONLY:47CPU·107source metadata·74정적슬롯중68통과/6NOT_RUN·새10SH 준비(101§423). 실제prepare/cost/학습은미실행. target79520/512464·별도native1048576, 원래12/14/17시·양cost/전체pending예산전GO아님. |
 | `p106b_native595_v1_s1337` | Stage4fm 명시4543·확장pool1191116192·fresh028C46 Q/F | 양4543/각595460096 실제학습·CP C0610452/7DF60C47·4543쌍crop/일정/LR 0불일치·재로드native32를 완료했다(101§403~407). Q CE3.357964/F3.203986는 같은fixed32·경로묶음 관측이며Q는backward도다르다. old299M 대비는pool/source/WSD·anneal 교락. UTC/perf차이와무모델시계차이를원인미확인으로분리하며QA/전체VAL/절대속도 미확립이다. |
 | `p106b_expansion_val_audit_v1_s1337` | Stage4fk 보존확장 TRAIN의 동일EOS/양끝·실제native32창 독립CPU검사 | 실제1,191,116,192 IDs scan43.514806초·선언동일EOS/양끝/32창 모두0hit(101§391). 모델/CP/GPU0·원입력불변. 의미중복제거/모든부분중복/학습허가 아님. |
 | `p106b_headwise_muon_v1_s1337` | Stage4fi 같은 실수 native 부모·동결4pass384에서 Q/K189head의 Muon NS 단위만 변경 | 실제384·새CP9BBB10F0·1694답/재검산완료(101§390/392~393). TEST613→612/1024·자연EM10→10/128·native32 CE3.402745→3.402509. 단일시드·기본optimizer비채택이며모든headwise사전학습무효라는뜻아님. |
 | `p106b_native_broad4_v1_s1337` | Stage4fj 새 native Q/F 부모·원22528 Broad행·2cycle연속 optimizer·4pass704 | CPU source/prepare완료 후 root가전체code-map 대신단일SHA의idle-proof를작성해실제Qcost는GPU로딩전오류9(101§394). 원실패보존·실제비용/704/새CP는NOT_RUN. 원형을덮지않는Stage4fl 새경로복구준비. |
-| `p106b_native_broad4_recovery_v2_s1337` | Stage4fl 원계산·299M 부모·교과·704·기한을 보존한 실패후 독립경로 | F704/CP357D2EA6·닫힌검산과실제1694첫답/17이력답을 완료했다(101§409/414). TEST132/1024·natural9/128·기초0/24, 사용자6질문도오답/반복이었다. grad24.876925/clip704이며 DEV감소를대화성공으로읽지않는다. Q704/공개는후속·원실패/코드/상한은불변이다. |
+| `p106b_native_broad4_recovery_v2_s1337` | Stage4fl 원계산·299M 부모·교과·704·기한을 보존한 실패후 독립경로 | 양704/CP39A68CA0·357D2EA6와실제1694/17답·닫힌대조완료(101§409/414/416/418/420). Q/F TEST209/132·natural8/9·기초1/0 of24이며Boolean편중/질문나열·반복이남는다. Q grad19.522158/clip704. 원실패/소스/상한보존·공개후속이며기술완료≠일반지능. |
 
 | 교차 재개 태그 | 범위 | 상태 |
 |---|---|---|
