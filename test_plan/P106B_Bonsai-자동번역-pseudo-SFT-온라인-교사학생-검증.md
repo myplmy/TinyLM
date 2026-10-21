@@ -7058,3 +7058,10 @@ A의 비학습 형식대조를 선택한다. B의 새학습/구조개입은별�
 현재DESIGNED/NOT_RUN이다. [형식민감도연구](https://arxiv.org/abs/2310.11324)와 [예시역할연구](https://arxiv.org/abs/2202.12837)의원초록을root도확인했다. 모델크기/과제가달라효과크기를승계하지않고전체조건을사전에고정하는근거로만사용했다. [instruction finetuning](https://arxiv.org/abs/2210.11416)은실제가중치학습연구로이번프롬프트진단과구분한다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+### Stage4fo 추가 비용조정 사전기록 — 2026-10-21 원예산을 늘리지 않는 마지막420초
+
+원 Stage4foWf는900초worker상한이누적잔량보다커모델진입전HOLD였다. source/F4/기존5종원형을보존한다. 실제잔량667.918초·소비2932.082초/원가족3600을확인하고,새Stage4foWfa에서같은미실행newbroad_float만420초cap으로시도한다. 원회귀/선결을생략하지않고원형1920요청/1919채점·generation128·점수/계보는그대로다.
+
+A의더엄격한cap을선택한다. B의원가족상한변경은기각, C의5종만마감은A도예산에안맞으면적용한다. 이전학생worker386.68/340.17초와회귀/선결약190초를근거로삼지만미래완료를보장하지않는다. 기존worker/result가생성되지않았으므로동일미실행endpoint를허용된새런처로시도하며old결과를덮지않는다.
+
+정규readback의고정600선결은잔량에들지않을수있으므로원readback은HOLD로남기고사용자17시허가안의별도600초CPU 원답감사를설계한다. 원가족완결/1시간내전체작업이라고속이지않는다. 추가CPU감사는기존 prepared/read_model/validate_event/recount의읽기전용검산만사용하며원writer/worker/readback을직접우회호출하지않는다. 모델·CP tensor·새Falcon0이며실제별도비용을기록한다. F4는WIP_20261021_PUBLIC_BOUNDED_COMPLETION_F4.json이다.
