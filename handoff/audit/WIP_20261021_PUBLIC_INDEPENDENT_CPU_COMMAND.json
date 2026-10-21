@@ -1,0 +1,45 @@
+{
+  "schema": "TINYLM_PUBLIC_INDEPENDENT_CPU_COMMAND_V2",
+  "command_source": "import json,time,signal\nfrom datetime import datetime,timezone\nfrom scripts import diag_p106b_native595_public as d\ndef alarm(signum,frame): raise TimeoutError(\"independent CPU audit 600-second cap\")\nsignal.signal(signal.SIGALRM,alarm); signal.alarm(600)\nbegan=datetime.now(timezone.utc); tick=time.perf_counter()\nprint(\"[INDEPENDENT_CPU_START] \"+began.isoformat(),flush=True)\nassert began.isoformat()<\"2026-10-21T07:50:00+00:00\"\np=d.build_runtime(); info0=p.info(); spent0=p.spent_seconds()\nreference,rows,tok,cached=p.prepared()\nlookup={r[\"id\"]:r for r in cached}; summaries={}; comparisons={}; pins={}; samples={}; total=scored=0\nfor model_id in p.MODELS:\n    report,events=p.read_model(model_id,reference,rows,tok)\n    assert p.sha(report[\"summary\"])==p.sha(p.recount(events,p.cohort(rows,model_id)))\n    summaries[model_id]=report[\"summary\"]; total+=report[\"requested\"]; scored+=report[\"scored\"]\n    cells={}\n    for task in p.ENGLISH:\n        actual=[e for e in events if e[\"task\"]==task and not e[\"skipped\"]]\n        assert len(actual)==256 and {e[\"scores\"][\"id\"] for e in actual}=={r[\"id\"] for r in cached if r[\"task\"]==task}\n        assert all(lookup[e[\"scores\"][\"id\"]][\"gold\"]==e[\"scores\"][\"gold\"] for e in actual)\n        right=sum(e[\"scores\"][\"pred_harness\"]==e[\"scores\"][\"gold\"] for e in actual)\n        left=sum(lookup[e[\"scores\"][\"id\"]][\"correct\"] for e in actual)\n        cells[task]=dict(n_common=256,common_ids_sha256=p.sha(sorted(e[\"scores\"][\"id\"] for e in actual)),cached_falcon_correct=left,current_model_correct=right,model_minus_cached_falcon=(right-left)/256)\n    comparisons[model_id]=cells\n    key=p.phase_key(\"evaluate\",model_id); rp=p.result_path(key); ap=p.EVIDENCE/(\"activity_\"+key+\".json\")\n    pins[model_id]=dict(report=dict(path=str(rp.relative_to(p.ROOT)),bytes=rp.stat().st_size,sha256=p.digest(rp)),activity=dict(path=str(ap.relative_to(p.ROOT)),bytes=ap.stat().st_size,sha256=p.digest(ap)),checkpoint_sha256=report[\"checkpoint_sha256\"],core_sha256=report[\"core_after\"])\n    case_lookup={p.row_id(r):r for r in p.cohort(rows,model_id)}\n    samples[model_id]=[]\n    for task in (\"korquad_free\",\"gsm8k_free\"):\n        selected=[e for e in events if e[\"task\"]==task and not e[\"skipped\"]][:2]\n        for e in selected:\n            r=case_lookup[e[\"id\"]]\n            samples[model_id].append(dict(id=e[\"id\"],task=task,question=r.get(\"question\"),item=r.get(\"item\"),golds=r.get(\"golds\"),answer=e[\"answer\"],finish_reason=e[\"generation\"][\"finish_reason\"],scores=e[\"scores\"]))\n    print(\"[INDEPENDENT_CPU_PROGRESS] \"+json.dumps(dict(model=model_id,requested=report[\"requested\"],scored=report[\"scored\"])),flush=True)\nassert (total,scored)==(9216,9212)\nassert p.info()==info0 and p.spent_seconds()==spent0\np._public_assert_unchanged(); ended=datetime.now(timezone.utc); elapsed=time.perf_counter()-tick\nassert ended.isoformat()<\"2026-10-21T08:00:00+00:00\" and elapsed<=600\nsignal.alarm(0)\nresult=dict(schema=\"P106B_NATIVE595_PUBLIC_INDEPENDENT_CPU_AUDIT_V2\",status=\"SIX_CLOSED_MODELS_RAW_RECOUNTED_ORIGINAL_FAMILY_READBACK_HOLD\",audit_namespace=\"p106b_native595_public_independent_audit_v2_s1337\",original_tag=d.TAG,started_at=began.isoformat(),ended_at=ended.isoformat(),seconds=elapsed,utc_seconds=(ended-began).total_seconds(),own_cap_seconds=600,own_user_authority_end_utc=\"2026-10-21T08:00:00+00:00\",original_family_limit_seconds=3600,original_family_spent_before=spent0,original_family_spent_after=p.spent_seconds(),original_namespace_unchanged=True,original_worker_or_writer_or_readback_called=False,models_loaded=0,checkpoint_tensor_loads=0,new_falcon_calls=0,training_updates=0,checkpoint_writes=0,actual_requested_rows=total,actual_scored_rows=scored,actual_length_excluded=total-scored,info=info0,pins=pins,summaries=summaries,same_id_cached_falcon=comparisons,cached_falcon=reference[\"binding\"][\"cached_falcon\"],fixed_first_two_eligible_free_samples=samples,gsm_actual_scope=\"64 questions in one format per student, not128 independent\",limitation=\"Existing public convenience pack and single seed; contamination unaudited. SUM_NLL MC is not free QA/conversation nor Falcon equivalence. This separately budgeted read-only audit does not complete the original family readback or enlarge its3600 cap.\")\nprint(\"[INDEPENDENT_CPU_FINAL] \"+json.dumps(result,ensure_ascii=False,sort_keys=True,allow_nan=False),flush=True)\n",
+  "progress": [
+    {
+      "model": "native595_ternary",
+      "requested": 768,
+      "scored": 768
+    },
+    {
+      "model": "native595_float",
+      "requested": 768,
+      "scored": 768
+    },
+    {
+      "model": "oldbroad_ternary",
+      "requested": 1920,
+      "scored": 1919
+    },
+    {
+      "model": "oldbroad_float",
+      "requested": 1920,
+      "scored": 1919
+    },
+    {
+      "model": "newbroad_ternary",
+      "requested": 1920,
+      "scored": 1919
+    },
+    {
+      "model": "newbroad_float",
+      "requested": 1920,
+      "scored": 1919
+    }
+  ],
+  "status": "SIX_CLOSED_MODELS_RAW_RECOUNTED_ORIGINAL_FAMILY_READBACK_HOLD",
+  "seconds": 165.1186602950038,
+  "utc_seconds": 165.11866,
+  "started_at": "2026-10-21T04:01:52.165272+00:00",
+  "ended_at": "2026-10-21T04:04:37.283932+00:00",
+  "family_spent_before": 3457.3205891799807,
+  "family_spent_after": 3457.3205891799807,
+  "scope": "This is a separate600-second current-authority read-only audit. Original family readback remains HOLD; no source/budget change, no original writer/worker/readback invocation.",
+  "prior_failed_attempt": "handoff/audit/WIP_20261021_PUBLIC_CPU_AUDIT_ATTEMPT_ERROR.json"
+}
