@@ -17,6 +17,7 @@ CKPT_NAME = re.compile(
     r"^(?P<preset>[^_]+)_(?P<data>[^_]+)_(?P<tokens>\d+(?:\.\d+)?[MB])_(?P<tag>.+)$",
     re.IGNORECASE,
 )
+CKPT_PREFIX = re.compile(r"^(?P<preset>[^_]+)_(?P<data>[^_]+)_(?P<tag>.+)$")
 
 
 @dataclass(frozen=True)
@@ -36,6 +37,7 @@ class ModelRecord:
     seed: int | None
     is_best: bool
     log_path: Path | None
+    modified_ns: int = 0
 
     @property
     def display_val(self) -> float | None:
@@ -65,8 +67,13 @@ def _integer_tokens(value):
         text, scale = text[:-1], 1_000_000_000
     try:
         return int(float(text) * scale)
-    except ValueError:
+    except (TypeError,ValueError,OverflowError):
         return None
+
+
+def _optional_integer(value):
+    number=_number(value)
+    return int(number) if type(value) is not bool and number is not None and number.is_integer() else None
 
 
 def discover_models(ckpt_dir: Path, log_dir: Path) -> list[ModelRecord]:
@@ -76,8 +83,9 @@ def discover_models(ckpt_dir: Path, log_dir: Path) -> list[ModelRecord]:
         base_stem = checkpoint.stem[:-5] if is_best else checkpoint.stem
         match = CKPT_NAME.match(base_stem)
         if match is None:
-            preset = data = tokens = "?"
-            tag = base_stem
+            prefix = CKPT_PREFIX.match(base_stem)
+            preset, data, tag = (prefix.group("preset"), prefix.group("data"), prefix.group("tag")) if prefix else ("?", "?", base_stem)
+            tokens = "?"  # "night" and other experiment labels are not a token budget.
         else:
             preset, data, tokens, tag = (
                 match.group("preset"), match.group("data"),
@@ -88,9 +96,11 @@ def discover_models(ckpt_dir: Path, log_dir: Path) -> list[ModelRecord]:
         if log_path.is_file():
             try:
                 metadata = json.loads(log_path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
+            except (OSError,UnicodeError,json.JSONDecodeError):
                 metadata = {}
+        if not isinstance(metadata, dict):metadata = {}
         final = metadata.get("final") or {}
+        if not isinstance(final, dict):final = {}
         pool = metadata.get("pool_tokens")
         records.append(ModelRecord(
             checkpoint=checkpoint.resolve(),
@@ -102,12 +112,13 @@ def discover_models(ckpt_dir: Path, log_dir: Path) -> list[ModelRecord]:
             arch=(str(metadata["arch"]) if metadata.get("arch") else None),
             final_val=_number(final.get("val_loss")),
             best_val=_number(metadata.get("best_val")),
-            steps=(int(metadata["steps"]) if metadata.get("steps") is not None else None),
+            steps=_optional_integer(metadata.get("steps")),
             pool_tokens=_integer_tokens(pool),
             optimizer=(str(metadata["optimizer"]) if metadata.get("optimizer") else None),
-            seed=(int(metadata["seed"]) if metadata.get("seed") is not None else None),
+            seed=_optional_integer(metadata.get("seed")),
             is_best=is_best,
             log_path=log_path.resolve() if log_path.is_file() else None,
+            modified_ns=checkpoint.stat().st_mtime_ns,
         ))
     return sorted(
         records,
@@ -136,7 +147,7 @@ def resolve_selection(records: list[ModelRecord], selection: str) -> ModelRecord
         if 1 <= index <= len(records):
             return records[index - 1]
         raise ValueError(f"번호 범위는 1..{len(records)}입니다")
-    exact = [row for row in records if text.lower() in {row.selector.lower(), row.stem.lower()}]
+    exact = [row for row in records if text.lower() in {row.selector.lower(), row.stem.lower(), row.checkpoint.name.lower()}]
     if len(exact) == 1:
         return exact[0]
     partial = filter_models(records, text)
