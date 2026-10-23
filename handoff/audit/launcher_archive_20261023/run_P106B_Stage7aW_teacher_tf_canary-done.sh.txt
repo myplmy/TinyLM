@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# P106B Stage7aW: pinned Qwen teacher-only TF logp canary, explicit MTP OFF.
+# Fourteen completion requests at most; under10min, no student/CP writes.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7a0W_teacher_tf_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_teacher_tf
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7aW_teacher_tf_canary_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=20 630 "$python_bin" -B -X utf8 scripts/diag_p106b_teacher_tf.py --execute
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7aW_teacher_tf_canary_"$stamp" --num 101 --note "TF canary exit=$result. Read preserved native requests/replies/report; technical probability availability is not ALM quality, general intelligence or dataset completion."
+exit "$result"

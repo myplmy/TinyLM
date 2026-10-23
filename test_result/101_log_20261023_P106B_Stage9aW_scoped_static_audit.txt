@@ -1,0 +1,285 @@
+
+==============================================================================
+[runlog] 2026-10-23 10:27:48  name=P106B_Stage9aW_scoped_static_audit
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/check_static_all.py --profile codex-safe --quiet --json handoff/audit/WIP_20261023_STATIC_02.json --wip handoff/WIP_20261022_작업원장.md
+==============================================================================
+####################################################################################################
+  ★정적 게이트 전수 — torch·GPU 를 **전혀 쓰지 않는다**. AI 가 매 갱신 직후 돈다
+  ⚠️ 이것은 `run_smoke_check.bat`(사용자·GPU)의 **대체가 아니라 앞단**이다
+####################################################################################################
+
+====================================================================================================
+  [FAIL] check_attrs   (exit 2)
+====================================================================================================
+TMTConfig 선언 필드 70개 + 런타임 부착 37개 = 허용 70개
+
+  [E] scripts/p106b_official_tasks.py
+        L29: cfg.get — TMTConfig 에 없음
+        L30: cfg.update — TMTConfig 에 없음   (혹시 이것? connectivity_update_every)
+
+총 2건
+주의: 정적 검사라 getattr() 같은 동적 접근은 못 본다. 필드 '존재'만 보고 값·로직은 모른다.
+      스모크(run_smoke.bat)의 대체가 아니라 그 앞단의 값싼 그물이다.
+
+====================================================================================================
+  [FAIL] check_imports   (exit 1)
+====================================================================================================
+================================================================================================
+  check_imports — 저장소 모듈의 `from A import B` 에서 B 가 A 에 있는가 (ast 전용)
+================================================================================================
+  ① 파일 988개 · 저장소 모듈 참조 3819건 검사
+
+  🚫 없는 이름을 import 한다 — **1건**
+    scripts/test_p106b_alm_cache.py:403  `import scripts` — ★**그 모듈 파일이 저장소에 없다**
+
+  ★이 게이트는 **이름의 존재**만 본다 — 그 이름이 옳은 물건인지는 사람이 본다.
+
+====================================================================================================
+  [FAIL] test_smoke_entrypoints   (exit 1)
+====================================================================================================
+test_smoke_start_note_forces_a_fresh_log (__main__.SmokeEntrypointExitTests) ... ok
+test_summary_isolates_last_accidentally_appended_session (__main__.SmokeEntrypointExitTests) ... ok
+test_windows_wrapper_returns_summary_failure (__main__.SmokeEntrypointExitTests) ... ok
+
+======================================================================
+FAIL: test_commit_banner_distinguishes_clean_and_dirty (__main__.SmokeEntrypointExitTests) (state=(0, 0))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_smoke_entrypoints.py", line 48, in test_commit_banner_distinguishes_clean_and_dirty
+    self.assertIn(phrase, body)
+AssertionError: 'INFO 작업트리 clean' not found in '[commit] abcdef0  +scoped-dirty 0개(코드 0개)\n[commit] INFO codex-safe 허용 경로만 조회; 제외 경로와 전체 작업트리 상태는 미확인. 이 개수로 전체 clean 또는 커밋 단독 검증을 주장하지 않는다.\n==============================================================================\n'
+
+======================================================================
+FAIL: test_commit_banner_distinguishes_clean_and_dirty (__main__.SmokeEntrypointExitTests) (state=(2, 0))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_smoke_entrypoints.py", line 48, in test_commit_banner_distinguishes_clean_and_dirty
+    self.assertIn(phrase, body)
+AssertionError: 'INFO 비코드 변경만' not found in '[commit] abcdef0  +scoped-dirty 2개(코드 0개)\n[commit] INFO codex-safe 허용 경로만 조회; 제외 경로와 전체 작업트리 상태는 미확인. 이 개수로 전체 clean 또는 커밋 단독 검증을 주장하지 않는다.\n==============================================================================\n'
+
+======================================================================
+FAIL: test_commit_banner_distinguishes_clean_and_dirty (__main__.SmokeEntrypointExitTests) (state=(2, 1))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_smoke_entrypoints.py", line 48, in test_commit_banner_distinguishes_clean_and_dirty
+    self.assertIn(phrase, body)
+AssertionError: '⚠️ 실행 코드 미커밋' not found in '[commit] abcdef0  +scoped-dirty 2개(코드 1개)\n[commit] INFO codex-safe 허용 경로만 조회; 제외 경로와 전체 작업트리 상태는 미확인. 이 개수로 전체 clean 또는 커밋 단독 검증을 주장하지 않는다.\n==============================================================================\n'
+
+======================================================================
+FAIL: test_commit_banner_distinguishes_clean_and_dirty (__main__.SmokeEntrypointExitTests) (state=(None, None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_smoke_entrypoints.py", line 48, in test_commit_banner_distinguishes_clean_and_dirty
+    self.assertIn(phrase, body)
+AssertionError: '⚠️ 작업트리 상태 확인 불가' not found in '[commit] abcdef0  +scoped-dirty 미확인\n[commit] INFO codex-safe 허용 경로만 조회; 제외 경로와 전체 작업트리 상태는 미확인. 이 개수로 전체 clean 또는 커밋 단독 검증을 주장하지 않는다.\n==============================================================================\n'
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.056s
+
+FAILED (failures=4)
+
+====================================================================================================
+  [FAIL] check_hf_redirect   (exit 1)
+====================================================================================================
+================================================================================================
+  HF 캐시 리다이렉트 검사 — `tinylm` import 가 HF 라이브러리보다 먼저인가
+================================================================================================
+  ✅ audit_aya_collection_ko.py   HF: huggingface_hub
+  ✅ diag_p106b_current_benchmark.py HF: transformers
+  ✅ diag_p106b_night_falcon.py   HF: transformers
+  ✅ diag_p106b_night_falcon_readback.py HF: transformers
+  ✅ fetch_bench_data.py          HF: datasets,huggingface_hub
+  ✅ prepare_public_sft.py        HF: huggingface_hub
+  🚫 diag_p106b_official_core6.py: **transformers 를 쓰는데 `import tinylm` 이 없다** -> HF 캐시가 작업폴더 밖으로 간다(2026-08-22 실사고). 파일 상단 `sys.path.insert` 바로 뒤에 `import tinylm  # noqa: F401` 을 넣으세요
+  🚫 prepare_p106b_official_eval.py: **datasets 를 쓰는데 `import tinylm` 이 없다** -> HF 캐시가 작업폴더 밖으로 간다(2026-08-22 실사고). 파일 상단 `sys.path.insert` 바로 뒤에 `import tinylm  # noqa: F401` 을 넣으세요
+  🚫 test_p106b_alm_train.py: **`import tinylm` 은 있는데 `sys.path.insert` 가 없다** -> 직접 실행하면 ModuleNotFoundError 로 죽는다(P075 단계0b 실사고). `ROOT = Path(__file__).resolve().parent.parent` 바로 뒤에 `sys.path.insert(0, str(ROOT))` 를 넣으세요
+
+  대상 9개 (HF 미사용 917개 제외) — 🚫 3건 실패
+  ⚠️ 정적 검사다. **import 가 있다** 는 것만 보고 **환경변수가 실제로 바뀌었는지**는
+     `fetch_bench_data.py` 가 실행 시점에 인쇄해 스스로 확인한다(이중 그물).
+================================================================================================
+
+====================================================================================================
+  [OK ] sync_experiments_tsv   (exit 0)
+====================================================================================================
+      → ★**지우면 이 명령이 소실된다.** 결과문서 §재현 명령을 먼저 채운다
+
+  🚫 run_P106B_Stage8dW_official_core6_cost-done.sh   [보류]
+      명령 2개 중 2개가 결과문서에 없다:
+        "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_official_core6
+        timeout --signal=TERM --kill-after=30 650 "$eval_python" -B -X utf8 scripts/diag_p106b_official_core6.py --exe
+      → ★**지우면 이 명령이 소실된다.** 결과문서 §재현 명령을 먼저 채운다
+
+  🚫 run_P106B_Stage8dWb_official_core6_versioned_cost-done.sh   [보류]
+      명령 2개 중 2개가 결과문서에 없다:
+        "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_official_core6
+        timeout --signal=TERM --kill-after=30 650 "$eval_python" -B -X utf8 scripts/diag_p106b_official_core6.py --exe
+      → ★**지우면 이 명령이 소실된다.** 결과문서 §재현 명령을 먼저 채운다
+
+  🚫 run_P106B_Stage8eWb_official_core6_versioned_full-done.sh   [보류]
+      명령 1개 중 1개가 결과문서에 없다:
+        timeout --signal=TERM --kill-after=30 7250 "$eval_python" -B -X utf8 scripts/diag_p106b_official_core6.py --ex
+      → ★**지우면 이 명령이 소실된다.** 결과문서 §재현 명령을 먼저 채운다
+
+  🚫 run_P106B_Stage8f0W_babylm_causal_cpu-done.sh   [보류]
+      명령 2개 중 2개가 결과문서에 없다:
+        "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_babylm_causal scripts.test_p106b_babylm_driver
+        "$python_bin" -B -X utf8 scripts/diag_p106b_babylm_causal.py --prepare
+      → ★**지우면 이 명령이 소실된다.** 결과문서 §재현 명령을 먼저 채운다
+
+  ⚠️ ③'재실행 예정 없음' 은 **사람이 판단한다.** 이 도구는 ①②만 본다.
+
+====================================================================================================
+  TSV 고아 행 — 표에는 있는데 디스크에 없는 배치 0건
+====================================================================================================
+  없다. 표와 디스크가 일치한다.
+
+====================================================================================================
+  삭제 가능 후보 7건: run_P067_Stage4Wb_tokenizer_recovery-done.sh run_P101A_Stage3jW_clean_mtp_four_arm-done.sh run_P101A_Stage3jWb_clean_parent_baseline-done.sh run_P101A_Stage3kW_verified_reasoning_pair-done.sh run_P106B_Stage4fvW_existing_model_probes-done.sh run_P106B_Stage4fwW_new_public768-done.sh run_P106B_Stage4u1W_public_source_deck-done.sh
+  ★삭제는 **사용자가** 한다. 이 도구도, AI 도 파일을 지우지 않는다.
+  ★삭제한 뒤에는 `python scripts/sync_experiments_tsv.py --apply` 로 표를 정리한다.
+  ★그 다음 `python scripts/queue_menu.py --audit` 로 확인한다(WSL에서는 Linux audit로 자동 위임).
+    필요한 id는
+    `python scripts/queue_menu.py --ids <배치명...>` 로 다시 계산한다.
+====================================================================================================
+
+====================================================================================================
+  [FAIL] check_smoke_diag   (exit 1)
+====================================================================================================
+============================================================================================
+  스모크 진단런 계약 — 표 vs 배치 vs 로그
+============================================================================================
+
+  [1] 집합 — 표 11개 · 배치 11개
+      ✅ 일치
+
+  [1b] 항목 중복 — 두 팔이 같은 것을 재는가
+      ✅ 축 11종 · 표지 29종 — 겹치는 팔 없다
+
+  [2] 항목 실재 — 표의 표지가 스크립트 소스에 있는가
+      ✅ 항목 29개 전부 소스에 있다
+
+  [3] 로그 인쇄 — 20261021035623_smoke_codex_oct21_final_approved_v1_2503365.txt
+      ✅ test_p101a_sft_mtp.py      exit 0
+      ✅ check_attrs.py             exit 0
+      ✅ check_diag_data.py         exit 0
+      ✅ diag_init_cla_owner.py     exit 0
+      🚫 check_handoff.py: 블록이 없다(안 돌았다)
+      ✅ check_links.py             exit 0
+      ✅ check_return_probs.py      exit 0
+      ✅ diag_sparse34_pack.py      exit 0
+      ✅ mem_runtime.py             exit 0
+      ✅ diag_sft_mask.py           exit 0
+      🚫 check_smoke.py: 블록이 없다(안 돌았다)
+
+  ----------------------------------------------------------------------------------------
+  🚫 **불일치 3건**
+     - Codex 대체 실행 증거 불일치: execution source pins differ
+     - check_handoff.py: 이 로그에 그 팔의 블록이 없다 — 팔이 안 돌았다
+     - check_smoke.py: 이 로그에 그 팔의 블록이 없다 — 팔이 안 돌았다
+  ★표가 틀렸는지 코드가 틀렸는지 먼저 정하세요(함정 34: 4번 중 4번 표가 틀렸다).
+
+====================================================================================================
+  [FAIL] check_control_chars   (exit 1)
+====================================================================================================
+============================================================================================
+  게이트 35 — 제어문자 (검사 6578파일 · `.bat` 은 lint_bat 소관)
+============================================================================================
+  🚫 review_request/20261023_sft_000117_A5DADA1A2F57_review.md:422  0x02
+       …sponse yi. It is not possible to fit a linear r…
+  🚫 review_request/20261023_sft_000137_B53568435447_review.md:653  0x02
+       …ssed extensively in Chapter 3. Once we have ass…
+
+  🚫 2파일 — **백슬래시 사고**다. 파이썬 패치나 heredoc 이 `\b`·`\v` 를 실제 바이트로 만들었다.
+     ★고치는 법: 그 파일을 `Write`/`Edit` 툴로 다시 쓴다. 🚫같은 방식으로 또 패치하지 않는다.
+
+####################################################################################################
+  요약
+####################################################################################################
+  🚫 check_attrs            exit 2    `cfg.X` 오타 — torch 없이 정적 검출
+  ✅ check_call_kwargs      exit 0    `cli.py` 가 넘기는 키워드가 대상 함수에 있는가
+  🚫 check_imports          exit 1    ★★`from A import B` 의 **B 가 A 에 정말 있는가**(2026-09-03 신설). `check_return_probs.py` 가 **없는 이름 `TMT`** 를 import 해 신설 이래 한 번도 안 돌았는데 **정적 22종이 매번 전부 통과**했다 — 아무도 import 문을 안 봤다. 함정 37 의 새 얼굴: *'파일이 있다 ≠ 그 파일이 import 된다'*. ✅실제 결함 주입으로 검출 확인·오탐 0
+  ✅ check_batch_name       exit 0    ★★실험 배치 **파일명**의 계획번호·단계 구분자가 **실재하는가**(2026-09-04 사용자 지시 8). `run_REVIEW4_expC_bench_n5000.bat` 는 계획번호도 단계도 없어 **어느 계획의 몇 단계인지 파일명이 말하지 않았다.** 🚫계획서에 Stage3 가 있다고 **Stage3B** 가 되는 것이 아니다 — 단계를 먼저 쓴다. ✅위반 1건 검출 후 P085 를 쓰고 개명
+  ✅ test_check_batch_name  exit 0    복합 재실행 Stage 접미사는 정확한 계획 표기만 허용하는가
+  ⏸ check_heldout_defects  exit NR   ★★held-out 의 **의미 결함**(2026-09-03). 구조 검사(정답 불변·중복·문자폭)는 다 통과하는데 **정답으로 표시된 후보가 거짓**인 문항이 있었다. D1=완전 일치(정확) · D2=정답 후보가 answer 의 서술어를 부정(휴리스틱) · D3=후보에 질문 내용어 0개(정보). ⚠️**오탐 3종을 고쳐 세웠다**
+  ✅ check_flag_used        exit 0    ★★**선언만 하고 아무도 안 읽는 CLI 플래그**(2026-09-03 신설). `common_bpb.py --drop-contaminated` 가 **파서에만 있고 몸통이 0줄**이라 배치가 그 플래그를 주고 돌렸는데 출력이 **바이트 동일**이었다(결과 053 §12.3). 게이트 3(`check_batch_flags`)은 *'파서에 있는가'* 만 본다 — **함정 37 의 셋째 얼굴**. ✅실검출 2건·오탐 2건은 규칙으로 면제
+  ✅ check_batch_flags      exit 0    배치가 쓰는 CLI 플래그가 **파서에 실제로 있는가**(미구현 배치 2회 재발)
+  ✅ test_check_batch_flags exit 0    Windows runlog 자식 파서에 --platform 등 인자가 귀속되고 잘못된 플래그는 거부되는가
+  ✅ check_flag_whitelist   exit 0    ★★배치가 써도 되는 플래그인가 — **'존재' 가 아니라 '의도'**(2026-09-04, 승인된 제안서). 게이트 3·5 를 통과해도 `--drop-contaminated`(미구현) · `--repeat-kv-reuse`(기각)는 **배치에 쓰면 안 된다.** 🚫함정 18 을 피하려고 **목록은 파서가 소유하고 표는 등급만** 소유한다 — 양방향 대조라 **새 플래그를 넣고 등급을 안 적으면 에러**다(사용자 요구). ✅행 제거·가짜 행 주입 둘 다 검출 확인. 등급표 `scripts/flag_whitelist.tsv`
+  ✅ check_pending          exit 0    ★★**선결이 없는데 미뤄 둔 항목**(2026-09-04, 승인된 제안서). `check_handoff` 규칙 9 가 *'없는 배치를 있는 것처럼 적지 마라'* 라면 이것은 *'만들 수 있는 배치를 안 만들고 넘기지 마라'* 다 — **의사결정함정 D1 을 기계로.** Windows `.bat`와 WSL `.sh`를 같은 실행 진입점으로 본다. ✅재현 검증: 2026-09-03 핸드오프에서 **제안서가 지목한 두 행** (P084 단계0 · 유니크 토큰 축)을 정확히 잡는다. ⚠️초판이 시간칸 `—` 를 0 으로 읽어 3행을 오탐했고 고쳤다(제안서 §8 이 미리 적어 둔 위험)
+  ✅ test_check_pending     exit 0    W2의 정확한 PNone+사유 결합과 W3 완료 배치명 종료형 회귀
+  ✅ check_lr_factor_sync   exit 0    ★★**`_lr_factor` 가 두 곳에 산다** — 정본은 `trainer.py`, 복제는 `diag_lrm_values.py`(torch 없이 WD 바닥을 계산해야 해서). 함정 18 을 남기는 대신 **값을 기계로 대조**한다 — sched 4×steps 4×decay_frac 3×점 40 = 1,992점. ✅결함 주입(0.9→0.8) 검출 확인
+  ⏸ check_eval_pool        exit NR   ★★★**채점지가 답안지였는가**(2026-09-05, 결과 075 §6). `prepare()` 의 val 은 스트림 말미 0.5% 이고 캐시는 결정적 스트림의 **접두사**라 `ko-en_300M/val.bin` 이 `ko-en_600M/train.bin` 안에 **1,500,000 토큰 전부 바이트 일치**한다. `paired_eval` 기본값이 `--tokens 300M` 이고 표준 학습이 `--pool-tokens 600M` 이라 **142개 런의 full-val 이 학습 데이터였다.** ✅실물 배치(`run_P084_Stage4_*`)에서 4건 검출 확인. ⚠️`-done` 은 경고로 낮춘다
+  ⏸ registry --scan        exit NR   ★★**런 레지스트리에 빠진 학습 런이 있는가**(2026-09-05, 승인된 제안서 안 C). `runs/registry.tsv` 가 정본(git·diff) · `docs/RUN_REGISTRY.md` 가 뷰 · `runs/registry.db` 가 질의 캐시. 🚫`runlog` 를 안 거치면 기록이 안 되므로 **json 쪽에서 역으로 본다** — 제안서 §7.2 가 적어 둔 약점의 그물. ✅소급 반영으로 full-train **142/142 = 100%** 에 계획번호가 붙었다
+  ✅ lint_bat               exit 0    배치 린터 20규칙 — 비ASCII·`%VAR%`·`--tag` 누락·VERIFY 뒤 학습런
+  ✅ check_shell_entrypoints exit 0    WSL 공통 queue·smoke·cleanup 진입점의 LF·실행권한·bash 구문과 BAT 스모크 엄격 파싱
+  ✅ test_queue_menu_linux  exit 0    Linux 큐가 experiments.tsv의 같은 stem .sh만 노출하고 스모크 실패에서 중단하는가
+  ✅ test_smoke_module      exit 0    BAT 스모크 변환기가 미지원 실행문을 거부하고 현재 인터프리터를 사용하는가
+  🚫 test_smoke_entrypoints exit 1    Windows·POSIX 스모크 래퍼가 summarize_smoke 실패를 종료코드 0으로 덮지 않는가
+  ✅ test_static_handoff_coverage exit 0    Codex-safe 전수에서독립인계검사·회귀가실제명령으로연결되고레거시금지경로는계속제외되는가
+  ✅ test_smoke_diag_freshness exit 0    새 핸드오프 데이터 입력은 그 팔만 stale로 보고, 다른 팔·미확인 입력의 실패는 숨기지 않는가
+  ✅ test_append_repro      exit 0    WSL -done SH와 접미사 P번호의 재현명령을 결과문서 보존·멱등 방식으로 이관하는가
+  ✅ test_dryrun_shell      exit 0    WSL runlog SH의 학습·판정 호출이 정적 preflight에서 0건으로 누락되지 않는가
+  ✅ test_rename_result_scope exit 0    결과 개명 도구가 Codex 금지 환경 원천을 열거하지 않는가
+  ✅ test_wandb_key_path    exit 0    W&B 비밀 경로·optimizer/Muon/WD/CLA payload·exact-tag 계약
+  ✅ test_eval_bench_model_specs exit 0    P097 공통평가가 모델별 data/tokenizer/arch와 KLUE label adapter를 보존하는가
+  ✅ test_lut_cpu_native    exit 0    P014D native CPU LUT source와 default-off 배선 계약; 실제 compile/model은 사용자 gate
+  ✅ check_links            exit 0    문서 상대링크 — 결과문서를 개명하면 참조가 깨진다
+  ⏸ check_handoff          exit NR   핸드오프 고정 섹션 8개
+  ✅ check_plan_numbers     exit 0    계획번호 ↔ 계획서 ↔ 실험계획목록 3자 정합(D16)
+  ✅ check_experiment_plan_index exit 0    실험계획목록은 물리 계획서마다 정확히 한 행·한 상태만 가지며 강조·소절·중복 행을 두지 않는다
+  ✅ frontier_audit         exit 0    모든 물리 계획이 최신성 필터 없이 frontier 한 행으로 보존되는가
+  ✅ test_frontier_audit    exit 0    오래된 P014와 최신 P097 fixture가 함께 frontier에 남는가
+  ✅ test_frontier_queue_gate exit 0    현재 frontier SHA·큐·non-DONE disposition 누락과 stale 입력을 종료 전 거부하는가
+  ✅ test_frontier_semantic_gate exit 0    미종결 계획과 승인 on-going 제안서의 수동 가치 triage·원천 최신성 누락을 종료 전 거부하는가
+  ✅ test_wip               exit 0    큐/핸드오프 WIP close의 frontier 및 결과문서 raw-log closure가 fail-closed인가
+  ✅ test_result_closure    exit 0    결과문서 한정 원본 로그·정확 절 매핑의 누락·review 범위·경로 오류 회귀
+  ✅ check_run_registry     exit 0    런 레지스트리·중복·태그 충돌
+  ✅ test_check_run_registry_null_val exit 0    SFT 진단 런의 val_loss=null을 NOT_RUN으로 표시하면서 계획 조회·태그 충돌을 계속 검사하는가
+  ✅ test_p106b_source_isolation exit 0    P106B 공개 job 출력은 보호 사전을 읽거나 기록하지 않고 별도 write-once 경로만 쓰는가
+  ✅ test_p106b_rights_quarantine exit 0    사전 파생 후보는 CC BY-SA 격리 envelope/20MB 샤드만 쓰고 일반 SFT 로더가 받지 않는가
+  ✅ check_result_numbers   exit 0    ★결과문서 번호 = 실험군 번호. **로그 파일명이 이미 번호를 말한다**(2026-08-22 오배정)
+  🚫 check_hf_redirect      exit 1    ★HF 캐시 리다이렉트 — `tinylm` import 없이 datasets 를 쓰면 작업폴더 밖으로 받는다
+  ✅ test_census_contract   exit 0    ★held-out census JSON이 `per_pick`과 쌍별 불일치·관계-family CI를 실제로 복원할 수 있는가
+  ✅ test_census_compare    exit 0    ★held-out 판본 비교가 동일 모델·ID·평가 조건을 강제하고 레거시 메타데이터 누락을 명시하는가
+  ✅ test_fetch_logging     exit 0    ★fetch 실패의 UTF-8 원문·명령·종료시각이 콘솔과 로그에 함께 남는가
+  ✅ test_handoff_entry     exit 0    ★세션 종료 생성기가 Python isolated mode에서도 형제 모듈을 찾아 실제로 시작하는가
+  ✅ check_proposals        exit 0    제안서 루트의 아홉 절·비용·계측위험·대안·권장안·suffix/status 양식
+  ✅ test_check_proposals   exit 0    제안서 린터가 빈 절·계측위험 누락·상태접미사 drift를 실제로 거부하는가
+  ✅ check_diag_data        exit 0    진단 도구의 계측 건강 — 절대지표에 난수 정답을 쓰는가
+  ✅ test_check_diag_data   exit 0    동일입력 차이 진단의 난수는 허용하고 절대품질 난수정답 CE는 검출하는가
+  ✅ queue_menu --audit     exit 0    `experiments.tsv` ↔ 디스크 양방향 대조
+  ✅ sync_experiments_tsv   exit 0    `-done` 삭제 가능 판정 + TSV 고아 행(보고만)
+  ✅ check_group_map        exit 0    ★설정이 파생하는 집합 ↔ 모델이 만드는 개수 (P074 네 팔 전멸, 로그 059)
+  ✅ check_smoke_coverage   exit 0    ★배치가 쓰는 축을 스모크가 실제로 돌리는가 — **새 기능이 아니라 새 조합**에서 죽는다
+  🚫 check_smoke_diag       exit 1    ★★스모크 **진단런**의 계약(`smoke_diag_contract.tsv`) ↔ 배치 ↔ 로그 — 2026-09-05 에 `diag_sparse34_pack` 이 exit 1 인데 *'총 에러 0건'* 이 찍혔다. `check_smoke` 는 필드만 보고 종료코드를 안 보며, 종료코드를 보라고 만든 `summarize_smoke` 는 배치가 `--` 를 빠뜨려 신설 이래 한 번도 안 돌았다. ★이 게이트가 *'그 팔이 무엇을 인쇄했는가'* 를 본다(로그가 코드보다 낡으면 경고)
+  ⏸ plot_results --verify  exit NR   ★그림 도구의 수치 표 ↔ 정본(json) 대조 (자백 A7 — 사본이 정본을 이중화한다)
+  ✅ check_rules_sync       exit 0    작업규약 영문 정본 ↔ 한글 대조본의 규칙 번호·강제 주체 일치
+  ✅ check_doc_metadata     exit 0    Codex Markdown 직접 발견 → 유형별 날짜·Git 내용일·영한 pair 정합(B2)
+  ✅ check_index_sync       exit 0    ★색인이 산출물을 다 담고 있는가 — **'연쇄 갱신 완료' 라고 적고 안 한 것**(함정 13, 2026-08-29)
+  ✅ check_doc_ownership    exit 0    ★★문서 본문이 **남의 것인가** — H1 번호·로그 귀속·본문 중복(함정 42, 2026-08-30). ✅파괴 커밋 86d24c9 에서 **29건 검출**을 확인하고 켰다
+  ✅ test_doc_ownership     exit 0    문서 귀속 검사가 공통 재현조건 표를 본문 복사로 오인하지 않으면서 서술 복사와 H1 번호 오류는 잡는가
+  ✅ check_smoke_fields     exit 0    ★★스모크가 요구하는 계측 필드를 trainer 가 **정말 찍는가** — `mlp_film` 이 실런 2개를 돌고도 json 에 없었다(2026-08-30). ✅그 줄을 뺀 사본에서 검출 확인 후 켰다. 게이트 15 는 *플래그* 단위, 이것은 *필드* 단위다
+  ⏸ check_tag_arch         exit NR   ★★★태그가 **주장하는** 아키텍처 ↔ json 이 **기록한 값**(2026-08-31). `mC_cla1_ag4_r20_s3` 가 `--cla-group 1` 없이 돌아 **cla2 모델이 cla1 이름**으로 3.6시간을 썼다. 게이트 15·20 은 *존재*를, 이것은 **값**을 본다. ✅실제 오염 1건을 검출한 상태에서 켰다
+  ✅ dryrun_batch           exit 0    ★★★배치를 **돌리기 전에** 프리셋 기본값까지 넣은 **유효 조건**을 인쇄한다(2026-09-02). 게이트 21 은 런이 **끝난 뒤** json 을 보고, 이것은 **돌기 전** 배치를 본다 — `--cla-group` 누락으로 3.6시간을 태운 자리가 이 사이였다. ✅17개 학습 호출 실사에서 실제 OOM 배치 1건 검출·오탐 0. ⚠️`-done` 은 건너뛴다(끝난 배치의 알려진 실패로 스위트를 빨갛게 두면 새 문제를 가린다)
+  ✅ check_launcher_tags    exit 0    BAT·SH 실험 진입점의 입력 모델/부모/교사 태그와 필수 checkpoint guard가 실제 독립 파일로 해석되는가. 새 출력 --tag는 존재를 요구하지 않는다
+  ✅ test_check_launcher_tags exit 0    옛 P076 _tied_ 선검사 결함·미존재 --models/부모 태그 검출, 새 출력 태그와 -done 이력 면제 회귀
+  ✅ check_compass          exit 0    ★★**연구방향 나침반(`handoff/COMPASS.md`)이 낡았는가**(2026-09-08(2차) 신설, 승인된 제안서). 축 12개 각각에 대해 **사람이 적은 인용 번호** vs **그 축을 제목에서 다루는 결과문서의 최대 번호** — ★두 값이 독립이라 함정 43(자기 사본과 대조하는 게이트)을 피한다. 본문이 아니라 **헤딩**만 본다(본문으로 보면 매번 빨개지고 아무도 안 읽는 경고는 미탐과 같다). ✅행 하나를 낡게 만들어 검출 확인. ⚠️키워드 오탐 4건을 실물에 대고 걸렀다(`폭`->`폭발`, `CLA`->`CLAUDE.md`)
+  ✅ test_compass           exit 0    나침반 제목 판독은 fenced SH 주석을 연구축으로 오인하지 않고 실제 ATX 제목·결과번호 규칙을 보존하는가
+  ✅ test_runlog_git_scope  exit 0    기본 Git 배너는 유지하고 명시 codex-safe 조회는 보호 경로를 제외하며 전체 clean을 주장하지 않는가
+  🚫 check_control_chars    exit 1    ★★**저장소 텍스트 파일의 제어문자**(2026-09-08(2차) 신설, 사용자 지시 3). 백슬래시 사고 **누적 15회** — 파이썬 패치나 heredoc 의 ``·`` 가 **실제 바이트**가 된다. 🚫문법 오류가 아니라 **문법적으로 멀쩡한 쓰레기**라 아무도 못 본다. `lint_bat` 규칙 1b 가 같은 것을 보지만 **`.bat` 만** 본다 — 이 게이트가 `.py`·`.md`·`.tsv` 를 맡는다. ⚠️탭은 안 본다(`.tsv` 구분자·`.py` 들여쓰기로 합법). ✅스크래치패드 사본에 실사고 바이트를 심어 검출 확인(1->0)
+  ✅ test_control_chars     exit 0    원본 로그의 완결된 ANSI CSI는 허용하되 고립 ESC·불완전 ANSI·백스페이스는 계속 차단하는가
+  ✅ check_smoke_tokenizer  exit 0    ★★**`--data synthetic` 을 받는 도구가 토크나이저 파일을 요구하는가**(2026-09-08(2차) 신설). `prepare()` 는 합성에 BPE 를 학습하지 않으므로 `tok-synthetic-*.json` 은 **설계상 영원히 없다** — 그런데 스모크 팔 [21c] 가 `Tokenizer.from_file` 을 무조건 불러 `os error 2` 로 죽었고 **큐 전체가 멈췄다**. 기존 넷은 전부 통과했다: 플래그도(3) import 도(4) 축 커버리지도(23) 멀쩡했고 진단 계약(32)은 **로그가 없어서** 못 봤다. ★함정 37 의 또 다른 얼굴 — *'팔을 넣었다 ≠ 그 팔이 돌 수 있다'*. ✅실물 결함 1건 검출 후 고치고 켰다(오탐 0)
+  ✅ check_handoff_codex    exit 0    Codex 현재 인계 구조·현재큐의시간사유·역사이력구별을 독립 판독한다
+  ✅ test_handoff_codex_contract exit 0    시간사유가7.1역사에만있으면실패하는 현재범위 회귀
+
+  🚫 6건 실패 — 검사 76종
+  ★보고 전용 게이트(sync_experiments_tsv)는 통과해도 출력을 인쇄한다 — **통과 = 볼 것 없음 이 아니다**(2026-08-28).
+  ★**이 스위트는 AI 가 직접 돌린다** — torch·GPU 를 쓰지 않으므로 위임할 이유가 없다.
+  ⚠️★**사용자에게 요청할 동적 단계는 현재 플랫폼의 `run_smoke_check.bat/.sh`다.**
+     정적은 *'이름이 있는가'*, 동적은 *'그 경로가 실제로 도는가'* 를 본다(함정 37).
+  STATIC_AUDIT handoff/audit/WIP_20261023_STATIC_02.json profile=codex-safe errors=6 actionable=0 not_run=6
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 1.0분  (2026-10-23 10:28:50)
+==============================================================================

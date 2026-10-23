@@ -1,0 +1,62 @@
+"""Root-only one-shot orchestration of existing closed-packet import/render APIs.
+
+No authoring, rewriting, semantic admission, model or protected corpus access.
+The .txt suffix preserves this run recipe; execute only with an explicit stdin.
+"""
+from pathlib import Path
+import json
+from scripts import p106b_text_batches as b
+
+base=b.BASE
+seen=set()
+for path in sorted((base/"imported").glob("*/report.json")):
+    report=json.loads(path.read_text(encoding="utf-8"))
+    seen.add((report.get("packet_sha256"),report.get("response_sha256")))
+completed=[];partial=[];errors=[]
+for response in sorted((base/"published").iterdir()):
+    if not response.is_dir() or response.is_symlink():
+        continue
+    packet=base/"packets"/(response.name+".json")
+    if not packet.is_file():
+        errors.append(dict(packet=response.name,error="no sealed packet"))
+        continue
+    try:
+        data=json.loads(b.safe(packet).read_text(encoding="utf-8"))
+        kind="sft" if "sources" in data else "native"
+        key="source_index" if kind=="sft" else "id"
+        collection=data["sources" if kind=="sft" else "documents"]
+        wanted={str(row[key])+".json" for row in collection}
+        actual={p.name for p in response.iterdir()}
+        if actual!=wanted:
+            partial.append(dict(packet=response.name,missing=len(wanted-actual),extra=len(actual-wanted)))
+            continue
+        files={}
+        for ident in wanted:
+            path=b.safe(response/ident)
+            json.loads(path.read_text(encoding="utf-8"))
+            files[ident]=b.file_sha(path)
+        bundle_sha=b.sha(json.dumps(files,sort_keys=True))
+        pair=(b.file_sha(packet),bundle_sha)
+        if pair in seen:
+            continue
+        output=base/"imported"/(response.name+"_published_"+bundle_sha[:12])
+        if output.exists():
+            raise FileExistsError("prior complete/partial import preserved")
+        report=b.import_packet(packet,response,output,kind)
+        review=b.ROOT/"review_request"/("20261023_"+response.name+"_"+bundle_sha[:12]+"_review.md")
+        rendered=b.render_review(output,review)
+        item=dict(event="CLOSED_TEXT_IMPORTED",packet=response.name,kind=kind,
+                  source_rows=report["source_rows"],output_rows=report["output_rows"],
+                  report=str((output/"report.json").relative_to(b.ROOT)),
+                  review=str(review.relative_to(b.ROOT)),
+                  display_control_counts=rendered["display_control_counts"])
+        completed.append(item);seen.add(pair)
+        print(json.dumps(item,ensure_ascii=False),flush=True)
+    except Exception as exc:
+        errors.append(dict(packet=response.name,error_type=type(exc).__name__,error=str(exc)[:1500]))
+        print(json.dumps(dict(event="CLOSED_TEXT_IMPORT_ERROR",**errors[-1]),ensure_ascii=False),flush=True)
+print(json.dumps(dict(event="CLOSED_TEXT_IMPORT_FINAL",new_closed_packets=len(completed),
+    source_appearances=sum(r["source_rows"] for r in completed),partial_packets=partial,
+    errors=errors,training_admission="NOT_ADMITTED",semantic_quality="NOT_VERIFIED"),
+    ensure_ascii=False),flush=True)
+raise SystemExit(bool(errors))

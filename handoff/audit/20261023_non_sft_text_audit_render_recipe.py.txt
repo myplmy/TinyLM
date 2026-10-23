@@ -1,0 +1,141 @@
+"""One-shot, root-owned text audit/render recipe, not a training importer.
+Only unescaped literal LF inside complete JSON strings may be serialized anew.
+Original packets and worker candidates are never edited; all output is NOT_ADMITTED.
+"""
+from pathlib import Path
+from collections import Counter
+import hashlib,json,sys
+BASE=Path("data_cache/p106b_text_work_20261022")
+OUT=BASE/"normalized_non_sft_review_20261023_v1"
+LIMIT=19_999_999
+VERSIONS={303:3,468:3,718:2,736:3,2728:3,3118:2,3750:3,9830:2,9994:2,11581:2,11970:2,13327:2,14019:2,14698:2,14708:2,14954:2,15069:3,15389:2,15476:3,16418:2,16541:3,16776:2,16908:2,17192:2,17943:2,18914:2,19602:3,19678:2,20359:2,20777:2,20913:2,20941:2,21147:2,21300:2,21640:2,23663:2,379431:2,391190:2,567493:2,678681:2,1006599:2,1120379:2,1267384:3,1296532:3,1359065:2,1378527:2}
+SELECTION=Path('handoff/audit/20261023_non_sft193_selection.json')
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def unique_pairs(pairs):
+    value={}
+    for key,item in pairs:
+        if key in value:raise ValueError("duplicate JSON key")
+        value[key]=item
+    return value
+def strict(raw):
+    return json.loads(raw,object_pairs_hook=unique_pairs,
+                      parse_constant=lambda value:(_ for _ in ()).throw(ValueError("nonfinite JSON")))
+def serialize_lf_only(raw):
+    try:return strict(raw),raw,[]
+    except json.JSONDecodeError as error:
+        if error.msg!="Invalid control character at" or raw[error.pos]!="\n":raise
+    inside=escaped=False;parts=[];changed=[]
+    for index,char in enumerate(raw):
+        if inside:
+            if escaped:
+                if char=="\n":raise ValueError("ambiguous backslash followed by literal LF")
+                parts.append(char);escaped=False
+            elif char=="\\":
+                parts.append(char);escaped=True
+            elif char=='"':
+                parts.append(char);inside=False
+            elif char=="\n":
+                parts.append("\\n");changed.append(index)
+            else:parts.append(char)
+        else:
+            parts.append(char)
+            if char=='"':inside=True
+    if inside or escaped or not changed:raise ValueError("not a complete literal-LF-only candidate")
+    normalized="".join(parts);value=strict(normalized)
+    # Exact character reconstruction proves there were no other text edits.
+    expected=raw
+    for index in reversed(changed):expected=expected[:index]+"\\n"+expected[index+1:]
+    if expected!=normalized:raise ValueError("serialization modified other characters")
+    return value,normalized,changed
+def selftest():
+    tests=0
+    for raw,wanted in [('{"x":"a\\nb"}',"a\nb"),('{\n"x":"a\nb"\n}',"a\nb"),
+                       ('{"x":"a\\\\b\nc"}',"a\\b\nc"),('{"x":"a\\"q\nb"}','a"q\nb')]:
+        value,normalized,changes=serialize_lf_only(raw)
+        assert value["x"]==wanted
+        assert strict(normalized)==value
+        tests+=1
+    for raw in ['{"x":"a\tb"}','{"x":"a\\\nb"}','{"x":"a\nb}', '{"x":"a\nb",}', '{"x":1,"x":2}', '{"x":NaN}']:
+        try:serialize_lf_only(raw)
+        except (ValueError,json.JSONDecodeError):tests+=1
+        else:raise AssertionError("invalid input admitted")
+    return tests
+def new_bytes(path,raw):
+    if len(raw)>LIMIT:raise ValueError("artifact20MB limit")
+    with path.open("xb") as stream:stream.write(raw)
+def payload(value):return (json.dumps(value,ensure_ascii=False,sort_keys=True,allow_nan=False)+"\n").encode("utf-8")
+def main():
+    tests=selftest();rows=[];errors=[];decisions=Counter();seen=set()
+    selection=strict(SELECTION.read_text())
+    assert {int(k):v for k,v in selection['versions'].items()}==VERSIONS
+    selected={r['source_id']:r for r in selection['records']}
+    assert len(selected)==193 and selection['training_admission']=='NOT_ADMITTED'
+    for number in range(1,26):
+        pp=BASE/"non_sft_translation_packets"/f"non_sft_translation_{number:06d}.json"
+        pbytes=pp.read_bytes();packet=strict(pbytes.decode("utf-8"))
+        for source in packet["sources"]:
+            ident=source["source_id"];key=(ident,source["source_sha256"])
+            if key in seen:raise ValueError("duplicate sealed source")
+            seen.add(key)
+            if sha(source["original_english"].encode("utf-8"))!=key[1]:raise ValueError("source string SHA")
+            candidate=BASE/"scratch/non_sft_translation_v1"/packet["packet"]/f"{ident}_v{VERSIONS.get(ident,1)}.json"
+            try:
+                raw=candidate.read_bytes();text=raw.decode("utf-8")
+                assert str(candidate)==selected[ident]['selected_candidate']
+                assert sha(raw)==selected[ident]['candidate_file_sha256']
+                value,normalized,changes=serialize_lf_only(text)
+                if (value.get("source_id")!=ident or value.get("source_sha256")!=key[1]
+                    or value.get("training_admission")!="NOT_ADMITTED"):raise ValueError("candidate identity/admission")
+                decision=value.get("decision")
+                if decision not in ("DRAFT_TRANSLATED","HOLD"):raise ValueError("candidate decision")
+                for field in ("ko_translation","ko_rephrase"):
+                    if not isinstance(value.get(field),str) or bool(value[field].strip())!=(decision=="DRAFT_TRANSLATED"):
+                        raise ValueError("two complete text fields or empty HOLD required")
+                raw_fact=value.get("fact_verification")
+                if raw_fact not in (None,"NOT_VERIFIED"):raise ValueError("unverified-only fact metadata")
+                if raw!=candidate.read_bytes() or pbytes!=pp.read_bytes():raise ValueError("input changed")
+                decisions[decision]+=1
+                rows.append(dict(source_id=ident,packet=str(pp),packet_sha256=sha(pbytes),source=source,
+                    raw_candidate=str(candidate),raw_candidate_sha256=sha(raw),candidate=value,
+                    serialized_candidate_sha256=sha(normalized.encode("utf-8")),
+                    literal_lf_serialization_positions=changes,raw_fact_field=raw_fact,
+                    fact_verification="NOT_VERIFIED",semantic_quality="NOT_VERIFIED",training_admission="NOT_ADMITTED"))
+            except Exception as exc:
+                errors.append(dict(source_id=ident,candidate=str(candidate),error_type=type(exc).__name__,error=str(exc)[:300]))
+    summary=dict(schema="P106B_NON_SFT_TEXT_AUDIT_RENDER_V1",selftests=tests,sealed_sources=len(seen),
+        readable_sources=len(rows),decisions=dict(decisions),errors=errors,
+        literal_lf_only_serialized_candidates=sum(bool(r["literal_lf_serialization_positions"]) for r in rows),
+        raw_fact_field_missing=sum(r["raw_fact_field"] is None for r in rows),
+        candidate_selection="EXPLICIT_VERSIONS_OTHERWISE_LITERAL_V1; NO_NEWEST_FALLBACK",
+        semantic_quality="NOT_VERIFIED",training_admission="NOT_ADMITTED",selection_versions=VERSIONS)
+    if "--render" not in sys.argv:
+        print(json.dumps(summary,ensure_ascii=False));return int(bool(errors))
+    if errors:print(json.dumps(summary,ensure_ascii=False));return 9
+    if OUT.exists():raise FileExistsError("preserve earlier audit snapshot")
+    OUT.mkdir()
+    review=Path("review_request/20261023_비SFT193원천_번역과재표현_검수_v1.md")
+    if review.exists():raise FileExistsError("preserve earlier human view")
+    from scripts.p106b_text_batches import visible_review_text
+    blocks=["# 비SFT193원천 번역·재표현 검수 v1","",
+      "원문·번역·재구성을 함께 표시합니다. 모든 후보는 학습 미채택이며 사실·의미 검증 완료가 아닙니다.",
+      "HOLD는 번역 완료로 세지 않습니다. 일부 원 JSON의 문자열 줄바꿈만 별도 직렬화했으며 원파일은 보존했습니다.",
+      "구버전의 사실 검증 필드 없음은 별도 표기합니다. 검사 미실행을 사실 통과로 해석하지 않습니다.",""]
+    for row in rows:
+        ident=row["source_id"];value=row["candidate"]
+        new_bytes(OUT/f"{ident}.json",payload(row))
+        blocks.extend([f"## 원천 {ident} — {value['decision']}","",
+          f"- 원 후보: {row['raw_candidate']}",
+          f"- 원천 SHA: {row['source']['source_sha256']}",
+          f"- 원파일의 사실 검증 필드: {row['raw_fact_field'] if row['raw_fact_field'] else '없음; 실제 사실 검증 미실행'}",
+          f"- 판독 이유: {value.get('reason_ko','')}","",
+          "### 영어 원문","",row["source"]["original_english"],"",
+          "### 한국어 충실 번역","",value["ko_translation"] or "보류 — 번역 작성 없음","",
+          "### 한국어 문장 재구성","",value["ko_rephrase"] or "보류 — 재구성 작성 없음","",
+          "### 시점·검토 메모","",value.get("temporal_scope_note","별도 메모 없음"),""])
+    visible,controls=visible_review_text("\n".join(blocks)+"\n")
+    new_bytes(review,visible.encode("utf-8"))
+    summary.update(human_review=str(review),display_control_counts=controls,
+        candidate_rows=[{k:v for k,v in row.items() if k not in ("candidate","source")} for row in rows])
+    new_bytes(OUT/"report.json",payload(summary))
+    print(json.dumps({k:v for k,v in summary.items() if k!="candidate_rows"},ensure_ascii=False));return 0
+if __name__=="__main__":raise SystemExit(main())

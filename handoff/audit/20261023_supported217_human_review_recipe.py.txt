@@ -1,0 +1,61 @@
+"""Closed first teacher batch only; source-bound readable review, no admission."""
+from pathlib import Path
+import json,hashlib,sys
+from scripts.p106b_shards import verify
+from scripts.p106b_text_batches import visible_review_text
+from scripts.p106b_native_text_audit import write_json
+root=Path.cwd();second='--second-window-v1' in sys.argv
+count=457 if second else 217
+batch=root/('HF/sft_ready/p106b_supported_production8h_v3_s1337/batch_000001' if second else 'HF/sft_ready/p106b_supported_production8h_v3_s1337/batch_000000')
+correct_meta='--correct-meta-v2' in sys.argv
+assert not second or correct_meta
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def content(value):
+    if isinstance(value,str):return value
+    if isinstance(value,list) and all(isinstance(x,dict) and x.get('type')=='text' and isinstance(x.get('text'),str) for x in value):
+        return ''.join(x['text'] for x in value)
+    raise ValueError('unknown content representation')
+report_path=batch/'report.json';raw_report=report_path.read_bytes();report=json.loads(raw_report)
+assert report['status']=='PRODUCTION_PAUSED' and report['returncode']==8
+assert report['accepted_groups']==count and report['formal_train_ready'] is False
+mp=batch/'candidates_shards_manifest.json';raw_mp=mp.read_bytes();manifest=json.loads(raw_mp)
+assert report['candidate_manifest']==manifest
+verify(batch,manifest)
+rows=[]
+for spec in manifest['shards']:
+    rows.extend(json.loads(line) for line in (batch/spec['path']).read_text().splitlines())
+assert len(rows)==count
+selected={i*(count-1)//15 for i in range(16)}
+blocks=[f'# V3 교사 {"둘째 창457" if second else "첫 창217"}후보 — 실제 학생 문맥·질문·답 검수','',
+    '원문 및 후보를 바꾸지 않은 읽기용 복사입니다. 형식 수락은 정답성·학습 채택이 아닙니다.',
+    '학생 입력 안의 참고자료와 마지막 질문을 함께 읽어 주세요. train/val은 기존 분할을 유지합니다.',
+    f'등간격16개 위치는 별도 표시하며, 전체{count}개 의미 검수 완료나 모집단 오류율을 뜻하지 않습니다. 둘째 창은 독립 판독 미실행입니다.',
+    '교사의 사고 원문은 이 검수본에 넣지 않았고 원 raw shard에 그대로 보존합니다.','']
+for index,row in enumerate(rows):
+    assert isinstance(row['messages'],list) and len(row['messages'])==2
+    assert [m['role'] for m in row['messages']]==['user','assistant']
+    split=row.get('meta' if correct_meta else 'metadata',{}).get('source_split','NOT_RECORDED')
+    blocks.extend([f'## 후보{index+1} — 분할 {split}'+(' — 독립 표본' if index in selected else ''),'',
+        '### 학생이 보는 문맥과 질문','',content(row['messages'][0]['content']),'',
+        '### 교사 최종 답','',content(row['messages'][1]['content']),''])
+assert raw_report==report_path.read_bytes() and raw_mp==mp.read_bytes()
+text,controls=visible_review_text('\n'.join(blocks)+'\n');payload=text.encode()
+assert len(payload)<20_000_000
+version='v2' if correct_meta else 'v1'
+out=root/f'review_request/20261023_V3교사_첫창217_문맥질문답변_검수_{version}.md'
+audit=root/('handoff/audit/WIP_20261023_TEACHER217_HUMAN_REVIEW_V2.json' if correct_meta else 'handoff/audit/WIP_20261023_TEACHER217_HUMAN_REVIEW.json')
+if second:
+    out=root/'review_request/20261023_V3교사_둘째창457_문맥질문답변_검수_v1.md'
+    audit=root/'handoff/audit/WIP_20261023_TEACHER457_HUMAN_REVIEW.json'
+assert not out.exists() and not audit.exists()
+if '--render' in sys.argv:
+    with out.open('xb') as stream:stream.write(payload)
+    write_json(audit,dict(schema='P106B_SUPPORTED217_HUMAN_REVIEW_V1',source_report=str(report_path.relative_to(root)),
+        source_report_sha256=sha(raw_report),candidate_manifest_sha256=sha(raw_mp),
+        candidate_concat_sha256=manifest['concat_sha256'],candidate_rows=count,output=str(out.relative_to(root)),
+        output_sha256=sha(payload),output_bytes=len(payload),display_control_counts=controls,
+        split_metadata_field='meta' if correct_meta else 'metadata',
+        preserves_v1_with_missing_split_display=correct_meta,
+        semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED',no_open_batch_access=True))
+print(json.dumps(dict(rows=count,bytes=len(payload),output=str(out.relative_to(root)),
+    semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED',rendered='--render' in sys.argv),ensure_ascii=False))

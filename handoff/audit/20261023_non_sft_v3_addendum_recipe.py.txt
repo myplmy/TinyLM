@@ -1,0 +1,47 @@
+"""Two explicit residual corrections; readable derivative, no admission."""
+import runpy,json,sys
+from pathlib import Path
+h=runpy.run_path('handoff/audit/20261023_non_sft_text_audit_render_recipe.py.txt',run_name='non_sft_reference_functions')
+strict,serialize,sha=h['strict'],h['serialize_lf_only'],h['sha']
+base=h['BASE'];remaining='--remaining-two-v3' in sys.argv
+numbers=(31,32) if remaining else (31,)
+packet_bytes={base/f'non_sft_translation_packets/non_sft_translation_{n:06d}.json':None for n in numbers}
+for path in packet_bytes:packet_bytes[path]=path.read_bytes()
+sources={s['source_id']:s for raw in packet_bytes.values() for s in strict(raw.decode())['sources']}
+identities=(29721,30596) if remaining else (30078,30166)
+blocks=[('# 비SFT 원천29721·30596 — 날짜·가능표현 v2/v3 보완 대조' if remaining else '# 비SFT 원천30078·30166 — 원문과 v2/v3 보완 대조'),'',
+    '정규화16b v1과 최초 선택 장부는 v2를 가리킨 채 보존합니다. 다음 v3는 별도 미게시 후보입니다.',
+    '독립 목적표본에서 발견한 두 조건·주체 오류의 좁은 보완이며 전체 자료의 의미·사실 통과가 아닙니다.',
+    '학습 채택은 하지 않았습니다. 줄바꿈 표기는 기존 엄격 LF 직렬화로만 표시합니다.','']
+records=[]
+for ident in identities:
+    s=sources[ident];assert sha(s['original_english'].encode())==s['source_sha256']
+    blocks.extend([f'## 원천{ident}','','### 영어 원문','',s['original_english'],''])
+    row={'source_id':ident,'source_sha256':s['source_sha256'],'versions':{}}
+    for version in (2,3):
+        number=32 if ident==30596 else 31
+        p=base/f'scratch/non_sft_translation_v1/non_sft_translation_{number:06d}/{ident}_v{version}.json'
+        raw=p.read_bytes();d,normalized,positions=serialize(raw.decode())
+        assert d['source_id']==ident and d['source_sha256']==s['source_sha256']
+        assert d['training_admission']=='NOT_ADMITTED' and d['fact_verification']=='NOT_VERIFIED'
+        row['versions'][str(version)]={'path':str(p),'sha256':sha(raw),'lf_serialization_positions':positions}
+        blocks.extend([f'### v{version} 메모','',d['reason_ko'],f'### v{version} 번역','',d['ko_translation'],
+            f'### v{version} 문장 재구성','',d['ko_rephrase'],''])
+        assert raw==p.read_bytes()
+    records.append(row)
+assert all(raw==p.read_bytes() for p,raw in packet_bytes.items())
+from scripts.p106b_text_batches import visible_review_text
+text,controls=visible_review_text('\n'.join(blocks)+'\n');data=text.encode();assert len(data)<20_000_000
+out=Path('review_request/20261023_비SFT2건_주체조건_v2_v3_보완검수.md')
+audit=Path('handoff/audit/WIP_20261023_NON_SFT_V3_ADDENDUM.json')
+if remaining:
+    out=Path('review_request/20261023_비SFT2건_날짜가능표현_v2_v3_보완검수.md')
+    audit=Path('handoff/audit/WIP_20261023_NON_SFT_V3_SCOPE_ADDENDUM.json')
+assert not out.exists() and not audit.exists()
+if '--render' in sys.argv:
+    h['new_bytes'](out,data)
+    h['new_bytes'](audit,h['payload']({'schema':'P106B_TWO_RESIDUAL_CORRECTIONS_V1','source_count':2,
+        'new_unique_sources':0,'packet_sha256':{str(p):sha(raw) for p,raw in packet_bytes.items()},'records':records,'human':str(out),
+        'human_sha256':sha(data),'human_bytes':len(data),'display_controls':controls,
+        'semantic_quality':'NOT_VERIFIED','training_admission':'NOT_ADMITTED','old_outputs_modified':False}))
+print(json.dumps({'source_count':2,'new_unique_sources':0,'bytes':len(data),'human':str(out),'rendered':'--render' in sys.argv},ensure_ascii=False))

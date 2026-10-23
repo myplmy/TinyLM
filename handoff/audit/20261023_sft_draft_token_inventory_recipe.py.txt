@@ -1,0 +1,62 @@
+"""Read closed draft snapshots with the existing ChatML encoder; never train.
+
+All assistant spans are potential encoder targets, not verified correct labels.
+Explicit turn supervision remains a separate admission task.
+"""
+from pathlib import Path
+from collections import Counter
+import hashlib,json
+from tokenizers import Tokenizer
+from scripts.p106b_shards import verify
+from scripts.p106b_native_text_audit import write_json
+from tinylm.data.sft import encode_conversation,sft_targets,IGNORE
+root=Path.cwd();base=root/'data_cache/p106b_text_work_20261022/imported'
+sha=lambda raw:hashlib.sha256(raw).hexdigest().upper()
+snap=root/'handoff/audit/WIP_20261023_TEXT_PROGRESS_09.json';snap_raw=snap.read_bytes();inventory=json.loads(snap_raw)
+tokenizer=root/'data_cache/tok-ko-en-32768-chat32.json';tok_raw=tokenizer.read_bytes();tok=Tokenizer.from_file(str(tokenizer))
+pins={str(snap.relative_to(root)):sha(snap_raw),str(tokenizer.relative_to(root)):sha(tok_raw)}
+unique={};duplicates=0
+def add(row,path,prior=False):
+    global duplicates
+    index=row['source_index'];kind=row['variant_kind']
+    assert kind in ('ko_translation','ko_rephrase','en_rephrase') and row['training_admission']=='NOT_ADMITTED'
+    message_sha=sha(json.dumps(row['messages'],sort_keys=True,ensure_ascii=False).encode())
+    key=(index,kind,message_sha)
+    if key in unique:duplicates+=1;return
+    unique[key]=(row,str(path.relative_to(root)),prior,message_sha)
+for rel,expected in inventory['report_path_to_sha256'].items():
+    path=root/rel;raw=path.read_bytes();assert sha(raw)==expected;pins[rel]=expected
+    mp=path.parent/'authoring_shards_manifest.json'
+    if not mp.is_file():continue
+    raw=mp.read_bytes();manifest=json.loads(raw);verify(path.parent,manifest);pins[str(mp.relative_to(root))]=sha(raw)
+    for spec in manifest['shards']:
+        p=path.parent/spec['path'];pins[str(p.relative_to(root))]=spec['sha256']
+        for line in p.read_text().splitlines():add(json.loads(line),p)
+prior=root/'data_cache/p106b_native_text_audit_v2_policy/revised_sft'
+mp=prior/'candidate_shards_manifest.json';raw=mp.read_bytes();manifest=json.loads(raw);verify(prior,manifest);pins[str(mp.relative_to(root))]=sha(raw)
+for spec in manifest['shards']:
+    p=prior/spec['path'];pins[str(p.relative_to(root))]=spec['sha256']
+    for line in p.read_text().splitlines():add(json.loads(line),p,True)
+assert len(unique)==5529 and len({k[0] for k in unique})==1843
+totals=Counter();by_kind={};records=[]
+for (index,kind,_),(row,path,prior,message_sha) in sorted(unique.items()):
+    ids,labels,_=encode_conversation(row,tok);x,y=sft_targets(ids,labels);targets=sum(t!=IGNORE for t in y)
+    bucket=by_kind.setdefault(kind,Counter());bucket.update(rows=1,nonpadding_x=len(x),potential_all_assistant_targets=targets)
+    eligible=0<len(x)<=1024 and targets>0
+    bucket.update(complete_within1024_rows=int(eligible),complete_within1024_x=len(x) if eligible else 0,
+        complete_within1024_potential_targets=targets if eligible else 0,over1024_rows=int(len(x)>1024))
+    totals.update(rows=1,nonpadding_x=len(x),potential_all_assistant_targets=targets,
+        complete_within1024_rows=int(eligible),complete_within1024_x=len(x) if eligible else 0,
+        complete_within1024_potential_targets=targets if eligible else 0,over1024_rows=int(len(x)>1024))
+    records.append(dict(source_index=index,kind=kind,messages_sha256=message_sha,source_file=path,
+        nonpadding_x=len(x),potential_all_assistant_targets=targets,complete_within1024=eligible,
+        inherited_turn_contract=row.get('supervision_contract','NOT_RECORDED'),prior_revision=prior))
+for rel,expected in pins.items():assert sha((root/rel).read_bytes())==expected
+output=root/'handoff/audit/WIP_20261023_SFT_DRAFT_TOKEN_INVENTORY.json'
+value=dict(schema='P106B_SFT_DRAFT_TOKEN_INVENTORY_V1',snapshot=str(snap.relative_to(root)),
+    input_pins=pins,encoder='existing encode_conversation(chatml) + sft_targets',rows=5529,sources=1843,
+    duplicate_appearances_not_counted=duplicates,totals=dict(totals),by_kind={k:dict(v) for k,v in by_kind.items()},
+    source_language_verified=False,semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED',
+    no_new_corpus_written=True,qualification='serialized token inventory only; not eligible train amount, no global question/concept dedup, turn supervision not certified; overlong rows are not truncated',records=records)
+write_json(output,value)
+print(json.dumps({k:v for k,v in value.items() if k not in ('input_pins','records')},ensure_ascii=False))

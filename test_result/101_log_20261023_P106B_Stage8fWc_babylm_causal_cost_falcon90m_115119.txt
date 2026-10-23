@@ -1,0 +1,20 @@
+
+==============================================================================
+[runlog] 2026-10-23 11:51:50  name=P106B_Stage8fWc_babylm_causal_cost_falcon90m_115119
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=30 650 data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_babylm_causal.py --execute --model falcon90m --mode cost --source-sha256 5D9C80ACB73858F91148CD5FB58FBC0DD9A7B27236360513C31607A83B5CA885
+==============================================================================
+[transformers] The fast path is not available because one of `(selective_state_update, causal_conv1d_fn, causal_conv1d_update)` is None. Falling back to the naive implementation. To install follow https://github.com/state-spaces/mamba/#installation and https://github.com/Dao-AILab/causal-conv1d
+
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]
+Loading weights:  53%|█████▎    | 206/386 [00:00<00:00, 2006.59it/s]
+Loading weights: 100%|██████████| 386/386 [00:00<00:00, 2147.99it/s]
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+[BABYLM_GROUP] {"model": "falcon90m", "mode": "cost", "group": "main", "rows": 536, "uid_macro_percent": 80.97014925373135, "seconds": 26.823737824001}
+[BABYLM_GROUP] {"model": "falcon90m", "mode": "cost", "group": "supplement", "rows": 40, "uid_macro_percent": 67.5, "seconds": 1.9981936499971198}
+[BABYLM_FINAL] {"status": "BABYLM_CAUSAL_COST_COMPLETE", "returncode": 0, "model": "falcon90m", "mode": "cost", "wall_seconds": 36.5329598160024, "error_type": null, "error": null}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.6분  (2026-10-23 11:52:27)
+==============================================================================
+Cost exit=0; original causal function with actual full logits. Not a full BLiMP score. Inspect actual parity, zero skips, source/model closure and measured full budget.

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Three existing strong models: local grammar48 and everyday KO/EN48.
+# Not official BabyLM; no dataset downloads, training, candidate retries.
+# Estimate0.5h UNMEASURED; each model/task capped1800s; GPU one at a time.
+# Independent model/task failures are recorded and remaining tasks continue.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+stamp="$(date +%H%M%S)"
+failed=0
+baseline=""
+for model in native595-f native595-q new595-broad-f; do
+    out="test_result/evidence/p106b_existing_probes_20261022/${model}_${stamp}"
+    extra=()
+    [[ -z "$baseline" ]] || extra=(--baseline-from "$baseline")
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fvW_"${model}_${stamp}" --num 101 --note 'Experimental ROOT-authored48 grammar minimal pairs,12lexical clusters; not official BabyLM score. Full sumNLL primary, exact ties separate; unigram/length/chance controls. Follow with48 KO/EN everyday first answers,31 literal diagnostics and17 manual cases, no claim of overall chat accuracy. Frozen questions never enter training.'
+    if "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fvW_"${model}_${stamp}" --num 101 -- "$python_bin" -B -X utf8 scripts/p106b_minimal_pair_benchmark.py --model "$model" --data scripts/fixtures/p106b_grammar_pairs48_20261022.jsonl --output "${out}/grammar" --max-wall-sec 1800 --execute "${extra[@]}"; then
+        [[ -n "$baseline" ]] || baseline="${out}/grammar"
+    else
+        failed=1
+    fi
+    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fvW_"${model}_${stamp}" --num 101 -- "$python_bin" -B -X utf8 scripts/p106b_chat_probe_batch.py --model "$model" --data scripts/fixtures/p106b_daily_chat48_20261022.jsonl --output "${out}/chat" --review-output "review_request/20261022_${model}_${stamp}_daily48.md" --max-wall-sec 1800 --max-new 96 --execute; then
+        failed=1
+    fi
+done
+exit "$failed"

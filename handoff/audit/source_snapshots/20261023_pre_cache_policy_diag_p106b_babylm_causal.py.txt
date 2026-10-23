@@ -1,0 +1,365 @@
+#!/usr/bin/env python3
+"""BabyLM2026 BLiMP의 변경 없는 causal 함수와 strict 모델을 연결하는 평가 전용 실행기.
+
+기본 호출은 소스 확인뿐이다. --prepare는 평가 원문/소스 SHA와 분모만 확인한다.
+모델은 명시 --execute에서만 한 개를 불러오며 학습·교사 요청·체크포인트 저장은 없다.
+"""
+from __future__ import annotations
+
+import argparse
+from collections import Counter
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import sys
+import time
+
+ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+TOOLS=ROOT/"data_cache/p106b_official_eval_tools/babylm_eval_6f825c291e2c4c78ad33b1935fd64d45f52642dc_minimal_blimp"
+DATA=ROOT/"data_cache/p106b_official_eval_assets/babylm_2026_strict_8d52da9"
+SOURCE=TOOLS/"source/strict/evaluation_pipeline/sentence_zero_shot"
+OUTPUT=ROOT/"test_result/evidence/p106b_babylm_causal_v2_s1337"
+MODELS=("native595-f","native595-q","new595-broad-f","falcon90m")
+DEADLINE=datetime(2026,10,23,7,30,tzinfo=timezone.utc).timestamp()
+LIMIT=19_999_999
+PINNED={str((DATA/"manifest.json").relative_to(ROOT)):"4734735531EBFFFD6E732027903CE361CC735E473C8EEB85F62B20984C149CC9",
+    str((TOOLS/"manifest.json").relative_to(ROOT)):"75B0DAE39E1938073BE5A7275E1D805FB2E64F78BC42CC3C3110B1BA6742B9A5",
+    str((TOOLS/"license_addendum_manifest.json").relative_to(ROOT)):"65901B3ED1E9B9CC3E88DCC12DF91527E2AFD440060150AC18FDF145B13BE54F"}
+FILES=("scripts/diag_p106b_babylm_causal.py","scripts/test_p106b_babylm_driver.py",
+       "scripts/p106b_babylm_causal.py","scripts/test_p106b_babylm_causal.py")
+PREFIXES=dict(main="evaluation_data/full_eval/blimp_filtered/",supplement="evaluation_data/full_eval/supplement_filtered/")
+EXPECTED=dict(main=dict(files=67,rows=59875),supplement=dict(files=5,rows=5218))
+
+
+def read(path):
+    path=Path(path)
+    if path.stat().st_size>LIMIT:raise ValueError("메타데이터20MB 상한")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def digest(path):
+    path=Path(path)
+    if path.is_symlink() or any(p.is_symlink() for p in path.parents) or not path.is_file():
+        raise ValueError("명시한 비연결 일반 파일 필요: "+str(path))
+    h=hashlib.sha256()
+    with path.open("rb") as stream:
+        for part in iter(lambda:stream.read(1<<20),b""):h.update(part)
+    return h.hexdigest().upper()
+
+
+def object_sha(value):
+    return hashlib.sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,allow_nan=False,separators=(",",":")).encode()).hexdigest().upper()
+
+
+def write(path,value):
+    raw=(json.dumps(value,ensure_ascii=False,sort_keys=True,allow_nan=False)+"\n").encode()
+    if len(raw)>LIMIT:raise ValueError("보고서20MB 상한")
+    with Path(path).open("xb") as stream:stream.write(raw)
+
+
+def identity():
+    from scripts.diag_p106b_official_core6 import SOURCES
+    names=tuple(dict.fromkeys((*FILES,*SOURCES)))
+    files={name:digest(ROOT/name) for name in names}
+    return dict(files=files,sha256=object_sha(files))
+
+
+def policy():
+    return dict(batch_size=8,max_context=1024,seed=1337,temperature=1.0,
+        precision="FP32_MATH_OR_NATIVE_EAGER_TF32_OFF",cache=False,training=False,
+        bos="ACTUAL_NATIVE_TOKENIZER_DEFAULT_NO_MANUAL_INSERTION",chat_template=False,
+        metric="OFFICIAL_UID_MACRO_PERCENT_MAIN_AND_SUPPLEMENT_SEPARATE",
+        numerical_atol=1e-5,numerical_rtol=1e-4,official_cli=False,
+        implementation="PINNED_UNMODIFIED_CAUSAL_AST_NODES_WITH_REAL_FULL_LOGITS_ADAPTER",
+        rank_observer="CALLS_ORIGINAL_THEN_REPLAYS_CPU_TIE_RNG_AND_COUNTERS; NO_SOURCE_REWRITE")
+
+
+def pins_and_rows():
+    pins={}
+    for name,expected in PINNED.items():
+        actual=digest(ROOT/name)
+        if actual!=expected:raise ValueError("고정 반입 manifest 불일치: "+name)
+        pins[name]=actual
+    data=read(DATA/"manifest.json")
+    if data.get("revision") not in (None,"8d52da9424a9ff30b9e8266c4f751aba9c504233"):
+        raise ValueError("평가 자료 revision 불일치")
+    sources=read(TOOLS/"manifest.json")
+    for item in sources["files"]:
+        path=ROOT/item["local_path"]
+        if digest(path)!=item["sha256"].upper():raise ValueError("원 공식 소스 변경")
+        pins[item["local_path"]]=item["sha256"].upper()
+    license_report=read(TOOLS/"license_addendum_manifest.json")
+    # 라이선스 파일의 실제 구조는 반입 영수증이 소유한다. 그 영수증 자체도 위에서 고정했다.
+    if not license_report:raise ValueError("라이선스 추가 영수증 없음")
+    for item in license_report["files"]:
+        if digest(ROOT/item["local_path"])!=item["sha256"].upper():raise ValueError("라이선스 원문 변경")
+        pins[item["local_path"]]=item["sha256"].upper()
+    groups={};counts={}
+    for group,prefix in PREFIXES.items():
+        files=[item for item in data["files"] if item["local_relative_path"].startswith(prefix)]
+        if len(files)!=EXPECTED[group]["files"]:raise ValueError("공식 UID 파일 분모 불일치")
+        rows=[]
+        for item in files:
+            relative=Path(item["local_relative_path"])
+            if relative.is_absolute() or ".." in relative.parts:raise ValueError("평가 경로 탈출")
+            path=DATA/relative
+            if digest(path)!=item["sha256"].upper():raise ValueError("평가 원문 변경")
+            pins[str(path.relative_to(ROOT))]=item["sha256"].upper()
+            with path.open(encoding="utf-8") as stream:
+                for index,line in enumerate(stream):
+                    raw=json.loads(line)
+                    if (not isinstance(raw,dict) or any(not isinstance(raw.get(key),str) or not raw[key]
+                        for key in ("sentence_good","sentence_bad"))):raise ValueError("빈 최소쌍/원 행 오류; 건너뛰지 않음")
+                    rows.append(dict(file=str(relative),line=index,raw=raw,source_sha256=item["sha256"].upper()))
+        if len(rows)!=EXPECTED[group]["rows"]:raise ValueError("공식 최소쌍 전체 분모 불일치")
+        groups[group]=rows;counts[group]=dict(files=len(files),rows=len(rows),order_sha256=object_sha(rows))
+    return pins,groups,counts
+
+
+def verify_pins(pins):
+    if any(digest(ROOT/name)!=expected for name,expected in pins.items()):raise ValueError("입력/소스 사후 SHA 불일치")
+
+
+def prepare():
+    started=time.perf_counter();signature=identity();pins,_,counts=pins_and_rows()
+    directory=OUTPUT/"prepare"
+    if directory.exists():raise FileExistsError("기존 준비 증거 보존")
+    directory.mkdir(parents=True,exist_ok=False)
+    if identity()!=signature:raise ValueError("준비 중 소스 변경")
+    value=dict(status="BABYLM_CAUSAL_DATA_PREPARED",returncode=0,source_identity=signature,
+        policy=policy(),input_pins=pins,actual_counts=counts,data_used_for_training=False,
+        model_loads=0,gpu_calls=0,optimizer_updates=0,checkpoint_writes=0,
+        semantics="EVALUATION_ONLY; NO_TRAIN_OR_TEACHER_DATA_CONNECTION",wall_seconds=time.perf_counter()-started)
+    write(directory/"report.json",value);return value
+
+
+def selected_rows(rows,mode):
+    if mode=="full":return rows
+    if mode!="cost":raise ValueError("등록한 cost/full만 허용")
+    return [row for row in rows if row["line"]<8]
+
+
+def full_admission(cost,signature,model,now):
+    if (cost.get("status")!="BABYLM_CAUSAL_COST_COMPLETE" or cost.get("returncode")!=0
+            or cost.get("model")!=model or cost.get("source_identity")!=signature
+            or cost.get("policy")!=policy() or not cost.get("sources_unchanged") or not cost.get("inputs_unchanged")
+            or {k:v["rows"] for k,v in cost.get("group_audits",{}).items()}!={"main":536,"supplement":40}):
+        raise ValueError("같은 모델·정책·source의 완결 cost 필요")
+    overhead=max(0.,cost["wall_seconds"]-sum(cost["evaluation_seconds"].values()))
+    forecast=sum(EXPECTED[name]["rows"]*cost["evaluation_seconds"][name]/cost["group_audits"][name]["rows"]
+        for name in EXPECTED)*1.5+overhead+120
+    if not math.isfinite(forecast) or forecast>3600 or now+forecast+30>DEADLINE:
+        raise ValueError("실측 full 외삽이1시간/16:30 모델 종료창 밖임")
+    return dict(forecast_seconds=forecast,hard_cap_seconds=min(3600,int(DEADLINE-now)-30),
+        observed_non_eval_overhead_seconds=overhead,forecast_multiplier=1.5,cleanup_reserve_seconds=30)
+
+
+class FullLogits:
+    """기존 strict runtime의 실제 full logits만 반환한다. synthetic logits를 만들지 않는다."""
+    def __init__(self,lm,torch,check):
+        self.lm,self.torch,self.check=lm,torch,check
+        self.vocab=lm.core.vocab_size if hasattr(lm,"core") else lm.model.config.vocab_size
+        self.calls=0;self.input_tokens=0
+
+    def __call__(self,*,input_ids,attention_mask):
+        torch=self.torch;self.check()
+        if (input_ids.ndim!=2 or input_ids.shape!=attention_mask.shape or input_ids.shape[0]>8
+                or not 1<=input_ids.shape[1]<=1024 or input_ids.device.type!="cuda"
+                or torch.is_grad_enabled() or torch.is_autocast_enabled("cuda")
+                or torch.backends.cuda.matmul.allow_tf32 or torch.backends.cudnn.allow_tf32
+                or not bool(((attention_mask==0)|(attention_mask==1)).all())
+                or bool((attention_mask[:,1:]>attention_mask[:,:-1]).any())):
+            raise ValueError("원 causal batch/오른쪽 pad/FP32/no_grad 계약 불일치")
+        if hasattr(self.lm,"core"):
+            runtime=self.lm.core.score_batch.runtime
+            if runtime["model"].training:raise ValueError("eval 모델만 허용")
+            runtime["route"].assert_active()
+            # TinyLM은 causal mask로 뒤 padding을 볼 수 없다. 실물 single/batch oracle가 별도 선결이다.
+            logits=self.lm.core.score_batch.forward(input_ids,use_cache=False)
+        else:
+            if self.lm.model.training:raise ValueError("eval 모델만 허용")
+            logits=self.lm.model(input_ids=input_ids,attention_mask=attention_mask,use_cache=False).logits
+        if logits.dtype!=torch.float32 or tuple(logits.shape)!=(*input_ids.shape,self.vocab) or not bool(torch.isfinite(logits).all()):
+            raise ValueError("실제 유한 FP32 full logits 필요")
+        self.calls+=1;self.input_tokens+=int(attention_mask.sum())
+        if hasattr(self.lm,"core"):self.lm.core.score_batch.runtime["route"].assert_active()
+        return dict(logits=logits)
+
+
+def numerical_canary(official,lm,forward,torch,processor,pad_id):
+    from scripts.p106b_babylm_causal import processed_pair,ATOL,RTOL
+    synthetic=[dict(sentence_good="The cat is sleeping.",sentence_bad="The cats is sleeping."),
+        dict(sentence_good="A child sees two red apples.",sentence_bad="A child see two red apples."),
+        dict(sentence_good="She has arrived.",sentence_bad="She have arrived.")]
+    items=[processed_pair(official,processor,row,"backend_synthetic.jsonl") for row in synthetic]
+    collate=official["get_causal_collate_fn"](pad_id)
+    many=collate(items)[1];checks=[];scores=dict(batch={},single={},reversed={})
+    for j in range(2):
+        prefix=f"sentence_{j}";inputs=many[prefix+"_inputs"].cuda();attention=many[prefix+"_attn_mask"].cuda()
+        logits=forward(input_ids=inputs,attention_mask=attention)["logits"]
+        targets=many[prefix+"_targets"].cuda();mask=many[prefix+"_phrase_mask"].cuda()
+        batched=(torch.nn.functional.log_softmax(logits,dim=-1).gather(-1,targets.unsqueeze(-1)).squeeze(-1)*mask).sum(1)
+        scores["batch"][j]=[float(v) for v in batched]
+        for index,item in enumerate(items):
+            single=collate([item])[1]
+            one_inputs=single[prefix+"_inputs"].cuda();one_attention=single[prefix+"_attn_mask"].cuda()
+            one_logits=forward(input_ids=one_inputs,attention_mask=one_attention)["logits"]
+            one_targets=single[prefix+"_targets"].cuda();one_mask=single[prefix+"_phrase_mask"].cuda()
+            labels=one_targets.clone();labels[one_mask==0]=-100
+            independent=-torch.nn.functional.cross_entropy(one_logits.reshape(-1,forward.vocab),labels.reshape(-1),ignore_index=-100,reduction="sum")
+            original=(torch.nn.functional.log_softmax(one_logits,dim=-1).gather(-1,one_targets.unsqueeze(-1)).squeeze(-1)*one_mask).sum()
+            actual,expected,oracle=float(batched[index]),float(original),float(independent)
+            scores["single"].setdefault(j,[]).append(expected)
+            if not (math.isclose(actual,expected,abs_tol=ATOL,rel_tol=RTOL) and math.isclose(expected,oracle,abs_tol=ATOL,rel_tol=RTOL)):
+                raise ValueError("실제 batch/single/full-label 독립 수치 oracle 불일치")
+            checks.append(dict(candidate=j,index=index,batch=actual,single=expected,full_label=oracle,
+                abs_batch_single=abs(actual-expected),atol=ATOL,rtol=RTOL,prompt_tokens=len(one_inputs[0]),passed=True))
+        del logits,inputs,attention,targets,mask,batched
+    # 같은 문항을 역순 batch/후보 역순으로 다시 호출해 잔존 state·정렬의 영향을 확인한다.
+    reversed_batch=collate(list(reversed(items)))[1]
+    for j in (1,0):
+        prefix=f"sentence_{j}";values=reversed_batch
+        logits=forward(input_ids=values[prefix+"_inputs"].cuda(),attention_mask=values[prefix+"_attn_mask"].cuda())["logits"]
+        targets=values[prefix+"_targets"].cuda();mask=values[prefix+"_phrase_mask"].cuda()
+        reversed_scores=(torch.nn.functional.log_softmax(logits,dim=-1).gather(-1,targets.unsqueeze(-1)).squeeze(-1)*mask).sum(1)
+        scores["reversed"][j]=list(reversed([float(v) for v in reversed_scores]))
+        for index,(observed,expected) in enumerate(zip(scores["reversed"][j],scores["batch"][j])):
+            if not math.isclose(observed,expected,abs_tol=ATOL,rel_tol=RTOL):raise ValueError("역순 호출의 원 우도 불일치")
+        del logits,targets,mask,reversed_scores
+    decisions={}
+    for mode,values in scores.items():
+        decisions[mode]=[dict(chosen=0 if values[0][i]>=values[1][i] else 1,
+            exact_tie=values[0][i]==values[1][i],margin=values[0][i]-values[1][i]) for i in range(3)]
+    if any([(r["chosen"],r["exact_tie"]) for r in values]!=[(r["chosen"],r["exact_tie"]) for r in decisions["batch"]] for values in decisions.values()):
+        raise ValueError("수치 tolerance 안이어도 batch/single/역순의 후보 선택이 달라짐")
+    return dict(checks=checks,scores=scores,decisions=decisions,
+        native_inputs=[{f"sentence_{j}":dict(ids=item[1][f"sentence_{j}_tokens"].tolist(),
+            phrase_mask=item[1][f"sentence_{j}_phrase_mask"].tolist()) for j in range(2)} for item in items],
+        passed=True)
+
+
+def execute(model,mode,expected_source):
+    started=time.perf_counter();signature=identity()
+    if signature["sha256"]!=expected_source:raise ValueError("명시한 실행 source SHA 불일치")
+    prep_path=OUTPUT/"prepare/report.json";prep=read(prep_path)
+    if prep.get("source_identity")!=signature or prep.get("status")!="BABYLM_CAUSAL_DATA_PREPARED":raise ValueError("같은 소스의 CPU 준비 필요")
+    pins,groups,counts=pins_and_rows()
+    if pins!=prep["input_pins"] or counts!=prep["actual_counts"]:raise ValueError("준비 입력/분모 변경")
+    pins[str(prep_path.relative_to(ROOT))]=digest(prep_path)
+    admission=full_admission(read(OUTPUT/model/"cost/report.json"),signature,model,time.time()) if mode=="full" else dict(hard_cap_seconds=600)
+    if time.time()+admission["hard_cap_seconds"]+30>DEADLINE:raise ValueError("모델 실행 상한이 현재 권한을 넘음")
+    directory=OUTPUT/model/mode
+    if directory.exists():raise FileExistsError("기존 완결/부분 결과 보존")
+    directory.mkdir(parents=True,exist_ok=False)
+    report=dict(schema="P106B_BABYLM_CAUSAL_V1",status="STARTED",returncode=9,model=model,mode=mode,
+        source_identity=signature,policy=policy(),admission=admission,input_pins=pins,group_audits={},
+        evaluation_seconds={},training=False,optimizer_updates=0,checkpoint_writes=0,
+        full_suite=False,track_eligibility="NOT_CLAIMED_DIFFERENT_TRAINING_BUDGETS_AND_DATA",
+        contamination="ALL_PRETRAINING_OVERLAP_NOT_AUDITED",official_cli=False,
+        started_at=datetime.now(timezone.utc).isoformat(),sources_unchanged=False,inputs_unchanged=False)
+    writer=None;completed=False
+    def check():
+        if time.perf_counter()-started>admission["hard_cap_seconds"]-20 or time.time()>DEADLINE-20:
+            raise TimeoutError("BabyLM 모델 종료 예산 도달")
+    try:
+        from scripts.diag_p106b_official_core6 import model_runtime,prerequisites,OFFLINE
+        from scripts.p106b_babylm_causal import load_official,TextProcessor,processed_pair,RankAudit
+        from scripts.p106b_shards import ShardWriter
+        from scripts.p106b_gate_runtime import wall_limit
+        from scripts.interactive_research_infer import require_idle_gpu
+        report["strict_runtime_prerequisite"]=prerequisites()
+        for key,value in OFFLINE.items():os.environ[key]=value
+        import torch
+        from torch.nn.attention import sdpa_kernel,SDPBackend
+        torch.set_num_threads(4);torch.manual_seed(1337)
+        torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+        check()
+        official,proof=load_official(SOURCE,torch,device="cuda")
+        report["official_source_selection"]=proof
+        remaining=min(admission["hard_cap_seconds"]-(time.perf_counter()-started),DEADLINE-time.time())
+        with wall_limit(remaining),sdpa_kernel(SDPBackend.MATH),torch.no_grad():
+            check()
+            report["gpu_point_query"]=require_idle_gpu()
+            check()
+            with model_runtime(model,torch) as (lm,model_proof):
+                report["model_proof"]=model_proof
+                forward=FullLogits(lm,torch,check)
+                native=hasattr(lm,"core")
+                processor=TextProcessor(lm.tokenizer,native=native,vocab=forward.vocab)
+                pad_id=lm.core.pad_id if native else lm.tokenizer.pad_token_id
+                if type(pad_id)is not int or not 0<=pad_id<forward.vocab:raise ValueError("실제 native pad ID 필요")
+                report["synthetic_real_model_oracle"]=numerical_canary(official,lm,forward,torch,processor,pad_id)
+                report["tokenizer_policy"]=dict(native=native,pad_id=pad_id,manual_bos=False,
+                    add_special_tokens="ACTUAL_TOKENIZER_DEFAULT_TRUE",original_processor_class=type(lm.tokenizer).__name__)
+                args=argparse.Namespace(task="blimp",save_predictions=True,images_path=None)
+                collate=official["get_causal_collate_fn"](pad_id)
+                for name,all_rows in groups.items():
+                    check();rows=selected_rows(all_rows,mode);tick=time.perf_counter()
+                    items=[];lengths=[]
+                    for row in rows:
+                        check();item=processed_pair(official,processor,row["raw"],row["file"]);items.append(item)
+                        lengths.append([[int(v) for v in item[1][f"sentence_{j}_tokens"]] for j in range(2)])
+                    if len({item[4] for item in items})!=EXPECTED[name]["files"]:raise ValueError("전체 UID 보존 실패")
+                    writer=ShardWriter(directory,name+"_pairs",limit=LIMIT)
+                    torch.manual_seed(1337);rng_before=torch.get_rng_state().tolist()
+                    def batches():
+                        for index in range(0,len(items),8):check();yield collate(items[index:index+8])
+                    with RankAudit(official,torch,sink=writer.append) as audit:
+                        stats,predictions=official["compute_causal_results"](args,forward,batches(),[1.0])
+                    accuracies,average=official["process_results"](args,stats)
+                    summary=audit.summary(average[1.0])
+                    if summary["rows"]!=len(rows):raise ValueError("원 평가 분모/행 누락")
+                    closing=writer;writer=None
+                    manifest=closing.close(lineage=dict(model=model,mode=mode,group=name,
+                        official_commit=proof["commit"],data_admission="EVALUATION_ONLY_NOT_TRAIN"))
+                    report["group_audits"][name]=dict(summary,pair_manifest=manifest,official_accuracies=accuracies,
+                        official_macro_percent=average[1.0],input_order_sha256=object_sha(rows),
+                        native_ids_order_sha256=object_sha(lengths),cpu_rng_before=rng_before,
+                        cpu_rng_after=torch.get_rng_state().tolist(),tokenizer_calls=2*len(rows),
+                        max_native_tokens=max(len(values) for pair in lengths for values in pair),context_truncated_rows=0)
+                    torch.cuda.synchronize();report["evaluation_seconds"][name]=time.perf_counter()-tick
+                    print("[BABYLM_GROUP] "+json.dumps(dict(model=model,mode=mode,group=name,rows=len(rows),
+                        uid_macro_percent=average[1.0],seconds=report["evaluation_seconds"][name]),ensure_ascii=False),flush=True)
+                    del items,lengths,predictions,stats
+                report["forward_calls"]=forward.calls;report["forward_input_tokens"]=forward.input_tokens
+                forward=lm=None
+        check();verify_pins(pins)
+        report["inputs_unchanged"]=True
+        report["sources_unchanged"]=identity()==signature
+        if not report["sources_unchanged"]:raise ValueError("원 평가 실행 코드가 변경됨")
+        report.update(status="BABYLM_CAUSAL_COST_COMPLETE" if mode=="cost" else "BABYLM_CAUSAL_BLIMP_COMPLETE",returncode=0)
+        completed=True
+    except BaseException as exc:
+        report.update(status="BABYLM_CAUSAL_PARTIAL",returncode=9,error_type=type(exc).__name__,error=str(exc)[:2000])
+    finally:
+        if writer is not None:
+            try:
+                if writer._total_rows:report["partial_pair_manifest"]=writer.close(lineage=dict(complete=False))
+                else:writer._finish()
+            except BaseException as exc:report["partial_close_error"]=repr(exc)
+        report.update(ended_at=datetime.now(timezone.utc).isoformat(),wall_seconds=time.perf_counter()-started)
+        write(directory/"report.json",report)
+    return {key:report.get(key) for key in ("status","returncode","model","mode","wall_seconds","error_type","error")}
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    action=parser.add_mutually_exclusive_group()
+    action.add_argument("--prepare",action="store_true");action.add_argument("--execute",action="store_true")
+    parser.add_argument("--model",choices=MODELS);parser.add_argument("--mode",choices=("cost","full"));parser.add_argument("--source-sha256")
+    args=parser.parse_args(argv)
+    if not args.execute and any((args.model,args.mode,args.source_sha256)):parser.error("모델 인자는 명시 --execute가 필요")
+    if args.execute and not all((args.model,args.mode,args.source_sha256)):parser.error("명시 모델·단계·소스 SHA 필요")
+    try:
+        value=prepare() if args.prepare else execute(args.model,args.mode,args.source_sha256) if args.execute else dict(status="SOURCE_ONLY",source_identity=identity(),policy=policy())
+        print("[BABYLM_FINAL] "+json.dumps(value if args.execute else {k:v for k,v in value.items() if k!="input_pins"},ensure_ascii=False),flush=True)
+        return value.get("returncode",0)
+    except (ValueError,FileExistsError,FileNotFoundError) as exc:
+        print("[BABYLM_PRECONDITION] "+str(exc),file=sys.stderr);return 9
+
+
+if __name__=="__main__":raise SystemExit(main())

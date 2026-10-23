@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Pinned official Core6, four fixed models, first32/task cost only.
+# No training; FP32/math/context1024/batch8, no automatic packages.
+# Up to4x10min hard cap. Independent model errors do not skip other models.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+eval_python="data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8d0W_core6_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_official_core6
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+source_sha="$("$python_bin" -B -X utf8 scripts/diag_p106b_official_core6.py | "$python_bin" -c 'import json,sys;print(json.load(sys.stdin)["source_identity"]["sha256"])')"
+result=$?
+[[ "$result" == 0 && "$source_sha" =~ ^[A-F0-9]{64}$ ]] || exit 9
+failures=0
+for model in native595-f native595-q new595-broad-f falcon90m; do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8dW_core6_cost_"$model"_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=30 650 "$eval_python" -B -X utf8 scripts/diag_p106b_official_core6.py --execute --model "$model" --mode cost --source-sha256 "$source_sha"
+  result=$?
+  if [[ "$result" != 0 ]]; then failures=$((failures+1)); fi
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8dW_core6_cost_"$model"_"$stamp" --num 101 --note "Cost diagnostic exit=$result; first32/task is not a full official score. No training or checkpoint writes."
+done
+[[ "$failures" == 0 ]]

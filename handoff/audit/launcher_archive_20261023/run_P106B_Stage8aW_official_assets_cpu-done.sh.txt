@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Core6 pinned local evaluation splits only. No installs, models or training.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8a0W_assets_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_official_eval_assets
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8aW_local_eval_splits_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=10 300 "$python_bin" -B -X utf8 scripts/prepare_p106b_official_eval.py --execute
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8aW_local_eval_splits_"$stamp" --num 101 --note "Asset loader exit=$result. Full native official task/prompt/metric/model evaluation is still NOT_RUN. No training split, installs or source edits."
+exit "$result"

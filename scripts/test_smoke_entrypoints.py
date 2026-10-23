@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import os
 from pathlib import Path
+from unittest.mock import patch
 
 import runlog
 import summarize_smoke
@@ -12,6 +14,11 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 class SmokeEntrypointExitTests(unittest.TestCase):
+    def setUp(self):
+        # These assertions cover the user default, not the separate opt-in banner.
+        scoped=patch.dict(os.environ,{"TL_RUNLOG_GIT_SCOPE":""})
+        scoped.start();self.addCleanup(scoped.stop)
+
     def test_smoke_start_note_forces_a_fresh_log(self) -> None:
         self.assertTrue(
             runlog._is_smoke_session_start(

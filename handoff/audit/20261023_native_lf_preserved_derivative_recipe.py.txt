@@ -1,0 +1,74 @@
+"""Root-only offline LF-preserved candidates. No word changes or admission."""
+from pathlib import Path
+from collections import Counter
+import copy,hashlib,json,inspect,sys
+from scripts.p106b_text_batches import apply_positioned_edits,lf_lines,visible_review_text
+from scripts.p106b_shards import ShardWriter
+from scripts.p106b_native_text_audit import write_json
+if '--check-only' in sys.argv:
+    inspect.signature(ShardWriter).bind(Path('/tmp/unused_owned_check'), 'unused', limit=19_999_999)
+    inspect.signature(ShardWriter.append).bind(None,{})
+    inspect.signature(ShardWriter.close).bind(None,lineage={})
+    inspect.signature(apply_positioned_edits).bind('',[])
+    print('ROOT_RECIPE_HELPER_CALL_SIGNATURES_PASS; data_reads=0; writes=0')
+    raise SystemExit(0)
+root=Path.cwd();audit=root/'handoff/audit/WIP_20261023_NATIVE_LF_WARNINGS.json'
+raw_audit=audit.read_bytes();report=json.loads(raw_audit)
+sha=lambda raw:hashlib.sha256(raw).hexdigest().upper()
+key=lambda s,d:(s.get('eos_segment_index',s['id']),s['sha256'],sha(json.dumps(d,sort_keys=True,ensure_ascii=False).encode()))
+wanted={(w['eos_segment_index'],w['source_sha256'],w['draft_sha256']) for w in report['warnings']}
+assert len(wanted)==472
+shards=sorted({w['review_shard'] for w in report['warnings']});pins={};selected={}
+for rel in shards:
+    path=root/rel;raw=path.read_bytes();pins[rel]=sha(raw)
+    for line in raw.decode().splitlines():
+        r=json.loads(line);k=key(r['source'],r['draft'])
+        if k in wanted:
+            if k in selected:assert selected[k][0]==r
+            else:selected[k]=(r,rel)
+assert set(selected)==wanted
+out=root/'data_cache/p106b_text_work_20261022/normalized_native_lf_review_20261023_v2'
+human=root/'review_request/20261023_LF보존_형식정규화_검수_v2.md'
+assert not out.exists() and not human.exists();out.mkdir()
+writer=ShardWriter(out,'native_lf_preserved',limit=19_999_999);counts=Counter();examples=[]
+for k,(row,source_file) in sorted(selected.items()):
+    source,draft=row['source'],row['draft'];original=source['text'];assert sha(original.encode())==source['sha256']
+    lines=lf_lines(original);new_draft=copy.deepcopy(draft);added=[]
+    for i,c in enumerate(new_draft['changes']):
+        if c['action']=='MOVE_TO_PROSE' and lines[c['source_lines'][1]-1].endswith('\n') and not c['replacement'].endswith('\n'):
+            c['replacement']+='\n';added.append(i)
+    assert added
+    before,_=apply_positioned_edits(original,draft['changes']);after,_=apply_positioned_edits(original,new_draft['changes'])
+    assert before.replace('\n','')==after.replace('\n','')
+    assert len(after)-len(before)==len(added) and after.count('\n')-before.count('\n')==len(added)
+    value=dict(eos_segment_index=k[0],source_id=source['id'],source_sha256=k[1],
+        original_draft_sha256=k[2],original_review_shard=source_file,proposed_draft=new_draft,
+        proposed_draft_sha256=sha(json.dumps(new_draft,sort_keys=True,ensure_ascii=False).encode()),
+        old_reconstruction_sha256=sha(before.encode()),new_reconstruction_sha256=sha(after.encode()),
+        lf_stripped_text_sha256=sha(after.replace('\n','').encode()),added_lf_change_indices=added,
+        semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED',kind='OFFLINE_FORMAT_LF_PRESERVATION_ONLY')
+    writer.append(value);counts.update(candidate_versions=1,added_lf_characters=len(added))
+    if len(examples)<12 or source['id'] in (30920,33624,34378,34966,35000):examples.append((source['id'],source_file,draft,new_draft,added))
+manifest=writer.close(lineage=dict(source_warning_audit_sha256=sha(raw_audit),source_snapshot=report['snapshot'],
+    original_writes=0,training_admission='NOT_ADMITTED',changes='append LF only where declared raw span ends LF'))
+for rel,expected in pins.items():assert sha((root/rel).read_bytes())==expected
+assert raw_audit==audit.read_bytes() and counts['candidate_versions']==472 and counts['added_lf_characters']==1932
+blocks=['# 원문 줄끝LF 보존 — 별도 형식 파생 후보','',
+    '원문·원게시·작성자v1/v2를 덮어쓰지 않았습니다.472개 후보의1932개 변경 끝에 원문LF만 보존했습니다.',
+    '단어·수치·주체·시제·정답성은 고치지 않았고 독립 의미검수·학습채택 전입니다.',
+    '의도적인 문단 결합도 바뀔 수 있으므로 정규화가 항상 더 좋은 문장이라는 주장은 하지 않습니다.',
+    '아래는 첫12개와 지명 사례의 목적표본이며 전체 구조 경고는 별도 원본 경고본에서 확인합니다.',
+    '새 샤드: '+str(out.relative_to(root)),'']
+for ident,source_file,old,new,indices in examples:
+    blocks.extend([f'## 원천{ident}','', '원형 검수 shard: '+source_file])
+    for i in indices:
+        blocks.extend(['','변경 원문 행: '+str(old['changes'][i]['source_lines']),'',
+            '기존 교체문 줄끝: LF 없음','새 교체문 줄끝: 원문 LF 보존','',new['changes'][i]['replacement']])
+text,controls=visible_review_text('\n'.join(blocks)+'\n');payload=text.encode();assert len(payload)<20_000_000
+with human.open('xb') as stream:stream.write(payload)
+summary=dict(schema='P106B_NATIVE_LF_PRESERVED_DERIVATIVE_V1',source_warning_audit_sha256=sha(raw_audit),
+    counts=dict(counts),manifest=manifest,human_review=str(human.relative_to(root)),human_bytes=len(payload),
+    human_sha256=sha(payload),display_control_counts=controls,source_shard_pins=pins,
+    original_writes=0,word_changes=0,runtime_gate_changes=0,semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED')
+write_json(out/'report.json',summary)
+print(json.dumps({k:v for k,v in summary.items() if k not in ('source_shard_pins','manifest')},ensure_ascii=False))

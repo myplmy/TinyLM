@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# SameDEV512/P090B first-answer baseline only, no training or correction.
+# About8-15min unmeasured, cap1800s, original evaluator reused, no stdin.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3jWb_clean_parent_baseline_"$stamp" --num 092 --note 'Unchanged sameDEV512 originalP090B first answers, FP32MATH/cacheON/greedy/max128/MTPinferOFF/retries0. Not direct-course TEST1024 or general intelligence. No training, answer correction, download or checkpoint writes. Existing output refuses overwrite.'
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3jWb_clean_parent_baseline_"$stamp" --num 092 -- "$python_bin" -B -X utf8 scripts/diag_p101a_clean_eval.py --family mtp --arm parent_baseline --max-wall-sec 1800 --execute
+exit "$?"

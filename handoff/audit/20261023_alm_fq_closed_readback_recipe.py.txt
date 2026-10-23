@@ -1,0 +1,100 @@
+"""Root-only closed-artifact readback; no model, tokenizer, teacher or GPU.
+Default is read-only. --render writes new audit and human text, never old artifacts.
+"""
+from pathlib import Path
+from collections import Counter
+import hashlib,json,math,sys
+from scripts.p106b_shards import verify
+from scripts.p106b_text_batches import visible_review_text
+from scripts.diag_p106b_alm_train import grade
+ROOT=Path('/home/uranus/tinyLM')
+LIMIT=19_999_999
+def sha(raw):return hashlib.sha256(raw).hexdigest().upper()
+def canonical(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+def load(path):return json.loads(path.read_bytes())
+def new(path,raw):
+    if len(raw)>LIMIT:raise ValueError('20MB artifact cap')
+    with path.open('xb') as out:out.write(raw)
+def main():
+    inventory={};summary={};all_answers={};identities=[];exposures=[]
+    for study in ('ternary_v1','float_v2'):
+        tag='p106b_alm_train_'+study+'_s1337';base=ROOT/'test_result/evidence'/tag
+        prepared_path=ROOT/'HF/sft_ready'/tag/'report.json';p=load(prepared_path)
+        inventory[str(prepared_path.relative_to(ROOT))]=sha(prepared_path.read_bytes())
+        assert p['status']=='ALM_TRAIN_PREPARED' and p['rows']==1024
+        identities.append([p['row_sha256'],p['evaluation_sha256'],p['val_sha256']])
+        exposures.append(p['whole_exposure'])
+        phases={};summary[study]={};all_answers[study]={}
+        for mode,arm in [('calibrate',None)]+[(m,a) for m in ('cost','train','evaluate') for a in (('parent','ce','alm') if m=='evaluate' else ('ce','alm'))]:
+            key=mode+('_'+arm if arm else '');path=base/key/'report.json';r=load(path)
+            inventory[str(path.relative_to(ROOT))]=sha(path.read_bytes())
+            assert r['returncode']==0 and r['sources_unchanged'] and r['inputs_unchanged'] and r['parent_checkpoint_unchanged']
+            assert r['study_profile']==p['study_profile'] and r['preparation_sha256']==inventory[str(prepared_path.relative_to(ROOT))]
+            phases[key]=r
+            if mode!='evaluate':continue
+            directory=path.parent;m=r['answer_manifest'];verify(directory,m)
+            assert load(directory/'answers_shards_manifest.json')==m
+            rows=[]
+            for s in m['shards']:
+                inventory[str((directory/s['path']).relative_to(ROOT))]=s['sha256']
+                rows.extend(json.loads(line) for line in (directory/s['path']).open(encoding='utf-8'))
+            assert [(x['kind'],x['index']) for x in rows]==[('OLD_DEV',i) for i in range(64)]+[('USER_OBSERVATION_NOT_SCORED',i) for i in range(8)]
+            dev=rows[:64]
+            for x in dev:
+                for k,v in grade(x['answer'],x['expected_original_annotations']).items():assert x[k]==v
+            assert r['first_answers']==64 and r['user_observations']==8
+            assert sum(x['exact_original'] for x in dev)==r['exact_original']
+            assert sum(x['strict_whitespace_exact'] for x in dev)==r['strict_whitespace_exact']
+            assert sum(x['whitespace_normalized_exact'] for x in dev)==r['whitespace_normalized_exact']
+            all_answers[study][arm]=rows
+            summary[study][arm]=dict(dev_tf=r['dev_tf'],native32=r['native32'],wall_seconds=r['wall_seconds'],
+                exact_original=r['exact_original'],strict_whitespace_exact=r['strict_whitespace_exact'],
+                whitespace_normalized_exact=r['whitespace_normalized_exact'],by_language=r['by_language'],
+                finish_reasons=dict(Counter(x['generation']['finish_reason'] for x in rows)),
+                report=str(path.relative_to(ROOT)),answer_concat_sha256=m['concat_sha256'])
+        cal=phases['calibrate']
+        summary[study]['calibration']={k:cal[k] for k in ('global_stats','weight','temperature','rho','ce_targets','kd_chunks','optimizer_updates','checkpoint_writes','core_before','core_after','rng_unchanged')}
+        for a in ('ce','alm'):
+            r=phases['train_'+a];history=r['history']
+            assert r['optimizer_updates']==32 and r['checkpoint_writes']==1 and len(history)==32
+            assert all(r[k]==p['whole_exposure'][k] for k in ('actual_x_tokens','ce_targets','kd_chunks'))
+            assert [x['update'] for x in history]==list(range(32))
+            epoch_ce=[]
+            for epoch in range(4):
+                h=[x for x in history if x['epoch']==epoch];assert len(h)==8
+                epoch_ce.append(math.fsum(x['loss']*x['assistant_targets'] for x in h)/sum(x['assistant_targets'] for x in h))
+            summary[study][a]['training']=dict(training_seconds=r['training_seconds'],wall_seconds=r['wall_seconds'],
+                actual_x_tokens=r['actual_x_tokens'],ce_targets=r['ce_targets'],kd_chunks=r['kd_chunks'],
+                optimizer_updates=r['optimizer_updates'],checkpoint_sha256=r['checkpoint_sha256'],
+                initial_core_sha256=r['initial_core_sha256'],final_core_sha256=r['final_core_sha256'],epoch_ce=epoch_ce,
+                preclip_norm_max=max(x['preclip_norm'] for x in history),gradient_element_max=max(x['gradient_max'] for x in history),
+                peak_allocated_mib=max(x['peak_allocated_mib'] for x in history),peak_reserved_mib=max(x['peak_reserved_mib'] for x in history))
+        for key in ('initial_core_sha256','initial_rng','optimizer_groups'):
+            assert phases['train_ce'][key]==phases['train_alm'][key]==phases['cost_ce'][key]==phases['cost_alm'][key]
+        assert [x['row_ids'] for x in phases['train_ce']['history']]==[x['row_ids'] for x in phases['train_alm']['history']]
+    assert identities[0]==identities[1] and exposures[0]==exposures[1]
+    ref=all_answers['ternary_v1']['parent']
+    for study,arms in all_answers.items():
+        for arm,rows in arms.items():
+            for x,y in zip(ref,rows):
+                assert (x['kind'],x['index'],x['question'],x.get('expected_original_annotations'),x['generation']['prompt_sha256'])==(y['kind'],y['index'],y['question'],y.get('expected_original_annotations'),y['generation']['prompt_sha256'])
+    result=dict(schema='P106B_ALM_FQ_CLOSED_READBACK_V1',scope='WITHIN_FAMILY_CE_VS_ALM; CROSS_FAMILY_CONFOUNDED',
+        inventory=inventory,inventory_sha256=sha(canonical(inventory)),whole_exposure=exposures[0],families=summary,
+        answers=all_answers,training_admission='EVALUATION_ONLY',semantic_quality='NOT_VERIFIED',new_model_calls=0)
+    if '--render' in sys.argv:
+        blocks=['ALM 실수·삼진 가족 실제 질문/답 대조','',
+            '기존 개발64문항과 사용자8문항입니다. 의미 정답률·일반 대화 점수가 아닙니다.',
+            '질문과 원주석 정답은 평가 전용이며 학습/교사 생성에 넣지 않습니다. F/Q 부모가 달라 가족 간 단독 양자화 인과 비교는 아닙니다.','']
+        for index,x in enumerate(ref):
+            blocks.extend(['='*72,f"문항 {index+1}: {x['kind']} / 원 인덱스 {x['index']}",'질문:',x['question'],
+                '원주석 정답: '+json.dumps(x.get('expected_original_annotations'),ensure_ascii=False),''])
+            for study in ('ternary_v1','float_v2'):
+                for arm in ('parent','ce','alm'):
+                    a=all_answers[study][arm][index];g=a['generation']
+                    blocks.extend([f"[{study} / {arm}] 종료={g['finish_reason']} / 생성토큰={g['generated_tokens']}",'답변:',a['answer'],''])
+        visible,controls=visible_review_text('\n'.join(blocks)+'\n')
+        result['display_control_counts']=controls
+        new(ROOT/'review_request/20261023_ALM_실수삼진_질문답변_대조.txt',visible.encode())
+        new(ROOT/'handoff/audit/WIP_20261023_ALM_FQ_CLOSED_READBACK.json',(json.dumps(result,ensure_ascii=False,sort_keys=True,allow_nan=False)+'\n').encode())
+    print(json.dumps({k:v for k,v in result.items() if k not in ('answers','inventory')},ensure_ascii=False))
+if __name__=='__main__':main()

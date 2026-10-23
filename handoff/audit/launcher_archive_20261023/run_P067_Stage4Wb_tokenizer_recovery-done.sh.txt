@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# P067 Stage4Wb completed 20261023; original commands preserved in result053 section13.
+# Before: model262144 versus tokenizer262145 rejected before model construction.
+# After: unchanged base IDs are allowed; out-of-model image ID must still fail.
+# Four independent first answers, then one expected input rejection. No training.
+# Approximate total under10min, one GPU at a time, no checkpoint writes/stdin.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+common=(--model m100R1c_ko-en_300M_G270Tfull.pt --tokenizer HF/models--google--gemma-3-1b-pt/snapshots/fcf18a2a879aab110ca39f8bffbccd5d49d8eb29/tokenizer.json --mode plain --device cuda --max-new 128 --allow-extra-special-tokens)
+"$python_bin" -B -X utf8 scripts/runlog.py --name P067_Stage4Wb_tokenizer_recovery_"$stamp" --num 053 --note 'P067 Stage4Wb: unchanged original weights and current tokenizer ID mapping; explicit text-only extra-special allowance. Loading recovery is not answer-quality improvement. Each prompt is independent, greedy FP32 MATH, max128, MTP inference off. Final image-marker input must be rejected before sample().'
+for prompt in '1+1은?' '대한민국의 수도는' 'The capital of France is' 'Two plus three equals'; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P067_Stage4Wb_tokenizer_recovery_"$stamp" --num 053 -- "$python_bin" -B -X utf8 scripts/interactive_infer.py "${common[@]}" --prompt "$prompt"
+    result=$?
+    [[ "$result" == 0 ]] || exit "$result"
+done
+"$python_bin" -B -X utf8 scripts/runlog.py --name P067_Stage4Wb_tokenizer_recovery_"$stamp" --num 053 -- "$python_bin" -B -X utf8 scripts/interactive_infer.py "${common[@]}" --prompt '<image_soft_token>'
+result=$?
+if [[ "$result" != 2 ]]; then
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P067_Stage4Wb_tokenizer_recovery_"$stamp" --num 053 --note 'ERROR9: the out-of-model image-marker input did not return the required rejection code2.'
+    exit 9
+fi
+"$python_bin" -B -X utf8 scripts/runlog.py --name P067_Stage4Wb_tokenizer_recovery_"$stamp" --num 053 --note 'COMPLETE: four actual runtime calls finished; final input returned expected2. Read the preserved answers and confirm the explicit out-of-range reason; exit0 is a loading-contract receipt, not semantic quality PASS.'

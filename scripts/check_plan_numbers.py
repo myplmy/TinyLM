@@ -31,6 +31,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -94,7 +95,16 @@ def load_diagnostic_refs(path=DIAGNOSTIC_REFS):
         if not target.is_file():
             errors.append(f"diagnostic registry line {line_no} target missing: {rel}")
             continue
-        if plan_id not in target.read_text(encoding="utf-8"):
+        raw = target.read_bytes()
+        if reason.startswith("sha256="):
+            pin = re.fullmatch(r"sha256=([A-Fa-f0-9]{64});\s*(.+)", reason)
+            if pin is None:
+                errors.append(f"diagnostic registry line {line_no} has malformed content pin")
+                continue
+            if hashlib.sha256(raw).hexdigest().upper() != pin.group(1).upper():
+                errors.append(f"diagnostic registry line {line_no} content pin differs: {rel}")
+                continue
+        if plan_id not in raw.decode("utf-8"):
             errors.append(f"diagnostic registry line {line_no} target does not mention {plan_id}: {rel}")
             continue
         rows[key] = reason

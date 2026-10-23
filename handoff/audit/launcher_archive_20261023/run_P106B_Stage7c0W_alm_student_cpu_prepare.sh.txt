@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# ALM fixed-reference student study; not full-vocabulary or truth distillation.
+# Fresh source/parent/cache identities and current absolute deadline are enforced.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+export CUDA_VISIBLE_DEVICES=''
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7c0W_alm_student_cpu_prepare_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_alm_train
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+timeout --signal=TERM --kill-after=30s 630s "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7c0W_alm_student_cpu_prepare_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_alm_train.py --prepare --max-wall-sec 600
+exit "$?"

@@ -120,6 +120,16 @@ def _escape_cell(value: str) -> str:
     return value.replace("|", r"\|") or "—"
 
 
+def _check_authored_note(value: str | None) -> None:
+    """Keep new work/resume prose Korean; never rewrite raw directives/assets.
+
+    Source-language titles/quotes belong in the unchanged directive or linked
+    artifact. This narrow check is not a language/semantic classifier for data.
+    """
+    if value and re.search(r"[\u3400-\u4dbf\u4e00-\u9fff\u3040-\u30ff。 、]".replace(" ", ""), value):
+        raise ValueError("new authored work/resume note must use Korean; keep source quotations in raw directives/artifacts")
+
+
 def _render_row(cells: Iterable[str]) -> str:
     return "| " + " | ".join(cells) + " |"
 
@@ -402,6 +412,8 @@ def set_state(
     artifact: str | None,
     resume: str | None,
 ) -> tuple[str, str]:
+    _check_authored_note(note)
+    _check_authored_note(resume)
     result: dict[str, str] = {}
 
     def mutate(lines: list[str], text: str) -> None:
@@ -512,7 +524,10 @@ def override_field(
     allow_directive_correction: bool,
 ) -> None:
     mapping = {"#": 0, "사용자 지시": 1, "상태": 2, "작업 내용": 3, "산출물": 4, "이어받을 지점": 5}
-    if field not in mapping:
+    # These descriptive boundaries do not grant execution authority.  Updating
+    # them keeps a new explicit user approval out of conflict with the capsule.
+    boundary_fields = {"변경 허용 범위", "NOT_RUN 경계", "사용자 소유 실행"}
+    if field not in mapping and field not in boundary_fields:
         raise ValueError(f"unsupported override field: {field}")
     if field == "상태":
         raise ValueError("status override is forbidden; use a normal transition")
@@ -520,6 +535,8 @@ def override_field(
         raise ValueError("directive correction requires --allow-directive-correction")
     if not reason.strip() or not approval_ref.strip():
         raise ValueError("--reason and --approval-ref are required")
+    if field in ("작업 내용", "이어받을 지점"):
+        _check_authored_note(set_after)
     if field == "#":
         if path.name.endswith("-done.md"):
             raise ValueError("completed ledgers are immutable and cannot have their IDs repaired")
@@ -530,7 +547,22 @@ def override_field(
         _validate_item_id(set_after)
 
     def mutate(lines: list[str], text: str) -> None:
-        if field == "#":
+        if field in boundary_fields:
+            if path.name.endswith("-done.md"):
+                raise ValueError("completed ledger boundaries are immutable")
+            table = parse_table(text)
+            _require_v2(table)
+            _find_item(table, item_id)  # Tie the approval to an existing directive.
+            prefix = f"- **{field}**: "
+            hits = [i for i, line in enumerate(lines) if line.startswith(prefix)]
+            if len(hits) != 1:
+                raise ValueError("boundary metadata must occur exactly once")
+            current = lines[hits[0]][len(prefix):]
+            if current != expect_before:
+                raise ValueError(f"STALE_BEFORE boundary={field!r}")
+            after = _escape_cell(set_after)
+            lines[hits[0]] = prefix + after
+        elif field == "#":
             # Recover exactly one rejected raw ID, not a relaxed parser or state override.
             _, header_index, end, header = _table_layout(lines)
             if header != V2_HEADER:

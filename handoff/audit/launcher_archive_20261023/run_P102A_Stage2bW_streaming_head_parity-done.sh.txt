@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Completed23Oct: CPU18 then actual four updates; numeric negative8, not adopted.
+# Existing fixed1024 parent/micro8/accum16/checkpoint remain unchanged; CP0.
+# Reserve600s before the explicit16:30KST limit; foreign GPU blocks before load.
+# No interactive input, fallback, package install, or overwrite.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P102A_Stage2b0W_streaming_cpu_"$stamp" --num 093 -- "$python_bin" -B -X utf8 scripts/test_p102a_streaming_head.py
+receipt="$("$python_bin" -B -X utf8 scripts/diag_p102a_streaming_head.py --check-only)"
+source_sha="$("$python_bin" -c 'import json,sys;print(json.load(sys.stdin)["source_sha256"])' <<< "$receipt")"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P102A_Stage2bW_streaming_head_"$stamp" --num 093 --note 'FP32/BF16 four numerical updates, whole tied gradients and weight/state after optimizer. Old tolerances fixed; code8 means valid numeric negative, not model quality or production adoption.'
+timeout --signal=TERM --kill-after=20s 620s "$python_bin" -B -X utf8 scripts/runlog.py --name P102A_Stage2bW_streaming_head_"$stamp" --num 093 -- "$python_bin" -B -X utf8 scripts/diag_p102a_streaming_head.py --execute --source-sha256 "$source_sha" --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 600

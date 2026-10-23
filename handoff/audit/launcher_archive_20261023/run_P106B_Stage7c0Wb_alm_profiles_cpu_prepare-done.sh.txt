@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Completed CPU preparation for both explicit ALM study profiles. Retain exact commands.
+# Same fixed1024/micro8/accum16/checkpoint-on policy and absolute16:30 cutoff.
+# Runtime and VRAM are admitted from actual cost; phase cap is not a forecast.
+# Dependency failure stops only its own call; independent arms/profiles retain receipts.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+profiles=(ternary_v1 float_v2)
+if (( $# > 0 )); then
+  case "$1" in ternary_v1|float_v2) profiles=("$1");; *) exit 8;; esac
+fi
+failed=0
+export CUDA_VISIBLE_DEVICES=''
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7c0Wb_alm_profiles_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_alm_train scripts.test_p106b_weight_route
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+for study in "${profiles[@]}"; do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7c0Wb_alm_profiles_cpu_prepare_${study}_"$stamp" --num 101 --note "CPU regressions and full1024 cache binding, model0. Original source/cache/parent preserved. Read final receipt and actual answers; no automatic quality PASS."
+  timeout --signal=TERM --kill-after=30s 630s "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7c0Wb_alm_profiles_cpu_prepare_${study}_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_alm_train.py --study "$study" --prepare --max-wall-sec 600
+  result=$?
+  if [[ "$result" != 0 ]]; then failed="$result"; fi
+done
+exit "$failed"

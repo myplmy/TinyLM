@@ -190,7 +190,7 @@ class MenuTests(unittest.TestCase):
 
     def test_emit_has_exact_stop_and_does_not_silently_truncate(self):
         args=NS(max_new=128,temperature=0.,top_k=1);tok=FakeTokenizer()
-        runtime=dict(model=object(),cfg=NS(max_seq_len=1024),device="cpu",mode="chatml",tokenizer=tok,stop_ids=[4])
+        runtime=dict(model=object(),cfg=NS(max_seq_len=1024,vocab_size=32768),device="cpu",mode="chatml",tokenizer=tok,stop_ids=[4])
         def fake_sample(model,cfg,captured,prompt,**kwargs):
             ids=tok.encode(prompt).ids
             captured.decode(ids+[91,4])
@@ -201,6 +201,16 @@ class MenuTests(unittest.TestCase):
             runtime["cfg"].max_seq_len=8
             with self.assertRaises(ValueError):ui._emit(runtime,"question",args)
             self.assertEqual(call.call_count,1)
+
+    def test_out_of_model_special_input_is_rejected_before_sample(self):
+        class ExtraInput(FakeTokenizer):
+            def encode(self,text):return NS(ids=[2,32768])
+        runtime=dict(model=object(),cfg=NS(max_seq_len=1024,vocab_size=32768),device="cpu",
+                     mode="plain",tokenizer=ExtraInput(),stop_ids=[])
+        with patch.object(GENERATE,"sample") as call:
+            with self.assertRaisesRegex(ValueError,"범위 밖"):
+                ui._emit(runtime,"<image_soft_token>",NS(max_new=128,temperature=0.,top_k=1))
+            call.assert_not_called()
 
     def test_chat32_val_does_not_guess_or_read_another_cache(self):
         runtime=dict(mode="chatml",route=NS(verified=True,path=Path("tok-ko-en-32768-chat32.json")))
@@ -233,5 +243,47 @@ class MenuTests(unittest.TestCase):
              contextlib.redirect_stdout(io.StringIO()):
             ui._validation_probe(self.record,runtime,None);memory.assert_not_called()
 
+
+class ExtraSpecialVocabularyTests(unittest.TestCase):
+    class Tokenizer:
+        def __init__(self):
+            self.base={"a":0,"b":1,"c":2,"d":3}
+            self.full=dict(self.base,image=4)
+            self.added={4:NS(special=True,content="image")}
+        def get_vocab_size(self,with_added_tokens=True):return len(self.full if with_added_tokens else self.base)
+        def get_vocab(self,with_added_tokens=True):return dict(self.full if with_added_tokens else self.base)
+        def get_added_tokens_decoder(self):return self.added
+        def token_to_id(self,name):return self.full.get(name)
+
+    def test_default_remains_strict_and_opt_in_preserves_source_mapping(self):
+        tok=self.Tokenizer();before=copy.deepcopy(tok.full)
+        with self.assertRaisesRegex(ValueError,"모델=4, tokenizer=5"):
+            d.resolve_mode(tok,dict(vocab_size=4),"plain")
+        value=d.validate_vocabulary(tok,dict(vocab_size=4),allow_extra_special=True)
+        self.assertEqual(value["extra_special_tokens"],{"image":4})
+        self.assertEqual(d.resolve_mode(tok,dict(vocab_size=4),"plain",allow_extra_special=True),("plain",[]))
+        self.assertEqual(tok.full,before)
+        d.validate_input_ids([0,1,2,3],4)
+
+    def test_ordinary_extra_token_or_undeclared_special_is_refused(self):
+        for added in ({4:NS(special=False,content="image")},{},{4:NS(special=True,content="wrong")}):
+            tok=self.Tokenizer();tok.added=added
+            with self.assertRaises(ValueError):d.validate_vocabulary(tok,dict(vocab_size=4),allow_extra_special=True)
+
+    def test_changed_missing_duplicate_or_outside_base_mapping_is_refused(self):
+        for full in ({"a":1,"b":0,"c":2,"d":3,"image":4},
+                     {"a":0,"b":1,"c":2,"d":3,"alias":3,"image":4},
+                     {"a":0,"b":1,"c":2,"image":4},
+                     {"a":0,"b":1,"c":2,"d":3,"image":True}):
+            tok=self.Tokenizer();tok.full=full
+            with self.assertRaises(ValueError):d.validate_vocabulary(tok,dict(vocab_size=4),allow_extra_special=True)
+        tok=self.Tokenizer();tok.base["d"]=4
+        with self.assertRaises(ValueError):d.validate_vocabulary(tok,dict(vocab_size=4),allow_extra_special=True)
+
+    def test_input_ids_are_never_clamped_remapped_or_dropped(self):
+        for ids in ([],[4],[-1],[True],[1.,2],[0,2,99]):
+            before=copy.deepcopy(ids)
+            with self.assertRaises(ValueError):d.validate_input_ids(ids,4)
+            self.assertEqual(ids,before)
 
 if __name__=="__main__":unittest.main()

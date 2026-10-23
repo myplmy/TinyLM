@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Executed V5 partial:32closed plus2partial rows, result101section450. Do not rerun under the changed V6 source.
+# Requires root admission after closed native16 canary and total-time review.
+# One exact16 batch per owned teacher; partial evidence cannot be overwritten.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+for ((batch=0; batch<64; batch++)); do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWg_native_edge_cache1024_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=20 630 "$python_bin" -B -X utf8 scripts/diag_p106b_alm_cache.py --execute --cache --batch-index "$batch" --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 600
+  result=$?
+  if [[ "$result" != 0 ]]; then
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWg_native_edge_cache1024_"$stamp" --num 101 --note "Prerequisite batch=$batch failed/partial exit=$result; remaining dependent batches NOT_RUN, prior evidence preserved."
+    exit "$result"
+  fi
+done

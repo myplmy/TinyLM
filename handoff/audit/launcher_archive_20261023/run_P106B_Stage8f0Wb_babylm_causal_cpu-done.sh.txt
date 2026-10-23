@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Original V2 CPU completed; command preserved, V3 is a separate preparation.
+# Version2 common GPU idle gate; official scoring functions unchanged.
+# Pinned official BabyLM causal AST, source/data counts and synthetic CPU oracles.
+# No model or training. This is not the official CLI or a BabyLM leaderboard score.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+export CUDA_VISIBLE_DEVICES=''
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8f0Wb_babylm_causal_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_babylm_causal scripts.test_p106b_babylm_driver
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8f0Wb_babylm_causal_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_babylm_causal.py --prepare
+exit "$?"

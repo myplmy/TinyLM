@@ -188,6 +188,21 @@ def _split_argv(argv):
     return argv[:i], argv[i + 1:]
 
 
+def _git_status_command(environ=None):
+    """Keep the user default; an explicit Codex scope never visits protected paths."""
+    environ = os.environ if environ is None else environ
+    scope = environ.get("TL_RUNLOG_GIT_SCOPE", "")
+    command = ["git", "status", "--porcelain"]
+    if not scope:
+        return command
+    if scope != "codex-safe":
+        raise ValueError("TL_RUNLOG_GIT_SCOPE must be empty or codex-safe")
+    return command + ["--", ".", ":(exclude)datasets/TinyDataset",
+                      ":(exclude).claude", ":(exclude)CLAUDE.md",
+                      ":(exclude)ai_dev_tool/[0-8]*", ":(exclude).aws",
+                      ":(exclude).env*"]
+
+
 def _git_state():
     """(sha7, dirty_count). git 이 없거나 저장소가 아니면 (None, None).
 
@@ -205,12 +220,15 @@ def _git_state():
       ★그것이 0 이면 *"코드는 이 커밋 그대로"* 라고 **말할 수 있다.**
     """
     import subprocess as sp
+    # Validate before the fallback: a misspelled scope must not use an
+    # unrestricted inventory or silently continue with an unknown boundary.
+    status_command = _git_status_command()
     try:
         sha = sp.run(["git", "rev-parse", "--short=7", "HEAD"], cwd=ROOT,
                      capture_output=True, text=True, timeout=10)
         if sha.returncode != 0:
             return None, None
-        st = sp.run(["git", "status", "--porcelain"], cwd=ROOT,
+        st = sp.run(status_command, cwd=ROOT,
                     capture_output=True, text=True, timeout=20)
         if st.returncode != 0:
             return sha.stdout.strip(), None
@@ -352,6 +370,13 @@ def _header(path, sha, dirty):
         state = "[commit] ⚠️ 변경 파일 분류 불가 — 커밋 단독 검증으로 귀속하지 않는다."
     else:
         state = "[commit] ⚠️ 실행 코드 미커밋 변경 있음 — 커밋과 변경의 합을 검증했다."
+    scoped = os.environ.get("TL_RUNLOG_GIT_SCOPE", "") == "codex-safe"
+    if scoped:
+        d = (f"  +scoped-dirty {_tot}개(코드 {_code}개)"
+             if _tot is not None else "  +scoped-dirty 미확인")
+        # A scoped clean count does not establish the state of excluded files.
+        state = ("[commit] INFO codex-safe 허용 경로만 조회; 제외 경로와 전체 작업트리 "
+                 "상태는 미확인. 이 개수로 전체 clean 또는 커밋 단독 검증을 주장하지 않는다.")
     line = (f"[commit] {sha or '(git 없음)'}{d}" + chr(10) + state + chr(10)
             + "=" * 78 + chr(10))
     with open(path, "a", encoding="utf-8", newline=os.linesep) as f:

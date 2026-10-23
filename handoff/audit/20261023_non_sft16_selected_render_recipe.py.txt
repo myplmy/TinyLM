@@ -1,0 +1,100 @@
+"""Root-only explicit16 and one term addendum; reuse existing strict serializer.
+
+Creates review derivatives only, never mutates raw/author/old193/old17 or admits.
+"""
+from pathlib import Path
+from collections import Counter
+import json,runpy,sys
+helper=runpy.run_path('handoff/audit/20261023_non_sft_text_audit_render_recipe.py.txt',run_name='non_sft_reference_functions')
+strict,serialize,sha=helper['strict'],helper['serialize_lf_only'],helper['sha']
+base=helper['BASE'];new,payload=helper['new_bytes'],helper['payload']
+selection={27092:1,27114:2,27505:1,27546:1,27671:1,28024:1,28209:1,28277:1,
+           28292:1,28334:2,28409:1,28453:1,28673:1,29202:1,29260:1,29313:1}
+followup='--followup31-32' in sys.argv
+numbers=(29,30)
+ledger_sha=None
+if followup:
+    ledger=base/'scratch/non_sft_translation_v1/self_review_31_32_20261023.json'
+    ledger_raw=ledger.read_bytes();review=strict(ledger_raw.decode());ledger_sha=sha(ledger_raw)
+    entries=review['source_reviews'];assert len(entries)==16
+    selection={}
+    for entry in entries:
+        ident=entry['source_id'];version=entry['selected_version']
+        assert version in ('v1','v2') and entry['selected_file']==entry['packet']+'/'+str(ident)+'_'+version+'.json'
+        assert ident not in selection;selection[ident]=int(version[1:])
+    assert set(selection)=={29529,29543,29721,30078,30166,30230,30239,30309,30374,30485,30596,30811,30913,30916,30925,31092}
+    numbers=(31,32)
+rows=[];counts=Counter();seen=set()
+for number in numbers:
+    path=base/'non_sft_translation_packets'/f'non_sft_translation_{number:06d}.json'
+    raw=path.read_bytes();packet=strict(raw.decode())
+    for source in packet['sources']:
+        ident=source['source_id'];assert ident in selection and ident not in seen;seen.add(ident)
+        assert sha(source['original_english'].encode())==source['source_sha256']
+        candidate=base/'scratch/non_sft_translation_v1'/packet['packet']/f'{ident}_v{selection[ident]}.json'
+        original=candidate.read_bytes();value,normalized,positions=serialize(original.decode())
+        assert value['source_id']==ident and value['source_sha256']==source['source_sha256']
+        if followup:
+            entry=next(e for e in entries if e['source_id']==ident)
+            assert entry['source_sha256']==source['source_sha256'] and entry['decision']==value['decision']
+        assert value['training_admission']=='NOT_ADMITTED' and value['fact_verification']=='NOT_VERIFIED'
+        assert value['decision'] in ('DRAFT_TRANSLATED','HOLD')
+        for field in ('ko_translation','ko_rephrase'):
+            assert isinstance(value[field],str) and bool(value[field].strip())==(value['decision']=='DRAFT_TRANSLATED')
+        assert raw==path.read_bytes() and original==candidate.read_bytes()
+        rows.append(dict(source_id=ident,source=source,packet=str(path),packet_sha256=sha(raw),
+            selected_candidate=str(candidate),candidate_sha256=sha(original),candidate=value,
+            serialized_sha256=sha(normalized.encode()),literal_lf_serialization_positions=positions,
+            semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED'))
+        counts[value['decision']]+=1
+assert seen==set(selection)
+term_packet=base/'non_sft_translation_packets/non_sft_translation_000026.json'
+term_source=next(s for s in strict(term_packet.read_text())['sources'] if s['source_id']==25123)
+term_path=base/'scratch/non_sft_translation_v1/non_sft_translation_000026/25123_v2.json'
+term_raw=term_path.read_bytes();term,term_normalized,positions=serialize(term_raw.decode())
+assert not positions and term['source_id']==25123 and term['source_sha256']==term_source['source_sha256']==sha(term_source['original_english'].encode())
+assert term['training_admission']=='NOT_ADMITTED' and term['fact_verification']=='NOT_VERIFIED'
+summary=dict(schema='P106B_NON_SFT16_EXPLICIT_TEXT_REVIEW_V1',source_count=16,decisions=dict(counts),
+    texts=2*counts['DRAFT_TRANSLATED'],selected_versions=selection,
+    literal_lf_candidates=sum(bool(r['literal_lf_serialization_positions']) for r in rows),
+    separate_term_addendum=dict(source_id=25123,path=str(term_path),sha256=sha(term_raw),new_unique_sources=0),
+    semantic_quality='NOT_VERIFIED',fact_verification='NOT_VERIFIED',training_admission='NOT_ADMITTED',
+    original193_and17_snapshots_modified=False,selection='EXPLICIT_ID_VERSION_MAP_NO_NEWEST_FALLBACK')
+if followup:
+    assert ledger.read_bytes()==ledger_raw
+    summary.update(followup_packet_numbers=list(numbers),self_review_ledger_sha256=ledger_sha,previous16_snapshot_modified=False)
+if '--render' in sys.argv:
+    out=base/('normalized_non_sft16b_review_20261023_v1' if followup else 'normalized_non_sft16_review_20261023_v1')
+    human=Path('review_request/20261023_비SFT후속16b_원문번역재표현_검수_v1.md' if followup else 'review_request/20261023_비SFT후속16_원문번역재표현_검수_v1.md')
+    term_human=Path('review_request/20261023_정수식물_용어보충_검수_v1.md')
+    assert not out.exists() and not human.exists()
+    assert term_human.exists() if followup else not term_human.exists()
+    from scripts.p106b_text_batches import visible_review_text
+    blocks=['# 비SFT 후속16 원문·번역·문장 재표현 검수','',
+        '작성자 자기검토와 총괄의 원문ID/SHA/직렬화 검산입니다. 독립 의미·사실 검수나 학습채택은 아닙니다.',
+        '원193·17·16 스냅샷과 원문·기존 초안은 보존합니다. 선택버전은 자기검토 장부와 원문SHA로 고정하며 최신 파일을 추측하지 않습니다.','']
+    out.mkdir()
+    for row in rows:
+        v=row['candidate'];new(out/f"{row['source_id']}.json",payload(row))
+        blocks.extend([f"## 원천 {row['source_id']} — {v['decision']}",'',
+            '선택파일: '+row['selected_candidate'],'원천SHA: '+row['source']['source_sha256'],
+            '판독 메모: '+v.get('reason_ko',''),'','### 영어 원문','',row['source']['original_english'],
+            '','### 한국어 번역','',v['ko_translation'] or '보류 — 작성 없음',
+            '','### 한국어 문장 재구성','',v['ko_rephrase'] or '보류 — 작성 없음',
+            '','### 시점 메모','',v.get('temporal_scope_note',''),''])
+    text,controls=visible_review_text('\n'.join(blocks)+'\n');new(human,text.encode())
+    note=['# 정수식물 용어 보충 — 원천25123 별도 v2','',
+        '기존17개 검수본과 선택 장부를 바꾸지 않은 별도 후보입니다. 새 원천1개로 가산하지 않습니다.',
+        'emergent macrophytes를 정수식물로 대응하되 유일한 표준 번역어라는 주장은 하지 않습니다.',
+        '원문의 서 있는 채로 고사한 조건, 하천23~60%·습지47~65%, 제외한 탄소 손실 범위를 확인해 주세요.',
+        '원 URL의 철회 안내만으로 출판 장 전체가 철회됐다고 확정하지 않았습니다.',
+        '선택파일: '+str(term_path),'선택SHA: '+sha(term_raw),'',
+        '## 영어 원문','',term_source['original_english'],'','## 새 한국어 번역','',term['ko_translation'],
+        '','## 새 한국어 문장 재구성','',term['ko_rephrase'],'',
+        '이는 원문 충실도 검수용이며 독립 사실 검증·학습 채택 전입니다.']
+    text,term_controls=visible_review_text('\n'.join(note)+'\n')
+    if not followup:new(term_human,text.encode())
+    summary.update(human_review=str(human),term_human_review=str(term_human),display_control_counts=controls,
+        term_display_control_counts=term_controls,records=rows)
+    new(out/'report.json',payload(summary))
+print(json.dumps({k:v for k,v in summary.items() if k!='records'},ensure_ascii=False))

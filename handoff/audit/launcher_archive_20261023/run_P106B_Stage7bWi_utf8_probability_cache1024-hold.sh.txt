@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# NOT_RUN V6 preserved; current strict source uses Stage7bWk.
+# Conditional V6 full1024 cache. Root must review the closed17 and measured whole forecast first.
+# Separate16-row invocations; dependent remainder stops on partial, old V5 is never reused.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+for ((batch=0; batch<64; batch++)); do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWi_utf8_probability_cache1024_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=20 630 "$python_bin" -B -X utf8 scripts/diag_p106b_alm_cache.py --execute --cache --batch-index "$batch" --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 600
+  result=$?
+  if [[ "$result" != 0 ]]; then
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWi_utf8_probability_cache1024_"$stamp" --num 101 --note "V6 batch=$batch exit=$result. Dependent remaining batches NOT_RUN; all prior complete/partial evidence preserved."
+    exit "$result"
+  fi
+done

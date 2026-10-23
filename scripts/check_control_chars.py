@@ -33,6 +33,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -63,6 +64,11 @@ def first_bad_control(raw: bytes) -> tuple[int, int] | None:
         if byte in BAD and index not in allowed_offsets:
             return index, byte
     return None
+
+
+def display_text(text: str) -> str:
+    """Quote diagnostic text without re-emitting the controls being found."""
+    return json.dumps(text,ensure_ascii=False)
 
 
 def _targets():
@@ -100,7 +106,6 @@ def main() -> int:
             line = raw[:i].count(b"\n") + 1
             nm = NAMES.get(b, f"0x{b:02X}")
             ctx = raw[max(0, i - 24):i + 24].decode("utf-8", "replace")
-            ctx = ctx.replace(chr(10), "\\n")
             hits.append((p, line, nm, ctx))
 
     print("=" * 92)
@@ -110,12 +115,11 @@ def main() -> int:
         print("  ✅ 제어문자 0건.")
         return 0
     for p, line, nm, ctx in hits:
-        print(f"  🚫 {p.relative_to(ROOT)}:{line}  {nm}")
-        print(f"       …{ctx}…")
-    print(f"\n  🚫 {len(hits)}파일 — **백슬래시 사고**다. "
-          f"파이썬 패치나 heredoc 이 `\\b`·`\\v` 를 실제 바이트로 만들었다.")
-    print("     ★고치는 법: 그 파일을 `Write`/`Edit` 툴로 다시 쓴다. "
-          "🚫같은 방식으로 또 패치하지 않는다.")
+        print(f"  🚫 {display_text(str(p.relative_to(ROOT)))}:{line}  {nm}")
+        print(f"       …{display_text(ctx)}…")
+    print(f"\n  🚫 금지 제어문자가 있는 {len(hits)}파일을 발견했다.")
+    print("     작성 오류인지 원문·모델 응답·보존 로그의 인용인지 원인과 증거 역할을 별도 확인한다.")
+    print("     원본 로그·후보를 임의 재작성하지 않는다. 탐지·대상·비영 종료 기준은 유지한다.")
     return 1
 
 

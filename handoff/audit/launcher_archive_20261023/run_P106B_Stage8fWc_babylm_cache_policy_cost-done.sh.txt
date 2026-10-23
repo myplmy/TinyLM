@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Completed20261023: four actual real-model cost/oracle gates, all exit0.
+# Actual full-logits cost: first8 per UID,536main+40supplement/model, four fixed models.
+# Independent model failures continue. No training or new package installation.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+eval_python="data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+source_sha="$("$python_bin" -B -X utf8 -c 'from scripts.diag_p106b_babylm_causal import identity;print(identity()["sha256"])')"
+result=$?
+[[ "$result" == 0 && "$source_sha" =~ ^[A-F0-9]{64}$ ]] || exit 9
+failures=0
+for model in native595-f native595-q new595-broad-f falcon90m; do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8fWc_babylm_causal_cost_"$model"_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=30 650 "$eval_python" -B -X utf8 scripts/diag_p106b_babylm_causal.py --execute --model "$model" --mode cost --source-sha256 "$source_sha"
+  result=$?
+  if [[ "$result" != 0 ]]; then failures=$((failures+1)); fi
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8fWc_babylm_causal_cost_"$model"_"$stamp" --num 101 --note "Cost exit=$result; original causal function with actual full logits. Not a full BLiMP score. Inspect actual parity, zero skips, source/model closure and measured full budget."
+done
+[[ "$failures" == 0 ]]

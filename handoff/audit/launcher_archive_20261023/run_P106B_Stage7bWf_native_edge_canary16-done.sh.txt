@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Completed exact16 V5 canary; result101section449. Source command retained as history.
+# Actual Qwen native template with nested thinking=false, replicated cold.
+# Frozen same16 reference answers; no student, new answers, training or CP.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWf_native_edge_canary16_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=20 630 "$python_bin" -B -X utf8 scripts/diag_p106b_alm_cache.py --execute --canary --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 600
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWf_native_edge_canary16_"$stamp" --num 101 --note "V5 native-edge cold-replicate exit=$result. No warm fallback or student quality claim; inspect exact16, coverage, raw probabilities, actual cache_n=0 and teardown."
+exit "$result"

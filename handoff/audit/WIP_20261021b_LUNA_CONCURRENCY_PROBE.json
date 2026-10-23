@@ -1,0 +1,97 @@
+{
+  "schema": "TINYLM_LUNA_CONCURRENCY_PROBE_V1",
+  "recorded_at_utc": "2026-10-21 14:33:54 UTC",
+  "user_authority": "현재사용자:근거없으면일단Luna최대5개동시사용시도부터해볼것",
+  "requested_model": "gpt-6-luna",
+  "requested_reasoning_effort": "max",
+  "fork_turns": "none",
+  "task_only": "메시지후45초대기,데이터/코드/셸/모델/GPU/추가에이전트금지",
+  "spawn_attempts": [
+    {
+      "ordinal": 1,
+      "task_name": "/root/luna_concurrency_probe_1",
+      "result": "CREATED",
+      "ready_message_observed": true
+    },
+    {
+      "ordinal": 2,
+      "task_name": "/root/luna_concurrency_probe_2",
+      "result": "CREATED",
+      "ready_message_observed": true
+    },
+    {
+      "ordinal": 3,
+      "task_name": "/root/luna_concurrency_probe_3",
+      "result": "CREATED",
+      "ready_message_observed": true
+    },
+    {
+      "ordinal": 4,
+      "task_name": "/root/luna_concurrency_probe_4",
+      "result": "REJECTED",
+      "exact_tool_error": "collab spawn failed: agent thread limit reached"
+    },
+    {
+      "ordinal": 5,
+      "task_name": "/root/luna_concurrency_probe_5",
+      "result": "REJECTED",
+      "exact_tool_error": "collab spawn failed: agent thread limit reached"
+    }
+  ],
+  "concurrent_list_agents_snapshot": {
+    "agents": [
+      {
+        "agent_name": "/root",
+        "agent_status": "running"
+      },
+      {
+        "agent_name": "/root/luna_concurrency_probe_1",
+        "agent_status": "running"
+      },
+      {
+        "agent_name": "/root/luna_concurrency_probe_2",
+        "agent_status": "running"
+      },
+      {
+        "agent_name": "/root/luna_concurrency_probe_3",
+        "agent_status": "running"
+      }
+    ]
+  },
+  "interruptions": [
+    {
+      "target": "/root/luna_concurrency_probe_1",
+      "previous_status": "running"
+    },
+    {
+      "target": "/root/luna_concurrency_probe_2",
+      "previous_status": "running"
+    },
+    {
+      "target": "/root/luna_concurrency_probe_3",
+      "previous_status": "running"
+    }
+  ],
+  "claim": "이번세션에서세보조에이전트가실행중일때네번째/다섯번째생성이실제로거부됐다. 모든Codex환경의제품고정상한3이라는주장은아니다.",
+  "code_edits_by_subagents": 0,
+  "source_dataset_writes_by_subagents": 0,
+  "model_gpu_runs": 0,
+  "configuration_changes": 0,
+  "configuration_observations": {
+    "windows_user_config": {
+      "path": "/mnt/c/Users/Uranus/.codex/config.toml",
+      "line": 29,
+      "key": "agents.max_concurrent_threads_per_session",
+      "value": 6
+    },
+    "repository_config": {
+      "path": ".codex/config.toml",
+      "explicit_concurrency_key_found": false
+    },
+    "linux_user_config": {
+      "path": "/home/uranus/.codex/config.toml",
+      "explicit_concurrency_key_found": false
+    },
+    "conclusion": "Windows저장설정6과현세션도구거부상태를구별한다. 어떤설정층이이번협업실행기에적용됐는지원인미확인. 설정변경0."
+  }
+}

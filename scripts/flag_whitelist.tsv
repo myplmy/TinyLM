@@ -1,6 +1,7 @@
 --convert	exp	P090 공개 SFT 변환; 새 prefix와 오염 gate 선결	2026-09-23	scripts/prepare_public_sft.py
+--source-sha256	ok	실험 실행 전 명시 source 서명 대조. 실행권한이나 모델 품질 판정이 아님	2026-10-23	scripts/diag_p106b_official_core6.py,scripts/diag_p106b_official_adapter.py,scripts/diag_p106b_alm_train.py
 --epochs	exp	P090 SFT 반복수; 지도 토큰 예산 preflight 선결	2026-09-23	scripts/train_sft_p090.py
---execute	exp	P090 모델/GPU opt-in; 사용자 실행과 parent 검증 필요	2026-09-23	scripts/train_sft_p090.py
+--execute	exp	CPU 준비·모델/교사·평가/학습의 명시 실행. 각 parser의 선결·실제 사용자 권한·해당 source 검산이 필요	2026-10-23	scripts/train_sft_p090.py,scripts/prepare_p106b_official_eval.py,scripts/diag_p106b_official_adapter.py,scripts/diag_p106b_official_core6.py,scripts/diag_p106b_alm_cache.py,scripts/diag_p106b_alm_train.py
 --fetch	exp	P090 pinned HF 원천 다운로드; 별도 HF 경로로 제한	2026-09-23	scripts/audit_aya_collection_ko.py,scripts/prepare_public_sft.py
 --max-chars	exp	P090 문자 길이 필터; 제외량 기록 필요	2026-09-23	scripts/prepare_public_sft.py
 --max-en	exp	P090 영어 공개 원천 표본 상한	2026-09-23	scripts/prepare_public_sft.py
@@ -15,6 +16,10 @@
 --tokenizer-data	exp	P090 tokenizer 계보 선택; parent와 일치 필요	2026-09-23	scripts/prepare_public_sft.py
 --tokenizer-sha256	ok	P090 tokenizer SHA256 일치 확인	2026-09-23	scripts/train_sft_p090.py
 flag	grade	evidence	checked	declared_in
+--code-sha256	exp	P101A 표현 CPU 진단의 검토 소스 서명 재지정; 합성21회귀와 실제48요청만 확인, 모델 품질 승인 아님	2026-10-22	scripts/diag_p101a_reasoning_surface_cpu.py
+--deadline	exp	실험의 시간대 포함 절대 기한. 내부 전후 검산과 외부 timeout은 별도이며 자동 승인 연장 금지	2026-10-23	scripts/diag_p101a_reasoning_surface_cpu.py,scripts/p106b_public_mc_extension.py,scripts/diag_p106b_alm_cache.py
+--run-id	exp	P101A 표현 진단의 새 출력 식별자; 기존 namespace 거부, 학습 태그와 별개	2026-10-22	scripts/diag_p101a_reasoning_surface_cpu.py
+--source-root	exp	새 공개768의 이 저장소 리터럴 root만 허용; 다른 root·링크·보호경로를 허용하는 우회 플래그 아님	2026-10-22	scripts/p106b_public_mc_extension.py
 --thinking	exp	P106B 새 lossless 교사의 사고 토큰 cap256/1024; 같은 source/MTP/sampler 비교 및 비대화형 명시 선택, 공식 사고깊이 권장값 아님	2026-10-15	scripts/diag_p106b_verbatim_source.py
 --best-candidate	ok	P090B 읽기 전용 기존 최선 부모 후보 경로; 선정과 학습은 별도	2026-09-24	scripts/diag_p090b_three_lineages.py
 --chat32-tokenizer	exp	P090B 새 어휘·격리 exact 캐시와 신규 부모 사전학습 전용; legacy/KD/1x풀 거부, 실제 사용자 GPU 별도	2026-09-24	scripts/diag_p090b_three_lineages.py,tinylm/cli.py
@@ -36,7 +41,7 @@ flag	grade	evidence	checked	declared_in
 --require-inputs	exp	P076 Stage2eWb 모든 입력 존재·비링크와 crop 출력 write-once를 실제 평가에서도 fail-closed 검증; 기본 off	2026-09-27	scripts/paired_eval.py
 --effort	exp	P106B Stage2iW 한시적 교사 사고강도 세 팔; none/low/medium 각각 별도 출력 버전·모델카드 샘플러, 정식 SFT 채택 아님	2026-09-28	scripts/diag_p106b_online_rate5.py
 --variant	exp	P106B 사용자 low우선 A안: publiclow1 새 공개원천 한 업데이트→정상계측·동일 deck/부모/교사 SHA·128 실제적용 뒤 publiclow5 다섯 업데이트; public1/5 medium은 HOLD, 기본 initial 유지·보호 사전 접근0	2026-09-29	scripts/diag_p106b_online_rate5.py
---max-wall-sec	exp	P106B Stage2iW 다섯 업데이트 제한 실험의 실행 상한; 부분 이력은 음성/미완으로 기록	2026-09-28	scripts/diag_p106b_online_rate5.py
+--max-wall-sec	exp	해당 단계의 명시 wall 상한. 원래 허용 기한과 함께 검산하고 부분 이력을 완료로 승격하지 않음	2026-10-23	scripts/diag_p106b_online_rate5.py,scripts/diag_p106b_alm_cache.py,scripts/diag_p106b_alm_train.py
 --ffn-cpu-first32	exp	P106 결과098 §6~§7: GGUF 첫32층 FFN만 CPU; 기본 off·GDN trace4 및 VRAM 판정 필수	2026-09-27	scripts/diag_p106_vram_sample.py
 --ffn-cpu-first60	exp	P106 결과098 §7: 첫60층 FFN CPU 민감도; 기본 off·교사 처리량 손실 및 동시 peak 별도	2026-09-27	scripts/diag_p106_vram_sample.py
 --fit-off	exp	P106 결과098 §6: Prism fit 자동배치 비활성으로 placement 대조 고정; 기본 off	2026-09-27	scripts/diag_p106_vram_sample.py
@@ -87,7 +92,7 @@ flag	grade	evidence	checked	declared_in
 --both-cache	ok		2026-09-04	scripts/bench_infer.py
 --bs	ok		2026-09-04	scripts/diag_depth_init.py,scripts/diag_gqa_equiv.py,scripts/diag_kd_loss.py,scripts/diag_sdpa_backends.py,scripts/diag_train_repeat.py
 --build	ok		2026-09-04	scripts/queue_menu.py
---cache	ok		2026-09-04	scripts/diag_common_text.py
+--cache	ok	parser별 명시 캐시 경로 또는 생성 모드. 캐시 완결·품질·학습준비는 별도 검사	2026-10-23	scripts/diag_common_text.py,scripts/diag_p106b_alm_cache.py
 --cache-data	ok	실제 validation 텍스트 원천 캐시를 명시한다. checkpoint tokenizer와 다르면 decode 후 model tokenizer로 재인코딩한다	2026-09-18	scripts/infer_text_probe.py
 --cache-dir	ok	기존 meta.json과 val.bin이 있는 정확한 cache directory를 명시하며 자동 생성하지 않는다	2026-09-18	scripts/infer_text_probe.py
 --candidate	ok	P085 Stage10c same-panel held-out version comparison candidate JSON	2026-09-14	scripts/compare_heldout_census.py
@@ -283,8 +288,8 @@ flag	grade	evidence	checked	declared_in
 --mlp-lrm-mode	ok		2026-09-08	tinylm/cli.py
 --mlp-lrm-wd	ok		2026-09-08	tinylm/cli.py
 --mlp-split	ok		2026-09-04	scripts/diag_depth_init.py,tinylm/cli.py
---mode	ok		2026-09-04	scripts/diag_train_repeat.py
---model	ok		2026-09-06	scripts/bench_tsv.py
+--mode	ok	해당 parser의 사전 고정 단계 선택. 실행 승인이나 미실행 단계의 PASS가 아님	2026-10-23	scripts/diag_train_repeat.py,scripts/diag_p106b_official_core6.py,scripts/diag_p106b_alm_train.py
+--model	ok	해당 parser의 명시 모델 선택. 사전 고정 비교에서는 새 점수로 재선별 금지	2026-10-23	scripts/bench_tsv.py,scripts/diag_p106b_official_core6.py
 --model-arch	ok	P097처럼 태그 접두사로 구조를 추측할 수 없는 checkpoint의 모델별 arch를 명시	2026-09-20	scripts/eval_bench_suite.py,scripts/eval_recipe_prompt_panel.py
 --model-data	ok	checkpoint가 사용한 tokenizer identity를 추측하지 않고 명시한다	2026-09-18	scripts/infer_text_probe.py
 --models	ok		2026-09-04	scripts/bench_fused_int8.py,scripts/bench_infer.py,scripts/census_heldout_discrimination.py,scripts/common_bpb.py,scripts/diag_alpha_group.py,scripts/diag_attention_sink.py,scripts/diag_decode_profile.py,scripts/diag_fp8_precision.py,scripts/diag_kvcache.py,scripts/diag_layer_map.py,scripts/diag_sparse34.py,scripts/diag_trapping.py,scripts/eval_bench_suite.py,scripts/eval_korean_bench.py,scripts/mem_runtime.py,scripts/paired_eval.py,scripts/probe_prompts.py
@@ -492,7 +497,8 @@ flag	grade	evidence	checked	declared_in
 --budget-hours	exp	P106B 비용worker 실측·학습외삽·평가/기록 예약의 합계예산; SH선결·대기·전체큐 달력시간은 별도이며 실행권한/상한 보장이 아님	2026-10-19	scripts/diag_p106b_relation_bind.py,scripts/diag_p106b_subject_role.py,scripts/p106b_subject_role_entry.py
 --contract	exp	P106B 독립 smoke의 새 합성 로그 폴더를 기존 계측 검사기에 전달; 모델 및 공용 검사기 변경 없음	2026-10-19	scripts/p106b_relation_smoke.py
 --worker	exp	P106B 질문위치/실제prefix/질문전이 독립3단계의 내부자식 선택; 공개execute는회귀/선결/실행을 거치고 사용자입력을 요구하지 않음	2026-10-19	scripts/diag_p106b_question_position.py,scripts/diag_p106b_actual_prefix_readback.py,scripts/diag_p106b_question_transfer.py
---deadline-utc	exp	Codex 격리 스모크의 명시적 시간대 포함 종료상한. 학습 하이퍼파라미터가 아니며 등록경로 선결 미검증으로 실제 full은 HOLD8	2026-10-19	scripts/codex_smoke.py
+--deadline-utc	exp	시간대 포함 절대 종료상한. 현재 사용자 실행권한과 별도로 대조하고 생산은 전후검증/정리여유를 차감한다	2026-10-23	scripts/codex_smoke.py,scripts/diag_p106b_supported_production8h.py
+--study	exp	ALM 학생의 등록된 불변 가족 선택. 부모·route·준비·교정·CP 계보를 묶으며 실행 승인이나 품질 판정이 아님	2026-10-23	scripts/diag_p106b_alm_train.py
 --allow-full-build	exp	P106B CPU legacy 캐시 전량 변환의 별도 명시 허용; pilot/전량 SHA/현재 host·guest 예산 뒤만	2026-10-19	scripts/diag_p106b_native_expansion.py
 --allow-full-scan	exp	P106B CPU legacy TRAIN 전체 SHA 읽기의 별도 명시 허용; source/pilot은 전량 읽지 않음	2026-10-19	scripts/diag_p106b_native_expansion.py
 --draw-tokens	exp	P106B 변환 후 실제 retained 위치에 대한 2배 풀 허용량 검산; 학습 실행 아님	2026-10-19	scripts/diag_p106b_native_expansion.py
@@ -520,3 +526,27 @@ flag	grade	evidence	checked	declared_in
 --muon-lr	exp	P078 경로 본실험의 절대 Muon LR. 기존 scale 메타데이터로 LR값을 추측하지 않음	2026-10-21	scripts/diag_p078_route_training.py
 --resource-only-r1	exp	P078 prefix router의 R1 비용전용 본체 대체. 과학 비교·채택에는 사용 금지	2026-10-21	scripts/diag_p078_prefix_router.py
 --holdout-sha256	exp	P078 기존학습/VAL과분리된공식TRAIN 근거의새라우터DEV/TEST 정확보고서SHA	2026-10-21	scripts/diag_p078_prefix_router.py
+--directory	exp	P106B 후행 번역 초안의 로컬 shard 입력 디렉터리. 원자료/학습/모델 변경 없음	2026-10-22	scripts/p106b_native_text_audit.py
+--key	exp	P106B 텍스트 수정본 병합의 정확 id 또는 source_index 식별자. 의미 정답 판정 아님	2026-10-22	scripts/p106b_native_text_audit.py
+--max-ids	exp	P106B 원문 CPU 구조 감사의 읽기 ID 상한. 풀 크기와 학습 처리량 구분	2026-10-22	scripts/p106b_native_text_audit.py
+--original	exp	P106B 후행 텍스트 수정 전 응답 JSON. 원형은 읽기 전용으로 보존	2026-10-22	scripts/p106b_native_text_audit.py
+--packet	exp	P106B Luna 원문/번역 입력의 봉인 JSON. 원문 SHA와 계보 검산용	2026-10-22	scripts/p106b_native_text_audit.py
+--response	exp	P106B Luna 텍스트 응답 JSON. 구조/정확삭제 검산이며 품질 PASS 아님	2026-10-22	scripts/p106b_native_text_audit.py
+--revision	exp	P106B 별도 텍스트 수정본 JSON. 옛 응답/원자료를 덮어쓰지 않고 병합	2026-10-22	scripts/p106b_native_text_audit.py
+--seconds	exp	P106B 원문 CPU 구조 감사의 단조시간 상한. GPU/학습 실행 권한 아님	2026-10-22	scripts/p106b_native_text_audit.py
+--count	exp	P106B 텍스트 전달 묶음 크기. 전체 정제·번역 목표 상한이 아님	2026-10-22	scripts/p106b_text_batches.py
+--language	exp	P106B 판독 패킷 후보 언어 선택. 실제 언어 품질 판정 아님	2026-10-22	scripts/p106b_text_batches.py
+--baseline-from	exp	최소쌍의 동일 입력/토큰 경계 기준선 재사용. 모델 점수 재사용 아님	2026-10-22	scripts/p106b_minimal_pair_benchmark.py
+--bos-policy	exp	최소쌍 실험의 명시 문장 시작 정책. 공식 BabyLM 등가성 미검증	2026-10-22	scripts/p106b_minimal_pair_benchmark.py
+--bos-token	exp	실제 토크나이저 BOS 존재 검산용. 없으면 실패하고 새 토큰 추가 금지	2026-10-22	scripts/p106b_minimal_pair_benchmark.py
+--selection	exp	P078 원형4팔 중 이번선택2팔의명시서술. 원형학습/PINS/전체실지출 유지	2026-10-22	scripts/diag_p078_selected_stage.py
+--selection-sha256	exp	P078 선택서술의정확bytesSHA와새권한/소스결합검산	2026-10-22	scripts/diag_p078_selected_stage.py
+--initializer	exp	V4의 동일 초기화 안에서 NTP/MTP 두 팔 판독. 네 팔 완료로 승격하지 않음	2026-10-22	scripts/diag_p101a_supervision_v4.py
+--review-output	exp	연구모델 실제질문/첫답을WSL review_request 새Markdown으로보존	2026-10-22	scripts/p106b_chat_probe_batch.py
+--allow-extra-special-tokens	exp	기본 어휘와 ID 대응이 같은 추가 특수 ID만 명시 허용하며 모델 범위 밖 입력은 거부	2026-10-23	scripts/interactive_infer.py
+--reserve-sec	exp	독립 학습 재개 전 실제 시간 예측에 포함할 종료·기록 여유. 승인기한을 늘리지 않음	2026-10-23	scripts/p101a_reasoning_surface_bridge.py
+--release-cublas-workspace	exp	PAD 진단의 명시 cuBLAS 작업공간 정리. 원형과 별도 namespace·객체 소멸 검산·GPU 할당0 기준 유지	2026-10-23	scripts/diag_p101a_padding_gpu.py
+--canary	exp	원 첫16행과 실패 원행34 추가17행의 교사 확률·UTF8 probe·바이트 정합 검산	2026-10-23	scripts/diag_p106b_alm_cache.py
+--batch-index	exp	고정16행 묶음의 명시 번호로 재시도 대상 임의 변경 방지	2026-10-23	scripts/diag_p106b_alm_cache.py
+--cache-prompt	exp	cold와 증가-prefix warm 정합을 검산하는 교사 prefix 캐시	2026-10-23	scripts/diag_p106b_alm_cache.py
+--synthetic-cpu	exp	실제 Muon 구현의 작은 CPU 합성 수치 관찰만 허용. 모델·GPU·학습 진단 권한 아님	2026-10-23	scripts/diag_p102a_muon_sensitivity.py

@@ -1,0 +1,55 @@
+"""Close exactly62 stopped, published sources without claiming whole128 done.
+
+Root-only transport derivative. Reuse strict source/span importer and renderer.
+Original packet, drafts, receipts and source bytes are never written.
+"""
+from pathlib import Path
+import json,sys,hashlib
+from scripts import p106b_text_batches as b
+base=b.BASE
+def byte_sha(value):return hashlib.sha256(value).hexdigest().upper()
+p=base/'packets/native_full_ko_000052.json';original=p.read_bytes();packet=json.loads(original)
+folder=base/'published/native_full_ko_000052'
+sources=packet['documents'];subset=sources[:62];wanted={str(s['id'])+'.json' for s in subset}
+assert len(sources)==128 and len(subset)==62 and sources[62]['id']==38880
+assert {f.name for f in folder.iterdir()}==wanted
+snapshots={f.name:f.read_bytes() for f in folder.iterdir()}
+files={name:byte_sha(raw) for name,raw in snapshots.items()}
+for s in subset:assert b.sha(s['text'])==s['sha256']
+matches={name:[] for name in wanted}
+for receipt in (base/'publish_receipts').glob('*/receipt.json'):
+    r=json.loads(receipt.read_bytes());obs=r.get('final_observation',{})
+    final=Path(r.get('final',''))
+    if not final.is_absolute():final=b.ROOT/final
+    if final.parent!=folder or final.name not in wanted:continue
+    if (r.get('exit_code')==0 and r.get('published_by_this_attempt') is True
+        and r.get('status')=='PUBLISHED_COPY_ONLY_DRAFT'
+        and obs.get('sha256')==files[final.name]
+        and r['packet_before']['sha256']==r['packet_after']['sha256']==byte_sha(original)
+        and r.get('input_before',{}).get('sha256')==files[final.name]
+        and r.get('input_after',{}).get('sha256')==files[final.name]):
+        matches[final.name].append(str(receipt))
+assert all(matches.values()),'successful exact-copy receipt missing'
+out=base/'root_closed_prefix/native_full_ko_000052_first62_20261023'
+assert not out.exists()
+if '--import' in sys.argv:
+    out.mkdir(parents=True)
+    derived=dict(packet,documents=subset,closure_scope='STOPPED_EXACT_FIRST62_OF128_NOT_WHOLE_PACKET',
+        origin_packet=str(p),origin_packet_sha256=byte_sha(original),unprocessed_source_count=66,
+        first_unprocessed_id=38880,exact_source_objects_preserved=True)
+    subpacket=out/'packet.json';response=out/'published_snapshot.json'
+    b.write_json(subpacket,derived)
+    b.write_json(response,[json.loads(snapshots[str(s['id'])+'.json']) for s in subset])
+    imported=base/'imported/native_full_ko_000052_closed_prefix62_20261023'
+    report=b.import_packet(subpacket,response,imported,'native')
+    human=b.ROOT/'review_request/20261023_native_full_ko_000052_앞62_검수.md'
+    b.render_review(imported,human)
+    b.write_json(out/'closure_receipt.json',dict(schema='P106B_STOPPED_PREFIX_CLOSURE_V1',
+        original_packet=str(p),original_packet_sha256=byte_sha(original),source_ids=[s['id'] for s in subset],
+        original_packet_source_count=128,closed_source_count=62,remaining_source_count=66,
+        first_unprocessed_id=38880,published_file_hashes=files,successful_copy_receipts=matches,
+        imported_report=str(imported/'report.json'),human=str(human),
+        original_packet_completed=False,semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED'))
+    print(json.dumps(dict(source_rows=report['source_rows'],report=str(imported/'report.json'),human=str(human),
+        whole_packet_completed=False,remaining=66,first_unprocessed_id=38880),ensure_ascii=False))
+assert p.read_bytes()==original and all((folder/name).read_bytes()==raw for name,raw in snapshots.items())

@@ -1,0 +1,110 @@
+"""Read-only derived BabyLM comparison; no model, source edits or dataset admission."""
+from pathlib import Path
+from collections import defaultdict, Counter
+import hashlib
+import json
+import math
+import random
+from scripts.p106b_shards import verify
+
+BASE=Path("test_result/evidence/p106b_babylm_causal_v3_s1337")
+MODELS=("native595-f","native595-q","new595-broad-f")
+GROUPS=("main","supplement")
+EXPECTED={"main":59875,"supplement":5218}
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest().upper()
+
+def load(model,group):
+    directory=BASE/model/"full"
+    report_path=directory/"report.json"
+    report=json.loads(report_path.read_text(encoding="utf-8"))
+    assert report["returncode"]==0 and report["status"]=="BABYLM_CAUSAL_BLIMP_COMPLETE"
+    assert report["sources_unchanged"] and report["inputs_unchanged"]
+    manifest=json.loads((directory/(group+"_pairs_shards_manifest.json")).read_text())
+    verify(directory,manifest)
+    rows=[]
+    for part in manifest["shards"]:
+        assert part["bytes"]<20_000_000
+        with (directory/part["path"]).open(encoding="utf-8") as stream:
+            rows.extend(json.loads(line) for line in stream)
+    assert len(rows)==EXPECTED[group]
+    assert len({(r["uid"],r["index"]) for r in rows})==len(rows)
+    by_uid=defaultdict(Counter)
+    equal=Counter()
+    identity=hashlib.sha256()
+    for row in rows:
+        assert row["chosen"] in (0,1) and row["label"]==0
+        assert isinstance(row["raw_sentences"],dict)
+        assert len(row["raw_sentences"]["sentences"])==2
+        assert all(math.isfinite(float(s)) for s in row["scores"])
+        text_a,text_b=row["raw_sentences"]["sentences"]
+        delta=len(text_a)-len(text_b)
+        correct=int(row["chosen"]==row["label"])
+        current=by_uid[row["uid"]]
+        current["rows"]+=1
+        current["correct"]+=correct
+        current["short_expected"]+=0.5 if delta==0 else float(delta<0)
+        current["long_expected"]+=0.5 if delta==0 else float(delta>0)
+        current["ties"]+=int(row["exact_tie"])
+        if delta==0:
+            equal["rows"]+=1
+            equal["correct"]+=correct
+        identity.update(json.dumps([row["uid"],row["index"],row["raw_sentences"]],
+                                   ensure_ascii=False,separators=(",",":")).encode())
+        identity.update(b"\n")
+    accuracies={u:100*c["correct"]/c["rows"] for u,c in by_uid.items()}
+    macro=sum(accuracies.values())/len(accuracies)
+    official=report["group_audits"][group]
+    assert abs(macro-official["uid_macro_percent"])<1e-10
+    assert sum(c["correct"] for c in by_uid.values())==official["correct"]
+    assert equal["rows"]==official["equal_character_length_pairs"]
+    return rows,accuracies,dict(
+        status=report["status"],report_sha256=sha(report_path),rows=len(rows),uids=len(by_uid),
+        uid_macro_percent=macro,pair_micro_percent=100*official["correct"]/len(rows),
+        correct=official["correct"],exact_ties=official["exact_ties"],
+        equal_characters=dict(equal,accuracy_percent=100*equal["correct"]/equal["rows"]),
+        shortest_random_tie_uid_macro_percent=sum(100*c["short_expected"]/c["rows"] for c in by_uid.values())/len(by_uid),
+        longest_random_tie_uid_macro_percent=sum(100*c["long_expected"]/c["rows"] for c in by_uid.values())/len(by_uid),
+        shortest_random_tie_pair_micro_percent=100*sum(c["short_expected"] for c in by_uid.values())/len(rows),
+        longest_random_tie_pair_micro_percent=100*sum(c["long_expected"] for c in by_uid.values())/len(rows),
+        uids_above_uniform=sum(v>50 for v in accuracies.values()),
+        uids_equal_uniform=sum(v==50 for v in accuracies.values()),
+        uids_below_uniform=sum(v<50 for v in accuracies.values()),
+        ordered_pair_identity_sha256=identity.hexdigest().upper(),
+        by_uid={u:dict(by_uid[u],accuracy_percent=accuracies[u]) for u in sorted(by_uid)})
+
+def paired(left,right,left_acc,right_acc):
+    assert len(left)==len(right) and set(left_acc)==set(right_acc)
+    wins=losses=both=neither=0
+    for a,b in zip(left,right):
+        assert (a["uid"],a["index"],a["raw_sentences"])==(b["uid"],b["index"],b["raw_sentences"])
+        x=a["chosen"]==a["label"]
+        y=b["chosen"]==b["label"]
+        wins+=int(y and not x)
+        losses+=int(x and not y)
+        both+=int(x and y)
+        neither+=int(not x and not y)
+    diffs=[right_acc[u]-left_acc[u] for u in sorted(left_acc)]
+    rng=random.Random(1337)
+    draws=sorted(sum(rng.choices(diffs,k=len(diffs)))/len(diffs) for _ in range(10000))
+    return dict(right_only_correct=wins,left_only_correct=losses,both_correct=both,both_incorrect=neither,
+                uid_macro_delta_pp=sum(diffs)/len(diffs),
+                uid_resample_percentile95_pp=[draws[250],draws[9749]],resamples=10000,seed=1337,
+                scope="DESCRIPTIVE_FIXED_UID_RESAMPLE_NOT_NEW_SEED_OR_UNSEEN_TASK_CONFIDENCE")
+
+result=dict(schema="P106B_BABYLM_DERIVED_READBACK_V1",model_runs=0,training_updates=0,
+    official_scores_unchanged=True,whole_babylm_suite=False,track_eligibility="NOT_CLAIMED",
+    majority_or_always_first="NOT_VALID_BASELINE_OFFICIAL_GOOD_FIRST_HAS_LABEL_LEAKAGE",
+    uniform_expectation_percent=50.0,
+    inference="GRAMMAR_MINIMAL_PAIR_DISCRIMINATION_NOT_KOREAN_DIALOGUE_OR_GENERAL_QA",
+    groups={})
+for group in GROUPS:
+    loaded={model:load(model,group) for model in MODELS}
+    summaries={model:value[2] for model,value in loaded.items()}
+    assert len({v["ordered_pair_identity_sha256"] for v in summaries.values()})==1
+    comparisons={}
+    for a,b in [("native595-f","native595-q"),("native595-f","new595-broad-f")]:
+        comparisons[a+"__"+b]=paired(loaded[a][0],loaded[b][0],loaded[a][1],loaded[b][1])
+    result["groups"][group]=dict(models=summaries,paired=comparisons)
+print(json.dumps(result,ensure_ascii=False,sort_keys=True))

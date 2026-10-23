@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Closed2026-10-23 16:05:12KST:106actions/44children/33trains,zero failures.
+# Fresh canonical smoke after the optional streaming-head module was added.
+# Same 106 actions and44 children; new source pins, no quality or speed claim.
+# Prior actual467.58sec;1200sec cap and absolute2026-10-23 16:30KST limit.
+# Fail dependent launch on non-idle GPU; retain every child receipt on failure.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+"$python_bin" -B -X utf8 -c 'from scripts.interactive_research_infer import require_idle_gpu; require_idle_gpu()'
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage9dW_current_source_full_smoke --num 101 -- "$python_bin" -B -X utf8 scripts/codex_smoke.py --mode full --session-id oct23_after_streaming_v3 --execute --deadline-utc 2026-10-23T07:30:00Z --max-wall-sec 1200
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage9dW_current_source_full_smoke --num 101 --note "Current-source canonical smoke exit=$result. Read106 actions,44 child receipts, source and original synthetic pins, and owned teardown. This is not answer quality, streaming-head adoption, or waiver of the preserved original C0 finding."
+exit "$result"

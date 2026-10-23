@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Original v1 full NOT_RUN; superseded by v2 common idle boundary.
+# Conditional full BLiMP: main59875 and supplement5218 separately, UID-macro percent.
+# Official-function native adapter, not whole CLI/whole BabyLM suite/track eligibility.
+# Four models are independent; each requires matching closed cost and measured budget.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+eval_python="data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+source_sha="$("$python_bin" -B -X utf8 -c 'from scripts.diag_p106b_babylm_causal import identity;print(identity()["sha256"])')"
+result=$?
+[[ "$result" == 0 && "$source_sha" =~ ^[A-F0-9]{64}$ ]] || exit 9
+failures=0
+for model in native595-f native595-q new595-broad-f falcon90m; do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8gW_babylm_causal_full_"$model"_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=30 3650 "$eval_python" -B -X utf8 scripts/diag_p106b_babylm_causal.py --execute --model "$model" --mode full --source-sha256 "$source_sha"
+  result=$?
+  if [[ "$result" != 0 ]]; then failures=$((failures+1)); fi
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8gW_babylm_causal_full_"$model"_"$stamp" --num 101 --note "Full exit=$result. Inspect main/supplement raw pairs, UID counts, macro versus micro, exact ties and source/model immutability. English grammar is not Korean dialogue."
+done
+[[ "$failures" == 0 ]]

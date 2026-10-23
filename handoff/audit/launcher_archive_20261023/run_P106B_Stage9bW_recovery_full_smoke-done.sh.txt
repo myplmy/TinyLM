@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Completed20261023: canonical44 smoke children with source/asset preservation.
+# Two declared Codex adaptations only; original training arguments unchanged.
+# Maximum1200sec within16:30; single GPU and no existing model co-residency.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+"$python_bin" -B -X utf8 -c 'from scripts.interactive_research_infer import require_idle_gpu; require_idle_gpu()'
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage9bW_recovery_full_smoke --num 101 -- "$python_bin" -B -X utf8 scripts/codex_smoke.py --mode full --session-id oct23_after_recovery_v1 --execute --deadline-utc 2026-10-23T07:30:00Z --max-wall-sec 1200
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage9bW_recovery_full_smoke --num 101 --note "Fresh full smoke exit=$result. Read all44 child receipts, summary, source pins, original synthetic preservation and owned-process teardown. This is not real model answer quality or the whole static suite. Preserved raw diagnostic C0 remains separately reported."
+exit "$result"

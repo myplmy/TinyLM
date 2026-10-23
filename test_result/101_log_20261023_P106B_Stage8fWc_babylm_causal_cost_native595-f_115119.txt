@@ -1,0 +1,15 @@
+
+==============================================================================
+[runlog] 2026-10-23 11:51:19  name=P106B_Stage8fWc_babylm_causal_cost_native595-f_115119
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=30 650 data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_babylm_causal.py --execute --model native595-f --mode cost --source-sha256 5D9C80ACB73858F91148CD5FB58FBC0DD9A7B27236360513C31607A83B5CA885
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_p106b_native595_v1_s1337_float_native.pt", "checkpoint_sha256": "7DF60C47605B654520C510E2758D559213AABCB7ED1090424BDC0D50BC9413BA", "core_sha256": "E21E7023D5F289E2EBA2C65127491CB8016232A538E0619E63068BA095D4E3DD", "report_sha256": "90B8DBE222CE9A35B8E9A0A8028AA44B6FF1A17C8E559047F370A6FB4A691CDE", "manifest_sha256": "557553646D190CB755639058DB93BBFF7EE5D02D9BCCEF8133E4197A596D7D65", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "float", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "LATENT_IDENTITY_VIEW", "backward": "IDENTITY", "dedicated_loader_required": true}, "name": "native595-f", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[BABYLM_GROUP] {"model": "native595-f", "mode": "cost", "group": "main", "rows": 536, "uid_macro_percent": 73.13432835820896, "seconds": 3.0062028559987084}
+[BABYLM_GROUP] {"model": "native595-f", "mode": "cost", "group": "supplement", "rows": 40, "uid_macro_percent": 72.5, "seconds": 0.16418266399705317}
+[BODY_UNCHANGED] E21E7023D5F289E2EBA2C65127491CB8016232A538E0619E63068BA095D4E3DD (CPU/GPU load + session exit)
+[BABYLM_FINAL] {"status": "BABYLM_CAUSAL_COST_COMPLETE", "returncode": 0, "model": "native595-f", "mode": "cost", "wall_seconds": 10.720745104001253, "error_type": null, "error": null}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.2분  (2026-10-23 11:51:31)
+==============================================================================
+Cost exit=0; original causal function with actual full logits. Not a full BLiMP score. Inspect actual parity, zero skips, source/model closure and measured full budget.

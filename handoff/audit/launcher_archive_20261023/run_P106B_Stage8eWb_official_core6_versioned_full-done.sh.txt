@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# V2 full Core6 uses matching closed v2 cost, one official manager and no_grad.
+# Same four fixed models; each <=2h and hard16:30KST. No model training.
+# All four full19965 completed23Oct; original commands preserved, result101section446.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+eval_python="data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+source_sha="$("$python_bin" -B -X utf8 scripts/diag_p106b_official_core6.py | "$python_bin" -c 'import json,sys;print(json.load(sys.stdin)["source_identity"]["sha256"])')"
+result=$?
+[[ "$result" == 0 && "$source_sha" =~ ^[A-F0-9]{64}$ ]] || exit 9
+failures=0
+for model in native595-f native595-q new595-broad-f falcon90m; do
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8eWb_core6_full_"$model"_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=30 7250 "$eval_python" -B -X utf8 scripts/diag_p106b_official_core6.py --execute --model "$model" --mode full --source-sha256 "$source_sha"
+  result=$?
+  if [[ "$result" != 0 ]]; then failures=$((failures+1)); fi
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage8eWb_core6_full_"$model"_"$stamp" --num 101 --note "V2 full evaluation exit=$result; inspect exact denominator, raw LL and independent audit. Not a Korean dialogue or BabyLM track score."
+done
+[[ "$failures" == 0 ]]

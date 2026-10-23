@@ -260,10 +260,14 @@ CHECKS = [
      "★두 값이 독립이라 함정 43(자기 사본과 대조하는 게이트)을 피한다. "
      "본문이 아니라 **헤딩**만 본다(본문으로 보면 매번 빨개지고 아무도 안 읽는 경고는 미탐과 같다). "
      "✅행 하나를 낡게 만들어 검출 확인. ⚠️키워드 오탐 4건을 실물에 대고 걸렀다(`폭`->`폭발`, `CLA`->`CLAUDE.md`)"),
+    ("test_compass", ["test_compass.py"],
+     "나침반 제목 판독은 fenced SH 주석을 연구축으로 오인하지 않고 실제 ATX 제목·결과번호 규칙을 보존하는가"),
+    ("test_runlog_git_scope", ["test_runlog_git_scope.py"],
+     "기본 Git 배너는 유지하고 명시 codex-safe 조회는 보호 경로를 제외하며 전체 clean을 주장하지 않는가"),
     ("check_control_chars", ["check_control_chars.py"],
      "★★**저장소 텍스트 파일의 제어문자**(2026-09-08(2차) 신설, 사용자 지시 3). "
-     "백슬래시 사고 **누적 15회** — 파이썬 패치나 heredoc 의 `\b`·`\v` 가 **실제 바이트**가 된다. "
-     "🚫문법 오류가 아니라 **문법적으로 멀쩡한 쓰레기**라 아무도 못 본다. "
+     r"백슬래시 표기의 잘못된 해석(\b·\v 등)과 원문·보존 로그 유래 제어문자를 구분해 확인한다. "
+     "금지 byte 발견은 원인 확정이나 원본 재작성 허가가 아니다. "
      "`lint_bat` 규칙 1b 가 같은 것을 보지만 **`.bat` 만** 본다 — 이 게이트가 `.py`·`.md`·`.tsv` 를 맡는다. "
      "⚠️탭은 안 본다(`.tsv` 구분자·`.py` 들여쓰기로 합법). ✅스크래치패드 사본에 실사고 바이트를 심어 검출 확인(1->0)"),
     ("test_control_chars", ["test_control_chars.py"],
@@ -306,12 +310,21 @@ def _wip_metadata(path: Path | None):
     }
 
 
-def _worktree_manifest(*, evidence_output: Path | None = None):
+def _worktree_manifest(*, evidence_output: Path | None = None, profile="all"):
+    if profile not in ("all", "codex-safe"):
+        raise ValueError("known static-audit profile required before Git")
+    command = ["git", "-c", "core.quotepath=false", "status", "--porcelain=v1", "--untracked-files=all"]
+    if profile == "codex-safe":
+        # Reuse the existing opt-in boundary before enumeration, not after it.
+        from runlog import _git_status_command
+        command += _git_status_command({"TL_RUNLOG_GIT_SCOPE": "codex-safe"})[3:]
     completed = subprocess.run(
-        ["git", "-c", "core.quotepath=false", "status", "--porcelain=v1", "--untracked-files=all"],
+        command,
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace",
         check=False,
     )
+    if profile == "codex-safe" and completed.returncode != 0:
+        raise RuntimeError("scoped Git audit failed; no whole-tree fallback")
     excluded = ("datasets/TinyDataset/", "HF/", "data_cache/", "runs/", "smoketest_logs/")
     rows = []
     for line in completed.stdout.splitlines():
@@ -423,7 +436,7 @@ def main():
     print("     정적은 *'이름이 있는가'*, 동적은 *'그 경로가 실제로 도는가'* 를 본다(함정 37).")
     if a.json_path:
         target = (ROOT / a.json_path).resolve()
-        manifest, worktree_sha = _worktree_manifest(evidence_output=target)
+        manifest, worktree_sha = _worktree_manifest(evidence_output=target, profile=a.profile)
         counts = {
             "pass": sum(row["status"] == "PASS" for row in evidence_checks),
             "errors": sum(row["status"] == "ERROR" for row in evidence_checks),
@@ -437,6 +450,7 @@ def main():
             "profile": a.profile,
             "wip": _wip_metadata(wip_path),
             "worktree_sha256": worktree_sha,
+            "worktree_scope": ("ALLOWED_PATHS_ONLY_NOT_WHOLE_TREE_CLEAN" if a.profile == "codex-safe" else "DEFAULT_WHOLE_TREE"),
             "worktree_manifest": manifest,
             "counts": counts,
             "checks": evidence_checks,

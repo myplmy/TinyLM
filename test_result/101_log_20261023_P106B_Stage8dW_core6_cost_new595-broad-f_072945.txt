@@ -1,0 +1,38 @@
+
+==============================================================================
+[runlog] 2026-10-23 07:29:54  name=P106B_Stage8dW_core6_cost_new595-broad-f_072945
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=30 650 data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_official_core6.py --execute --model new595-broad-f --mode cost --source-sha256 F8261861946CABCA2000E5A9EE0D717155C9CA13CECCF362872AD45C554AA70F
+==============================================================================
+[Task: boolq] metric acc is defined, but aggregation is not. using default aggregation=mean
+[Task: boolq] metric acc is defined, but higher_is_better is not. using default higher_is_better=True
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_core6.py", line 318, in <module>
+    if __name__=='__main__':main()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_core6.py", line 314, in main
+    value=execute(args.model,args.mode,args.source_sha256)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_core6.py", line 263, in execute
+    with model_runtime(model,torch) as (lm,model_proof):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_core6.py", line 142, in model_runtime
+    with research_adapter(name,runtime_root=Path(sysconfig.get_paths()['purelib']),batch_size=8) as lm:
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "/home/uranus/tinyLM/scripts/p106b_official_lm_adapter.py", line 518, in research_adapter
+    with selected_runtime(resolve_model(model_name)) as runtime:
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "/home/uranus/tinyLM/scripts/interactive_research_infer.py", line 418, in selected_runtime
+    with method.weight_route(model, spec.arm) as cpu_route:
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "/home/uranus/tinyLM/scripts/p106b_weight_route.py", line 251, in weight_route
+    versions = tuple((p, p._version) for p in model.parameters())
+  File "/home/uranus/tinyLM/scripts/p106b_weight_route.py", line 251, in <genexpr>
+    versions = tuple((p, p._version) for p in model.parameters())
+RuntimeError: Inference tensors do not track version counter.
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-10-23 07:29:58)
+==============================================================================
+Cost diagnostic exit=1; first32/task is not a full official score. No training or checkpoint writes.

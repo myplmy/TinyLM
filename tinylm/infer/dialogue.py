@@ -72,8 +72,53 @@ def resolve_tokenizer(record,metadata,cache_dir,explicit=None):
     return TokenizerRoute(match[0].resolve(),match[1],False,"LEGACY_OR_DECLARED_CONVENTION_WITHOUT_SAVED_SHA")
 
 
-def resolve_mode(tokenizer,cfg,requested="auto"):
-    if tokenizer.get_vocab_size()!=cfg["vocab_size"]:raise ValueError("체크포인트와 tokenizer 어휘 크기가 다릅니다.")
+def validate_vocabulary(tokenizer,cfg,*,allow_extra_special=False):
+    """An opt-in text-only contract, never resize or remap the tokenizer.
+
+    Some HF text models omit a newly added image marker from their output
+    matrix. Permit only a complete unchanged base vocabulary plus individually
+    declared special IDs beyond that matrix. Encoding still needs a range
+    check at the actual model boundary.
+    """
+    size=cfg["vocab_size"];full_size=tokenizer.get_vocab_size()
+    if type(size) is not int or size<2 or type(full_size) is not int:
+        raise ValueError("어휘 크기는 유효한 정수여야 합니다.")
+    if full_size==size and not allow_extra_special:
+        return dict(policy="EXACT_VOCAB_SIZE",model_vocab_size=size,
+                    tokenizer_vocab_size=full_size,extra_special_tokens={})
+    if not allow_extra_special:
+        raise ValueError(f"체크포인트와 tokenizer 어휘 크기가 다릅니다: 모델={size}, tokenizer={full_size}. "
+                         "추가 특수 토큰만 있는 경우에도 명시 허용과 입력 범위 검사가 필요합니다.")
+    if tokenizer.get_vocab_size(with_added_tokens=False)!=size:
+        raise ValueError("추가 특수 토큰 허용은 기본 어휘가 모델과 정확히 같은 경우에만 가능합니다.")
+    base=tokenizer.get_vocab(with_added_tokens=False);full=tokenizer.get_vocab()
+    if (len(base)!=size or len(full)!=full_size or set(base.values())!=set(range(size))
+            or any(type(value) is not int for value in full.values())
+            or len(set(full.values()))!=full_size
+            or any(full.get(token)!=ident for token,ident in base.items())
+            or any(ident<size and base.get(token)!=ident for token,ident in full.items())):
+        raise ValueError("기존 토큰의 ID 변경·중복·빈 구간 또는 다른 기본 어휘를 허용하지 않습니다.")
+    extra={token:ident for token,ident in full.items() if ident>=size}
+    if not extra and full_size==size:
+        return dict(policy="EXACT_VOCAB_SIZE",model_vocab_size=size,
+                    tokenizer_vocab_size=full_size,extra_special_tokens={})
+    added=tokenizer.get_added_tokens_decoder()
+    if not extra or any(ident not in added or not added[ident].special
+                        or added[ident].content!=token for token,ident in extra.items()):
+        raise ValueError("모델 범위를 벗어난 ID는 모두 명시된 추가 특수 토큰이어야 합니다.")
+    return dict(policy="EXPLICIT_EXTRA_SPECIAL_TEXT_ONLY",model_vocab_size=size,
+                tokenizer_vocab_size=full_size,base_ids_unchanged=True,
+                extra_special_tokens=extra,input_range_check_required=True,
+                historical_training_identity="SEPARATE_FROM_VOCAB_RANGE_COMPATIBILITY")
+
+
+def validate_input_ids(ids,vocab_size):
+    if not ids or any(type(ident) is not int or not 0<=ident<vocab_size for ident in ids):
+        raise ValueError("입력에 모델 어휘 범위 밖 토큰 ID가 있습니다. 추가 이미지/특수 토큰은 이 텍스트 모델에서 지원하지 않습니다.")
+
+
+def resolve_mode(tokenizer,cfg,requested="auto",*,allow_extra_special=False):
+    validate_vocabulary(tokenizer,cfg,allow_extra_special=allow_extra_special)
     markers=[tokenizer.token_to_id(name) for name in ("<|im_start|>","<|im_end|>")]
     available=all(type(v) is int and 0<=v<cfg["vocab_size"] for v in markers) and markers[0]!=markers[1]
     mode=("chatml" if available else "plain") if requested=="auto" else requested

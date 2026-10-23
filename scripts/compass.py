@@ -66,6 +66,32 @@ AXES = [
 ]
 
 ROW = re.compile(r"^\|\s*\*{0,2}([^|*]+?)\*{0,2}\s*\|")
+FENCE_START = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+ATX_HEADING = re.compile(r"^ {0,3}#{1,6}(?:[ \t]+|$)")
+
+
+def markdown_headings(text):
+    """Read ATX headings, not shell comments inside fenced evidence blocks.
+
+    Keep the existing axis keywords and number rule unchanged. Unclosed fenced
+    blocks remain code through EOF; a shorter/opposite fence cannot close one.
+    This is a document-structure reader, not an experiment or quality gate.
+    """
+    result = []
+    fence_char, fence_length = None, 0
+    for line in text.splitlines():
+        if fence_char is not None:
+            if re.fullmatch(r" {0,3}" + re.escape(fence_char) +
+                            "{" + str(fence_length) + r",}[ \t]*", line):
+                fence_char, fence_length = None, 0
+            continue
+        opened = FENCE_START.match(line)
+        if opened and not (opened[1][0] == "`" and "`" in opened[2]):
+            fence_char, fence_length = opened[1][0], len(opened[1])
+            continue
+        if ATX_HEADING.match(line):
+            result.append(line.lstrip(" "))
+    return result
 
 
 def read_rows():
@@ -88,8 +114,8 @@ def result_docs():
     out = {}
     for p in sorted(RESULTS.glob("[0-9][0-9][0-9]_*.md")):
         n = int(p.name[:3])
-        heads = [ln for ln in io.open(p, encoding="utf-8", errors="replace").read().split(NL)
-                 if ln.startswith("#")]
+        with io.open(p, encoding="utf-8", errors="replace") as stream:
+            heads = markdown_headings(stream.read())
         out[n] = (p, heads)
     return out
 

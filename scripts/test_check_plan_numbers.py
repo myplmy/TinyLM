@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import importlib.util
+import hashlib
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -37,6 +40,37 @@ class DiagnosticReferenceTests(unittest.TestCase):
             diagnostic_refs={("P091", "report.md"): "old diagnostic"},
         )
         self.assertEqual((missing, diagnostic), ({}, {}))
+
+    def pinned(self, reason, *, mutate=False):
+        with tempfile.TemporaryDirectory(prefix='tinylm-plan-ref-') as folder:
+            root=Path(folder);target=root/'review.md'
+            target.write_text('원문 서지의 P162-163. Photo.\n',encoding='utf-8')
+            expected=hashlib.sha256(target.read_bytes()).hexdigest().upper()
+            registry=root/'refs.tsv'
+            registry.write_text('plan_id\tpath\treason\nP162\treview.md\t'+reason.replace('DIGEST',expected)+'\n',encoding='utf-8')
+            if mutate:target.write_text(target.read_text()+'새 실험 P162 계획\n',encoding='utf-8')
+            with patch.object(MODULE,'ROOT',root):
+                return MODULE.load_diagnostic_refs(registry)
+
+    def test_exact_content_pin_is_accepted(self):
+        rows,errors=self.pinned('sha256=DIGEST; 원문 쪽수이며 실험 참조가 아님')
+        self.assertFalse(errors);self.assertEqual(set(rows),{('P162','review.md')})
+
+    def test_modified_file_fails_closed(self):
+        rows,errors=self.pinned('sha256=DIGEST; 원문 쪽수',mutate=True)
+        self.assertFalse(rows);self.assertTrue(any('content pin differs'in e for e in errors))
+
+    def test_wrong_content_pin_fails_closed(self):
+        rows,errors=self.pinned('sha256='+'0'*64+'; 원문 쪽수')
+        self.assertFalse(rows);self.assertTrue(errors)
+
+    def test_malformed_content_pin_fails_closed(self):
+        rows,errors=self.pinned('sha256=not-a-digest; 원문 쪽수')
+        self.assertFalse(rows);self.assertTrue(any('malformed'in e for e in errors))
+
+    def test_legacy_unpinned_registry_stays_compatible(self):
+        rows,errors=self.pinned('기존 정확 파일/번호 진단 문맥')
+        self.assertFalse(errors);self.assertTrue(rows)
 
 
 if __name__ == "__main__":

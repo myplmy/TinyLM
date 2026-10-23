@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# P101A Stage3ncW: same PAD pair, explicit runtime-workspace cleanup and strict0.
+# No model/parameter may survive a block; no checkpoint writes/quality adoption.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3nb0W_workspace_cpu_"$stamp" --num 092 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p101a_padding_gpu
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+source_sha="$("$python_bin" -B -X utf8 scripts/diag_p101a_padding_gpu.py --check-only | "$python_bin" -c 'import json,sys; print(json.load(sys.stdin)["source_sha256"])')"
+result=$?
+[[ "$result" == 0 && "$source_sha" =~ ^[A-F0-9]{64}$ ]] || exit 9
+failures=0
+for mode in correctness timing; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3ncW_workspace_"$mode"_"$stamp" --num 092 -- timeout --signal=TERM --kill-after=20 1230 "$python_bin" -B -X utf8 scripts/diag_p101a_padding_gpu.py --execute --mode "$mode" --release-cublas-workspace --source-sha256 "$source_sha" --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 1200 --output "test_result/evidence/p101a_padding_gpu_v1_s1337_workspace_v2/$mode"
+    result=$?
+    if [[ "$result" != 0 ]]; then
+        failures=$((failures+1))
+        "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3ncW_workspace_"$mode"_"$stamp" --num 092 --note "ERROR: mode=$mode exit=$result. Preserve partial; timing cannot establish numerical adoption."
+    fi
+done
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3ncW_workspace_final_"$stamp" --num 092 --note "Final failures=$failures. Read all-parameter comparisons and measured ABBA separately. No checkpoint writes or production/quality adoption."
+[[ "$failures" == 0 ]] || exit 9

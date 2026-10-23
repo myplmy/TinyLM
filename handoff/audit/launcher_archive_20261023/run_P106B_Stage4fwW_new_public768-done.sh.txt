@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# New fixed public MC768 on three strong existing model endpoints.
+# No training/download: reuse literal scorer and strict F/Q loader.
+# Estimated0.5h UNMEASURED; first32 retained in each real run, cap1200s/model.
+# Source preparation is prerequisite; independent endpoint errors continue.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+stamp="$(date +%H%M%S)"
+packet="data_cache/p106b_public_new768_20261022"
+failed=0
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fwW_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_public_mc_extension || exit 9
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fwW_code_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/p106b_public_mc_extension.py check-only || exit 9
+if [[ ! -f "$packet/report.json" ]]; then
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fwW_prepare_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/p106b_public_mc_extension.py prepare --output "$packet" || exit 9
+fi
+for model in native595-f native595-q new595-broad-f; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fwW_"${model}_${stamp}" --num 101 --note 'New public768 fixed before model results: PIQA/HellaSwag/ARC-Easy256 each, old IDs and normalized contexts excluded. Same weights, not training improvement. Primary SUM_NLL noPMI, fixed chance/old-majority/length controls; cached Falcon old768 is not comparable. Strict UI route and raw per-candidate scores preserved. Official BabyLM NOT_RUN. Deadline16:30KST22Oct, no interactive wait.'
+    if ! "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fwW_"${model}_${stamp}" --num 101 -- "$python_bin" -B -X utf8 scripts/p106b_public_mc_extension.py evaluate --input "$packet" --output "test_result/evidence/p106b_public_new768_20261022/${model}_${stamp}" --model "$model" --max-wall-sec 1200 --deadline 2026-10-22T16:30:00+09:00 --execute; then
+        failed=1
+    fi
+done
+exit "$failed"

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# P101A Stage3nW completed with preserved runtime-workspace admission errors.
+# Max about40min; one GPU, no CP saves or semantic-quality claim.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3n0W_padding_gpu_cpu_"$stamp" --num 092 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p101a_padding_gpu
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+source_sha="$("$python_bin" -B -X utf8 scripts/diag_p101a_padding_gpu.py --check-only | "$python_bin" -c 'import json,sys; print(json.load(sys.stdin)["source_sha256"])')"
+result=$?
+[[ "$result" == 0 && "$source_sha" =~ ^[A-F0-9]{64}$ ]] || exit 9
+failures=0
+for mode in correctness timing; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3nW_padding_gpu_"$mode"_"$stamp" --num 092 -- timeout --signal=TERM --kill-after=20 1230 "$python_bin" -B -X utf8 scripts/diag_p101a_padding_gpu.py --execute --mode "$mode" --source-sha256 "$source_sha" --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 1200 --output "test_result/evidence/p101a_padding_gpu_v1_s1337/$mode"
+    result=$?
+    if [[ "$result" != 0 ]]; then
+        failures=$((failures+1))
+        "$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3nW_padding_gpu_"$mode"_"$stamp" --num 092 --note "ERROR: mode=$mode exit=$result. Preserve partial output; independent timing may still run but cannot establish numerical adoption."
+    fi
+done
+"$python_bin" -B -X utf8 scripts/runlog.py --name P101A_Stage3nW_padding_gpu_final_"$stamp" --num 092 --note "Final diagnostic failures=$failures; read both report.json files. Timing completion alone is not numerical equivalence, new knowledge or production adoption. No checkpoint writes."
+[[ "$failures" == 0 ]] || exit 9

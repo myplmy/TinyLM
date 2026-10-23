@@ -1,0 +1,394 @@
+"""실제 자료/서버/모델을 쓰지 않는 ASCII probe helper 합성 CPU 회귀."""
+from __future__ import annotations
+
+import ast
+from copy import deepcopy
+import json
+import math
+from pathlib import Path
+import sys
+from types import ModuleType
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from scripts import p106b_alm_utf8_probability as m
+
+
+def fixture_probe():
+    return m.ValidatedAsciiProbe(4000, b"A", 4096, (4094, 4095))
+
+
+def fixture_base():
+    return dict(prompt=[10, 20, 10], n_predict=1, n_probs=2, temperature=0.0,
+                post_sampling_probs=False, stream=False, cache_prompt=False, seed=1337,
+                repeat_penalty=1.0, presence_penalty=0.0, frequency_penalty=0.0,
+                top_p=1.0, top_k=0, min_p=0.0, logit_bias=[[17, 100]])
+
+
+def fixture_request(k=64, bias=100):
+    return m.build_probe_payload(fixture_base(), probe=fixture_probe(), n_probs=k, bias=bias)
+
+
+def fixture_response(payload=None):
+    payload = fixture_request() if payload is None else payload
+    count = min(payload["n_probs"], fixture_probe().vocab_size)
+    top = [dict(id=index, logprob=-6.0 - 0.02 * index,
+                token="fixture-" + str(index), bytes=[65]) for index in range(count)]
+    # reference 표시 문자열 대신 실제 bytes가 일부분인 합성 예다.
+    top[17].update(token="", bytes=[0xEA])
+    chosen = min(-12.0, top[-1]["logprob"] - 1.0)
+    settings = deepcopy(payload)
+    settings.pop("cache_prompt")
+    settings.pop("return_tokens")
+    settings.update(grammar="", lora=[], max_tokens=1,
+                    logit_bias=[dict(token=4000, bias=payload["logit_bias"][0][1])])
+    return dict(content="A", tokens=[4000], tokens_predicted=1,
+                tokens_evaluated=len(payload["prompt"]), stop=True, stop_type="limit",
+                stopping_word="", truncated=False, timings=dict(cache_n=0, predicted_n=1),
+                generation_settings=settings,
+                completion_probabilities=[dict(id=4000, token="A", bytes=[65],
+                    logprob=chosen, top_logprobs=top)])
+
+
+def parse(reply=None, payload=None, target=17):
+    payload = fixture_request() if payload is None else payload
+    reply = fixture_response(payload) if reply is None else reply
+    return m.parse_probe_response(reply, request_payload=payload, probe=fixture_probe(),
+                                  reference_target_id=target)
+
+
+class PieceContract(unittest.TestCase):
+    def test_strict_utf8_complete_and_unchanged(self):
+        for value in (b"A", b" \n\t", "가".encode(), "각😀".encode(), b"\x00"):
+            original = value
+            with self.subTest(value=value):
+                self.assertTrue(m.piece_is_complete_utf8(value))
+                self.assertIs(value, original)
+                self.assertEqual(value, original)
+
+    def test_cutoffs_lone_continuations_and_invalid_utf8_rejected(self):
+        for value in (b"", b"\xea", b"\xea\xb0", b"\x80", b"\xb0\x80",
+                      b"A\xea", b"\xc0\x80", b"\xed\xa0\x80", b"\xf4\x90\x80\x80",
+                      b"\xff", b"\xe2A\xa1"):
+            with self.subTest(value=value):
+                self.assertFalse(m.piece_is_complete_utf8(value))
+
+    def test_mutable_and_nonbyte_inputs_not_coerced(self):
+        for value in (bytearray(b"A"), memoryview(b"A"), "A", [65], None):
+            with self.subTest(value=value), self.assertRaises(m.ProbabilityContractError):
+                m.piece_is_complete_utf8(value)
+
+    def test_probe_requires_ascii_native_id_and_explicit_special_registry(self):
+        for args in ((4000, b"\xea", 4096, ()), (4000, "가".encode(), 4096, ()),
+                     (4000, b"\x00", 4096, ()), (4000, b"", 4096, ()),
+                     (4000, b"A", 4096, (4000,)), (True, b"A", 4096, ()),
+                     (-1, b"A", 4096, ()), (4096, b"A", 4096, ()),
+                     (4000, b"A", True, ()), (4000, b"A", 4096, [1]),
+                     (4000, b"A", 4096, (1, 1)), (4000, b"A", 4096, (True,))):
+            with self.subTest(args=args), self.assertRaises(m.ProbabilityContractError):
+                m.ValidatedAsciiProbe(*args)
+
+    def test_probe_is_immutable_and_bytes_not_replaced(self):
+        from dataclasses import FrozenInstanceError
+        probe = fixture_probe()
+        self.assertEqual(probe.piece_bytes, b"A")
+        with self.assertRaises(FrozenInstanceError):
+            probe.token_id = 12
+
+
+class PayloadContract(unittest.TestCase):
+    def test_only_registered_k_bias_pairs_and_original_prefix_seed(self):
+        base = fixture_base()
+        before = deepcopy(base)
+        for k in m.ALLOWED_N_PROBS:
+            for bias in m.ALLOWED_BIASES:
+                value = m.build_probe_payload(base, probe=fixture_probe(), n_probs=k, bias=bias)
+                self.assertEqual(value["prompt"], before["prompt"])
+                self.assertIsNot(value["prompt"], base["prompt"])
+                self.assertEqual(value["seed"], 1337)
+                self.assertEqual(value["logit_bias"], [[4000, bias]])
+                self.assertEqual(value["n_probs"], k)
+                self.assertEqual(value["n_predict"], 1)
+                self.assertTrue(value["return_tokens"])
+                for name in ("post_sampling_probs", "cache_prompt", "backend_sampling", "stream"):
+                    self.assertIs(value[name], False)
+                for name, expected in m._NEUTRAL.items():
+                    self.assertEqual(value[name], expected)
+                self.assertEqual(value["samplers"], ["temperature"])
+        self.assertEqual(base, before)
+
+    def test_request_nested_data_detached_from_original(self):
+        original = fixture_base()
+        value = m.build_probe_payload(original, probe=fixture_probe(), n_probs=64)
+        value["prompt"].append(12)
+        value["logit_bias"][0][1] = 200
+        self.assertEqual(original, fixture_base())
+
+    def test_unregistered_k_or_bias_or_unverified_probe_rejected(self):
+        for k in (2, 63, 65, 513, 4096, True, 64.0):
+            with self.subTest(k=k), self.assertRaises(m.ProbabilityContractError):
+                m.build_probe_payload(fixture_base(), probe=fixture_probe(), n_probs=k)
+        for bias in (20, 101, 150, True, 100.0, float("inf")):
+            with self.subTest(bias=bias), self.assertRaises(m.ProbabilityContractError):
+                m.build_probe_payload(fixture_base(), probe=fixture_probe(), n_probs=64, bias=bias)
+        with self.assertRaises(m.ProbabilityContractError):
+            m.build_probe_payload(fixture_base(), probe=4000, n_probs=64)
+
+    def test_wrong_native_prefix_ids_and_missing_seed_rejected(self):
+        for prefix in ([], "10,20", [True], [-1], [4096], [10.0], (10, 20)):
+            value = fixture_base()
+            value["prompt"] = prefix
+            with self.subTest(prefix=prefix), self.assertRaises(m.ProbabilityContractError):
+                m.build_probe_payload(value, probe=fixture_probe(), n_probs=64)
+        value = fixture_base()
+        del value["seed"]
+        with self.assertRaises(m.ProbabilityContractError):
+            m.build_probe_payload(value, probe=fixture_probe(), n_probs=64)
+
+    def test_non_neutral_or_unknown_tf_fields_not_silently_forwarded(self):
+        for key, wrong in (("n_predict", 2), ("n_predict", True), ("cache_prompt", True),
+                           ("post_sampling_probs", True), ("backend_sampling", True),
+                           ("stream", True), ("temperature", 0.8), ("top_p", 0.95),
+                           ("repeat_penalty", 1.1), ("top_k", True), ("seed", True),
+                           ("grammar", "root ::= ."), ("max_tokens", 5), ("stop", ["A"]),
+                           ("lora", []), ("samplers", ["top_k", "temperature"]),
+                           ("logit_bias", [[17, 100], [18, 100]])):
+            value = fixture_base()
+            value[key] = wrong
+            with self.subTest(key=key, wrong=wrong), self.assertRaises(m.ProbabilityContractError):
+                m.build_probe_payload(value, probe=fixture_probe(), n_probs=64)
+
+
+class ResponseContract(unittest.TestCase):
+    def test_found_target_fragment_by_id_and_not_chosen_probe(self):
+        reply = fixture_response()
+        before = deepcopy(reply)
+        result = parse(reply)
+        self.assertEqual(result["status"], "FOUND")
+        self.assertEqual(result["reference_target_id"], 17)
+        self.assertEqual(result["probe_id"], 4000)
+        self.assertEqual(result["chosen_probe"]["id"], 4000)
+        self.assertNotEqual(result["target_logprob"], result["chosen_probe"]["logprob"])
+        self.assertEqual(result["target_rank"], 18)
+        self.assertEqual(result["target_probability_origin"], m.TARGET_ORIGIN)
+        self.assertEqual((result["requested_n_probs"], result["actual_n_probs"]), (64, 64))
+        self.assertEqual(result["raw_target"]["bytes"], [0xEA])
+        self.assertEqual(result["raw_top2"], reply["completion_probabilities"][0]["top_logprobs"][:2])
+        self.assertFalse(result["renormalized_by_helper"])
+        self.assertEqual(reply, before)
+        self.assertEqual(result["raw_top_logprobs"], before["completion_probabilities"][0]["top_logprobs"])
+        result["raw_top2"][0]["bytes"].append(99)
+        self.assertEqual(reply, before)
+        json.dumps(result, allow_nan=False)
+
+    def test_missing_target_is_explicit_and_never_zero_or_probe_logp(self):
+        result = parse(target=3000)
+        self.assertEqual(result["status"], "MISSING_TARGET")
+        for name in ("target_logprob", "target_rank", "target_probability_origin", "raw_target"):
+            self.assertIsNone(result[name])
+        self.assertEqual(result["reference_target_id"], 3000)
+        self.assertEqual(result["chosen_probe"]["id"], 4000)
+        self.assertEqual(len(result["raw_top2"]), 2)
+
+    def test_registered_k_and_actual_rank_are_not_hardcoded(self):
+        for k in m.ALLOWED_N_PROBS:
+            request = fixture_request(k, 200)
+            result = parse(payload=request, target=k - 1)
+            self.assertEqual(result["target_rank"], k)
+            self.assertEqual(result["actual_n_probs"], k)
+            self.assertEqual(result["bias"], 200)
+
+    def test_wrong_target_id_type_or_range_rejected(self):
+        for target in (True, -1, 4096, "17", 17.0):
+            with self.subTest(target=target), self.assertRaises(m.ProbabilityContractError):
+                parse(target=target)
+
+    def test_actual_flags_cache_and_generation_counts_required(self):
+        fields = (("truncated", True), ("truncated", 0), ("stop", False),
+                  ("stop_type", "word"), ("stopping_word", "A"),
+                  ("tokens_predicted", 0), ("tokens_predicted", 2),
+                  ("tokens_predicted", True), ("tokens_evaluated", 2),
+                  ("tokens", []), ("tokens", [4000, 4000]), ("tokens", [True]),
+                  ("tokens", [4001]), ("content", "�"))
+        for name, wrong in fields:
+            reply = fixture_response()
+            reply[name] = wrong
+            with self.subTest(name=name, wrong=wrong), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+        for timing in (None, {}, {"cache_n": 1}, {"cache_n": False}, {"cache_n": 0, "predicted_n": 2}):
+            reply = fixture_response()
+            reply["timings"] = timing
+            with self.subTest(timing=timing), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+
+    def test_missing_actual_top_level_evidence_rejected(self):
+        for name in ("truncated", "stop", "stop_type", "stopping_word", "tokens_predicted",
+                     "tokens_evaluated", "tokens", "content", "timings", "generation_settings",
+                     "completion_probabilities"):
+            reply = fixture_response()
+            del reply[name]
+            with self.subTest(name=name), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+
+    def test_actual_settings_missing_or_wrong_are_not_request_echo_proof(self):
+        fields = (("post_sampling_probs", True), ("post_sampling_probs", 0),
+                  ("backend_sampling", True), ("stream", True), ("n_probs", 512),
+                  ("n_predict", 2), ("max_tokens", 2), ("seed", 1338), ("samplers", ["top_k"]),
+                  ("grammar", "root ::= ."), ("lora", [dict(id=0, scale=1)]),
+                  ("logit_bias", [[4000, 100]]),
+                  ("logit_bias", [dict(token=True, bias=100)]),
+                  ("logit_bias", [dict(token=4001, bias=100)]),
+                  ("logit_bias", [dict(token=4000, bias=200)]))
+        for name, wrong in fields:
+            reply = fixture_response()
+            reply["generation_settings"][name] = wrong
+            with self.subTest(name=name), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+        for name in ("post_sampling_probs", "backend_sampling", "n_probs", "n_predict", "temperature"):
+            reply = fixture_response()
+            del reply["generation_settings"][name]
+            with self.subTest(missing=name), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+        for name in m._NEUTRAL:
+            reply = fixture_response()
+            reply["generation_settings"][name] = 123
+            with self.subTest(neutral=name), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+
+    def test_missing_multiple_or_wrong_probe_probability_objects_rejected(self):
+        for count in (0, 2):
+            reply = fixture_response()
+            reply["completion_probabilities"] *= count
+            with self.subTest(count=count), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+        for name, wrong in (("id", 17), ("id", True), ("bytes", [66]), ("bytes", [True]),
+                            ("bytes", b"A"), ("top_probs", []), ("prob", 0.5)):
+            reply = fixture_response()
+            reply["completion_probabilities"][0][name] = wrong
+            with self.subTest(name=name), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+
+    def test_positive_nonfinite_nonnumeric_and_underflow_logp_rejected(self):
+        for value in (0.0000000001, float("nan"), float("inf"), -float("inf"),
+                      -3.4028235e38, -1000.0, True, None, "-1", 10**1000, -(10**1000)):
+            for location in ("chosen", "top"):
+                reply = fixture_response()
+                row = reply["completion_probabilities"][0]
+                entry = row if location == "chosen" else row["top_logprobs"][17]
+                entry["logprob"] = value
+                with self.subTest(value=str(value)[:40], location=location), self.assertRaises(m.ProbabilityContractError):
+                    parse(reply)
+
+    def test_duplicate_wrong_ids_or_reordered_top_k_rejected(self):
+        for value in (True, -1, 4096, "17", 17.0):
+            reply = fixture_response()
+            reply["completion_probabilities"][0]["top_logprobs"][17]["id"] = value
+            with self.subTest(value=value), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+        for mutation in ("duplicate", "reversed", "short", "long", "post_probability"):
+            reply = fixture_response()
+            top = reply["completion_probabilities"][0]["top_logprobs"]
+            if mutation == "duplicate": top[17]["id"] = top[0]["id"]
+            elif mutation == "reversed": top.reverse()
+            elif mutation == "short": top.pop()
+            elif mutation == "long": top.append(dict(id=3000, logprob=-100))
+            else: top[17]["prob"] = 0.5
+            with self.subTest(mutation=mutation), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+
+    def test_partial_vocab_renormalization_or_saturation_refused(self):
+        for value in (-math.log(64), 0.0):
+            reply = fixture_response()
+            for entry in reply["completion_probabilities"][0]["top_logprobs"]:
+                entry["logprob"] = value
+            with self.subTest(value=value), self.assertRaises(m.ProbabilityContractError):
+                parse(reply)
+
+    def test_top2_ties_keep_server_order_without_new_tie_breaker(self):
+        reply = fixture_response()
+        top = reply["completion_probabilities"][0]["top_logprobs"]
+        top[1]["logprob"] = top[0]["logprob"]
+        top[0]["id"], top[1]["id"] = top[1]["id"], top[0]["id"]
+        result = parse(reply)
+        self.assertEqual(result["raw_top2"], top[:2])
+        self.assertEqual([item["id"] for item in result["raw_top2"]], [1, 0])
+
+    def test_probe_outside_top_k_cannot_have_a_better_raw_logp(self):
+        reply = fixture_response()
+        row = reply["completion_probabilities"][0]
+        row["logprob"] = row["top_logprobs"][0]["logprob"]
+        with self.assertRaises(m.ProbabilityContractError):
+            parse(reply)
+
+    def test_selected_probe_inside_top_k_must_match_same_raw_value_and_bytes(self):
+        reply = fixture_response()
+        row = reply["completion_probabilities"][0]
+        row["top_logprobs"][2].update(id=4000, token="A", bytes=[65])
+        row["logprob"] = row["top_logprobs"][2]["logprob"]
+        result = parse(reply, target=4000)
+        self.assertEqual(result["target_rank"], 3)
+        self.assertEqual(result["target_logprob"], result["chosen_probe"]["logprob"])
+        changed = deepcopy(reply)
+        changed["completion_probabilities"][0]["logprob"] -= 1
+        with self.assertRaises(m.ProbabilityContractError):
+            parse(changed)
+        changed = deepcopy(reply)
+        changed["completion_probabilities"][0]["top_logprobs"][2]["bytes"] = [66]
+        with self.assertRaises(m.ProbabilityContractError):
+            parse(changed)
+
+    def test_payload_tampering_after_build_rejected_without_mutation(self):
+        for key, wrong in (("logit_bias", [[17, 100]]), ("return_tokens", False),
+                           ("backend_sampling", True), ("samplers", []), ("n_probs", 100)):
+            value = fixture_request()
+            value[key] = wrong
+            before = deepcopy(value)
+            with self.subTest(key=key), self.assertRaises(m.ProbabilityContractError):
+                parse(payload=value)
+            self.assertEqual(value, before)
+
+
+class DependencyContract(unittest.TestCase):
+    def test_helper_declared_imports_are_only_stdlib(self):
+        source = Path(m.__file__).read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        imported = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                imported.update(alias.name.split(".")[0] for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                imported.add(node.module.split(".")[0])
+        self.assertEqual(imported, {"__future__", "copy", "dataclasses", "math"})
+
+    def test_fresh_import_has_no_model_network_or_io_execution(self):
+        source = Path(m.__file__).read_text(encoding="utf-8")
+        code = compile(source, m.__file__, "exec")
+        module = ModuleType("p106b_utf8_probability_synthetic_import")
+        original = __import__
+        def guarded(name, *args, **kwargs):
+            if name.split(".")[0] not in {"__future__", "copy", "dataclasses", "math"}:
+                raise AssertionError("미승인 import: " + name)
+            return original(name, *args, **kwargs)
+        with patch.dict(sys.modules, {module.__name__: module}), \
+             patch("builtins.__import__", side_effect=guarded), \
+             patch("builtins.open", side_effect=AssertionError("파일 접근")):
+            exec(code, module.__dict__)
+        self.assertEqual(module.ALLOWED_N_PROBS, m.ALLOWED_N_PROBS)
+
+    def test_build_and_parse_have_no_file_network_or_process_calls(self):
+        import socket
+        import subprocess
+        value = fixture_request()
+        reply = fixture_response(value)
+        with patch("builtins.open", side_effect=AssertionError("파일 접근")), \
+             patch.object(socket, "socket", side_effect=AssertionError("네트워크")), \
+             patch.object(subprocess, "Popen", side_effect=AssertionError("프로세스")):
+            built = m.build_probe_payload(fixture_base(), probe=fixture_probe(), n_probs=64)
+            self.assertEqual(parse(reply, built)["status"], "FOUND")
+
+
+if __name__ == "__main__":
+    unittest.main()

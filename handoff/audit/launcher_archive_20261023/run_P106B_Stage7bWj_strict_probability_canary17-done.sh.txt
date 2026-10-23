@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Completed20261023: original17 closed; failed row34 raw probability recovered.
+# At most600sec. Requires actual normal forcing/probe controls before cache admission.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWj_utf8_probability_canary17_"$stamp" --num 101 -- timeout --signal=TERM --kill-after=20 630 "$python_bin" -B -X utf8 scripts/diag_p106b_alm_cache.py --execute --canary --deadline 2026-10-23T16:30:00+09:00 --max-wall-sec 600
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7bWj_utf8_probability_canary17_"$stamp" --num 101 --note "V7 canary exit=$result. Inspect all17, original row34, four same-K controls, target/probe IDs, raw logp/top2, cache_n0 and teardown. Not student quality."
+exit "$result"

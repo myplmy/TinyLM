@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Original V6 CPU completed; command preserved, not a V7 execution entry.
+# V6 original1024 rows; UTF8-fragment probability helper and exact17 canary preparation.
+# CPU only. Source/schema tests do not establish raw model parity or answer truth.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+export CUDA_VISIBLE_DEVICES=''
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7b0We_utf8_probability_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 -m unittest scripts.test_p106b_alm_core scripts.test_p106b_alm_bytes scripts.test_p106b_alm_template_alignment scripts.test_p106b_alm_cache scripts.test_p106b_alm_utf8_probability scripts.test_p106b_alm_train
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7b0We_utf8_probability_cpu_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_alm_cache.py --prepare
+exit "$?"

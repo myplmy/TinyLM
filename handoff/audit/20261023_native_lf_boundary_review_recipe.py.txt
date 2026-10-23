@@ -1,0 +1,69 @@
+"""Read-only positioned native draft LF warnings; no rejection or correction.
+
+Raw next-line class is only structural context. Paragraph joins can be intended.
+Old non-positioned edit contracts are explicitly not covered by this diagnostic.
+"""
+from pathlib import Path
+from collections import Counter
+import hashlib,json
+from scripts.p106b_shards import verify
+from scripts.p106b_text_batches import lf_lines,apply_positioned_edits,visible_review_text
+from scripts.p106b_native_text_audit import write_json
+root=Path.cwd();snap=root/'handoff/audit/WIP_20261023_TEXT_PROGRESS_10.json'
+sha=lambda raw:hashlib.sha256(raw).hexdigest().upper()
+snap_raw=snap.read_bytes();snapshot=json.loads(snap_raw);seen=set();counts=Counter();warnings=[];pins={}
+for relative,expected in snapshot['report_path_to_sha256'].items():
+    p=root/relative;raw=p.read_bytes();assert sha(raw)==expected;pins[relative]=expected
+    mp=p.parent/'review_shards_manifest.json'
+    if not mp.is_file():continue
+    manifest=json.loads(mp.read_text());verify(p.parent,manifest)
+    for spec in manifest['shards']:
+        shard=p.parent/spec['path'];pins[str(shard.relative_to(root))]=spec['sha256']
+        for raw_row in shard.read_text().splitlines():
+            row=json.loads(raw_row);source,draft=row['source'],row['draft']
+            key=(source.get('eos_segment_index',source['id']),source['sha256'],sha(json.dumps(draft,sort_keys=True,ensure_ascii=False).encode()))
+            if key in seen:counts['duplicate_draft_appearances']+=1;continue
+            seen.add(key);counts['unique_source_draft_versions']+=1
+            assert sha(source['text'].encode())==source['sha256']
+            changes=draft.get('changes',[])
+            if not changes:counts['no_edit_versions']+=1;continue
+            if not all(isinstance(c,dict) and 'source_lines' in c for c in changes):
+                counts['non_positioned_versions_not_covered']+=1;continue
+            apply_positioned_edits(source['text'],changes);counts['positioned_versions_checked']+=1
+            lines=lf_lines(source['text'])
+            for c in changes:
+                if c['action']!='MOVE_TO_PROSE':continue
+                counts['move_to_prose_changes_checked']+=1
+                first,last=c['source_lines'];replacement=c['replacement']
+                if not lines[last-1].endswith('\n') or replacement.endswith('\n'):continue
+                following=lines[last] if last<len(lines) else ''
+                category='EOF_TRAILING_LF_REMOVAL' if not following else ('BLANK_LINE_REDUCTION' if not following.strip() else 'NONBLANK_RAW_NEXT_LINE_JOIN_RISK')
+                counts[category]+=1
+                warnings.append(dict(eos_segment_index=key[0],source_id=source['id'],source_sha256=source['sha256'],
+                    draft_sha256=key[2],review_shard=str(shard.relative_to(root)),source_lines=[first,last],
+                    category=category,source_range=''.join(lines[first-1:last]),replacement=replacement,
+                    next_raw_lf_line=following,qualification='structural warning only; next raw line may itself be edited; no semantic or automatic rejection verdict'))
+for relative,expected in pins.items():assert sha((root/relative).read_bytes())==expected
+assert snap.read_bytes()==snap_raw
+assert {30920,33624,34966,35000}<=set(w['source_id'] for w in warnings if w['category']=='NONBLANK_RAW_NEXT_LINE_JOIN_RISK')
+human=root/'review_request/20261023_원문후보_LF경계_구조경고_검수_v1.md'
+audit=root/'handoff/audit/WIP_20261023_NATIVE_LF_WARNINGS.json'
+assert not human.exists() and not audit.exists()
+parts=['# 닫힌 원문 후보의 LF 경계 구조 경고','',
+    '문자열의 정오를 판정하는 목록이 아니라, 선언된 원문 행과 교체문 끝의 줄바꿈 차이를 표시합니다.',
+    '경고만으로 불량·재생성·격리·학습 제외를 결정하지 않습니다. 빈행 감소와 본문 직결 위험을 분리합니다.',
+    '다음 행은 원문 기준입니다. 다른 편집의 영향·의도적인 문장 연결·의미 보존은 원문과 전체 후보를 함께 읽어야 합니다.',
+    '이전 비위치 편집 계약은 이 경고 방식의 미검사 범위이며 원문은 모두 보존합니다.','']
+for i,w in enumerate(warnings,1):
+    parts.extend([f"## 경고{i} — 원천{w['source_id']} / {w['category']}",'',
+        '위치: '+str(w['source_lines']),'전체 검수 shard: '+w['review_shard'],
+        '','### 원문 범위','',w['source_range'],'','### 기존 후보 교체문','',w['replacement'],
+        '','### 원문의 바로 다음 LF행','',w['next_raw_lf_line'] or '(문서 끝)',''])
+text,controls=visible_review_text('\n'.join(parts)+'\n');payload=text.encode();assert len(payload)<20_000_000
+with human.open('xb') as stream:stream.write(payload)
+value=dict(schema='P106B_NATIVE_POSITIONED_LF_WARNING_V1',snapshot=str(snap.relative_to(root)),snapshot_sha256=sha(snap_raw),
+    counts=dict(counts),warnings=warnings,human_review=str(human.relative_to(root)),human_bytes=len(payload),
+    human_sha256=sha(payload),display_control_counts=controls,semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED',
+    runtime_gate_changed=False,candidate_edits=0,model_calls=0,qualification='raw-line structural warnings, not semantic defect count; non-positioned contracts not covered')
+write_json(audit,value)
+print(json.dumps({k:v for k,v in value.items() if k not in ('warnings','display_control_counts')},ensure_ascii=False))

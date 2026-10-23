@@ -1,0 +1,72 @@
+{
+  "schema": "P106B_ALM_V7_FULL_CACHE_EXECUTION_DECISION_V1",
+  "decision_time_kst": "2026-10-23T12:11:29+09:00",
+  "authority": "사용자2026-10-23 17시까지 CPU/GPU 주도 실험 연장",
+  "model_stop_kst": "2026-10-23T16:30:00+09:00",
+  "source_conditioning_contract": "NATIVE_TEMPLATE_THINKING_FALSE_EDGE_COLD_UTF8_PROBE_STRICT_ACTUAL_V4",
+  "canary_report": "HF/sft_ready/p106b_alm_context_v7_s1337/canary/batch_000000/report.json",
+  "canary_actual": {
+    "rows": 17,
+    "original_failure_row": 34,
+    "target_id": 36054,
+    "unique_teacher_targets": 100,
+    "completion_requests": 208,
+    "wall_seconds": 176.80005266100488,
+    "scoring_seconds": 100.32038274800288,
+    "recovered_failure_two_cold_observations": true
+  },
+  "full_plan": {
+    "rows": 1024,
+    "batches": 64,
+    "rows_per_batch": 16,
+    "max_seconds_each": 600,
+    "student_x_tokens": 256267,
+    "student_ce_targets": 5897,
+    "student_body_targets_excluding_eot": 4873
+  },
+  "forecast": {
+    "estimated_teacher_unique_targets": 5333,
+    "estimated_completion_requests_without_retries": 6357,
+    "nominal_minutes": [
+      138.5,
+      147.5
+    ],
+    "variable_scoring_1_5x_minutes": [
+      165.7,
+      179.1
+    ],
+    "all_time_1_5x_stress_minutes": [
+      206.5,
+      219.9
+    ],
+    "scope": "Canary language ratios and saved prefix lengths; estimate only, not a whole-cache measurement."
+  },
+  "known_unobserved": {
+    "full_max_student_x": 852,
+    "canary_max_student_x": 438,
+    "teacher_context1024_all_rows": "NOT_VERIFIED",
+    "full_teacher_topk_retries": "NOT_MEASURED",
+    "student_actual_cost": "NOT_RUN",
+    "combined_full_student_completion_today": "NOT_GUARANTEED"
+  },
+  "alternatives": [
+    {
+      "name": "A",
+      "scope": "원17 성공만 보존하고 비용0으로 학생 증류를 계속 보류"
+    },
+    {
+      "name": "B",
+      "scope": "현1024·64batch 전량cache를 고정계약/절대마감으로 수행한 뒤 실제 학생cost가 남은창에 들어갈 때만 학생을 진행"
+    },
+    {
+      "name": "C",
+      "scope": "원1024를 작은 표본으로 줄이거나 계약을 완화해 학생을 우선 실행"
+    }
+  ],
+  "selected": "B",
+  "rationale": "원형1024/계약을 보존하며 cache 자체의 보수와 스트레스 예상이 현재 남은창에 들어감. 학생2시간 보수예약을 함께 충족했다고 주장하지 않음. 축소·문턱완화로 완료를 만들지 않음.",
+  "execution_after": "BabyLM active full worker and its owned GPU process fully closed",
+  "checkpoints_written": 0,
+  "student_loads_in_this_step": 0,
+  "quality_claim": false
+}

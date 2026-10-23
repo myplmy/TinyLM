@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Prospective2of4 only: uniformR2 versus balancedR1/R2/R2/R3,704updates each.
+# Original training/PINS/4cost receipts unchanged; remaining2 are NOT complete.
+# Forecast about4.9h including reserve; memory cost sample below3.1GiB.
+# Prerequisite/admission failure stops this dependent study; no stdin.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2Wd_selected_count_pair_"$stamp" --num 066 --note 'Explicit ROOT-prioritized2of4, not original four-arm completion. Same original22528x4/704 and all4cost ledger; absolute current authorization/selection SHA required. V3 has two known PUBLIC supervision defects: this is a frozen noisy-control study, no formal data/model adoption. Shuffles deferred; router is a separate gate.'
+if [[ -z "${TL_P078_AUTHORIZATION:-}" || -z "${TL_P078_AUTHORIZATION_SHA256:-}" || -z "${TL_P078_SELECTION:-}" || -z "${TL_P078_SELECTION_SHA256:-}" ]]; then
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2Wd_selected_count_pair_"$stamp" --num 066 --note 'HOLD8: explicit current authorization and root-owned two-stage selection descriptor plus both exact hashes required. No model started.'
+    exit 8
+fi
+common=(--corpus HF/sft_ready/p101a_sft_mtp_cleanbilingual_v3_s1337/corpus --corpus-sha256 7D52695308B0D8122B3ABE42CC7E396BFF3F94E811E5F379FFA85F259ED4EB20 --authorization "$TL_P078_AUTHORIZATION" --authorization-sha256 "$TL_P078_AUTHORIZATION_SHA256" --selection "$TL_P078_SELECTION" --selection-sha256 "$TL_P078_SELECTION_SHA256" --execute)
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2Wd_selected_count_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 scripts/diag_p078_selected_stage.py --mode budget-preview --max-wall-sec 600 "${common[@]}"
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+for arm in uniform_r2 balanced_count; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2Wd_selected_count_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 scripts/diag_p078_selected_stage.py --mode train --arm "$arm" --max-wall-sec 10800 "${common[@]}"
+    result=$?
+    [[ "$result" == 0 ]] || exit "$result"
+done
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2Wd_selected_count_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 scripts/diag_p078_selected_stage.py --mode readback --max-wall-sec 600 "${common[@]}"
+exit "$?"

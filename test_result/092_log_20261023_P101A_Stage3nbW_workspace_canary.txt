@@ -1,0 +1,10 @@
+
+==============================================================================
+[runlog] 2026-10-23 06:19:01  name=P101A_Stage3nbW_workspace_canary
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=5 30 /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c import torch,gc,json,time; t=time.perf_counter(); torch.cuda.init(); measurements={"before":torch.cuda.memory_allocated()}; a=torch.ones((1024,1024),device="cuda"); b=torch.ones_like(a); c=a@b; torch.cuda.synchronize(); measurements["matmul_live"]=torch.cuda.memory_allocated(); del a,b,c; gc.collect(); torch.cuda.empty_cache(); torch.cuda.synchronize(); measurements["after_del_empty_cache"]=torch.cuda.memory_allocated(); clear=getattr(torch._C,"_cuda_clearCublasWorkspaces",None); measurements["clear_api_present"]=callable(clear); clear() if callable(clear) else None; gc.collect(); torch.cuda.empty_cache(); torch.cuda.synchronize(); measurements["after_cublas_workspace_clear"]=torch.cuda.memory_allocated(); print(json.dumps({"schema":"P101A_CUBLAS_WORKSPACE_CANARY_V1","measurements":measurements,"wall_sec":time.perf_counter()-t,"model_loads":0,"optimizer_updates":0,"checkpoint_writes":0}));
+==============================================================================
+{"schema": "P101A_CUBLAS_WORKSPACE_CANARY_V1", "measurements": {"before": 0, "matmul_live": 21102592, "after_del_empty_cache": 8519680, "clear_api_present": true, "after_cublas_workspace_clear": 0}, "wall_sec": 0.4655892379996658, "model_loads": 0, "optimizer_updates": 0, "checkpoint_writes": 0}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-23 06:19:03)
+==============================================================================

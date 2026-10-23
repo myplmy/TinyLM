@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Completed20261023: fixed/update704 and original four-arm raw readback exit0.
+# Reuse original cost/main/reader; no retraining of completed two arms.
+# About4.5h forecast with reserve, fresh user execution window needed.
+# Dependency failures stop this study only; no stdin or authority fallback.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+stamp="$(date +%H%M%S)"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2We_remaining_shuffle_pair_"$stamp" --num 066 --note 'Original frozen noisyV3 course; two known PUBLIC supervision defects preserved and disclosed. Need completed uniform/balanced704, actual same-source4cost and fresh whole-pending authority. Only remaining two shuffles train; original four-arm readback runs only after all four actual closures. Not a current17:00 extension.'
+if [[ -z "${TL_P078_AUTHORIZATION:-}" || -z "${TL_P078_AUTHORIZATION_SHA256:-}" ]]; then
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2We_remaining_shuffle_pair_"$stamp" --num 066 --note 'HOLD8: fresh original-family authorization descriptor and exact SHA required; no model starts.'
+    exit 8
+fi
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2We_remaining_shuffle_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 -c 'from types import SimpleNamespace; from scripts import diag_p078_route_protocol as p; d=p.load_driver(); a=SimpleNamespace(corpus=d.CLEAN_CORPUS,corpus_sha256="7D52695308B0D8122B3ABE42CC7E396BFF3F94E811E5F379FFA85F259ED4EB20",adam_lr=5e-5,muon_lr=2e-4); rows=[d.closed(a,"train",arm) for arm in ("uniform_r2","balanced_count")]; assert all(r["updates"]==704 and r["checkpoint_writes"]==1 and d.digest(d.path(r["checkpoint"]))==r["checkpoint_sha256"] for r in rows); assert len({r["initial_core_sha256"] for r in rows})==1; print("[PREREQUISITE] two closed704 bodies and CP bytes verified; model/GPU0")'
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+common=(--corpus HF/sft_ready/p101a_sft_mtp_cleanbilingual_v3_s1337/corpus --corpus-sha256 7D52695308B0D8122B3ABE42CC7E396BFF3F94E811E5F379FFA85F259ED4EB20 --authorization "$TL_P078_AUTHORIZATION" --authorization-sha256 "$TL_P078_AUTHORIZATION_SHA256" --execute)
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2We_remaining_shuffle_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 scripts/diag_p078_route_protocol.py --mode budget-preview --max-wall-sec 600 "${common[@]}"
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+for arm in fixed_shuffle_r2 update_shuffle_r2; do
+    "$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2We_remaining_shuffle_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 scripts/diag_p078_route_protocol.py --mode train --arm "$arm" --max-wall-sec 14400 "${common[@]}"
+    result=$?
+    [[ "$result" == 0 ]] || exit "$result"
+done
+"$python_bin" -B -X utf8 scripts/runlog.py --name P078_Stage2We_remaining_shuffle_pair_"$stamp" --num 066 -- "$python_bin" -B -X utf8 scripts/diag_p078_route_protocol.py --mode readback --max-wall-sec 1800 "${common[@]}"
+exit "$?"

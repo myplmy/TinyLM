@@ -67,6 +67,8 @@ def _metadata(record,runtime=None):
         print("tokenizer:",route.path)
         print("tokenizer SHA:",route.sha256,"/ 학습 SHA 일치:",route.verified)
         print("mode:",runtime["mode"],"/ precision:",runtime["precision"],"/ device:",runtime["device"])
+        if runtime.get("vocabulary_contract"):
+            print("어휘 호환 계약:",runtime["vocabulary_contract"])
         if not route.verified:print("[주의] 저장된 학습 tokenizer SHA가 없어 정체성 미인증:",route.reason)
     print("[주의] 대화 표지/종료 성공과 질문 정답성은 별개입니다. 최신 모델도 오답일 수 있습니다.")
 
@@ -84,7 +86,9 @@ def _load_runtime(record,args):
     route=contract.resolve_tokenizer(record,metadata,paths.DATA_CACHE,args.tokenizer)
     tokenizer=Tokenizer.from_file(str(route.path))
     if contract.file_sha(route.path)!=route.sha256:raise ValueError("tokenizer가 확인 도중 바뀌었습니다.")
-    mode,stop_ids=contract.resolve_mode(tokenizer,metadata["cfg"],args.mode)
+    allow_extra_special=getattr(args,"allow_extra_special_tokens",False)
+    vocabulary=contract.validate_vocabulary(tokenizer,metadata["cfg"],allow_extra_special=allow_extra_special)
+    mode,stop_ids=contract.resolve_mode(tokenizer,metadata["cfg"],args.mode,allow_extra_special=allow_extra_special)
     if args.history and mode!="chatml":raise ValueError("--history는 ChatML 경계가 확인된 모드에서만 사용할 수 있습니다.")
     # CLI arch labels need not equal MLP tying (e.g. attention-only sharing).
     # With an explicit checkpoint, load_model builds the full stored cfg and
@@ -98,7 +102,8 @@ def _load_runtime(record,args):
     if cfg.vocab_size!=metadata["cfg"]["vocab_size"]:raise ValueError("실제 로드 cfg가 달라졌습니다.")
     model=PrecisionForward(base,"fp32_math") if args.precision=="fp32-math" else base
     return dict(model=model,cfg=cfg,device=device,tokenizer=tokenizer,metadata=metadata,
-        route=route,mode=mode,stop_ids=stop_ids,precision=args.precision,checkpoint_sha256=identity)
+        route=route,mode=mode,stop_ids=stop_ids,precision=args.precision,checkpoint_sha256=identity,
+        vocabulary_contract=vocabulary)
 
 
 def _emit(runtime,question,args,history=()):
@@ -107,6 +112,7 @@ def _emit(runtime,question,args,history=()):
     from tinylm.infer.generate import sample
     tok=runtime["tokenizer"];prompt=contract.make_prompt(question,runtime["mode"],history)
     ids=tok.encode(prompt).ids
+    contract.validate_input_ids(ids,runtime["cfg"].vocab_size)
     if len(ids)+args.max_new>runtime["cfg"].max_seq_len:
         raise ValueError(f"입력 {len(ids)} + 생성 {args.max_new} > 문맥 {runtime['cfg'].max_seq_len}; 자동 절단하지 않습니다. :reset 또는 짧은 질문을 쓰세요.")
     captured=CaptureTokens(tok)
@@ -159,6 +165,8 @@ def main(argv=None):
     parser.add_argument("--top-k",type=int,default=1)
     parser.add_argument("--mode",choices=("auto","plain","chatml"),default="auto")
     parser.add_argument("--tokenizer",type=Path,help="정확한 로컬 JSON; 저장 SHA가 있으면 일치해야 함")
+    parser.add_argument("--allow-extra-special-tokens",action="store_true",
+        help="기본 어휘와 ID가 동일한 추가 특수 토큰만 명시 허용; 범위 밖 특수 토큰 입력은 거부")
     parser.add_argument("--precision",choices=("fp32-math","native"),default="fp32-math")
     parser.add_argument("--history",action="store_true",help="chatml에서 실제 이전 질문/답을 유지; 기본은 독립 질문")
     parser.add_argument("--prompt",help="한 번만 생성하고 종료")

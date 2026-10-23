@@ -1,0 +1,90 @@
+"""BabyLM 실행기의 합성 경계 시험. 실제 자료·체크포인트·CUDA는 사용하지 않는다."""
+from __future__ import annotations
+
+import ast
+import copy
+from contextlib import redirect_stderr
+import io
+import json
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+
+from scripts import diag_p106b_babylm_causal as m
+
+
+class DriverTests(unittest.TestCase):
+    def cost(self):
+        return dict(status="BABYLM_CAUSAL_COST_COMPLETE",returncode=0,model="native595-f",
+            source_identity={"synthetic":True},policy=m.policy(),sources_unchanged=True,inputs_unchanged=True,
+            wall_seconds=20.,evaluation_seconds=dict(main=2.,supplement=1.),
+            group_audits=dict(main=dict(rows=536),supplement=dict(rows=40)))
+
+    def test_import_is_stdlib_only_and_has_no_model_action(self):
+        tree=ast.parse(Path(m.__file__).read_text())
+        imports=[n for n in tree.body if isinstance(n,(ast.Import,ast.ImportFrom))]
+        self.assertFalse(any((getattr(n,"module","") or "").startswith(("torch","transformers","tinylm")) for n in imports))
+        calls=[n for n in tree.body if isinstance(n,ast.Expr) and isinstance(n.value,ast.Call)]
+        self.assertEqual(calls,[])
+
+    def test_cost_rows_are_eight_per_file_not_first_global_eight(self):
+        values=[dict(file=name,line=i) for name in ("a","b") for i in range(10)]
+        chosen=m.selected_rows(values,"cost")
+        self.assertEqual(len(chosen),16)
+        self.assertEqual([r["line"] for r in chosen],[*range(8),*range(8)])
+        self.assertIs(m.selected_rows(values,"full"),values)
+        with self.assertRaises(ValueError):m.selected_rows(values,"other")
+
+    def test_closed_full_admission_uses_each_group_rate_and_overhead(self):
+        now=m.DEADLINE-7200
+        value=m.full_admission(self.cost(),{"synthetic":True},"native595-f",now)
+        expected=(59875*2/536+5218*1/40)*1.5+17+120
+        self.assertAlmostEqual(value["forecast_seconds"],expected)
+        self.assertEqual(value["observed_non_eval_overhead_seconds"],17)
+
+    def test_partial_or_changed_cost_never_opens_full(self):
+        for key,value in (("status","PARTIAL"),("returncode",9),("model","native595-q"),
+            ("source_identity",{}),("policy",{}),("sources_unchanged",False),("inputs_unchanged",False),
+            ("group_audits",dict(main=dict(rows=535),supplement=dict(rows=40)))):
+            cost=self.cost();cost[key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):
+                m.full_admission(cost,{"synthetic":True},"native595-f",m.DEADLINE-7200)
+
+    def test_budget_never_extends_deadline(self):
+        with self.assertRaises(ValueError):m.full_admission(self.cost(),{"synthetic":True},"native595-f",m.DEADLINE-60)
+        cost=self.cost();cost["evaluation_seconds"]["main"]=200.
+        with self.assertRaises(ValueError):m.full_admission(cost,{"synthetic":True},"native595-f",m.DEADLINE-7200)
+
+    def test_bad_timing_not_used_as_speed_claim(self):
+        cost=self.cost();cost["evaluation_seconds"]["main"]=float("nan")
+        with self.assertRaises(ValueError):m.full_admission(cost,{"synthetic":True},"native595-f",m.DEADLINE-7200)
+
+    def test_write_once_and_twenty_mb_guard(self):
+        with tempfile.TemporaryDirectory() as name:
+            target=Path(name)/"result.json"
+            m.write(target,{"a":1});before=target.read_bytes()
+            with self.assertRaises(FileExistsError):m.write(target,{"a":2})
+            self.assertEqual(target.read_bytes(),before)
+            with patch.object(m,"LIMIT",10),self.assertRaises(ValueError):m.write(Path(name)/"too_large.json",{"a":"x"*20})
+            self.assertFalse((Path(name)/"too_large.json").exists())
+
+    def test_manifest_symlink_is_not_opened(self):
+        with tempfile.TemporaryDirectory() as name:
+            root=Path(name);target=root/"real.txt";target.write_text("fixture")
+            linked=root/"alias.txt";linked.symlink_to(target)
+            with self.assertRaises(ValueError):m.digest(linked)
+
+    def test_policy_separates_official_function_from_cli_and_training(self):
+        value=m.policy()
+        self.assertFalse(value["official_cli"]);self.assertFalse(value["training"])
+        self.assertEqual(value["batch_size"],8);self.assertEqual(value["temperature"],1.)
+        self.assertFalse(value["cache"]);self.assertEqual(value["max_context"],1024)
+        self.assertIn("UNMODIFIED",value["implementation"])
+
+    def test_model_flags_cannot_trigger_implicit_execute(self):
+        for args in (("--model","native595-f"),("--mode","full"),("--prepare","--model","native595-f")):
+            with self.subTest(args=args),redirect_stderr(io.StringIO()),self.assertRaises(SystemExit):m.main(args)
+
+
+if __name__=="__main__":unittest.main()

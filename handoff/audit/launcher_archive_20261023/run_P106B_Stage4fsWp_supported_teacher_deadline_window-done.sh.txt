@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Completed23Oct14:35: explicit STOP,217 groups/63344 train-x, normal pause8.
+# No student/model co-residency. Same pilot, source quota, sampling and resume contract.
+# The fixed deadline includes a final 60-second publication/teardown reserve.
+# Stop on a missing prerequisite; no interactive input, no automatic mode fallback.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+window_seconds=$(( $(date -u -d '2026-10-23 07:30:00' +%s) - $(date -u +%s) ))
+if (( window_seconds < 120 )); then
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWp_supported_teacher_deadline_"$stamp" --num 101 --note 'HOLD: fewer than120 seconds remain in the explicitly authorized window; no model started.'
+  exit 8
+fi
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWp_supported_teacher_deadline_"$stamp" --num 101 --note 'Same supported-source V3 pilot and Gemma MTP-ON policy. Fresh produce only, no hidden resume. Deadline2026-10-23T07:30:00Z; immutable batches and source hashes retained. Normal budget pause is not an experiment failure or75M completion. Read final receipt/raw answers before quality claims.'
+timeout --signal=TERM --kill-after=30s "${window_seconds}s" "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage4fsWp_supported_teacher_deadline_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_supported_production8h.py --mode produce --max-wall-sec 28800 --deadline-utc 2026-10-23T07:30:00Z --stop-file HF/sft_ready/p106b_supported_production8h_v3_s1337/STOP --execute

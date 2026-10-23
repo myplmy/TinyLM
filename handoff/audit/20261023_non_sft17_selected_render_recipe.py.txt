@@ -1,0 +1,62 @@
+"""Root-only fixed17 follow-up; reuse prior strict LF serializer, no admission."""
+from pathlib import Path
+from collections import Counter
+import json,runpy,sys
+helper=runpy.run_path('handoff/audit/20261023_non_sft_text_audit_render_recipe.py.txt',run_name='non_sft_reference_functions')
+strict,serialize,sha=helper['strict'],helper['serialize_lf_only'],helper['sha']
+base=helper['BASE'];new,payload=helper['new_bytes'],helper['payload']
+ledger=base/'scratch/non_sft_translation_v1/self_review_17_20261023.json'
+ledger_raw=ledger.read_bytes();review=strict(ledger_raw.decode())
+assert review['training_admission']=='NOT_ADMITTED' and review['unique_source_count']==17
+selected={r['source_id']:r for r in review['sources']}
+assert len(selected)==17
+rows=[];decisions=Counter();seen=set()
+for number in (26,27,28):
+    path=base/'non_sft_translation_packets'/f'non_sft_translation_{number:06d}.json'
+    packet_raw=path.read_bytes();packet=strict(packet_raw.decode())
+    for s in packet['sources']:
+        ident=s['source_id'];assert ident not in seen;seen.add(ident)
+        assert sha(s['original_english'].encode())==s['source_sha256']
+        entry=selected[ident];relative=Path(entry['selected_candidate'])
+        assert not relative.is_absolute() and '..' not in relative.parts
+        assert relative.parts[0]==packet['packet'] and relative.name.startswith(str(ident)+'_v')
+        candidate=base/'scratch/non_sft_translation_v1'/relative
+        raw=candidate.read_bytes();value,normalized,positions=serialize(raw.decode())
+        assert value['source_id']==ident and value['source_sha256']==s['source_sha256']
+        assert value['training_admission']=='NOT_ADMITTED' and value['fact_verification']=='NOT_VERIFIED'
+        decision=value['decision'];assert decision in ('DRAFT_TRANSLATED','HOLD') and decision==entry['decision']
+        for key in ('ko_translation','ko_rephrase'):
+            assert isinstance(value[key],str) and bool(value[key].strip())==(decision=='DRAFT_TRANSLATED')
+        assert raw==candidate.read_bytes() and packet_raw==path.read_bytes()
+        rows.append(dict(source_id=ident,source=s,packet=str(path),packet_sha256=sha(packet_raw),
+            selected_candidate=str(candidate),candidate_sha256=sha(raw),candidate=value,
+            serialized_sha256=sha(normalized.encode()),literal_lf_serialization_positions=positions,
+            author_self_review=entry,semantic_quality='NOT_VERIFIED',training_admission='NOT_ADMITTED'))
+        decisions[decision]+=1
+assert len(seen)==17 and ledger.read_bytes()==ledger_raw
+summary=dict(schema='P106B_NON_SFT17_SELECTED_TEXT_REVIEW_V1',source_count=17,decisions=dict(decisions),
+    texts=2*decisions['DRAFT_TRANSLATED'],ledger_sha256=sha(ledger_raw),
+    literal_lf_candidates=sum(bool(r['literal_lf_serialization_positions']) for r in rows),
+    semantic_quality='NOT_VERIFIED',fact_verification='NOT_VERIFIED',training_admission='NOT_ADMITTED',
+    original193_snapshot_modified=False,selection='EXPLICIT_AUTHOR_LEDGER_AND_ROOT_SOURCE_SHA_NO_NEWEST_FALLBACK')
+if '--render' in sys.argv:
+    out=base/'normalized_non_sft17_review_20261023_v1'
+    human=Path('review_request/20261023_비SFT후속17_원문번역재표현_검수_v1.md')
+    assert not out.exists() and not human.exists()
+    from scripts.p106b_text_batches import visible_review_text
+    blocks=['# 비SFT 후속17 원문·번역·재표현 검수','',
+        '작성자의 자기 재독과 총괄의 ID/SHA/직렬화 검산입니다. 의미·사실 독립 검수나 학습채택이 아닙니다.',
+        '원래193 스냅샷과 원문/v1은 보존합니다. 미확정 전문용어와 원문 내 시점/불일치를 임의 교정하지 않습니다.','']
+    out.mkdir()
+    for r in rows:
+        v=r['candidate'];new(out/f"{r['source_id']}.json",payload(r))
+        blocks.extend([f"## 원천 {r['source_id']} — {v['decision']}",'',
+            '선택파일: '+r['selected_candidate'],'원천SHA: '+r['source']['source_sha256'],
+            '판독 이유: '+v.get('reason_ko',''),'자기검토: '+r['author_self_review'].get('fidelity_concern_ko',''),
+            '', '### 영어 원문','',r['source']['original_english'],'','### 한국어 번역','',
+            v['ko_translation'] or '보류 — 작성 없음','','### 한국어 문장 재구성','',
+            v['ko_rephrase'] or '보류 — 작성 없음','','### 시점·검토 메모','',v.get('temporal_scope_note',''),''])
+    text,controls=visible_review_text('\n'.join(blocks)+'\n');new(human,text.encode())
+    summary.update(human_review=str(human),display_control_counts=controls,records=rows)
+    new(out/'report.json',payload(summary))
+print(json.dumps({k:v for k,v in summary.items() if k!='records'},ensure_ascii=False))

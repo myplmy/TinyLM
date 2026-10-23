@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Completed20261023:106 actions,44 children,33 synthetic trains, no failures.
+# Expected about8min from prior440sec,1200sec cap and absolute16:30 deadline.
+# Original synthetic assets and logs remain immutable; isolated session namespace.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+"$python_bin" -B -X utf8 -c 'from scripts.interactive_research_infer import require_idle_gpu; require_idle_gpu()'
+result=$?
+[[ "$result" == 0 ]] || exit "$result"
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage9cW_alm_full_smoke --num 101 -- "$python_bin" -B -X utf8 scripts/codex_smoke.py --mode full --session-id oct23_after_alm_v2 --execute --deadline-utc 2026-10-23T07:30:00Z --max-wall-sec 1200
+result=$?
+"$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage9cW_alm_full_smoke --num 101 --note "Fresh ALM-profile full smoke exit=$result. Read106 actions,44 child receipts, summary, source and original synthetic pins, owned teardown. Not model answer quality; preserved raw C0 static finding is not waived."
+exit "$result"

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Completed own TRAIN128 calibration for Q and F. Retain exact profile commands.
+# Same fixed1024/micro8/accum16/checkpoint-on policy and absolute16:30 cutoff.
+# Runtime and VRAM are admitted from actual cost; phase cap is not a forecast.
+# Dependency failure stops only its own call; independent arms/profiles retain receipts.
+set -uo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+python_bin="$(tinylm_python)"
+export TL_RUNLOG_GIT_SCOPE=codex-safe
+stamp="$(date +%H%M%S)"
+profiles=(ternary_v1 float_v2)
+if (( $# > 0 )); then
+  case "$1" in ternary_v1|float_v2) profiles=("$1");; *) exit 8;; esac
+fi
+failed=0
+for study in "${profiles[@]}"; do
+  source_sha="$("$python_bin" -B -X utf8 -c 'import sys; from scripts import diag_p106b_alm_train as s; c=s.study_context(sys.argv[1]); print(s.sha(s.sources(c)))' "$study")"
+  result=$?
+  if [[ "$result" != 0 || -z "$source_sha" ]]; then failed=8; continue; fi
+  "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7cWb_alm_profile_gradient_${study}_"$stamp" --num 101 --note "Own TRAIN128 gradient calibration, optimizer0; no cross-profile lambda. Original source/cache/parent preserved. Read final receipt and actual answers; no automatic quality PASS."
+  timeout --signal=TERM --kill-after=30s 930s "$python_bin" -B -X utf8 scripts/runlog.py --name P106B_Stage7cWb_alm_profile_gradient_${study}_"$stamp" --num 101 -- "$python_bin" -B -X utf8 scripts/diag_p106b_alm_train.py --study "$study" --execute --mode calibrate --source-sha256 "$source_sha" --max-wall-sec 900
+  result=$?
+  if [[ "$result" != 0 ]]; then failed="$result"; fi
+done
+exit "$failed"

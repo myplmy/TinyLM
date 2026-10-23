@@ -65,12 +65,50 @@ class WipV2Tests(unittest.TestCase):
                 self.assertEqual(path.read_bytes(), before)
                 self.assertFalse(path.with_name(path.name + ".lock").exists())
 
+    def test_boundary_override_preserves_rows_and_refreshes_capsule(self) -> None:
+        path = self.create()
+        rows = WIP.parse_table(path.read_text(encoding="utf-8")).rows
+        WIP.override_field(path, "1", "NOT_RUN 경계", "GPU·삭제 금지",
+                           "삭제 금지; GPU는 오늘 17시까지 별도 승인",
+                           "새 명시 승인을 기존 경계와 구분", "사용자 10월22일 지시", False)
+        text = path.read_text(encoding="utf-8")
+        self.assertEqual(WIP.parse_table(text).rows, rows)
+        self.assertIn("GPU는 오늘 17시까지 별도 승인", WIP.capsule_text(path))
+        self.assertIn('"before": "GPU·삭제 금지"', text)
+        before = path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "STALE_BEFORE"):
+            WIP.override_field(path, "1", "NOT_RUN 경계", "GPU·삭제 금지", "변경",
+                               "사유", "승인", False)
+        self.assertEqual(path.read_bytes(), before)
+        with self.assertRaisesRegex(ValueError, "unsupported"):
+            WIP.override_field(path, "1", "Codex 세션 ID", "이전", "다음",
+                               "사유", "승인", False)
+
     def test_create_rejects_unsupported_ids_without_artifacts(self) -> None:
         for raw in ("3AB=지시", "3-A=지시", "3가=지시", "=지시"):
             with self.subTest(raw=raw):
                 with self.assertRaisesRegex(ValueError, "invalid"):
                     WIP.create_ledger([raw], "prev", "docs", "GPU 금지", "없음", "없음")
                 self.assertEqual(list(self.handoff.iterdir()), [])
+
+    def test_new_authored_note_language_is_checked_before_any_mutation(self) -> None:
+        path = self.create()
+        before = path.read_bytes()
+        for bad in ("검토 意味", "진행。", "확인 、", "완료 テスト"):
+            with self.subTest(bad=bad), self.assertRaisesRegex(ValueError, "authored work/resume"):
+                WIP.set_state(path, "1", WIP.RUN, bad, None, "다음 단계")
+            self.assertEqual(path.read_bytes(), before)
+        with self.assertRaisesRegex(ValueError, "authored work/resume"):
+            WIP.override_field(path,"1","작업 내용","—","進行","사유","현재 사용자",False)
+        self.assertEqual(path.read_bytes(),before)
+
+    def test_source_language_raw_directive_and_artifact_are_not_censored(self) -> None:
+        path = self.create()
+        WIP.add_item(path,"3","원문 인용 原文 テキスト", "한국어 설명")
+        WIP.set_state(path,"3",WIP.RUN,"원문 그대로 보존", "docs/原文.md", "다음 단계")
+        text=path.read_text(encoding="utf-8")
+        self.assertIn("原文 テキスト",text)
+        self.assertIn("docs/原文.md",text)
 
     def test_parse_and_close_refuse_unrecognized_progress_rows(self) -> None:
         path = self.create()

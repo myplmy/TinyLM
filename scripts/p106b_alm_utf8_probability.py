@@ -1,0 +1,431 @@
+"""P106B의 ASCII probe 요청·응답을 검사하는 순수 stdlib helper.
+
+HTTP, 파일, 토크나이저, 모델 및 재시도 제어를 다루지 않는다. native piece는
+이미 확인한 bytes로만 받으며 decode/encode로 바꾸어 반환하지 않는다.
+probe가 실제 비특수 native ID인지는 호출자의 어휘 증거가 전제다.
+    응답 flag/부분 질량 관찰은 원 logits와의 실물 수치 canary를 대신하지 않는다.
+"""
+from __future__ import annotations
+
+from copy import deepcopy
+from dataclasses import dataclass
+import math
+
+
+ALLOWED_N_PROBS = (64, 512, 2048)
+ALLOWED_BIASES = (100, 200)
+TARGET_ORIGIN = "native.completion_probabilities[0].top_logprobs"
+
+_NEUTRAL = {
+    "temperature": 0.0,
+    "top_k": 0,
+    "top_p": 1.0,
+    "min_p": 0.0,
+    "typical_p": 1.0,
+    "repeat_penalty": 1.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "dry_multiplier": 0.0,
+    "xtc_probability": 0.0,
+    "mirostat": 0,
+    "dynatemp_range": 0.0,
+    "adaptive_target": -1.0,
+    "top_n_sigma": -1.0,
+}
+_CONTROL = {
+    "n_predict": 1,
+    "cache_prompt": False,
+    "post_sampling_probs": False,
+    "backend_sampling": False,
+    "stream": False,
+}
+_BASE_FIELDS = set(_NEUTRAL) | set(_CONTROL) | {
+    "prompt", "seed", "n_probs", "logit_bias", "return_tokens", "samplers",
+}
+
+
+class ProbabilityContractError(ValueError):
+    """원 native 확률로 취급할 수 없는 요청/응답 계약이다."""
+
+
+class NativeNotForcedError(ProbabilityContractError):
+    """나머지 actual 계약을 모두 검사한 뒤에만 성립하는 선택 실패다."""
+
+    def __init__(self, observed: dict, message: str = "actual native token was not forced") -> None:
+        super().__init__(message)
+        self.observed = deepcopy(observed)
+
+
+def _integer(value: object, *, name: str, minimum: int, maximum: int) -> int:
+    if type(value) is not int or not minimum <= value <= maximum:
+        raise ProbabilityContractError(f"{name}: 범위 내 실제 정수가 필요함")
+    return value
+
+
+def _finite_number(value: object, name: str) -> float:
+    if type(value) not in (int, float):
+        raise ProbabilityContractError(f"{name}: 실제 유한 수가 필요함")
+    try:
+        result = float(value)
+    except (OverflowError, ValueError) as exc:
+        raise ProbabilityContractError(f"{name}: 유한 수 범위를 벗어남") from exc
+    if not math.isfinite(result):
+        raise ProbabilityContractError(f"{name}: 비유한 값 거부")
+    return result
+
+
+def _number_equals(value: object, expected: int | float, name: str) -> None:
+    if _finite_number(value, name) != expected:
+        raise ProbabilityContractError(f"{name}: 중립 설정 {expected!r} 필요")
+
+
+def _flag(value: object, expected: bool, name: str) -> None:
+    if value is not expected:
+        raise ProbabilityContractError(f"{name}: 명시적 {expected!r} 필요")
+
+
+def piece_is_complete_utf8(piece_bytes: bytes) -> bool:
+    """비어 있지 않은 bytes가 단독으로 엄격한 UTF-8인지 판별한다.
+
+    잘린 선두/연속 바이트, overlong, surrogate 및 범위 밖 code point는 False다.
+    빈 piece는 probe에 사용할 수 없으므로 False이며 bytearray 등은 거부한다.
+    원 bytes는 변경·정규화·대체하지 않는다.
+    """
+    if type(piece_bytes) is not bytes:
+        raise ProbabilityContractError("piece_bytes: 불변 bytes만 허용")
+    if not piece_bytes:
+        return False
+    try:
+        piece_bytes.decode("utf-8", errors="strict")
+    except UnicodeDecodeError:
+        return False
+    return True
+
+
+@dataclass(frozen=True)
+class ValidatedAsciiProbe:
+    """호출자가 원 native 어휘에서 확인한 ID/bytes/special 목록의 불변 계약.
+
+    이 객체 자체가 실제 tokenizer 조회나 서버 forcing 성공의 증거는 아니다.
+    표시 가능한 ASCII와 TAB/LF/CR만 probe로 받으며 NUL 등 제어문자는 제외한다.
+    """
+
+    token_id: int
+    piece_bytes: bytes
+    vocab_size: int
+    special_token_ids: tuple[int, ...]
+
+    def __post_init__(self) -> None:
+        _integer(self.vocab_size, name="vocab_size", minimum=1, maximum=2**31 - 1)
+        _integer(self.token_id, name="probe_id", minimum=0, maximum=self.vocab_size - 1)
+        if type(self.special_token_ids) is not tuple:
+            raise ProbabilityContractError("special_token_ids: 명시적 tuple 필요")
+        for token in self.special_token_ids:
+            _integer(token, name="special_token_id", minimum=0, maximum=self.vocab_size - 1)
+        if len(set(self.special_token_ids)) != len(self.special_token_ids):
+            raise ProbabilityContractError("special_token_ids: 중복 ID 거부")
+        if self.token_id in self.special_token_ids:
+            raise ProbabilityContractError("probe_id: special/BOS/EOT는 probe로 쓸 수 없음")
+        if (not piece_is_complete_utf8(self.piece_bytes)
+                or any(not (32 <= byte <= 126 or byte in (9, 10, 13))
+                       for byte in self.piece_bytes)):
+            raise ProbabilityContractError("probe: 비어 있지 않은 정상 ASCII bytes 필요")
+
+
+def _check_probe(probe: ValidatedAsciiProbe) -> None:
+    if type(probe) is not ValidatedAsciiProbe:
+        raise ProbabilityContractError("검증된 ValidatedAsciiProbe 필요")
+    probe.__post_init__()
+
+
+def _check_native_payload(payload: dict, *, vocab_size: int, allow_cache_prompt: bool = False) -> None:
+    _integer(vocab_size, name="vocab_size", minimum=2, maximum=2**31 - 1)
+    if type(payload) is not dict or any(type(key) is not str for key in payload):
+        raise ProbabilityContractError("원 TF payload는 문자열 key의 dict여야 함")
+    if set(payload) - _BASE_FIELDS:
+        raise ProbabilityContractError("미승인 TF payload 필드: " + ",".join(sorted(set(payload) - _BASE_FIELDS)))
+    prefix = payload.get("prompt")
+    if type(prefix) is not list or not prefix:
+        raise ProbabilityContractError("원 prefix는 비어 있지 않은 native ID list여야 함")
+    for token in prefix:
+        _integer(token, name="prefix_id", minimum=0, maximum=vocab_size - 1)
+    _integer(payload.get("seed"), name="seed", minimum=0, maximum=2**32 - 1)
+    for name, expected in _CONTROL.items():
+        if name == "cache_prompt" and allow_cache_prompt:
+            if type(payload.get(name)) is not bool:
+                raise ProbabilityContractError("cache_prompt: 명시적 bool 필요")
+            continue
+        if name == "backend_sampling" and name not in payload:
+            continue
+        if type(expected) is bool:
+            _flag(payload.get(name), expected, name)
+        else:
+            _integer(payload.get(name), name=name, minimum=expected, maximum=expected)
+    for name, expected in _NEUTRAL.items():
+        if name in payload:
+            _number_equals(payload[name], expected, name)
+    if "return_tokens" in payload and type(payload["return_tokens"]) is not bool:
+        raise ProbabilityContractError("return_tokens: bool 필요")
+    if "samplers" in payload and payload["samplers"] != ["temperature"]:
+        raise ProbabilityContractError("samplers: 중립 temperature-only 계약 필요")
+    _integer(payload.get("n_probs"), name="기존 n_probs", minimum=1, maximum=2**31 - 1)
+    if "logit_bias" in payload:
+        old = payload["logit_bias"]
+        if type(old) is not list or len(old) != 1 or type(old[0]) is not list or len(old[0]) != 2:
+            raise ProbabilityContractError("기존 bias는 단일 [native ID,bias]여야 함")
+        _integer(old[0][0], name="기존 bias ID", minimum=0, maximum=vocab_size - 1)
+        _integer(old[0][1], name="기존 bias", minimum=100, maximum=200)
+        if old[0][1] not in ALLOWED_BIASES:
+            raise ProbabilityContractError("기존 bias는100/200만 허용")
+
+
+def _check_base_payload(payload: dict, probe: ValidatedAsciiProbe) -> None:
+    _check_probe(probe)
+    _check_native_payload(payload, vocab_size=probe.vocab_size)
+
+
+def build_direct_payload(tf_payload: dict, *, vocab_size: int, n_probs: int = 2) -> dict:
+    """legacy TF source를 바꾸지 않고 complete target의 중립 요청을 만든다."""
+    _check_native_payload(tf_payload, vocab_size=vocab_size, allow_cache_prompt=True)
+    if type(n_probs) is not int or n_probs not in (2, *ALLOWED_N_PROBS):
+        raise ProbabilityContractError("직접 n_probs:2 또는 사전64/512/2048만 허용")
+    if "logit_bias" not in tf_payload:
+        raise ProbabilityContractError("직접 요청의 명시적 단일 target bias 필요")
+    result = deepcopy(tf_payload)
+    result.update(_NEUTRAL)
+    result.update(n_predict=1, post_sampling_probs=False, backend_sampling=False,
+                  return_tokens=True, stream=False, n_probs=n_probs, samplers=["temperature"])
+    return result
+
+
+def build_probe_payload(
+    tf_payload: dict, *, probe: ValidatedAsciiProbe, n_probs: int, bias: int = 100
+) -> dict:
+    """원 native prefix/seed를 보존하고 승인된 probe 요청 사본을 만든다.
+
+    기존 TF의 n_predict/cache/raw/stream 계약은 맞아야 하며 미지의 template,
+    grammar, stop, LoRA, alias 등은 조용히 전달하지 않고 거부한다. helper가
+    probe/K/bias를 선택하거나 K 상승·서버 호출을 수행하지 않는다.
+    """
+    _check_base_payload(tf_payload, probe)
+    if type(n_probs) is not int or n_probs not in ALLOWED_N_PROBS:
+        raise ProbabilityContractError("n_probs: 사전64/512/2048만 허용")
+    if type(bias) is not int or bias not in ALLOWED_BIASES:
+        raise ProbabilityContractError("bias: 사전100/200만 허용")
+    result = deepcopy(tf_payload)
+    result.update(_NEUTRAL)
+    result.update(_CONTROL)
+    result.update(return_tokens=True, n_probs=n_probs, samplers=["temperature"],
+                  logit_bias=[[probe.token_id, bias]])
+    return result
+
+
+def _raw_entry(item: object, *, vocab_size: int) -> tuple[int, float]:
+    if type(item) is not dict or "prob" in item or "top_probs" in item:
+        raise ProbabilityContractError("raw logprob 객체가 필요하며 sampling 후 확률은 거부")
+    token = _integer(item.get("id"), name="반환 ID", minimum=0, maximum=vocab_size - 1)
+    value = _finite_number(item.get("logprob"), "logprob")
+    if not -1e30 < value <= 0 or math.exp(value) == 0.0:
+        raise ProbabilityContractError("logprob: 비양수 유한 원 값 필요; underflow sentinel 거부")
+    data = item.get("bytes")
+    if type(data) is not list:
+        raise ProbabilityContractError("반환 bytes: 명시적 정수 list 필요")
+    for byte in data:
+        _integer(byte, name="반환 byte", minimum=0, maximum=255)
+    if "token" in item and type(item["token"]) is not str:
+        raise ProbabilityContractError("반환 token 표시값은 str여야 함")
+    return token, float(value)
+
+
+def parse_native_response(
+    response: dict,
+    *,
+    request_payload: dict,
+    vocab_size: int,
+    expected_token_id: int,
+    expected_piece_bytes: bytes | None = None,
+    require_cold_prefix: bool = True,
+) -> dict:
+    """complete/probe 공통 actual 계약. 유효한 다른 선택만 NOT_FORCED다.
+
+    원 값과 순서를 보존한다. require_cold_prefix=False는 과거 warm 합성 회귀용이며
+    V7 실물은 모든 요청에 True다. flag 검사는 독립 raw-logit oracle가 아니다.
+    """
+    _check_native_payload(request_payload, vocab_size=vocab_size,
+                          allow_cache_prompt=not require_cold_prefix)
+    wanted = _integer(expected_token_id, name="expected_token_id", minimum=0, maximum=vocab_size - 1)
+    if expected_piece_bytes is not None and not piece_is_complete_utf8(expected_piece_bytes):
+        raise ProbabilityContractError("expected piece: 완결된 원 UTF-8 bytes 필요")
+    k, bias_rows = request_payload["n_probs"], request_payload.get("logit_bias")
+    if type(k) is not int or k not in (2, *ALLOWED_N_PROBS):
+        raise ProbabilityContractError("요청 n_probs가 사전 범위 밖임")
+    if bias_rows is None or bias_rows[0][0] != wanted:
+        raise ProbabilityContractError("요청 bias ID가 명시한 선택 target과 다름")
+    if request_payload.get("return_tokens") is not True or request_payload.get("backend_sampling") is not False:
+        raise ProbabilityContractError("요청 return_tokens=true/backend_sampling=false 증거 필요")
+    if request_payload.get("samplers") != ["temperature"]:
+        raise ProbabilityContractError("요청 temperature-only sampler 증거 필요")
+    if type(response) is not dict:
+        raise ProbabilityContractError("native 응답 dict 필요")
+    _flag(response.get("truncated"), False, "actual truncated")
+    _flag(response.get("stop"), True, "actual final stop")
+    if response.get("stop_type") != "limit" or response.get("stopping_word") != "":
+        raise ProbabilityContractError("한 token의 정상 limit 종료 증거 필요")
+    _integer(response.get("tokens_predicted"), name="actual tokens_predicted", minimum=1, maximum=1)
+    _integer(response.get("tokens_evaluated"), name="actual tokens_evaluated",
+             minimum=len(request_payload["prompt"]), maximum=len(request_payload["prompt"]))
+    tokens = response.get("tokens")
+    if type(tokens) is not list or len(tokens) != 1:
+        raise ProbabilityContractError("실제 생성 native ID가 정확히1개 필요")
+    chosen_id = _integer(tokens[0], name="실제 생성 ID", minimum=0, maximum=vocab_size - 1)
+    timings = response.get("timings")
+    if type(timings) is not dict:
+        raise ProbabilityContractError("actual timings.cache_n=0 증거 필요")
+    cache_n = _integer(timings.get("cache_n"), name="actual timings.cache_n=0" if require_cold_prefix else "actual timings.cache_n", minimum=0,
+                       maximum=0 if require_cold_prefix or request_payload["cache_prompt"] is False
+                       else len(request_payload["prompt"]))
+    if "prompt_n" in timings:
+        _integer(timings["prompt_n"], name="actual timings.prompt_n",
+                 minimum=len(request_payload["prompt"]) - cache_n,
+                 maximum=len(request_payload["prompt"]) - cache_n)
+    if "predicted_n" in timings:
+        _integer(timings["predicted_n"], name="actual timings.predicted_n", minimum=1, maximum=1)
+
+    settings = response.get("generation_settings")
+    if type(settings) is not dict:
+        raise ProbabilityContractError("actual generation_settings 필요")
+    for name in ("post_sampling_probs", "backend_sampling", "stream"):
+        _flag(settings.get(name), False, "actual " + name)
+    _integer(settings.get("n_predict"), name="actual n_predict", minimum=1, maximum=1)
+    _integer(settings.get("n_probs"), name="actual n_probs", minimum=k, maximum=k)
+    _integer(settings.get("seed"), name="actual seed", minimum=request_payload["seed"],
+             maximum=request_payload["seed"])
+    if "max_tokens" in settings:
+        _integer(settings["max_tokens"], name="actual max_tokens", minimum=1, maximum=1)
+    for name, expected in _NEUTRAL.items():
+        _number_equals(settings.get(name), expected, "actual " + name)
+    if settings.get("samplers") != ["temperature"] or settings.get("grammar") != "" or settings.get("lora") != []:
+        raise ProbabilityContractError("actual 중립 sampler/빈 grammar/빈 LoRA 증거 필요")
+    if settings.get("speculative.types") != "none,none" or settings.get("stop") != []:
+        raise ProbabilityContractError("actual MTP OFF/빈 stop 설정 증거 필요")
+    actual_bias = settings.get("logit_bias")
+    if (type(actual_bias) is not list or len(actual_bias) != 1
+            or type(actual_bias[0]) is not dict or set(actual_bias[0]) != {"token", "bias"}):
+        raise ProbabilityContractError("actual logit_bias는 단일 native token/bias 객체여야 함")
+    _integer(actual_bias[0]["token"], name="actual bias token", minimum=wanted, maximum=wanted)
+    _number_equals(actual_bias[0]["bias"], bias_rows[0][1], "actual bias")
+
+    rows = response.get("completion_probabilities")
+    if type(rows) is not list or len(rows) != 1:
+        raise ProbabilityContractError("원 확률 객체가 정확히1개 필요")
+    row = rows[0]
+    row_id, chosen_logprob = _raw_entry(row, vocab_size=vocab_size)
+    if row_id != chosen_id:
+        raise ProbabilityContractError("확률 객체와 실제 생성 native ID가 다름")
+    chosen_bytes = bytes(row["bytes"])
+    try:
+        chosen_text = chosen_bytes.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise ProbabilityContractError("실제 선택 piece는 완결 UTF-8여야 함") from exc
+    if response.get("content") != chosen_text:
+        raise ProbabilityContractError("실제 content와 선택 piece bytes가 다름")
+    if chosen_id == wanted and expected_piece_bytes is not None and chosen_bytes != expected_piece_bytes:
+        raise ProbabilityContractError("실제 선택 ID의 bytes가 검증 native piece와 다름")
+    top = row.get("top_logprobs")
+    expected_k = min(k, vocab_size)
+    if type(top) is not list or len(top) != expected_k or len(top) < 2:
+        raise ProbabilityContractError("실제 원 top-K 길이가 요청/어휘 범위와 다름")
+    parsed = [_raw_entry(item, vocab_size=vocab_size) for item in top]
+    ids = [token for token, _ in parsed]
+    if len(set(ids)) != len(ids):
+        raise ProbabilityContractError("원 top-K의 중복 ID 거부")
+    values = [value for _, value in parsed]
+    if any(left < right for left, right in zip(values, values[1:])):
+        raise ProbabilityContractError("원 top-K는 서버 순위 순서여야 함; helper가 정렬하지 않음")
+    if chosen_id in ids:
+        chosen_rank = ids.index(chosen_id)
+        if chosen_logprob != values[chosen_rank]:
+            raise ProbabilityContractError("chosen probe와 원 top-K의 같은 ID logp가 다름")
+        if top[chosen_rank].get("bytes") != row["bytes"]:
+            raise ProbabilityContractError("원 top-K의 선택 ID bytes가 실제 piece와 다름")
+    elif chosen_logprob > values[-1]:
+        raise ProbabilityContractError("top-K 밖 probe가 마지막 원소보다 높은 logp를 가짐")
+    mass = math.fsum(math.exp(value) for value in values)
+    known_mass = mass + (0.0 if chosen_id in ids else math.exp(chosen_logprob))
+    # FP32 softmax/log를 JSON으로 받은 뒤 exp/fsum한 합은 정확한 실수 분포가 아니다.
+    # 원 확률 여부는 pinned API와 forcing/probe parity가 소유하며 합만으로 판정하지 않는다.
+
+    return {
+        "status": "FORCED" if chosen_id == wanted else "NOT_FORCED",
+        "expected_token_id": wanted,
+        "raw_chosen": deepcopy(row),
+        "raw_top2": deepcopy(top[:2]),
+        "raw_top_logprobs": deepcopy(top),
+        "requested_n_probs": k,
+        "actual_n_probs": len(top),
+        "bias": bias_rows[0][1],
+        "top_k_probability_mass": mass,
+        "known_probability_mass_including_probe": known_mass,
+        "mass_equals_one": known_mass == 1.0,
+        "mass_exceeds_one": known_mass > 1.0,
+        "mass_policy": "OBSERVATION_ONLY_NOT_A_NORMALIZATION_OR_VALIDITY_VERDICT",
+        "actual_cache_n": cache_n,
+        "actual_tokens_evaluated": len(request_payload["prompt"]),
+        "actual_tokens_predicted": 1,
+        "actual_post_sampling_probs": False,
+        "actual_backend_sampling": False,
+        "actual_speculative_types": "none,none",
+        "actual_truncated": False,
+        "native_prefix_ids": list(request_payload["prompt"]),
+    }
+
+
+def parse_probe_response(
+    response: dict, *, request_payload: dict, probe: ValidatedAsciiProbe,
+    reference_target_id: int,
+) -> dict:
+    """공통 actual 검사 후 원 top-K의 reference를 선택 probe와 분리한다."""
+    _check_base_payload(request_payload, probe)
+    if type(request_payload.get("n_probs")) is not int or request_payload["n_probs"] not in ALLOWED_N_PROBS:
+        raise ProbabilityContractError("probe n_probs는 사전64/512/2048만 허용")
+    target = _integer(reference_target_id, name="reference_target_id", minimum=0,
+                      maximum=probe.vocab_size - 1)
+    actual = parse_native_response(response, request_payload=request_payload,
+        vocab_size=probe.vocab_size, expected_token_id=probe.token_id,
+        expected_piece_bytes=probe.piece_bytes, require_cold_prefix=True)
+    if actual["status"] != "FORCED":
+        raise NativeNotForcedError(actual)
+    top = actual["raw_top_logprobs"]
+    ids = [item["id"] for item in top]
+    rank = ids.index(target) + 1 if target in ids else None
+    target_entry = deepcopy(top[rank - 1]) if rank is not None else None
+    return {
+        "status": "FOUND" if rank is not None else "MISSING_TARGET",
+        "reference_target_id": target,
+        "target_logprob": float(target_entry["logprob"]) if target_entry is not None else None,
+        "target_rank": rank,
+        "target_probability_origin": TARGET_ORIGIN if rank is not None else None,
+        "lookup_origin": TARGET_ORIGIN,
+        "requested_n_probs": actual["requested_n_probs"],
+        "actual_n_probs": len(top),
+        "bias": actual["bias"],
+        "probe_id": probe.token_id,
+        "probe_piece_hex": probe.piece_bytes.hex(),
+        "chosen_probe": {"id": actual["raw_chosen"]["id"], "logprob": actual["raw_chosen"]["logprob"]},
+        "raw_target": target_entry,
+        "raw_top2": deepcopy(top[:2]),
+        "raw_top_logprobs": deepcopy(top),
+        "top_k_probability_mass": actual["top_k_probability_mass"],
+        "known_probability_mass_including_probe": actual["known_probability_mass_including_probe"],
+        "mass_equals_one": actual["mass_equals_one"],
+        "mass_exceeds_one": actual["mass_exceeds_one"],
+        "mass_policy": "OBSERVATION_ONLY_NOT_A_NORMALIZATION_OR_VALIDITY_VERDICT",
+        "renormalized_by_helper": False,
+        "actual_cache_n": 0,
+        "actual_tokens_predicted": 1,
+        "actual_post_sampling_probs": False,
+        "actual_backend_sampling": False,
+        "actual_speculative_types": actual["actual_speculative_types"],
+        "actual_truncated": False,
+        "native_prefix_ids": list(request_payload["prompt"]),
+    }

@@ -1,0 +1,31 @@
+{
+  "schema": "SUBAGENT_WRONG_OUTPUT_PATH_DELETE_DISCLOSURE_V1",
+  "reported_at_kst": "2026-10-22T09:24:52+09:00",
+  "agent": "/root/luna_concurrency_probe_2",
+  "deleted_path": "data_cache/p106b_text_work_20261013/luna/native_full_en_000013_rows/2587.json",
+  "expected_path": "data_cache/p106b_text_work_20261022/luna/native_full_en_000013_rows/2587.json",
+  "reported_operations": [
+    "apply_patch Add File wrong date path",
+    "apply_patch Delete File wrong date path",
+    "apply_patch Add File expected date path"
+  ],
+  "permission": "Deletion was not included in delegated scope; rule violation recorded, no further cleanup authorized.",
+  "before_existence_check": "NOT_RUN",
+  "deleted_file_sha256": "NOT_RECORDED",
+  "filesystem_observation": {
+    "wrong_top_directory_birth_kst": "2026-10-22T09:24:47.647453499+09:00",
+    "wrong_parent_directory_birth_kst": "2026-10-22T09:24:47.649873824+09:00",
+    "wrong_parent_directory_change_kst": "2026-10-22T09:24:52.338287594+09:00",
+    "correct_file_birth_kst": "2026-10-22T09:24:54.813874024+09:00",
+    "exact_wrong_file_git_tracked": false
+  },
+  "interpretation": "New directory timestamps support the reported accidental new path; Add File success alone does not prove prior file absence. Deleted bytes cannot be independently hashed afterward.",
+  "recovery_material": "The correctly located source2587 draft is retained. Byte identity to the deleted file was not recorded and is not certified.",
+  "prevention": [
+    "Read exact output-path existence before Add File",
+    "Do not delete any mistaken output; report exact path to root",
+    "Use only assigned dated output directories"
+  ],
+  "source_or_checkpoint_deletion": "No such operation reported or observed in this incident."
+}
+
