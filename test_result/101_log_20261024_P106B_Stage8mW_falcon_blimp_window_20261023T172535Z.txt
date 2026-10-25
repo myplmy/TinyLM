@@ -1,0 +1,40 @@
+Recover the previously time-held Falcon evaluation only. Same official UID macro, FP32 eager/MATH, batch8,1024context,noKV. Preparation and cost are not full scores. Fresh cost forecast must fit7200sec and24Oct08:40KST. New source, no global deadline patch, no source or model mutation.
+
+==============================================================================
+[runlog] 2026-10-24 02:25:35  name=P106B_Stage8mW_falcon_blimp_window_20261023T172535Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_babylm_window.py --execute --mode cost --model falcon90m --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 600 --source-sha256 43536A20657FBACBE498B9C8B0FE2580F99866AF179EA0029A1470B5F78FFB37
+==============================================================================
+[transformers] The fast path is not available because one of `(selective_state_update, causal_conv1d_fn, causal_conv1d_update)` is None. Falling back to the naive implementation. To install follow https://github.com/state-spaces/mamba/#installation and https://github.com/Dao-AILab/causal-conv1d
+
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]
+Loading weights:  62%|██████▏   | 240/386 [00:00<00:00, 2358.63it/s]
+Loading weights: 100%|██████████| 386/386 [00:00<00:00, 2553.53it/s]
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+[BABYLM_WINDOW_GROUP] {"model": "falcon90m", "mode": "cost", "group": "main", "rows": 536}
+[BABYLM_WINDOW_GROUP] {"model": "falcon90m", "mode": "cost", "group": "supplement", "rows": 40}
+[BABYLM_WINDOW_FINAL] {"status": "BABYLM_WINDOW_COST_COMPLETE", "returncode": 0, "model": "falcon90m", "mode": "cost", "wall_seconds": 32.633461286000966, "error_type": null, "error": null}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.6분  (2026-10-24 02:26:10)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-24 02:26:10  name=P106B_Stage8mW_falcon_blimp_window_20261023T172535Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_babylm_window.py --execute --mode full --model falcon90m --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 7200 --source-sha256 43536A20657FBACBE498B9C8B0FE2580F99866AF179EA0029A1470B5F78FFB37
+==============================================================================
+[transformers] The fast path is not available because one of `(selective_state_update, causal_conv1d_fn, causal_conv1d_update)` is None. Falling back to the naive implementation. To install follow https://github.com/state-spaces/mamba/#installation and https://github.com/Dao-AILab/causal-conv1d
+
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]
+Loading weights:  70%|███████   | 272/386 [00:00<00:00, 2715.93it/s]
+Loading weights: 100%|██████████| 386/386 [00:00<00:00, 3029.47it/s]
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+[BABYLM_WINDOW_GROUP] {"model": "falcon90m", "mode": "full", "group": "main", "rows": 59875}
+[BABYLM_WINDOW_GROUP] {"model": "falcon90m", "mode": "full", "group": "supplement", "rows": 5218}
+[BABYLM_WINDOW_FINAL] {"status": "BABYLM_WINDOW_BLIMP_COMPLETE", "returncode": 0, "model": "falcon90m", "mode": "full", "wall_seconds": 2904.216241372, "error_type": null, "error": null}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 50.5분  (2026-10-24 03:16:41)
+==============================================================================
+Both model phases returned0. Accept the full result only after59875main/5218supplement,72UID, raw recount, source/data/model unchanged and owned cleanup are verified. Full BabyLM suite and matched training budget are not claimed.

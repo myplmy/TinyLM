@@ -1,0 +1,599 @@
+#!/usr/bin/env python3
+"""Synthetic CPU tensors and temporary fixtures only; no model/tokenizer/GPU."""
+from __future__ import annotations
+
+import ast
+from contextlib import nullcontext
+import gc
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+from types import SimpleNamespace
+import unittest
+import weakref
+
+from scripts import diag_p106b_qwen35_numeric_observer as run
+
+
+class Writer:
+    def __init__(self):
+        self.rows = []
+
+    def append(self, row):
+        self.rows.append(json.loads(json.dumps(row, allow_nan=False)))
+
+
+class SyntheticLM:
+    def __init__(self, torch, *, future=False, shape_drift=False, capture_drift=False, returned_state=False):
+        self.device = torch.device("cpu")
+        self.calls = []
+        owner = self
+        class SyntheticBody:
+            config = SimpleNamespace(vocab_size=8, num_hidden_layers=2, hidden_size=3)
+
+            def __call__(self, *, input_ids, **kwargs):
+                owner.calls.append(dict(kwargs))
+                self_device = input_ids.device
+                assert self_device.type == "cpu"
+                length = input_ids.shape[1]
+                values = input_ids.float().cumsum(dim=1)
+                if future:
+                    values = input_ids.float().sum(dim=1, keepdim=True).repeat(1, length)
+                logits = values.unsqueeze(-1).repeat(1, 1, 8) + torch.arange(8, device="cpu")
+                if shape_drift:
+                    logits += length * .01
+                if capture_drift and kwargs["output_hidden_states"]:
+                    logits += .01
+                states = tuple(values.unsqueeze(-1).repeat(1, 1, 3) + i for i in range(3))
+                return SimpleNamespace(logits=logits, hidden_states=states if kwargs["output_hidden_states"] else None,
+                                       past_key_values=object() if returned_state else None)
+        self.model = SyntheticBody()
+
+    def tok_encode(self, text, **kwargs):
+        return {"Prefix for a causal state check": [1, 2, 3], " one future": [4, 5],
+                " another different future": [6, 7, 1]}[text]
+
+
+class NumericTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import torch
+        cls.torch = torch
+        torch.set_num_threads(1)
+
+    def matrix(self, rows):
+        return self.torch.tensor(rows, dtype=self.torch.float32, device="cpu")
+
+    def test_equal_and_same_label_ce(self):
+        value = self.matrix([[1., 2., 3.], [3., 2., 1.]])
+        result = run.pair_metrics(value, value.clone(), self.torch, [0, 1])
+        self.assertTrue(result["original_allclose"])
+        self.assertEqual(result["violation_count"], 0)
+        self.assertEqual(result["same_prefix_label_loglikelihood"]["difference"], 0.)
+        self.assertIn("NOT_A_REPLACEMENT", result["oracle_device"])
+
+    def test_original_right_reference_denominator_and_count(self):
+        left, right = self.matrix([[2e-5, 1.]]), self.matrix([[0., 1.]])
+        result = run.pair_metrics(left, right, self.torch)
+        self.assertFalse(result["original_allclose"])
+        self.assertEqual(result["violation_count"], 1)
+        self.assertEqual(result["first_violation_indices"], [[0, 0]])
+        self.assertAlmostEqual(result["maximum_normalized_difference"], 2., places=5)
+
+    def test_within_tolerance_does_not_count_as_violation(self):
+        result = run.pair_metrics(self.matrix([[5e-6, 1.]]), self.matrix([[0., 1.]]), self.torch)
+        self.assertTrue(result["original_allclose"])
+        self.assertEqual(result["violation_count"], 0)
+
+    def test_argmax_and_same_label_likelihood_difference(self):
+        result = run.pair_metrics(self.matrix([[3., 1.], [1., 3.]]),
+                                 self.matrix([[1., 3.], [1., 3.]]), self.torch, [0, 1])
+        self.assertEqual(result["argmax_changed_positions"], [0])
+        self.assertNotEqual(result["same_prefix_label_loglikelihood"]["difference"], 0.)
+
+    def test_nonfinite_evidence_remains_json_serializable(self):
+        result = run.pair_metrics(self.matrix([[float("nan"), 1.]]), self.matrix([[0., 1.]]), self.torch)
+        self.assertFalse(result["original_allclose"])
+        self.assertEqual(result["nonfinite_values"], [1, 0])
+        self.assertIsNone(result["maximum_absolute_difference"])
+        json.dumps(result, allow_nan=False)
+
+    def test_wrong_shape_dtype_and_labels_fail(self):
+        value = self.matrix([[1., 2.], [3., 4.]])
+        with self.assertRaises(ValueError):
+            run.pair_metrics(value, value[:1], self.torch)
+        with self.assertRaises(ValueError):
+            run.pair_metrics(value.double(), value.double(), self.torch)
+        with self.assertRaises(ValueError):
+            run.pair_metrics(value, value, self.torch, [0])
+
+    def observe(self, **options):
+        lm, writer = SyntheticLM(self.torch, **options), Writer()
+        result = run.observe(lm, self.torch, writer, lambda: None)
+        self.assertEqual(len(writer.rows), 20)
+        self.assertEqual(len(lm.calls), 10)
+        self.assertTrue(all(row["use_cache"] is False and row["past_key_values"] is None
+                            and row["logits_to_keep"] == 0 for row in lm.calls))
+        return result, writer.rows
+
+    def test_causal_trace_complete_not_an_admission(self):
+        result, rows = self.observe()
+        self.assertEqual(result["numerical_negative_pairs"], 0)
+        self.assertTrue(result["observations_complete"])
+        self.assertFalse(result["admission_open"])
+        self.assertFalse(result["numerical_pass_claim"])
+        self.assertEqual(result["benchmark_rows"], 0)
+        hidden = rows[0]["hidden_values"]
+        self.assertEqual(hidden, [])
+        self.assertTrue(rows[1]["hidden_values"][-1]["final_normalized"])
+
+    def test_future_sensitive_synthetic_model_is_recorded_not_raised_or_admitted(self):
+        result, rows = self.observe(future=True)
+        self.assertGreater(result["numerical_negative_pairs"], 0)
+        fixed = next(row for row in rows if row.get("category") == "shape_fixed_future_swap")
+        self.assertTrue(fixed["same_input_shape"])
+        self.assertFalse(fixed["logits"]["original_allclose"])
+        self.assertTrue(result["observations_complete"])
+        self.assertFalse(result["admission_open"])
+
+    def test_shape_drift_separated_from_same_shape_future_swap(self):
+        _, rows = self.observe(shape_drift=True)
+        fixed = next(row for row in rows if row.get("category") == "shape_fixed_future_swap")
+        changed = next(row for row in rows if row.get("category") == "shape_changed_original_extension")
+        self.assertTrue(fixed["logits"]["original_allclose"])
+        self.assertFalse(changed["same_input_shape"])
+        self.assertFalse(changed["logits"]["original_allclose"])
+
+    def test_capture_flag_effect_observed(self):
+        _, rows = self.observe(capture_drift=True)
+        self.assertFalse(next(row for row in rows if row.get("category") == "capture_flag_toggle")["logits"]["original_allclose"])
+
+    def test_returned_state_is_operational_error(self):
+        lm = SyntheticLM(self.torch, returned_state=True)
+        with self.assertRaisesRegex(ValueError, "stateless"):
+            run.capture(lm, self.torch, [1, 2], 2, False, lambda: None)
+
+    def test_probe_plan_has_exact_equal_suffix_lengths(self):
+        prefix, plans = run.probe_plan(SyntheticLM(self.torch))
+        indexed = {name: sequence for name, sequence, _ in plans}
+        self.assertEqual(len(indexed["same_a"]), len(indexed["same_b"]))
+        self.assertNotEqual(indexed["same_a"], indexed["same_b"])
+        self.assertEqual(indexed["same_a"], indexed["same_a_again"])
+        self.assertEqual(indexed["original2_off"], prefix + [6, 7, 1])
+
+
+class FailureTests(unittest.TestCase):
+    def test_completed_traceback_frames_release_payload(self):
+        held = []
+        class Payload:
+            pass
+        def broken():
+            payload = Payload()
+            held.append(weakref.ref(payload))
+            raise RuntimeError("original synthetic failure")
+        result, error = run.safely(broken)
+        gc.collect()
+        self.assertIsNone(result)
+        self.assertIsNone(held[0]())
+        self.assertEqual(error["type"], "RuntimeError")
+        self.assertIn("broken", error["traceback"])
+
+    def test_exception_chain_text_preserved_and_refs_removed(self):
+        try:
+            try:
+                raise ValueError("first cause")
+            except ValueError as first:
+                raise RuntimeError("second error") from first
+        except RuntimeError as error:
+            record = run.error_snapshot(error)
+            self.assertIsNone(error.__traceback__)
+            self.assertIsNone(error.__cause__)
+            self.assertIsNone(error.__context__)
+        self.assertIn("first cause", record["traceback"])
+        self.assertIn("second error", record["traceback"])
+
+    def test_keyboard_interrupt_remains_an_error_record(self):
+        def broken():
+            raise KeyboardInterrupt("stop")
+        _, error = run.safely(broken)
+        self.assertEqual(error["type"], "KeyboardInterrupt")
+
+
+class Device:
+    def __init__(self, kind):
+        self.type = kind
+
+    def __str__(self):
+        return self.type + (":0" if self.type == "cuda" else "")
+
+
+class Storage:
+    def __init__(self, address=1, size=64):
+        self.address, self.size = address, size
+
+    def data_ptr(self):
+        return self.address
+
+    def nbytes(self):
+        return self.size
+
+
+class CudaMetadataTensor:
+    is_cuda, shape, dtype = True, (2, 8), "float32"
+    device = Device("cuda")
+
+    def __init__(self, storage=None):
+        self.storage = Storage() if storage is None else storage
+
+    def untyped_storage(self):
+        return self.storage
+
+
+class CleanupDiagnosticsTests(unittest.TestCase):
+    def make(self, *, control_drop=0, failure=False):
+        state = dict(allocated=100, clear_calls=0, empty_calls=0, synchronizes=0)
+        def clear():
+            state["clear_calls"] += 1
+            if failure:
+                raise RuntimeError("private clear failed")
+            state["allocated"] = 0
+        def synchronize():
+            state["synchronizes"] += 1
+        def empty_cache():
+            state["empty_calls"] += 1
+            if state["empty_calls"] == 1:
+                state["allocated"] -= control_drop
+        cuda = SimpleNamespace(synchronize=synchronize, empty_cache=empty_cache, current_device=lambda: 0,
+            is_initialized=lambda: True,
+            get_allocator_backend=lambda: "synthetic_native",
+            memory_allocated=lambda: state["allocated"], memory_reserved=lambda: state["allocated"] + 10,
+            memory_stats=lambda: {"active_bytes.all.current": state["allocated"], "active.all.current": 1,
+                                 "requested_bytes.all.current": state["allocated"]})
+        torch = SimpleNamespace(__version__=run.TORCH_VERSION, Tensor=CudaMetadataTensor, cuda=cuda,
+                                _C=SimpleNamespace(_cuda_clearCublasWorkspaces=clear))
+        parameter = SimpleNamespace(device=Device("cpu"), shape=(2, 8))
+        model = SimpleNamespace(named_parameters=lambda: iter([("weight", parameter)]), named_buffers=lambda: iter([]))
+        lm, proof, result = SimpleNamespace(pretrained=model), dict(owned_cleanup_complete=False, body_unchanged=True), {}
+        return torch, lm, proof, result, state
+
+    def run_diagnostic(self, **options):
+        torch, lm, proof, result, state = self.make(**options)
+        run.cleanup_diagnostic(torch, lm, proof, result, lambda: None, run.cleanup_api(torch),
+            scan=lambda value: dict(complete=True, storages=[], unique_storages=0), collect=lambda: None)
+        return proof, result, state
+
+    def test_private_clear_once_after_ordinary_control_preserves_original_false(self):
+        proof, result, state = self.run_diagnostic()
+        self.assertEqual((result["allocated_delta_control"], result["allocated_delta_private_clear"]), (0, 100))
+        self.assertEqual((state["clear_calls"], state["empty_calls"], state["synchronizes"]), (1, 2, 4))
+        self.assertIs(proof["owned_cleanup_complete"], False)
+        self.assertTrue(result["original_proof_unchanged"])
+        self.assertTrue(result["diagnostic_complete"])
+        self.assertFalse(result["admission_open"])
+        self.assertEqual(result["registered_after_runtime"]["parameters"]["device_counts"], {"cpu": 1})
+
+    def test_ordinary_control_decrease_is_not_attributed_to_private_clear(self):
+        _, result, _ = self.run_diagnostic(control_drop=40)
+        self.assertEqual((result["allocated_delta_control"], result["allocated_delta_private_clear"]), (40, 60))
+        self.assertFalse(result["control_allocated_stable"])
+
+    def test_api_absence_and_version_mismatch_hold_before_call(self):
+        torch, _, _, _, state = self.make()
+        torch.__version__ = "OTHER_VERSION"
+        with self.assertRaises(run.q.Hold):
+            run.cleanup_api(torch)
+        torch.__version__ = run.TORCH_VERSION
+        torch._C = SimpleNamespace()
+        with self.assertRaises(run.q.Hold):
+            run.cleanup_api(torch)
+        self.assertEqual(state["clear_calls"], 0)
+
+    def test_private_api_error_preserved_and_not_retried(self):
+        torch, lm, proof, result, state = self.make(failure=True)
+        _, error = run.safely(lambda: run.cleanup_diagnostic(torch, lm, proof, result, lambda: None,
+            run.cleanup_api(torch), scan=lambda value: dict(complete=True), collect=lambda: None))
+        self.assertEqual(error["message"], "private clear failed")
+        self.assertEqual(state["clear_calls"], 1)
+        self.assertNotIn("private_clear_returned", result)
+        self.assertFalse(proof["owned_cleanup_complete"])
+
+    def test_incomplete_bounded_scan_holds_without_clear(self):
+        torch, lm, proof, result, state = self.make()
+        with self.assertRaises(run.q.Hold):
+            run.cleanup_diagnostic(torch, lm, proof, result, lambda: None, run.cleanup_api(torch),
+                scan=lambda value: dict(complete=False), collect=lambda: None)
+        self.assertEqual(state["clear_calls"], 0)
+
+    def test_metadata_deduplicates_storage_and_releases_owned_list(self):
+        torch, _, _, _, _ = self.make()
+        storage = Storage()
+        objects = [CudaMetadataTensor(storage), CudaMetadataTensor(storage)]
+        refs = [weakref.ref(value) for value in objects]
+        result = run.cuda_storage_metadata(torch, objects_fn=lambda: objects)
+        gc.collect()
+        self.assertEqual((result["cuda_tensor_objects"], result["unique_storages"], result["unique_storage_bytes"]), (2, 1, 64))
+        self.assertTrue(all(ref() is None for ref in refs))
+        self.assertEqual(objects, [])
+        json.dumps(result, allow_nan=False)
+
+    def test_metadata_limits_and_error_always_release_list_and_loop_variable(self):
+        torch, _, _, _, _ = self.make()
+        for limits in (dict(maximum_objects=1), dict(maximum_storages=1)):
+            objects = [CudaMetadataTensor(Storage(i)) for i in range(2)]
+            refs = [weakref.ref(value) for value in objects]
+            result = run.cuda_storage_metadata(torch, objects_fn=lambda: objects, **limits)
+            self.assertFalse(result["complete"])
+            self.assertTrue(all(ref() is None for ref in refs))
+            self.assertEqual(objects, [])
+        class Broken(CudaMetadataTensor):
+            def untyped_storage(self):
+                raise RuntimeError("storage metadata failed")
+        objects = [Broken()]
+        with self.assertRaisesRegex(RuntimeError, "metadata failed"):
+            run.cuda_storage_metadata(torch, objects_fn=lambda: objects)
+        self.assertEqual(objects, [])
+
+    def test_imported_torch_source_paths_and_hashes_are_checked(self):
+        with tempfile.TemporaryDirectory(prefix="torch_source_synthetic_") as temporary:
+            paths = [Path(temporary) / (str(i) + ".py") for i in range(4)]
+            for path in paths:
+                run.q.external.write_json(path, dict(synthetic=True))
+            fake = SimpleNamespace(__file__=str(paths[0]), version=SimpleNamespace(__file__=str(paths[1])),
+                cuda=SimpleNamespace(__file__=str(paths[2]), memory=SimpleNamespace(__file__=str(paths[3]))))
+            signature = dict(files={str(path): run.q.digest(path) for path in paths})
+            self.assertEqual(len(run.imported_torch_identity(fake, signature)), 4)
+            signature["files"][str(paths[0])] = "0" * 64
+            with self.assertRaises(ValueError):
+                run.imported_torch_identity(fake, signature)
+
+    def test_uninitialized_pre_snapshot_does_not_query_or_initialize_cuda(self):
+        def forbidden():
+            raise AssertionError("CUDA initialization/query forbidden")
+        fake = SimpleNamespace(cuda=SimpleNamespace(is_initialized=lambda: False, current_device=forbidden,
+            memory_stats=forbidden, memory_allocated=forbidden, memory_reserved=forbidden))
+        result = {}
+        run.record_snapshot(fake, None, result, "pre", lambda: None,
+            scan=lambda value: dict(complete=True, unique_storages=0), rss_fn=lambda: 123)
+        self.assertFalse(result["allocator"]["cuda_initialized"])
+        self.assertFalse(result["registered"]["model_present"])
+        self.assertEqual(result["phase"], "pre")
+        self.assertFalse(result["cpu_observer"]["creates_cuda_tensors"])
+
+    def test_resident_and_post_snapshots_have_device_and_heap_metadata(self):
+        torch, lm, proof, _, _ = self.make()
+        snapshots = {}
+        for phase in ("resident", "post"):
+            target = snapshots.setdefault(phase, {})
+            run.record_snapshot(torch, lm.pretrained, target, phase, lambda: None,
+                scan=lambda value: dict(complete=True, unique_storages=0), rss_fn=lambda: 321)
+            self.assertEqual(target["registered"]["parameters"]["device_counts"], {"cpu": 1})
+            self.assertEqual(target["cpu_observer"]["rss_before_snapshot_bytes"], 321)
+        self.assertFalse(proof["owned_cleanup_complete"])
+
+    def test_gc_heap_rss_and_temporary_strong_reference_limitations_are_explicit(self):
+        torch, _, _, _, _ = self.make()
+        samples = iter([100, 200, 150])
+        objects = [CudaMetadataTensor()]
+        result = run.cuda_storage_metadata(torch, objects_fn=lambda: objects, rss_fn=lambda: next(samples))
+        heap = result["cpu_heap"]
+        self.assertEqual((heap["rss_before_scan_bytes"], heap["rss_while_gc_list_owned_bytes"],
+                          heap["rss_after_list_release_bytes"]), (100, 200, 150))
+        self.assertGreater(heap["gc_list_shallow_bytes"], 0)
+        self.assertIn("TEMPORARY_STRONG_REFERENCES", heap["limitation"])
+        self.assertEqual(objects, [])
+
+    def test_complete_three_phase_inventory_is_required(self):
+        snapshots = {phase: dict(phase=phase, python_cuda=dict(complete=True),
+            registered=dict(model_present=phase != "pre")) for phase in ("pre", "resident", "post")}
+        run.verify_snapshots(snapshots)
+        snapshots.pop("resident")
+        with self.assertRaises(ValueError):
+            run.verify_snapshots(snapshots)
+
+
+class ClosureTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="qwen35_observer_synthetic_")
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+        self.elapsed = [1.]
+        self.signature = dict(sha256="A" * 64)
+        self.admission = dict(deadline_epoch=run.q.LATEST, hard_cap_seconds=570, cleanup_reserve_seconds=30)
+        self.report = dict(schema=run.SCHEMA, tag=run.TAG, returncode=0, model_load_attempted=True,
+            model_proof=dict(owned_cleanup_complete=True), assets={}, observations=dict(observations_complete=True),
+            quality_claim=False, admission_open=False, benchmark_rows=0,
+            raw_recount=dict(independent_recount=True, counts=dict(snapshot=10, comparison=10)))
+
+    def finish(self, **kwargs):
+        options = dict(identity_fn=lambda: self.signature, verify_fn=lambda pins: None,
+            runtime_fn=lambda proof, assets: None, clock=lambda: self.elapsed[0], wall=lambda: run.q.LATEST - 1000,
+            timer=lambda seconds: nullcontext())
+        options.update(kwargs)
+        run.finalize(self.report, self.directory, self.signature, {}, self.admission, 0,
+                     lambda: dict(synthetic_nvml=True), **options)
+
+    def test_observation_only_closure(self):
+        self.finish()
+        closure = run.q.read_json(self.directory / "phase_closure.json")
+        self.assertFalse(closure["admission_open"])
+        self.assertFalse(closure["numerical_pass_claim"])
+        self.assertTrue(self.report["phase_closure_verified"])
+
+    def test_report_written_before_cleanup_error_veto(self):
+        def incomplete(*args):
+            raise ValueError("cleanup incomplete")
+        self.finish(runtime_fn=incomplete)
+        self.assertTrue((self.directory / "report.json").is_file())
+        self.assertTrue((self.directory / "phase_veto.json").is_file())
+        self.assertEqual(self.report["returncode"], 9)
+
+    def test_private_clear_zero_cannot_repair_original_cleanup_failure(self):
+        self.report["model_proof"]["owned_cleanup_complete"] = False
+        self.report["cleanup_diagnostic"] = dict(after_private_clear_control=dict(allocated_bytes=0),
+                                                  original_owned_cleanup_complete=False)
+        def original_check(proof, assets):
+            if proof["owned_cleanup_complete"] is not True:
+                raise ValueError("original cleanup incomplete")
+        self.finish(runtime_fn=original_check)
+        self.assertEqual(self.report["returncode"], 9)
+        self.assertFalse(run.q.read_json(self.directory / "report.json")["model_proof"]["owned_cleanup_complete"])
+        self.assertTrue((self.directory / "phase_veto.json").exists())
+
+    def test_original_error_survives_writer_failure(self):
+        self.report["original_error"] = dict(type="RuntimeError", message="original evaluation error", traceback="SYNTHETIC")
+        def broken(path, value):
+            if path.name == "report.json":
+                raise OSError("report write failed")
+            run.q.external.write_json(path, value)
+        self.finish(write=broken)
+        veto = run.q.read_json(self.directory / "phase_veto.json")
+        self.assertEqual(veto["original_error"]["message"], "original evaluation error")
+        self.assertEqual(veto["closure_error"]["type"], "OSError")
+
+    def test_late_report0_is_vetoed_not_overwritten(self):
+        def delayed(path, value):
+            run.q.external.write_json(path, value)
+            if path.name == "report.json":
+                self.elapsed[0] = 571
+        self.finish(write=delayed)
+        self.assertEqual(run.q.read_json(self.directory / "report.json")["returncode"], 0)
+        self.assertEqual(self.report["returncode"], 9)
+        self.assertTrue((self.directory / "phase_veto.json").exists())
+
+    def test_closure_write_and_final_read_time_are_checked(self):
+        def delayed(path):
+            result = run.q.read_json(path)
+            if path.name == "phase_closure.json":
+                self.elapsed[0] = 571
+            return result
+        self.finish(read=delayed)
+        self.assertEqual(self.report["returncode"], 9)
+
+    def test_source_and_asset_change_veto(self):
+        self.finish(identity_fn=lambda: dict(sha256="B" * 64))
+        self.assertEqual(self.report["returncode"], 9)
+        self.assertTrue((self.directory / "report.json").exists())
+
+    def test_asset_change_and_missing_recount_veto(self):
+        def changed(pins):
+            raise ValueError("asset changed")
+        self.finish(verify_fn=changed)
+        self.assertEqual(self.report["returncode"], 9)
+        self.assertTrue((self.directory / "report.json").exists())
+
+    def test_success_without_raw_recount_veto(self):
+        self.report.pop("raw_recount")
+        self.finish()
+        self.assertEqual(self.report["returncode"], 9)
+
+    def test_existing_report_is_not_overwritten(self):
+        run.q.external.write_json(self.directory / "report.json", dict(preserved=True))
+        self.finish()
+        self.assertEqual(run.q.read_json(self.directory / "report.json"), dict(preserved=True))
+        self.assertEqual(self.report["returncode"], 9)
+
+
+class RuntimeProofTests(unittest.TestCase):
+    def setUp(self):
+        from scripts.test_p106b_qwen35_text_core6 import inventory_fixture, FakeTorch
+        _, inventory, source, _, body = inventory_fixture()
+        self.assets = dict(inventory=inventory)
+        self.proof = dict(model_loaded=True, body_unchanged=True, tokenizer_unchanged=True, owned_cleanup_complete=True,
+            key_consumption=run.q.verify_consumption(body, inventory, source.__getitem__, FakeTorch),
+            tokenizer_composite_contract=dict(passed=True, original_json_added_tokens=22, config_added_tokens=33,
+                extra_list=list(range(13)), named_tokens={str(i): i for i in range(7)}))
+
+    def test_all_actual_value_receipts_required_without_fabricating_hybrid_pass(self):
+        run.verify_runtime(self.proof, self.assets)
+        self.assertNotIn("hybrid_canary", self.proof)
+        self.proof["key_consumption"]["language_values"].pop()
+        with self.assertRaises(ValueError):
+            run.verify_runtime(self.proof, self.assets)
+
+    def test_untied_head_bad_value_or_incomplete_cleanup_rejected(self):
+        for field in ("tied_head_alias", "passed"):
+            with self.subTest(field=field):
+                self.proof["key_consumption"][field] = False
+                with self.assertRaises(ValueError):
+                    run.verify_runtime(self.proof, self.assets)
+                self.proof["key_consumption"][field] = True
+        self.proof["owned_cleanup_complete"] = False
+        with self.assertRaises(ValueError):
+            run.verify_runtime(self.proof, self.assets)
+
+    def test_value_sha_and_config_only_tokens_cannot_be_omitted(self):
+        self.proof["key_consumption"]["language_values"][0].pop("fp32_value_sha256")
+        with self.assertRaises(ValueError):
+            run.verify_runtime(self.proof, self.assets)
+
+
+class RawTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix="qwen35_raw_synthetic_")
+        self.addCleanup(temporary.cleanup)
+        self.directory = Path(temporary.name)
+
+    def write(self, rows):
+        from scripts.p106b_shards import ShardWriter
+        writer = ShardWriter(self.directory, "synthetic", limit=512)
+        for row in rows:
+            writer.append(row)
+        manifest = writer.close(lineage=dict(synthetic=True))
+        run.q.pin_manifest(self.directory, "synthetic", manifest, {})
+        return manifest
+
+    def test_complete_inventory_recounted_from_multiple_exclusive_shards(self):
+        rows = [dict(kind="snapshot", name=str(i)) for i in range(10)]
+        rows += [dict(kind="comparison", left=str(i), right="other", actual_input_shapes=[[1, 3], [1, 3]],
+            same_input_shape=True, logits=dict(violation_count=0, violations_by_prefix_position=[0, 0, 0],
+            original_allclose=True)) for i in range(10)]
+        manifest = self.write(rows)
+        self.assertEqual(run.recount_observations(self.directory, manifest, True),
+                         dict(independent_recount=True, counts=dict(snapshot=10, comparison=10)))
+
+    def test_duplicate_and_incomplete_records_rejected(self):
+        manifest = self.write([dict(kind="snapshot", name="same"), dict(kind="snapshot", name="same")])
+        with self.assertRaises(ValueError):
+            run.recount_observations(self.directory, manifest, False)
+
+    def test_partial_inventory_cannot_be_called_complete(self):
+        manifest = self.write([dict(kind="snapshot", name="only")])
+        with self.assertRaises(ValueError):
+            run.recount_observations(self.directory, manifest, True)
+
+
+class SourceTests(unittest.TestCase):
+    def test_import_check_only_blocks_all_model_backends(self):
+        code = """import builtins, sys
+original = builtins.__import__
+def guarded(name, *args, **kwargs):
+    if name.split('.')[0] in {'torch','transformers','tokenizers','lm_eval','datasets','safetensors','numpy'}:
+        raise AssertionError('backend import forbidden: ' + name)
+    return original(name, *args, **kwargs)
+builtins.__import__ = guarded
+from scripts import diag_p106b_qwen35_numeric_observer as run
+raise SystemExit(run.main(['--check-only']))
+"""
+        reply = subprocess.run([sys.executable, "-B", "-c", code], cwd=run.ROOT, capture_output=True, text=True, timeout=30)
+        self.assertEqual(reply.returncode, 0, reply.stderr)
+        result = json.loads(reply.stdout)
+        self.assertEqual((result["models"], result["tokenizers"], result["gpu_calls"]), (0, 0, 0))
+
+    def test_no_frozen_admission_finalizer_or_monkeypatch(self):
+        source = Path(run.__file__).read_text()
+        self.assertTrue(source.isascii())
+        tree = ast.parse(source)
+        self.assertFalse(any(isinstance(node, (ast.Global, ast.Nonlocal)) for node in ast.walk(tree)))
+        self.assertFalse(any(isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and node.func.attr in ("verify_model_proof", "finalize", "resize_token_embeddings", "register_forward_hook")
+            for node in ast.walk(tree)))
+
+    def test_internal600_rejected_before_source_assets_or_model(self):
+        with self.assertRaisesRegex(ValueError, "60..570"):
+            run.execute("A" * 64, "2026-10-24T08:40:00+09:00", 600)
+
+
+if __name__ == "__main__":
+    unittest.main()

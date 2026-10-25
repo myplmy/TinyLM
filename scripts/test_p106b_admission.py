@@ -1,0 +1,712 @@
+#!/usr/bin/env python3
+"""Synthetic-only CPU regressions for the real publication/import adapter.
+
+No original/candidate corpus, checkpoint, model or GPU is opened. The tests use
+fresh temporary packets, the existing publisher/importer and a tiny tokenizer.
+"""
+from __future__ import annotations
+
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
+import copy
+import io
+import json
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+from types import SimpleNamespace
+import unittest
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from scripts import p106b_admission as m
+from scripts import p106b_source_cleanup as cleanup
+
+
+class SyntheticTokenizer:
+    truncation = None
+    padding = None
+
+    def encode(self, text):
+        ids, offsets, pos = [], [], 0
+        while pos < len(text):
+            end = pos + (5 if text.startswith("<eos>", pos) else 1)
+            ids.append(2 if end-pos == 5 else ord(text[pos]) + 10)
+            offsets.append((pos, end))
+            pos = end
+        return SimpleNamespace(ids=ids, offsets=offsets)
+
+    def token_to_id(self, token):
+        return 2 if token == "<eos>" else None
+
+
+class AdmissionTests(unittest.TestCase):
+    def setUp(self):
+        self.stack = ExitStack()
+        self.addCleanup(self.stack.close)
+        temporary = self.stack.enter_context(tempfile.TemporaryDirectory(prefix="p106b_admission_synthetic_"))
+        self.root = Path(temporary) / "repo"
+        self.root.mkdir()
+        self.stack.enter_context(patch.object(m, "ROOT", self.root))
+        self.stack.enter_context(patch.object(m.publication, "ROOT", self.root))
+        self.stack.enter_context(patch.object(cleanup, "ROOT", self.root))
+        self.base = self.root / m.publication.BASE_REL
+        self.stack.enter_context(patch.object(m.publication, "BASE", self.base))
+        self.packet_path = self.base / "packets/unit.json"
+        self.packet_path.parent.mkdir(parents=True)
+        self.import_path = self.root / "imported"
+        self.publications_path = self.root / "publications.json"
+        self.bundle_path = self.root / "bundle.json"
+        self.reviews_path = self.root / "reviews.json"
+        self.splits_path = self.root / "root_splits.json"
+        self.contract_path = self.root / "encoding.json"
+        self.output = self.root / "new_training_version"
+        self.tokenizer = SyntheticTokenizer()
+
+    def write(self, path, value):
+        path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        return m.read_artifact(path)[1]["sha256"]
+
+    def rewrite(self, path, function):
+        value = json.loads(path.read_text(encoding="utf-8"))
+        function(value)
+        self.write(path, value)
+        return value
+
+    def fixture(self, *, kind="sft", size=1, triage=(), author_hold=(), source_split="train", identical=False,
+                response_file=False, same_native_payload=False, explicit_native_roots=False):
+        self.kind = kind
+        sources, responses, canonical_rows, canonical_raw = [], [], [], []
+        for source_id in range(size):
+            suffix = "same" if identical else str(source_id)
+            if kind == "sft":
+                messages = [dict(role=role, content=content + suffix) for role, content in
+                    (("user", "첫 질문 "), ("assistant", "원래 오해 "),
+                     ("user", "교정 조건 "), ("assistant", "교정 답 "))]
+                meta = dict(source_id="synthetic-" + str(source_id), supervised_assistant_turns=[2])
+                canonical = dict(messages=messages, meta=meta)
+                raw = (json.dumps(canonical, ensure_ascii=False) + "\n").encode()
+                canonical_rows.append(canonical)
+                canonical_raw.append(raw)
+                source = dict(source_index=source_id, source_id=meta["source_id"], root_id="root-" + str(source_id),
+                    source_line_sha256=m.digest(raw.rstrip(b"\r\n")), source_split=source_split,
+                    messages=messages, meta=meta)
+                variants = [] if source_id in triage else [dict(kind=variant_kind,
+                    messages=[dict(role=msg["role"], content=msg["content"] + " " + variant_kind) for msg in messages])
+                    for variant_kind in m.batches.KINDS]
+                reason = "합성 원천 검토 보류" if source_id in triage or source_id in author_hold else ""
+                response = dict(source_index=source_id, variants=variants, triage_reason=reason)
+            else:
+                content = "합성 본문 " + suffix + "\n둘째 문장\n"
+                source = dict(id=source_id, eos_segment_index=source_id, text=content,
+                    sha256=m.batches.sha(content), source_split=source_split)
+                response = dict(id=source_id, decision="HOLD" if source_id in author_hold else "KEEP", changes=[])
+                if explicit_native_roots:
+                    source["root_id"] = "native-root-" + str(source_id)
+                if same_native_payload:
+                    response.update(decision="REWRITE", changes=[dict(source_lines=[1, 1],
+                        source_start="합성 본문 " + suffix, source_end="합성 본문 " + suffix,
+                        action="MOVE_TO_PROSE", replacement="같은 합성 본문\n")])
+            sources.append(source)
+            responses.append(response)
+        packet = dict(schema="P106B_LUNA_SFT_TEXT_PACKET_V3" if kind == "sft" else "P106B_NATIVE_REVIEW_TEXT_PACKET_V5",
+                      training_admission="NOT_ADMITTED")
+        if kind == "sft":
+            canonical_path = self.root / "synthetic_canonical.jsonl"
+            canonical_path.write_bytes(b"".join(canonical_raw))
+            packet.update(sources=sources, required_variants=list(m.batches.KINDS),
+                          canonical_sha256=m.read_artifact(canonical_path)[1]["sha256"])
+        else:
+            packet.update(documents=sources, edit_contract=m.batches.LINE_EDIT_CONTRACT)
+        self.write(self.packet_path, packet)
+        entries = []
+        for source_id, response in enumerate(responses):
+            scratch = self.base / ("author_scratch/synthetic/unique_" + str(source_id) + ".json")
+            scratch.parent.mkdir(parents=True, exist_ok=True)
+            self.write(scratch, response)
+            rc, receipt = m.publication.publish(str(self.packet_path), str(scratch), kind)
+            self.assertEqual(rc, 0, receipt)
+            entries.append(dict(source_id=source_id,
+                receipt=str(self.root / receipt["attempt"] / "receipt.json"),
+                published=str(self.root / receipt["final"])))
+        response_input = self.base / "published/unit"
+        if response_file:
+            response_input = self.root / "response_file.json"
+            self.write(response_input, responses)
+        if kind == "sft":
+            with patch.object(m.batches, "CANONICAL", canonical_path), patch.object(m.batches, "source_rows",
+                    side_effect=lambda: iter((i, raw, row) for i, (raw, row) in enumerate(zip(canonical_raw, canonical_rows)))):
+                report = m.batches.import_packet(self.packet_path, response_input, self.import_path, kind)
+        else:
+            report = m.batches.import_packet(self.packet_path, response_input, self.import_path, kind)
+        # Source split is immutable. The real V5 SFT importer is TRAIN-only;
+        # evaluation-source rejection is exercised through native fixtures.
+        publication_index = dict(schema=m.PUBLICATIONS_SCHEMA, kind=kind,
+            parent_packet_sha256=m.read_artifact(self.packet_path)[1]["sha256"], entries=entries)
+        if response_file:
+            publication_index["response_file"] = str(response_input)
+        self.write(self.publications_path, publication_index)
+        self.receipt_entries, self.report = entries, report
+        return self.freeze()
+
+    def freeze(self):
+        result = m.freeze(self.packet_path, self.import_path, self.publications_path, self.bundle_path)
+        bundle = json.loads(self.bundle_path.read_text(encoding="utf-8"))
+        self.write_review_inputs(bundle)
+        return bundle, result
+
+    def write_review_inputs(self, bundle):
+        reviews = dict(schema=m.REVIEWS_SCHEMA, parent_packet_sha256=bundle["parent_packet_sha256"],
+                      bundle_sha256=m.read_artifact(self.bundle_path)[1]["sha256"], decisions=[])
+        for candidate in bundle["candidates"]:
+            reviews["decisions"].append(dict(candidate_id=candidate["candidate_id"],
+                candidate_sha256=candidate["candidate_sha256"], decision="ACCEPT",
+                supervised_assistant_turns=[2] if bundle["kind"] == "sft" else [],
+                reviews={dimension: dict(decision="ACCEPT", reviewer="synthetic-reviewer",
+                    reason="합성 fixture 명시 판정", evidence=dict(source_sha256=candidate["source_sha256"],
+                        reference="synthetic parent packet, source " + str(candidate["source_id"]),
+                        context="합성 원문맥의 조건·지도턴·권리 주장 입력")) for dimension in m.DIMENSIONS}))
+        self.write(self.reviews_path, reviews)
+        roots = []
+        for source in bundle["sources"]:
+            split = source["source_split"] or "train"
+            roots.append(dict(root_id=source["root_id"], group_id="document-group-" + str(source["source_id"]),
+                split=split, source_history=[dict(source_id=source["source_id"],
+                    source_sha256=source["source_sha256"], source_split=split, prior_exposure_splits=[split],
+                    source_document_id="synthetic-document-" + str(source["source_id"]),
+                    evidence="합성 원천 문서와 노출 이력")]))
+        self.write(self.splits_path, dict(schema=m.SPLITS_SCHEMA, parent_packet_sha256=bundle["parent_packet_sha256"],
+            split_policy_reference="synthetic existing split policy, unchanged", roots=roots))
+        token_path = self.root / "synthetic_tokenizer.json"
+        token_sha = self.write(token_path, dict(schema="SYNTHETIC_CHARACTER_TOKENIZER_V1"))
+        self.write(self.contract_path, dict(schema=m.ENCODING_SCHEMA, template="chatml", context=4096,
+            tokenizer=dict(path=str(token_path), sha256=token_sha),
+            native_eos=dict(policy="APPEND_ONE", token="<eos>", id=2)))
+
+    def prepare(self):
+        return m.prepare(self.bundle_path, self.reviews_path, self.splits_path, self.contract_path,
+                         self.output, synthetic_tokenizer=self.tokenizer)
+
+    def token_rows(self, result):
+        manifest = json.loads(Path(result["manifest"]["path"]).read_text(encoding="utf-8"))
+        rows = []
+        for corpus in manifest["corpora"]:
+            for shard in corpus["manifest"]["shards"]:
+                rows.extend(json.loads(line) for line in (self.output / shard["path"]).read_text().splitlines())
+        return rows, manifest
+
+    def test_real_import_adapter_freezes_exact_sft_lineage_and_remains_not_admitted(self):
+        bundle, result = self.fixture(size=2, triage=(1,))
+        self.assertEqual(bundle["source_ids"], [0, 1])
+        self.assertEqual(len(bundle["candidates"]), 3)
+        self.assertTrue(bundle["sources"][1]["triage_only"])
+        self.assertEqual(result["training_admission"], "NOT_ADMITTED")
+        self.assertIn("tinylm/train/mtp_sft.py", bundle["code_sha256"])
+        for candidate in bundle["candidates"]:
+            other = {k: v for k, v in candidate.items() if k != "candidate_sha256"}
+            self.assertEqual(candidate["candidate_sha256"], m.sha_value(other))
+            self.assertEqual(candidate["published_receipt_sha256"], bundle["sources"][0]["published_receipt_sha256"])
+
+    def test_actual_encode_record_masks_only_reviewed_turn_and_preserves_full_conversation(self):
+        self.fixture()
+        result = self.prepare()
+        rows, manifest = self.token_rows(result)
+        from tinylm.chat.serialize import loss_spans, serialize
+        self.assertEqual(result["training_admission"], "SYNTHETIC_ONLY_NOT_ADMITTED")
+        self.assertEqual(len(rows), 3)
+        for row in rows:
+            canonical = row["canonical"]
+            serialized = serialize(canonical, "chatml")
+            span = loss_spans(canonical, "chatml")[1]
+            expected = serialized[span[0]:span[1]]
+            actual = "".join(chr(token-10) for token in row["y"] if token != -100)
+            self.assertEqual(actual, expected)
+            self.assertEqual(set(row["segments"]), {0, 2})
+            self.assertEqual(row["input_tokens"], len(serialized)-1)
+            self.assertEqual(row["assistant_target_tokens"], len(expected))
+            self.assertEqual(row["ntp_target_tokens"], 0)
+            self.assertEqual(len(canonical["messages"]), 4)
+            self.assertEqual(row["source_history"][0]["source_split"], "train")
+            self.assertEqual(row["training_admission"], "SYNTHETIC_ONLY_NOT_ADMITTED")
+        self.assertEqual(manifest["triage_only_source_ids"], [])
+        self.assertEqual(m.verify_admission(self.output, result["manifest"]["sha256"])["verified_rows"], 3)
+
+    def test_native_has_separate_ntp_counts_and_explicit_eos(self):
+        self.fixture(kind="native")
+        result = self.prepare()
+        rows, manifest = self.token_rows(result)
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row["objective"], "NATIVE_NTP")
+        self.assertNotIn("segments", row)
+        self.assertNotIn("canonical", row)
+        self.assertEqual(row["y"][-1], 2)
+        self.assertEqual(row["assistant_target_tokens"], 0)
+        self.assertEqual(row["ntp_target_tokens"], row["input_tokens"])
+        self.assertEqual(manifest["counts"]["assistant_target_tokens"], 0)
+
+    def test_file_bytes_import_identity_uses_real_response_and_published_objects(self):
+        bundle, _ = self.fixture(response_file=True)
+        self.assertEqual(self.report["response_identity_kind"], "FILE_BYTES")
+        result = self.prepare()
+        self.assertEqual(result["accepted_rows"], 3)
+        response_path = self.root / "response_file.json"
+        self.assertTrue(any(artifact["path"] == str(response_path) for artifact in bundle["artifacts"]))
+        self.rewrite(response_path, lambda rows: rows.pop())
+        with self.assertRaisesRegex(ValueError, "response file SHA"):
+            m.checked_bundle(self.bundle_path)
+
+    def test_stale_candidate_review_sha_rejected_before_output(self):
+        self.fixture()
+        self.rewrite(self.reviews_path, lambda doc: doc["decisions"][0].update(candidate_sha256="A" * 64))
+        with self.assertRaisesRegex(ValueError, "candidate SHA"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_stale_bundle_sha_and_modified_frozen_payload_rejected(self):
+        self.fixture()
+        self.rewrite(self.reviews_path, lambda doc: doc.update(bundle_sha256="A" * 64))
+        with self.assertRaisesRegex(ValueError, "bundle SHA"):
+            self.prepare()
+        self.rewrite(self.bundle_path, lambda doc: doc["candidates"][0]["payload"]["messages"][1].update(content="changed"))
+        with self.assertRaisesRegex(ValueError, "stale"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_parent_128_vs_imported_66_never_promoted_to_full_coverage(self):
+        self.fixture()
+        self.rewrite(self.packet_path, lambda doc: doc["sources"].extend(
+            dict(doc["sources"][0], source_index=i, root_id="root-" + str(i)) for i in range(1, 128)))
+        self.rewrite(self.import_path / "report.json", lambda doc: doc.update(source_rows=66))
+        with self.assertRaisesRegex(ValueError, "parent packet SHA"):
+            m.build_bundle(self.packet_path, self.import_path, self.publications_path)
+        self.assertFalse(self.output.exists())
+
+    def test_missing_parent_receipt_id_and_duplicate_source_id_are_rejected(self):
+        self.fixture(size=2)
+        self.rewrite(self.publications_path, lambda doc: doc["entries"].pop())
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            m.build_bundle(self.packet_path, self.import_path, self.publications_path)
+        self.rewrite(self.packet_path, lambda doc: doc["sources"].append(copy.deepcopy(doc["sources"][0])))
+        with self.assertRaises(ValueError):
+            m.build_bundle(self.packet_path, self.import_path, self.publications_path)
+
+    def test_partial_or_failed_publication_receipt_is_not_admission_evidence(self):
+        self.fixture()
+        self.rewrite(Path(self.receipt_entries[0]["receipt"]), lambda doc: doc.update(
+            status="ALREADY_EXISTS_NOT_A_COMPLETION_PROOF", exit_code=8, published_by_this_attempt=False))
+        with self.assertRaisesRegex(ValueError, "successful copy-only"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_changed_receipt_and_published_bytes_are_detected(self):
+        self.fixture()
+        self.rewrite(Path(self.receipt_entries[0]["published"]), lambda doc: doc.update(triage_reason="changed after receipt"))
+        with self.assertRaisesRegex(ValueError, "candidate SHA"):
+            self.prepare()
+
+    def test_hold_and_reject_candidates_never_enter_shards(self):
+        self.fixture()
+        def choose(doc):
+            doc["decisions"][0]["decision"] = "HOLD"
+            doc["decisions"][0]["reviews"]["meaning"]["decision"] = "HOLD"
+            doc["decisions"][1]["decision"] = "REJECT"
+        self.rewrite(self.reviews_path, choose)
+        result = self.prepare()
+        rows, manifest = self.token_rows(result)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(result["excluded_rows"], 2)
+        self.assertEqual({entry["decision"] for entry in manifest["excluded"]}, {"HOLD", "REJECT"})
+
+    def test_accept_cannot_hide_hold_dimension_or_missing_reviewer(self):
+        self.fixture()
+        self.rewrite(self.reviews_path, lambda doc: doc["decisions"][0]["reviews"]["rights"].update(decision="HOLD"))
+        with self.assertRaisesRegex(ValueError, "HOLD/REJECT"):
+            self.prepare()
+        self.rewrite(self.reviews_path, lambda doc: doc["decisions"][0]["reviews"]["rights"].update(decision="ACCEPT", reviewer=""))
+        with self.assertRaisesRegex(ValueError, "reviewer"):
+            self.prepare()
+
+    def test_contextual_evidence_is_explicit_and_bound_to_source_sha(self):
+        bundle, _ = self.fixture()
+        for change, expected in ((lambda review: review.pop("evidence"), "evidence source SHA"),
+                (lambda review: review["evidence"].update(source_sha256="A" * 64), "evidence source SHA"),
+                (lambda review: review["evidence"].update(context=""), "source-context evidence")):
+            document = json.loads(self.reviews_path.read_text())
+            change(document["decisions"][0]["reviews"]["meaning"])
+            with self.subTest(expected=expected), self.assertRaisesRegex(ValueError, expected):
+                m.reviewed_candidates(document, bundle, m.read_artifact(self.bundle_path)[1]["sha256"])
+
+    def test_no_implicit_review_or_zero_row_success(self):
+        self.fixture()
+        self.rewrite(self.reviews_path, lambda doc: doc["decisions"].pop())
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            self.prepare()
+        bundle = json.loads(self.bundle_path.read_text())
+        self.write_review_inputs(bundle)
+        self.rewrite(self.reviews_path, lambda doc: [row.update(decision="HOLD") for row in doc["decisions"]])
+        with self.assertRaisesRegex(ValueError, "zero accepted"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_author_hold_needs_explicit_source_bound_resolution(self):
+        self.fixture(author_hold=(0,))
+        with self.assertRaisesRegex(ValueError, "HOLD resolution"):
+            self.prepare()
+        self.rewrite(self.reviews_path, lambda doc: [row.update(author_hold_resolution="합성 원문맥으로 보류 사유 해소")
+                                                   for row in doc["decisions"]])
+        rows, _ = self.token_rows(self.prepare())
+        self.assertTrue(all(row["author_hold"] for row in rows))
+
+    def test_source_train_exposure_is_not_relabelled_as_unseen_holdout(self):
+        self.fixture()
+        self.rewrite(self.splits_path, lambda doc: doc["roots"][0].update(split="val"))
+        with self.assertRaisesRegex(ValueError, "TRAIN-exposed"):
+            self.prepare()
+
+    def train_reuse_ledger(self, bundle):
+        readback = dict(actual_step_events=4, exact_source_id_messages_license_revision_matching=True,
+            matched_sources=[dict(canonical_source_index=s["source_id"],
+                canonical_source_line_sha256=s["source_sha256"], current_root=s["root_id"],
+                past_root=s["root_id"], record_sha256="C" * 64) for s in bundle["sources"]])
+        evidence_path = self.root / "historical_train_readback.json"
+        evidence_sha = self.write(evidence_path, readback)
+        document = json.loads(self.splits_path.read_text())
+        document.update(schema="P106B_ADMISSION_ROOT_SPLITS_TRAIN_REUSE_V2",
+            identity_scope="SOURCE_RECORD_TRAIN_ONLY", global_document_overlap="UNVERIFIED",
+            source_document_identity="MISSING",
+            train_exposure_readback=dict(path=str(evidence_path), sha256=evidence_sha))
+        sources = {s["source_id"]: s for s in bundle["sources"]}
+        for root in document["roots"]:
+            for entry in root["source_history"]:
+                entry["source_document_id"] = None
+                entry["source_record_sha256"] = sources[entry["source_id"]]["source_object_sha256"]
+        self.write(self.splits_path, document)
+        return document
+
+    def test_known_train_reuse_keeps_missing_document_identity_explicit(self):
+        bundle, _ = self.fixture()
+        document = self.train_reuse_ledger(bundle)
+        self.assertEqual(m.root_assignments(document, bundle)["root-0"]["split"], "train")
+        result = self.prepare()
+        rows, manifest = self.token_rows(result)
+        self.assertEqual(manifest["global_document_overlap"], "UNVERIFIED")
+        self.assertEqual(manifest["identity_scope"], "SOURCE_RECORD_TRAIN_ONLY")
+        self.assertTrue(all(r["split"] == "train" for r in rows))
+        self.assertTrue(all(r["source_history"][0]["source_document_id"] is None for r in rows))
+        self.assertEqual(m.verify_admission(self.output, result["manifest"]["sha256"])["verified_rows"], 3)
+
+    def test_train_reuse_cannot_claim_holdout_unseen_or_fabricated_document(self):
+        bundle, _ = self.fixture()
+        baseline = self.train_reuse_ledger(bundle)
+        changes = (
+            lambda d: d["roots"][0].update(split="val"),
+            lambda d: d["roots"][0]["source_history"][0].update(prior_exposure_splits=[]),
+            lambda d: d["roots"][0]["source_history"][0].update(prior_exposure_splits=["train", "test"]),
+            lambda d: d["roots"][0]["source_history"][0].update(source_record_sha256="A" * 64),
+            lambda d: d["roots"][0]["source_history"][0].update(source_document_id="guessed-article"),
+            lambda d: d.update(global_document_overlap="ZERO"),
+            lambda d: d["train_exposure_readback"].update(sha256="A" * 64),
+        )
+        for change in changes:
+            document = copy.deepcopy(baseline)
+            change(document)
+            with self.subTest(document=document), self.assertRaises(ValueError):
+                m.root_assignments(document, bundle)
+
+    def test_train_reuse_requires_matching_actual_train_readback(self):
+        bundle, _ = self.fixture()
+        baseline = self.train_reuse_ledger(bundle)
+        path = Path(baseline["train_exposure_readback"]["path"])
+        for change in (lambda d: d.update(actual_step_events=0),
+                lambda d: d["matched_sources"][0].update(current_root="other-root"),
+                lambda d: d["matched_sources"][0].update(canonical_source_line_sha256="A" * 64),
+                lambda d: d.update(matched_sources=[])):
+            readback = json.loads(path.read_text())
+            change(readback)
+            document = copy.deepcopy(baseline)
+            document["train_exposure_readback"]["sha256"] = self.write(path, readback)
+            with self.subTest(readback=readback), self.assertRaises(ValueError):
+                m.root_assignments(document, bundle)
+            self.train_reuse_ledger(bundle)
+
+    def test_variant_language_metadata_uses_declared_kind_without_changing_source(self):
+        bundle, _ = self.fixture()
+        source = copy.deepcopy(bundle["sources"][0])
+        source["source_metadata"]["language"] = "en"
+        original = copy.deepcopy(source)
+        contract = json.loads(self.contract_path.read_text())
+        for candidate in bundle["candidates"]:
+            kind = candidate["candidate_id"].rsplit(":", 1)[1]
+            row = m.encode_candidate(candidate, dict(supervised_assistant_turns=[2]),
+                                     source, contract, self.tokenizer)
+            meta = row["canonical"]["meta"]
+            self.assertEqual(meta["language"], "en" if kind == "en_rephrase" else "ko")
+            self.assertEqual(meta["source_language"], "en")
+            self.assertEqual(meta["variant_kind"], kind)
+            self.assertEqual(row["canonical"]["messages"], candidate["payload"]["messages"])
+            self.assertEqual(set(s for s in row["segments"] if s), {2})
+        self.assertEqual(source, original)
+        self.rewrite(self.splits_path, lambda doc: doc["roots"][0]["source_history"][0].update(source_split="val"))
+        with self.assertRaisesRegex(ValueError, "split/exposure"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_public_train_without_prior_exposure_can_use_owner_local_val(self):
+        self.fixture()
+        def assign(doc):
+            doc["roots"][0]["split"] = "val"
+            history = doc["roots"][0]["source_history"][0]
+            history["prior_exposure_splits"] = []
+            history["evidence"] = "합성 공개train 원천은 사용전이며 소유자가 localval로 지정했다"
+        self.rewrite(self.splits_path, assign)
+        result = self.prepare()
+        rows, manifest = self.token_rows(result)
+        self.assertTrue(all(row["source_split"] == "train" and row["split"] == "val" for row in rows))
+        self.assertTrue(all(row["source_history"][0]["prior_exposure_splits"] == [] for row in rows))
+        self.assertEqual(manifest["corpora"][0]["split"], "val")
+        self.assertIn("not independent", manifest["limitation"])
+
+    def test_prior_exposure_is_never_inferred_from_an_omitted_history(self):
+        self.fixture()
+        self.rewrite(self.splits_path, lambda doc: doc["roots"][0]["source_history"][0].pop("prior_exposure_splits"))
+        with self.assertRaisesRegex(ValueError, "prior-exposure"):
+            self.prepare()
+
+    def test_eval_data_cannot_enter_training(self):
+        self.fixture(kind="native", source_split="val")
+        self.rewrite(self.splits_path, lambda doc: doc["roots"][0].update(split="train"))
+        with self.assertRaisesRegex(ValueError, "evaluation source"):
+            self.prepare()
+
+    def test_shared_document_group_and_document_identity_prevent_cross_root_leakage(self):
+        bundle, _ = self.fixture(kind="native", size=2, source_split="val")
+        document = json.loads(self.splits_path.read_text())
+        document["roots"][1]["split"] = "test"
+        document["roots"][1]["group_id"] = document["roots"][0]["group_id"]
+        with self.assertRaisesRegex(ValueError, "document group"):
+            m.root_assignments(document, bundle)
+        document["roots"][1]["group_id"] = "different-declared-group"
+        document["roots"][1]["source_history"][0]["source_document_id"] = document["roots"][0]["source_history"][0]["source_document_id"]
+        with self.assertRaisesRegex(ValueError, "original document"):
+            m.root_assignments(document, bundle)
+
+    def test_identical_original_identity_cannot_evade_root_grouping(self):
+        bundle, _ = self.fixture(kind="native", size=2, source_split="val", identical=True,
+                                explicit_native_roots=True)
+        document = json.loads(self.splits_path.read_text())
+        document["roots"][1]["split"] = "test"
+        with self.assertRaisesRegex(ValueError, "original/root source"):
+            m.root_assignments(document, bundle)
+
+    def test_identical_candidate_payload_from_different_sources_cannot_cross_splits(self):
+        bundle, _ = self.fixture(kind="native", size=2, source_split="val", same_native_payload=True)
+        first, second = bundle["candidates"]
+        self.assertEqual(first["payload_sha256"], second["payload_sha256"])
+        self.assertNotEqual(first["source_sha256"], second["source_sha256"])
+        self.rewrite(self.splits_path, lambda doc: doc["roots"][1].update(split="test"))
+        with self.assertRaisesRegex(ValueError, "duplicate candidate payload"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_supervision_cannot_expand_source_allowlist(self):
+        self.fixture()
+        self.rewrite(self.reviews_path, lambda doc: doc["decisions"][0].update(supervised_assistant_turns=[1, 2]))
+        with self.assertRaisesRegex(ValueError, "broaden inherited"):
+            self.prepare()
+
+    def test_supervision_turn_ids_are_explicit_valid_and_nonempty(self):
+        bundle, _ = self.fixture()
+        for turns in ([], [True], [3], [2, 2]):
+            with self.subTest(turns=turns):
+                document = json.loads(self.reviews_path.read_text())
+                document["decisions"][0]["supervised_assistant_turns"] = turns
+                with self.assertRaisesRegex(ValueError, "supervised assistant"):
+                    m.reviewed_candidates(document, bundle, m.read_artifact(self.bundle_path)[1]["sha256"])
+
+    def test_sft_over_context_fails_without_truncating(self):
+        self.fixture()
+        self.rewrite(self.contract_path, lambda doc: doc.update(context=8))
+        with self.assertRaisesRegex(ValueError, "context"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_native_context_eos_and_objective_guards(self):
+        self.fixture(kind="native")
+        self.rewrite(self.contract_path, lambda doc: doc.update(context=2))
+        with self.assertRaisesRegex(ValueError, "context"):
+            self.prepare()
+        self.rewrite(self.contract_path, lambda doc: doc.update(context=4096, native_eos=dict(policy="ALREADY_PRESENT", token="<eos>", id=2)))
+        with self.assertRaisesRegex(ValueError, "EOS is absent"):
+            self.prepare()
+        self.rewrite(self.reviews_path, lambda doc: doc["decisions"][0].update(supervised_assistant_turns=[1]))
+        with self.assertRaisesRegex(ValueError, "native NTP"):
+            self.prepare()
+
+    def test_fixed_tokenizer_template_and_truncation_are_checked(self):
+        self.fixture()
+        document = json.loads(self.contract_path.read_text())
+        original_sha = document["tokenizer"]["sha256"]
+        self.rewrite(self.contract_path, lambda doc: doc["tokenizer"].update(sha256="A" * 64))
+        with self.assertRaisesRegex(ValueError, "tokenizer SHA"):
+            self.prepare()
+        self.rewrite(self.contract_path, lambda doc: doc["tokenizer"].update(sha256=original_sha))
+        self.tokenizer.truncation = dict(max_length=8)
+        with self.assertRaisesRegex(ValueError, "truncation"):
+            self.prepare()
+        self.tokenizer.truncation = None
+        self.rewrite(self.contract_path, lambda doc: doc.update(template="plain"))
+        with self.assertRaisesRegex(ValueError, "ChatML"):
+            self.prepare()
+
+    def test_existing_output_or_frozen_final_is_never_overwritten(self):
+        self.fixture()
+        before = self.bundle_path.read_bytes()
+        with self.assertRaises(FileExistsError):
+            m.freeze(self.packet_path, self.import_path, self.publications_path, self.bundle_path)
+        self.assertEqual(self.bundle_path.read_bytes(), before)
+        self.output.mkdir()
+        existing = self.output / "admission_manifest.json"
+        existing.write_bytes(b"incomplete previous output")
+        with self.assertRaises(FileExistsError):
+            self.prepare()
+        self.assertEqual(existing.read_bytes(), b"incomplete previous output")
+
+    def test_shard_tampering_and_manifest_tampering_fail_pinned_verification(self):
+        self.fixture()
+        result = self.prepare()
+        _, manifest = self.token_rows(result)
+        shard = self.output / manifest["corpora"][0]["manifest"]["shards"][0]["path"]
+        raw = shard.read_bytes()
+        shard.write_bytes(raw.replace(b"root-0", b"root-1", 1))
+        with self.assertRaisesRegex(ValueError, "hash contract"):
+            m.verify_admission(self.output, result["manifest"]["sha256"])
+        self.rewrite(self.output / "admission_manifest.json", lambda doc: doc.update(accepted_rows=99))
+        with self.assertRaisesRegex(ValueError, "manifest SHA"):
+            m.verify_admission(self.output, result["manifest"]["sha256"])
+
+    def assert_same_size_token_swap_rejected(self, kind):
+        self.fixture(kind=kind)
+        result = self.prepare()
+        real_verify = m.verify_shards
+        swaps = []
+        def verify_then_swap(directory, manifest):
+            real_verify(directory, manifest)
+            spec = manifest["shards"][0]
+            shard = directory / spec["path"]
+            before = shard.read_bytes()
+            rows = [json.loads(line) for line in before.splitlines()]
+            row = rows[0]
+            original_x = row["x"][0]
+            target = next(i for i, value in enumerate(row["y"]) if value != -100)
+            original_y = row["y"][target]
+            row["x"][0] += -1 if original_x % 10 == 9 else 1
+            row["y"][target] += -1 if original_y % 10 == 9 else 1
+            after = b"".join((json.dumps(value, ensure_ascii=False, sort_keys=True,
+                separators=(",", ":")) + "\n").encode("utf-8") for value in rows)
+            self.assertEqual(len(after), len(before))
+            self.assertEqual(after.count(b"\n"), before.count(b"\n"))
+            self.assertNotEqual(m.digest(after), spec["sha256"])
+            shard.write_bytes(after)
+            swaps.append((original_x, original_y))
+        with patch.object(m, "verify_shards", verify_then_swap):
+            with self.assertRaisesRegex(ValueError, "shard changed after verification"):
+                m.verify_admission(self.output, result["manifest"]["sha256"])
+        self.assertEqual(len(swaps), 1)
+        self.assertEqual(m.read_artifact(self.output / "admission_manifest.json")[1]["sha256"],
+                         result["manifest"]["sha256"])
+
+    def test_sft_verifier_rejects_same_size_token_swap_after_shard_verification(self):
+        self.assert_same_size_token_swap_rejected("sft")
+
+    def test_native_verifier_rejects_same_size_token_swap_after_shard_verification(self):
+        self.assert_same_size_token_swap_rejected("native")
+
+    def test_source_import_shard_tampering_is_rejected(self):
+        self.fixture()
+        shard = self.import_path / "authoring_000000.jsonl"
+        shard.write_bytes(shard.read_bytes() + b"{}\n")
+        with self.assertRaisesRegex(ValueError, "hash contract"):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_changed_input_during_write_leaves_no_completion_manifest(self):
+        self.fixture()
+        real_append = m.ShardWriter.append
+        changed = False
+        def append_then_change(writer, row):
+            nonlocal changed
+            real_append(writer, row)
+            if not changed:
+                self.rewrite(self.reviews_path, lambda doc: doc.update(interrupted_input=True))
+                changed = True
+        with patch.object(m.ShardWriter, "append", append_then_change):
+            with self.assertRaisesRegex(ValueError, "input changed while writing"):
+                self.prepare()
+        self.assertTrue(self.output.exists())
+        self.assertFalse((self.output / "admission_manifest.json").exists())
+
+    def test_writer_output_limit_is_strictly_below_20mb(self):
+        self.fixture()
+        result = self.prepare()
+        _, manifest = self.token_rows(result)
+        self.assertTrue(all(path.stat().st_size < 20_000_000 for path in self.output.iterdir()))
+        self.assertTrue(all(corpus["manifest"]["limit_bytes"] == 19_999_999 for corpus in manifest["corpora"]))
+
+    def test_pinned_manifest_reads_existing_sft_record_and_cpu_padding_api(self):
+        self.fixture()
+        result = self.prepare()
+        with self.assertRaisesRegex(ValueError, "synthetic output"):
+            list(m.iter_sft_records(self.output, result["manifest"]["sha256"]))
+        restored = list(m.iter_sft_records(self.output, result["manifest"]["sha256"], allow_synthetic=True))
+        from tinylm.train.mtp_sft import count_record, pad_records
+        records = [record for _, record in restored]
+        x, y, segments = pad_records(records, pad_id=0, device="cpu")
+        self.assertEqual(x.shape, y.shape)
+        self.assertEqual(y.shape, segments.shape)
+        self.assertEqual(x.device.type, "cpu")
+        self.assertEqual(int(y.ne(-100).sum()), sum(record.targets for record in records))
+        for audit, record in restored:
+            self.assertEqual(count_record(record)[1], audit["assistant_target_tokens"])
+
+    def test_native_manifest_cannot_be_consumed_as_sft_records(self):
+        self.fixture(kind="native")
+        result = self.prepare()
+        with self.assertRaisesRegex(ValueError, "no admitted SFT"):
+            list(m.iter_sft_records(self.output, result["manifest"]["sha256"], allow_synthetic=True))
+
+    def test_no_artifact_reads_under_protected_path_or_link(self):
+        protected = self.root / "datasets/TinyDataset/nonexistent.json"
+        with self.assertRaisesRegex(ValueError, "protected"):
+            m.read_artifact(protected)
+        actual = self.root / "plain.json"
+        self.write(actual, {})
+        link = self.root / "linked.json"
+        link.symlink_to(actual)
+        with self.assertRaisesRegex(ValueError, "linked"):
+            m.read_artifact(link)
+        self.assertEqual(actual.read_bytes(), b"{}\n")
+
+    def test_cli_help_never_imports_torch_or_opens_assets(self):
+        code = "import runpy,sys\nsys.argv=['p106b_admission.py','--help']\n" \
+               "try:\n runpy.run_path(" + repr(str(ROOT / "scripts/p106b_admission.py")) + ",run_name='__main__')\n" \
+               "except SystemExit as exc:\n assert exc.code == 0\n" \
+               "assert 'torch' not in sys.modules\nassert 'tokenizers' not in sys.modules\n"
+        process = subprocess.run([sys.executable, "-I", "-B", "-c", code],
+                                 capture_output=True, text=True, timeout=15)
+        self.assertEqual(process.returncode, 0, process.stderr)
+        self.assertIn("freeze", process.stdout)
+        self.assertIn("prepare", process.stdout)
+
+    def test_cli_invalid_inputs_return_nonzero_without_output(self):
+        output = io.StringIO()
+        with redirect_stderr(output), redirect_stdout(io.StringIO()):
+            rc = m.main(["verify", "--output", str(self.output), "--manifest-sha256", "A" * 64])
+        self.assertEqual(rc, 9)
+        self.assertIn("ADMISSION_ERROR", output.getvalue())
+        self.assertFalse(self.output.exists())
+
+
+if __name__ == "__main__":
+    unittest.main()

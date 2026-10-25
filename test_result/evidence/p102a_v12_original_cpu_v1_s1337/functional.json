@@ -1,0 +1,136 @@
+{
+  "schema": "V12_FUNCTIONAL_MATH_INTERPRETER_VERIFICATION",
+  "passed": 9,
+  "total": 9,
+  "tests": [
+    {
+      "name": "one_scan_row_group_pack_and_storage_alias",
+      "status": "PASS",
+      "detail": {
+        "cases": 24,
+        "row_and_group_pack_bits_equal": true,
+        "transpose_is_view": true,
+        "GPU_executed": false
+      }
+    },
+    {
+      "name": "exact_ternary_group_representation_and_rejection",
+      "status": "PASS",
+      "detail": {
+        "cases": 2,
+        "exact_ternary_compute_weights": true,
+        "nonternary_rejected": true
+      }
+    },
+    {
+      "name": "transpose_free_integer_adjoint_interpreter",
+      "status": "PASS",
+      "detail": {
+        "cases": 6,
+        "strided_right_integer_GEMM_bitwise_equal": true,
+        "max_reduction_K": 8192
+      }
+    },
+    {
+      "name": "group_forward_integer_MMA_and_local_error_bounds",
+      "status": "PASS",
+      "detail": {
+        "cases": 6,
+        "forward_CPU_interpreter_bits_equal": true,
+        "group_error_bounds_pass": true,
+        "max_decoded_relative_error_in_these_cases": 0.007181199616222635,
+        "scope": "Local forward bound, not whole-network quality certificate"
+      }
+    },
+    {
+      "name": "original_shared_MLP_CLA_S2_native_path_bitwise_v11",
+      "status": "PASS",
+      "detail": {
+        "AMP_and_FP32_two_microbatch_cases": 2,
+        "native_forward_and_whole_gradient_bits_match_v11_when_fanin_policy_matches": true
+      }
+    },
+    {
+      "name": "all_modes_saved_full_pack_and_forward_replay",
+      "status": "PASS",
+      "detail": [
+        {
+          "mode": "native",
+          "without_SAC_pack_executions": 68,
+          "with_SAC_pack_executions": 36,
+          "losses_and_gradients_bitwise_equal": true
+        },
+        {
+          "mode": "block1",
+          "without_SAC_pack_executions": 68,
+          "with_SAC_pack_executions": 36,
+          "losses_and_gradients_bitwise_equal": true
+        },
+        {
+          "mode": "block2",
+          "without_SAC_pack_executions": 68,
+          "with_SAC_pack_executions": 36,
+          "losses_and_gradients_bitwise_equal": true
+        },
+        {
+          "mode": "block2_pow2",
+          "without_SAC_pack_executions": 68,
+          "with_SAC_pack_executions": 36,
+          "losses_and_gradients_bitwise_equal": true
+        }
+      ]
+    },
+    {
+      "name": "version_nonfinite_abort_and_route_restoration",
+      "status": "PASS",
+      "detail": {
+        "mutation_nonfinite_closed_rejected": true,
+        "failed_update_gradients_cleared": true,
+        "method_routes_restored": true
+      }
+    },
+    {
+      "name": "shared_AMP_cast_node_fanin_matches_native_dense_gradients",
+      "status": "PASS",
+      "detail": {
+        "two_microbatch_source_vs_dense": [
+          {
+            "BF16_autocast": false,
+            "whole_gradient_relative_error": 0.0,
+            "whole_gradient_bitwise_equal": true
+          },
+          {
+            "BF16_autocast": true,
+            "whole_gradient_relative_error": 0.0,
+            "whole_gradient_bitwise_equal": true
+          }
+        ],
+        "zero_integer_packing": true
+      }
+    },
+    {
+      "name": "explicit_CUDA_no_fallback",
+      "status": "PASS",
+      "detail": {
+        "CUDA_backend_does_not_replace_execution_with_CPU": true
+      }
+    }
+  ],
+  "source_sha256": {
+    "v12_build_delivery.py": "24b54ea31f16f6c002a27a079de6c3718ca57ebbe15c6205d79bd2fd26bc3cbb",
+    "v12_kernels.py": "31f9a09b7d5c458d026514d346ccb02fa0c8dc7094c4e7da270b3ba3dc0bdc30",
+    "v12_dense_control.py": "6057c2043bbc2a832a05adec27ae648861c9388d6d400fed35eff95bef6db91a",
+    "v12_gpu_gate.py": "fce0b1c7d397f7050b9bfff55a7c943579d7cfe3da6955fa869a030f29e062aa",
+    "v12_swiglu_verify.py": "18dbaa01abca37a0e29d97530acb85262780f43f0b6da3d48c2b2ce9bbddee6b",
+    "v12_offline_compile.py": "a7ae40cb19e6178e4728358bc653f5b5f7e26edf9226d7c8ccddf85c21416f1e",
+    "v12_build_report.py": "94721363d7dd8eeddce997a061c4dd2820a9021edf9f9015e3530c5b037acb85",
+    "v12_swiglu.py": "e4d8426e92c918fb55e60fad841c9754fd8e7506ccac55608076453a5a638f90",
+    "v12_geometry_audit.py": "df7c26c216c956d27faa724e091eb08dc47c0f2c4197f64ed14fdfbf5794fdfc",
+    "v12_verify.py": "a46d5c9347cc5930581175738c8d8bd5080cfd5eb713eadd33e7b9090c8dfba0",
+    "v12_learning.py": "b455dc4ca0aa58774cd8b596fa52d2dfa1921cc5eac2534532691fe6ce89e805",
+    "v12_code_reuse.py": "950c05ea234f462003dcffa84c9b1944311eb98f2b5a1055c1847ace1d808e53",
+    "v12_cost_frontier.py": "80a96e8a628729d62c94376ace7afc1d3626c25fe07fb402cffbf9af6416fb48"
+  },
+  "GPU_executed": false,
+  "same_quality_2x_verified": false
+}

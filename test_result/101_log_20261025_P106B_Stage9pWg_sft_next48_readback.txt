@@ -1,0 +1,10 @@
+
+==============================================================================
+[runlog] 2026-10-25 10:27:17  name=P106B_Stage9pWg_sft_next48_readback
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c from pathlib import Path;import json,hashlib;root=Path("data_cache/p106b_text_work_20261022/root_semantic_followup_20261025/sft_000005");d=json.loads((root/"root_semantic_review.json").read_text());sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest().upper();assert sha(root/"source_and_variants.md")==d["input_sha256"];assert sha(root/"luna_semantic_notes.md")==d["luna_notes_sha256"];a=json.loads(Path("handoff/audit/WIP_20261025_SFT_DRAFT_FORMAT_READBACK.json").read_text());src=Path("data_cache/p106b_text_work_20261022/imported/sft_000005/authoring_000000.jsonl");assert sha(src)==a["input_files"][str(src)];status=[s for r in d["rows"] for s in r["variants"].values()];assert len(status)==48 and status.count("HOLD")==24 and status.count("PROVISIONAL_ACCEPT")==24;assert d["new_admission"]==0;print(json.dumps({"source_rows":16,"variants":48,"provisional":24,"hold":24,"root_review_sha256":sha(root/"root_semantic_review.json"),"source_unchanged":True,"new_admission":0,"cpu_only":True},ensure_ascii=False))
+==============================================================================
+{"source_rows": 16, "variants": 48, "provisional": 24, "hold": 24, "root_review_sha256": "BAEB091703FCE85873F300C3C1344621071D4771532FEA9B1729622722D79E33", "source_unchanged": true, "new_admission": 0, "cpu_only": true}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-25 10:27:17)
+==============================================================================

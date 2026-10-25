@@ -1,0 +1,16 @@
+
+==============================================================================
+[runlog] 2026-10-24 05:33:42  name=P106B_Stage8s0W_qwen35_tokenizer_20261024T0535
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -c import json; from scripts import diag_p106b_qwen35_text_core6 as r; import tinylm; assert r.identity()["sha256"]=="97AD99AD6BD8424E99C56B28D97703C0FB17602059CEDC051676E68F5E5F070E"; files={k:r.MODEL_DIR/k for k in ("tokenizer.json","tokenizer_config.json")}; assert all(r.digest(p)==r.SMALL_PINS[k] for k,p in files.items()); raw=r.read_json(files["tokenizer.json"]); metadata=r.read_json(files["tokenizer_config.json"]); tokenizer,proof=r.build_tokenizer(raw,metadata); print(json.dumps({"status":"ACTUAL_TOKENIZER_COMPOSITE_COMPLETE","model_loads":0,"gpu_calls":0,"proof":proof},ensure_ascii=False,sort_keys=True)); assert all(r.digest(p)==r.SMALL_PINS[k] for k,p in files.items())
+==============================================================================
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/uranus/tinyLM/scripts/diag_p106b_qwen35_text_core6.py", line 301, in build_tokenizer
+    return tokenizer, validate_tokenizer(tokenizer, raw, metadata, declarations)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_qwen35_text_core6.py", line 246, in validate_tokenizer
+    raise Hold("TOKENIZER_PIPELINE_HOLD: exact original BPE/pipeline including ByteLevel options required")
+scripts.diag_p106b_qwen35_text_core6.Hold: TOKENIZER_PIPELINE_HOLD: exact original BPE/pipeline including ByteLevel options required
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-10-24 05:33:46)
+==============================================================================

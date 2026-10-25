@@ -1,0 +1,161 @@
+{
+  "schema": "P102A_FUSED_CE_ROOT_CLOSURE_V1",
+  "raw_log": "test_result/093_log_20261025_P102A_Stage2eW_official_fused_ce_numeric.txt",
+  "raw_sha256": "2871587242B5E889E1AB54E02361F7F5DC3B7DF77688FFD8012193CDA8EE782E",
+  "report": "test_result/evidence/p102a_fused_ce_v1_s1337_oct25a/report.json",
+  "report_file_bytes_sha256": "56628E0B201D24FE0113374C61679CBC8EBF985D2A08BBCEF8423A2D684B7EF6",
+  "report_canonical_json_sha256": "643982367E742A81C1C1757BBE1C4A18C164DCB3764EEA1600ED55365A899313",
+  "terminal": "test_result/evidence/p102a_fused_ce_v1_s1337_oct25a/terminal.jsonl",
+  "terminal_sha256": "2CC3DB3328A60BB556F44C9C20DA94B6B52A744C619950FC625DDDF929D4570D",
+  "actual_process_exit_code": 8,
+  "terminal_no_veto": true,
+  "terminal_report_canonical_sha_matches": true,
+  "gpu_compute_processes_after": [],
+  "gpu_compute_observation": "separate actual nvidia-smi query after process exit; not continuous peak proof",
+  "models_loaded": 0,
+  "actual_parent_data_updates": "NOT_RUN",
+  "rows": [
+    {
+      "precision": "bf16_eager",
+      "backend": "cce_exact",
+      "complete": true,
+      "close": false,
+      "loss": {
+        "close": true,
+        "left": 72.76697540283203,
+        "max_abs": 7.62939453125e-06,
+        "relative_to_reference": 1.0484693762540349e-07,
+        "right": 72.76698303222656
+      },
+      "gradients": [
+        {
+          "name": "projected",
+          "dtype": "torch.bfloat16",
+          "elements": 2048,
+          "mismatch_elements": 281,
+          "max_abs": 0.0001220703125,
+          "close": false
+        },
+        {
+          "name": "shared_table",
+          "dtype": "torch.float32",
+          "elements": 8388608,
+          "mismatch_elements": 0,
+          "max_abs": 1.1920928955078125e-07,
+          "close": true
+        }
+      ]
+    },
+    {
+      "precision": "bf16_eager",
+      "backend": "liger",
+      "complete": true,
+      "close": false,
+      "loss": {
+        "close": true,
+        "left": 72.76697540283203,
+        "max_abs": 0.0,
+        "relative_to_reference": 0.0,
+        "right": 72.76697540283203
+      },
+      "gradients": [
+        {
+          "name": "projected",
+          "dtype": "torch.bfloat16",
+          "elements": 2048,
+          "mismatch_elements": 288,
+          "max_abs": 0.0001220703125,
+          "close": false
+        },
+        {
+          "name": "shared_table",
+          "dtype": "torch.float32",
+          "elements": 8388608,
+          "mismatch_elements": 1234,
+          "max_abs": 2.4870038032531738e-05,
+          "close": false
+        }
+      ]
+    },
+    {
+      "precision": "bf16_eager",
+      "backend": "reference",
+      "complete": true,
+      "close": true
+    },
+    {
+      "precision": "fp32_math",
+      "backend": "cce_exact",
+      "complete": true,
+      "close": true,
+      "loss": {
+        "close": true,
+        "left": 72.76732635498047,
+        "max_abs": 7.62939453125e-06,
+        "relative_to_reference": 1.0484643195534717e-07,
+        "right": 72.767333984375
+      },
+      "gradients": [
+        {
+          "name": "projected",
+          "dtype": "torch.float32",
+          "elements": 2048,
+          "mismatch_elements": 0,
+          "max_abs": 4.172325134277344e-07,
+          "close": true
+        },
+        {
+          "name": "shared_table",
+          "dtype": "torch.float32",
+          "elements": 8388608,
+          "mismatch_elements": 0,
+          "max_abs": 1.4901161193847656e-08,
+          "close": true
+        }
+      ]
+    },
+    {
+      "precision": "fp32_math",
+      "backend": "liger",
+      "complete": true,
+      "close": true,
+      "loss": {
+        "close": true,
+        "left": 72.76732635498047,
+        "max_abs": 0.0,
+        "relative_to_reference": 0.0,
+        "right": 72.76732635498047
+      },
+      "gradients": [
+        {
+          "name": "projected",
+          "dtype": "torch.float32",
+          "elements": 2048,
+          "mismatch_elements": 0,
+          "max_abs": 5.587935447692871e-08,
+          "close": true
+        },
+        {
+          "name": "shared_table",
+          "dtype": "torch.float32",
+          "elements": 8388608,
+          "mismatch_elements": 0,
+          "max_abs": 2.9802322387695312e-08,
+          "close": true
+        }
+      ]
+    },
+    {
+      "precision": "fp32_math",
+      "backend": "reference",
+      "complete": true,
+      "close": true
+    }
+  ],
+  "source_unchanged": true,
+  "dependencies_unchanged": true,
+  "final_allocated_bytes": 0,
+  "whole_controller_seconds_before_terminal": 13.694413615005033,
+  "quality_or_speed_adopted": false,
+  "readback_correction": "첫 감사에서 canonical JSON 해시를 파일 바이트 해시로 오해해 assertion이 났다. 해당 호출은 파일을 쓰지 않았고 올바른 canonical 계약으로 재검산했다."
+}

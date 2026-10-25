@@ -1,0 +1,225 @@
+Gemma3-270M Base external comparison. Same official task contract, but pretraining budget differs from TinyLM. Costs and synthetic canaries are not benchmark scores. Full phase requires cost forecast plus30percent margin to fit7200sec and08:40KST. TQDM_DISABLE changes progress display only; raw choice likelihoods are sharded below20MB.
+
+==============================================================================
+[runlog] 2026-10-24 00:00:44  name=P106B_Stage8hWd_gemma270_official_core6_20261023T150044Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_external_core6.py --execute --model gemma270 --mode canary --source-sha256 1DD733198FF56833BB3515DBE5588D0E9BCC1922A449187B7E17A471AD23FBC4 --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 600
+==============================================================================
+[Task: boolq] metric acc is defined, but aggregation is not. using default aggregation=mean
+[Task: boolq] metric acc is defined, but higher_is_better is not. using default higher_is_better=True
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+{"mode": "canary", "model": "gemma270", "status": "EXTERNAL_CANARY_COMPLETE", "wall_seconds": 18.708507135999753}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-10-24 00:01:05)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-10-24 00:01:05  name=P106B_Stage8hWd_gemma270_official_core6_20261023T150044Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_external_core6.py --execute --model gemma270 --mode cost --source-sha256 1DD733198FF56833BB3515DBE5588D0E9BCC1922A449187B7E17A471AD23FBC4 --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 600
+==============================================================================
+[Task: boolq] metric acc is defined, but aggregation is not. using default aggregation=mean
+[Task: boolq] metric acc is defined, but higher_is_better is not. using default higher_is_better=True
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+
+Tokenizing inputs:   0%|          | 0/64 [00:00<?, ?it/s]
+Tokenizing inputs: 100%|██████████| 64/64 [00:00<00:00, 8454.13it/s]
+
+Running loglikelihood requests:   0%|          | 0/64 [00:00<?, ?it/s]
+Running loglikelihood requests:   3%|▎         | 2/64 [00:00<00:04, 13.20it/s]
+Running loglikelihood requests:   8%|▊         | 5/64 [00:00<00:03, 19.08it/s]
+Running loglikelihood requests:  12%|█▎        | 8/64 [00:00<00:02, 23.16it/s]
+Running loglikelihood requests:  20%|██        | 13/64 [00:00<00:01, 30.08it/s]
+Running loglikelihood requests:  28%|██▊       | 18/64 [00:00<00:01, 36.21it/s]
+Running loglikelihood requests:  34%|███▍      | 22/64 [00:00<00:01, 36.51it/s]
+Running loglikelihood requests:  42%|████▏     | 27/64 [00:00<00:00, 40.57it/s]
+Running loglikelihood requests:  50%|█████     | 32/64 [00:00<00:00, 41.31it/s]
+Running loglikelihood requests:  58%|█████▊    | 37/64 [00:01<00:00, 31.24it/s]
+Running loglikelihood requests:  64%|██████▍   | 41/64 [00:01<00:00, 32.65it/s]
+Running loglikelihood requests:  72%|███████▏  | 46/64 [00:01<00:00, 36.83it/s]
+Running loglikelihood requests:  80%|███████▉  | 51/64 [00:01<00:00, 39.98it/s]
+Running loglikelihood requests:  88%|████████▊ | 56/64 [00:01<00:00, 41.38it/s]
+Running loglikelihood requests:  95%|█████████▌| 61/64 [00:01<00:00, 43.39it/s]
+Running loglikelihood requests: 100%|██████████| 64/64 [00:01<00:00, 36.61it/s]
+{"event": "EXTERNAL_OFFICIAL_TASK_CLOSED", "mode": "cost", "model": "gemma270", "rows": 32, "seconds": 2.8744256669997412, "task": "piqa"}
+
+Tokenizing inputs:   0%|          | 0/128 [00:00<?, ?it/s]
+Tokenizing inputs: 100%|██████████| 128/128 [00:00<00:00, 6264.54it/s]
+
+Running loglikelihood requests:   0%|          | 0/128 [00:00<?, ?it/s]
+Running loglikelihood requests:   3%|▎         | 4/128 [00:00<00:03, 39.99it/s]
+Running loglikelihood requests:   6%|▋         | 8/128 [00:00<00:03, 39.46it/s]
+Running loglikelihood requests:   9%|▉         | 12/128 [00:00<00:03, 38.50it/s]
+Running loglikelihood requests:  13%|█▎        | 17/128 [00:00<00:02, 39.32it/s]
+Running loglikelihood requests:  18%|█▊        | 23/128 [00:00<00:02, 43.50it/s]
+Running loglikelihood requests:  22%|██▏       | 28/128 [00:00<00:02, 44.11it/s]
+Running loglikelihood requests:  26%|██▌       | 33/128 [00:00<00:02, 42.93it/s]
+Running loglikelihood requests:  30%|██▉       | 38/128 [00:00<00:02, 43.42it/s]
+Running loglikelihood requests:  34%|███▎      | 43/128 [00:01<00:02, 42.17it/s]
+Running loglikelihood requests:  38%|███▊      | 48/128 [00:01<00:02, 35.53it/s]
+Running loglikelihood requests:  41%|████▏     | 53/128 [00:01<00:01, 37.62it/s]
+Running loglikelihood requests:  45%|████▌     | 58/128 [00:01<00:01, 39.66it/s]
+Running loglikelihood requests:  49%|████▉     | 63/128 [00:01<00:01, 41.96it/s]
+Running loglikelihood requests:  53%|█████▎    | 68/128 [00:01<00:01, 42.17it/s]
+Running loglikelihood requests:  57%|█████▋    | 73/128 [00:01<00:01, 42.30it/s]
+Running loglikelihood requests:  61%|██████    | 78/128 [00:01<00:01, 41.78it/s]
+Running loglikelihood requests:  65%|██████▍   | 83/128 [00:02<00:01, 42.51it/s]
+Running loglikelihood requests:  69%|██████▉   | 88/128 [00:02<00:00, 40.05it/s]
+Running loglikelihood requests:  73%|███████▎  | 93/128 [00:02<00:00, 40.93it/s]
+Running loglikelihood requests:  77%|███████▋  | 98/128 [00:02<00:00, 38.84it/s]
+Running loglikelihood requests:  80%|████████  | 103/128 [00:02<00:00, 39.91it/s]
+Running loglikelihood requests:  84%|████████▍ | 108/128 [00:02<00:00, 39.87it/s]
+Running loglikelihood requests:  88%|████████▊ | 113/128 [00:02<00:00, 40.84it/s]
+Running loglikelihood requests:  92%|█████████▏| 118/128 [00:02<00:00, 42.02it/s]
+Running loglikelihood requests:  96%|█████████▌| 123/128 [00:03<00:00, 41.14it/s]
+Running loglikelihood requests: 100%|██████████| 128/128 [00:03<00:00, 27.77it/s]
+Running loglikelihood requests: 100%|██████████| 128/128 [00:03<00:00, 38.45it/s]
+{"event": "EXTERNAL_OFFICIAL_TASK_CLOSED", "mode": "cost", "model": "gemma270", "rows": 32, "seconds": 4.77352545299982, "task": "arc_easy"}
+
+Tokenizing inputs:   0%|          | 0/128 [00:00<?, ?it/s]
+Tokenizing inputs: 100%|██████████| 128/128 [00:00<00:00, 7621.14it/s]
+
+Running loglikelihood requests:   0%|          | 0/128 [00:00<?, ?it/s]
+Running loglikelihood requests:   2%|▏         | 3/128 [00:00<00:04, 27.08it/s]
+Running loglikelihood requests:   5%|▌         | 7/128 [00:00<00:04, 30.23it/s]
+Running loglikelihood requests:   9%|▊         | 11/128 [00:00<00:04, 28.28it/s]
+Running loglikelihood requests:  12%|█▏        | 15/128 [00:00<00:03, 29.97it/s]
+Running loglikelihood requests:  15%|█▍        | 19/128 [00:00<00:03, 32.24it/s]
+Running loglikelihood requests:  19%|█▉        | 24/128 [00:00<00:02, 36.80it/s]
+Running loglikelihood requests:  23%|██▎       | 29/128 [00:00<00:02, 39.42it/s]
+Running loglikelihood requests:  27%|██▋       | 35/128 [00:00<00:02, 43.33it/s]
+Running loglikelihood requests:  31%|███▏      | 40/128 [00:01<00:02, 42.37it/s]
+Running loglikelihood requests:  35%|███▌      | 45/128 [00:01<00:01, 41.93it/s]
+Running loglikelihood requests:  39%|███▉      | 50/128 [00:01<00:01, 40.36it/s]
+Running loglikelihood requests:  43%|████▎     | 55/128 [00:01<00:01, 37.62it/s]
+Running loglikelihood requests:  46%|████▌     | 59/128 [00:01<00:01, 37.17it/s]
+Running loglikelihood requests:  49%|████▉     | 63/128 [00:01<00:01, 35.54it/s]
+Running loglikelihood requests:  52%|█████▏    | 67/128 [00:01<00:01, 33.15it/s]
+Running loglikelihood requests:  55%|█████▌    | 71/128 [00:01<00:01, 34.43it/s]
+Running loglikelihood requests:  59%|█████▊    | 75/128 [00:02<00:01, 34.87it/s]
+Running loglikelihood requests:  62%|██████▏   | 79/128 [00:02<00:01, 35.89it/s]
+Running loglikelihood requests:  65%|██████▍   | 83/128 [00:02<00:01, 36.50it/s]
+Running loglikelihood requests:  69%|██████▉   | 88/128 [00:02<00:01, 38.62it/s]
+Running loglikelihood requests:  73%|███████▎  | 94/128 [00:02<00:00, 43.28it/s]
+Running loglikelihood requests:  77%|███████▋  | 99/128 [00:02<00:00, 40.22it/s]
+Running loglikelihood requests:  81%|████████▏ | 104/128 [00:02<00:00, 39.03it/s]
+Running loglikelihood requests:  84%|████████▍ | 108/128 [00:02<00:00, 37.57it/s]
+Running loglikelihood requests:  88%|████████▊ | 113/128 [00:03<00:00, 39.23it/s]
+Running loglikelihood requests:  91%|█████████▏| 117/128 [00:03<00:00, 39.10it/s]
+Running loglikelihood requests:  95%|█████████▌| 122/128 [00:03<00:00, 41.57it/s]
+Running loglikelihood requests:  99%|█████████▉| 127/128 [00:03<00:00, 42.07it/s]
+Running loglikelihood requests: 100%|██████████| 128/128 [00:03<00:00, 37.97it/s]
+{"event": "EXTERNAL_OFFICIAL_TASK_CLOSED", "mode": "cost", "model": "gemma270", "rows": 32, "seconds": 4.31487504299912, "task": "arc_challenge"}
+
+Tokenizing inputs:   0%|          | 0/128 [00:00<?, ?it/s]
+Tokenizing inputs: 100%|██████████| 128/128 [00:00<00:00, 8760.95it/s]
+
+Running loglikelihood requests:   0%|          | 0/128 [00:00<?, ?it/s]
+Running loglikelihood requests:   3%|▎         | 4/128 [00:00<00:03, 36.19it/s]
+Running loglikelihood requests:   6%|▋         | 8/128 [00:00<00:04, 27.22it/s]
+Running loglikelihood requests:   9%|▊         | 11/128 [00:00<00:04, 26.90it/s]
+Running loglikelihood requests:  11%|█         | 14/128 [00:00<00:04, 27.20it/s]
+Running loglikelihood requests:  14%|█▍        | 18/128 [00:00<00:03, 30.13it/s]
+Running loglikelihood requests:  17%|█▋        | 22/128 [00:00<00:03, 32.32it/s]
+Running loglikelihood requests:  20%|██        | 26/128 [00:00<00:03, 33.11it/s]
+Running loglikelihood requests:  23%|██▎       | 30/128 [00:00<00:03, 32.51it/s]
+Running loglikelihood requests:  27%|██▋       | 34/128 [00:01<00:02, 34.50it/s]
+Running loglikelihood requests:  30%|███       | 39/128 [00:01<00:02, 36.41it/s]
+Running loglikelihood requests:  34%|███▎      | 43/128 [00:01<00:02, 35.78it/s]
+Running loglikelihood requests:  37%|███▋      | 47/128 [00:01<00:02, 35.07it/s]
+Running loglikelihood requests:  40%|███▉      | 51/128 [00:01<00:02, 34.21it/s]
+Running loglikelihood requests:  44%|████▍     | 56/128 [00:01<00:01, 36.47it/s]
+Running loglikelihood requests:  47%|████▋     | 60/128 [00:01<00:01, 37.24it/s]
+Running loglikelihood requests:  50%|█████     | 64/128 [00:01<00:01, 36.78it/s]
+Running loglikelihood requests:  53%|█████▎    | 68/128 [00:01<00:01, 37.39it/s]
+Running loglikelihood requests:  56%|█████▋    | 72/128 [00:02<00:01, 35.45it/s]
+Running loglikelihood requests:  60%|██████    | 77/128 [00:02<00:01, 37.44it/s]
+Running loglikelihood requests:  63%|██████▎   | 81/128 [00:02<00:01, 37.19it/s]
+Running loglikelihood requests:  66%|██████▋   | 85/128 [00:02<00:01, 37.44it/s]
+Running loglikelihood requests:  70%|██████▉   | 89/128 [00:02<00:01, 37.60it/s]
+Running loglikelihood requests:  73%|███████▎  | 93/128 [00:02<00:00, 35.66it/s]
+Running loglikelihood requests:  77%|███████▋  | 98/128 [00:02<00:00, 38.23it/s]
+Running loglikelihood requests:  80%|███████▉  | 102/128 [00:02<00:00, 34.76it/s]
+Running loglikelihood requests:  83%|████████▎ | 106/128 [00:03<00:00, 28.41it/s]
+Running loglikelihood requests:  87%|████████▋ | 111/128 [00:03<00:00, 31.99it/s]
+Running loglikelihood requests:  91%|█████████ | 116/128 [00:03<00:00, 35.79it/s]
+Running loglikelihood requests:  95%|█████████▍| 121/128 [00:03<00:00, 38.08it/s]
+Running loglikelihood requests:  98%|█████████▊| 125/128 [00:03<00:00, 33.49it/s]
+Running loglikelihood requests: 100%|██████████| 128/128 [00:03<00:00, 34.42it/s]
+{"event": "EXTERNAL_OFFICIAL_TASK_CLOSED", "mode": "cost", "model": "gemma270", "rows": 32, "seconds": 4.713441978999981, "task": "hellaswag"}
+
+Tokenizing inputs:   0%|          | 0/64 [00:00<?, ?it/s]
+Tokenizing inputs: 100%|██████████| 64/64 [00:00<00:00, 9624.45it/s]
+
+Running loglikelihood requests:   0%|          | 0/64 [00:00<?, ?it/s]
+Running loglikelihood requests:   6%|▋         | 4/64 [00:00<00:01, 39.47it/s]
+Running loglikelihood requests:  12%|█▎        | 8/64 [00:00<00:01, 39.66it/s]
+Running loglikelihood requests:  19%|█▉        | 12/64 [00:00<00:01, 36.84it/s]
+Running loglikelihood requests:  25%|██▌       | 16/64 [00:00<00:01, 37.58it/s]
+Running loglikelihood requests:  31%|███▏      | 20/64 [00:00<00:01, 36.38it/s]
+Running loglikelihood requests:  38%|███▊      | 24/64 [00:00<00:01, 36.59it/s]
+Running loglikelihood requests:  44%|████▍     | 28/64 [00:00<00:00, 36.15it/s]
+Running loglikelihood requests:  50%|█████     | 32/64 [00:00<00:00, 36.17it/s]
+Running loglikelihood requests:  58%|█████▊    | 37/64 [00:00<00:00, 38.70it/s]
+Running loglikelihood requests:  66%|██████▌   | 42/64 [00:01<00:00, 40.27it/s]
+Running loglikelihood requests:  73%|███████▎  | 47/64 [00:01<00:00, 41.68it/s]
+Running loglikelihood requests:  81%|████████▏ | 52/64 [00:01<00:00, 43.54it/s]
+Running loglikelihood requests:  89%|████████▉ | 57/64 [00:01<00:00, 45.05it/s]
+Running loglikelihood requests:  97%|█████████▋| 62/64 [00:01<00:00, 42.06it/s]
+Running loglikelihood requests: 100%|██████████| 64/64 [00:01<00:00, 40.08it/s]
+{"event": "EXTERNAL_OFFICIAL_TASK_CLOSED", "mode": "cost", "model": "gemma270", "rows": 32, "seconds": 2.493580046999341, "task": "winogrande"}
+
+Tokenizing inputs:   0%|          | 0/64 [00:00<?, ?it/s]
+Tokenizing inputs: 100%|██████████| 64/64 [00:00<00:00, 2529.64it/s]
+
+Running loglikelihood requests:   0%|          | 0/64 [00:00<?, ?it/s]
+Running loglikelihood requests:   3%|▎         | 2/64 [00:00<00:03, 19.76it/s]
+Running loglikelihood requests:   9%|▉         | 6/64 [00:00<00:02, 27.44it/s]
+Running loglikelihood requests:  16%|█▌        | 10/64 [00:00<00:01, 30.91it/s]
+Running loglikelihood requests:  22%|██▏       | 14/64 [00:00<00:01, 31.53it/s]
+Running loglikelihood requests:  28%|██▊       | 18/64 [00:00<00:01, 32.43it/s]
+Running loglikelihood requests:  34%|███▍      | 22/64 [00:00<00:01, 31.23it/s]
+Running loglikelihood requests:  41%|████      | 26/64 [00:00<00:01, 30.48it/s]
+Running loglikelihood requests:  47%|████▋     | 30/64 [00:00<00:01, 31.25it/s]
+Running loglikelihood requests:  53%|█████▎    | 34/64 [00:01<00:00, 31.99it/s]
+Running loglikelihood requests:  59%|█████▉    | 38/64 [00:01<00:00, 32.33it/s]
+Running loglikelihood requests:  66%|██████▌   | 42/64 [00:01<00:00, 32.75it/s]
+Running loglikelihood requests:  72%|███████▏  | 46/64 [00:01<00:00, 32.35it/s]
+Running loglikelihood requests:  80%|███████▉  | 51/64 [00:01<00:00, 34.51it/s]
+Running loglikelihood requests:  86%|████████▌ | 55/64 [00:01<00:00, 35.82it/s]
+Running loglikelihood requests:  92%|█████████▏| 59/64 [00:01<00:00, 34.84it/s]
+Running loglikelihood requests:  98%|█████████▊| 63/64 [00:01<00:00, 35.36it/s]
+Running loglikelihood requests: 100%|██████████| 64/64 [00:01<00:00, 32.68it/s]
+{"event": "EXTERNAL_OFFICIAL_TASK_CLOSED", "mode": "cost", "model": "gemma270", "rows": 32, "seconds": 2.9332495229991764, "task": "boolq"}
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 683, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 673, in main
+    result = execute(args.model, args.mode, args.source_sha256, args.deadline, args.max_wall_sec)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 652, in execute
+    close_report(target / "report.json", report,
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 118, in close_report
+    write_json(path, report)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 108, in write_json
+    raw = (json.dumps(json_ready(value), ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8")
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 98, in json_ready
+    return {key: json_ready(item) for key, item in value.items()}
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 98, in <dictcomp>
+    return {key: json_ready(item) for key, item in value.items()}
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 98, in json_ready
+    return {key: json_ready(item) for key, item in value.items()}
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 98, in <dictcomp>
+    return {key: json_ready(item) for key, item in value.items()}
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 98, in json_ready
+    return {key: json_ready(item) for key, item in value.items()}
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 98, in <dictcomp>
+    return {key: json_ready(item) for key, item in value.items()}
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 97, in json_ready
+    raise TypeError("report object keys must be strings")
+TypeError: report object keys must be strings
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.9분  (2026-10-24 00:01:56)
+==============================================================================
+Stopped phase=cost exit=1. Later phases NOT_RUN; inspect partial report. Prerequisite HOLD is not model quality failure.

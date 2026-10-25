@@ -114,8 +114,12 @@ def ce_sum(logits, targets, chunk=2048):
     return total
 
 
-def components(model, hidden, y, segments, horizons=(2,3,4), chunk=2048, checkpoint_heads=True):
+def components(model, hidden, y, segments, horizons=(2,3,4), chunk=2048, checkpoint_heads=True,
+               ce_backend='reference'):
     """One forward; bounded positional head/CE chunks for main and auxiliary."""
+    if ce_backend != 'reference':
+        from .fused_ce import validate_backend
+        validate_backend(ce_backend)
     sums={};counts={}
     for h in (1,)+tuple(horizons):
         target,valid=horizon_targets(y,segments,h)
@@ -131,6 +135,9 @@ def components(model, hidden, y, segments, horizons=(2,3,4), chunk=2048, checkpo
             features=hidden[:,start:end][keep].unsqueeze(0)
             block=block[keep].unsqueeze(0)
             def head_ce(features,targets,which=h):
+                if ce_backend != 'reference':
+                    from .fused_ce import model_head_ce
+                    return model_head_ce(model,features,targets,horizon=which,backend=ce_backend)
                 logits=model._head_logits(features) if which==1 else model.mtp_aux_logits(features,which)
                 return ce_sum(logits,targets,chunk)
             if checkpoint_heads and torch.is_grad_enabled() and features.requires_grad:

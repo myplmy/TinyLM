@@ -313,6 +313,7 @@ A1의1.05 문턱은 이 pilot의 작은 order/noise 여유이며 통계적 신�
 > 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 
+
 ### Stage3aWb/3bWb — 2026-09-30 사용자 A 승인: 옛 실패를 보존한 별도 재시험
 
 A1의 원본 v22는 두 쌍 중 첫 속도비1.140×만 1.05를 넘었고 역순은1.015×, KO형식은1~2/4였다. A2의 v23은 고정16교사 요청 중 KO4/8·EN6/8이라 serial에서만 partial10행과 학생 일부 backward를 남기고 optimizer/실제겹침0이었다. **이것은 도구 전체 실패가 아니라 사전 형식 문턱의 음성**이다. 그러나 A2 최상위 `arms=[]`는 partial serial 원형을 보여 주지 못한 기록 결함이므로 새 코드에서는 `serial/arm_manifest.json`이 있으면 상위 요약에도 `partial_arm=true`를 남긴다. 기존 v22/v23 JSON·문턱은 수정하지 않는다.
@@ -2147,6 +2148,28 @@ run_P106B_Stage4xWb_format_mix_dev24.sh. 파일은 새로 작성하며 입력대
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage4fsXWc — 10월26일 승인창의 같은 V3 증분생성
+
+원장69의 미완75M 생산을 이어간다. 기존3개 닫힌 batch와 cursor[1,12271]을 동적으로
+재검산하고 과거 고정 predecessor 감독을 다시 실행하지 않는다. 같은 Gemma4-12B Q4_0·
+MTP ON nmax2·context8192·thinking1024·max_output3072와 원 sampler를 유지한다.
+원형·옛 STOP·기존 batch는 덮거나 삭제하지 않고 같은 V3의 새 불변 batch로 잇는다.
+
+최근 batch874개는 모두 한국어 QA다. 총괄은 가시 문맥과 질문·답5개를 직접 읽었고 문맥
+연결을 관찰했으나, 일부 질문은 답을 미리 드러내며 원천 시점·번역 표현은 거친 사례가 있다.
+이를 전체 정답성·권리·지식 검증이나75M 편입 승인으로 삼지 않는다. 언어·과제 quota와
+내용 검토는 계속 미완이다. 이번 창에서 prompt를 바꿔 비교 조건을 숨기지 않는다.
+
+일회 실행 SH는 기존 생산기·require_idle_gpu·runlog·OS timeout을 재사용한다. 최대8h이고
+17시 KST 절대 마감의120초 전보다 길게 열지 않는다. 내부 deadline과 외부 TERM/KILL
+상한을 함께 쓰고 새 STOP 경로를 인쇄한다. 필요하면 중간에 정상 STOP으로 batch를 닫는다.
+종료8은 생산 보류이며 품질 음성이나 실행 오류9와 구분한다. 학생 학습은 이 단계에서0이다.
+
+실행 파일은 run_P106B_Stage4fsXWc_oct26_supported_resume.sh다. source·quota·cursor·batch
+완결과 소유 정리·원로그20MB 미만을 확인해 결과101에 실제 공급량과 시간을 기록한다.
+본75M×4epoch·micro8×accum16·checkpoint-on 목표와 기존 학생 기본값은 바꾸지 않는다.
+
 
 ### Stage4ab/4ac — 실제 내용선택과 형식 이득의 구별
 
@@ -8386,6 +8409,72 @@ TL_P106B_USER_8H=1 ./run_P106B_Stage4fsXW_user_supported_resume8h.sh다.
 
 2026-10-23 준비. GPT가 이 새8시간 모델 실행을 수행하지 않는다. check-only·SH 검사는 별도 기록한다.
 
+### Stage4fsXWb — 10월25일 위임 안의 동일 V3 제한 재개
+
+현재13시까지 CPU/GPU 위임을 새로 받았다. 기존 사용자 소유8시간 SH를 자동 실행하면
+허가를 넘길 수 있으므로 새 런처만 추가한다. 동일 V3·Gemma/MTP·사고1024·출력3072·
+문맥8192·샘플러·원천·quota·재시도·커서·학생1024 계약을 바꾸지 않는다. 새 교과·
+가속 실험이 아니며 기존 구현의 재사용과 부족분 후보 생산이다.
+
+세 경로는 기존 사용자8h 창을 그대로 실행, 생산을 계속 준비 상태로만 보존, 현재 남은
+승인창만 제한 재개다. 총괄은 마지막 경로를 준비한다. C 전량·v12·공식 FP32 수치 실행과
+정리가 종결하고 12시40분 이전에 parent최소300초와 사전여유120초가 남을 때만 연다. 이미 닫힌 두 배치와
+같은 pilot·원형 입력·토큰 quota 및 커서를 먼저 CPU로 재생한다. 새 STOP 경로를 명시하고
+옛 STOP은 그대로 둔다. 기존 미폐쇄 배치나 원천 변경이 있으면 생산은 보류한다.
+
+절대 실행 deadline은2026-10-25T03:40:00Z다. 재생/검산도 잔여 wall에 포함하고
+내부 감독은 준비부터 최대7200초에 STOP·종결120초 예약을 포함한다. OS는 잔여 창을 넘기지 않고 TERM 뒤
+최대30초 강제종료 유예만 주며 최종 기록·검산을13시 전 끝낸다. 끝난 report와 실제
+소유 종료·메모리 조회 공백·20,000,000바이트 이하 원 raw/candidate shard를 확인한다. 정상 시간
+중지8은 실패나75M 완성이 아니라 기술 후보 증분 보존이다. 의미 정답·원천 권리·
+정식 TRAIN_READY는 자동 승인하지 않는다.
+
+독립 검토 후 보완: 기존 SH의 timeout이 runlog만 기다리고 별도 세션 교사/계측을
+확인하지 못하는 경우를 찾았다. 기존 생성 조건을 그대로 둔 수동 추적, 새 소유 감독,
+생산 연기의 세 경로 중 새 감독을 택한다. 지정 새2파일에서 기존 proc/subreaper와
+공용 그룹 감독을 재사용하고 소유 token·실제 PID/부모/시작시각·실행파일을 검산한다.
+종료 전 고유 STOP으로 정상 게시를 먼저 요구하며 강제정리·실제 child exit·새 batch와
+원형 불변·종결 거부를 별도 회수한다. CPU 반례와 독립 검토가 미완이면 이 창은 실행하지
+않는다. 기본 생산기/교사 lifecycle을 바꾸거나 과거 두 배치의 종료 증거를 소급하지 않는다.
+합성 회귀 뒤에는 새 게시 검산 함수로 과거 실제 batch1을 읽기 전용으로 검산한다.
+batch0을 이전 상태로 두고 실제 원응답·후보 참조·manifest/파일집합·증분을 대조하되,
+과거 GPU 프로세스 종료를 새 감독이 관찰했다는 주장으로 바꾸지 않는다.
+
+최종 준비: 총괄 CPU44개4.666초·실제 종료0과127개 소스 check-only를 회수했다.
+독립 검토의 정리 오류 표지·원응답 명세 누락·소유 구성원 없는 과거 PGID 신호 경로를
+수리한 source CBA05428을 사용한다. 과거 실제 batch1 읽기 검산도0.559242초에 완료했다.
+새 SH는 감독을 통해 원 생산기를 직접 자식으로 실행하며, stdout 원문은 전용 producer.log에
+남긴다. supervisor 강제종료 뒤 자손 전체 보장은 하지 않고 root의 실제 소유 PID 검산이 필요하다.
+
+### Stage9pWd — native 후보의 후행 잔재 판독과 추출형 revision
+
+Stage9pWa의128개 구조 동결은 의미·본문 정제 완료가 아니다. 작성자 HOLD45는 유지하고
+나머지83개를 텍스트 전용 두 packet으로 읽는다. Luna 두 개는 빈 기록표제·문서후미
+분류·원시 위키 표·문맥 없는 단편에 대해 문서별 짧은 인용과 제거 범위만 제안한다.
+root는 실제 문맥을 재확인한다. 이미 누락된 사실을 보태거나 낯선 학술어를 바꾸지 않는다.
+
+대안은 목록을 새 문장으로 재작성, 확실한 잔재만 원문에서 추출 제거, 현 후보 전부 보류다.
+이번에는 두 번째와 불명 단편의 보류를 조합한다. 프로그래밍은 root가 기존 위치 편집과
+게시/import/동결기를 재사용하며 Luna는 코드에 손대지 않는다. 새 revision·게시 영수증·
+별도 bundle은 원128의 원형·이전 게시·과거 판정을 보존한다. 정확 문서별 선택이지
+모든 틀린 문구 목록이나 온라인 의미 판정기가 아니다. 원문서/권리·분할·학습 편입은
+별도 미완으로 유지하며 새 모델이나 품질 점수를 이 CPU 단계에서 만들지 않는다.
+
+### Stage9qWa / Stage9qWb — 실제 WSL 메뉴와 인계 소비자의 재고 정합
+
+원장71의 미완료 재고 검토에서 완료20개가 C2 메뉴 계산에 혼입됨을 실제 읽기 호출로
+확인했다. 실제 Linux 메뉴9행과 C2의29행이며 현재 실행은 실제 id4/C2 id24다.
+Stage9qWa는 원형·입력 불변의 읽기 증거를 `WIP_20261025_C2_MENU_READBACK.json`에
+보존한다. 전체 C2/C3 수동 판정이나 모델 실행은 아니다.
+
+Stage9qWb는 실제 메뉴의 기존 필터 재사용, 소비자별 규칙 복제, 수리 보류의 세 경로 중
+첫 안을 선택한다. 정확3소스/3회귀와 영향·보호 경계는
+`handoff/audit/WIP_20261025_C2_MENU_REPAIR_SCOPE.md`가 소유한다. 원형6개를 보존했고
+진행 중인 C와 뒤의 v12/FP32/교사 source pin 의존성과 분리됨을 검산했다.
+실행 동작·과학적 READY·원 조건·이전 인계는 바꾸지 않는다. 격리 CPU 반례와 root의
+실제 메뉴 재검산·독립 반 검토 뒤에만 이 수리의 통과를 기록한다. 최종 C2/C3 의미
+검토와 원장 전체 마감은 계속 별도다. 모델·GPU·설치·Git·삭제0이다.
+
 ### 최신 사용자 정정과 런처 정리
 
 소규모 학습으로 본학습 이전 지능·벤치마크 성과를 판정하지 않는다. 1안의 수치 정합·
@@ -8398,6 +8487,1083 @@ TL_P106B_USER_8H=1 ./run_P106B_Stage4fsXW_user_supported_resume8h.sh다.
 체크포인트/자료는 유지한다. 정확 처분 집합과 남은23개는 LAUNCHER_RETIREMENT_V2.json,
 현재 실제 실행권한은 exact WIP가 소유한다. 교사8h 재개는 새 사용자 창·원천 검토가 선결이며
 23일17시 이후 Codex의 새GPU실행을 허용하는 경로가 아니다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage8hW / Stage8iW — 지명 외부 HF 모델의 공식 Core6 누락 회수 (2026-10-23 야간)
+
+### 1. 왜·질문
+
+첨부§6.2의 외부8종 중 기존 공식 Core6의 완료는 Falcon1종뿐이다. 과거 네모델 완료는
+TinyLM3+Falcon1이며 외부4종 완료가 아니었다. 지명 HF 실행본부터 누락을 회수한다.
+새 작은 학생을 학습해 지능을 판정하는 단계가 아니라 이미 완성된 외부 모델의 공식 평가다.
+
+### 2. 방법과 예측
+
+| 안 | 실제 경로 | 이점·제약 |
+|---|---|---|
+| A | 기존 HF Qwen0.6B/Gemma270M/1B를 strict HFLM에 연결 | 도구·자료·모델이 이미 있어 설치0. 큰 어휘는batch1부터 비용과 수치를 확인 |
+| B | 지명 GPT2 Q4 GGUF를 HF로 dequantize하여 평가 | 주어진 양자화 값의 공식 점수를 비교할 수 있으나 현재 gguf reader 미설치. 별도 허가 전 실행 금지 |
+| C | 지명 GGUF를 native 서버의 target별 우도로 평가 | 파일을 그대로 쓰나 tokenizer/API 검산과 많은 HTTP 요청의 비용이 추가됨 |
+
+설치 없이 가능한 A를 독립 준비하고 GPT2의 필요한 단일 의존성 허가를 사용자에게 남긴다.
+어떤 모델이 TinyLM보다 얼마나 좋은지는 미리 예측하지 않는다. 외부 더 큰 모델의 우위가
+보여도 같은 파라미터/학습량 효과로 분해하지 않는다. 기술 실패는 점수0으로 채우지 않는다.
+
+### 3. 고정 비교 조건
+
+- 기존 고정 lm_eval commit·6과제 YAML·로컬 전량 자료·원 prompt·선택지·원 집계 함수를 재사용한다.
+- zero-shot, chat template OFF, 1024문맥, continuation 전체 합산 우도와 공식 character-normalized
+  지표를 구분한다. 긴 continuation은 버리지 않고 거부하며 문맥 절단량을 기록한다.
+- HF 실행은FP32/eager/MATH·TF32off·KVoff이며 실제 저장dtype와 다르다고 명시한다.
+- Qwen3-0.6B Base, Gemma3-270M Base, Gemma3-1B PT의 로컬 정확 파일·revision·SHA를 고정한다.
+  Qwen3.5-0.8B는 nested/hybrid loader 선결이 풀리기 전 모델 입장 HOLD다.
+- 기본batch1. 합성 backend oracle에서 full-label CE와 batch1/2 정합을 확인한다. batch 변경은
+  원 공식 prompt·내용·집계 변경이 아니지만 자원과 수치 조건에 명시한다.
+
+### 4. 단계·Preflight
+
+1. 새 독립 `diag_p106b_external_core6.py`와 CPU 회귀는 기존 공식 도구와 raw 검산을 재사용한다.
+   원 실행기의 고정4모델·옛 마감·출력·source를 변경하거나 runtime patch하지 않는다.
+2. canary는 합성 영한·빈문맥/BOS·pad/어휘·strict weight loading·배치/CE 수치·자산 불변을 확인한다.
+3. Stage8hW cost는 과제별32문항, 합192문항의 기술 비용 진단이다. 이 표본 점수를 정식 결과로
+   승격하지 않는다. 여섯 과제별 원 보기와 target token 분모·시작/종료·원답을 보존한다.
+4. Stage8iW full은 같은 source/policy의 cost가 완료됐을 때만 admission한다. 과제별 가중 외삽과
+   안전 여유·로드비용을 포함하고 최대7200초 및10/24 08:40 내부 마감에 맞는 모델만 연다.
+5. 각19965문항·67106보기와 원 집계/선택지 우도 독립 재계수가 모두 닫혀야 전량 완료다.
+   중단/미실행·부분 원답도 보존하고 다른 독립 모델과 분리한다.
+
+### 5. 자원·실행·한계
+
+tag `p106b_external_core6_v1_s1337`, 새 evidence/model/mode 폴더만 쓰고 파일당20MB 미만으로
+분할한다. 기존 partial/완료 출력이 있으면 덮어쓰지 않는다. 모델은 직렬로 한 번에 하나만 상주한다.
+새 SH는 구현/CPU 회귀와 명령 확인 후 등록한다. 신규 설치·다운로드·학습·checkpoint 저장0이다.
+최대2h/model은 강제 상한이며 실측 비용이 아니다. 이전 Falcon full1828.5초는 다른 모델의
+시간 보장이 아니다. 기존 TinyLM 완료모델 결과는 재사용하고 이미 한 학습/평가를 반복하지 않는다.
+
+자유대화·한국어 QA·추론·정식 BabyLM 전체 결과가 아니며, 사전학습 전체의 오염 여부는 미감사다.
+평가 정답은 교사 생성이나 정정학습에 전달하지 않는다. GPT2/Bonsai/정확 IQ2가 이 HF registry의
+세 모델 평가로 완료되는 것이 아니므로 각각 원장 미완을 유지한다.
+
+설계 시점: 자산 확보와 도구 설치는 기존 증거, 이번 새 모델 실행·전량 결과는 미실행.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage8hWd/We/Wf — text 어휘 경계와 실패 영수증의 v2 수리
+
+23:44 KST의 Stage8hWa Gemma270 canary는 모델 점수 산출 전에 중단됐다. tokenizer의
+special image ID262144가 text head의0..262143 밖인데, 실제 텍스트 입력과 무관하게 전체
+어휘를 한꺼번에 거부한 입장검사였다. 다음 failure 보고를 JSON으로 쓰는 단계도 Transformers의
+loading_info에 포함된 set을 직렬화하지 못했다. 원로그와 정확 소스2개/SHA는
+handoff/audit/source_20261024_external_hf_v1에 보존한다. 원래 report가 없던 사실을 숨기지 않는다.
+
+선택지는 전체 어휘 검사를 무조건 풀기, 실제 텍스트 경계를 명시적으로 검사하기, 해당 모델만
+보류하기다. 두 번째를 채택한다. tokenizer 자체나 head 크기를 바꾸거나 토큰을 삭제하지 않는다.
+범위 밖 어휘는 설정에 선언된 added special image token으로 확인된 경우만 별도 메타데이터로
+기록한다. 임의의 비특수/미등록 범위 밖 ID는 계속 거부하고, 실제 HFLM에 전달할 모든 encoded
+입력·정답 ID와 prefix/pad/eos가 text head 범위에 있는지 검사한다. 범위 밖 토큰이 실제 질문에
+포함되면 실패이지 우도를 추정하거나 다른 ID로 바꾸지 않는다. Gemma1B도 같은 계약으로 검사한다.
+
+또한 loading_info의 set/tuple/기본 숫자를 JSON 안전 형태로 변환한 뒤 저장하고, 의도적 로딩 실패와
+canary 오류에서라도 원 오류·cleanup 증거를 담은 report가 닫히는 합성 회귀를 추가한다.
+원래 strict loading의 missing/extra/mismatch/error 거부 기준은 유지한다.
+
+태그와 schema는 독립 v2로 올린다. HF 실제 source와 CPU canary·cost·full의 matching 조건은
+v2 안에서만 이어진다. old canary를 새 full의 선결로 읽지 않는다. 새 단계를 Stage8hWd Gemma270,
+Stage8hWe Qwen06, Stage8hWf Gemma1B로 구분하며 이전 수행 SH는 done, 미수행 v1 SH는 hold한다.
+공식 과제·정밀도·샘플·문턱·집계·파일상한은 변경0이다. CPU 회귀와 정적 통과 뒤 실행한다.
+
+### Stage8hWg/Wh/Wi — 실제 cost 영수증의 정수 label-key 보존
+
+v2 Gemma270의 실제 canary는18.709초에 통과했고 실제32문항×6과제의 원형과 독립 재계수도
+완료했다. 그러나 마지막 report writer가 정상적인 정수 label-key를 거부했다. fallback은
+`EXTERNAL_REPORT_CLOSURE_ERROR`/9로 닫혔으며 full은 실행하지 않았다. v2 원형과 소스를
+별도 보존하고 v3 태그/단계로만 보완한다. 계산·ID guard·모델·공식 과제·문턱은 변경0이다.
+
+JSON 표준으로 표현 가능한 원시 키만 결정적으로 보존하고, 문자열로 변환했을 때 충돌하는
+키는 거부한다. 임의 객체를 default=str로 숨기지 않는다. 실제 저장된 여섯 cost raw 샤드의
+독립 audit를 재구성해 report 전체와 함께 CPU 직렬화/재독해를 먼저 수행한다. 합성의 빈 dict만
+검사해 같은 계측 결함을 반복하지 않는다. 이 CPU 검사와 실패 report 회귀가 통과한 뒤
+Gemma270/Qwen06/Gemma1B 각각 Stage8hWg/Wh/Wi로 canary→cost→full을 새로 수행한다.
+이는 잃은 cost proof를 소급 추정하거나 이전 cost를 새 source의 완료로 바꾸는 작업이 아니다.
+
+### Stage9eW — 현재 소스의 야간 종합 스모크
+
+새 HF 계측 회귀와 실제 raw report CPU 검산 뒤 기존 Codex 전용 전체 스모크를 한 번 수행한다.
+표준 사용자 동작106개/실제 child44개를 그대로 실행하고, 기존 승인된 출력 격리/환경 적응만
+사용한다. 옛 모델 실행 결과로 새 진단 source가 검증됐다고 소급하지 않는다. 새 namespace는
+`oct24_hf_v3`, 최대1200초/08:40 KST 마감이며 기존 checkpoint·원로그 덮어쓰기는 없다.
+source/기존 synthetic 자산 불변·종료 상태·실제 동작/자식 수를 확인하고, 새 HF 평가 canary나
+공식 전량 점수를 이 공용 스모크의 통과로 대신하지 않는다. 과거440초는 참고이며 시간 보장이 아니다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage8j0W / Stage8jW / Stage8kW — 정확 b11396 native GGUF의 지명 GPT2 비교
+
+### 1. 왜·질문
+
+기존 HF 세 모델로 GPT2 Q4 비교 지시를 대신할 수 없다. 해당 GGUF와 llama.cpp 실행본은
+이미 있지만 평가 venv의 gguf Python 패키지는 없다. 이번 단계는 기존에 허가된 평가 도구
+소스 다운로드 범위에서, 설치된 b11396의 정확 commit 헤더로 독립 worker를 만들 수 있는지
+검증한다. 패키지 설치를 소스 복사로 우회하지 않으며 기존 공유 라이브러리에 연결한다.
+
+### 2. 세 방법과 예측
+
+| 안 | 방법 | 장점 | 제약·비용 |
+|---|---|---|---|
+| A | native worker로 모든 continuation 위치의 원 logits를 읽음 | 지명 Q4 가중치와 native tokenizer 재사용, 패키지 설치0 | exact header/ABI·shift·캐시 회귀 필요, 구현2~4시간 추정 |
+| B | Transformers GGUF reader로 dequantize | 기존 HF 연결기 활용 | gguf 패키지 별도 허가 대기, native 계산과도 다름 |
+| C | 기존 공식 GGUFLM의 토큰별 HTTP scoring | 이미 검토한 서버 방식 | 수백만 회 호출 가능성과 BOS/문맥 계약 검산 부담 |
+
+A를 우선하되 수치 canary가 실패하면 점수0이나 품질 음성으로 바꾸지 않고 보류한다.
+속도 예측은 실제 cost 뒤에만 한다. 작은 학생 학습의 성과를 판정하는 단계가 아니다.
+
+### 3. 소스·비교 조건
+
+공식 태그 b11396의 commit은 `2e7c58c5477478c8cf6e199cfaa5dcd5a4319c81`이며 로컬
+common ELF의 build11396/commit2e7c58c54 및 과거 runtime receipt와 대조했다. 필요한
+include 폐쇄와 LICENSE를 새 cache에만 취득하고 URL/bytes/SHA를 보존한다. 원 llama 실행기와
+라이브러리는 읽기 전용이다. 최소 compiler·링커만 재사용하고 ABI 구조를 추측하지 않는다.
+
+기존 pinned lm_eval의 과제/YAML·전량19965문항/67106보기·0shot·chat OFF·문맥1024·
+전체 continuation 합산 우도·원 acc/character acc_norm 및 독립 raw 재계수를 유지한다.
+새 adapter가 모델 실행만 담당하며 공식 prompt와 집계는 고치지 않는다. native tokenizer의
+정확 BOS/EOS와 실제 ID 경계를 기록한다. Q4 계산과 native KV/backend 조건은 HF FP32와
+다름을 명시하고 사전학습량·모델 크기도 통제됐다고 주장하지 않는다.
+
+### 4. 싼 단계부터 조건부 실행
+
+1. Stage8j0W CPU는 source/헤더/lib pin, exclusive 출력, wire protocol, token/길이 경계,
+   계획한 문맥 왼쪽 절단, target shift·합산·greedy 검산과 실패/정리 회귀를 수행한다.
+2. Stage8jW canary는 지명 GPT2 한 모델만 올려 영한·빈문맥/prefix·선행 공백·BPE 경계,
+   원 logits full-label CE와 한 토큰씩 재계산, KV clear/재호출/미래 토큰 불변을 확인한다.
+   별도 서버의 제한 teacher-forcing과도 가능한 범위에서 대응하되 측정 경로를 분리한다.
+3. 수치 정합을 통과하면 같은 source로32문항×6의 cost를 측정한다. 표본 점수는 보고하지 않는다.
+4. Stage8kW full은 과제별 가중 외삽×1.3+로드/정리 여유가 실제 마감08:40 KST와7200초에
+   들어가는 경우만 열고, 전체 분모/raw 재계수/소스와 모델 불변성/종료가 모두 닫혀야 완료다.
+
+### 5. 판정·자원·한계
+
+최초 namespace는 `p106b_native_gguf_core6_v1_s1337`이다. 세 CPU/HF 동결 source는
+변경하지 않고 독립 native 파일만 추가한다. GPU는 한 작업씩, worker는 소유 PID만 종료하며
+마감·예외에도 부분 raw와 실패 report를 보존한다. 파일별20MB 미만을 지킨다. canary 최대600초,
+cost 최대600초, full 최대7200초는 상한이지 예상 시간이 아니다. 합성/짧은 수치 검산은 정식
+점수나 자유 대화 정상화의 증거가 아니다. 구현 전이며 SH는 검산 후 별도 작성한다.
+
+### 6. 실행 이력
+
+2026-10-24 00시대 설계. 현재 HFv3 Gemma270 전량 실행과는 source/출력/GPU 작업을 분리한다.
+헤더 취득·컴파일·native model 실행은 이 설계 시점에 미실행이며 결과가 나오면 여기에 대조한다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 2026-10-24 실행 이력 대조
+
+- HFv2의 canary는 실제 통과했으나 cost192원형 뒤 정상 정수label-key를 저장하지 못했다.
+  실패 source·원형·fallback을 보존했고 full은 미실행이다. 모델 품질 음성이 아닌 계측 오류다.
+- 실제192원형을 포함한 CPU 영수증696049B 왕복과 직접63회귀를 통과한 뒤 v3를 동결했다.
+  v3의 Gemma270는 canary17.458초와 cost41.957초를 통과해 전량 진행 중이다. 이 둘은 점수 아님.
+- Stage9eW는00:14~00:22 KST 전체106동작/44child/33합성학습을 완료했다. source82·기존
+  synthetic123개 전후 불변과 정리/원형 완결을 확인했다(결과101§478). 전체 스모크를 회수할 수
+  있다는 운영 예측은 맞았지만 새 HF 정식 점수나 자유대화 개선은 아직 이 결과가 답하지 않는다.
+
+### 같은 native 연결의 두 번째 조건부 모델
+
+정확한 `HF/benchmark_20261023/qwen35_08b_iq2xxs/Qwen3.5-0.8B-UD-IQ2_XXS.gguf`도
+registry 후보로 사전 등록한다. revision `6ab461498e2023f6e3c1baea90a8f0fe38ab64d0`,
+338227456B/SHA `A369165C8EC45A92D55CBAD98B5377E2C32CA8DFC824C899D9D05B33B6B53E54`다.
+GPT2는112858624B/SHA `67027F93ACE5B0AF66C4FFCEEB529E556FACD9968E63C4F822D7B4A351E835E1`,
+revision `f273bb57fe6ccad3d9ef415577a1b5c8d051544e`의 기존 지명 파일이다. 새 다운로드는 없다.
+각 모델은 독립 namespace/자산검사/canary/cost/full을 거치며 Qwen hybrid memory의 독립 초기화와
+clear/한토큰 대 full/미래 token 검산을 별도로 통과해야 한다. GPT2 성공을 Qwen 실행 허가로
+전이하지 않는다. Bonsai PTQ1의 별도 Prism 포맷/엔진은 이번 worker의 지원으로 추정하지 않는다.
+
+## Stage8lW — 닫힌 공식 Core6 원형의 대응 차이와 기준선 재계수
+
+### 1. 목적과 방법 비교
+
+원장68의 같은 문항 paired95% CI와 모델별 비교표를 회수한다. 이미 끝난 모델을 재실행하거나
+평가 정답을 학습하지 않고, 닫힌 정식 full의 원 선택지 우도·문항·공식 metric을 읽는다.
+단순 최종 평균만 비교하는 안은 저비용이나 문항 대응과 분산을 놓친다. 전체 모델 재평가는
+불필요한 GPU 중복이다. 정식 원형을 대응시킨 CPU 재계수가 기존 조건을 가장 잘 보존한다.
+
+### 2. 계약·판정
+
+독립 `scripts/summarize_p106b_core6_pairs.py`와 그 CPU 회귀만 신설한다. 기존 평가기·task·
+원 raw·모델은 변경0이다. 모델별19965문항/67106보기, 정확 model/status/출처·raw SHA/
+문항순서·doc/prompt/정답/선택지 대응과 per-row 공식 metric 재계수를 먼저 확인한다.
+cost/partial/HOLD를0점으로 채우거나 다른 문항군을 끼우지 않는다. 전체 이어질 자료가 없는
+모델은 미실행 행으로 남기며 원문 raw를 새 Git 증거에 중복 복사하지 않는다.
+
+과제별 주 metric은 PIQA·Wino·BoolQ acc와 ARC-E·ARC-C·HellaSwag acc_norm이다.
+고정6과제 각각 안에서 같은 문항을 대응 재표집하고 과제 평균6개는 동일 가중치로 합친다.
+resamples100000/seed20261024,95% percentile CI이며 과제 모집단·학습seed 변동 CI가 아니다.
+평균 차이는 {-1,0,+1}의 빈도 multinomial 재표집으로 같은 문항 bootstrap과 동등하게 계산할
+수 있으나 이 동등성은 평균 통계에만 한정하고 합성 직접 재표집 회귀로 확인한다.
+CI는 탐색적·다중비교 미보정이며 채택/일반지능 보증으로 바꾸지 않는다.
+
+무작위 기대·정답 label 최빈·가장 짧은/긴 보기 baseline도 분리한다. 사후 label 최빈은
+학습된 모델/사전 예측기가 아니라 진단 기준이다. 종료·대화/한국어 성능은 이 우도 평가의
+CI로 대신하지 않는다. 작은 학습의 성과 채택은 하지 않는다.
+
+### 3. 비용·실행·영향
+
+CPU만 최대120초를 먼저 목표로 하고 실제 elapsed/RSS/입력·출력SHA를 남긴다. 새 출력
+`test_result/evidence/p106b_core6_pairs_v1_s1337/`만 exclusive로 쓰고 파일별20MB 미만,
+HF/GGUF 실행 source는 동결한다. 추가 설치·모델·GPU·checkpoint 저장0이다. CPU회귀 뒤
+닫힌 full들만 먼저 읽고, 뒤 모델이 완료되면 별도 명시 output stamp로 같은 source를 재사용한다.
+새 보고가 여러 개여도 정식 모델 평가를 중복 실행한 것으로 세지 않는다.
+
+2026-10-24 설계 시점은 구현/실행 미완이다. root가 범위/입력 full 검증 뒤 수행하며 결과101의
+별도 절과 모델표에 실제 닫힌 결과만 갱신한다. 이 계획은 추론/학습 조건을 변경하지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage8m0W / Stage8mW — 과거 시간보류 Falcon 문법 전량의 새 실행 창
+
+### 목적·방법·예측
+
+기존 Falcon의 본536쌍/보충40쌍 cost는 완료됐으나 full 외삽5013.3101초가 옛3600초
+상한을 넘어 모델 입장 전에 보류됐다. TinyLM3종은 본59875쌍/보충5218쌍을 완료했다.
+이제 사용자09시 계산 허가 안에서 미실행 Falcon만 회수한다. 옛 source의 마감 상수를
+runtime patch하는 안은 제외하고, 동일 실제 평가함수를 호출하는 독립 제어기를 택한다.
+전체 모델 재평가는 중복비용이다. 새 cost의 전체 외삽이 실제 남은 창과7200초에 맞는지는
+미확정이며 맞지 않으면 보류한다. 작은 학생 학습의 성과 판정 단계가 아니다.
+
+### 조건·단계·비용
+
+기존 diag_p106b_babylm_causal의 policy/pins_and_rows/FullLogits/numerical_canary와
+p106b_babylm_causal의 고정 공식 AST/processor/RankAudit를 재사용한다. source·자료·
+UID macro percent·seed/동점RNG·BOS·FP32/eager/MATH/cacheOFF·batch8·문맥1024는
+바꾸지 않는다. BabyLM2026 BLiMP 본67UID/59875쌍과 보충5UID/5218쌍의 고정 범위이며
+BabyLM 전체 파이프라인이나 동일 학습규모 트랙 자격을 주장하지 않는다.
+
+새 scripts/diag_p106b_babylm_window.py와 CPU 회귀만 신설한다. Stage8m0W는 data/source
+동일성과 새마감/7200상한·원시각 보존·기존full 덮기거부를 검사한다. 새namespace
+p106b_babylm_falcon_window_v1_s1337에서 준비→Falcon cost600초→full7200초로 진행하되
+과제별 실측×1.5+로드/정리 예비가08:40 KST와상한에 맞을 때만 입장한다. 새 source의
+cost부터 닫고 옛 cost를 새 source의 완료로 바꾸지 않는다. 자료/소스전후와 전체 분모/
+독립 집계/소유정리가 모두 닫혀야 완료다. 파일별20MB미만·한GPU작업·학습0이다.
+설계 시점 구현/실행은 미완이며 SH는 CPU검사 후 root가 작성한다.
+
+## Stage8n0W / Stage8nW — 공식 lambada_openai default의 별도 전량 평가
+
+### 목적·원천 확인
+
+원장47의 마지막 단어 예측은 Core6 보기선택과 다른 과제다. 기존 pinned harness의
+lambada_openai 원prompt/마지막공백구분단어+선행공백 target 및 greedy전체target일치acc/
+perplexity를 재사용한다. 별도mt_en 과제로 대체하거나 보기선택 audit를 복사하지 않는다.
+
+처음에는 로컬config=en과 공식default의 내용 동등성이 미확인이었다. root의 공식HF API
+`https://huggingface.co/api/datasets/EleutherAI/lambada_openai/tree/900124bf3b8235c6daf21033af9948b3f07346c4/default/test?recursive=false`
+조회 결과 default/test/default.parquet의1157764B/LFS SHA99D8A9E54CDA761C6340DDD4FA6FEDA7F846FFB0E716AFA52968DEA75495EEA7가
+실제 로컬en/test/en.parquet의 재계산SHA/bytes와 일치했다. 행수 추정이 아닌byte동일성을
+증거로 같은 파일을default 과제에binding한다. 원문을 바꾸거나 다시 받지 않는다.
+
+### 방법 비교·조건·단계
+
+en파일을default로 추정하는 안은 제외했다. mt_en 공식명 평가도 지명default의 완료는 아니다.
+공급자revision/LFS와 로컬 실제byte동일성을 보존한default binding을 채택한다. 독립
+scripts/diag_p106b_lambada_default.py와 CPU 회귀만 추가하고 prepare_harness/create_adapter/
+공식YAML/ConfigurableTask/TemplateLM와 strict model_runtime을 재사용한다. 기존 평가기·
+모델/원raw·task함수는 변경0이다. 후보는 기존native595-f/native595-q/new595-broad-f/Falcon과
+이번HF3종이며 모델별수치canary/원천동일성/가중치불변을 통과해야 평가한다.
+
+0shot/chatOFF/문맥1024/fulltargetLL과greedy/TF32off/cacheOFF 및 원backend정밀도를
+기록하고5153행순서를 보존한다. 단어target이 여러subword여도 일부만 맞힌 것을 정답으로
+세지 않는다. 문맥왼쪽 절단량을 기록하고target을 자르지 않는다. 한국어QA/대화 평가가 아니다.
+Stage8n0W CPU는SHA/5153분모/default원정의/target경계와독립재계수회귀를 확인한다.
+Stage8nW는 p106b_lambada_default_v1_s1337에서 모델별canary600초→cost32문항600초→
+full7200초를 조건부 수행한다. cost×전체분모×1.5+로드/정리여유가08:40 KST와상한에
+맞아야 입장한다. CPU/계측표본점수는 정식결과로 내지 않는다. 실제 모델순서는 Core6와
+native누락회수 뒤 남은시간에 root가 결정한다. full5153원형/재계수/불변/정리가 닫힌것만
+보고하고 미실행을0점으로 세지 않는다. 평가 정답의 학습/교사 전달은0이다.
+
+설계 시점 두 새driver는 미구현/모델실행0이고 추가설치·다운로드·학습/저장0이다.
+CPU검사 뒤 exact SH/등록을root가 작성하며 결과101의 실제이력으로 예측을 대조한다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage8jWa / Stage8jWb — native 모델별 세 단계 런처
+
+Stage8jWa는GPT2 Q4, Stage8jWb는정확Qwen3.5-0.8B UD-IQ2_XXS다. 각 SH는 자기모델의
+canary→cost→full만연결하고서로의선결을공유하지않는다. 기존helper의memory timeout3회와
+gap공개를재사용하며지속실패/실제낮은free/예기치않은worker종료는중단한다. namespace v1의
+source A7DF5E7E81DAA0450439061903ADE2B7EF31C6C5B702A8CEDA99C252472296A8를동결했다.
+CPP worker_v1_004의CPU self-test는backend/model0으로통과했다. 실제 모델수치와점수는
+아직미실행이며각초기canary가실제입장선결이다. 모니터gap의peak/OOM안전을보증하지않는다.
+
+## Stage8lWb / Stage8n0Wb / Stage8nWb — 새 도구 정적·실패 종결 보완
+
+Stage8lW의 v1은 완료5모델의 정확 문항 대응과10쌍 집계를 이미 닫았다. 이후 Stage9fW
+전수 정적 검사가 `config`라는 딕셔너리 변수 이름을 TMTConfig로 분류했고, 명시 캐시
+초기화 import와 새 옵션 등급표도 누락돼 있었다. 검사기를 완화하지 않고 원 v1 소스와
+원형 결과를 그대로 보존한다. 딕셔너리 이름을 명확히 하고 기존 tinylm 캐시 정책을 명시한
+v2에서 뒤에 완료될 모델을 더한 별도 재계수를 수행한다. 공식 prompt·metric·통계는 불변이다.
+
+LAMBADA v1은 CPU 회귀만 있고 prepare/모델은 아직0이다. 초기 import 실패 때 미바인딩
+cleanup 함수가 원 오류를 가릴 수 있는 결함, 평가 오류와 보고서 저장 오류가 겹쳤을 때
+원 오류를 잃는 결함을 독립 검토가 확인했다. 기존 v1 소스를 보존한 새 v2에서 이 두
+실패 경로와 같은 딕셔너리 이름만 수리하고 회귀로 확인한다. 다른 동결된 HF/native/
+Falcon 코드와 공식 task 계산은 바꾸지 않는다.
+
+새 source와 namespace는 실행 전에 다시 동결한다. CPU prepare를 먼저 수행하고 모델별
+canary/cost/full의 기존 시간 상한·08:40 KST·5153분모·전체 target 계약을 유지한다.
+작은 학습이나 TinyLM 성과 실험을 새로 추가하는 작업이 아니다. 기존 C0 원로그는 수정0이며
+별도 정적 오류로 계속 보고한다. 이 단계는 수리 설계이고 실제 통과는 후속 원형이 소유한다.
+
+## Stage8jWc / Stage8jWd — native 한 토큰 경로 정합 복구
+
+Stage8jWa GPT2 v1은 실제 cold prefix 대 전체 continuation LL이 엄격 허용차를 넘어
+canary에서 중단됐다. 전량과cost는 미실행이며0점으로 세지 않는다. 한 토큰의 위치가
+달라진 문제인지, 같은 위치의 행렬 shape별 양자화 계산 차이인지 아직 확정하지 않는다.
+원3파일·wire·report·worker는 보존한다.
+
+1안인 허용차 확대는 선택하지 않는다. 2안인 cold prefix 검사 삭제도 선택하지 않는다.
+3안인 한 토큰씩 순전파하는 새 worker를 준비한다. 요청 사이에는 KV를 완전히 지우고,
+요청 내부만 KV를 유지하며 실제 batch/ubatch/output1과 위치를 고정한다. 다음 decode 전에
+필요 logits를 복사해 동일 이력과 같은 계산 shape를 맞춘다. 각 비교의 원LL·기대LL·문턱을
+실패 전에 기록하고 full CE·단일 prefix·cold replay·미래토큰 검사를 모두 유지한다.
+
+Stage8jWc는 GPT2, Stage8jWd는 정확 Qwen IQ2의 새 source/worker/namespace v2에서
+CPU 회귀와 컴파일 뒤 각자 canary→cost→조건부 full이다. strict 문턱과19965/67106분모,
+공식 계산과7200초/08:40 KST는 바꾸지 않는다. 느려지면 cost에서 보류하며 억지로 full을
+열지 않는다. 모델의 일반 품질을 진단용 숫자에 따라 채택하는 작업이 아니다.
+
+### Stage8nWb 실행 방식
+
+LAMBADA v2의 독립 SH는 모델 이름을 명령행으로 받으며 입력 대기를 만들지 않는다.
+미지정이면 사전등록7개 모델을 한 GPU에서 순차 검사한다. 각 모델은 같은 모델의
+canary→cost32→조건부 full5153만 연결한다. 한 모델의 오류로 독립 다음 모델을 취소하지
+않되 최종 상태에는 실패와 미실행을 남긴다. 기존 출력이 있으면 덮지 않고 거부한다.
+모델별 실측 입장이 선결이며7개 최대상한의 합16.34시간은 예상 소요가 아니다.
+실제 남은 승인시간에 들어가는 full만 수행하고08:40 뒤 새 모델은 실행하지 않는다.
+
+## Stage8o0W / Stage8oW — Belebele 한국어·영어 대응 독해 전량
+
+### 목적·선행과 방법 선택
+
+원장45번의 한영 독해를 Core6 영어 보기선택 및 LAMBADA 마지막 단어와 구분한다.
+공식 facebook/belebele의 고정 revision과 CC-BY-SA-4.0을 보존하며 한국어·영어 각각900개
+전량을 사용한다. TinyLM 본학습 전 작은 학습의 지능평가나 새 교사 생성은 하지 않는다.
+다른 영어 평가의 성과를 한국어 대화능력으로 대신하는 것을 막는 별도 행동 측정이다.
+
+전량만 집계하는 안은 단순하지만 토크나이저별 문맥 절단이 섞인다. 공통 무절단 subset만
+평가하는 안은 공식900분모를 잃는다. 전량을 주 결과로 보존하고 공통 무절단 부분은 별도
+보조집계로 표시하는 안을 선택한다. 그 분모는 실제 사전 토큰화 뒤 고정하며 결과에 맞춰
+문항을 고르지 않는다. 새 모델 훈련·채택 문턱은 만들지 않는다.
+
+### 자료·공식 계산 계약
+
+원 revision `7899cdfa4e1e0d733fd77c848e2c273cb1d32be2`의 JSONL 두 파일을 취득한다.
+KO1534047B/Git blob7772046854ba9d68c33d86d8aff064f7507fbd2a,
+EN836071B/blob a678517e601a401ba28a8c51287b7e186b161ef6이다. 실제 bytes·Git blob OID·
+로컬 SHA256·900분모·키 유일성·정답 라벨을 prepare에서 검산한다. 공식 변환 metadata는
+두 언어 `(link,question_number)` 교집합900·link488·정답차0을 보였으나 원 JSONL의
+실제 취득 검산으로 다시 확인한다. 행순서와 ds 날짜는 대응키가 아니며 split열은 없다.
+
+고정 harness d6de81643928d653435c431bae19945d41d32520의 공통 및 KO/EN YAML과
+ConfigurableTask를 그대로 사용한다. 원 지문·질문·네 답안을 포함한 prompt 끝의 `Answer:`와
+실제 target A/B/C/D의 전체 조건부 우도를 보존한다. 답 문장 우도로 바꾸지 않는다.
+실제 continuation은 공식 기본 target_delimiter가 붙은 ` A`~` D`다. 강제1토큰으로
+가정하지 않고 원 _encode_pair와 plan_tokens를 그대로 사용한다. 무절단 경계는
+len(context)+len(continuation)≤1025이며 단순 prompt≤1024로 교집합을 만들지 않는다.
+정답 문자열1..4를0-based로 읽고 공식 acc와 문자길이 acc_norm을 재계수한다. 라벨 길이가
+모두1이므로 두 metric은 같아야 한다. 0shot/chatOFF/문맥1024/왼쪽문맥절단 공개/
+target무절단/FP32/eager/MATH/TF32off/cacheOFF와 원 backend의 batch조건을 유지한다.
+
+### 단계·자원·영향 및 미확인
+
+독립 diag_p106b_belebele.py와 CPU 회귀만 추가하며 기존 평가기·모델·원raw·환경 수정0이다.
+Stage8o0W는 기존 취득 허가에 한한 prepare와 source/data/공식 metric 및 실패종결 회귀다.
+Stage8oW는 사전고정 Tiny3·Falcon·Gemma270·Qwen06·Gemma1B에 대해 모델별canary600초,
+언어별32문항 cost600초, 실측×전체분모×1.5+로드·정리 여유가 맞을 때만 full7200초다.
+전량1모델은1800문항·7200보기이며 샤드별20MB미만이다. 같은 모델의 기존Core6를
+다시 실행하지 않는다. full1800과독립재계수·source/자산불변·소유정리가 닫혀야 완료다.
+
+공통 무절단 subset은7모델×양언어×네보기 모두 절단0인 대응키의 교집합으로 사전 고정한다.
+488 link 묶음을 양 언어·모델에 함께 재표집하는 CI는 별도 검증 후에만 추가한다.
+문항 IID CI로 대신하거나 학습seed·자유대화 능력의 불확실성으로 확대하지 않는다.
+시간이 부족한 모델과 구현은 NOT_RUN으로 남긴다. 새 설치·모델 다운로드·학습0이다.
+
+설계 시점 실제 취득·모델·GPU는 미실행이며, root가 CPU 검토·source동결·런처등록 뒤
+08:40 마감 안에서 직렬 수행한다. 구현1~2시간은 추정이고 GPU 시간은새 cost가소유한다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage8p0W / Stage8pW — GPT2의 엄격 계산을 유지한 새 전량 시간 창
+
+### 목적·대안·선결
+
+Stage8jWc는 실제canary와cost192문항576보기를 통과했지만 전량 외삽8734.441984초가
+기술상한7200초를 넘어 모델 입장 전에 보류했다. 미완을 다음 창으로 넘기는 안은 추가
+구현이 없지만 지명GPT2 회수가 늦어진다. 공통prefix 캐시 재사용을 새로 구현하는 안은
+빠를 수 있지만 수치·상태 검증이 더 필요하다. 현재 승인09시 안에 충분히 들어가는 별도
+10800초 창에서 원 계산 그대로 실행하는 안을 선택한다. 지능·정답성 문턱을 바꾸는 것이 아니다.
+
+### 불변 계약과 실행
+
+원 native v2의 source42713A9E, 정확worker_v2_001, 자산·원canary와cost SHA 및
+수치 통과·raw독립재계수를 선결로 재사용한다. 같은 모델·공식6과제·19965문항67106보기·
+singleton n_batch/n_ubatch/output1·문맥1024·원 token경계·CE/prefix/cold/future검사와
+atol1e-5/rtol1e-4는 그대로다. 새 비용표본의 정답률로 지능을 판단하지 않는다.
+
+독립 p106b_native_window.py와 CPU 회귀에서10800초 입장과 새namespace의 소유수명·
+시간예외·정리·source/자산 후검사를 연결한다. 기존 frozen 함수와 globals를 고치지 않는다.
+내부 native evaluate_tasks의 manifest tag는 원 v2 출처로 명시하고 새 보고서 tag와 구분한다.
+기존 full HOLD를 덮지 않으며 새 보고서에 원형3개SHA와 새controller source를 연결한다.
+잘못된 source/자산/cost 및10800초가08:40 안에 들지 않으면 worker 전 보류한다.
+
+Stage8p0W는 import/실패종결·시간입장·원선결변조거부 및 원함수 호출 계약을 CPU에서
+확인한다. Stage8pW는 먼저 진행한 Falcon문법 종료 뒤 GPT2만 직렬 전량을 수행한다.
+Qwen IQ2의15313.504361초 외삽은 이 창에도 들어오지 않아 전량은 미실행으로 남긴다.
+source·원자산·소유정리·전량분모와 원raw재계수까지 닫힐 때만 새 점수를 보고한다.
+
+기술예상은cost기반8734초이고10800은 최대상한이지 실측소요가 아니다.08:40 내부 마감과
+09시 사용자 마감은 유지한다. 학습·기존가중치변경·패키지설치·다운로드0이며 파일별20MB
+미만을 유지한다. 설계 시점 새controller 구현·실제 full은 미실행이다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage8p0Wc / Stage8pWb — 저장 종결 시간을 포함하는 새 제어기
+
+v1 sourceBA9C6E52는 root121 CPU회귀만 통과했고 실제full은미실행이다. 독립검토가
+마지막report저장·재읽기보다먼저시간상한을검사하는반례를찾았다. 정확v1소스·CPU로그를
+보존하고미실행SH는hold로분리한다. 새v2는 최종저장과재읽기뒤실제wall/deadline을
+보수적으로검사한다. 이미원report가있으면덮지않고별도확정종결영수증으로초과/실패와
+CLI9를연결하며정리예비와외부상한도확인한다. 모든파일기록까지원자적마감보장을
+주장하지않고실제프로세스종료시각을함께검산한다.
+
+추가로 원forecast helper는 이미 소비한phase시간을 빼지 않는다. 새owner의 두 입장점에서
+실제경과+원forecast+종결예비가10800초이내인지 검사해 worker전 예측보류한다.
+강제wall만료·worker비정상종료·표본누락도 합성 회귀에서 실패로 확인한다. 원sharedhelper는
+변경하지 않는다. 이는 예산제어 보완이며 공식정답/수치 문턱의 변경이 아니다.
+
+같은source42713/worker/모델/원canary/cost/HOLD 및scientific계산은그대로다. 새source와
+namespace에서저장지연·읽기지연·시간경계/이중저장실패회귀를추가한다. v1을실제모델
+통과로승격하지않으며새controller검토전GPU실행0을유지한다. 동일10800/08:40시간창이다.
+
+### Stage8o0Wb / Stage8oWb — 한영 평가의 잔여시간·종결 경계 보완
+
+Belebele v1 sourceC97D6021은 원공식계산/토큰교집합설계와root85 CPU회귀를통과했다.
+실제자료취득·prepare·모델·GPU는0이다. 상속한finalize가후pin/가중치검증·idle조회·
+보고서저장을alarm밖에서수행하고마감을다시검사하지않는반례를독립검토가확인했다.
+원두소스와CPU로그는보존한다. 같은활성두파일의v2에서후검증과저장·재읽기를
+남은시간타이머로감싸고최종종결영수증과실패veto를확인한것만후속선결로받는다.
+원report를덮지않고실제종료코드와시간도대조한다. 파일·stdout·프로세스종료를모두
+원자적으로보장한다고하지않으며외부root상한과정리예비를함께사용한다.
+
+worker전입장도이미소비한phase시간+원cost외삽+종결예비가총상한과08:40에들어가는지
+검사한다. 정상시간보류/다른GPU점유는HOLD8, 실제도구·원형·계측·정리오류는9로
+구분한다. 저장/읽기/후pin지연과예산경계·원오류보존회귀를추가한다. 원공유helper와
+YAML·labelLL·1025경계·900/488·사전7모델교집합은변경0이다. 새source/namespace에서
+root회귀·독립반검토를통과한뒤공식2파일prepare부터시작한다. v1 CPU를실제점수로
+승격하거나실제자료를이미취득했다고보고하지않는다.
+
+### Stage8pWb 외부 소유 감시와 정리 예비
+
+새 제어기 v2는 root128 CPU회귀를0.766초에 통과했고 독립 검토에서 추가 차단 결함이
+발견되지 않았다. 이것이 실제 모델이나 마감 안전의 통과 증거는 아니다. native worker는
+별도 세션으로 실행돼 부모 timeout만으로 자식 종료를 보장할 수 없다. 전량 시작 직후
+root가 실제 PID·PPID·PGID·SID·시작 tick·실행파일·직계 부모와 명령을 독립 영수증에
+보존하고 끝까지 감시한다. 이 절차가 없는 무인 큐 실행은 허용하지 않는다.
+
+새 SH의 부모 상한은10675초 뒤INT,5초 뒤KILL이다. 전체10800초 안에서 남은120초는
+정확 소유 worker의 종료와 실제 GPU 유휴 검산 예비다. 필요시 같은 PID의 시작 tick과
+실행파일을 다시 확인한 뒤 그 소유 그룹만 TERM/KILL한다. 다른 프로세스나 불명 소유에
+광범위 종료 명령을 사용하지 않는다. 단순 환경변수 확인은 감시가 실제 수행됐다는 증거가 아니다.
+timeout·불명 정리·누락 점조회 또는 최종 상한 초과라면 종결 후보가 있어도 완료/점수로
+채택하지 않는다. 원자적 파일 기록이나 중단 불가능 syscall의 종료를 보증하지 않는다.
+
+Falcon 전량이 종료되고 GPU 유휴가 확인된 뒤에만 시작하며10800초 전체가08:40 이전에
+들어가야 한다. 예상8734초는 기존cost 외삽이고 확정 소요가 아니다. root가 실제 시작·
+프로세스 종료·후검증 시각을 회수한다. 점수와 수치 문턱 및 원19965/67106은 변경0이다.
+
+### Stage8oWb 실제 실행 직전 동결
+
+Belebele v2 source2BB7BC8D는 root103 CPU회귀를0.777초에 통과했다. 독립 검토는
+기존29개 함수 AST 불변과 새종결 경계를 확인했고 추가 차단 반례를 발견하지 않았다.
+이는 실제자료·모델 점수나 절대 안전 증거가 아니다. 모델 실행 전 공식2개 원 JSONL의
+독립 prepare와7모델 token-only 동결을 먼저 닫는다. root가 prepare 실제프로세스0,
+일치하는phase_closure와보고서SHA 및veto부재와CUDA미초기화를 확인한다.
+
+SH는 phase별600/7200과 실제절대잔여 중 작은 cap을 사용하고 절대08:40보다60초
+일찍 정리예비를 둔다. 부모 외부timeout은cap−5초 INT와5초뒤KILL이며 실제종료·
+원형불변·유휴확인까지 root가 검산한다. 정상 시간입장 부족은HOLD8, 실제실행/종결
+오류는9다. 실제 HF 모델은 같은 프로세스에만 올리고 GPU는 한 작업씩 수행한다.
+확정종결전저장된report0만으로완료나후속선결을채택하지않는다. 공식계산·공통무절단
+부분집합·사전고정7모델·원source동결은불변이며원형을덮거나작은학습을추가하지않는다.
+
+## Stage8q0W / Stage8qW — 독해의 지문 단위 대응 신뢰구간
+
+원장68번의 CI는 같은 지문에서 나온 두 질문의 의존성과 양언어 대응을 보존해야 한다.
+문항별 독립 재표집은 작지만 이 조건을 충족하지 못한다. 지문별 정확도 단순평균은
+한 질문·두 질문 지문에 같은 비중을 주므로 공식 문항 평균과 추정 대상이 달라진다.
+따라서 공식 문항 평균을 원점수로 유지하고 지문 link488개를 복원 재표집하는 대응
+cluster bootstrap을 선택한다. 한 번 선택한 지문의 모든 질문과 양언어·모델을 함께 뽑는다.
+각 반복의 정답 합을 실제 선택된 문항 수로 나누며 지문 수488로 나누지 않는다.
+
+고정7모델 중 실제 full1800/7200과 종결 및 원형 검산이 닫힌 모델만 명시 목록으로 받는다.
+같은 공식 문항·정답·요청·순서와사전동결토큰계획 및공통무절단898을검산한다. 기존
+Belebele reader와 과학함수를 재사용하고 동결source2BB7BC8D는수정하지않는다. 주900과
+보조898의 모델 차이를 양언어별로 분리한다. 양언어 평균의 새 공식점수는 만들지 않는다.
+
+기존 Core6와 같은100000회·seed20261024·percentile95를사용하되 재표집 단위는지문이다.
+학습seed·과제 모집단·자유대화 불확실성이나 다중비교 보정 CI로 확대하지 않는다. chunk별
+같은 cluster 가중치를 모든 모델·언어·보조집계에 공유하고 메모리를유계화한다. 실제
+분모0이나불완결·veto·대응불일치·source변조는실패로닫는다. 작은합성 지문에서직접
+복원추출과동등성을확인한뒤실제원raw를CPU에서재계수한다. 소요는미측정이며상한120초다.
+
+새2파일과독립namespace만작성하며기존보고서를덮거나GPU/학습을추가하지않는다.
+실제점수가모이기전구현과CPU회귀를먼저검토한다. full미실행모델을0점으로넣지않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage8nWc — LAMBADA 동결 계산의 한 단계 외부 감독
+
+LAMBADA v2의 내부 finalize는 후검사와 보고서 저장을 단발 timer 밖에서 수행한다.
+Belebele 준비가 이 소스에 연결됐으므로 지금 고치면 동결된 과학 계보가 바뀐다. 원
+helper를 수정하는 안, 독립 Python 제어기를 다시 만드는 안, root가 한 단계씩 실제
+외부 상한과 종료를 검산하는 안을 비교해 이번 남은 시간에는 마지막 안을 선택한다.
+무인 큐로 canary/cost/full을 자동 연쇄하지 않으며 이전 SH의 자동 순회도 사용하지 않는다.
+
+새 SH는 명시한 모델과 한 단계만 받고 공식 sourceA400D971을 유지한다. 각 단계 cap은
+600/7200초와 절대 잔여시간 중 작은 값이다.08:40보다60초 정리 예비를 두고 외부timeout을
+cap−5초 INT와5초뒤KILL로 둔다. actual exit0·보고서 원형/전량분모·raw검산·source/자산/
+본체불변·소유정리와 실제 전체 wall/절대마감이 함께 닫힌 경우만 root가 독립 영수증에
+채택한다. 내부report0만으로 시간 초과를 통과로 만들지 않는다. 중단/timeout/불명 정리는
+실패이며 후속은 미실행이다. 종료가 모델 점수보다 우선하고 정상 HOLD는0점이 아니다.
+
+학습·설치·원본 변경0이며 모델별 canary와 cost를 먼저 회수한다. 원default5153행과
+마지막 단어의 전체 subword LL/greedy를 유지한다. 실제 시간이 부족하면 미실행으로
+남긴다. 이는 기존 계산의 감독 연결이지 새 학습이나 새로운 benchmark 프로토콜이 아니다.
+
+### Stage8oWc / Stage8nWc 외부 로그 수명의 보완
+
+독립 검토는 cap 계산 뒤 로그 준비가61초 지연되면 기존60초 절대예비를 넘는 반례와
+child0 뒤 note1을 무시하는 반례를 확인했다. 실제 Belebele 모델과 LAMBADA 모델은
+아직0이다. GPU 실행 전 외부 timeout을 runlog 바깥으로 옮겨 준비·실행·후미를 함께
+감싼다. 사전 note는 별도15초,종결 note도15초이며오류를9로반영한다. 마지막 사전
+note 뒤 실제 cap을 다시 계산하고 절대마감120초 예비를 둔다. root가 실제 프로세스와
+상한 및 소유 정리를 회수해야만 점수를 채택한다. syscall·저장·프로세스종료의 원자성은
+보장하지 않는다. 독립 그룹의 고아가 없다는 후검증도 필요하다.
+
+CPU prepare를 마친 Stage8oWb는 done으로 보존하고 새Stage8oWc에서 모델만 수행한다.
+미실행 LAMBADA Stage8nWc는 같은 파일을 좁게 보완한다. 공식 prompt/metric·고정source·
+원 준비·계보는변경0이다. root가독립합성반례와정적검사를회수한뒤실제모델에사용한다.
+
+### Stage8r0W / Stage8rW — GPT2 원 종결을 보존한 대응 통계
+
+이미 닫힌 GPT2 Q4 전량의 보조 통계를 추가한다. 점수만 표로 남기는 안, 새 얇은 종결
+연결기로 기존 통계 함수를 재사용하는 안, 새 집계기를 다시 작성하는 안을 비교해 두 번째를
+선택했다. 기존 helper는 진행 중 평가의 동결 소스이며 변경하지 않는다. 새 두 파일만
+원 report9/PENDING·terminal0·실제 부모0의 총괄 감사·실패 veto 부재·정확 SHA와 수치 및
+worker 정리를 검증한다. 원 객체의 상태를 바꾸거나 원 파일을 다시 저장하지 않는다.
+
+기존7모델은 기존 입장 함수를 그대로 사용하고 공통 CaseContracts로19965문항/67106보기와
+문서·질문·정답·보기 순서의 대응을 전량 확인한다. 기존 recount_model과 paired_intervals를
+직접 재사용해 새 GPT2 대응7쌍만 계산한다. 기존21쌍을 새 결과처럼 세지 않는다. 동일100000회,
+seed20261024·고정6과제 동일가중·percentile95와 다중비교 미보정 조건을 유지한다.
+이미 점수를 본 사후 보조 분석이며 학습seed 불확실성·한국어·일반 대화·새 지능 개선이 아니다.
+native Q4/F32 KV와 HF FP32/no-KV 및 배치·사전학습 차이는 결과에 남긴다.
+
+새 CPU 회귀·총괄 소스 검토·독립 반 검토와 소스 동결 후 별도120초 시간창에서 실행한다.
+종결 저장과 실제 프로세스 종료까지 외부 상한으로 확인하고 입력 원형은 전후 해시로 대조한다.
+미완 full이나 SHA 차이·잔존 worker 증거는 보류 또는 오류이며0점으로 채우지 않는다.
+
+> 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 합니다.
+
+### Stage8s0W / Stage8sWa~c — Qwen3.5 HF 언어부의 독립 연결
+
+기존 보류를 계속하는 안, 공식 언어 클래스를 새 연결기에서 엄격히 검산하는 안,
+시각부까지 포함한 conditional 클래스를 사용하는 안을 비교해 두 번째를 준비한다.
+텍스트 벤치마크에 쓰는 언어320키는 이름·shape·실제 FP32 값과 tied-head까지 확인하고
+시각153키·MTP15키는 이름과 shape를 보존해 미사용을 명시한다. 파일 바이트를 읽지
+않았다거나 전체488키를 계산에 사용했다고 주장하지 않는다. 기존 source2BB와 Core6 v3는
+수정하지 않으며 새 두 파일과 독립 namespace만 사용한다.
+
+토크나이저의 기준은 고정 tokenizer.json의 처리 부품과 tokenizer_config의 선언을 함께
+보존하는 것이다. 공통22개와 config 전용11개, 추가 special 목록과 named 속성을 모두
+검산한다. 공식 Qwen3_5Tokenizer의 재구성 결과도 이름만으로 통과시키지 않는다. 부품과
+선언을 정확히 보존하는 공식 backend 경로만 허용하며 임의 regex 변경·ID 재매핑·누락을
+하지 않는다. 코드에서 원 JSON만 읽고 config 전용 선언을 버리는 방식은 채택하지 않는다.
+
+기존 공식 task·request·전체 label CE와 독립 재계수 함수를 재사용한다. batch1/2와 prefix,
+미래 토큰 비영향, 요청 간 상태 격리 및 반복·순서 변경을 실제 수치 canary에서 확인한다.
+새 cost는 과제별32문항이며 같은 공식19965문항/67106보기 전량의 입장을 실측으로 판단한다.
+CPU·독립 검토 뒤에만 GPU를 열고 모델 실행08:40 및 사용자 위임09:00 경계를 유지한다.
+시간 부족이나 구조·수치·정리 미충족은 보류 또는 오류이지0점이나 모델 품질 실패가 아니다.
+
+### Stage8r0Wc / Stage8rWb — 연결 실패 표식의 v2 후속
+
+독립 검토가 v1의 끊어진 출력 실패 링크를 놓치는 반례를 합성으로 재현했다. 실제 통계는
+아직0이며 원 두 소스를 정확 보존했다. v2는 실패 표식의 exists와is_symlink 및 실패
+기록 경로의 비연결 검사를 좁게 보완했다. 통계·원형 재계수 함수는 그대로다. 총괄59개
+CPU 회귀7.815초와 독립59개6.517초를 회수했으며 별도 v2 namespace와 새 source08B4A93C를
+사용한다. 실제8모델 재계수와 새7쌍은 전체120초 외부 감독과 실제 종료0 및 terminal 검산이
+함께 닫힌 경우만 채택한다. 첫 v1의54개 합성 통과를 실제 통계 완료로 바꾸지 않는다.
+
+### Stage8s0Wb — 원본 BPE의 공개 직렬화와 실제 합성 계약
+
+v1의 합성67개와 독립 검토 뒤 실제 CPU 토크나이저에서 pipeline HOLD가 발생했다.
+공식 원본 roundtrip의 merge247587개가 문자열에서 두 원소 배열로 바뀌지만 원순서와
+문자열 내용이 exact동일하고, 미기재 ignore_merges가 공식 false로 표시됨을 실제 확인했다.
+원문과 공개 직렬화의 표현 차이를 규칙 변경으로 오판하지 않는 v2를 별도 source로 준비한다.
+원형 v1을 보존하고 원문 SHA와 내용·순서 및 config 전체 선언을 계속 검산한다.
+추가 GPU 실행 선결은 새 소스 전체 읽기·독립 검토·CPU 회귀·실제 tokenizer 통과다.
+실제 모델 입장은 같은 공식 text class와320키 값 검산 및 수치 문턱을 유지한다.
+
+### Stage8sWb — Qwen3.5 text 한 단계 감독 실행
+
+실제 tokenizer 합성은 v2 source79A70282에서 원247587개 규칙과 config33·추가13·명명7을
+검산해 통과했다. 총괄84회귀0.275초와 독립84회귀0.310초,53개 shell 계약을 확인했다.
+TSV258의 단일 SH는 canary/cost/full 중 하나만 명시 실행한다. cost/full은 총괄이
+실제 선행 부모 종료0을 관찰한 뒤 운영 증언 인자를 줄 때만 열며 저장 report0만으로
+이를 자동 증명하지 않는다. 한 단계 전체 외부 timeout570/7170,절대08:40과120초 여유,
+종결·원형 SHA와 veto 부재 및 소유 정리가 모두 선결이다. 비용은 새 과제별32문항의
+실측에서 전량 예산을 판단하며 예산을 넘으면 보류하고 점수0으로 채우지 않는다.
+공식19965문항/67106보기 전량과 원 엄격 수치 문턱 및 FP32/MATH를 유지한다.
+
+### Stage8nWd — LAMBADA 후행 고정답 진단
+
+지명7모델 전량을 회수한 뒤 저장된 공식 target5153개에서 가장 자주 나오는 동일 단어를
+항상 답하는 후행 진단 기준을 계산한다. 모델·교사·학습은0이며 원 target의 대소문자·공백·
+문장부호와 공식 분모를 유지한다. 정답을 본 사후 최빈 기준이며 새 학습 성과나 사전 모델이
+아니다. 선택지 없는 자유 단어 공간의 균등 무작위 정확도를 임의로 정하지 않는다.
+원 sample manifest의 파일·행·SHA와 순서 및 전량 target 대응을 확인하고 원형은 바꾸지 않는다.
+
+### Stage8s0Wc / Stage8sWc — 명시 config 생성자 연결의 최소 복구
+
+실제 v2 canary가 use_cache 미지원 생성자 키워드로 종료9였다. 공식5.14.1의 명시
+config 경로와 해당 모델의 config 단일 생성자를 대조했고 중복 키워드가 원인이다.
+원 v2 두파일·실패를 보존한다. v3는 from_pretrained의 중복 키워드만 제거하고 config와
+모든 forward의 cacheOFF·pastNone·원본320값 및 BPE와 수치 문턱은 유지한다.
+가짜 엄격 생성자로 기존 실패를 재생하고 AST로 중복 키워드 제거와 기존 설정·forward
+보존을 확인한다. 새 CPU·독립 검토와 source동결 뒤 실제 canary/cost부터 판단한다.
+
+### Stage8s0Wd / Stage8sWd — Qwen3.5 형상과 미래 내용의 수치 관찰
+
+v3 실제 canary는 prefix_vs_future1 음성과 정리 veto로 종료9였다. 현재 최대차·위치가
+저장되지 않아 미래 누설인지 길이에 따른 FP32 차이인지 구분하지 못한다. 기존 소스와
+음성 및 수치 문턱을 보존한다. 단순 보존 A,별도 관찰 B,커널/정밀도 변경 C 중 B를 택한다.
+
+동결 runtime을 재사용하는 새 관찰기에서 P/P 반복,같은 길이 P+U/P+V와 A/B/A,
+원래 P/P+tail1/P+tail2를 비교한다. 원 ATOL/RTOL의 위반 수·최대차·위치·argmax,
+동일 prefix label 우도 차이와 층별 변화 및 관찰 ON/OFF의 logits를 기록한다. 공개
+hidden-state 반환을 쓰고 마지막 norm과 층 위치를 명시하며 가중치나 forward를 교체하지 않는다.
+
+GPU 결과를 CPU로 회수한 뒤 참조를 정리하고 예기치 않은 오류는 원 원인부터 남긴다.
+언어320키와 tokenizer 및 전후 소스·자산·본체 검산,allocator와 실제 GPU 정리를 유지한다.
+새 관찰 종결은 공식 canary가 아니며 원 cost/full을 열지 않는다. CPU·독립 검토 뒤
+전체600초 외부 상한과08:40 마감 안에서만 수행한다. 설치·다운로드·새 학습은0이다.
+
+총괄은 새 두파일791행을 직접 읽었고 새33개와 기존87개의 합계120개 CPU회귀를
+1.286초에 통과했다. source0E735714는41파일이며 원2B244C6B 동결을 검산했다.
+TAG는 기존 실행0·충돌0이다. 새 TSV260의 단일 SH는 runlog 전체595초와 kill5초를
+포함한600초 상한이며 내부570초,절대08:40과120초 잔여를 요구한다. 독립 검토 뒤에만
+실제 GPU를 허용하며 문턱 위반은 자료로 남겨도 원 canary 비용/전량은 자동 개방하지 않는다.
+
+### Stage8s0We / Stage8sWe — 모델 참조와 엔진 workspace 정리 분리
+
+관찰 v1 실제9는 예상 수치 음성과 달리 cleanup flag가false인 독립 문제다. 원20행과
+소스·veto를 보존했다. PyTorch2.10 공식 cuBLAS workspace 문서와 실제 설치 선언을
+대조해 별도 인과 계측 B를 선택한다. 원 q.runtime이나 허용차·모델·가중치는 변경하지 않는다.
+
+새 관찰 v2에서 allocator allocated/reserved/active,등록 parameter/buffer device와
+Python CUDA tensor의 중복 제거 storage 메타를 기록한다. 값이나 참조를 보관하지 않는다.
+runtime 종료 뒤 일반 synchronize/GC/empty_cache 반복 대조를 먼저 하고 전용 cuBLAS
+workspace clear 한 번 뒤 같은 통계를 기록한다. 대조에서도 감소하면 clear 단독효과로
+해석하지 않는다. Python scan이 모든 C++ 저장소를 대표한다고도 하지 않는다.
+원 cleanup flag를 덮지 않고 새 통계만 추가하며 원 canary/cost/full은 여전히 미실행이다.
+CPU 반례·독립 검토와 새 source 동결 후 단일 외부600/내부570초 관찰만 root가 실행한다.
+
+실행 전 독립 검토에서 v2는 runtime 종료 후만 기록하고 입장 전과 상주 시점이 빠진 것을
+확인했다. 원 v2 두 파일은 정확 보존하고 GPU 미실행으로 남긴다. 같은 활성 두 파일의
+별도 v3에서 입장 전·상주 중·종료 뒤 allocator/등록 텐서/GC 메타를 기록한다. GC의
+전체 CPU 목록 생성과 일시 강참조 및 관찰 비용을 공개하고 관찰 자체가 무비용이라고
+주장하지 않는다. 새 CUDA 텐서를 만들어 측정하지 않으며 원 cleanup 판정은 유지한다.
+
+후속 v3의133개 합성은 통과했지만 저장소 메타 상한128이 언어320키 규모보다 작은
+반례를 root와 독립 검토가 GPU 전에 확인했다. 두 소스 원형을 보존하고 모델 미실행으로
+남긴다. v4는 전 시점의 메타 저장소 한도만1024로 분리하고320/322/1024 통과와
+1025 중단을 검증한다. 상주만 상한을 늘리면 종료 뒤 잔류 분석이 다시 막힐 수 있어
+전 시점을 일치시킨다. 원 수치 문턱·본체·GPU 계산·cleanup false 판정은 변경0이다.
+
+총괄은 v3 전체 변경부와 v4의 두 줄 및 추가 회귀를 읽었고, v4 새48개와 원87개를
+합친135개 CPU 회귀가2.307초에 통과했다. source48은2BBAAE80으로 동결했고 원
+2B244C6B는 그대로다. 세 시점 추가 CPU는Stage8s0Wf,1024 경계 CPU는Stage8s0Wg
+별도 runlog에 보존한다. 새 TSV261과Stage8sWe는 관찰기만 실행하며 모델 상주와
+workspace 대조가 통과하더라도 원 cleanup false와원 수치 음성 및전량 보류를 유지한다.
+
+### Stage9lWa / Stage9lWb / Stage9lWc — 야간 마감 정적 감사
+
+실제 독립 관찰과 정본·새 인계 반영 뒤 codex-safe 전수 정적을 exact WIP와 새 JSON에
+결합한다. A는 한정 회차 마감 전, B는 WIP/인계 메타데이터의 최종 정정 뒤 재검산이며
+같은 모델 실험의 반복이나 새 GPU 실행이 아니다. 원 보존로그 C0 오류와 범위6미실행은
+원형대로 공개하고 전체 PASS로 바꾸지 않는다. 제품과 공용 검사기 변경은0이다.
+
+독립 인계 판독이 GPT2의 primary9/terminal0/실제부모0 설명 누락을 지적해 원형과
+종결감사 직접 연결을 추가했다. C는 이 마지막 문서 보완 뒤의 정적 재검산이며 점수나
+runtime의 재실행이 아니다. A/B를 지우거나 미실행으로 바꾸지 않는다.
+
+### Stage9lWd — 사용자 후속 순서와 필수조건 설명 뒤 정적 감사
+
+사용자가 다음 회차를 C 다음 A로 지정하고 B의 필요 요소·이유·필수 여부를 물었다.
+남은 정확 외부모델의 공식 평가 연결 다음 정제/번역 후보 편입과 부족 자료/교사 생산을
+준비한다. B의 공식 fused linear CE는 선택적 가속이고 현재32k 본학습이나 평가·자료
+준비의 새 필수 게이트가 아니다. 추가 설치와 모델 실행은 이 선택에 포함되지 않는다.
+기존 출력층·환경 메타데이터와 공식 고정 소스를 읽고 최소 커널1종·공유출력층 연결·
+수치 및 전체시간 검증으로 분리한다. 세부는 본학습 준비표가 소유하고 현재 인계와
+COMPASS의 후속 순서를 동기화한다. 새74번 WIP와 문서가 확정된 뒤 별도 JSON에
+codex-safe 전수 정적을 결합하며 원 C0 오류와 범위6 미실행을 면제하지 않는다.
+
+## Stage8jWe / Stage8jWf — IQ2의 명시 전량 시간창 준비
+
+### 왜·질문·GPU 전 예측
+
+기존 정확 IQ2의 엄격 canary/cost는 완료됐지만15313.504초 외삽이 원7200초와 별도
+10800초 창을 넘어 전량은 미실행이다. 독립 제어기에서 사용자 명시 시간창이 충분한지
+확인하고 같은 수치/공식 평가로 전량을 이어갈 수 있는가를 묻는다. 과학적 계산을 바꾸지
+않고 시간창 소유만 분리하므로 CPU 계약은 닫을 수 있으나 실제 비용 지연·정리 실패로
+다음 실행도 보류될 수 있다. 예측은 보장이 아니다.
+
+### 단계·판정·비용
+
+- Stage8jWe: 새 IQ2 owner와 합성 CPU 회귀, check-only는 기존 source/worker 신원만 읽고
+  모델을 올리지 않는다. 원 canary/cost/HOLD와 실제 종료 원로그 SHA·192행/576보기의
+  재계수 및 source drift·저장 지연·veto 반례를 검증한다. CPU이며 실제 본평가는0이다.
+- Stage8jWf: 새 aware deadline·max-wall·source SHA·정확 원로그를 필수 입력으로 받고,
+  선결 검사 뒤와 worker 직전에 소비시간+원 forecast+종결30초가 양쪽 시간 안에 들어갈
+  때만 새 namespace의 full을 연다. 외부 OS hardcap과 실제 종료·terminal 영수증·veto
+  부재를 모두 회수한다. 원7200초 HOLD와 GPT2 owner 및 수치 문턱은 변경하지 않는다.
+- 원 forecast는 약4.254시간이며 초기검사/저장/종결 여유가 추가로 필요하다. 새 상한을
+  현재 CPU 허가나 옛09시 위임에서 가져오지 않는다. 실제 예상·상한은 새 사용자 창에서 정한다.
+
+한계: CPU 준비는 IQ2 점수나 Qwen HF 수치 해결 및 Bonsai PTQ ABI 성공이 아니다.
+기존 공식 evaluator/worker를 재사용하며 기준 모델의 문항·분모·집계를 바꾸지 않는다.
+새 제어기는 scripts/p106b_native_iq2_window.py, 회귀는 scripts/test_p106b_native_iq2_window.py다.
+원문/보고서/가중치·모델/GPU·전체 스모크 변경 또는 실행은 이번에0이다.
+
+## Stage4ft0W — 원장1·2의 명시 채택과 학습 manifest 연결 준비
+
+### 왜·질문·예측
+
+strict import와 불변 게시가 성공해도 NOT_ADMITTED로 남는 현재 경계는 맞다. 빠진 것은
+정확 후보 SHA에 대한 후행 검수 결정을 분할·토큰·학습 manifest에 잇는 접점이다.
+새 p106b_admission.py는 기존 importer/publisher와 shard·MTP encoding을 재사용한다.
+구조와 명시 결정/분할·토큰 연결은 CPU로 시험할 수 있으나 의미 판독을 자동 대체하지 않는다.
+
+### 단계·판정
+
+1. 원장1의 부모128/앞62·뒤66 coverage와 새 revision 경계/LF, 원장2의1273/2460 새3변형
+   기계 후보를 별도 명세로 기록한다. 현재 타세션 원형·후보는 수정하거나 편입하지 않는다.
+2. 정확 게시/import·원천/후보 SHA를 frozen bundle에 묶고 후보별 명시 검수와 root/group
+   split·이전 실제 노출·tokenizer/template/context를 입력받는다. 분할 정책과 의미 점수를
+   코드가 추정하지 않는다. SFT의 학술 용어·지도 턴을 보존하고 native NTP를 별도로 센다.
+3. 합성 source/tokenizer와 실제 기존 publisher/importer/sharder 접점으로 stale SHA·누락·
+   HOLD·split 누설·context·마스크·shard 변조·출력 충돌을 시험한다. 합성 출력은 항상 미채택이다.
+4. 다음 A에서 총괄의 원문1차 판독·정확 적용과 실제 채택 영수증을 회수한 뒤에만 실제 준비한다.
+   임시 checklist 현재 부재를 이전 읽기 감사로 대체해 최신 검증했다고 주장하지 않는다.
+
+완료 기준과 원장별 차이는
+[편입 단계 정본](../docs/research/20261024_CAB_선결준비와_데이터편입.md)이 소유한다.
+CPU 합성 통과는 실제66/60후보의 채택·전량 정제·75M완성·본학습 성공이 아니다.
+분할 비율·seed·실행 창은 이번 코드가 새로 확정하지 않으며 작은 학습의 지능 판정도 하지 않는다.
+
+### 2026-10-24 CPU 회수
+
+총괄이 Stage8jWe22개와 Stage4ft0W39개, B 접점/제어기47개와 기존 MTP23개를 함께 실행해
+131/131, 6.213초, 종료0을 회수했다. [소스/명령/종료 감사](../handoff/audit/WIP_20261024_CPU_CAB_VERIFICATION.json)와
+[편입·구현 범위 설명](../docs/research/20261024_CAB_선결준비와_데이터편입.md)이 정본이다.
+명시 검수 없는 채택·다른 split 노출 은폐·같은 계수의 shard 변조를 거부하는 합성 계약이며,
+실제 후보의 내용 검수나 학습 편입 증거가 아니다. 원장1·2와 실제 편입0은 유지한다.
+
+### Stage9mW / Stage9mWb — 이번 CPU 준비의 전수 정적 감사
+
+이번 추가 코드·문서와 정확 WIP를 codex-safe 전수 정적의 새 JSON에 연결한다. 기존 보존
+로그의 C0 오류와 범위상6미실행은 원형대로 공개한다. 검사기나 원로그를 완화·수정하지
+않으며 전체 GPU 스모크는 다음 새 승인창까지 NOT_RUN이다. 계속 작업 요청만으로 새
+공유 핸드오프를 생성하지 않고 열린 WIP를 갱신한다.
+
+첫 전수는 새 CLI9개의 등급 등록 누락, 변경 전 스모크의 execution source pin 불일치,
+기존 원로그 C0의 세 실패를 찾았다. CLI는 exp 등급으로 등록하고 Wb에서 재검산한다.
+원 스모크·보존로그·검사기는 수정하지 않는다. 새 전체 스모크가 금지된 이번에는 source
+pin 실패를 억지로 통과시키지 않으며 다음 GPU 회차의 실제 재검증 항목으로 남긴다.
+
+## Stage9nW — 10월25일 현재 소스의 전체 스모크
+
+사용자가 2026년10월25일13시까지 CPU와GPU의 주도 연구를 새로 승인했다. 이전 CPU
+선결 뒤 mtp_sft가 바뀌어 execution source pin이 달라졌으므로 현재 소스의 전체 스모크를
+새 namespace에서 회수한다. 같은 canonical BAT 모듈·진단·종합 판정은 그대로이며
+stdout 분리와 기존 Codex 격리 출력 경로만 사용한다. 이전 원로그를 덮지 않는다.
+
+질문은 현재 기본 학습·모델·검사 경로가 실제로 완결하는가다. 기존 MTP 마스크의 CPU
+회귀는 통과했지만 실제 조합의 오류·시간초과·정리 실패가 남을 수 있다. 성공 예측은
+CPU와 기존 동일 기본값에 근거하며 보장이 아니다.
+
+1. source/plan·현재 WIP와 codex-safe 전수 정적을 회수한다. 기존 C0 원로그와 아직
+   새 스모크가 없는 신선도 실패는 분리해서 공개하며 검사기를 완화하지 않는다.
+2. run_P106B_Stage9nW_oct25_current_smoke.sh는 최대1200초, 절대13시 상한과
+   별도 OS timeout을 둔다. 실행 전 모델/GPU 비점유와 원형·새 namespace를 확인한다.
+3. report의 전체 action/child·실제 종료·소스/원형 불변·정리·종합 판정을 모두 검산한다.
+   일부 실행·종료0만으로 전체 통과라고 하지 않는다.
+
+예상은 과거 현재형식 스모크 약7~10분이며 상한20분은 소요 예측이 아니다. 성공해도
+공식 Liger/CCE·v12 가속·IQ2 전량 점수·새 본학습 지능을 검증한 것이 아니다. 새 소스
+변경 뒤에는 해당 신선도를 다시 확인한다. 현재 단계는 실행 전이다.
+
+Stage8jWf 정확IQ2의 다음 실제 전량은 이 준비 뒤 같은 source/canary/cost/raw576보기와
+실제 원로그 종료를 검산하고,15313.504초 외삽+준비·종결 여유가 새 창에 들어갈 때만
+실행한다. GPU는 직렬이며 원7200초HOLD와 GPT2 owner·수치계약은 변경하지 않는다.
+
+## Stage8jWg / Stage8jWh — 고정 worker의 날짜 경계 수리와 독립 전량
+
+실행 전 반 검토에서 원 C++ worker의 상한이2026-10-24 08:40에 고정돼 있음을 확인했다.
+새 Python 창이 오래된 바이너리에 오늘 시각을 전달하면 모델 로딩 전에 거부된다.
+전날22개 CPU 회귀는 모의 Worker여서 실제 C++ 날짜 경계를 검증하지 못했다. 이 준비
+결함을 실제 모델 음성이나 기존 canary/cost의 실패로 재해석하지 않는다.
+
+대안은 원형을 유지하고 날짜만 바꾼 별도 빌드, 일반화한 새 runtime 상한 API, C 보류다.
+현재 새13시 위임만 필요한 만큼 첫 안을 택한다. 원 C++와 바이너리를 고치지 않고 새
+캐시 사본의 상한 숫자와 설명만 바꿨음을 바이트 diff로 검증한다. 원 컴파일러·헤더·
+라이브러리·수치 플래그·모델 경로와 평가 API는 동일하다. 새 바이너리 신원을 별도로 고정한다.
+
+- Stage8jWg: 기존 Python v1을 보존한 뒤 v2 owner와 새 worker 영수증을 연결한다.
+  CPU self-test와 모델 없는 날짜/미등록 경로 거부에서 원거부·새허용경계·13시초과거부를
+  재현한다. 원 source/worker가 바뀌지 않음과 허용한 날짜 diff만 검산한다.
+- Stage8jWh: 새 창 안에서 원 엄격 수치 suite를 다시 수행한 뒤 같은 full19965문항과
+  67106보기를 평가한다. 기존192행/576보기 cost와 원 canary·원 실제 종료를 검산하고
+  새 worker는 수치 canary가 통과하기 전 전량에 입장시키지 않는다.
+- 독립 OS 감독은 controller뿐 아니라 별도 세션의 worker를 소유 신원·PID 시작시각·
+  정확 실행파일/명령과 고유 owner token으로 확인한다. 다른 프로세스를 종료하지 않으며
+  SIGKILL 반례와 잔여 child·terminal veto·실제 종료를 따로 회수한다.
+
+예측은 날짜만 달라 원 수치 계약을 보존할 수 있다는 것이지만 실제 바이너리·자식 수명
+문제가 남을 수 있다. CPU 수리 약15~40분 예상, 전량은 기존4.254시간 외삽에 준비·종결을
+더한다. 실제 완료·정리까지 오늘13시 안에 들어가는 경우에만 수행한다. 옛 source42713과
+원HOLD는 불변이며 새 수치 문턱·캐시 재사용·근사 가속을 섞지 않는다.
+
+### Stage9oWa — 현재 승인창의 GPU 전 정적
+
+Stage9nW 실행 전 codex-safe 전수를 새 WIP에 결합했다. 기존 원로그 C0와 아직 현재
+스모크가 없는 execution source pin 불일치를 보존한다. 이 정적 단계는 GPU 성공이나
+현재 모델 품질을 판정하지 않는다.
+
+### Stage9oWb / Stage9nWb — 새 선택 진단 소스 동결 뒤 정적·전체 스모크
+
+첫 Stage9nW 뒤 독립 v12·FP32·교사 소유 감독 파일이 추가됐다. 이전 전체 스모크0을
+새 코드 전체의 신선한 검증으로 승격하지 않는다. Stage9oWb에서 같은 codex-safe
+전수 정적을 현재 WIP에 결합하며 원로그의 기존 C0 오류는 보존한다. 이를 없애기 위해
+원로그·검사기·범위 계약을 변경하지 않는다.
+
+Stage9nWb는 `run_P106B_Stage9nWb_oct25_frozen_source_smoke.sh`(registry267),
+격리 namespace `oct25_cab_v2`에서 같은 정본106개 action/44개 child 인자를 수행한다.
+소스가 최종 동결되고 진행 중인 C와 독립 커널 GPU가 실제 종료한 뒤만 GPU에 입장한다.
+기존과 같은 내부1200초·절대13시와 외부 OS상한을 적용한다. 원형 불변·실제 종료·
+종합 판정·소유 정리를 확인하고 실제 source pin의 범위만 통과로 기록한다. 이후 원천이
+바뀌면 그 신선도를 별도로 다룬다. 기술 종합 확인은 새 학생 지능·v12 가속 채택과 다르다.
+
+수행 후 보완 Stage9oWc: 첫9oWb의 Triton 지역 변수 오인3항목을 이름 구분만으로
+수리하고 동일 전수 정적을 다시 수행했다. 실제69통과·원로그1오류·범위6미실행이며
+원형/원 문턱은 보존했다. 이 재검증은 새 선택 소스 동결의 CPU 선결이고 그 뒤의
+메뉴 정합 등 추가 변경과 최종 인계 신선도는 별도로 다시 연결한다.
+
+## Stage9pWa — native128 게시·import 연결과 정확 SHA 검산
+
+원장1의 검수문128개와 게시62개의 차이를 실제 게시/가져오기 단계에서 해소한다. 원 부모
+packet128과 SHA D742AF00은 보존한다. 뒤66 중 네 후보의 끝 경계·고유명사 전사·LF만
+새 revision에서 원문과 대조해 보완하고, 나머지62개는 기존 후보 바이트를 그대로 쓴다.
+기존 앞62 게시본과 영수증은 덮지 않는다. 정확128 roster와 게시 영수증을 갖춘 새 strict
+import 뒤 별도 bundle을 동결한다. HOLD·외부 사실 미검증·권리/원문서 계보·기존 TRAIN 노출은
+별도로 남기며 이 단계 통과로 학습 편입을 주장하지 않는다.
+
+대안은 현 부분62 유지, 전체128의 정확 게시/import, 원천 전체 재작성이다. 현재 이미
+있는 검수·후보를 활용하고 누락 연결만 마치는 두 번째 안을 택했다. 새 의미를 추정하거나
+검사 허용차를 바꾸지 않는다. CPU 수초~수분 예상, 모델·GPU 추가 사용·원캐시 변경0이다.
+
+## Stage9pWb — 개별 SFT1273/2460 의미 보존 수리와 새2원천 연결
+
+두 지명 사례는 옛60원천180변형 roster 밖이다. 이 수리를180전량 완료라고 세지 않는다.
+원 source·게시 v1·미게시 v2를 보존하고 같은 canonicalSHA·원source_index/root_id/역할을
+갖는 명시2원천 recovery packet을 만든다.1273은 문자 그대로 남은 줄바꿈만 복구해 thin의
+체형 의미와 종족·속성·선택을 유지한다.2460은 한국어 안내에도 교정 대상 영어를 인용하고
+세미콜론이 실제 교정문에 존재하도록 맞춘다.영어 변형도 It is인 원 교정 대상을 보존한다.
+새3변형씩 copy-only 게시→기존 strict import→새 bundle을 연결하되 구조 통과와 실제 의미/
+권리/지도턴·원문서 분할·토큰 적격은 분리한다. 원문·구버전 덮기와 모델 실행은0이다.
+
+## Stage9pWc — 옛60원천180변형의 현재 편입 계약 이관
+
+옛 용어검토 packet V2와 수정180행을 현재 SFT V3 packet과 V5 strict import에 연결한다.
+기존 canonical의 정확60행·source ID·root·메시지·source-line SHA와 원형180의 대응을 먼저
+대조한다. source metadata의 Aya53/OASST7·Apache-2.0·revision을 새 packet에 보존한다.
+4개 원천의4턴 대화를 포함해 역할·순서를 유지하고 새 내용 작성이나 원변형 교체는 하지 않는다.
+새 draft의180메시지는 기존 revised180과 정확히 같아야 한다. 기존 HOLD_REVIEW6변형의
+원천과 용어 미확정은 새 판정으로 덮지 않고 triage에 연결한다. root/source와 세 변형의
+정확 roster·SHA 및 게시/code 전후 불변 뒤 import/bundle을 동결한다. 이 이관은 원문맥의
+의미 전수 확인이나 학습 채택을 대신하지 않는다. 개별1273/2460의6변형과 별도로 집계한다.
+CPU 수초~수분 예상이며 모델·GPU·원로그·기존 source/게시본 변경은0이다.
+
+## Stage9pWe — 기존 SFT5529의 형식 경고와 추가16원천48변형의 후행 판독
+
+기존 후보를 고치거나 온라인 탈락시키지 않고, 정확 메시지 SHA를 재고 원형과 대조한 뒤
+리터럴 줄바꿈·NUL·코드펜스 개수 신호만 경고로 센다. 따옴표·코드에서 의도한 문자를
+자동 치환하지 않는다. 원문과 번역 충실도 및 사실 정답성을 별도 판정한다.
+
+기존60원천과1273/2460 밖의 연속 packet004를 후행 묶음으로 읽는다.16개는 전달 단위이며
+사용자 지정 총량·무작위 품질 표본이 아니다. Luna 한 개는 텍스트 의견만 내고 총괄이
+원문16개·세 변형48개를 직접 대조한다. 감독할 답변 턴·조건·전문어를 기록하고 보류는
+후보 자체에 대한 정답 문자열 목록으로 일반화하지 않는다. 정확 수학 반례와 제한된 실제
+TRAIN 노출은 원문 오류와 번역 오류를 구별하는 사후 분석이다. 관측 뒤 세운 가설을
+사전 등록이나 반복의 단독 원인 증명으로 바꾸지 않는다. 새 편입·학습·GPU는0이다.
+
+실제 source ID·nested 메시지·license/revision·wire의 양성 label과 업데이트 그룹을
+함께 대조한다. selected_sources 배열의 순서를 실제 wire 순서로 가정하지 않는다.
+확인한 과거 한 런 밖의 학습 노출이나 미검수5529 전체의 오류율은 미확인으로 남긴다.
+CPU 재소비는 Stage9pWe 로그와 감사 JSON, 실제 후행 판독은 결과101§509가 소유한다.
+
+## Stage9pWf — 판독한 리터럴 줄바꿈44후보의 별도 형식 수정본
+
+기존 동결5529 재고의 경고47개에서 각516곳 주변 문맥과 담당 텍스트 의견을 대조한다.
+이미 별도 보완한1273의3변형은 중복 작성하지 않는다. 나머지44개는 코드펜스 바깥의
+명시481개 위치만 실제 줄바꿈으로 바꾸고 정확 변경 구간·원 메시지 SHA를 남긴다.
+코드펜스 내부 바이트·다른 단어·역할·전문 용어·원문은 불변이어야 한다.
+이는 전역 문자열 치환기가 아니라 후행 판독한 고정 후보의 형식 수정 작업이다.
+
+별도 write-once 후보에만 쓰며 현재 생산기·기존 source/게시본·학습 코퍼스는 바꾸지 않는다.
+현재 revision에 남은 결함 수나 전체5529 의미 검수·TRAIN_READY·새 학습을 주장하지 않는다.
+CPU 수초 예상, 모델/GPU0이며 결과101의 후속 절과 감사 JSON이 실제 수행을 소유한다.
+
+## Stage9pWg — 추가 SFT220~235의 원문과48변형 후행 판독
+
+기존 renderer를 재사용해 원문16개와 세 변형48개를 원문·질문·답변이 읽히는 텍스트로
+만든다. 담당은 코드나 후보를 고치지 않고 판독 의견만 쓰며 총괄이 원문·변형을 전부
+직접 대조한다. 원문 자체의 오답·누락, 번역에서 추가된 주장, 시점 없는 주장, 전문 용어,
+정상 외국어 인용을 나누고 모든 미확인을 거짓으로 취급하지 않는다.
+
+판독 뒤 만든 이 계획은 사전 등록 인과 실험이 아니다. 구조 재읽기는 입력 SHA·후보 수와
+총괄 판정의 전달 정합을 검산할 뿐 의미 판정을 자동화하지 않는다. 새 편입·학습·GPU0이며
+본학습 지능 채택의 증거로 쓰지 않는다. 결과101 후속 절과 별도 판독 JSON이 소유한다.
+
+## Stage9rW — 닫힌 정확 IQ2 전량의 추가8쌍 대응 통계
+
+이미 관찰한 IQ2 점수 뒤의 사후 보조 분석이다. 기존 고정6과제와 공식 원문항·선택지·gold
+순서를 재대조하고, 원 raw 재계수와 기존 paired_intervals 함수를 그대로 사용한다.
+기존28쌍을 다시 bootstrap하지 않고 IQ2와 기존8모델 사이8쌍만 더한다.
+100000회·seed20261024·고정 과제 안의 대응 문항 재표집·percentile95·6과제 동일가중을 유지한다.
+
+native 원 report의9/PENDING과 terminal0·root 실제0은 정확 SHA로 따로 검증한다.
+원 보고서를 HF 성공으로 바꾸거나 모델/가중치를 다시 로드하지 않는다. source/입력은
+재계수 전후 불변이어야 하며 새 report는 write-once·20MB 미만이다.
+CPU120초·외부150초 한정, GPU/교사/학습/체크포인트0이다.
+문항 불확실성과 학습seed·사전학습량·정밀도/engine 교락을 분리하고, 유의차를 새 TinyLM
+지능 향상이나 모델 채택으로 승격하지 않는다. 기준선·과제별 차이도 함께 보고한다.
+
+## Stage4hWb — 기존 Dolly-v2·Mintaka-inst의 실제 직렬화 토큰 재고
+
+기존17,991,737행의 형식 재고를 다시 의미 검수했다고 부르지 않는다. 현재 미분류인 두
+가족의 정확4언어·가족 집단에 실제로 연결된5개 기존 파일만 원 iterator로 읽고, 고정 chat32/1024에서
+원 질문·답의 입력토큰·assistant 지도위치·무절단 적합 행을 전량 계수한다.
+원 raw 과제를 세는 것으로 새 QA/명시 멀티턴 변환 뒤의 토큰이나 독립 고유 개념량은 아니다.
+
+대안은 행 수만 유지, Dolly 별명 치환과 즉시 편입, 원형·정책을 유지한 실제 계수다.
+현재는 세 번째를 택한다. 이름 동치·카드만의 권리·원 split·원문 사실·중복·가족 상한은
+이 계수로 승인하지 않는다. 실제 가용량은 계속 NOT_MEASURED, 새 편입0이다.
+기존 source/report/tokenizer의 전후 SHA와 예상 행 수를 대조하며 CPU1500초·외부1530초,
+마감13시 이전에 닫는다. 시간 만료는 부분 재고로 남기고 전량으로 외삽하지 않는다.
+새 source 다운로드·LLM/교사·GPU·학습·원자료 수정은0이다.
+
+## Stage4hWc — 실제5파일에 고정한 원천 토큰 재고 재개
+
+앞 단계의9파일 assertion은 전체 Collection의 파일 수를 대상 두 가족의 실제 파일 수로
+잘못 복사한 구현 오류였다. 실행은 전량 스캔·새 산출물 이전에 종료1이고 의미 음성이 아니다.
+기존 inventory group의 source_paths를 직접 대조한 정확5파일/4집단을 고정한 V2로 재수행한다.
+기존 V1 소스·실패 로그는 보존하고 새 단계·출력을 쓴다. 계수·원형·1500초·미편입 조건은 같다.
+
+## Stage4hWd — 원문 parquet의 split·task·template 열 후행 대조
+
+토큰 재고 뒤 확인한 원 parquet에는 현재 정규화가 사용하지 않는 split·task_type·
+template_id·sub_dataset_name 열이 있다. 같은5파일을 metadata 열만 읽어 두 가족의
+실제값·서로 다른 template 수·정확 행 수를 대조한다. 원 iterator·허용목록·메타데이터는
+고치지 않는다. 이 값이 원자료 instance ID나 실제 모델의 미노출을 증명한다고 추정하지 않는다.
+CPU300초·외부330초, source 전후 SHA·127616행 대조, 새 편입/GPU/다운로드0이다.
+
+## Stage4hWe — 같은 원문 메시지의 정확 중복과 첫 질문 그룹 계수
+
+metadata의 template 수를 중복 수로 추정하지 않는다. 같은5파일에서 원 normalize/attach와
+conversation_split_key를 재사용해 정규화된 전체 질문·답의 정확 중복을 실제 계수한다.
+중복 제거 후1024 기술 적합의 입력/지도량도 별도로 세고 원 자료는 삭제·수정하지 않는다.
+질문이 같고 답 문장이 다르다는 신호도 의미 모순 판정이 아니다. 비동일 재표현·원개념
+중복과 원자료 ID 복원·VAL 누설 부재는 이 계수로 증명하지 않는다.
+CPU300초·외부330초·원 source와 부모감사 전후 불변, 새 편입/모델/GPU0이다.
+
+### 2026-10-25 Stage4fsXWb 실제 회수
+
+결과101§516에서 같은V3 원형·MTP·사고·샘플러의 한 번 재개를 실제8 정상pause로 닫았다.
+새874그룹/입력259054·지도23958, 누적입력29480785·75M까지45519215 부족이다.
+cursor[1,12271]과 새batch2·원응답 참조·이전불변·소유정리를 검산했다.
+내용 정답성·실제편입·학생본학습은 미완이다. 기존 사용자8h 도구는 새 시간창에서
+동적으로 이어갈 도구로 남기며 고정 두 predecessor 감독을 그대로 재실행하지 않는다.
+달력7523.688초와 내부7082.983초의 원인미확인 차이를 정확2h나 가속으로 쓰지 않는다.
+
+## Stage9pWh — 승인된 기존60원천의 TRAIN 전용 편입
+
+사용자 후속 A승인에 따라 기존60원천·180변형의 정확 SHA에 묶인 총괄 판독을 재사용한다.
+목적은 통과한 번역·문장 재구성만 기존 원본과 같은 TRAIN에 연결하는 것이다. 22보류는
+제외하며 다른34원천까지 일괄 승인하지 않는다. 기사 ID를 추정하거나 새 평가셋을 만들지 않는다.
+
+기존 편입기를 재사용하되, 원문서 ID가 없는 자료에는 별도의 TRAIN 전용 계약을 적용한다.
+원천 레코드 SHA·root와 실제 완료된 학습의 노출 판독을 맞추고, TRAIN 외 분할과
+기존 VAL/TEST 노출 은폐를 거부한다. 문서 단위 전역 누설은 UNVERIFIED로 남긴다.
+원본과 과거 판독은 불변이며, 원본을 새 변형 코퍼스에 복제해 학습 비중을 늘리지 않는다.
+교정 전 오답 등 미승인 assistant 턴은 문맥으로만 보존하고 지도 마스크에서 제외한다.
+
+실제 chat32 tokenizer와 context1024를 고정해 무절단 토큰·지도턴·언어 메타데이터를
+검산한다. 변형 언어와 원천 언어는 따로 기록한다. 새 출력과 명세는 각20MB 미만으로
+분리하며 prepare/verify/기존 SFT 소비자 회수까지 CPU로 수행한다. 모델·GPU·학습은0이다.
+
+사전 조건은 기존 60원천180변형의 동일성, 총괄의 후보별 의미·용어·출처·권리·지도턴
+판독, 실제 TRAIN 이력 일치다. 출력 적격은 기술 편입 준비이며 내용 정답성의 전수 증명,
+75M 완성, 기존 trainer 자동 편입, 학생 품질 개선을 뜻하지 않는다. 이력·권리·지도턴·
+SHA 충돌이나 context 초과가 있으면 해당 조건을 완화하지 않고 중단한다.
+
+### Stage9pWi — 같은60원천의 작성자 보류 해소 기록
+
+Stage9pWh의 첫 준비는 원천198의 author_hold_resolution 누락으로 종료1이며 코퍼스가
+생기지 않았다. 원문과 세 변형을 다시 직접 비교해 OpenAI 회사와 오픈소스 모델의 구분을
+보존한 두 번째 교정 답만 지도하도록 근거를 명시한다. 첫 오해 답은 문맥으로만 남긴다.
+같은 원천·후보·판독 SHA와158/22 경계는 유지하며, 새 v2 출력에서 동일 CPU 검산을 한다.
+이전 부분 출력은 덮지 않는다. 원천192 등 다른 보류를 자동 해제하지 않는다.
+
+## Stage9pWj — 과거 제어문자 로그의 원형 보존과 가역 표시
+
+2026-10-26 사용자는 정적 오류 해소와 전체 스모크를 직접 요청했다. 현재 출력기는 이미
+안전한 JSON 인용과7그룹 회귀를 갖췄으나,10월23일 진단 로그에는 원문 문맥의0x02 두 개와
+설명 문자열의0x08·0x0B가 남아 반복 탐지된다. 검사기 BAD·대상·실패 기준은 바꾸지 않는다.
+
+원형32444바이트·SHA311FC8EF 전체값을 새 원형 파일에 불변 보관하고, 기존 .txt에는
+원형 경로·해시·변환 규칙을 밝힌 표시본을 둔다. 원 LF줄 가운데 금지 문자가 있는 줄만
+기존 display_text의 JSON 인용으로 바꾸고, 나머지 원문은 그대로 둔다. 연결 영수증에는
+원경로·원형과 표시본의 SHA·변환 줄·금지4바이트·역복원 일치를 기록한다. 옛 감사의 SHA와
+실패6건·종료1은 고치지 않는다. 새 원형 파일에는 Git 줄끝 변환 금지 속성을 적용한다.
+
+성공 조건은 원형 SHA/바이트 불변, 표시본의 안전성과 역복원 exact, 현재 출력기의 기존
+회귀 통과다. 새 텍스트 검사 통과는 과거 원형의 금지문자 소멸이나 과거 실행 성공이 아니다.
+비용은 CPU 수초이며 모델/GPU0이다. 원형을 잃거나 복원이 다르면 중단하고 수리 완료로
+보고하지 않는다. 삭제·일반 오류 면제·다른 원본 로그 수정은 하지 않는다.
+
+## Stage9nWc — 현재 소스의 격리 전체 스모크
+
+정적 오류 해소 후 기존 scripts/codex_smoke.py의 full 경로로 현재 run_smoke_check.sh의
+정본 동적 팔을 실행한다. 사용자 환경의 학습 인수·조건은 유지하고 산출물 namespace와
+stdout 회수 방식만 격리한다. 기존83소스·123합성산출물 불변은 현재 check의 실제 분모로
+다시 확인하며, 수를 과거 값에 맞추지 않는다. 새 소스가 있으면 check가 인쇄한 값이 정본이다.
+
+현재 사용자 CPU/GPU 승인 마감은2026-10-26 17:00 KST(08:00 UTC)이며 전체 실행 상한은
+1800초다. 원형·현재 source pin·측정 필드와 실제 자식 종료를 함께 대조한다. 실패한 팔이나
+안전/정리 오류가 있으면 전체 PASS로 보고하지 않는다. 이후 구현 변경은 새 검증 대상으로
+분리한다. 실제 합성 짧은 학습은 기능 검증이며 지능·벤치 향상으로 판단하지 않는다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 

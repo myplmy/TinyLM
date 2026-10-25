@@ -1,0 +1,21 @@
+
+==============================================================================
+[runlog] 2026-10-25 16:00:59  name=P106B_Stage9pWh_approved_train60_admission
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 handoff/audit/train60_approval_20261025/prepare_approved_train60.py
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/handoff/audit/train60_approval_20261025/prepare_approved_train60.py", line 153, in <module>
+    main()
+  File "/home/uranus/tinyLM/handoff/audit/train60_approval_20261025/prepare_approved_train60.py", line 101, in main
+    result = admission.prepare(NEW / "bundle.json", NEW / "reviews.json", NEW / "root_splits.json",
+  File "/home/uranus/tinyLM/scripts/p106b_admission.py", line 728, in prepare
+    decisions = reviewed_candidates(reviews, bundle, bundle_artifact["sha256"])
+  File "/home/uranus/tinyLM/scripts/p106b_admission.py", line 631, in reviewed_candidates
+    text(row.get("author_hold_resolution"), "explicit author HOLD resolution")
+  File "/home/uranus/tinyLM/scripts/p106b_admission.py", line 145, in text
+    raise ValueError(field + " must be explicit nonempty text")
+ValueError: explicit author HOLD resolution must be explicit nonempty text
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-10-25 16:01:00)
+==============================================================================

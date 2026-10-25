@@ -1,0 +1,29 @@
+
+==============================================================================
+[runlog] 2026-10-24 05:34:40  name=P106B_Stage8s0W_qwen35_tokenizer_diff_20261024T0536
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -c import json; import tinylm; from scripts import diag_p106b_qwen35_text_core6 as r; from tokenizers import Tokenizer,AddedToken; from transformers import TokenizersBackend; raw=r.read_json(r.MODEL_DIR/"tokenizer.json"); metadata=r.read_json(r.MODEL_DIR/"tokenizer_config.json"); captured=[]
+def frontend(**kwargs):
+ obj=TokenizersBackend(**kwargs); captured.append(obj); return obj
+try:
+ r.build_tokenizer(raw,metadata,api=(Tokenizer,AddedToken,frontend))
+except r.Hold as e:
+ print("PRESERVED_HOLD",str(e))
+observed=json.loads(captured[0].backend_tokenizer.to_str()); print("MODELS_GPU",0)
+for k in r.PIPELINE:
+ if observed.get(k)!=raw.get(k):
+  a,b=raw.get(k),observed.get(k); print("CHANGED_PIPELINE",k)
+  if isinstance(a,dict) and isinstance(b,dict):
+   for sub in sorted(set(a)|set(b)):
+    if a.get(sub)!=b.get(sub):
+     x,y=a.get(sub),b.get(sub); print(sub,json.dumps(x)[:1000] if len(json.dumps(x))<1000 else {"length":len(x),"sha":r.object_sha(x)},json.dumps(y)[:1000] if len(json.dumps(y))<1000 else {"length":len(y),"sha":r.object_sha(y)})
+  else: print(json.dumps([a,b]))
+==============================================================================
+PRESERVED_HOLD TOKENIZER_PIPELINE_HOLD: exact original BPE/pipeline including ByteLevel options required
+MODELS_GPU 0
+CHANGED_PIPELINE model
+ignore_merges null false
+merges {'length': 247587, 'sha': 'E46D25943A3674693D5CA9A1717702C074B664E8F1101A4A1A4F90CC5FB67DD6'} {'length': 247587, 'sha': 'A9467C2CFFCEB96C3B8A8F8C0A92CF7A8DC25A98E478D00C1DA5A14B85C8C88D'}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-10-24 05:34:44)
+==============================================================================

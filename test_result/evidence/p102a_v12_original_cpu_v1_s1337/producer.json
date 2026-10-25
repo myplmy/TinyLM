@@ -1,0 +1,112 @@
+{
+  "schema": "V12_SWIGLU_PRODUCER_VERIFICATION",
+  "passed": 5,
+  "total": 5,
+  "tests": [
+    {
+      "name": "native_pointwise_VJP_preserved",
+      "status": "PASS",
+      "detail": {
+        "cases": 3,
+        "native_BF16_SiLU_mul_forward_and_VJP_bitwise_equal_CPU": true
+      }
+    },
+    {
+      "name": "fused_GPU_formula_and_pack_CPU_interpreter",
+      "status": "PASS",
+      "detail": {
+        "cases": [
+          {
+            "input_std": 0.01,
+            "elements": 4352,
+            "BF16_values_differing_from_native_CPU": 0,
+            "max_BF16_ULPs": 0,
+            "packs_match_their_own_produced_values_bitwise": true
+          },
+          {
+            "input_std": 0.1,
+            "elements": 4352,
+            "BF16_values_differing_from_native_CPU": 0,
+            "max_BF16_ULPs": 0,
+            "packs_match_their_own_produced_values_bitwise": true
+          },
+          {
+            "input_std": 1.0,
+            "elements": 4352,
+            "BF16_values_differing_from_native_CPU": 0,
+            "max_BF16_ULPs": 0,
+            "packs_match_their_own_produced_values_bitwise": true
+          },
+          {
+            "input_std": 3.0,
+            "elements": 4352,
+            "BF16_values_differing_from_native_CPU": 0,
+            "max_BF16_ULPs": 0,
+            "packs_match_their_own_produced_values_bitwise": true
+          },
+          {
+            "input_std": 10.0,
+            "elements": 4352,
+            "BF16_values_differing_from_native_CPU": 0,
+            "max_BF16_ULPs": 0,
+            "packs_match_their_own_produced_values_bitwise": true
+          },
+          {
+            "input_std": 30.0,
+            "elements": 4352,
+            "BF16_values_differing_from_native_CPU": 0,
+            "max_BF16_ULPs": 0,
+            "packs_match_their_own_produced_values_bitwise": true
+          }
+        ],
+        "scope": "CPU interpreter, not NVIDIA expf or hardware execution. CPU training uses native SiLU and therefore does not prove CUDA fused-producer quality."
+      }
+    },
+    {
+      "name": "whole_original_shared_model_S2_and_native_head_bits",
+      "status": "PASS",
+      "detail": {
+        "two_microbatch_logits_and_all_master_gradients_bitwise_equal_CPU": true,
+        "baseline_calls": {
+          "activation_pack_implementations": 36,
+          "forward_int8_mm": 48,
+          "v12_forward_integer_block_products": 448
+        },
+        "fused_calls": {
+          "v12_swiglu_producer_implementations": 8,
+          "activation_pack_implementations": 28,
+          "forward_int8_mm": 48,
+          "v12_forward_integer_block_products": 448
+        }
+      }
+    },
+    {
+      "name": "producer_and_pack_replay_suppressed_by_SAC",
+      "status": "PASS",
+      "detail": {
+        "without_SAC_calls": {
+          "v12_swiglu_producer_implementations": 16,
+          "activation_pack_implementations": 52,
+          "forward_int8_mm": 88,
+          "v12_forward_integer_block_products": 832
+        },
+        "with_SAC_calls": {
+          "v12_swiglu_producer_implementations": 8,
+          "activation_pack_implementations": 28,
+          "forward_int8_mm": 48,
+          "v12_forward_integer_block_products": 448
+        },
+        "same_candidate_gradients_bitwise_equal": true
+      }
+    },
+    {
+      "name": "unsupported_scope_abort_and_method_restoration",
+      "status": "PASS",
+      "detail": {
+        "unsupported_FP32_training_rejected_and_all_routes_restored": true
+      }
+    }
+  ],
+  "GPU_executed": false,
+  "same_quality_2x_verified": false
+}

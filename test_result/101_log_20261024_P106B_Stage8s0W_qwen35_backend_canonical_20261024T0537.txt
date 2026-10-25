@@ -1,0 +1,10 @@
+
+==============================================================================
+[runlog] 2026-10-24 05:35:40  name=P106B_Stage8s0W_qwen35_backend_canonical_20261024T0537
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -c import json; import tinylm; from scripts import diag_p106b_qwen35_text_core6 as r; from tokenizers import Tokenizer; raw=r.read_json(r.MODEL_DIR/"tokenizer.json"); ref=json.loads(Tokenizer.from_str(json.dumps(raw,ensure_ascii=False)).to_str()); a=raw["model"]; b=ref["model"]; old=a["merges"]; new=b["merges"]; assert all(isinstance(x,str) for x in old); assert all(isinstance(x,list) and len(x)==2 for x in new); assert old==[" ".join(x) for x in new]; delta={k for k in set(a)|set(b) if a.get(k)!=b.get(k)}; assert delta=={"ignore_merges","merges"} and "ignore_merges" not in a and b["ignore_merges"] is False; assert all(raw.get(k)==ref.get(k) for k in r.PIPELINE if k!="model"); print(json.dumps({"status":"OFFICIAL_BACKEND_SERIALIZATION_CANONICAL_PROOF","model_loads":0,"gpu_calls":0,"ordered_merges":len(old),"ordered_merge_content_unchanged":True,"only_differences":sorted(delta),"raw_pipeline_sha256":r.object_sha({k:raw.get(k) for k in r.PIPELINE}),"public_roundtrip_pipeline_sha256":r.object_sha({k:ref.get(k) for k in r.PIPELINE})},sort_keys=True))
+==============================================================================
+{"gpu_calls": 0, "model_loads": 0, "only_differences": ["ignore_merges", "merges"], "ordered_merge_content_unchanged": true, "ordered_merges": 247587, "public_roundtrip_pipeline_sha256": "FEE1F6066DBDEBCC449FE6E53984CAA0621845F4F6BD5DF6897DEBBF55B8E363", "raw_pipeline_sha256": "4824E7B0F0A2ACD9B4B1521A7BD24979839E53E45CDE345B57CF157A8C0AAC39", "status": "OFFICIAL_BACKEND_SERIALIZATION_CANONICAL_PROOF"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-24 05:35:43)
+==============================================================================

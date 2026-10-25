@@ -1,0 +1,188 @@
+{
+  "schema": "TINYLM_CPU_CAB_CLOSURE_V1",
+  "created_at": "2026-10-24T17:26:06.918649+09:00",
+  "wip": {
+    "path": "handoff/WIP_20261022_작업원장.md",
+    "sha256": "EE601D9543067619E14C58C95FC3084AACEB3EF448A9BC6DB91E7DF899BD1C90",
+    "total": 79,
+    "done": 43,
+    "open": 36,
+    "current_request_items": {
+      "75": "✅**완료**",
+      "76": "✅**완료**",
+      "77": "✅**완료**",
+      "78": "✅**완료**",
+      "79": "✅**완료**"
+    },
+    "original_admission_items": {
+      "1": "🔄진행",
+      "2": "🔄진행"
+    }
+  },
+  "cpu_regression": {
+    "tests": 131,
+    "seconds": 6.213,
+    "actual_exit_code": 0,
+    "verification": "handoff/audit/WIP_20261024_CPU_CAB_VERIFICATION.json",
+    "verification_sha256": "FC4BB7A7677B55828E084AEE6454467E7482D83B9D0CE93116D7F651623F39E0",
+    "source_ast_count": 9,
+    "source_hashes_unchanged": true,
+    "check_only_count": 4
+  },
+  "static": {
+    "path": "handoff/audit/WIP_20261024_CPU_CAB_STATIC_RECHECK.json",
+    "sha256": "64B313019F64D0C211CF4A92421B2787F4795C0EAAC7A2959E9825C97FB9827F",
+    "actual_exit_code": 1,
+    "counts": {
+      "pass": 68,
+      "errors": 2,
+      "actionable_warnings": 0,
+      "accepted_info": 0,
+      "not_run": 6
+    },
+    "wip_binding_matches": true,
+    "retained_errors": [
+      {
+        "checker": "check_smoke_diag",
+        "target": "이전 전체 스모크의 execution source pins",
+        "cause": "이번 mtp_sft 추가 뒤 현재 소스와 다르다. 현재 전체 스모크는 금지되어 실제 검증을 다음 새 GPU 허가창에 남긴다.",
+        "action": "새 전체 스모크를 실제 수행한다. 옛 원로그와 검사기는 수정하지 않는다."
+      },
+      {
+        "checker": "check_control_chars",
+        "target": "test_result/101_log_20261023_P106B_Stage9aW_scoped_static_audit.txt:190",
+        "sha256": "311FC8EF42DB7D5F2A49047BF7CFB96D501F79F0A59AC4C1C7F3273C7D8A2CE3",
+        "cause": "기존 보존 원로그의 byte0x02. 원형을 수정하지 않았다.",
+        "action": "원형과 오류를 공개하며 허용차 변경이나 로그 덮기 없이 진단 근거로 보존한다."
+      }
+    ],
+    "not_run_scope": [
+      "heldout defects",
+      "eval pool",
+      "registry scan",
+      "legacy handoff",
+      "plot verify",
+      "tag architecture"
+    ]
+  },
+  "scope": {
+    "actual_exit_code": 0,
+    "explicit_path_count": 29,
+    "summary": "SUMMARY changed=29 allowed_rules=29 errors=0"
+  },
+  "artifacts": {
+    "tinylm/train/fused_ce.py": {
+      "bytes": 7113,
+      "sha256": "A2482BB136BF525A16E38B4635DE72C5E70EC7DBD144CF232B5DE6B67AE5E6D1"
+    },
+    "tinylm/train/mtp_sft.py": {
+      "bytes": 7700,
+      "sha256": "D700B91EAFCC03B1834B865B89D9CEC32BBB8F4936386BB7FB5A37C521799D9D"
+    },
+    "scripts/test_p102a_fused_ce.py": {
+      "bytes": 12528,
+      "sha256": "FE3E63A23B42C2171F3BFDCA165BD7816B44ADCA6579D4E23D1A11591438C22E"
+    },
+    "scripts/diag_p102a_fused_ce.py": {
+      "bytes": 47205,
+      "sha256": "4073BC6E1AAB8E8864C490FE630FBEC920792AE39737AF8307BD17B9CAECACC3"
+    },
+    "scripts/test_p102a_fused_ce_driver.py": {
+      "bytes": 37899,
+      "sha256": "BB88CC804553EBF1F73F55038A98F03FE903265CD9C6E9836BFAB9D39A4F089B"
+    },
+    "scripts/p106b_admission.py": {
+      "bytes": 51616,
+      "sha256": "594B9CAFDC8CA645F072631B7F26D6589E70A57AF8AC526C3F7B79C05530F8FB"
+    },
+    "scripts/test_p106b_admission.py": {
+      "bytes": 34738,
+      "sha256": "E6FB26A0FC4EDDC1F70A516BEF21F311EB9A4EE88C1AD488BEF715FEB430011F"
+    },
+    "scripts/p106b_native_iq2_window.py": {
+      "bytes": 33585,
+      "sha256": "F253DB04B68C6470553E48C515CD4B7766087041E976882BC787BBB1019CC610"
+    },
+    "scripts/test_p106b_native_iq2_window.py": {
+      "bytes": 38317,
+      "sha256": "2FD5D9184A90A06577EE11D100FE23339E53F7A12CAF9A408788B5A20811E561"
+    },
+    "docs/research/20261024_CAB_선결준비와_데이터편입.md": {
+      "bytes": 14685,
+      "sha256": "035A6BAC797200A0A12FB87CFE5AF561C47C0F7EA06231E4DD68B3E7B6619E44"
+    },
+    "docs/research/20261024_fused_ce_minimal_requirements.txt": {
+      "bytes": 568,
+      "sha256": "549BF9EBD71779FA34D510456B0ED6E1A857B26D6E111D0AF65D5855B5E17593"
+    },
+    "test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md": {
+      "bytes": 37083,
+      "sha256": "630A3676BDC9B4473334A728DD74413C1060D725F17FE57E96E25DE8A89B3D16"
+    },
+    "test_plan/P106B_Bonsai-자동번역-pseudo-SFT-온라인-교사학생-검증.md": {
+      "bytes": 995917,
+      "sha256": "0FC5C40D78D07D4CF79B078B8B423803B2FD1EE33D1655A16D1C8F6A20C2E3D1"
+    },
+    "test_plan/실험계획목록.md": {
+      "bytes": 36595,
+      "sha256": "35F4DAAD8A21C6FE59CB03C165A9E06F75BDB5241D444B90F6CBE5919BCAD16A"
+    },
+    "docs/methods/05_training_speed.md": {
+      "bytes": 32116,
+      "sha256": "E6A2821B50AA7B67CF48ABAE03D9ED46F5BB4A37F431F093DA02D6B42A4E9305"
+    },
+    "handoff/COMPASS.md": {
+      "bytes": 19268,
+      "sha256": "4C25E8D5C53F821881FFF590E25C3CD44C6016B6EF18D4ECC02821A6CC14AB75"
+    },
+    "handoff/WIP_20261022_작업원장.md": {
+      "bytes": 701730,
+      "sha256": "EE601D9543067619E14C58C95FC3084AACEB3EF448A9BC6DB91E7DF899BD1C90"
+    },
+    "ai_dev_tool/Codex/08_AI-미보고-내역-자백원장.md": {
+      "bytes": 109265,
+      "sha256": "B83CC8ED7BBD9C1C1CEF71B50091C199920E9D7FE6DBB0864D43ECC41453D481"
+    },
+    "scripts/flag_whitelist.tsv": {
+      "bytes": 65995,
+      "sha256": "D5F8338490BD421A0201A49D912F2FD1696D2EDCFB6A5F32961618C6099AE22F"
+    },
+    "handoff/audit/WIP_20261024_CPU_PREP_SCOPE.md": {
+      "bytes": 6316,
+      "sha256": "8BBE170D59887E19EF034EB3BA0AA7B4EA753F8EAD459787B0ED622BC92B5EA4"
+    },
+    "handoff/audit/WIP_20261024_ACCEL_PACKAGES_CPU.json": {
+      "bytes": 22461,
+      "sha256": "D1E13FE1B7CEE20206E2B7CB2EB8C1AE25B421FE862CDA26B2F1F80D85AE5D8D"
+    },
+    "handoff/audit/WIP_20261024_CPU_CAB_VERIFICATION.json": {
+      "bytes": 38548,
+      "sha256": "FC4BB7A7677B55828E084AEE6454467E7482D83B9D0CE93116D7F651623F39E0"
+    },
+    "handoff/audit/WIP_20261024_CPU_CAB_STATIC_AUDIT.json": {
+      "bytes": 174534,
+      "sha256": "989F53CA7C73ECD8191C3E29C1294B870B097633D58A899579A1EC101476EB86"
+    },
+    "handoff/audit/WIP_20261024_CPU_CAB_STATIC_RECHECK.json": {
+      "bytes": 174921,
+      "sha256": "64B313019F64D0C211CF4A92421B2787F4795C0EAAC7A2959E9825C97FB9827F"
+    },
+    "test_result/093_log_20261024_P102A_Stage2dW_cpu_fused_and_cab_contract.txt": {
+      "bytes": 867,
+      "sha256": "5EB428CC09DB806A16AE0B1664B72A2E407D32027AF99850C315DAE3ABC6B842"
+    },
+    "test_result/101_log_20261024_P106B_Stage9mW_cpu_cab_preparation.txt": {
+      "bytes": 28111,
+      "sha256": "F8C21CE02BDB4109E9111B1EAE4638A31819E883DA4E71DA06AE2F6097AAF789"
+    },
+    "test_result/101_log_20261024_P106B_Stage9mWb_cpu_cab_recheck.txt": {
+      "bytes": 25217,
+      "sha256": "AE906389409892FE721E9BBDE7BA3074C87A145C0ABC23874666789DEF39CD1F"
+    }
+  },
+  "gpu_model_checkpoint_training_full_smoke": "NOT_RUN",
+  "actual_dataset_admissions": 0,
+  "git_write_delete_new_handoff": 0,
+  "known_limit": "원장39~53 등의 다른 공식 과제와 실제 편입·공식 커널·본학습 전체 완료를 뜻하지 않는다.",
+  "audit_storage_note": "WIP 읽기와 새 감사 쓰기를 한 heredoc에 넣은 첫 호출은 보호 훅이 거부해 실행0이었다. 읽기 검산과 정확 감사 대상 apply_patch를 분리했고 WIP는 정상 API로만 갱신했다."
+}

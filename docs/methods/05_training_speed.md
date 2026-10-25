@@ -196,3 +196,54 @@ student input에는 참조본문·질문·코드생성자료요청이 포함되�
 세학생의 첫compile update·이후31평균·전체(로딩/초기·종료평가/저장)를 따로 집계했다.
 같은forward에 referenceCE.1을 더한 것은 추가input0이어도 CE-head 계산·target event가 추가된다.
 Persistent2s의 장기실측은 timeout3을2호출에서복구했지만공백을메웠다는 뜻이아니며 연속peak/OOM안전은 미확정이다.
+
+## 2026-10-23 야간 — head 미세차와 실제 Muon 증폭을 분리
+
+[093§14](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)는
+같은 실제 초기값/첫128행의 raw157·clip157·NS85·weight85를 회수하고 원 step을 재생했다.
+동일 입력과 실제 update는85개 모두 완전일치했다. 원 BF16 NS 뒤 weight85개/11,881원소가
+실패했고 진단 FP32 NS에서는 최종weight85개가 허용차를 통과했다. 내부 NS의2원소는
+남아 있으므로 전체 내부 정합 통과나 optimizer 기본 채택으로 바꾸지 않는다.
+약92.671초는 회수·첫step 비용을 포함한 기술 진단이다. 실제 peak allocated는 양팔
+3639.128MiB로 같고 타일 head forward도 빠르지 않았다. 본학습 wall clock 개선·정식
+CCE/Liger 설치/구현·ALM GPU 가속과 품질은 미완이며 이미 끝난 단일update를 다시 돌리지 않는다.
+
+## 2026-10-24 CPU 준비 — 공식 두 커널의 선택형 연결
+
+위 문단은 야간 진단 당시 상태다. 이후 사용자 승인으로 Liger0.8.5와 고정 CCE3de376c/25.9.3을
+별도 환경에 설치하고 source/wheel·설치 payload를 대조했다. 기존 Torch/Triton/Transformers와
+모델·optimizer 기본값은 그대로다. 새 선택 adapter는 기존 shared head/shift/마스크/업데이트
+분모를 재사용하며 reference가 기본값이다. CPU 디스패치 모의시험을 실제 GPU 커널로 부르지 않는다.
+
+[P102A Stage2dW/2eW](../../test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md)는 원 허용차로
+초기 공식 커널 canary와 전 gradient·clip·Muon update/state의 다음 GPU 기술 게이트를 준비한다.
+완결 수치 음성과 API/저장/정리 오류를 나누고 source/패키지 SHA·전체 시간창·terminal veto를
+보존해야 한다. 이 검증 후에도 실제 MTP GPU와 동일 본학습의 전체 wall/peak·최종 품질은 별도다.
+가속 패키지가 현재 C의 평가나 A의 자료 준비를 막는 필수 게이트가 되는 것은 아니다.
+
+## 2026-10-25 공식 CE 첫 CUDA와 v12 별도 기술 검증
+
+[093§15](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)의 실제
+공식 kernel canary는 FP32 두 후보 통과, BF16 projected gradient288/281원소 음성으로
+종료8이었다. 원 문턱은 그대로이며 부모·자료·실제 update는0이다. BF16의 작은 차이와
+§14에서 관측한 저정밀 Muon 증폭은 별도 사실이고 이번 공식 kernel의 실제 update를
+실행한 것으로 합치지 않는다. 기본 reference와 원형은 유지한다.
+
+사용자 ZIP의 v12는 [별도 검토](../research/20261025_v12_학습가속_타당성검토.md) 뒤
+모델 없는 커널 분해를 택했다. 원1.7376배 추정은 native S2 대비이고 설정 맞춘 dense
+대비는1.2341배다.14개 CPU 원형과 새63회귀 뒤 실제 CUDA를 회수했다.
+[093§17~18](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)에서
+v12의 구현 대조는 완료됐지만 pack 포함 세 fullINT 경로는 native보다 느렸다. 공식 FP32
+부모3팔도 Muon update 문턱을 통과하지 못해 실제8이다. 전체 본학습 시간·품질은 미완이다.
+미측정 hybrid와 같은 출력의 producer pack 비교만 새 companion으로 준비한다.
+pack·변환·공유 AMP·STE·선택 저장·CE 효과를 나누고 작은 관찰로 지능을 채택하지 않는다.
+
+## 2026-10-25 같은 작업량 추가 GPU의 실제 판정
+
+[093§20](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md)의
+native 전방+원INT gradient 대조는 실제0으로 닫혔다. 큰 두 재사용 선형은 약동률,
+작은 출력폭은 열세다. 동일출력 큰 SwiGLU+7pack 전방은1.20~1.28배지만 VJP포함은
+1.04배로 줄었다. 작은 형상의 순서편차와 native gradient 근사는 남는다.
+현재 제품이 해당7pack을 자동 소비하지 않으므로 기본 trainer는 바꾸지 않는다.
+전체 본학습·데이터공급·optimizer·정리까지 포함한 비용과 정식 품질은 별도다.
+공식 FP32 부모3팔의 NS/update 음성8·원허용차도 보존한다.

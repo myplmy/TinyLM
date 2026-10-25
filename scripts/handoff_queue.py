@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import os
 import re
 import sys
 from dataclasses import dataclass
@@ -148,14 +149,75 @@ def transferred_batches(text: str) -> set[str]:
     return set()
 
 
-def _load_registry() -> tuple[list[dict[str, object]], list[str]]:
-    spec = importlib.util.spec_from_file_location("tinylm_queue_for_handoff", QUEUE_MODULE)
+def _source_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {QUEUE_MODULE}")
+        raise RuntimeError(f"cannot load {path}")
     module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
-    return module.load()
+    return module
+
+
+def _launcher_evidence(root: Path, name: str) -> dict:
+    """등록 파일의 완료 증거는 현재 플랫폼의 실행 동반본과 따로 보존한다."""
+    path = root / name
+    physical = path.is_file()
+    terminal = re.search(r"-(done[-_a-z0-9]*|hold|cancel)$", path.stem, re.IGNORECASE)
+    literal_done = bool(terminal and terminal.group(1).lower().startswith("done"))
+    aliases = sorted(root.glob(path.stem + "-done*" + path.suffix))
+    if physical and literal_done:
+        aliases.insert(0, path)
+    return dict(physical=physical, terminal=bool(terminal),
+        done_aliases=[value.name for value in aliases],
+        completed=bool(aliases) and (not physical or literal_done))
+
+
+def registry_inventory(root: Path = ROOT, *, platform: str | None = None) -> dict:
+    """실제 메뉴 함수를 격리된 입력 root로 호출한다. 큐를 만들거나 실행하지 않는다."""
+    root = Path(root)
+    windows = _source_module("tinylm_queue_input", QUEUE_MODULE)
+    windows.ROOT, windows.TSV = root, root / "experiments.tsv"
+    # Linux 메뉴의 기존 절대 import를 정확한 형제 소스에 연결한다.
+    # -I 소비자에서도 sys.path를 늘리거나 다른 환경의 파일을 fallback하지 않는다.
+    absent = object()
+    previous = sys.modules.get("queue_menu", absent)
+    sys.modules["queue_menu"] = windows
+    try:
+        linux = _source_module("tinylm_linux_queue_input", QUEUE_MODULE.with_name("queue_menu_linux.py"))
+    finally:
+        if previous is absent:
+            sys.modules.pop("queue_menu", None)
+        else:
+            sys.modules["queue_menu"] = previous
+    rows, warnings = windows.load()
+    rows = linux.with_shell_state(rows, root)
+    posix = (os.name if platform is None else platform) == "posix"
+    selected = linux.available(rows) if posix else windows.available(rows)
+    name_field = "shell_batch" if posix else "batch"
+    menu_ids = {str(row[name_field]): index for index, row in enumerate(selected)}
+    for row in rows:
+        name = str(row[name_field])
+        registered = _launcher_evidence(root, str(row["batch"]))
+        target = registered if name == row["batch"] else _launcher_evidence(root, name)
+        done = list(dict.fromkeys(registered["done_aliases"] + target["done_aliases"]))
+        physical = target["physical"]
+        if registered["completed"] or target["completed"]:
+            state = "DONE"
+        elif (registered["physical"] and registered["terminal"]) or (physical and target["terminal"]):
+            state = "HOLD"
+        else:
+            state = "PRESENT" if physical else "MISSING"
+        row.update(physical_exists=bool(row["exists"]), execution_file_exists=physical,
+            inventory_state=state, done_aliases=done,
+            menu_name=name, menu_id=menu_ids.get(name), menu_eligible=name in menu_ids,
+            runnable=state == "PRESENT" and name in menu_ids)
+    return dict(rows=rows, warnings=warnings, menu_ids=menu_ids,
+                runnable_ids={row["menu_name"]: row["menu_id"] for row in rows if row["runnable"]})
+
+
+def _load_registry(root: Path = ROOT) -> tuple[list[dict[str, object]], list[str]]:
+    inventory = registry_inventory(root)
+    return inventory["rows"], inventory["warnings"]
 
 
 def inherited_rows_locked(previous: Path) -> list[str]:
@@ -193,31 +255,39 @@ def inherited_rows_locked(previous: Path) -> list[str]:
     return out
 
 
-def inherited_rows(previous: Path) -> list[str]:
-    items = [item for item in queue_items(previous.read_text(encoding="utf-8")) if item.execution != "DONE"]
-    rows, warnings = _load_registry()
+def inherited_rows(previous: Path, root: Path = ROOT, *, platform: str | None = None) -> list[str]:
+    text = previous.read_text(encoding="utf-8")
+    for header, rows in _tables(_section(text)):
+        if "인벤토리" in header and any(row[header.index("인벤토리")].strip(" `") == "UNVERIFIED" for row in rows):
+            return inherited_rows_locked(previous)
+    items = [item for item in queue_items(text) if item.execution != "DONE"]
+    inventory = registry_inventory(root, platform=platform)
+    rows, warnings = inventory["rows"], inventory["warnings"]
     if warnings:
         raise ValueError("experiments.tsv warning: " + " | ".join(warnings))
-    available = [row for row in rows if bool(row["exists"])]
-    live_id = {str(row["batch"]): index for index, row in enumerate(available)}
     by_batch = {str(row["batch"]): row for row in rows}
+    by_batch.update({str(row["menu_name"]): row for row in rows})
     rendered: list[str] = []
     cumulative = 0.0
     for priority, item in enumerate(items, start=1):
         registry = by_batch.get(item.batch)
-        if item.batch in live_id and registry is not None:
+        if registry is not None and registry["runnable"]:
             inventory, execution = "PRESENT", "REVALIDATE"
-            queue_id = str(live_id[item.batch])
+            queue_id = str(registry["menu_id"])
             hours = float(registry["hours_n"])
-        elif registry is not None and bool(registry["done"]):
+        elif registry is not None and registry["inventory_state"] == "DONE":
             inventory, execution = "DONE", "DONE"
             queue_id = "—"
+            hours = float(registry["hours_n"])
+        elif registry is not None and (registry["physical_exists"] or registry["execution_file_exists"]):
+            inventory, execution, queue_id = "PRESENT", "HOLD", "—"
             hours = float(registry["hours_n"])
         else:
             inventory, execution = "MISSING", "HOLD"
             queue_id = "—"
             hours = float(registry["hours_n"]) if registry is not None else 0.0
-        cumulative += hours
+        if inventory != "DONE":
+            cumulative += hours
         reason = inherited_reason(item.reason)
         experiment = re.sub(r"\s+", " ", item.experiment).replace("|", r"\|")
         precondition = re.sub(r"\s+", " ", item.precondition).replace("|", r"\|")
@@ -243,10 +313,10 @@ def inheritance_errors(current: Path, previous: Path) -> list[str]:
     ]
 
 
-def render_table(previous: Path) -> str:
+def render_table(previous: Path, root: Path = ROOT, *, platform: str | None = None) -> str:
     header = "| " + " | ".join(QUEUE_COLUMNS) + " |"
     separator = "|---:|---:|---|---|---:|---:|---|---|---|---|"
-    rows = inherited_rows(previous)
+    rows = inherited_rows(previous, root, platform=platform)
     return "\n".join((header, separator, *rows))
 
 

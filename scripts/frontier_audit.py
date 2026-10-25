@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -48,27 +50,40 @@ def index_rows(root: Path):
     return rows
 
 
+def _registry_inventory(root: Path):
+    """-I와 임의 적재에서도 정확한 형제 소스만 읽고 모듈 상태를 복원한다."""
+    name = "_tinylm_frontier_handoff_queue"
+    source = Path(__file__).resolve().with_name("handoff_queue.py")
+    spec = importlib.util.spec_from_file_location(name, source)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"로컬 형제 소스를 적재하지 못했다: {source}")
+    module = importlib.util.module_from_spec(spec)
+    absent = object()
+    previous = sys.modules.get(name, absent)
+    sys.modules[name] = module
+    try:
+        spec.loader.exec_module(module)
+        return module.registry_inventory(root)
+    finally:
+        if previous is absent:
+            sys.modules.pop(name, None)
+        else:
+            sys.modules[name] = previous
+
+
 def experiment_rows(root: Path):
+    inventory = _registry_inventory(root)
+    if inventory["warnings"]:
+        raise ValueError("experiments.tsv warning: " + " | ".join(inventory["warnings"]))
     result = []
-    for line_no, raw in enumerate((root / "experiments.tsv").read_text(encoding="utf-8").splitlines(), 1):
-        if not raw.strip() or raw.lstrip().startswith("#"):
-            continue
-        cells = [cell.strip() for cell in raw.split("\t")]
-        if cells[0] == "prio" or len(cells) < 8:
-            continue
-        batch = cells[2]
-        target = root / batch
-        suffix = target.suffix
-        stem = batch[:-len(suffix)] if suffix else batch
-        done = sorted(root.glob(stem + "-done*" + suffix))
-        try:
-            hours = float(cells[4])
-        except ValueError:
-            hours = 0.0
+    for row in inventory["rows"]:
         result.append({
-            "line": line_no, "plan": cells[1], "batch": batch,
-            "gpu": cells[3], "hours": hours, "note": cells[7],
-            "exists": target.is_file(), "done": [path.name for path in done],
+            "line": row["line"], "plan": row["plan"], "batch": row["batch"],
+            "gpu": row["gpu"], "hours": row["hours_n"], "note": row["note"],
+            "exists": row["physical_exists"], "done": row["done_aliases"],
+            "execution_file_exists": row["execution_file_exists"],
+            "inventory_state": row["inventory_state"], "runnable": row["runnable"],
+            "menu_name": row["menu_name"], "menu_id": row["menu_id"],
         })
     return result
 
@@ -136,7 +151,7 @@ def compile_frontier(root: Path):
         text = path.read_text(encoding="utf-8")
         idx = index.get(ident, {})
         launchers = [row for row in experiments if row["plan"].upper() == ident.upper()]
-        live = [row for row in launchers if row["exists"]]
+        live = [row for row in launchers if row["runnable"]]
         # A live historical launcher remains in inventory but is not READY.
         eligible = [row for row in live if not row["note"].lstrip().upper().startswith("HOLD:")]
         done_launchers = [name for row in launchers for name in row["done"]]
@@ -183,7 +198,9 @@ def compile_frontier(root: Path):
             "evidence_date": max(dates) if dates else None,
             "launcher_inventory": {
                 "live": [item["batch"] for item in live],
-                "done": done_launchers,
+                "physical": [item["batch"] for item in launchers if item["exists"] or item["execution_file_exists"]],
+                "held": [item["batch"] for item in launchers if item["inventory_state"] == "HOLD"],
+                "done": list(dict.fromkeys(done_launchers)),
                 "registered": [item["batch"] for item in launchers],
             },
             "preflight_count": len(live),

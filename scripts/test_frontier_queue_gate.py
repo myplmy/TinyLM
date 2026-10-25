@@ -6,7 +6,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
+import frontier_queue_gate as gate
 from frontier_queue_gate import marker, prepare, verify_handoff
 
 
@@ -143,6 +145,55 @@ class FrontierQueueGateTests(unittest.TestCase):
         path, _frontier = self._prepared()
         self._accept_live(path)
         self.assertEqual(verify_handoff(self.root, self.handoff), [])
+
+    def test_done_rows_do_not_shift_same_priority_menu_ids(self):
+        tsv = self.root / 'experiments.tsv'
+        rows = tsv.read_text(encoding='utf-8').splitlines()
+        rows.insert(1, '1\tP014\trun_prior-done.sh\tY\t99\tN\tN\t완료 보존')
+        rows.append('1\tP014\trun_second.sh\tN\t.1\tN\tN\t같은 우선순위')
+        tsv.write_text('\n'.join(rows) + '\n', encoding='utf-8')
+        for name in ('run_prior-done.sh', 'run_second.sh'):
+            (self.root / name).write_text('#!/bin/sh\n')
+        self.assertEqual(gate._menu_ids(self.root), {'run_P014.sh': 0, 'run_second.sh': 1})
+        path, _ = self._prepared()
+        self._accept_live(path)
+        self.assertEqual(verify_handoff(self.root, self.handoff), [])
+
+    def test_physical_hold_without_menu_id_is_preserved_but_cannot_be_ready(self):
+        tsv = self.root / 'experiments.tsv'
+        tsv.write_text(tsv.read_text(encoding='utf-8').replace('run_P014.sh', 'run_P014-hold.sh'), encoding='utf-8')
+        (self.root / 'run_P014-hold.sh').write_text('#!/bin/sh\n')
+        self.handoff.write_text(self.handoff.read_text(encoding='utf-8').replace(
+            '| 0 | P014 gate | run_P014.sh', '| — | P014 gate | run_P014-hold.sh').replace(
+            '| PRESENT | GATED |', '| PRESENT | HOLD |'), encoding='utf-8')
+        path, frontier = self._prepared()
+        self.assertEqual(frontier['rows'][0]['launcher_inventory']['held'], ['run_P014-hold.sh'])
+        self.assertEqual(verify_handoff(self.root, self.handoff), [])
+        data = json.loads(path.read_text(encoding='utf-8'))
+        self.assertIn('물리 재고 1건', data['dispositions'][0]['reason'])
+        self.handoff.write_text(self.handoff.read_text(encoding='utf-8').replace(
+            '| — | P014', '| 0 | P014').replace('| PRESENT | HOLD |', '| PRESENT | READY |'), encoding='utf-8')
+        self.assertTrue(any('not executable' in error for error in verify_handoff(self.root, self.handoff)))
+
+    def test_locked_queue_is_rejected_before_frontier_or_menu_access(self):
+        self.handoff.write_text(self.handoff.read_text(encoding='utf-8').replace(
+            '| PRESENT | GATED |', '| UNVERIFIED | REVALIDATE |')
+            + '\n<!-- TINYLM_FRONTIER_QUEUE_V1 artifact=audit/FRONTIER_QUEUE_AAAAAAAAAAAA_BBBBBBBBBBBB.json sha256='
+            + 'A' * 64 + ' -->\n', encoding='utf-8')
+        with patch.object(gate, '_frontier', side_effect=AssertionError('frontier 접근 금지')) as frontier, \
+                patch.object(gate, 'registry_inventory', side_effect=AssertionError('메뉴 접근 금지')) as registry:
+            with self.assertRaisesRegex(ValueError, 'queue lock'):
+                prepare(self.root, self.handoff)
+            self.assertTrue(any('queue lock' in error for error in verify_handoff(self.root, self.handoff)))
+            frontier.assert_not_called()
+            registry.assert_not_called()
+
+    def test_completed_alias_cannot_reenter_as_a_physical_hold_queue(self):
+        (self.root / 'run_P014.sh').rename(self.root / 'run_P014-done.sh')
+        self.handoff.write_text(self.handoff.read_text(encoding='utf-8').replace(
+            '| 0 | P014', '| — | P014').replace('| PRESENT | GATED |', '| PRESENT | HOLD |'), encoding='utf-8')
+        self._prepared()
+        self.assertTrue(any('queue transfer history' in error for error in verify_handoff(self.root, self.handoff)))
 
 
 

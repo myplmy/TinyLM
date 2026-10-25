@@ -1,5 +1,7 @@
 --convert	exp	P090 공개 SFT 변환; 새 prefix와 오염 gate 선결	2026-09-23	scripts/prepare_public_sft.py
 --source-sha256	ok	실험 실행 전 명시 source 서명 대조. 실행권한이나 모델 품질 판정이 아님	2026-10-23	scripts/diag_p106b_official_core6.py,scripts/diag_p106b_official_adapter.py,scripts/diag_p106b_alm_train.py
+--output-stamp	ok	읽기 전용 재계수의 새 요약 출력 식별자. 기존 경로와 링크를 거부하며 원답과 모델은 변경하지 않는다	2026-10-24	scripts/summarize_p106b_core6_pairs.py
+--read-only	ok	완료된 공식 평가 원형의 CPU 재계수만 수행하고 요약 파일도 기록하지 않는다. 모델과 GPU는 사용하지 않는다	2026-10-24	scripts/summarize_p106b_core6_pairs.py
 --epochs	exp	P090 SFT 반복수; 지도 토큰 예산 preflight 선결	2026-09-23	scripts/train_sft_p090.py
 --execute	exp	CPU 준비·모델/교사·평가/학습의 명시 실행. 각 parser의 선결·실제 사용자 권한·해당 source 검산이 필요	2026-10-23	scripts/train_sft_p090.py,scripts/prepare_p106b_official_eval.py,scripts/diag_p106b_official_adapter.py,scripts/diag_p106b_official_core6.py,scripts/diag_p106b_alm_cache.py,scripts/diag_p106b_alm_train.py
 --fetch	exp	P090 pinned HF 원천 다운로드; 별도 HF 경로로 제한	2026-09-23	scripts/audit_aya_collection_ko.py,scripts/prepare_public_sft.py
@@ -550,3 +552,19 @@ flag	grade	evidence	checked	declared_in
 --batch-index	exp	고정16행 묶음의 명시 번호로 재시도 대상 임의 변경 방지	2026-10-23	scripts/diag_p106b_alm_cache.py
 --cache-prompt	exp	cold와 증가-prefix warm 정합을 검산하는 교사 prefix 캐시	2026-10-23	scripts/diag_p106b_alm_cache.py
 --synthetic-cpu	exp	실제 Muon 구현의 작은 CPU 합성 수치 관찰만 허용. 모델·GPU·학습 진단 권한 아님	2026-10-23	scripts/diag_p102a_muon_sensitivity.py
+--prior-process-exit0	exp	독립 평가의 선행 실제 종료0을 총괄이 확인한 경우만 명시하는 운영 증언. 저장 report0만으로 자동 증명하지 않음	2026-10-24	scripts/diag_p106b_qwen35_text_core6.py
+--bundle	exp	명시 게시/import를 동결한 편입 후보 묶음. 실제 채택은 별도 검수·분할 계약 필요	2026-10-24	scripts/p106b_admission.py
+--dependency-sha256	exp	공식 fused CE 진단의 고정 패키지 출처·버전 서명. 실제 GPU 커널 성공이나 실행 허가 아님	2026-10-24	scripts/diag_p102a_fused_ce.py
+--encoding-contract	exp	편입 tokenizer·template·context·native EOS의 명시 고정 계약. 자동 절단이나 분할 금지	2026-10-24	scripts/p106b_admission.py
+--import-directory	exp	기존 strict importer의 보고서와 샤드를 명시한다. 원천을 다시 읽거나 자동 편입하지 않음	2026-10-24	scripts/p106b_admission.py
+--manifest-sha256	exp	새 편입 manifest 재읽기 검산의 외부 고정 SHA. 파일 존재만으로 채택하지 않음	2026-10-24	scripts/p106b_admission.py
+--prior-run-log	exp	정확 IQ2 선행 canary와 cost의 실제 종료를 확인할 원로그 경로. 저장 report0으로 대체 금지	2026-10-24	scripts/p106b_native_iq2_window.py
+--publications	exp	후보별 게시 영수증과 원 응답의 명시 목록. 부모 packet의 전체 ID coverage 필요	2026-10-24	scripts/p106b_admission.py
+--reviews	exp	정확 후보 SHA별 의미·용어·출처·권리·지도턴의 명시 검수. 자동 정답 검사 아님	2026-10-24	scripts/p106b_admission.py
+--root-splits	exp	원천 계보와 실제 이전 노출을 보존한 명시 분할 원장. 임의 비율·seed·평가 누설 금지	2026-10-24	scripts/p106b_admission.py
+--supervise	exp	정확 IQ2 전량 제어기와 별도 세션 worker의 실제 종료를 소유 신원과 시간 상한으로 감독	2026-10-25	scripts/p106b_native_iq2_window.py
+--expand	exp	v12 작은 커널 수치 검산 통과 뒤 명시한 큰 행렬로만 확대. 모델 학습이나 품질 채택 아님	2026-10-25	scripts/diag_p102a_v12_kernels.py
+--_started	exp	v12 감독이 내부 자식에만 전달하는 시작 monotonic 시각. 외부 권한이나 예산 연장 아님	2026-10-25	scripts/diag_p102a_v12_kernels.py
+--_worker	exp	v12 OS 감독이 호출하는 내부 커널 자식 모드. 단독 실행으로 감독을 대체하지 않음	2026-10-25	scripts/diag_p102a_v12_kernels.py
+--measure	exp	v12 기술 진단의 정상 반복 계측 횟수. 모델 학습량이나 품질 검증 횟수 아님	2026-10-25	scripts/diag_p102a_v12_kernels.py
+--original-zip-sha256	exp	사용자 제공 v12 원 ZIP의 정확 바이트 신원을 고정하고 실행 전 검산	2026-10-25	scripts/diag_p102a_v12_kernels.py

@@ -1,0 +1,13 @@
+Pinned source2BB7BC8D, official two JSONL only; KO/EN900,1800rows7200choices per model. Default7-model pre-output token freeze, full and common-untruncated auxiliary separated. Outer phase cap plus60sec absolute cleanup reserve; root must verify actual closure. No training/install. prepare=1 models=native595-q falcon90m qwen06 gemma1b gemma270 new595-broad-f native595-f.
+
+==============================================================================
+[runlog] 2026-10-24 03:17:05  name=P106B_Stage8oWb_belebele_closed_20261023T181705Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/usr/bin/timeout --signal=INT --kill-after=5s 595s /home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_belebele.py --prepare --mode prepare --source-sha256 2BB7BC8DD6A18465DA8A4B87B4AE3452D43F5E8B26CFD01BAC41482BF9A477FB --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 600
+==============================================================================
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+[BELEBELE_FINAL] {"status": "BELEBELE_PREPARED", "returncode": 0, "model": null, "mode": "prepare", "actual_rows": null, "wall_seconds": 55.16489437199925, "error_type": null, "error": null, "hold_reason": null, "phase_closure_verified": true, "phase_closure_sha256": "206C1D4A517B65CD97926E2DF1E83906129415FA09D06F1A91058BCBD4EFB597", "phase_completion_wall_seconds": 55.17011683999954, "closure_contract": "REPORT0_ALONE_IS_NOT_SUCCESS; ROOT_REQUIRES_CLOSURE_AND_REAL_PROCESS_EXIT0_AND_NO_VETO_AND_EXTERNAL_HARDCAP; NO_ATOMIC_FILESYSTEM_PROCESS_EXIT_OR_POST_LAST_READ_TAMPER_PROOF"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.0분  (2026-10-24 03:18:03)
+==============================================================================
+model=none phase=prepare actual process=0. A stored report0 alone is insufficient: require matching phase_closure, no phase_veto, root actual deadline and cleanup audit. Timeout124/137 is error, not score0.

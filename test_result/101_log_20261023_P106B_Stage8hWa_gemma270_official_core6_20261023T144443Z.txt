@@ -1,0 +1,50 @@
+Gemma3-270M Base external comparison. Same official task contract, but pretraining budget differs from TinyLM. Costs and synthetic canaries are not benchmark scores. Full phase requires cost forecast plus30percent margin to fit7200sec and08:40KST. TQDM_DISABLE changes progress display only; raw choice likelihoods are sharded below20MB.
+
+==============================================================================
+[runlog] 2026-10-23 23:44:43  name=P106B_Stage8hWa_gemma270_official_core6_20261023T144443Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_external_core6.py --execute --model gemma270 --mode canary --source-sha256 7C03FFAEF2182D0FDFA717931976FF5DCFB44E8C181F888535ADF6F29B8266DF --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 600
+==============================================================================
+[Task: boolq] metric acc is defined, but aggregation is not. using default aggregation=mean
+[Task: boolq] metric acc is defined, but higher_is_better is not. using default higher_is_better=True
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 504, in execute
+    with model_runtime(model, torch, assets, proof=proof) as (lm, proof):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 252, in model_runtime
+    raise AdmissionHold("native tokenizer IDs exceed the actual model vocabulary")
+__main__.AdmissionHold: native tokenizer IDs exceed the actual model vocabulary
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 559, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 549, in main
+    result = execute(args.model, args.mode, args.source_sha256, args.deadline, args.max_wall_sec)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 529, in execute
+    write_json(target / "report.json", report)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 87, in write_json
+    raw = (json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8")
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 201, in encode
+    chunks = list(chunks)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type set is not JSON serializable
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-10-23 23:44:52)
+==============================================================================
+Stopped phase=canary exit=1. Later phases NOT_RUN; inspect partial report. Prerequisite HOLD is not model quality failure.

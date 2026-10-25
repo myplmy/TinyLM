@@ -16,7 +16,7 @@ import re
 import sys
 
 from frontier_audit import compile_frontier, experiment_rows
-from handoff_queue import QUEUE_COLUMNS, _section, _tables
+from handoff_queue import QUEUE_COLUMNS, _section, _tables, registry_inventory
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,7 +70,9 @@ def queue_rows(handoff: Path) -> list[dict]:
         try:
             hours = float(row[header.index("⚙")].strip(" `⚙h시간"))
             raw_id = row[header.index("id")].strip(" `")
-            menu_id = int(raw_id) if inventory == "PRESENT" else raw_id
+            menu_id = int(raw_id) if inventory == "PRESENT" and raw_id != "—" else raw_id
+            if inventory == "PRESENT" and menu_id == "—" and execution != "HOLD":
+                raise ValueError("a non-menu physical launcher must remain HOLD")
         except ValueError as exc:
             raise ValueError(f"§7 has invalid id/hours for {batch}") from exc
         if hours < 0:
@@ -83,23 +85,11 @@ def queue_rows(handoff: Path) -> list[dict]:
 
 
 def _menu_ids(root: Path) -> dict[str, int]:
-    """WSL menu ordering: priority then TSV line, present BAT+SH or native SH."""
-    items = []
-    for line_number, raw in enumerate((root / "experiments.tsv").read_text(encoding="utf-8").splitlines(), 1):
-        if not raw.strip() or raw.lstrip().startswith("#"):
-            continue
-        cells = raw.split("\t")
-        if cells[0] == "prio" or len(cells) < 8:
-            continue
-        batch = cells[2].strip()
-        shell = batch[:-4] + ".sh" if batch.lower().endswith(".bat") else batch
-        if (root / batch).is_file() and (root / shell).is_file():
-            try:
-                items.append((int(cells[0]), line_number, shell))
-            except ValueError as exc:
-                raise ValueError(f"TSV invalid priority at line {line_number}") from exc
-    items.sort()
-    return {batch: index for index, (_prio, _line, batch) in enumerate(items)}
+    """기존 실제 메뉴와 같은 필터·순서를 공유한다."""
+    inventory = registry_inventory(root)
+    if inventory["warnings"]:
+        raise ValueError("experiments.tsv warning: " + " | ".join(inventory["warnings"]))
+    return inventory["runnable_ids"]
 
 
 def _frontier(root: Path) -> dict:
@@ -126,8 +116,8 @@ def artifact_name(frontier: dict, queue: list[dict]) -> str:
 
 
 def prepare(root: Path, handoff: Path) -> tuple[Path, dict, bool]:
-    frontier = _frontier(root)
     queue = queue_rows(handoff)
+    frontier = _frontier(root)
     target = root / "handoff" / "audit" / artifact_name(frontier, queue)
     if target.exists() or target.is_symlink():
         if target.is_symlink() or not target.is_file():
@@ -142,7 +132,7 @@ def prepare(root: Path, handoff: Path) -> tuple[Path, dict, bool]:
             decision, reason, review = "REVIEW_REQUIRED", "", "MANUAL_REQUIRED"
         else:
             decision, review = "HOLD", "AUTO_NO_LAUNCHER"
-            reason = "등록된 실물 런처 0건; 첫 선결: " + row["first_prerequisite"]
+            reason = "현재 메뉴 실행 대상 0건; 물리 재고 " + str(len(row["launcher_inventory"]["physical"])) + "건; 첫 선결: " + row["first_prerequisite"]
         dispositions.append({"plan_id": row["plan_id"], "decision": decision,
                              "reason": reason, "review": review, "approval_ref": ""})
     document = {"schema": SCHEMA, "frontier_sha256": frontier["frontier_sha256"],
@@ -169,8 +159,8 @@ def verify_handoff(root: Path, handoff: Path) -> list[str]:
         if len(marks) != 1:
             return ["handoff needs exactly one current frontier artifact/SHA marker"]
         relative, stated_sha = marks[0]
-        frontier = _frontier(root)
         queue = queue_rows(handoff)
+        frontier = _frontier(root)
         expected_name = artifact_name(frontier, queue)
         if relative != "audit/" + expected_name:
             errors.append("frontier artifact name is stale for current source/queue")
@@ -198,11 +188,11 @@ def verify_handoff(root: Path, handoff: Path) -> list[str]:
             errors.append("frontier non-DONE disposition IDs are missing, duplicated or extra")
         registered = {}
         for row in experiment_rows(root):
-            if not row["exists"]:
+            if not row["exists"] and not row["execution_file_exists"] and not row["done"]:
                 continue
             registered[row["batch"]] = row
             shell = row["batch"][:-4] + ".sh" if row["batch"].lower().endswith(".bat") else row["batch"]
-            if (root / shell).is_file():
+            if row["menu_name"] == shell:
                 registered[shell] = row
         menu_ids = _menu_ids(root)
         queued_plans = set()
@@ -214,10 +204,16 @@ def verify_handoff(root: Path, handoff: Path) -> list[str]:
             if raw is None or raw["plan"] not in current:
                 errors.append(f"queue batch is absent/unmapped: {entry['batch']}")
                 continue
+            if raw["inventory_state"] == "DONE":
+                errors.append(f"completed launcher belongs in queue transfer history: {entry['batch']}")
+                continue
             (held_plans if entry["execution"] == "HOLD" else queued_plans).add(raw["plan"])
             if abs(float(raw["hours"]) - entry["hours"]) > 1e-9:
                 errors.append(f"queue hours differ from TSV: {entry['batch']}")
-            if menu_ids.get(entry["batch"]) != entry["id"]:
+            if not raw["runnable"] and entry["execution"] != "HOLD":
+                errors.append(f"queue launcher is not executable in the current menu: {entry['batch']}")
+            expected_id = menu_ids.get(raw["menu_name"], "—")
+            if expected_id != entry["id"]:
                 errors.append(f"queue menu id differs: {entry['batch']}")
         for entry in dispositions:
             if not isinstance(entry, dict) or entry.get("plan_id") not in current:

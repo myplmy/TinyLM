@@ -1,0 +1,27 @@
+Exact112858624B GPT2 Q4_K_M through the existing b11396 engine and pinned official Core6 tasks. Native tokenizer/quantized CUDA/F32 KV, not HF FP32. Canary/cost are technical prerequisites, not benchmark results. All19965rows/67106choices required; files under20MB, absolute stop24Oct08:40KST.
+
+==============================================================================
+[runlog] 2026-10-24 01:29:53  name=P106B_Stage8jWa_gpt2_native_core6_20261023T162953Z
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/p106b_native_core6.py --execute --model gpt2_q4km --mode canary --source-sha256 A7DF5E7E81DAA0450439061903ADE2B7EF31C6C5B702A8CEDA99C252472296A8 --deadline 2026-10-24T08:40:00+09:00 --max-wall-sec 600
+==============================================================================
+[Task: boolq] metric acc is defined, but aggregation is not. using default aggregation=mean
+[Task: boolq] metric acc is defined, but higher_is_better is not. using default higher_is_better=True
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/p106b_native_core6.py", line 643, in <module>
+    if __name__ == "__main__": raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/p106b_native_core6.py", line 636, in main
+    result = execute(args.model, args.mode, args.source_sha256, args.deadline, args.max_wall_sec)
+  File "/home/uranus/tinyLM/scripts/p106b_native_core6.py", line 589, in execute
+    report["numerical_canary"] = numerical_canary(lm, torch)
+  File "/home/uranus/tinyLM/scripts/p106b_native_core6.py", line 449, in numerical_canary
+    single_check = compare([actual], [(math.fsum(row[0] for row in single), all(row[1] for row in single))])
+  File "/home/uranus/tinyLM/scripts/p106b_native_core6.py", line 417, in compare
+    return support.compare_scores(actual, expected)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_external_core6.py", line 458, in compare_scores
+    raise ValueError("external numerical likelihood oracle negative")
+ValueError: external numerical likelihood oracle negative
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-10-24 01:29:57)
+==============================================================================
+Stopped phase=canary exit=1. Later phase NOT_RUN; preserve report/raw/telemetry gaps. Prerequisite or backend error is not a model quality0.

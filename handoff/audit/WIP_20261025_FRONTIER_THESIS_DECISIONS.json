@@ -1,0 +1,514 @@
+[
+  {
+    "plan_id": "P004",
+    "plan_path": "test_plan/P004_KDA-적용-롱컨텍스트.md",
+    "value_tier": "UNCERTAIN",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "KDA 커널·혼합 구조가 구현 선결이며 CPU 배포 목표 적합성은 미확인이다.",
+    "evidence": [
+      "test_plan/P004_KDA-적용-롱컨텍스트.md"
+    ],
+    "next_action": "배포 대상과 문맥 길이를 먼저 확정하고 지원 범위·구현 비용을 검토한다."
+  },
+  {
+    "plan_id": "P005",
+    "plan_path": "test_plan/P005_muP전이-Muon옵티마이저.md",
+    "value_tier": "MEDIUM",
+    "decision": "USER_DECISION",
+    "reason": "Muon 격자는 완료됐지만 m100R5 승격과 동일성 검증은 사용자 최종 승인 선결이다.",
+    "evidence": [
+      "test_plan/P005_muP전이-Muon옵티마이저.md",
+      "test_result/076_20260906_P005-뮤온은-lr-15배에서-이기고-1배에서-64배-진다.md"
+    ],
+    "next_action": "승격 필요성과 프리셋 범위를 결정한다. 승인 전 Stage4나 별도 muP 축을 열지 않는다."
+  },
+  {
+    "plan_id": "P005b",
+    "plan_path": "test_plan/P005b_Muon-레시피-정렬과-QK-norm-상한.md",
+    "value_tier": "MEDIUM",
+    "decision": "BUILD_NEXT",
+    "reason": "레시피·전이·LR 검증은 완료됐고 남은 QK 포화·행렬 노름 질문의 진단 도구가 기존 검토에서 미준비로 남았다.",
+    "evidence": [
+      "test_plan/P005b_Muon-레시피-정렬과-QK-norm-상한.md",
+      "test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md"
+    ],
+    "next_action": "기존 레시피를 보존한 b6·b7 진단 도구를 다음 구현 후보로 구체화한다. 학습 가능한 g는 포화 관측 뒤 판단한다."
+  },
+  {
+    "plan_id": "P006",
+    "plan_path": "test_plan/P006_MTP-학습aux-및-FastMTP추론.md",
+    "value_tier": "MEDIUM",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "MTP 학습은 수행됐으나 병렬 BF16 정합·가속은 미확정이고 전체 FastMTP는 미구현이다.",
+    "evidence": [
+      "test_plan/P006_MTP-학습aux-및-FastMTP추론.md",
+      "test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md"
+    ],
+    "next_action": "P101A 결과를 재사용해 정합·정렬·동적 어휘의 남은 질문을 분리한다. 기존 네 팔은 반복하지 않는다."
+  },
+  {
+    "plan_id": "P007",
+    "plan_path": "test_plan/P007_토큰스윕-격차품질곡선.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "현 데이터의 기존 계열은 종결됐고 포화점 질문만 P041로 이관됐다.",
+    "evidence": [
+      "test_plan/P007_토큰스윕-격차품질곡선.md",
+      "test_result/006_20260730114800_P007-토큰스윕-클린판.md"
+    ],
+    "next_action": "옛 진행 표지를 종결·이관 근거에 맞춰 정리하는 후보로 둔다. 기존 P007B는 재실행하지 않는다."
+  },
+  {
+    "plan_id": "P009",
+    "plan_path": "test_plan/P009_민감도-혼합정밀-삼진.md",
+    "value_tier": "MEDIUM",
+    "decision": "USER_DECISION",
+    "reason": "혼합 비트는 품질·메모리 교환을 겨냥하지만 int4 STE와 배포 지원이 구현 선결이다.",
+    "evidence": [
+      "test_plan/P009_민감도-혼합정밀-삼진.md"
+    ],
+    "next_action": "민감도 대상과 허용할 메모리 증가, 구현 범위를 사용자 판단으로 확정한다."
+  },
+  {
+    "plan_id": "P010",
+    "plan_path": "test_plan/P010_하이퍼넷-층별적응.md",
+    "value_tier": "LOW",
+    "decision": "LOW_PRIORITY",
+    "reason": "하이퍼넷은 설계 단계이며 초기화·안정성과 기존 FiLM·LoRA 대비 이득이 미검증이다.",
+    "evidence": [
+      "test_plan/P010_하이퍼넷-층별적응.md"
+    ],
+    "next_action": "현재 표현력 병목에 필요한 질문인지 판단하고 구현 착수는 뒤로 둔다."
+  },
+  {
+    "plan_id": "P011",
+    "plan_path": "test_plan/P011_저토큰교사-KD-손익분기.md",
+    "value_tier": "LOW",
+    "decision": "LOW_PRIORITY",
+    "reason": "저토큰 교사 계획의 바탕인 KD 이득은 기존 300M 조건에서 유지되지 않았다.",
+    "evidence": [
+      "test_plan/P011_저토큰교사-KD-손익분기.md",
+      "test_result/042_20260813_P055-단계0-KD감사-A1만-유효하다.md"
+    ],
+    "next_action": "KD 재검토 예산과 교사·초기화 분리 질문이 생길 때만 범위를 재검토한다."
+  },
+  {
+    "plan_id": "P013",
+    "plan_path": "test_plan/P013_seq-length-warmup-소규모.md",
+    "value_tier": "LOW",
+    "decision": "LOW_PRIORITY",
+    "reason": "길이 스케줄은 초기 비용 외에 학습 과정·토큰 분모·최종 품질도 바꿀 수 있어 분리 검증이 필요하다.",
+    "evidence": [
+      "test_plan/P013_seq-length-warmup-소규모.md"
+    ],
+    "next_action": "전체 벽시계에서 초기 구간의 기여가 중요한지 판단한 뒤 구현 범위를 검토한다."
+  },
+  {
+    "plan_id": "P014D",
+    "plan_path": "test_plan/P014D_LUT-배포커널-속도와-패킹.md",
+    "value_tier": "LOW",
+    "decision": "FAILED_GATE",
+    "reason": "scalar native 커널은 실제 두 모델에서 int8 대비 1.50배 속도 문턱을 넘지 못했다.",
+    "evidence": [
+      "test_plan/P014D_LUT-배포커널-속도와-패킹.md",
+      "test_result/069_20260902_P014D-디코드-프로파일이-경로이름을-양자화형식으로-넘겨-두-팔-다-죽었다.md"
+    ],
+    "next_action": "기본 승격을 보류한다. 새 SIMD·layout·외부 ABI는 새 비용·정합 계약과 별도 승인 뒤 검토한다."
+  },
+  {
+    "plan_id": "P014E",
+    "plan_path": "test_plan/P014E_회전삼진-민감도와-직접패킹-단계게이트.md",
+    "value_tier": "MEDIUM",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "합성과 실제 가중치 부분 투영은 완료됐지만 전체 배포·품질은 미측정이고 회전·padding 비용이 있다.",
+    "evidence": [
+      "test_plan/P014E_회전삼진-민감도와-직접패킹-단계게이트.md",
+      "test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md"
+    ],
+    "next_action": "동일 체크포인트·실제 텍스트의 전체 wall·RSS를 잴 필요성과 G1b 구현 범위를 먼저 확정한다."
+  },
+  {
+    "plan_id": "P016",
+    "plan_path": "test_plan/P016_3대4희소삼진-1.25bit.md",
+    "value_tier": "LOW",
+    "decision": "FAILED_GATE",
+    "reason": "메모리 교환비는 음성 종결이며 CPU 속도 축 재개는 별도 계약이다.",
+    "evidence": [
+      "test_plan/P016_3대4희소삼진-1.25bit.md",
+      "test_result/008_20260730115000_P016-3대4희소삼진-실측.md"
+    ],
+    "next_action": "기존 메모리 팔은 반복하지 않는다. CPU 이식 비용·기대 기여와 사용자 허가부터 판단한다."
+  },
+  {
+    "plan_id": "P018",
+    "plan_path": "test_plan/P018_압축교사-distill.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "압축 교사·추론 모드 조합까지 수행됐고 기존 300M KD 분기는 폐기됐다.",
+    "evidence": [
+      "test_plan/P018_압축교사-distill.md",
+      "test_result/037_20260808_P018-교사가-학생보다-나빴다-압축교사가-더-좋다.md",
+      "test_result/042_20260813_P055-단계0-KD감사-A1만-유효하다.md"
+    ],
+    "next_action": "옛 대기 표지를 수행·종결 이력에 맞춰 정리한다. 다른 예산의 KD 재도입은 별도 판단한다."
+  },
+  {
+    "plan_id": "P019",
+    "plan_path": "test_plan/P019_hidden정확-오프라인KD.md",
+    "value_tier": "LOW",
+    "decision": "LOW_PRIORITY",
+    "reason": "hidden 캐시는 구현 전이며 저장량 목표를 위한 양자화·PQ는 정확 복원과 다른 근사 계약이다.",
+    "evidence": [
+      "test_plan/P019_hidden정확-오프라인KD.md"
+    ],
+    "next_action": "해당 교사 캐시가 실제로 필요한지와 저장·오차 비용을 먼저 확인한다."
+  },
+  {
+    "plan_id": "P020",
+    "plan_path": "test_plan/P020_a4.8경량-ReLU2GLU-3bitKV.md",
+    "value_tier": "MEDIUM",
+    "decision": "USER_DECISION",
+    "reason": "ReLU2GLU와 KV3은 학습 구조와 배포 메모리라는 서로 다른 질문이며 아직 실행 근거가 없다.",
+    "evidence": [
+      "test_plan/P020_a4.8경량-ReLU2GLU-3bitKV.md"
+    ],
+    "next_action": "두 축 중 먼저 검증할 목표를 결정한다. dense 재기준선과 KV 평가 계약을 섞지 않는다."
+  },
+  {
+    "plan_id": "P022",
+    "plan_path": "test_plan/P022_FP8-Ada-학습가속.md",
+    "value_tier": "MEDIUM",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "순수 FP8 GEMM 통과는 전체 학습 가속 근거가 아니며 후속 변환 비용 음성이 있다.",
+    "evidence": [
+      "test_plan/P022_FP8-Ada-학습가속.md",
+      "test_result/010_20260730130000_P022-FP8-0단계게이트-통과.md"
+    ],
+    "next_action": "실제 캠페인의 비용 회수 조건과 P022C 병목을 반영해 착수 가치를 판단한다."
+  },
+  {
+    "plan_id": "P022B",
+    "plan_path": "test_plan/P022B_FP8선택적혼합정밀도-DeepSeekV3식.md",
+    "value_tier": "MEDIUM",
+    "decision": "DOC_CORRECTION",
+    "reason": "단계0·2·3과 D1 후속은 이미 수행돼 옛 미완료 표지가 중복 작업을 만든다.",
+    "evidence": [
+      "test_plan/P022B_FP8선택적혼합정밀도-DeepSeekV3식.md",
+      "test_result/035_20260807_P022B-단계0-per-tensor로도-FP8은-거의-공짜다.md",
+      "test_result/055_20260823_P068-wq-bf16은-메모리만-주고-속도는-안-준다.md",
+      "docs/EXPERIMENT_BASELINES.md"
+    ],
+    "next_action": "완료 진단과 P068 후속을 연결해 상태 정리를 제안한다. BF16 optimizer 상태를 전역 표준으로 올리지 않는다."
+  },
+  {
+    "plan_id": "P022C",
+    "plan_path": "test_plan/P022C_FP8-compute-shadow-precision-분리.md",
+    "value_tier": "MEDIUM",
+    "decision": "FAILED_GATE",
+    "reason": "일부 속도 양성에도 수치·메모리 계약은 전 형상 음성이며 shadow는 별도 미실행이다.",
+    "evidence": [
+      "test_plan/P022C_FP8-compute-shadow-precision-분리.md",
+      "test_result/081_20260913_P022C-FP8-backend는-통과했지만-학습이득은-미측정이다.md"
+    ],
+    "next_action": "cache 단독 통합을 열지 않는다. 새 계산 경로와 shadow 질문은 별도 비용·승인으로 분리한다."
+  },
+  {
+    "plan_id": "P023",
+    "plan_path": "test_plan/P023_Sophia-옵티마이저-검증.md",
+    "value_tier": "LOW",
+    "decision": "LOW_PRIORITY",
+    "reason": "P026 대기는 해제됐지만 Sophia의 STE·param_groups·하이퍼파라미터 검증 비용은 남았다.",
+    "evidence": [
+      "test_plan/P023_Sophia-옵티마이저-검증.md",
+      "test_result/015_20260731102500_P026-cooldownQAT-스케줄정렬.md"
+    ],
+    "next_action": "현재 Muon 레시피와 다른 질문이 필요한지 판단한 뒤 이식·튜닝 예산을 검토한다."
+  },
+  {
+    "plan_id": "P024",
+    "plan_path": "test_plan/P024_점진적스태킹-교사학습가속.md",
+    "value_tier": "LOW",
+    "decision": "LOW_PRIORITY",
+    "reason": "교사 성장 학습은 구현 전이며 성장 일정과 CLA 재배선까지 바꾸는 공수가 필요하다.",
+    "evidence": [
+      "test_plan/P024_점진적스태킹-교사학습가속.md"
+    ],
+    "next_action": "현재 목표에서 교사 학습비가 중요한지 먼저 확인하고 착수 가치를 판단한다."
+  },
+  {
+    "plan_id": "P025",
+    "plan_path": "test_plan/P025_2대4희소-GPU학습가속.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "native 2:4 진단은 P025B에서 확장 수행돼 옛 0단계와 중복될 수 있다.",
+    "evidence": [
+      "test_plan/P025_2대4희소-GPU학습가속.md",
+      "test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md"
+    ],
+    "next_action": "재사용할 backend 근거와 아직 안 잰 고정 희소 품질 질문을 분리해 재고를 정리한다."
+  },
+  {
+    "plan_id": "P025B",
+    "plan_path": "test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md",
+    "value_tier": "MEDIUM",
+    "decision": "FAILED_GATE",
+    "reason": "전체 primitive의 GPU event는 양성이지만 동기 wall은 느리며 모델 통합·품질은 미실행이다.",
+    "evidence": [
+      "test_plan/P025B_2대4-동적희소-프리트레이닝-sparse-master.md",
+      "test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md"
+    ],
+    "next_action": "host wall 개선 계획이 먼저다. sparse-master 메모리 축은 별도 재승인 대상으로 둔다."
+  },
+  {
+    "plan_id": "P027",
+    "plan_path": "test_plan/P027_CUDAGraphs-compile-런치오버헤드.md",
+    "value_tier": "MEDIUM",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "타잉 임베딩과 정적 버퍼 충돌이 남아 플래그 존재만으로 가속을 주장할 수 없다.",
+    "evidence": [
+      "test_plan/P027_CUDAGraphs-compile-런치오버헤드.md"
+    ],
+    "next_action": "동일 타잉 조건의 버퍼 수명·충돌 원인과 전체 비용을 확인할 진단 계약부터 정한다."
+  },
+  {
+    "plan_id": "P028",
+    "plan_path": "test_plan/P028_데이터효율-공통텍스트bpb-재측정.md",
+    "value_tier": "HIGH",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "영문 공통 bpb와 필터 효과는 수행됐지만 한국어 공통 원문·언어 예산 교락이 비교 해석을 제한한다.",
+    "evidence": [
+      "test_plan/P028_데이터효율-공통텍스트bpb-재측정.md",
+      "test_result/011_20260730135000_P028-단계0-캐시진단.md"
+    ],
+    "next_action": "한국어 원문셋 선정·고정과 토큰 혼합·고정 평가 교량 계약을 먼저 확정한다."
+  },
+  {
+    "plan_id": "P029",
+    "plan_path": "test_plan/P029_정성프로브-100M급-능력확인.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "생성과 원답안 10행 판독은 끝났고 EOS 종료 사유·품질 개선은 미판정이다.",
+    "evidence": [
+      "test_plan/P029_정성프로브-100M급-능력확인.md",
+      "test_result/013_20260730190000_P029-정성프로브-1차.md"
+    ],
+    "next_action": "옛 원답안 미열람 표지를 정리한다. 종료 사유가 필요할 때 별도 관측 범위를 승인받는다."
+  },
+  {
+    "plan_id": "P030",
+    "plan_path": "test_plan/P030_추론속도-KV캐시-CPU배포.md",
+    "value_tier": "MEDIUM",
+    "decision": "DOC_CORRECTION",
+    "reason": "Stage5·6·7b는 실측 완료이며 새 WSL·RMS4 질문은 P030B 소유다.",
+    "evidence": [
+      "test_plan/P030_추론속도-KV캐시-CPU배포.md",
+      "test_result/014_20260731003000_P030-CPU추론실측-양자화오버헤드.md"
+    ],
+    "next_action": "완료 명령을 보존하고 중복 실행 대기를 정리한다. 새 배포 문제는 P030B에서 판단한다."
+  },
+  {
+    "plan_id": "P030B",
+    "plan_path": "test_plan/P030B_WSL-현행-RMS4-CPU배포-실측.md",
+    "value_tier": "HIGH",
+    "decision": "FAILED_GATE",
+    "reason": "교차 순서에서 속도 우위는 미재현이고 최소 상주 126.7MiB는 40MiB 목표를 넘는다.",
+    "evidence": [
+      "test_plan/P030B_WSL-현행-RMS4-CPU배포-실측.md",
+      "test_result/100_20260926_P030B-1코어-바닥은-통과했지만-상주-목표는-미달이다.md"
+    ],
+    "next_action": "같은 ABBA 반복보다 실제 packed 상주 경로·형상 대안의 필요성과 비용을 사용자 판단으로 정한다."
+  },
+  {
+    "plan_id": "P033",
+    "plan_path": "test_plan/P033_친칠라최적-스케일업-윤곽.md",
+    "value_tier": "LOW",
+    "decision": "USER_DECISION",
+    "reason": "장기 스케일업은 한국어 공급·평가 교량·상세 조건이 미확정인 윤곽 계획이다.",
+    "evidence": [
+      "test_plan/P033_친칠라최적-스케일업-윤곽.md"
+    ],
+    "next_action": "현재 학습 목표에 필요한지부터 결정한다. 필요할 때만 데이터·LR·장기 예산을 확정한다."
+  },
+  {
+    "plan_id": "P034C",
+    "plan_path": "test_plan/P034C_상주-회계의-남은-항.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "MiB급 KV를 RSS로 판정하는 축은 종결됐고 임베딩 후속은 별도 계획 소유다.",
+    "evidence": [
+      "test_plan/P034C_상주-회계의-남은-항.md",
+      "test_result/061_20260830_P034C-RSS로는-MiB급-예산을-검증할-수-없다.md"
+    ],
+    "next_action": "RSS 재실행 대기를 정리하고 필요한 P075 결과만 회계에 반영할지 판단한다."
+  },
+  {
+    "plan_id": "P035B",
+    "plan_path": "test_plan/P035B_anneal-동역학-계측과-오염대조.md",
+    "value_tier": "LOW",
+    "decision": "FAILED_GATE",
+    "reason": "A3는 완료됐으나 G2 지속 궤적차가 불성립해 adaptive·freeze 개방 근거가 없다.",
+    "evidence": [
+      "test_plan/P035B_anneal-동역학-계측과-오염대조.md",
+      "test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md"
+    ],
+    "next_action": "같은 가설의 장기 반복을 권하지 않는다. 새 관측 가설·사용자 승인 없이는 후속을 열지 않는다."
+  },
+  {
+    "plan_id": "P037",
+    "plan_path": "test_plan/P037_데이터파이프라인-무결성검증.md",
+    "value_tier": "HIGH",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "새 B 기능 캐시는 생성됐지만 평가 교량·학습 준비·품질은 별개이며 2배 풀 조건도 충족하지 않는다.",
+    "evidence": [
+      "test_plan/P037_데이터파이프라인-무결성검증.md",
+      "test_result/023_20260802100000_P037-단계2-필터는작동-검증이엉뚱한캐시를쟀다.md"
+    ],
+    "next_action": "평가 교량 목적·사용 계약을 확정한다. 600M 확대는 필요성과 공개 보충 원천이 있을 때만 판단한다."
+  },
+  {
+    "plan_id": "P040",
+    "plan_path": "test_plan/P040_타잉의-학습속도-이득-AB.md",
+    "value_tier": "MEDIUM",
+    "decision": "DOC_CORRECTION",
+    "reason": "A/B는 수행됐지만 타잉과 CLA가 함께 달라 순수 타잉 속도는 추정이다.",
+    "evidence": [
+      "test_plan/P040_타잉의-학습속도-이득-AB.md",
+      "test_result/033_20260807_P040-타잉은-학습시간을-조금-벌고-VRAM을-많이-번다.md"
+    ],
+    "next_action": "미실행 표지를 정리하고 교락을 보존한다. 순수 효과가 꼭 필요할 때만 CLA 고정의 새 질문을 승인받는다."
+  },
+  {
+    "plan_id": "P041",
+    "plan_path": "test_plan/P041_한국어코퍼스확장-데이터스케일-수확체감.md",
+    "value_tier": "HIGH",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "포화점 질문은 승계됐지만 한국어 원천·공통 원문·토큰 믹서·공정 val 선결이 남았다.",
+    "evidence": [
+      "test_plan/P041_한국어코퍼스확장-데이터스케일-수확체감.md"
+    ],
+    "next_action": "원천 실사·한국어 공통 원문·P037 평가 교량 계약을 먼저 검토한다. 큰 예산 스윕을 먼저 열지 않는다."
+  },
+  {
+    "plan_id": "P042",
+    "plan_path": "test_plan/P042_KD교사-추론화-및-nockpt개방.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "기존 진단은 수행됐고 no-ckpt는 조건부였으며 300M KD 분기는 폐기됐다.",
+    "evidence": [
+      "test_plan/P042_KD교사-추론화-및-nockpt개방.md",
+      "test_result/034_20260807_P042-단계0-비트동일성-게이트-통과.md",
+      "test_result/042_20260813_P055-단계0-KD감사-A1만-유효하다.md"
+    ],
+    "next_action": "옛 본 런 대기를 정리한다. 다른 예산의 KD 필요성이 생길 때만 별도 범위를 검토한다."
+  },
+  {
+    "plan_id": "P048",
+    "plan_path": "test_plan/P048_prelude-coda-1+1-남은최대-packed레버.md",
+    "value_tier": "MEDIUM",
+    "decision": "USER_DECISION",
+    "reason": "g16 스택은 수행됐고 메모리 절감 대신 +0.0745의 품질 대가가 남아 기본 승격은 보류됐다.",
+    "evidence": [
+      "test_plan/P048_prelude-coda-1+1-남은최대-packed레버.md",
+      "test_result/032_20260807_P048-preludecoda-1+1-효율은-g16과-같다.md"
+    ],
+    "next_action": "기존 결과로 메모리 예산별 선택을 판단한다. 완료된 단계2를 다시 실행 대상으로 올리지 않는다."
+  },
+  {
+    "plan_id": "P049B",
+    "plan_path": "test_plan/P049B_학습시-재귀구조-UniversalTransformer식.md",
+    "value_tier": "MEDIUM",
+    "decision": "DOC_CORRECTION",
+    "reason": "반복 대가로 읽었던 폐기 판정은 학습·평가 불일치로 철회됐고 후속은 P062로 이관됐다.",
+    "evidence": [
+      "test_plan/P049B_학습시-재귀구조-UniversalTransformer식.md",
+      "test_result/043_20260813_P049B-반복대가가-아니라-학습평가-스케줄-불일치였다.md"
+    ],
+    "next_action": "철회·이관을 반영하고 P062의 수행 결과를 재사용한다. 옛 단계1·2를 중복 큐로 만들지 않는다."
+  },
+  {
+    "plan_id": "P050",
+    "plan_path": "test_plan/P050_부모없는-단독학습-vs-부모증류.md",
+    "value_tier": "MEDIUM",
+    "decision": "USER_DECISION",
+    "reason": "부모·KD 분해와 시드 대조는 수행됐고 새 확정 구조의 재검토는 별도 질문이다.",
+    "evidence": [
+      "test_plan/P050_부모없는-단독학습-vs-부모증류.md",
+      "test_result/038_20260808_P050-부모초기화가-전부다-KD는-0이다.md"
+    ],
+    "next_action": "현재 구조의 남은 질문과 P101A 부모 대조의 차이를 먼저 결정한다. 옛 분해 실험은 반복하지 않는다."
+  },
+  {
+    "plan_id": "P050B",
+    "plan_path": "test_plan/P050B_dense를-부모로-쓰는-것이-항상-타당한가.md",
+    "value_tier": "MEDIUM",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "REVIEW2와 mC_solo 과거 생성은 확인되지만 현재 자산과 tied 부모의 동형 이식은 미검산이다.",
+    "evidence": [
+      "test_plan/P050B_dense를-부모로-쓰는-것이-항상-타당한가.md",
+      "test_result/038_20260808_P050-부모초기화가-전부다-KD는-0이다.md"
+    ],
+    "next_action": "현재 자산·tied 부모 로드·항등 복사·총비용 확인 범위를 정한다. 존재를 추정해 새 학습하지 않는다."
+  },
+  {
+    "plan_id": "P052",
+    "plan_path": "test_plan/P052_시드반복-체크포인트판정을-아키텍처판정으로.md",
+    "value_tier": "MEDIUM",
+    "decision": "DOC_CORRECTION",
+    "reason": "Stage4b·5 세 번째 시드는 완료됐고 cla2의 checkpoint 교락과 눈금 한계가 남는다.",
+    "evidence": [
+      "test_plan/P052_시드반복-체크포인트판정을-아키텍처판정으로.md",
+      "test_result/039_20260809_P052-시드노이즈가-0.0006이다-분해능을-다시-유도해야-한다.md"
+    ],
+    "next_action": "완료 상태·교락을 반영해 명령을 보존한다. 다른 형상·학습 계열에 옛 눈금을 그대로 적용하지 않는다."
+  },
+  {
+    "plan_id": "P053",
+    "plan_path": "test_plan/P053_KD손실청크-학습VRAM최대항목을-쪼갠다.md",
+    "value_tier": "LOW",
+    "decision": "DOC_CORRECTION",
+    "reason": "청크 세 팔은 수행됐지만 긴 품질 검증은 없고 기존 300M KD 분기는 폐기됐다.",
+    "evidence": [
+      "test_plan/P053_KD손실청크-학습VRAM최대항목을-쪼갠다.md",
+      "test_result/048_20260815_P053-KD청크는-3.06GiB를-공짜로-준다.md",
+      "test_result/042_20260813_P055-단계0-KD감사-A1만-유효하다.md"
+    ],
+    "next_action": "옛 실행 대기를 정리한다. 새 KD 유지 조건의 승인 없이는 긴 품질 런이나 512 청크를 열지 않는다."
+  },
+  {
+    "plan_id": "P054",
+    "plan_path": "test_plan/P054_dense부모-재생성과-교체가능성.md",
+    "value_tier": "MEDIUM",
+    "decision": "USER_DECISION",
+    "reason": "재생성·재현성·안 C는 수행됐고 부모 변경은 자식을 분해능 이상 움직였으나 전면 교체는 미승인이다.",
+    "evidence": [
+      "test_plan/P054_dense부모-재생성과-교체가능성.md",
+      "test_result/040_20260813_P054-dense재생성-같은명령이-0.017-다른모델을-만들었다.md",
+      "test_result/049_20260820_P063-단계0-분해능은-조건마다-18배-다르다.md"
+    ],
+    "next_action": "기존 부모·비교 계보를 보존한 채 교체 필요성과 전환 비용을 사용자 판단으로 남긴다."
+  },
+  {
+    "plan_id": "P055",
+    "plan_path": "test_plan/P055_KD는-왜-해로운가-원인규명.md",
+    "value_tier": "MEDIUM",
+    "decision": "DOC_CORRECTION",
+    "reason": "구현 감사·α 스윕이 완료돼 기존 300M KD 제거가 결정됐으므로 조건부 대기는 오래됐다.",
+    "evidence": [
+      "test_plan/P055_KD는-왜-해로운가-원인규명.md",
+      "test_result/042_20260813_P055-단계0-KD감사-A1만-유효하다.md",
+      "docs/EXPERIMENT_BASELINES.md"
+    ],
+    "next_action": "해당 계열 완료·종결 이력을 정리한다. 다른 예산·교사는 별도 근거가 있을 때만 검토한다."
+  },
+  {
+    "plan_id": "P056",
+    "plan_path": "test_plan/P056_optimizer-step-양자화캐시와-aw-재계산.md",
+    "value_tier": "UNCERTAIN",
+    "decision": "EVIDENCE_NEEDED",
+    "reason": "이 계획의 소유 실행 결과는 찾지 못했고 현행 양자화 캐시 구현과의 중복도 미확인이다.",
+    "evidence": [
+      "test_plan/P056_optimizer-step-양자화캐시와-aw-재계산.md"
+    ],
+    "next_action": "현행 경로와 중복을 먼저 대조한다. 남는 차이에만 전체 update parity·gradient·희소 조합 계약과 구현 범위를 정한다."
+  }
+]

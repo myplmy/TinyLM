@@ -1,0 +1,140 @@
+# ── Python ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.env
+.venv/
+
+# ── 대용량·재생성 가능 학습 산출물 ─────────────────────
+# 토큰 바이너리·체크포인트는 커밋하지 않는다(재생성 가능, 수백 MB~GB).
+runs/
+**/run100m/ckpt/
+**/run100m/data/
+**/data_cache/
+*.pt
+*.bin
+
+# ── Hugging Face 로컬 캐시(모델·데이터셋) ───────────────
+HF/
+
+# ── Wandb logs ───────────────
+wandb/
+
+# ── 로그(logs/*.json)는 추적한다 — 실험 기록이므로 무시하지 않음 ──
+
+# ── scratch ─────────────────────────────────────────────
+tmp/
+*.tmp
+
+# ── TinyDataset 작업 스크립트 ────────────────────────────
+# 2026-08-30 사용자 지시 — `datasets/TinyDataset/` 아래의 python 은 **다른 AI 모델이
+# 데이터셋을 만드는 동안 임시로 쓰는 것**이고 우리 코드가 아니다.
+# 우리 정본 코드는 `tinylm/` 과 `scripts/` 뿐이므로 여기 것은 추적하지 않는다.
+# ⚠️데이터(.json/.jsonl)는 **추적한다** — 그것이 산출물이다.
+datasets/TinyDataset/**/*.py
+
+# ── TinyDataset 정본 감사기 allowlist ────────────────────
+!datasets/TinyDataset/stage1_highdensity_dataset/tools/stage2_10_corpus_common.py
+!datasets/TinyDataset/stage2_highdensity_dataset/tools/audit_stage2_a03_train_full.py
+!datasets/TinyDataset/stage2_highdensity_dataset/tools/verify_stage2_similarity_sklearn.py
+!datasets/TinyDataset/stage2_highdensity_dataset/tools/reaudit_stage2_a01_train.py
+
+# ★런 레지스트리 DB 캐시 — 정본은 runs/registry.tsv (2026-09-05)
+runs/registry.db
+
+# ── ClaudeCode_세션작업기록 ───────────────
+ai_dev_tool/temp_claude_중단세션/**
+
+# ── Codex environment ───────────────
+.codex/environments/
+
+# Experiment evidence: bounded decision records may be tracked selectively.
+# Bulk/temporary/private diagnostics remain local; never move old evidence here automatically.
+/test_result/evidence/local/
+/test_result/101_log_20261015_P106B_Stage4bpW_dualqa_teacher_pair_230614.txt
+/test_result/101_log_20261015_P106B_Stage4bpWb_dualqa_optional_note_pair_233058.txt
+/test_result/101_log_20261016_P106B_Stage4brW_dualqa_teacher_production_000516.txt
+/test_result/evidence/_local/
+/test_result/evidence/**/cache/
+/test_result/evidence/**/*.npy
+/test_result/evidence/**/*.npz
+/test_result/evidence/**/*.safetensors
+/test_result/evidence/**/*.gguf
+/test_result/evidence/**/*.parquet
+/test_result/evidence/**/*.arrow
+/test_result/evidence/**/*.pkl
+/test_result/evidence/**/*.pickle
+/test_result/evidence/**/*.sqlite
+/test_result/evidence/**/*.sqlite3
+/test_result/evidence/**/*.db
+/test_result/evidence/**/*.zip
+/test_result/evidence/**/*.gz
+/test_result/evidence/**/*.zst
+
+# Session runtime capsules are local, potentially stale recovery state, not final evidence.
+/handoff/audit/*_RUNTIME_CAPSULE.json
+# Redundant local operational snapshots; unique failures and the freeze audit are retained.
+/handoff/audit/WIP_20261015_ORPO_READY_STATIC_AUDIT.json
+/handoff/audit/WIP_20261015_ORPO_READY3_STATIC_AUDIT.json
+/handoff/audit/WIP_20261015_ORPO_READY4_STATIC_AUDIT.json
+
+# Completed small diagnostics: redundant intermediate snapshots, raw/final proof retained.
+/test_result/evidence/p093b_generation_v2_s1337/generation_decode/partial.json
+/test_result/evidence/p106b_gemma_ac_v2_s1337/panel/partial.json
+
+# Selected source QA includes third-party public personal records; raw/local retained, only report+SHA tracked.
+/test_result/evidence/p106b_visible_source16_v2_s1337/teacher_raw_000000.jsonl
+/test_result/evidence/p106b_visible_source16_v2_s1337/canonical_000000.jsonl
+
+# Follow-up source512 learner console includes third-party source text; local raw retained.
+/test_result/101_log_20261014_P106B_Stage4vWa_source_sft_only_*.txt
+/test_result/101_log_20261014_P106B_Stage4vWb_source_reference_lm_*.txt
+/test_result/101_log_20261014_P106B_Stage4xWa_format_mix_student_*.txt
+/test_result/101_log_20261014_P106B_Stage4yW_source_prompt_pair_*.txt
+# Small teacher panel prints actual source-derived QA; private raw remains local, report/SHA tracked.
+/test_result/101_log_20261015_P106B_Stage4ao1W_lossless_budget_panel_*.txt
+/handoff/audit/FRONTIER_QUEUE_90F226278B4E_9742F1063CF2.json
+/handoff/audit/FRONTIER_SEMANTIC_90F226278B4E_311326E82F8B.json
+/handoff/audit/FRONTIER_QUEUE_90F226278B4E_A2AFAE7390BD.json
+/handoff/audit/FRONTIER_SEMANTIC_90F226278B4E_4F9D61806E32.json
+
+# Superseded local frontier snapshots; final freeze and failure/review ancestry remain tracked.
+/handoff/audit/FRONTIER_QUEUE_3E621C55546D_49EC7900F040.json
+/handoff/audit/FRONTIER_SEMANTIC_3E621C55546D_E020F59F15D6.json
+/handoff/audit/FRONTIER_QUEUE_3E621C55546D_419164B3BF5E.json
+/handoff/audit/FRONTIER_SEMANTIC_3E621C55546D_D3993F2383AA.json
+
+# Exact local smoke raw; project excludedPaths applies, tracked SHA audit retained.
+/smoketest_logs/202610190118_smoke_6ada839.txt
+# Approved isolated smoke raw stays local; portable receipt and hash are tracked.
+/smoketest_logs/20261021035623_smoke_codex_oct21_final_approved_v1_2503365.txt
+# Superseded pre-final-source frontier drafts are local, never final proof.
+/handoff/audit/FRONTIER_QUEUE_ADBBF3AB4CF9_C1957E32BF62.json
+/handoff/audit/FRONTIER_SEMANTIC_ADBBF3AB4CF9_A0623C57E6E9.json
+
+# 2026-10-21 preparation intermediate copies; final18 metadata snapshot is versioned.
+/test_result/evidence/p106b_oct21_preparation_20261021T114221544182Z/
+/test_result/evidence/p106b_oct21_preparation_20261021T115656331663Z/
+/test_result/evidence/p106b_oct21_preparation_20261021T115801965414Z/
+/test_result/evidence/p106b_oct21_preparation_20261021T132353360907Z/
+
+# Oct22/23 source-review copies and unadmitted translations remain local.
+# Version root judgments, bounded reports and SHA receipts, not corpus copies.
+/review_request/20261021_*
+/review_request/20261022_*
+/review_request/20261023_*
+/test_result/101_log_20261023_P106B_Stage4fsWp_supported_teacher_deadline_*.txt
+/test_result/101_log_20261023_P106B_Stage4fsWt_supported_teacher_resume_*.txt
+# Current studies: bulk prompts/answers and event shards stay local; JSON reports/manifests stay selectable.
+/test_result/evidence/p078_route_training_v1_s1337_cleanv3/**/*.jsonl
+/test_result/evidence/p101a_sft_mtp_cleanbilingual_v3_s1337/**/*.jsonl
+/test_result/evidence/p101a_sft_mtp_verified_direct_v3_s1337/**/*.jsonl
+/test_result/evidence/p101a_sft_mtp_verified_trace_v3_s1337/**/*.jsonl
+/test_result/evidence/p101a_reasoning_surface_cpu_v1/**/answers_*.jsonl
+/test_result/evidence/p106b_alm_train_float_v2_s1337/**/*.jsonl
+/test_result/evidence/p106b_alm_train_ternary_v1_s1337/**/*.jsonl
+/test_result/evidence/p106b_babylm_causal_v3_s1337/**/*.jsonl
+/test_result/evidence/p106b_existing_probes_20261022/**/*.jsonl
+/test_result/evidence/p106b_official_core6_v1/**/*.jsonl
+/test_result/evidence/p106b_official_core6_v2/**/*.jsonl
+/test_result/evidence/p106b_public_new768_20261022/**/*.jsonl
+/test_result/evidence/p106b_qwen_tf_v1_s1337/**/*.jsonl

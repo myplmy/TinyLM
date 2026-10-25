@@ -1,0 +1,24 @@
+
+==============================================================================
+[runlog] 2026-10-25 09:21:37  name=P106B_Stage9pWe_sft_format_semantic_readback
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c import json, hashlib
+from pathlib import Path
+audit=Path('handoff/audit/WIP_20261025_SFT_DRAFT_FORMAT_READBACK.json')
+f=json.loads(audit.read_text());assert f['counts']['rows']==5529 and f['inputs_unchanged'] and f['training_admission']==0
+for name,sha in f['input_files'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest().upper()==sha
+root=Path('data_cache/p106b_text_work_20261022/root_semantic_followup_20261025/sft_000004')
+r=json.loads((root/'root_semantic_review.json').read_text());assert len(r['decisions'])==48 and r['verdict_counts']=={'PROVISIONAL_ACCEPT':25,'HOLD':23}
+for name,sha in r['input_pins'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest().upper()==sha
+e=json.loads(Path('handoff/audit/WIP_20261025_SFT_FOLLOWUP_TRAIN_EXPOSURE.json').read_text())
+for name,sha in e['input_pins'].items():assert hashlib.sha256(Path(name).read_bytes()).hexdigest().upper()==sha
+assert e['matched_sources']==10 and e['new_translation_admission']==0
+source=next(x for x in e['matched'] if x['canonical_source_index']==205)
+assert source['assistant_targets']==533 and [x['absolute_pass'] for x in source['actual_exposures']]==[0,1,2,3]
+print(json.dumps(dict(status='READBACK_COMPLETE_NOT_ADMITTED',draft_warnings=f['counts'],root_review=r['verdict_counts'],original_train_source205=source,training_admission=0,models=0,gpu_calls=0),ensure_ascii=False))
+
+==============================================================================
+{"status": "READBACK_COMPLETE_NOT_ADMITTED", "draft_warnings": {"rows": 5529, "with_literal_backslash_n": 47, "literal_backslash_n_occurrences": 516, "with_actual_lf": 2370, "with_odd_backtick_fence_count": 0, "with_nul": 0}, "root_review": {"PROVISIONAL_ACCEPT": 25, "HOLD": 23}, "original_train_source205": {"canonical_source_index": 205, "source_id": "01dc4312-b146-4029-bc1c-b3cb1a4b574b", "messages_sha256": "D9527B9289C758B7FB6B5C956FB0B487308F46B8D4668E67016F2F39B1DD1ED7", "source": {"source": "oasst", "source_id": "01dc4312-b146-4029-bc1c-b3cb1a4b574b", "source_license": "Apache-2.0", "source_revision": "fdf72ae0827c1cda404aff25b6603abec9e3399b"}, "global_wire_row": 22312, "course_index": 1277, "source_group": 174, "assistant_targets": 533, "supervised_turns": 1, "record_sha256": "AB311F3511DA2430E3CB0FFE0CECC5331EC0C7BBC46792CE1BCFFC0DE262F743", "actual_exposures": [{"source_group": 174, "absolute_pass": 0, "absolute_update": 99, "cycle": 0, "assistant_targets": 26183, "positive_rows": 128}, {"source_group": 174, "absolute_pass": 1, "absolute_update": 177, "cycle": 0, "assistant_targets": 26183, "positive_rows": 128}, {"source_group": 174, "absolute_pass": 2, "absolute_update": 451, "cycle": 1, "assistant_targets": 26183, "positive_rows": 128}, {"source_group": 174, "absolute_pass": 3, "absolute_update": 529, "cycle": 1, "assistant_targets": 26183, "positive_rows": 128}]}, "training_admission": 0, "models": 0, "gpu_calls": 0}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-10-25 09:21:37)
+==============================================================================
