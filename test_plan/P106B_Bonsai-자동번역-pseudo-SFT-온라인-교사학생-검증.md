@@ -2149,6 +2149,39 @@ run_P106B_Stage4xWb_format_mix_dev24.sh. 파일은 새로 작성하며 입력대
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+
+## Stage6fW — 26일 같은 Gemma 형상의 분리 자원 입장 진단
+
+Stage4fsXWc의 실패는 모델 시작 전14,000MiB 입장 조건이었다. 과거 같은 형상에서
+global 표본 peak8771MiB였으나 현재 여유는 약12.7GiB다. 공통 gate나 생산 원문은 바꾸지 않는다.
+
+| 후보 | 방법 | 이점·한계 | 결정 |
+|---|---|---|---|
+| A | 별도600초·4생성 HTTP 요청으로 현재 상주·원답·회수 확인 | 기존 생성 조건 유지, 실제 장시간·3턴/긴원천 전량 안전을 보증하지 않음 | 현재 기술 진단으로 수행 |
+| B |14,000MiB를 유지하고 외부 점유가 줄 때까지 대기 | 변경이 작으나 지금 생산을 시작하지 못함 | 진단 실패 시 보류 유지 |
+| C | 교사 일부 CPU 오프로딩을 별도 비교 | 여유가 늘 수 있으나 모델 배치·성능 조건도 바뀜 | 이번 대조에 섞지 않음 |
+
+독립변수는 생산과 분리된 시작 자원 정책이다. 과거8771+2048=10819MiB를1024MiB 단위로
+올린11264MiB를 임시 입장 기준으로 쓰며 미래 peak 상한으로 부르지 않는다. 모델 시작
+직전 GPU0·경쟁 compute PID·여유를 다시 읽는다. Gemma4-12B Q4_0/MTP ON nmax2·
+context8192·thinking1024·max_output3072·샘플러는 기존과 같다. 가상 근거의 한영 QA/JSON
+각1회, 총4회 생성 상한이며 건강조회·tokenize는 따로 센다. 실제 원천 취득·quota·다중턴
+생산·학생 학습·체크포인트는0이다. 과거 capacity와 달리 현재 OS 점유/입장 실패의 원인 분리다.
+
+기존 GemmaSession·V3 payload·공통 소유 감독의 Budget/supervise_process를 재사용한다.
+오래된 날짜의 감독 main은 호출하지 않는다. 신규 코드와 CPU 회귀를 확정한 뒤 source SHA를
+고정한다. 내부590초, 외부595초 TERM·5초 KILL, 절대26일17시의 더 이른 제한을 적용한다.
+시작·HTTP·보존·실제 종료·잔존 회수까지 같은 예산에 포함한다. 네 요청 미완·부분 로그·
+강제 회수·소유 추적 오류·계측 누락은 완전 관측으로 승격하지 않는다.
+
+진단 종료0 자체는 생산 자동 승인 조건이 아니다. 총괄이 네 원답/형식과 실제 모델·MTP·
+샘플러, 표본 min-free≥2048MiB·계측 오류/누락0·별도 세션 종료/잔존0을 읽고 현재 여유를
+재확인해야 별도 생산 전용 자원 정책을 판단한다. 표본 peak이며 OOM 안전 보증은 아니다.
+CPU 합성 회귀와 check-only는 모델 실행·품질 근거가 아니다. 학습 토큰0, 풀/배치/초기화
+대조는 해당 없음이며 일반 지능·정답성 판정은 하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
 ## Stage4fsXWc — 10월26일 승인창의 같은 V3 증분생성
 
 원장69의 미완75M 생산을 이어간다. 기존3개 닫힌 batch와 cursor[1,12271]을 동적으로
@@ -9568,3 +9601,162 @@ stdout 회수 방식만 격리한다. 기존83소스·123합성산출물 불변�
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## Stage4fsYW — 선행 원답 판독 뒤 같은 V3의 분리 자원 생산
+
+Stage6fW의 실제72.046초·네 원답/구조·표본최소여유3706MiB·조회오류/누락0·소유 회수0을
+총괄이 직접 읽고 capacity_root_review.json으로 고정했다. 공통14,000MiB 정책은 유지하며
+이 재개에만 입장11264MiB·실행중 여유2048MiB 하한을 프로세스 내부에서 적용/복원한다.
+하한 위반을 query timeout 재시도로 감추지 않는다. 관측은 미래 OOM 보증이 아니다.
+
+생성 정보는 기존 V3와 같다. Gemma4-12B Q4_0·MTP ON nmax2·context8192·사고1024·
+출력3072·샘플러·가시원천768예약·quota·cursor·학생 마스크는 변경하지 않는다.
+원래 생산기 execute(mode=resume), PersistentMemory와 제한 재시도를 재사용한다.
+기존 inputs와 네 닫힌 배치(빈 선결 보류 포함)를 검산하고 별도 새 STOP과 감독 출력을 쓴다.
+현재 cumulative29.481M·부족45.519M은 재개 전 값이며 생성량을 완료 전에 추정 합산하지 않는다.
+
+이번 실행은 최대8h 제어기의17900초 내부창, 전체 런처17995초 TERM·5초 KILL로 약5h만
+배분한다. source/검수/과거배치 재생·시작·생성·저장·실제회수를 모두 같은 부모 예산과
+26일17시 중 더 이른 마감에 청구한다.120초 종결을 예약하며 부모만 total_budget을 소유해
+원 생산기의 ITIMER_REAL과 경합하지 않는다. STOP 뒤 자발적8의 닫힌 증분만 정상 pause다.
+선결거부·새빈배치·오류9·controller TERM·강제회수·잔존·변경된 원형은 별도로 판정한다.
+
+기술 선결은21개 CPU 회귀, source/검수/네 raw SHA, 자식소유·실제0/8/9 검산과 현재 정적·
+SH 검사다. 실제 구문·회귀 통과만으로 생산 성공·자료 정답·75M 완성·학생 학습을 주장하지 않는다.
+생산 중 원형과 동결125소스를 수정하지 않으며 다른 GPU 학습을 함께 실행하지 않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+## Stage9pWl — 후속 SFT16의 원문·세 변형 후행 판독과 실제 길이
+
+원장2의 후속236~251을 총괄이 전부 읽고 원문·세 변형을 대조한다.16원천48변형은 처리 묶음이며 전체 번역 완료가 아니다.
+기존 published/import/후행 메모는 보존한다. 원천 사실성·용어·번역 의미·대화 턴·1024 포장·TRAIN 노출/권리를
+분리하며 의미 통과를 실제 편입으로 자동 승격하지 않는다. Luna는 텍스트 의견만 제공하고 처리 코드는 총괄이 소유한다.
+CPU 검산은 기존 ChatML/assistant encode를 사용한다. 새 모델·GPU·가속·지능 판정은 없다.
+
+## Stage9pWm — 영어55 정리 후보의 LF 경계·사이트 UI를 별도 revision으로 회복
+
+기존128원천38KEEP/22REWRITE/68HOLD는 그대로 보존한다. 표시 packet에 renderer가 덧붙인 검토 사유는
+실제 draft.proposed_text가 아니므로 본문 삭제 건수에 넣지 않는다.22정리 후보의 원문·기존 후보 SHA를 묶고,
+원문 LF를 소비한 MOVE_TO_PROSE에 끝 LF가 빠져 생긴 제목/본문 접합과 명확한 player/download/related-link UI만
+정확 대상별로 수리한다. URL·필자·정식 학술 인용은 원형/출처 metadata에 남기고 용어·수치·사실은 새로 쓰지 않는다.
+
+새 패킷은 같은128 원문 객체를 가지며 이전 패킷 SHA와 연결된다. 실제 바뀐 후보의 정확 diff를 원문 LF 범위와
+경계 acknowledgment로 다시 선언하고 기존 publisher/strict importer를 재사용한다. 중복/외부ID·뜻모를 새삽입·
+과거 HOLD 자동해제·기존 published 덮기는 금지한다. 모든 파일20MB 미만이며 semantic/admission은 NOT_ADMITTED다.
+예상 CPU 수분 이내이나 실측 전 보장하지 않는다. 구조 회복·출처 원형 보존은 사실·권리 승인이나 실제 TRAIN 편입이 아니다.
+
+
+
+## Stage10aW — 원문·형식 파생본과 선택형 NorMuon 본학습의 CPU 계약
+
+### 왜와 질문
+
+기존 Native595는 원 확장 TRAIN에서 완료됐지만 새 형식 파생본을 같은300M 절대 horizon에서 직접 비교한 팔은 없다.
+현재 형식 후보는1,441,175 EOS 구간 중46,051구간의 NFC/줄바꿈/빈 꼬리 표제를 바꾼 것이며 의미 전수 정제본은 아니다.
+원장1·55·88의 실제 편입/optimizer 미완을 같은 초기화의 전체 본학습으로 분리해 확인한다.
+
+| 질문 | 비교 | 답할 수 없는 것 |
+|---|---|---|
+| 형식 파생본의 전체 효과가 있는가 | original+Muon 대 format+Muon | 전체 의미정제·권리·글로벌 기사 누설 또는 모든 반복의 원인 |
+| 같은 형식 풀에서 행별 EMA가 도움이 되는가 | format+Muon 대 조건부 format+NorMuon | 공식 NorMuon 그대로의 재현·모든 LR/seed·원문 풀에서의 상호작용 |
+| 본학습을 시간 내 완료 가능한가 | 실제 cost8·whole wall·외부 마감/회수 | 짧은 cost 손실을 지능·벤치 승자로 사용하기 |
+
+### 예측과 한계
+
+빈 꼬리 표제를 줄이는 것만으로 일반 QA·지식·대화를 크게 개선할 가능성은 낮다. 그 부정적 예측도 유지한다.
+같은 format 풀에서 원 Muon 대 TinyLM-adapted NorMuon은 새 최적화 축이지만 GPU 동기화 비용과 수렴은 미측정이다.
+전체300M을 완료하기 전 작은 학습으로 성과를 판단하지 않는다. 형식 변화가 토큰 길이를 바꾸므로 같은 seed의
+샘플링도 양팔의 모든 문자/문서 창이 같음을 뜻하지 않는다. 실제 offsets·소스/문서 대응을 보고한다.
+어느 팔도75M 고유 SFT×4epoch나40MB 최종 고정 삼진 배포의 완료를 대신하지 않는다.
+
+### 단계와 입장 조건
+
+Stage10aW는 새 CPU builder28회귀 및 최소 학습 제어 회귀를 수행한다. 원형/후보/구간 SHA·EOS·공통 보류/VAL제외·
+부족 풀·부분 출력·마감·원형 보존을 확인하며 실제 데이터 준비나 품질 PASS로 부르지 않는다.
+
+## Stage10bW — 같은 원 TRAIN roster의 두 풀 준비
+
+정확 source6DB29132·format report40EC5BE8·chat32 tokenizer9716F40E·VAL AD7EFB0D를 policy로 고정한다.
+명시 HOLD는 같은 원cache SHA에 묶인 EOS/span/원문SHA와 전체 동일 원문 SHA로 양팔 공통 제외한다.
+미해결 매핑은 입장을 닫는다. 과거 REWRITE와 후속 HOLD가 충돌한 구간도 불량 확정 없이 공통 제외한다.
+기본 review queue 표시를 전체 불량/보류로 간주하지 않는다.
+
+기존 transform/EOS/VAL/ShardWriter를 재사용한다. 변하지 않은 원 ID는 그대로 복사하고 바뀐 본문만 재인코딩한다.
+각 풀 최소600,047,616 ID, 같은 보존 문서 roster/순서·별도 offsets/전체 SHA·한 EOS2·정제 후의 VAL중복 공통 제외를
+실제 검산해야 한다. EOS 캐시구간은 원 기사URL 문서와 다르므로 전역 문서단위 누설0이라고 하지 않는다.
+완결 manifest·정책·보류 roster·소스 신원 없이 본학습을 열지 않는다. 실제 대량 CPU 시간은 아직 미측정이다.
+
+## Stage10cWa — original+Muon 비용과 기술 정합
+
+## Stage10cWb — format+Muon 비용과 기술 정합
+
+## Stage10cWc — format+NorMuon 선택형 비용과 기술 정합
+
+각 비용 팔은 새 fresh 초기화의8업데이트·기술 캐시/late 진단·실제 소유 회수만 수행하며 CP를 저장하지 않는다.
+자료·초기화·optimizer group·LR·정밀도·checkpoint/compile·고정 target 분모·현재 source pins를 본팔과 대조한다.
+이 cost는 corpus/model 품질 성과를 판정하지 않는다. 원 GPU입장은 유휴 및 여유14000MiB이며 교사와 겹치지 않는다.
+원 `tinylm.train.muon.Muon`과 새 `NorMuon`의 실제 클래스·상태·그룹을 구분해 기록한다.
+NorMuon beta2=.95·eps=1e-10을 명시한 동일 행렬 params/scale/NS/모멘텀 및 원 AdamW 그룹을 보존한다.
+
+## Stage10dWa — original+Muon 전체300M
+
+## Stage10dWb — format+Muon 전체300M
+
+## Stage10dWc — format+NorMuon 조건부 전체300M
+
+세 팔 모두 같은 dense14/dim768/chat32·fresh core028C46B232D6D4C5205CAF15A7C259E3B1687347FC4838D00B3F3CB938C0D1C5·
+micro8×accum16×seq1024·2289업데이트=300,023,808 target/input·checkpoint ON·BF16·compile default·TF32 OFF·
+NTP-only·clip1을 사용한다. 부모 CP는 구조/토크나이저 확인에만 읽고 학습 가중치를 복사하지 않는다.
+원 AdamW/Muon은 최대LR.001/.004·warmup100·WSD·quant linear end.8·matrixWD0와 기존 otherWD를 유지한다.
+.8은 기존 native 비교 계보의 명시 선택이며 글로벌 표준 .6을 자동 변경하지 않는다.
+TLinear-only 삼진 경로/STE를 재사용하며 FP32 embedding/head/norm/scale을 전체 삼진/packed라고 표시하지 않는다.
+
+같은 format 두 팔은 정확 offsets와 초기 core 및 Adam 그룹이 같아야 한다. 부정확한 gradient를 덮는 fused CE나
+새 NS 보정은 적용하지 않는다. 모든 업데이트의 실제 targets/x·LR·anneal·clip·gradient·offsets SHA와
+whole wall/메모리·checkpoint SHA를 기록한다. partial은 전체 본학습 완료로 세지 않는다.
+CP는 기존 runs/ckpt의 큰 로컬 파일로 보존·Git제외하며20MB 결과 규칙을 핑계로 새 CP 샤딩을 도입하지 않는다.
+
+### 비용과 시간 결정
+
+과거 약100분/팔은 추정 기준이다. 보수35%를 더하면 원 두 팔 약270분, 선택 세 팔 약405분이며 준비·CP·평가는 별도다.
+현재 교사는 약6시13분부터 최대5시간을 허용받았지만 데이터/본학습 선결이 먼저 닫히면 자발 STOP으로 닫힌 증분을
+회수하고 GPU를 반환한다. 무조건5시간을 쓴 뒤 세 본팔을 밀어 넣지 않는다.
+현재 cost의 컴파일·warm/late·저장/정리를 포함한 root budget 승인이 있어야 full을 시작한다.
+최소250분이라는 고정 하한이 실제 전망을 대신하지 않는다. 전체 두 팔/조건부 세 팔이16시 이전에 끝나는 보수 예측이
+부족하면 선택 팔을 실행하지 않거나 새 사용자용 런처로 남긴다.17시까지 최소1시간을 평가/회수/기록에 예약한다.
+
+## Stage10eW — 완료한 본팔의 공식 평가와 실제 답 원형 회수
+
+완주한 CP만 새 정확 runtime identity로 공식 Core6에 연결한다. 원 official task/revision·0-shot prompt·선택지
+우도/길이정규화·문항·집계는 유지하며 과거 고정model명이나 옛 canary/마감에 새CP를 끼워 넣지 않는다.
+최종 val/test와 원 공식 정답을 학습에 편입하지 않는다. 같은 문항의 paired CI와 선택지 무작위·최빈 기준을 구분한다.
+
+실제 대화는 사용자 관측 실패인1+1/2+2/사과·당근 대상조회/영희 사과5개/사과 설명/농구 정의와 한영 일반 질문을
+평문·ChatML에서 같은128상한/greedy·EOS/원종료로 보존한다. 질문 재출력·답 반복·잘못된 대상·한도 도달은
+숫자 벤치와 별도 판독하며 짧게 종료한 답을 정답이라고 하지 않는다. 이는 최소 진단이지 광범위 대화 벤치가 아니다.
+
+### 실행 이력
+
+현재 DESIGNED/CPU_PREPARING. 새 builder 최종28회귀는 담당 CPU 통과이고 총괄 회수 및 실제 두 풀·cost·본학습·공식평가는 미실행이다.
+계획 실행본은 source/profile와 자료 완결 뒤 런처를 작성한다. 기존 생산·기본 trainer·원형125소스는 변경하지 않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 합니다.
+
+
+
+### 26일 GPU 실행 전 총괄 결정 — 형식 풀의 optimizer 두 팔을 우선
+
+Stage10bW가 실제0으로 완결돼 원문1185306577·형식1185169307 ID와 같은1439374 EOS roster를 확보했다.
+순 토큰 차이137270은 전체 변경 토큰/의미 비율이 아니다. 현재 형식 변환만으로 일반 QA가 크게 개선될 근거는 약하다는
+문헌 검토와 시간/비용을 반영해, **오늘 필수 팔은 Stage10dWb format+Muon과 Stage10dWc format+NorMuon**으로 정한다.
+Stage10cWb/c의 실제 비용이 먼저이며 profile의 required/corpus/optimizer가 이를 명시한다.
+original+Muon(Stage10cWa/dWa)은 준비 상태로 보존하고 오늘 자동 실행하지 않는다. 형식의 직접 효과는 미확인으로 남긴다.
+이는 GPU cost·품질·벤치 결과를 본 뒤의 선택이 아니라 실행 전 CPU 자료 성격/연구가치 결정이다.
+서로 다른 모델의300M을 합쳐 한 모델600M이라고 하지 않는다. 같은format 두팔은 입력/offset/init와 원 AdamW를 같게 맞춘다.
+
+실제 GPU cost 전에 eps 기재1e-8을 구현 기본값과 동결 driver가 요구하는1e-10으로 정정했다. 결과를 본 뒤 조정한 값이 아니다.
+학습 profile의 generation은 null로 둔다. 학습 내부의 옛 emit64를128토큰 생성으로 오인하지 않으며,
+완주 뒤 별도 엄격 CP 경로에서 계획한 평문/ChatML·greedy·최대128토큰 원답을 회수한다.
+총괄이 새 학습 driver 전체를 읽고 실제 CPU52건을6.257초·종료0으로 회수했다. 비용/본학습/품질은 아직 미실행이다.
+

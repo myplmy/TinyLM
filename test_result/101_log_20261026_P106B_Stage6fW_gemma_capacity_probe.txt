@@ -1,0 +1,39 @@
+
+==============================================================================
+[runlog] 2026-10-26 05:30:41  name=P106B_Stage6fW_gemma_capacity_probe
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c 
+import subprocess,sys
+from pathlib import Path
+from scripts.p106b_stage_receipt import pipeline
+py=sys.argv[1]; source=sys.argv[2]
+base=[py,"-I","-B","-X","utf8","handoff/audit/oct26_research/probe_gemma_capacity.py"]
+phases=[
+ ("REGRESSION",[py,"-I","-B","-X","utf8","scripts/test_p106b_gemma_capacity_probe.py"]),
+ ("PREFLIGHT",base+["--check-only","--source-sha256",source]),
+ ("EXECUTE",["timeout","--signal=TERM","--kill-after=5s","595s"]+base+
+  ["--execute","--output",str(Path.cwd()/"test_result/evidence/p106b_gemma_capacity_v1_20261026_roota"),
+   "--source-sha256",source,"--max-wall-sec","590","--deadline","2026-10-26T08:00:00Z"])]
+def launch(command):
+    return subprocess.run(command,stdin=subprocess.DEVNULL).returncode
+raise SystemExit(pipeline(phases,launch,lambda line:print(line,flush=True),
+                 experiment="P106B_Stage6fW_gemma_capacity_probe")["returncode"])
+ /home/uranus/miniforge3/envs/tlm_torch/bin/python 20E9CC072993D530655C875C81E464E760D1261F34FE3645E1B40620558D4FA5
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+................................
+----------------------------------------------------------------------
+Ran 32 tests in 1.397s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+{"schema": "P106B_GEMMA_CAPACITY_PROBE_V1", "source_sha256": "20E9CC072993D530655C875C81E464E760D1261F34FE3645E1B40620558D4FA5", "code_files": 123, "protocol": {"schema": "P106B_GEMMA_CAPACITY_PROBE_V1", "admission_mib": 11264, "generations": 4, "context": 8192, "thinking": 1024, "max_output": 3072, "mtp": true, "max_wall_sec": 600, "default_wall_sec": 590, "reserve_sec": 60, "absolute_deadline": "2026-10-26T08:00:00+00:00", "workload_sha256": "9E21D08804AC25B4EB46AFB2C0447D9F34B78F404BC963DF1C6E22AAEE460056", "addendum_sha256": "A1D9D8E1F2D91D030FAC69F4F2BC096C60A735EA43F269DA1ACC6B904B0CE21A"}, "torch_imported": false, "gpu_queries": 0, "files_written": 0}
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+{"schema": "P106B_GEMMA_CAPACITY_PROBE_V1", "status": "OBSERVED", "returncode": 0, "generation_limit": 4, "future_oom_safety": "NOT_ESTABLISHED"}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_Stage6fW_gemma_capacity_probe", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.2분  (2026-10-26 05:31:56)
+==============================================================================

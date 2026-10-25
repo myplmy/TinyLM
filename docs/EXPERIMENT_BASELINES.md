@@ -3975,3 +3975,15 @@ hybrid 두 큰 선형은 약동률이고 작은 출력폭은 열세, 동일출�
 원문서 식별자가 없는 TRAIN 재사용은 SOURCE_RECORD_TRAIN_ONLY·전역 문서누설
 UNVERIFIED로 제한한다. 새 평가셋·기존 trainer 자동 연결·모델/GPU/새 학습은0이다.
 준비 성공을 원천 전체의 사실·권리 검증이나 본학습 효과로 사용하지 않는다.
+
+
+### 2026-10-26 독립 준비와 자원 입장
+
+| 계열 | 현재 증거 | 미완 조건 |
+|---|---|---|
+| P005b Stage15W | TinyLM-adapted NorMuon CPU25시험0, 기존Muon/NS/trainer 불변;078§17 | GPU 비용/동기화·추가state·전체 본학습 효과와 AdaMuon 미실행 |
+| P106B Stage6fW/4fsYW | 같은Gemma8192/1024/3072·MTP2 네 응답72.046초0, 표본peak12356/최소여유3706MiB·조회오류0·소유회수0;101§523 | 장기OOM 보증 아님. legacy14000 유지·별도11264/2048 profile의5h생산 RUNNING |
+| P106B Stage10a/b | CPU28/52/46회귀0·1793명시HOLD와 동일 원문 추가8위치 제외·같은1439374 EOS 양풀 완결;101§529/532 | format1185169307 ID·동일fresh core/offset/Adam으로 Muon/NorMuon 각300023808; 실제양cost와16시마감 충족 시만 실행 |
+
+새 native 비교는 fresh028C46·chat32/dense14·micro8×accum16×seq1024·ckptON·BF16/default compile·원MuonRMS4 및 명시WSD/quant끝.8의 계보만 쓴다. 전역 .6을 바꾸지 않는다. TLinear-only 삼진과 전체 고정 삼진/40MB packed를 구분한다. CPU·probe·준비 상태는 기존 품질 판정을 바꾸지 않는다.
+

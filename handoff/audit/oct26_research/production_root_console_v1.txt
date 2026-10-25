@@ -1,0 +1,41 @@
+
+==============================================================================
+[runlog] 2026-10-26 06:12:21  name=P106B_Stage4fsYW_capacity_profile_resume5h
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -c 
+import subprocess,sys
+from pathlib import Path
+from scripts.p106b_stage_receipt import pipeline
+py,source,review=sys.argv[1:4]
+base=[py,"-I","-B","-X","utf8","handoff/audit/oct26_research/resume_gemma_capacity.py"]
+pins=["--source-sha256",source,"--review-sha256",review]
+phases=[
+ ("REGRESSION",[py,"-I","-B","-X","utf8","scripts/test_p106b_capacity_resume.py"]),
+ ("PREFLIGHT",base+["--check-only"]+pins),
+ ("EXECUTE",base+["--execute","--output",
+  str(Path.cwd()/"test_result/evidence/p106b_gemma_capacity_resume_v1_20261026_roota"),
+  "--max-wall-sec","17900","--deadline","2026-10-26T08:00:00Z"]+pins)]
+def launch(command):
+    return subprocess.run(command,stdin=subprocess.DEVNULL).returncode
+raise SystemExit(pipeline(phases,launch,lambda line:print(line,flush=True),
+                 experiment="P106B_Stage4fsYW_capacity_profile_resume5h")["returncode"])
+ /home/uranus/miniforge3/envs/tlm_torch/bin/python 1B9705BE3995B6EDD533B75787293743D2E0DCB154AF0B979A3197A61590634B 2D0C3FFC8558AA151311DDFAEB9E7E06AEE2170953707C210138B9A6B407BB0D
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+.....................
+----------------------------------------------------------------------
+Ran 21 tests in 3.427s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+{"schema": "P106B_GEMMA_CAPACITY_RESUME_V1", "source_sha256": "1B9705BE3995B6EDD533B75787293743D2E0DCB154AF0B979A3197A61590634B", "prior_probe": {"review_path": "handoff/audit/oct26_research/capacity_root_review.json", "review_sha256": "2D0C3FFC8558AA151311DDFAEB9E7E06AEE2170953707C210138B9A6B407BB0D", "probe_report_sha256": "FEFF7FDB9DF30E0FC94156680522D072A6BAC7F43544DBC313000DACF3FE307B", "probe_source_sha256": "20E9CC072993D530655C875C81E464E760D1261F34FE3645E1B40620558D4FA5", "raw_sha256": {"test_result/evidence/p106b_gemma_capacity_v1_20261026_roota/raw_01.json": "0D83D2FBC61F5FDD7C3593BD4D281BEE926E772F4424E19019B17E1016FEC674", "test_result/evidence/p106b_gemma_capacity_v1_20261026_roota/raw_02.json": "7CE8040919F6B3446C398EA742F7771A0651519A3D532E7058979D28C255C48A", "test_result/evidence/p106b_gemma_capacity_v1_20261026_roota/raw_03.json": "D2BA11E1BE14EF43B265604B47A52C25B98CA4635DDD800613DF878334CCE470", "test_result/evidence/p106b_gemma_capacity_v1_20261026_roota/raw_04.json": "E87EED1CE110C517164339838F86255A7479F6085FE0D679D8F9583A5D78793E"}, "terminal_sha256": "7DBAA667812CC3F42B202E04BE88F4AAB65BE61F2978FE95EE8E3C140A4E67D6", "resource_only": true, "future_oom_safety": "NOT_ESTABLISHED"}, "torch_imported": false, "gpu_queries": 0, "files_written": 0, "production_replay": "NOT_RUN", "model_loaded": false}
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+{"schema": "P106B_GEMMA_CAPACITY_RESUME_V1", "returncode": 8, "future_oom_safety": "NOT_ESTABLISHED"}
+[PHASE_END] 3/3 EXECUTE; rc=8; status=HOLD
+[EXPERIMENT_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_Stage4fsYW_capacity_profile_resume5h", "failed_phase": "EXECUTE", "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 8, "status": "HOLD"}], "returncode": 8, "schema": "P106B_STAGE_RECEIPT_V1", "status": "HOLD"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 92.9분  (2026-10-26 07:45:15)
+==============================================================================
+[runlog] 로그 파일: /home/uranus/tinyLM/test_result/101_log_20261026_P106B_Stage4fsYW_capacity_profile_resume5h.txt  (4,029 bytes)

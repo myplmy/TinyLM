@@ -1,0 +1,76 @@
+{
+  "arms": [
+    {
+      "corpus": "format",
+      "id": "format_muon",
+      "optimizer": "muon",
+      "required": true
+    },
+    {
+      "corpus": "format",
+      "id": "format_normuon",
+      "optimizer": "normuon",
+      "required": true
+    }
+  ],
+  "cleanup_reserve_sec": 120,
+  "entry_free_mib": 14000,
+  "evaluation_reserve_sec": 3600,
+  "final_deadline": "2026-10-26T08:00:00+00:00",
+  "generation": null,
+  "geometry_parent": {
+    "path": "runs/ckpt/m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt",
+    "sha256": "12E18658CDCD0AFEBE5A87073DC8977304C0D490A03A8471779D514FBB0D9950",
+    "use": "CONFIG_AND_TOKEN_METADATA_ONLY"
+  },
+  "minimum_pair_training_sec": 15000,
+  "normuon": {
+    "beta2": 0.95,
+    "eps": 1e-10,
+    "implementation": "TINYLM_ADAPTED_POST_NS_ROW_EMA"
+  },
+  "pair_complete": {
+    "path": "data_cache/p106b_native_format_pair_v1_20261026_s1337/complete.json",
+    "sha256": "934F0879B830AFD3D216829D81869172FD4FF7CFB0DF4CEEDA9DF194849537A0"
+  },
+  "pair_policy": {
+    "path": "handoff/audit/oct26_research/native_format_pair_policy.json",
+    "sha256": "C76D9CC964D05BF6315EAF1724EAEFF86B324D65BB96F797883032C3592A65BA"
+  },
+  "recipe": {
+    "accum": 16,
+    "adam_peak_lr": 0.001,
+    "amp": "bf16",
+    "checkpoint": true,
+    "compile": "default",
+    "decay_frac": 0.2,
+    "dim": 768,
+    "layers": 14,
+    "matrix_peak_lr": 0.004,
+    "micro": 8,
+    "objective": "NTP_ONLY",
+    "quant_anneal": "linear",
+    "quant_end": 0.8,
+    "quantization_scope": "TLINEAR_WEIGHTS_ONLY",
+    "schedule": "wsd",
+    "scratch_core_sha256": "028C46B232D6D4C5205CAF15A7C259E3B1687347FC4838D00B3F3CB938C0D1C5",
+    "seed": 1337,
+    "seq": 1024,
+    "tf32": false,
+    "total_targets": 300023808,
+    "updates": 2289,
+    "vocab": 32768,
+    "warmup": 100
+  },
+  "schema": "P106B_NATIVE_FORMAT_TRAINING_PROFILE_V1",
+  "scope": "FULL300M_NATIVE_NTP_OPTIMIZER_PAIR_NOT_TEACHER75M_SFT",
+  "tokenizer": {
+    "path": "data_cache/tok-ko-en-32768-chat32.json",
+    "sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E"
+  },
+  "train_deadline": "2026-10-26T07:00:00+00:00",
+  "validation": {
+    "path": "data_cache/ko-en_601000000_chat32/val.bin",
+    "sha256": "AD7EFB0DBD0D830A216B4D21A91C8ACB3FC41DAE2B23A3A55999AE8727AA374C"
+  }
+}
