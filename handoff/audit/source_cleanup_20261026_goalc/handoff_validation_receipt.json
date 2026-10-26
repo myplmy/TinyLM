@@ -1,0 +1,127 @@
+{
+  "schema": "P106B_GOAL_FINAL_HANDOFF_RECEIPT_V1",
+  "observed_at": "2026-10-26T10:32:53.692500+00:00",
+  "session_id": "01a17740-f435-7243-874c-2b5d58181c4c",
+  "core_commit": "7ca2a86593b9632d95acf17fd79e1f4bbb6f895c",
+  "handoff": {
+    "path": "handoff/202610261918_HANDOFF.md",
+    "sha256": "23512D11A6CBAACA9E227C417AC454D48FDE12090B3E9042D29A659807FBBB5F"
+  },
+  "closed_wip": {
+    "path": "handoff/WIP_20261026_작업원장-done.md",
+    "sha256": "5C5543BA69B710829FC9993F0EE8281AAD1E3FED3846A71842D310380D04AA88",
+    "all9_done": true,
+    "rename_preserves_audit_bound_bytes": true
+  },
+  "final_static": {
+    "path": "handoff/audit/source_cleanup_20261026_goalc/FINAL_STATIC_AUDIT.json",
+    "sha256": "2B726349EDA66E73B31A16BE6E7A5876DADC5FEE3BE6F7BF4739ED6735A87D72",
+    "actual_tool_session": 16414,
+    "actual_outer_returncode": 0,
+    "counts": {
+      "pass": 70,
+      "errors": 0,
+      "actionable_warnings": 0,
+      "accepted_info": 0,
+      "not_run": 6
+    }
+  },
+  "handoff_followup": "After static audit, only the handoff audit-link/actual outcome text was finalized. These exact final bytes passed the checks below. No preprocessing/cache/source or WIP bytes changed.",
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "-I",
+        "-B",
+        ".agents/skills/session-handoff/scripts/check_handoff_codex.py",
+        "handoff/202610261918_HANDOFF.md"
+      ],
+      "actual_returncode": 0,
+      "output": "CHECK handoff/202610261918_HANDOFF.md\n  PASS static structure and local links\nSUMMARY files=1 errors=0\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/handoff_time.py",
+        "handoff/202610261918_HANDOFF.md"
+      ],
+      "actual_returncode": 0,
+      "output": "================================================================================================\n  ★핸드오프 파일명 시각 감사 — **증거 대조**(통계 휴리스틱 아님)\n  규칙: 파일명 시각 > 최초 존재 증거 + 10분 이면 에러. 한쪽만 본다\n================================================================================================\n\n  검사 1건 · 🚫모순 0건 · ✅정합 1건 · ⚠️건너뜀 0건\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/handoff_queue.py",
+        "--audit",
+        "handoff/202610261918_HANDOFF.md",
+        "--previous",
+        "handoff/202610261536_HANDOFF.md"
+      ],
+      "actual_returncode": 0,
+      "output": "SUMMARY previous_incomplete=2 errors=0\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/frontier_queue_gate.py",
+        "--check",
+        "--handoff",
+        "handoff/202610261918_HANDOFF.md"
+      ],
+      "actual_returncode": 0,
+      "output": "FRONTIER_SUMMARY errors=0\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/frontier_semantic_gate.py",
+        "--check",
+        "--handoff",
+        "handoff/202610261918_HANDOFF.md"
+      ],
+      "actual_returncode": 0,
+      "output": "SEMANTIC_SUMMARY errors=0\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_result_closure.py",
+        "--manifest",
+        "handoff/audit/source_cleanup_20261026_goalc/FINAL_RESULT_CLOSURE.json"
+      ],
+      "actual_returncode": 0,
+      "output": "SUMMARY result_closure_errors=0\n"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/wip.py",
+        "--capsule-check",
+        "--file",
+        "handoff/WIP_20261026_작업원장-done.md"
+      ],
+      "actual_returncode": 0,
+      "output": "CAPSULE_OK WIP_20261026_작업원장-done.md chars=1949\n"
+    }
+  ],
+  "scoped_collector_contract": {
+    "actual_pass": true,
+    "literal_paths": 50,
+    "invalid_paths_rejected": 5
+  },
+  "frozen_preprocessing_pins_rechecked": true,
+  "historical_time_audit": {
+    "actual_returncode": 1,
+    "total": 198,
+    "pass_count": 197,
+    "unresolved_path": "handoff/202610261536_HANDOFF.md",
+    "filename_time": "2026-10-26 15:36 +09:00",
+    "earliest_author_time": "2026-10-26 05:19:58 +09:00",
+    "first_commit": "8ea1194c",
+    "old_file_modified": false,
+    "current_handoff_time_check": "PASS independently above"
+  },
+  "training_authorized": false,
+  "automatic_scope_incident_record": "handoff/audit/source_cleanup_20261026_goalc/STATIC_SCOPE_INCIDENT.md",
+  "other_session_modifications_or_staging": 0
+}
