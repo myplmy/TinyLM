@@ -9729,6 +9729,10 @@ CP는 기존 runs/ckpt의 큰 로컬 파일로 보존·Git제외하며20MB 결�
 
 ## Stage10eW — 완료한 본팔의 공식 평가와 실제 답 원형 회수
 
+## Stage10eWa — format+Muon의 새 CP 카나리·비용·공식 전량
+
+## Stage10eWb — format+NorMuon의 새 CP 카나리·비용·공식 전량
+
 완주한 CP만 새 정확 runtime identity로 공식 Core6에 연결한다. 원 official task/revision·0-shot prompt·선택지
 우도/길이정규화·문항·집계는 유지하며 과거 고정model명이나 옛 canary/마감에 새CP를 끼워 넣지 않는다.
 최종 val/test와 원 공식 정답을 학습에 편입하지 않는다. 같은 문항의 paired CI와 선택지 무작위·최빈 기준을 구분한다.
@@ -9759,4 +9763,25 @@ original+Muon(Stage10cWa/dWa)은 준비 상태로 보존하고 오늘 자동 실
 학습 profile의 generation은 null로 둔다. 학습 내부의 옛 emit64를128토큰 생성으로 오인하지 않으며,
 완주 뒤 별도 엄격 CP 경로에서 계획한 평문/ChatML·greedy·최대128토큰 원답을 회수한다.
 총괄이 새 학습 driver 전체를 읽고 실제 CPU52건을6.257초·종료0으로 회수했다. 비용/본학습/품질은 아직 미실행이다.
+
+## Stage10f0W — 완주 모델의 실제128토큰 대화 계약 CPU 검사
+
+## Stage10f0Wb — 총괄 launcher의 최적화 모드·후행 시간·보류 종결 CPU 회귀
+
+기존 생성기와 interactive prompt를 재사용하는 독립 접점을 준비한다. 기존47/58 소스는 변경하지 않는다.
+완주한2289업데이트·300023808지도토큰·실제 부모종료0·엄격 CP 계보가 없으면 모델 로드 전 HOLD다.
+같은12질문을 평문/ChatML 두 형식에 넣고 FP32/MATH·TF32 OFF·MTP OFF·greedy·max_new128·기존EOS/EOT 종료를 고정한다.
+코드 복제 없이 가능한 기존 유틸리티 연결을 우선하고, 필요한 경우 새 driver/회귀 두 파일만 추가한다.
+합성 CPU는 턴/종료/길이/원문/소유/마감·모델불변 계약만 확인하고 실제 대화 능력의 증거로 쓰지 않는다.
+
+## Stage10fWa — format+Muon 완주 모델의 평문·ChatML 실제 답
+
+## Stage10fWb — format+NorMuon 완주 모델의 평문·ChatML 실제 답
+
+각 모델24답, 두 모델48답을 같은 고정12질문·128토큰 상한에서 회수한다. 사용자 실패6개와 한영 일반질문6개를
+GPU 결과 전에 native_dialogue_cases_v1.json으로 동결한다. prompt 문자열·전체입력IDs·답 본문·생성IDs·EOS/EOT·종료원인·
+상한도달을 보존하고 총괄이 실제 답을 읽는다. 이 진단은 소규모 학습이 아니라 전체 본학습 뒤의 제한된 행동 관찰이다.
+반복·질문 재출력·대상/계산 오류를 벤치 점수와 분리하고 넓은 대화 품질이나 SFT75M 완료로 일반화하지 않는다.
+새 모델을 더 가르치거나 같은 평가 답에 맞춰 재선택하지 않는다. 모델 로드/생성/전체 wall·표본메모리·소유회수와
+생성 전후 본체 지문을 닫고17시 전체 마감을 지킨다. 새 원답·manifest는20MB 미만 샤드로 나눈다.
 

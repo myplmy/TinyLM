@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""Use the pinned official adapter only after a genuinely closed full arm."""
+from pathlib import Path
+from types import SimpleNamespace
+import argparse
+import json
+import os
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+from scripts import diag_p106b_native_format_official as diag
+
+BASE = Path(__file__).resolve().parent
+SOURCE = "9841ACF491E1CCD156FB060C2194773CCD6B02186F86F55ADA549FF8C5D4BB71"
+
+def publish(path, value):
+    raw = (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
+    if len(raw) >= 20_000_000:
+        raise ValueError("small root metadata limit")
+    with path.open("xb") as stream:
+        stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+    return {"path": str(path.relative_to(ROOT)), "sha256": diag.digest(path)}
+
+def budget(cap=600):
+    return diag.supervisor.Budget(cap, diag.END.timestamp(), started=time.monotonic(), reserve=120)
+
+def prepare(arm, *, allow_write=True):
+    inputs, _ = diag.training.read(str((BASE / "native_training_inputs_v1.json").relative_to(ROOT)),
+        "850EA5767D568C58907C085A9053E8343F6FC3D5B309E81813CB89462B7A411F")
+    if diag.source_identity()["sha256"] != SOURCE:
+        raise ValueError("frozen evaluation source differs")
+    closed_path = ROOT / "test_result/evidence" / (diag.training.PREFIX + arm + "_train") / "root_closed_ref.json"
+    if not closed_path.is_file():
+        raise diag.Hold("full training root closure is absent")
+    closed = json.loads(closed_path.read_text())
+    args = SimpleNamespace(mode="train", profile=inputs["profile"]["path"],
+        profile_sha256=inputs["profile"]["sha256"], f4=inputs["f4"]["path"],
+        f4_sha256=inputs["f4"]["sha256"])
+    train_state = diag.training.metadata(args)
+    diag.training.read_closed(closed, train_state, arm, "train")
+    value = {"schema": diag.PROFILE, "root_approved": True, "source_sha256": SOURCE,
+        "training_source_sha256": train_state["source_identity"]["sha256"],
+        "training_profile": inputs["profile"], "training_f4": inputs["f4"],
+        "closed_train": closed, "arm": arm, "official_policy": diag.policy(),
+        "numerical_contract": diag.CONTRACT, "cleanup_reserve_sec": 120,
+        "entry_free_mib": 14000, "deadline": diag.END.isoformat()}
+    path = BASE / ("native_official_" + arm + "_profile_v1.json")
+    if path.exists():
+        if json.loads(path.read_text()) != value:
+            raise ValueError("existing official profile differs")
+        return {"path": str(path.relative_to(ROOT)), "sha256": diag.digest(path)}
+    if not allow_write:
+        raise diag.Hold("root profile has not been explicitly prepared")
+    return publish(path, value)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--arm", choices=("format_muon", "format_normuon"), required=True)
+    parser.add_argument("--check-only", action="store_true")
+    args = parser.parse_args()
+    try:
+        profile = prepare(args.arm, allow_write=not args.check_only)
+    except diag.Hold:
+        print(json.dumps({"returncode": 8, "reason": "FULL_TRAINING_NOT_CLOSED", "model_loaded": False, "files_written": 0}))
+        return 8
+    common = [sys.executable, "-I", "-B", "-X", "utf8", "scripts/diag_p106b_native_format_official.py",
+        "--profile", profile["path"], "--profile-sha256", profile["sha256"], "--source-sha256", SOURCE,
+        "--deadline", diag.END.isoformat()]
+    if args.check_only:
+        return subprocess.run(common + ["--mode", "canary", "--max-wall-sec", "600", "--check-only"],
+            cwd=ROOT, stdin=subprocess.DEVNULL).returncode
+    admission = {"schema": diag.ADMISSION, "source_sha256": SOURCE, "profile_sha256": profile["sha256"]}
+    admission_ref = None
+    for mode in ("canary", "cost", "full"):
+        cap = 7200 if mode == "full" else 600
+        output = ROOT / "test_result/evidence" / (diag.PREFIX + args.arm + "_" + mode)
+        if output.exists():
+            raise FileExistsError(output)
+        command = common + ["--mode", mode, "--max-wall-sec", str(cap), "--output", str(output.relative_to(ROOT))]
+        if admission_ref is not None:
+            command += ["--admission", admission_ref["path"], "--admission-sha256", admission_ref["sha256"]]
+        checked = subprocess.run(command + ["--check-only"], cwd=ROOT, stdin=subprocess.DEVNULL)
+        if checked.returncode:
+            return checked.returncode
+        started = time.monotonic()
+        actual = subprocess.run(["timeout", "--signal=TERM", "--kill-after=10s", str(cap + 30) + "s",
+            *command, "--execute"], cwd=ROOT, stdin=subprocess.DEVNULL)
+        elapsed = time.monotonic() - started
+        observed = {"mode": mode, "arm": args.arm, "actual_supervisor_exit": actual.returncode,
+            "actual_parent_wall_sec": elapsed, "command": command, "outer_timeout_sec": cap + 30}
+        if output.is_dir():
+            publish(output / "root_observation.json", observed)
+        if actual.returncode:
+            print(json.dumps(observed), flush=True)
+            return actual.returncode
+        report = output / "report.json"
+        spec = {"path": str(report.relative_to(ROOT)), "sha256": diag.digest(report),
+            "terminal_sha256": diag.digest(output / "terminal.jsonl"),
+            "actual_supervisor_exit": actual.returncode, "actual_parent_wall_sec": elapsed}
+        meta = SimpleNamespace(source_sha256=SOURCE, profile=profile["path"], profile_sha256=profile["sha256"])
+        check_budget = budget()
+        state = diag.metadata(meta, check_budget)
+        diag.read_closed(spec, state, mode, check_budget)
+        publish(output / "root_closed_ref.json", spec)
+        print(json.dumps({"mode": mode, "arm": args.arm, "actual_exit": actual.returncode,
+                          "whole_parent_sec": elapsed, "root_closed": True}), flush=True)
+        if mode != "full":
+            admission[mode] = spec
+            admission_ref = publish(BASE / ("native_official_" + args.arm + "_after_" + mode + "_v1.json"), admission)
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
