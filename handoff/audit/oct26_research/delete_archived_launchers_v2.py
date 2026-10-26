@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Delete only five explicitly archived and closed root launchers."""
+"""Delete only an explicit versioned set of archived, closed root launchers."""
 from pathlib import Path
 import contextlib
 import hashlib
@@ -19,12 +19,20 @@ def need(value, message):
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest().upper()
 
-def main():
+def main(manifest_name="launcher_retirement_manifest_v2.json",
+         receipt_name="launcher_deletion_receipt_v2.json", expected_count=5, prior_deleted=28):
     base = Path(__file__).resolve().parent
-    manifest_path = base / "launcher_retirement_manifest_v2.json"
+    for value in [manifest_name, receipt_name]:
+        need(Path(value).name == value and value.endswith(".json"), "owned audit filename required")
+    receipt_path = base / receipt_name
+    need(not receipt_path.exists() and not receipt_path.is_symlink(), "fresh deletion receipt required")
+    need(type(expected_count) is int and expected_count > 0, "positive explicit count required")
+    need(type(prior_deleted) is int and prior_deleted >= 0, "prior deletion count required")
+    manifest_path = base / manifest_name
     manifest = json.loads(manifest_path.read_text())
     rows = manifest["entries"]
-    need(len(rows) == 5 and len({row["path"] for row in rows}) == 5, "exact five launchers required")
+    need(len(rows) == expected_count and len({row["path"] for row in rows}) == expected_count,
+         "exact launcher count required")
     with contextlib.redirect_stdout(io.StringIO()):
         eligible = set(canonical.report_done(canonical.result_corpus()))
     names = {row["path"] for row in rows}
@@ -56,7 +64,9 @@ def main():
             "deleted": deleted, "deleted_count": len(deleted), "archives_retained": len(rows),
             "active_markdown_links": links, "logs_deleted": 0, "models_deleted": 0, "datasets_deleted": 0,
             "active_normuon_launcher_deleted": False}
-        with (base / "launcher_deletion_receipt_v2.json").open("x", encoding="utf-8") as stream:
+        receipt.update(manifest_path=str(manifest_path.relative_to(ROOT)),
+                       prior_deleted=prior_deleted, cumulative_deleted=prior_deleted+len(deleted))
+        with receipt_path.open("x", encoding="utf-8") as stream:
             json.dump(receipt, stream, ensure_ascii=False, indent=2, sort_keys=True)
     print(json.dumps(receipt))
 

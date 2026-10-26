@@ -58,7 +58,9 @@ def main(manifest_path=None, verification_path=None):
     lines = strict.stdout.decode(errors="replace").splitlines()
     if strict.returncode and not all(line.endswith("new blank line at EOF.") for line in lines):
         raise ValueError("unexpected source whitespace error: " + strict.stdout.decode(errors="replace"))
-    check = git("-c", "core.whitespace=blank-at-eol,space-before-tab", "diff", "--cached", "--check", "--", *source,
+    # Keep the strict EOF findings above without rewriting already measured sources.
+    # Explicitly disable only that cosmetic category; Git otherwise keeps it enabled.
+    check = git("-c", "core.whitespace=blank-at-eol,space-before-tab,-blank-at-eof", "diff", "--cached", "--check", "--", *source,
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     result = {"schema": "TINYLM_CLOSED_INDEX_VERIFICATION_V1", "files": verified, "deletions": deletions,
         "all_index_bytes_match": True, "source_whitespace_exit": check.returncode,

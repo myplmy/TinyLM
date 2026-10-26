@@ -16,6 +16,10 @@ EXACT = {
     "docs/research/20261023_모델별_벤치마크와_실제답변_종합.md",
     "docs/research/20261026_전체300M_두모델_실제48답_판독.md",
     "docs/research/20261026_실제학습노출과_원문맥락_정제판독.md",
+    "docs/research/20261026_softmax_CE_수치논문_검토.md",
+    "handoff/202610261536_HANDOFF.md",
+    "test_plan/P102A_T1-S1-S2-S3-학습시간-기능계약.md",
+    "test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md",
     "experiments.tsv", "handoff/COMPASS.md", "handoff/WIP_20261022_작업원장.md",
     "scripts/diag_p106b_native_format_dialogue.py", "scripts/diag_p106b_native_format_official.py",
     "scripts/summarize_p106b_native_format_pair.py", "scripts/test_p106b_native_format_official.py",
@@ -41,7 +45,8 @@ LIVE_LOG = "test_result/101_log_20261026_P106B_Stage4fsZbW_capacity_after_eval_r
 
 def archived_deletion(name):
     head = subprocess.check_output(["git", "show", "HEAD:" + name], cwd=ROOT)
-    for filename in ["launcher_retirement_manifest_v3.json", "replaced_launcher_archive_v1.json"]:
+    for filename in ["launcher_retirement_manifest_v3.json", "launcher_retirement_manifest_v4.json",
+                     "launcher_retirement_manifest_v5.json", "replaced_launcher_archive_v1.json"]:
         record = json.loads((BASE / filename).read_text())
         for item in record["entries"]:
             if name not in [item["path"], item.get("tracked_source")]:
@@ -57,7 +62,12 @@ def archived_deletion(name):
     return None
 
 
-def main(destination_name="full_pair_stage_manifest_v1.json", static_name="static_precommit7_v5.json"):
+def main(destination_name="full_pair_stage_manifest_v1.json", static_name="static_precommit7_v5.json",
+         include_closed_teacher=False):
+    if include_closed_teacher:
+        proof = json.loads((BASE / "teacher_rootc_closed_readback_v1.json").read_text())
+        if proof["observed_actual_tool_exit"] != 8 or proof["status"] != "CLOSED_PRODUCTION_PAUSED":
+            raise ValueError("actual closed teacher readback required")
     raw = subprocess.check_output([
         "git", "-c", "status.renames=false", "status", "--porcelain=v1", "-z", "--untracked-files=all",
         "--", ".", ":(exclude)datasets/TinyDataset/**", ":(exclude).agents/**",
@@ -67,13 +77,16 @@ def main(destination_name="full_pair_stage_manifest_v1.json", static_name="stati
         if not part:
             continue
         name = part[3:].decode()
-        if name.startswith(LIVE) or name == LIVE_LOG or (
+        if not include_closed_teacher and (name.startswith(LIVE) or name == LIVE_LOG or (
             name.startswith("handoff/audit/oct26_research/postfull_async_v1/")
             and Path(name).name not in ["inputs.json", "step_00.json", "step_01.json", "step_02.json"]
-        ):
+        )):
             excluded.append(name)
             continue
         allowed = (name in EXACT or name.startswith("handoff/audit/oct26_research/")
+            or include_closed_teacher and (name.startswith(LIVE) or name == LIVE_LOG)
+            or name.startswith("handoff/audit/FRONTIER_QUEUE_89033CDA28A8_")
+            or name.startswith("handoff/audit/FRONTIER_SEMANTIC_89033CDA28A8_")
             or name.startswith(CLOSED) or name.startswith("run_P106B_Stage10") and name.endswith(".sh")
             or name in ["run_P106B_Stage4fsZW_capacity_mtp_continue4h.sh",
                         "run_P106B_Stage4fsZW_capacity_mtp_continue4h-done.sh",
