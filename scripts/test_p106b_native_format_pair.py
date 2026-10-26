@@ -141,6 +141,11 @@ class PairTests(unittest.TestCase):
         return codec, policy, rows
 
     def build(self, codec, *, budget=None):
+        # Synthetic fixtures exercise the CPU builder independently of the
+        # historical production authorization deadline. Keep that deadline
+        # unchanged and explicitly inject a current fixture-only time budget.
+        if budget is None:
+            budget = pair.Budget(3600, time.time() + 3600)
         return pair.build("data_cache/policy.json", "data_cache/prepared",
                           root=self.root, codec=codec, budget=budget)
 
