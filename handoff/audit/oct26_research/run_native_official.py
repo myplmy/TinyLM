@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from scripts import diag_p106b_native_format_official as diag
 
 BASE = Path(__file__).resolve().parent
-SOURCE = "9841ACF491E1CCD156FB060C2194773CCD6B02186F86F55ADA549FF8C5D4BB71"
+SOURCE = "6E08116657927517C1A8FE6C616902DA2794996D3E6934AD21125E4F317BAA22"
 
 def publish(path, value):
     raw = (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
@@ -47,7 +47,7 @@ def prepare(arm, *, allow_write=True):
         "closed_train": closed, "arm": arm, "official_policy": diag.policy(),
         "numerical_contract": diag.CONTRACT, "cleanup_reserve_sec": 120,
         "entry_free_mib": 14000, "deadline": diag.END.isoformat()}
-    path = BASE / ("native_official_" + arm + "_profile_v1.json")
+    path = BASE / ("native_official_" + arm + "_profile_v3.json")
     if path.exists():
         if json.loads(path.read_text()) != value:
             raise ValueError("existing official profile differs")
@@ -76,7 +76,7 @@ def main():
     admission_ref = None
     for mode in ("canary", "cost", "full"):
         cap = 7200 if mode == "full" else 600
-        output = ROOT / "test_result/evidence" / (diag.PREFIX + args.arm + "_" + mode)
+        output = ROOT / "test_result/evidence" / (diag.PREFIX + args.arm + "_json_recovery_v3_" + mode)
         if output.exists():
             raise FileExistsError(output)
         command = common + ["--mode", mode, "--max-wall-sec", str(cap), "--output", str(output.relative_to(ROOT))]
@@ -109,7 +109,7 @@ def main():
                           "whole_parent_sec": elapsed, "root_closed": True}), flush=True)
         if mode != "full":
             admission[mode] = spec
-            admission_ref = publish(BASE / ("native_official_" + args.arm + "_after_" + mode + "_v1.json"), admission)
+            admission_ref = publish(BASE / ("native_official_" + args.arm + "_after_" + mode + "_v3.json"), admission)
     return 0
 
 if __name__ == "__main__":

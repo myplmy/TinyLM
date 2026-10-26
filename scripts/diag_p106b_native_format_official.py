@@ -575,7 +575,7 @@ def execute_worker(args, state, budget, admitted):
                                     raise
                                 finally:
                                     training.close_preserving(row_error, [("공식 raw 부분 shard 닫기", raw._finish)])
-                                child["independent_audits"][name] = audit
+                                child["independent_audits"][name] = audit_payload(audit)
                                 child["official_results"][name] = official.plain(result)
                                 child["actual_counts"][name] = counts[name]
                                 budget.check("공식 과제 저장 후")
@@ -621,6 +621,20 @@ def parser():
     group.add_argument("--execute", action="store_true")
     group.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     return value
+
+
+def audit_payload(value):
+    """정수 label key를 JSON 표현으로 고정하며 수치와 검산 조건은 유지한다."""
+    return json.loads(canonical(value), object_pairs_hook=adapter._unique_object)
+
+
+def worker_python():
+    """가상환경의 논리 실행 경로를 유지하고 실제 바이너리 검산은 감독에 맡긴다."""
+    executable = sys.executable
+    require(isinstance(executable, str) and os.path.isabs(executable)
+        and Path(executable).is_file() and os.access(executable, os.X_OK),
+        "worker Python의 유효한 기존 절대 실행 경로가 필요하다")
+    return executable
 
 
 def main(argv=None):
@@ -679,7 +693,7 @@ def main(argv=None):
                     supervisor.write_once(output / "invocation.json", dict(parent_pid=os.getpid(), parent_starttime=owner["starttime"],
                         source_sha256=state["source_identity"]["sha256"], profile_sha256=state["profile_sha256"], mode=args.mode,
                         work_end=work_end), budget)
-                    command = [str(Path(sys.executable).resolve()), "-I", "-B", "-X", "utf8", str(Path(__file__).resolve())]
+                    command = [worker_python(), "-I", "-B", "-X", "utf8", str(Path(__file__).resolve())]
                     command += [item for item in (sys.argv[1:] if argv is None else argv) if item != "--execute"]
                     command += ["--worker", "--parent-started", str(budget.started), "--work-end", str(work_end)]
                     observed = training.supervise(command, output, budget)

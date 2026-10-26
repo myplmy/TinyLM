@@ -3985,5 +3985,22 @@ UNVERIFIED로 제한한다. 새 평가셋·기존 trainer 자동 연결·모델/
 | P106B Stage6fW/4fsYW | 같은Gemma8192/1024/3072·MTP2 네 응답72.046초0, 표본peak12356/최소여유3706MiB·조회오류0·소유회수0;101§523 | 장기OOM 보증 아님. legacy14000 유지·별도11264/2048 profile의5h생산 RUNNING |
 | P106B Stage10a/b | CPU28/52/46회귀0·1793명시HOLD와 동일 원문 추가8위치 제외·같은1439374 EOS 양풀 완결;101§529/532 | format1185169307 ID·동일fresh core/offset/Adam으로 Muon/NorMuon 각300023808; 실제양cost와16시마감 충족 시만 실행 |
 
+### 2026-10-26 같은 format의 전체300M 두 팔과 공식 평가 회수
+
+정본은 [101 §§540~545](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)이며 위 준비 상태 이후의 실제 결과다.
+양팔은 동일 초기 본체·자료·offset·micro8×accum16·길이1024·checkpoint ON·LR/schedule을 유지해
+각2,289업데이트/300,023,808 targets를 완주했다. Muon5854.900705초, NorMuon6199.775928초는 root driver 범위이고
+정리/자식/실제 종료는 모두0이다. 병행CPU·순서가 완전 통제된 속도 반복시험은 아니다.
+
+동일 공식19,965문항/67,106보기의 Core6 평균은40.0891/38.8417%다. NorMuon−Muon −1.2474%p,
+문항대응 pointwise95% 구간[−2.0408,−0.4531]이며 사전30검정의 Holm 뒤 새 두 팔의 BoolQ 열세만 남았다.
+별도24답씩에서 반복·질문 재출력이 남아 일반 대화 개선도 확인하지 못했다. 기본 Muon과 기존 임계값을 유지한다.
+AdaMuon은 미구현, raw+Muon 전체 본팔은 NOT_RUN이다. 같은 새 두 팔의 optimizer 비교와
+기존595M·외부모델의 학습량/원천/구조가 다른 비교를 구분한다. 교사75M SFT의 완성과도 별개다.
+
+원 source47 학습은 불변이고, 공식58·대화70·통계75의 새 버전은 환경/JSON 표현 수리만 연결한다.
+비용32건은 기술 입장이며 공식점수는 full만 사용한다. PENDING9 leaf는 닫힌 root/terminal 실제0과 함께 읽고
+앞선 PackageNotFoundError/직렬화9는 품질 음성으로 바꾸지 않는다. 새 σ·채택 문턱은 만들지 않았다.
+
 새 native 비교는 fresh028C46·chat32/dense14·micro8×accum16×seq1024·ckptON·BF16/default compile·원MuonRMS4 및 명시WSD/quant끝.8의 계보만 쓴다. 전역 .6을 바꾸지 않는다. TLinear-only 삼진과 전체 고정 삼진/40MB packed를 구분한다. CPU·probe·준비 상태는 기존 품질 판정을 바꾸지 않는다.
 

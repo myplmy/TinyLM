@@ -13,13 +13,13 @@ from scripts import summarize_p106b_native_format_pair as stats
 from handoff.audit.oct26_research.run_native_official import publish
 
 BASE = Path(__file__).resolve().parent
-SOURCE = "0465071FB3FB9C18190D37DCDE72D85E86B3E36E445A9E4C194B13442A4F5BA5"
-OUTPUT = ROOT / "test_result/evidence/p106b_native_format_pair_stats_v1_20261026_main"
+SOURCE = "6683620DCAC0D197B62FE30E5EDBA62E777461A580EEE2657AD254978445232D"
+OUTPUT = ROOT / "test_result/evidence/p106b_native_format_pair_stats_v1_20261026_json_recovery_v3"
 
 
 def prepare(*, allow_write):
     stats.require(stats.source_identity()["sha256"] == SOURCE, "frozen statistics source differs")
-    roots = {model: ROOT / "test_result/evidence" / (stats.official.PREFIX + model + "_full") / "root_closed_ref.json"
+    roots = {model: ROOT / "test_result/evidence" / (stats.official.PREFIX + model + "_json_recovery_v3_full") / "root_closed_ref.json"
              for model in stats.NEW_MODELS}
     if not all(path.is_file() for path in roots.values()):
         raise stats.Hold("both actual full evaluations are required")
@@ -27,12 +27,12 @@ def prepare(*, allow_write):
                  official_source_sha256=stats.OFFICIAL_SHA, training_source_sha256=stats.TRAINING_SHA,
                  dialogue_source_sha256=stats.DIALOGUE_SHA, new_models={})
     for model, root in roots.items():
-        profile = BASE / ("native_official_" + model + "_profile_v1.json")
+        profile = BASE / ("native_official_" + model + "_profile_v3.json")
         stats.require(profile.is_file(), "original official profile is absent")
         value["new_models"][model] = dict(
             profile=dict(path=str(profile.relative_to(ROOT)), sha256=stats.official.digest(profile)),
             full_root_ref=dict(path=str(root.relative_to(ROOT)), sha256=stats.official.digest(root)))
-    path = BASE / "native_pair_stats_inputs_v1.json"
+    path = BASE / "native_pair_stats_inputs_v3.json"
     if path.exists():
         stats.require(json.loads(path.read_text()) == value, "existing statistics inputs differ")
         return dict(path=str(path.relative_to(ROOT)), sha256=stats.official.digest(path))

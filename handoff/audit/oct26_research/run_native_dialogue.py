@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 from scripts import diag_p106b_native_format_dialogue as diag
 
 BASE = Path(__file__).resolve().parent
-SOURCE = "E059BA2DE73D14053021932ACD37B83505D3ABD5523488809392D66F91164E9B"
+SOURCE = "B43FABDAE9082B8A995DD5941F10DC07E76400AA641D2CA437EAE27742EC3860"
 
 def publish(path, value):
     raw = (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
@@ -47,7 +47,7 @@ def prepare(arm, *, allow_write):
         "generation_contract": diag.CONTRACT, "cases": diag.CASES_REF,
         "deadline": diag.END.isoformat(), "cleanup_reserve_sec": 120, "entry_free_mib": 14000,
         "arm": arm, "training_profile": inputs["profile"], "training_f4": inputs["f4"], "closed_train": spec}
-    path = BASE / ("native_dialogue_" + arm + "_profile_v1.json")
+    path = BASE / ("native_dialogue_" + arm + "_profile_v3.json")
     if path.exists():
         if json.loads(path.read_text()) != value:
             raise ValueError("existing dialogue profile differs")
@@ -93,7 +93,7 @@ def main():
         print(json.dumps({"returncode": 8, "reason": "FULL_CLOSURE_OR_PROFILE_NOT_READY",
             "model_loaded": False, "gpu_calls": 0, "files_written": 0}))
         return 8
-    folder = ROOT / "test_result/evidence" / (diag.PREFIX + args.arm)
+    folder = ROOT / "test_result/evidence" / (diag.PREFIX + args.arm + "_json_recovery_v3")
     command = [sys.executable, "-I", "-B", "-X", "utf8", "scripts/diag_p106b_native_format_dialogue.py",
         "--profile", profile["path"], "--profile-sha256", profile["sha256"], "--source-sha256", SOURCE,
         "--deadline", diag.END.isoformat(), "--max-wall-sec", "1800"]

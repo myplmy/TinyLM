@@ -34,7 +34,7 @@ PROFILE="P106B_NATIVE_FORMAT_DIALOGUE_PROFILE_V1"
 PREFIX="p106b_native_format_dialogue_v1_20261026_"
 END=datetime(2026,10,26,8,tzinfo=timezone.utc)
 TRAINING_SHA="9EA74842B672407044FB52B668B56EC8AD2C4390229409C7E12EE5F9B002F90C"
-OFFICIAL_SHA="9841ACF491E1CCD156FB060C2194773CCD6B02186F86F55ADA549FF8C5D4BB71"
+OFFICIAL_SHA="6E08116657927517C1A8FE6C616902DA2794996D3E6934AD21125E4F317BAA22"
 CASES_REF=dict(path="handoff/audit/oct26_research/native_dialogue_cases_v1.json",
     sha256="EA3AE329D8774A54CF4E0D4BA37D692E135A3B2AA336F00548CDBEF97A23E321")
 MODES=("plain","chatml")
@@ -358,7 +358,7 @@ def main(argv=None):
                     supervisor.write_once(output/"invocation.json",dict(parent_pid=os.getpid(),
                         parent_starttime=owner["starttime"],source_sha256=state["source_identity"]["sha256"],
                         profile_sha256=state["profile_sha256"],work_end=work_end),budget)
-                    command=[str(Path(sys.executable).resolve()),"-I","-B","-X","utf8",str(Path(__file__).resolve())]
+                    command=[official.worker_python(),"-I","-B","-X","utf8",str(Path(__file__).resolve())]
                     command += [item for item in (sys.argv[1:] if argv is None else argv) if item != "--execute"]
                     command += ["--worker","--parent-started",str(budget.started),"--work-end",str(work_end)]
                     observed=training.supervise(command,output,budget)

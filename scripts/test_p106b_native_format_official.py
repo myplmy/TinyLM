@@ -20,6 +20,7 @@ import tempfile
 import time
 from types import SimpleNamespace, ModuleType
 import unittest
+import venv
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -147,6 +148,69 @@ assert not any(name.split('.')[0] in {'torch','tokenizers','lm_eval'} for name i
         main_source = Path(d.__file__).read_text(encoding="utf-8")
         self.assertIn('str(Path(__file__).resolve())', main_source)
         self.assertNotIn("inference_mode(", main_source)
+
+
+class AuditSerializationTests(unittest.TestCase):
+    def test_integer_label_audit_roundtrip_preserves_all_numbers(self):
+        audit = dict(rows=2, correct=1, random_expected_correct=1., posthoc_label_counts={0: 1, 1: 1})
+        old = copy.deepcopy(audit)
+        with tempfile.TemporaryDirectory(prefix="native_official_audit_", dir="/tmp") as temporary:
+            directory = Path(temporary)
+            with self.assertRaisesRegex(ValueError, "재읽기"):
+                d.supervisor.write_once(directory / "old.json", audit, Budget())
+            normalized = d.audit_payload(audit)
+            d.supervisor.write_once(directory / "new.json", normalized, Budget())
+            self.assertEqual(json.loads((directory / "new.json").read_text()), normalized)
+        self.assertEqual(audit, old)
+        self.assertEqual(normalized, dict(rows=2, correct=1, random_expected_correct=1.,
+                                          posthoc_label_counts={"0": 1, "1": 1}))
+        self.assertEqual(d.canonical(audit), d.canonical(normalized))
+
+    def test_nonfinite_audit_is_still_rejected(self):
+        with self.assertRaises(ValueError):
+            d.audit_payload(dict(rows=2, correct=float("nan")))
+
+
+class WorkerPythonTests(unittest.TestCase):
+    def test_current_absolute_interpreter_path_is_unchanged(self):
+        self.assertEqual(d.worker_python(), sys.executable)
+
+    def test_relative_or_missing_interpreter_has_no_fallback(self):
+        with tempfile.TemporaryDirectory(prefix="native_official_missing_", dir="/tmp") as temporary:
+            for executable in ("python", str(Path(temporary) / "missing_python")):
+                with self.subTest(executable=executable), patch.object(d.sys, "executable", executable):
+                    with self.assertRaises(ValueError): d.worker_python()
+
+    @unittest.skipUnless(sys.platform == "linux", "이 회귀는 Linux symlink venv를 확인한다")
+    def test_actual_tmp_venv_child_prefix_is_preserved(self):
+        with tempfile.TemporaryDirectory(prefix="native_official_venv_", dir="/tmp") as temporary:
+            directory = Path(temporary) / "venv"
+            venv.EnvBuilder(with_pip=False, symlinks=True).create(directory)
+            executable = directory / "bin/python"
+            self.assertTrue(executable.is_symlink())
+            code = """import json,os,pathlib,runpy,subprocess,sys
+module=runpy.run_path(sys.argv[1],run_name='venv_worker_fixture')
+chosen=module['worker_python']()
+probe="import json,os,sys; print(json.dumps(dict(prefix=sys.prefix,base_prefix=sys.base_prefix,executable=sys.executable,real_exe=os.readlink('/proc/self/exe'))))"
+def child(python):
+ result=subprocess.run([python,'-I','-B','-c',probe],capture_output=True,text=True,timeout=10,check=True)
+ return json.loads(result.stdout)
+print(json.dumps(dict(parent_prefix=sys.prefix,parent_base_prefix=sys.base_prefix,chosen=chosen,
+ resolved=str(pathlib.Path(sys.executable).resolve()),good=child(chosen),
+ previous=child(str(pathlib.Path(sys.executable).resolve())))))
+"""
+            result = subprocess.run([str(executable), "-I", "-B", "-c", code, str(Path(d.__file__).resolve())],
+                capture_output=True, text=True, timeout=25, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            value = json.loads(result.stdout)
+            self.assertEqual(value["chosen"], str(executable))
+            self.assertNotEqual(value["chosen"], value["resolved"])
+            self.assertEqual(value["parent_prefix"], str(directory))
+            self.assertEqual(value["good"]["prefix"], value["parent_prefix"])
+            self.assertNotEqual(value["good"]["prefix"], value["good"]["base_prefix"])
+            self.assertEqual(value["previous"]["prefix"], value["parent_base_prefix"])
+            self.assertNotEqual(value["previous"]["prefix"], value["parent_prefix"])
+            self.assertEqual(value["good"]["real_exe"], value["previous"]["real_exe"])
 
 
 class PayloadTests(unittest.TestCase):
@@ -552,6 +616,13 @@ class ParentTests(unittest.TestCase):
         self.assertIn("--worker", self.command); self.assertNotIn("--execute", self.command)
         inv = json.loads((self.root / self.output / "invocation.json").read_bytes())
         self.assertLess(inv["work_end"], d.STARTED + 600 - 119)
+
+    def test_parent_argv_uses_preserved_worker_helper(self):
+        executable = sys.executable
+        with patch.object(d, "worker_python", return_value=executable) as chosen:
+            self.assertEqual(self.run_main(), 0)
+        chosen.assert_called_once_with()
+        self.assertEqual(self.command[0], executable)
 
     def test_existing_namespace_is_preserved(self):
         path = self.root / self.output; path.mkdir()

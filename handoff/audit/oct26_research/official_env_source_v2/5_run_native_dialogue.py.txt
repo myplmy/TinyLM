@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Collect fixed128-token raw answers only from an actually closed full arm."""
+from pathlib import Path
+from types import SimpleNamespace
+import argparse
+import base64
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+from scripts import diag_p106b_native_format_dialogue as diag
+
+BASE = Path(__file__).resolve().parent
+SOURCE = "AAD464C911F0521A490C814AEB143BED57764E7FCB83FBC8D0C57071280EC4FE"
+
+def publish(path, value):
+    raw = (json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode()
+    if len(raw) >= 20_000_000:
+        raise ValueError("small root metadata limit")
+    with path.open("xb") as stream:
+        stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+    return {"path": str(path.relative_to(ROOT)), "sha256": diag.official.digest(path)}
+
+def make_budget():
+    return diag.supervisor.Budget(600, diag.END.timestamp(), started=time.monotonic(), reserve=120)
+
+def prepare(arm, *, allow_write):
+    if diag.source_identity()["sha256"] != SOURCE:
+        raise ValueError("dialogue source differs")
+    inputs, _ = diag.training.read(str((BASE / "native_training_inputs_v1.json").relative_to(ROOT)),
+        "850EA5767D568C58907C085A9053E8343F6FC3D5B309E81813CB89462B7A411F")
+    closed = ROOT / "test_result/evidence" / (diag.training.PREFIX + arm + "_train") / "root_closed_ref.json"
+    if not closed.is_file():
+        raise diag.Hold("full training is not closed")
+    spec = json.loads(closed.read_text())
+    train_args = SimpleNamespace(mode="train", profile=inputs["profile"]["path"],
+        profile_sha256=inputs["profile"]["sha256"], f4=inputs["f4"]["path"], f4_sha256=inputs["f4"]["sha256"])
+    train_state = diag.training.metadata(train_args)
+    diag.training.read_closed(spec, train_state, arm, "train")
+    value = {"schema": diag.PROFILE, "root_approved": True, "source_sha256": SOURCE,
+        "training_source_sha256": diag.TRAINING_SHA, "official_source_sha256": diag.OFFICIAL_SHA,
+        "generation_contract": diag.CONTRACT, "cases": diag.CASES_REF,
+        "deadline": diag.END.isoformat(), "cleanup_reserve_sec": 120, "entry_free_mib": 14000,
+        "arm": arm, "training_profile": inputs["profile"], "training_f4": inputs["f4"], "closed_train": spec}
+    path = BASE / ("native_dialogue_" + arm + "_profile_v2.json")
+    if path.exists():
+        if json.loads(path.read_text()) != value:
+            raise ValueError("existing dialogue profile differs")
+        return {"path": str(path.relative_to(ROOT)), "sha256": diag.official.digest(path)}
+    if not allow_write:
+        raise diag.Hold("root dialogue profile is not prepared")
+    return publish(path, value)
+
+def close(spec, state, folder, actual_wall):
+    budget = make_budget()
+    report = diag.official.read_ref(spec, budget)
+    diag.require(report["schema"] == diag.SCHEMA and type(report["returncode"]) is int
+        and report["returncode"] == 0, "actual dialogue report is not complete")
+    diag.require(report["source_sha256"] == SOURCE and report["profile_sha256"] == state["profile_sha256"],
+        "dialogue source or profile differs")
+    diag.require(diag.training.supervision_ok(report["supervision"]), "dialogue supervision did not close")
+    diag.require(actual_wall >= report["whole_parent_seconds"], "actual root wall excludes parent work")
+    terminal = folder / "terminal.jsonl"
+    diag.require(diag.official.digest(terminal) == spec["terminal_sha256"], "dialogue terminal SHA differs")
+    diag.require([json.loads(line) for line in terminal.read_text().splitlines()]
+        == [{"event": "OBSERVATION", "returncode": 0}], "dialogue terminal contains a veto or incomplete closure")
+    worker = diag.official.read_ref({"path": str((folder / "worker.json").relative_to(ROOT)),
+        "sha256": report["worker_sha256"]}, budget)
+    diag.require(report["worker"] == worker, "dialogue worker differs from parent report")
+    diag.validate_worker(worker, state, folder, budget)
+    whole, count = hashlib.sha256(), 0
+    for row in diag.official.manifests_rows(folder / "stdout", report["supervision"]["stdout_manifest"], budget):
+        diag.require(row["encoding"] == "BASE64_RAW_STDOUT", "dialogue stdout encoding differs")
+        raw = base64.b64decode(row["bytes"], validate=True)
+        whole.update(raw); count += len(raw)
+    diag.require(whole.hexdigest().upper() == report["supervision"]["stdout_sha256"], "dialogue stdout SHA differs")
+    diag.require(count == report["supervision"]["stdout_bytes"], "dialogue stdout bytes differ")
+    diag.immutable(state, budget)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--arm", choices=("format_muon", "format_normuon"), required=True)
+    parser.add_argument("--check-only", action="store_true")
+    args = parser.parse_args()
+    try:
+        profile = prepare(args.arm, allow_write=not args.check_only)
+    except diag.Hold:
+        print(json.dumps({"returncode": 8, "reason": "FULL_CLOSURE_OR_PROFILE_NOT_READY",
+            "model_loaded": False, "gpu_calls": 0, "files_written": 0}))
+        return 8
+    folder = ROOT / "test_result/evidence" / (diag.PREFIX + args.arm + "_env_recovery_v2")
+    command = [sys.executable, "-I", "-B", "-X", "utf8", "scripts/diag_p106b_native_format_dialogue.py",
+        "--profile", profile["path"], "--profile-sha256", profile["sha256"], "--source-sha256", SOURCE,
+        "--deadline", diag.END.isoformat(), "--max-wall-sec", "1800"]
+    checked = subprocess.run(command + ["--check-only"], cwd=ROOT, stdin=subprocess.DEVNULL)
+    if checked.returncode or args.check_only:
+        return checked.returncode
+    if folder.exists():
+        raise FileExistsError(folder)
+    tick = time.monotonic()
+    actual = subprocess.run(["timeout", "--signal=TERM", "--kill-after=10s", "1830s", *command,
+        "--output", str(folder.relative_to(ROOT)), "--execute"], cwd=ROOT, stdin=subprocess.DEVNULL)
+    elapsed = time.monotonic() - tick
+    observation = {"actual_supervisor_exit": actual.returncode, "actual_parent_wall_sec": elapsed,
+        "arm": args.arm, "command": command, "outer_timeout_sec": 1830}
+    if folder.is_dir():
+        publish(folder / "root_observation.json", observation)
+    if actual.returncode:
+        return actual.returncode
+    spec = {"path": str((folder / "report.json").relative_to(ROOT)), "sha256": diag.official.digest(folder / "report.json"),
+        "terminal_sha256": diag.official.digest(folder / "terminal.jsonl"),
+        "actual_supervisor_exit": actual.returncode, "actual_parent_wall_sec": elapsed}
+    state = diag.metadata(SimpleNamespace(source_sha256=SOURCE, profile=profile["path"], profile_sha256=profile["sha256"]), make_budget())
+    close(spec, state, folder, elapsed)
+    publish(folder / "root_closed_ref.json", spec)
+    print(json.dumps({"arm": args.arm, "actual_exit": actual.returncode, "whole_parent_sec": elapsed,
+        "requests": 24, "raw_answers_root_read": "PENDING"}), flush=True)
+    return actual.returncode
+
+if __name__ == "__main__":
+    raise SystemExit(main())

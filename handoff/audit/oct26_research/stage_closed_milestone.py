@@ -11,8 +11,13 @@ BASE = Path(__file__).resolve().parent
 def git(*args, **kwargs):
     return subprocess.run(["git", *args], cwd=ROOT, **kwargs)
 
-def main():
-    manifest_path = BASE / "closed_milestone_stage_v3.json"
+def main(manifest_path=None, verification_path=None):
+    manifest_path = Path(manifest_path) if manifest_path is not None else BASE / "closed_milestone_stage_v3.json"
+    verification_path = Path(verification_path) if verification_path is not None else BASE / "closed_index_verification_v2.json"
+    if manifest_path.parent.resolve() != BASE or verification_path.parent.resolve() != BASE:
+        raise ValueError("explicit commit audit paths must stay in the owned audit directory")
+    if manifest_path.is_symlink() or not manifest_path.is_file() or verification_path.exists() or verification_path.is_symlink():
+        raise ValueError("a regular manifest and a fresh verification path are required before staging")
     manifest = json.loads(manifest_path.read_text())
     paths = []
     for row in manifest["files"]:
@@ -63,7 +68,7 @@ def main():
         "frozen_source_bytes_not_rewritten": True,
         "explicit_paths": paths, "protected_paths": 0, "oversized_files": 0,
         "excluded_live_paths": manifest["excluded_live_or_unrelated"], "commit_executed": False}
-    with (BASE / "closed_index_verification_v2.json").open("x", encoding="utf-8") as stream:
+    with verification_path.open("x", encoding="utf-8") as stream:
         json.dump(result, stream, ensure_ascii=False, indent=2, sort_keys=True)
     print(json.dumps({key:value for key,value in result.items() if key not in ("explicit_paths", "excluded_live_paths")},ensure_ascii=False))
     if check.returncode:
