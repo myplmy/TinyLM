@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 BASE = Path(__file__).resolve().parent
 EXACT = {
+    ".gitignore",
     "AGENTS.md", "ai_dev_tool/Codex/00_WORKING_RULES.md",
     "ai_dev_tool/Codex/00_작업규약_한글판.md",
     "ai_dev_tool/Codex/06_Codex용_프로젝트지침과_메모리.md",
@@ -14,6 +15,7 @@ EXACT = {
     "docs/EXPERIMENT_BASELINES.md", "docs/METHODS.md",
     "docs/research/20261023_모델별_벤치마크와_실제답변_종합.md",
     "docs/research/20261026_전체300M_두모델_실제48답_판독.md",
+    "docs/research/20261026_실제학습노출과_원문맥락_정제판독.md",
     "experiments.tsv", "handoff/COMPASS.md", "handoff/WIP_20261022_작업원장.md",
     "scripts/diag_p106b_native_format_dialogue.py", "scripts/diag_p106b_native_format_official.py",
     "scripts/summarize_p106b_native_format_pair.py", "scripts/test_p106b_native_format_official.py",
@@ -29,12 +31,33 @@ CLOSED = (
     "test_result/evidence/p106b_native_format_official_v1_20261026_",
     "test_result/evidence/p106b_native_format_dialogue_v1_20261026_",
     "test_result/evidence/p106b_native_format_pair_stats_v1_20261026_",
+    "test_result/evidence/p106b_native_exposure_v1_20261026_",
+    "test_result/evidence/p106b_native_exposure_v2_20261026_",
+    "test_result/evidence/p106b_native_exposure_v3_20261026_",
 )
 LIVE = "test_result/evidence/p106b_gemma_capacity_resume_v1_20261026_rootc/"
 LIVE_LOG = "test_result/101_log_20261026_P106B_Stage4fsZbW_capacity_after_eval_resume.txt"
 
 
-def main(destination_name="full_pair_stage_manifest_v1.json"):
+def archived_deletion(name):
+    head = subprocess.check_output(["git", "show", "HEAD:" + name], cwd=ROOT)
+    for filename in ["launcher_retirement_manifest_v3.json", "replaced_launcher_archive_v1.json"]:
+        record = json.loads((BASE / filename).read_text())
+        for item in record["entries"]:
+            if name not in [item["path"], item.get("tracked_source")]:
+                continue
+            archive = ROOT / item["archive"]
+            if archive.is_symlink() or not archive.is_file():
+                raise ValueError("regular launcher archive required")
+            content = archive.read_bytes()
+            if content != head or hashlib.sha256(content).hexdigest().upper() != item["sha256"]:
+                raise ValueError("archived deletion bytes differ: " + name)
+            return dict(path=name, deleted_after_source_archive=True,
+                        source_archive=item["archive"], source_sha256=item["sha256"])
+    return None
+
+
+def main(destination_name="full_pair_stage_manifest_v1.json", static_name="static_precommit7_v5.json"):
     raw = subprocess.check_output([
         "git", "-c", "status.renames=false", "status", "--porcelain=v1", "-z", "--untracked-files=all",
         "--", ".", ":(exclude)datasets/TinyDataset/**", ":(exclude).agents/**",
@@ -69,7 +92,11 @@ def main(destination_name="full_pair_stage_manifest_v1.json"):
             variants = [ROOT / (name[:-3] + suffix + ".sh") for suffix in ["-done", "-hold"]]
             matches = [p for p in variants if p.is_file()]
             if len(matches) != 1:
-                raise ValueError("rename destination")
+                entry = archived_deletion(name)
+                if entry is None:
+                    raise ValueError("rename destination or exact archived deletion required")
+                entries.append(entry)
+                continue
             head = subprocess.check_output(["git", "show", "HEAD:" + name], cwd=ROOT)
             if matches[0].read_bytes() != head:
                 raise ValueError("renamed bytes")
@@ -83,12 +110,14 @@ def main(destination_name="full_pair_stage_manifest_v1.json"):
                                 sha256=hashlib.sha256(content).hexdigest().upper()))
     if unexpected:
         raise ValueError("unclassified paths: " + repr(unexpected))
-    audit = json.loads((BASE / "static_precommit7_v5.json").read_text())
+    if Path(static_name).name != static_name or not static_name.endswith(".json"):
+        raise ValueError("owned static audit filename required")
+    audit = json.loads((BASE / static_name).read_text())
     if audit["counts"]["errors"] != 0:
         raise ValueError("current static errors")
     manifest = dict(schema="TINYLM_EXPLICIT_CLOSED_STAGE_V1", files=entries,
         excluded_live_or_unrelated=excluded, protected_access=False, gpu_quality_claim=False,
-        current_static_audit="handoff/audit/oct26_research/static_precommit7_v5.json",
+        current_static_audit="handoff/audit/oct26_research/" + static_name,
         approved_basis="Current autonomous research, exact-path staging and Korean local commits; WIP88-91")
     if Path(destination_name).name != destination_name or not destination_name.endswith(".json"):
         raise ValueError("one fresh local JSON manifest name is required")

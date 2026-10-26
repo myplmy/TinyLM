@@ -1,0 +1,259 @@
+"""Read-only audit of actual target windows from two completed native runs."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import sys
+import time
+from collections import Counter
+
+ROOT = Path(__file__).resolve().parents[3]
+BASE = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+from scripts.p106b_native_text_audit import file_sha, safe, signals, write_json
+from scripts.p106b_shards import ShardWriter, verify
+
+OUTPUT = ROOT / "test_result/evidence/p106b_native_exposure_v2_20261026_rootb"
+PROFILE = BASE / "native_training_profile_v1.json"
+DEADLINE = 1792998000  # 2026-10-26 16:00 KST, before the user's 17:00 boundary.
+SOURCE_FILES = [__file__, BASE / "test_actual_exposure.py",
+    BASE / "run_actual_exposure.py", ROOT / "scripts/p106b_stage_receipt.py",
+    ROOT / "scripts/p106b_native_text_audit.py", ROOT / "scripts/p106b_source_cleanup.py",
+    ROOT / "scripts/p106b_shards.py"]
+
+
+def require(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def canonical_sha(value):
+    raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    return hashlib.sha256(raw).hexdigest().upper()
+
+
+def read(path):
+    return json.loads(safe(path).read_text(encoding="utf-8"))
+
+
+def target_span(offset, pool, width=1024):
+    require(type(offset) is int and type(pool) is int and type(width) is int and width > 0
+            and 0 <= offset and offset + width + 1 <= pool, "actual target window outside pool")
+    return offset + 1, offset + width + 1
+
+
+def window_signals(text, *, left_complete=False, right_complete=False):
+    # Known EOS document boundaries retain complete first/last lines.
+    interior = text.split(chr(10))
+    if not left_complete:
+        interior = interior[1:]
+    if not right_complete:
+        interior = interior[:-1]
+    result, headings = signals(chr(10).join(interior))
+    if "within_doc_repeated_line_extras" in result:
+        result["within_segment_repeated_line_extras"] = result.pop("within_doc_repeated_line_extras")
+    if "empty_or_adjacent_heading_lines" in result:
+        result["segment_terminal_or_adjacent_heading_lines"] = result.pop("empty_or_adjacent_heading_lines")
+    return result, headings, len(interior)
+
+
+def segment_ranges(length, eos_positions):
+    require(type(length) is int and length > 0, "nonempty target window required")
+    cursor = 0
+    result = []
+    for end in eos_positions:
+        require(type(end) is int and cursor <= end < length, "EOS positions must be ordered and in range")
+        if end > cursor:
+            result.append((cursor, end, cursor > 0, True))
+        cursor = end + 1
+    if cursor < length:
+        result.append((cursor, length, cursor > 0, False))
+    return result
+
+
+def ledger(base, worker, pool):
+    manifest = worker["event_manifest"]
+    verify(base / "updates", manifest)
+    require(manifest["rows"] == 2289, "full update ledger required")
+    offsets = []
+    count = 0
+    for shard in manifest["shards"]:
+        for line in (base / "updates" / shard["path"]).read_text(encoding="utf-8").splitlines():
+            row = json.loads(line)
+            count += 1
+            require(row["update"] == count and row["targets"] == row["x_tokens"] == 131072
+                    and row["synthetic"] is False and len(row["offsets"]) == 128
+                    and canonical_sha(row["offsets"]) == row["offsets_sha256"], "actual update row differs")
+            for offset in row["offsets"]:
+                target_span(offset, pool)
+            offsets.extend(row["offsets"])
+    require(count == 2289 and len(offsets) == 292992, "whole update coverage required")
+    return offsets
+
+
+def prepare():
+    import numpy as np
+    profile = read(PROFILE)
+    complete = ROOT / profile["pair_complete"]["path"]
+    require(file_sha(complete) == profile["pair_complete"]["sha256"], "paired corpus receipt changed")
+    cache = read(complete)
+    spec = cache["arms"]["format"]
+    bin_path = safe(complete.parent / "format.bin")
+    tokenizer = safe(ROOT / profile["tokenizer"]["path"])
+    require(bin_path.stat().st_size == spec["bytes"] == spec["tokens"] * 2, "uint16 corpus shape differs")
+    require(file_sha(tokenizer) == profile["tokenizer"]["sha256"], "tokenizer changed")
+    refs = [PROFILE, complete, tokenizer, *map(Path, SOURCE_FILES)]
+    both = []
+    for arm in ["format_muon", "format_normuon"]:
+        base = ROOT / ("test_result/evidence/p106b_native_format_training_v1_20261026_" + arm + "_train")
+        closed = read(base / "root_closed_ref.json")
+        report_path = safe(ROOT / closed["path"])
+        require(closed["actual_supervisor_exit"] == 0 and file_sha(report_path) == closed["sha256"], "full parent is not closed")
+        report = read(report_path)
+        worker = read(base / "worker.json")
+        require(report["returncode"] == 0 and report["worker"] == worker and worker["updates"] == 2289
+                and worker["totals"] == {"targets": 300023808, "x_tokens": 300023808}
+                and worker["corpus"] == "format", "full worker differs")
+        values = ledger(base, worker, spec["tokens"])
+        array = np.asarray(values, dtype="<i8")
+        require(hashlib.sha256(array.tobytes()).hexdigest().upper() == worker["offsets"]["offsets_bytes_sha256"], "actual offset checksum differs")
+        both.append(array)
+        refs += [base / "root_closed_ref.json", report_path, base / "worker.json"]
+        refs += [base / "updates" / row["path"] for row in worker["event_manifest"]["shards"]]
+    require(np.array_equal(both[0], both[1]), "two completed arms saw different crop offsets")
+    require(file_sha(bin_path) == spec["sha256"], "actual consumed corpus changed")
+    prior = ROOT / "test_result/evidence/p106b_native_exposure_v1_20261026_roota/report.json"
+    prior_root = read(prior.with_name("root_closed_ref.json"))
+    require(prior_root["actual_cpu_exit"] == 0 and file_sha(prior) == prior_root["sha256"], "preserve first actual exposure closure")
+    prior_report = read(prior)
+    refs += [prior, prior.with_name("root_closed_ref.json")]
+    inputs = dict(schema="P106B_NATIVE_ACTUAL_EXPOSURE_INPUTS_V2", cache=str(bin_path.relative_to(ROOT)),
+        cache_sha256=spec["sha256"], cache_bytes=spec["bytes"], pool_tokens=spec["tokens"],
+        tokenizer=str(tokenizer.relative_to(ROOT)), target_windows=292992, targets=300023808,
+        target_selection="y=cache[offset+1:offset+1025]; replacement and overlaps retained",
+        prior_target_stream_sha256=prior_report["counts"]["visited_target_bytes_sha256"],
+        eos_metadata_policy="ID2 splits document segments and is never passed to the HTML detector",
+        refs={str(safe(path).relative_to(ROOT)): file_sha(path) for path in refs},
+        checkpoints_read=0, models_loaded=0, gpu_calls=0, source_or_training_mutations=0)
+    return inputs, both[0]
+
+
+def scan(tokens, tokenizer, offsets, count, deadline):
+    import numpy as np
+    started = time.monotonic()
+    totals, windows, heads = Counter(), Counter(), Counter()
+    buckets = {}
+    visited = hashlib.sha256()
+    for chunk in range(0, count, 256):
+        if time.monotonic() >= deadline or time.time() >= DEADLINE:
+            raise TimeoutError("CPU scan budget or authority boundary reached")
+        selected = offsets[chunk:min(count, chunk + 256)]
+        arrays = [tokens[slice(*target_span(int(offset), len(tokens)))] for offset in selected]
+        per_window = [(Counter(), Counter(), 0) for _ in arrays]
+        parts, owners = [], []
+        for local, array in enumerate(arrays):
+            ends = np.flatnonzero(array == 2).tolist()
+            totals["eos_target_tokens"] += len(ends)
+            for start, end, left_complete, right_complete in segment_ranges(len(array), ends):
+                parts.append(array[start:end].tolist())
+                owners.append((local, left_complete, right_complete))
+                totals["nonempty_document_segments"] += 1
+                totals["fully_bounded_document_segments" if left_complete and right_complete else "partial_document_segments"] += 1
+        texts = tokenizer.decode_batch(parts, skip_special_tokens=False)
+        for text, (local, left_complete, right_complete) in zip(texts, owners):
+            info, headings, complete_lines = window_signals(text, left_complete=left_complete, right_complete=right_complete)
+            counts, heading_counts, line_count = per_window[local]
+            counts.update(info)
+            heading_counts.update(headings)
+            per_window[local] = (counts, heading_counts, line_count + complete_lines)
+        for local, (array, offset) in enumerate(zip(arrays, selected)):
+            index = chunk + local
+            raw = array.tobytes()
+            visited.update(raw)
+            aggregate, headings, complete_lines = per_window[local]
+            info = dict(+aggregate)
+            totals.update(info)
+            heads.update(headings)
+            for key in info:
+                windows[key] += 1
+            totals["complete_interior_lf_lines"] += complete_lines
+            features = ["background", *sorted(info)]
+            rank = hashlib.sha256((str(index) + ":" + str(int(offset))).encode()).hexdigest()
+            for feature in features:
+                store = buckets.setdefault(feature, {})
+                if len(store) < 8 or rank < max(store):
+                    store[rank] = dict(window_index=index, offset=int(offset), target_span=list(target_span(int(offset), len(tokens))),
+                        target_ids_sha256=hashlib.sha256(raw).hexdigest().upper(),
+                        text=tokenizer.decode(array.tolist(), skip_special_tokens=False),
+                        signals=info, heading_lines=headings, semantic_quality="NOT_REVIEWED", automatic_rejection=False)
+                    if len(store) > 8:
+                        del store[max(store)]
+        if chunk and chunk % 32768 == 0:
+            print(json.dumps(dict(phase="SCAN", windows=min(count, chunk + 256), expected=count)), flush=True)
+    samples = {row["window_index"]: row for store in buckets.values() for row in store.values()}
+    require(len(samples) <= 96, "bounded deterministic examples")
+    return dict(target_windows=count, target_tokens=count * 1024, totals=dict(totals),
+        windows_with_signal=dict(windows), standalone_heading_counts=dict(heads),
+        visited_target_bytes_sha256=visited.hexdigest().upper(), scan_seconds=time.monotonic() - started), [samples[key] for key in sorted(samples)]
+
+
+def main():
+    if sys.argv[1:] not in [["--check-only"], ["--execute"]]:
+        print("use --check-only or --execute", file=sys.stderr)
+        return 2
+    started = time.monotonic()
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+    os.nice(10)
+    if time.time() >= DEADLINE:
+        raise TimeoutError("CPU audit may not start after 16:00 KST")
+    inputs, offsets = prepare()
+    require("torch" not in sys.modules, "CPU audit must not import torch")
+    if sys.argv[1:] == ["--check-only"]:
+        print(json.dumps(dict(status="EXPOSURE_PREFLIGHT_ONLY", windows=len(offsets), files_written=0, gpu_calls=0)))
+        return 0
+    require(not OUTPUT.exists() and not OUTPUT.is_symlink(), "fresh output namespace required")
+    OUTPUT.mkdir()
+    write_json(OUTPUT / "inputs.json", inputs)
+    import numpy as np
+    from tokenizers import Tokenizer
+    tokens = np.memmap(ROOT / inputs["cache"], dtype="<u2", mode="r")
+    tokenizer = Tokenizer.from_file(str(ROOT / inputs["tokenizer"]))
+    cost, _ = scan(tokens, tokenizer, offsets, 512, time.monotonic() + 120)
+    forecast = cost["scan_seconds"] / 512 * len(offsets) * 1.5 + 30
+    write_json(OUTPUT / "cost.json", dict(status="CPU_COST_ONLY", cost=cost, conservative_full_scan_seconds=forecast,
+        model_quality_claim=False, inputs_sha256=file_sha(OUTPUT / "inputs.json")))
+    print(json.dumps(dict(phase="COST", scan_seconds=cost["scan_seconds"], full_forecast_seconds=forecast)), flush=True)
+    if forecast > 900 or time.time() + forecast >= DEADLINE:
+        write_json(OUTPUT / "hold.json", dict(status="FULL_CPU_BUDGET_HOLD", returncode=8, forecast_seconds=forecast))
+        return 8
+    full, samples = scan(tokens, tokenizer, offsets, len(offsets), time.monotonic() + 900)
+    writer = ShardWriter(OUTPUT / "samples", "windows", limit=1_000_000)
+    for sample in samples:
+        writer.append(sample)
+    sample_manifest = writer.close(lineage={"inputs_sha256": file_sha(OUTPUT / "inputs.json"), "selection": "lowest SHA of index:offset, up to8 per existing signal plus background"})
+    verify(OUTPUT / "samples", sample_manifest)
+    for name, digest in inputs["refs"].items():
+        require(file_sha(ROOT / name) == digest, "frozen source or input changed during CPU audit")
+    require(file_sha(ROOT / inputs["cache"]) == inputs["cache_sha256"], "corpus changed during CPU audit")
+    require(full["visited_target_bytes_sha256"] == inputs["prior_target_stream_sha256"], "EOS correction changed actual target exposure")
+    report = dict(schema="P106B_NATIVE_ACTUAL_EXPOSURE_V2", status="FULL_ACTUAL_TARGET_EXPOSURE_AUDIT_COMPLETE",
+        returncode=0, counts=full, samples=sample_manifest, inputs_sha256=file_sha(OUTPUT / "inputs.json"),
+        exact_targets_covered=full["target_tokens"] == 300023808, same_exposure_in_both_models=True,
+        models_loaded=0, gpu_calls=0, source_files_changed=0, whole_seconds=time.monotonic() - started,
+        denominator="NONUNIQUE_TARGET_WINDOW_EXPOSURES; not unique documents or semantic error rate",
+        eos_metadata_passed_to_structure_detector=False, repeated_lines_combined_across_eos=False,
+        limitations=["partial document edge lines excluded; EOS-bounded complete lines retained", "crop can start inside an unfinished code fence",
+            "existing structure/repeated-line signals are candidates, not errors", "no causal model-repeat claim",
+            "no source edits, admission, training or benchmark-label use"])
+    write_json(OUTPUT / "report.json", report)
+    print(json.dumps(dict(phase="FINAL", status=report["status"], actual_candidate_exit=0, windows=full["target_windows"],
+        targets=full["target_tokens"], whole_seconds=report["whole_seconds"], output=str(OUTPUT.relative_to(ROOT)))), flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except Exception as error:
+        print(json.dumps(dict(status="CPU_AUDIT_ERROR", error_type=type(error).__name__, error=str(error), returncode=9)), file=sys.stderr, flush=True)
+        raise SystemExit(9)

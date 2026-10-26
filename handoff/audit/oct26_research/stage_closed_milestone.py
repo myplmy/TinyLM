@@ -28,7 +28,7 @@ def main(manifest_path=None, verification_path=None):
         elif hashlib.sha256(path.read_bytes()).hexdigest().upper() != row["sha256"]:
             raise ValueError("closed source changed: " + name)
         paths.append(name)
-    paths.extend([str(manifest_path.relative_to(ROOT)), str(Path(__file__).resolve().relative_to(ROOT))])
+    paths.append(str(manifest_path.relative_to(ROOT)))
     paths = list(dict.fromkeys(paths))
     staged = set(git("diff", "--cached", "--no-renames", "--name-only", "-z", stdout=subprocess.PIPE, check=True).stdout.decode().split(chr(0))) - {""}
     if not staged.issubset(set(paths)):
@@ -66,6 +66,7 @@ def main(manifest_path=None, verification_path=None):
         "strict_source_whitespace_exit": strict.returncode,
         "strict_eof_blank_findings_preserved": lines,
         "frozen_source_bytes_not_rewritten": True,
+        "stage_helper_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest().upper(),
         "explicit_paths": paths, "protected_paths": 0, "oversized_files": 0,
         "excluded_live_paths": manifest["excluded_live_or_unrelated"], "commit_executed": False}
     with verification_path.open("x", encoding="utf-8") as stream:

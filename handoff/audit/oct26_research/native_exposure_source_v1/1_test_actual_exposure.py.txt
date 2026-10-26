@@ -1,0 +1,58 @@
+"""Small CPU contract tests for the actual-window adapter, not model quality."""
+import importlib.util
+from pathlib import Path
+import unittest
+
+spec = importlib.util.spec_from_file_location("actual_exposure", Path(__file__).with_name("audit_actual_exposure.py"))
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+
+class ExposureTests(unittest.TestCase):
+    def test_targets_shift_one_and_keep_exact_width(self):
+        values = list(range(12))
+        self.assertEqual(values[slice(*module.target_span(2, 12, 4))], [3, 4, 5, 6])
+        self.assertEqual(values[slice(*module.target_span(7, 12, 4))], [8, 9, 10, 11])
+
+    def test_invalid_offsets_and_bool_are_not_silently_clipped(self):
+        for args in [(-1, 12, 4), (8, 12, 4), (True, 12, 4), (0, 12, 0), (0, 12.0, 4)]:
+            with self.assertRaises(ValueError):
+                module.target_span(*args)
+
+    def test_partial_boundary_headings_do_not_count(self):
+        info, headings, count = module.window_signals("각주" + chr(10) + "실제 내용" + chr(10) + "외부 링크")
+        self.assertEqual(headings, {})
+        self.assertEqual(count, 1)
+
+    def test_complete_heading_uses_existing_signal(self):
+        text = chr(10).join(["boundary", "각주", "내용입니다", "boundary"])
+        info, headings, _ = module.window_signals(text)
+        self.assertEqual(info["standalone_heading_lines"], 1)
+        self.assertEqual(headings, {"각주": 1})
+
+    def test_prose_mentions_are_not_standalone_headings(self):
+        text = chr(10).join(["boundary", "각주를 읽으세요", "외부 링크가 있습니다", "boundary"])
+        self.assertNotIn("standalone_heading_lines", module.window_signals(text)[0])
+
+    def test_complete_code_fence_is_preserved_and_excluded(self):
+        text = chr(10).join(["boundary", "```text", "각주", "```", "boundary"])
+        self.assertEqual(module.window_signals(text)[1], {})
+        self.assertIn("각주", text)
+
+    def test_requested_repeated_lines_are_observations_not_removed(self):
+        text = chr(10).join(["boundary", "반복을 요청한 문장", "반복을 요청한 문장", "boundary"])
+        info, _, _ = module.window_signals(text)
+        self.assertEqual(info["within_window_repeated_line_extras"], 1)
+        self.assertEqual(text.count("반복을 요청한 문장"), 2)
+
+    def test_different_values_are_not_identical_repeated_lines(self):
+        text = chr(10).join(["boundary", "대상 A는 사과입니다", "대상 A는 당근입니다", "boundary"])
+        self.assertNotIn("within_window_repeated_line_extras", module.window_signals(text)[0])
+
+    def test_shared_signal_implementation_is_reused(self):
+        from scripts.p106b_native_text_audit import signals
+        self.assertIs(module.signals, signals)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

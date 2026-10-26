@@ -1,0 +1,42 @@
+
+==============================================================================
+[runlog] 2026-10-26 14:01:45  name=P106B_Stage10hW_actual_target_exposure_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 handoff/audit/oct26_research/run_actual_exposure.py
+==============================================================================
+[PHASE_BEGIN] 1/3 REGRESSION; child success is not the final experiment verdict
+test_complete_code_fence_is_preserved_and_excluded (__main__.ExposureTests) ... ok
+test_complete_heading_uses_existing_signal (__main__.ExposureTests) ... ok
+test_different_values_are_not_identical_repeated_lines (__main__.ExposureTests) ... ok
+test_invalid_offsets_and_bool_are_not_silently_clipped (__main__.ExposureTests) ... ok
+test_partial_boundary_headings_do_not_count (__main__.ExposureTests) ... ok
+test_prose_mentions_are_not_standalone_headings (__main__.ExposureTests) ... ok
+test_requested_repeated_lines_are_observations_not_removed (__main__.ExposureTests) ... ok
+test_shared_signal_implementation_is_reused (__main__.ExposureTests) ... ok
+test_targets_shift_one_and_keep_exact_width (__main__.ExposureTests) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
+OK
+[PHASE_END] 1/3 REGRESSION; rc=0; status=PASS
+[PHASE_BEGIN] 2/3 PREFLIGHT; child success is not the final experiment verdict
+{"status": "EXPOSURE_PREFLIGHT_ONLY", "windows": 292992, "files_written": 0, "gpu_calls": 0}
+[PHASE_END] 2/3 PREFLIGHT; rc=0; status=PASS
+[PHASE_BEGIN] 3/3 EXECUTE; child success is not the final experiment verdict
+{"phase": "COST", "scan_seconds": 0.1757601469871588, "full_forecast_seconds": 180.86811617010244}
+{"phase": "SCAN", "windows": 33024, "expected": 292992}
+{"phase": "SCAN", "windows": 65792, "expected": 292992}
+{"phase": "SCAN", "windows": 98560, "expected": 292992}
+{"phase": "SCAN", "windows": 131328, "expected": 292992}
+{"phase": "SCAN", "windows": 164096, "expected": 292992}
+{"phase": "SCAN", "windows": 196864, "expected": 292992}
+{"phase": "SCAN", "windows": 229632, "expected": 292992}
+{"phase": "SCAN", "windows": 262400, "expected": 292992}
+{"phase": "FINAL", "status": "FULL_ACTUAL_TARGET_EXPOSURE_AUDIT_COMPLETE", "actual_candidate_exit": 0, "windows": 292992, "targets": 300023808, "whole_seconds": 94.92765344999498, "output": "test_result/evidence/p106b_native_exposure_v1_20261026_roota"}
+[PHASE_END] 3/3 EXECUTE; rc=0; status=PASS
+[PHASE_PIPELINE_FINAL] {"evidence_scope": "stage execution, not model quality or scientific adoption", "experiment": "P106B_Stage10hW_actual_target_exposure_cpu", "failed_phase": null, "main_experiment_invoked": true, "phases": [{"phase": "REGRESSION", "returncode": 0, "status": "PASS"}, {"phase": "PREFLIGHT", "returncode": 0, "status": "PASS"}, {"phase": "EXECUTE", "returncode": 0, "status": "PASS"}], "returncode": 0, "schema": "P106B_STAGE_RECEIPT_V1", "status": "COMPLETE"}
+[EXPERIMENT_FINAL] {"status": "CLOSED_CPU_AUDIT", "returncode": 0, "raw_report": "test_result/evidence/p106b_native_exposure_v1_20261026_roota/report.json", "model_quality_claim": false}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.7분  (2026-10-26 14:03:25)
+==============================================================================
