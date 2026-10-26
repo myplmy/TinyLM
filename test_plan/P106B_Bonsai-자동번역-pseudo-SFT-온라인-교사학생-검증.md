@@ -9785,3 +9785,25 @@ GPU 결과 전에 native_dialogue_cases_v1.json으로 동결한다. prompt 문�
 새 모델을 더 가르치거나 같은 평가 답에 맞춰 재선택하지 않는다. 모델 로드/생성/전체 wall·표본메모리·소유회수와
 생성 전후 본체 지문을 닫고17시 전체 마감을 지킨다. 새 원답·manifest는20MB 미만 샤드로 나눈다.
 
+## Stage10g0W — 완료6과제 통계 접점의 CPU 계약
+
+두 새 공식full의 실제 root 종결·source58·profile·학습/평가원형·raw manifest SHA와 lineage만 새로 연결한다.
+기존 재계수·원문항 순서·정답/선택지·request 계약과 paired_intervals 및 정확 McNemar 함수는 재사용한다.
+통계는 모델이나 체크포인트 본문을 열지 않는다. 기존 고정 모델명/스키마를 새 모델로 치환하지 않는다.
+합성 CPU는 누락/부분full/분모·순서·SHA·지표 방향·Holm/seed·출력20MB 경계만 확인하며 가짜 모델 성과로 보고하지 않는다.
+
+## Stage10gW — 새 두 전체모델과 기존 기준선의 대응 통계
+
+GPU 원점수를 읽기 전에 비교를 고정한다. 원 주지표는 PIQA acc, ARC-E/ARC-C/HellaSwag acc_norm,
+WinoGrande/BoolQ acc이며 기존6과제 동일가중 평균을 보조 파생값으로 사용한다. BoolQ는3270 전량이고3269 보조결과와 합치지 않는다.
+ordered pair는 Muon→NorMuon, Native595-Q→Muon, Native595-Q→NorMuon, Falcon→Muon, Falcon→NorMuon의 다섯이다.
+차이는 항상 오른쪽−왼쪽이다. 기존 기준선끼리의 비교는 다시 하지 않는다.
+
+각 모델 전량19965문항/67106선택지·같은 docs/arguments/gold_choices/cases 네 순서 SHA를 요구한다.
+새 canonical doc SHA와 원 harness의 다른 직렬화 SHA를 같은 값으로 오인하지 않는다. Wino suffix를 gold label로 대체하지 않는다.
+원 paired_intervals의100000회/seed20261024로6과제·mean6의 pointwise95% 구간을 회수한다.
+과제별 실제 비음수 정수 불일치의 McNemar30개(5쌍×6과제)는 한 Holm5% 가족으로 표시한다.
+평균6의 검정을 과제 불일치 수를 합친 검정으로 대신하지 않는다. 학습seed/넓은 대화 불확실성·자동채택 판정은 아니다.
+사후최빈라벨·무작위/길이 휴리스틱은 진단 기준이며 학습된 모델로 승격하지 않는다. 과거595M/외부모델 대비는
+자료·학습량·구조가 달라 관측 벤치 비교이며, 같은300M의 Muon/NorMuon 직접 대조와 구분한다.
+
