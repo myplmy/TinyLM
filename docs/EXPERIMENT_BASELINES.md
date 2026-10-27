@@ -247,6 +247,10 @@ fp32 상주와 int8 상주가 갈린다.**
 | `P106B_Stage4fsXWc_oct26_supported_resume` | 같은 V3·같은 생성조건의26일 명시 재개 | 실제94.623초·시작VRAM14000MiB 조건 미충족 종료8, 모델/새자료0. 누적29480785·부족45519215 유지. OOM·query timeout·정상 생산pause로 세지 않는다. 결과101§522. |
 | `p102a_v12_kernel_v1_s1337_oct25a` | 원 ZIP·runtime7개 동결, M32 후 조건부8192의 정수곱·전치·producer 수치와 pack 포함 비용 | 실제 worker·감독·root0과 원형 불변·소유 정리를 회수했다. 큰 fullINT 세 형상의 native/후보 wall 비는0.8426/0.9386/0.5362배다. 큰 CPU oracle은8행·8열 표본이며 본학습 속도·품질 채택이 아니다. 결과093절17과 V12_KERNEL_ROOT_CLOSURE가 정본이다. |
 | `p102a_fused_ce_fp32_v1_s1337_oct25a` | 원 부모·첫128행·micro8×accum16·seq1024·checkpoint-on의 reference/Liger/CCE 각1update와 원 Muon 재생 | 실제 부모3팔 완결·root8·최종CUDA0. Liger raw157은 문턱 안이나 NS/update85는 음성, CCE raw16개도 음성이다. 원NS·문턱·reference 유지, CP저장·품질학습0. source20E2D751, 결과093절18과 FP32_PARENT_ROOT_CLOSURE. |
+| `p106b_resource_matrix_v2_20261027` | 완료TinyLM5모델×CPU1/CUDA2thread·FP32/MATH/KVon/MTPoff·고정128/512+32생성 | 결과101§558:10자식report/runlog0·동일ID/종료·원본불변/모델해제/owned정리0. 부모shell미회수. Q고유storage711896180B/F373337204B·실제답반복잔존·외부자원미완. packed배포나학습품질판정아님. 초기v1CUDA정리9는§556원형보존. |
+| `p005b_adamuon_gradient_cost_v1_20261027` | 독립FP32 V·같은8192목표기울기·폐기복사본Mu/Nor/Ada 두순서 | 결과078§19:실제17.752초/부모0·5형상독립수식일치·원형/기울기불변/정리0. Ada행렬state678690816B는Muon의2배·현재행렬step200.750/211.990ms로빠르지않음. 본체step/CP저장0·전체학습품질/효율미측정·기본Muon유지. |
+| `p106b_hf_resources_v2_20261027` | 완료HF4모델×CPU1/CUDA2thread·FP32/eager/MATH/KVon/MTPoff·native128/512+32 | 결과101§560:probe+8행/부모83799실제0·원형/최종core불변·모델해제/owned정리0. Falcon/Gemma270/Qwen06/Gemma1B 고유storage347.792/1022.715/2273.750/3814.264MiB. CPU도초기CUDA검증사용·packed/지능비교아님. 최초v1초기화9는§559보존. |
+| `p078_prefix_router_bootstrap_v3_s1337_bridge20261027` | 기존704본체동결·과거/current source분리·고정V3/별도512holdout·prefix-only | 결과066§14~15:실제29790/부모0으로TRAIN22528라벨·head880업데이트·DEV epoch1·TEST256×4완료. learnedCE2.7190/random_quota2.7231과실제원답오류/반복을구분한다. 원본체step0·지능채택0이며같은라우터를반복학습하지않는다. |
 | `p106b_supported_supervisor_v1_20261025_oct25a` | 기존 V3와 같은 입력·조건·명시 재개, 새 소유 감독과12시40분 절대 마감 | 실제8의 정상 증분 pause. 새874그룹·TRAIN 입력259054/지도23958, 누적29480785·75M까지45519215 부족. 같은 MTP·사고·샘플러·원형 불변·소유 정리와 새배치 검산 완료. sourceCBA05428·결과101절516, 내용·편입·학생학습은 미완이다. |
 | `p102a_v12_matched_pipeline_v1_s1337_oct25a` | 같은 BF16·GROUP128의 native/fullINT/hybrid·동일 y+7pack producer, warmup2/measure5 | 실제0·6행렬/2producer 완결. 큰 hybrid 재사용 두 형상은 약동률·작은 출력폭은 열세. 큰 producer 전방1.20~1.28배/VJP포함1.04배는 국소 관측이며 기본 trainer·전체 품질/속도 채택 아님. sourceE4DAE0F8·결과093절20. |
 | `p106b_alm_context_v6_s1337` | 같은 원1024의 native no-thinking/cold 확률; UTF8 조각은 원 top-K 조회 | CPU218/같은1024 SHA 완료(101§451). V5는32행 뒤UTF8 확률누락 부분실패(§450). 새 원17/전체/학생 효과는 미실행. |
@@ -4028,3 +4032,40 @@ TRAIN799.624M은300M의2배 **수량 선결만** 충족한다. 확장 원형의�
 [101 §555](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의후속CPU작업은기존HOLD817,494구간을전부재판정했다. 기존채택본문을보존하며새채택226,047·새중복제외130,752·잔여HOLD460,695를연결한별도`p106b_hold_recovery_v1_20261026_goalc/cache_v5`를실제생성했다. 전체계수·독립재생성의종결상태와SHA는결과절/생성·검산영수증이소유한다. 후행문맥잔여가있던cache_v3/v4를최종본으로승격하지않는다.
 
 새TRAIN901,936,870ID·VAL2,275,978ID는이전TRAIN799,623,912ID·VAL2,027,607ID와다른채택구성이다. 300M의2배수량선결은충족하지만학습사용·목표혼합·권리/원기사누설·실제입력연결/동일조건품질선결을대신하지않는다. 한글음절/codepoint1.05781%→4.34368%는문자대리지표이며한국어자료의정확비중이나승인된목표혼합비아니다. 기존양팔CE/공식점수/σ나optimizer판정을갱신하지않으며**추가300M금지는유지**한다.
+
+### 2026-10-27 동결 prefix 라우터와 실제 원스케일 패킹
+
+[066 §15](../test_result/066_20260831_P078-이득은-몰려있지만-어느-크롭인지는-재현되지-않는다.md)의 실제29790/부모0은 TRAIN22,528 라벨·head880업데이트·DEV256 선택·TEST256×4·원형 재계수의 전체다. 본체업데이트0·source51/기존CP 불변이며 새head만별도저장했다. 같은64/128/64 quota에서 CE는 learned2.719024670/random2.723148844/untrained2.736898039/TRAIN상수2.738929241이다. 작은 embedding 통계 head의 기술 관측으로 남기며 실제 첫답의 대상 혼동/반복·fully_pipeline_blind=false 때문에 지능/품질 채택하지 않는다. 방문량 동률은 시간/FLOP 동률이 아니다.
+
+[099 §7](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md)의 완료 Native595-Q는 g128 원scale+5트릿 코드로 새파일에서만 추론했다. FP32표 유지/기존TWN표를 분리한 고유storage는54,615,668/22,896,244B다. 원CPU1200초HOLD8과GPU타일128 수치ERROR9를 보존하고, 별도CPU5400초후속64533/0 및 형상대조69489/0 뒤 fullrow4096 전체GPU49139/0을 회수했다. 새GPU16위치는각정확동률이며 ID/종료/해제0이다. CPU약1.5~1.8tok/s·GPU약22~30tok/s로 같은기준선보다느리므로기본가속으로채택하지않는다. 가중치/storage 감소를 전체40MiB·직접packed커널·새한영품질·큰교사어휘/직접KL로승격하지않는다. 추가300M 금지는 그대로다.
+
+### 2026-10-27 GPT2 singleton 생성자원과 미해결 bulk
+
+[101 §§561~562](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은원bulk ERROR9·진단74314/0·전체27611의CUDA0/CPU HOLD8·별도CPU6275/0을연결한다. 동일Q4_K_M/원scale/b11396·F32KV·MTPoff·ctx1024에서chunk1의기기별16위치exact,chunk32/512는원tol음성이다. 같은singleton호출열의자기일관성이고일반KV/bulk해결은미확인이다.
+
+동일4문맥128/512+고정32·예열1/실측3/관찰3·자연4질문64를마쳤다. CUDA17.287초/CPU75.443초이며관찰TTFT는106.416~447.652/484.184~2240.368ms,무관찰tok/s는65.029~225.348/12.490~50.061이다. prefix각토큰head호출·CPU1/CUDA2·nativeQ4차이를명시한서술적값이며다른엔진의동등정밀도가속판정이아니다. 실제8답모두64한도·반복/오답이다. 소유worker각0/해제완료·source불변이고원CPU HOLD8/공식Core6점수불변이다. exact native model/KV/backend storage·연속물리peak·일반품질은미측정이다.
+
+[재귀13계열 이력](research/20261027_재귀실험_이력대조.md)은기존공유/깊이/재귀/셔플/재주입/라우터의실제조건·7CP의전체SHA/meta헤더를구분한다. 과거code/tokenizer/정밀도미확인을현재기본값으로채우지않으며새품질/현재삼진점수로옮기지않는다. P070의중간MLP수와이미완료한gate/CP진단의계획상태를정정했다. 새학습·추가300M은0이다.
+
+### 2026-10-27 실제V262144 packed와 참조 속도
+
+[099 §11](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md)은기존G270Tfull/V262144/E256·공유20층의옛가중치와같은현재지정tokenizer를사용한다. 기존32K Native595와같은모델/학습조건이라고비교하지않는다. CPU19431/0·GPU58402/0으로두표형식64위치exact/ID·종료·해제0을회수했고배포phase원CPtensor읽기0이다. 성공기준선/파일은재계산하지않았다.
+
+TWN고정storage27.498MiB/반환KV512일부합35.218MiB와실제GPUpeak102.960MiB·RSS를분리한다. packed CPU0.768~0.820/GPU9.106~10.055tok/s로참조언팩이느려기본가속/품질채택하지않는다. 16원답의오답/반복을보존하고헤더tuple/list·PathLike원오류9와옛32K수치/예산음성을유지한다. 실제큰표lookup/head기능과새교사동일어휘학습/직접KL/전체40MiB/직접커널/새지능은별개다. 추가300M금지도그대로다.
+
+### 2026-10-27 P013 문맥 분할의 기술 회계와 비용
+
+[결과106](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md)은기존Native595-Q/CLA2/R1/grad-checkpointON/BF16eager의같은가상full-window를비교한다. 전체786432위치·원천96호출계약30298/0과 F+B79138/0·98.952초를회수했다. 같은131072input/target에서micro8×accum16/32/64·seq1024/512/256의중앙값3.563120/3.992726/7.973745초다. 현분할은기본가속비채택이며allocatedpeak4815.092/3108.076/2254.568MiB감소와구분한다.
+
+18가상F+B·6warm/12실측·157gradient유한·원core/파일SHA불변·모델해제/소유CUDA0을확인했다. optimizer/저장/새자료학습0이며reserved캐시이월·타세션CPU1부하를보존한다. 제품trainer/compile/전체wall·본학습품질은NOT_RUN이고추가300M금지는그대로다. 동일token을맞춘것을동일context함수나고유코퍼스노출로해석하지않는다.
+
+### 2026-10-27 P107 가시성·shift와 기존 모델의 목적별 비용
+
+[107§6](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)의source39/profile9EF350FC는원Native595-Q/CLA2/R1/grad-checkpointON/BF16autocast/FP32CE를사용한다. CPU109/metadata56224·새전체smoke34481/0·정적16805/70통과뒤48383/실제0·111.261초로4조건24가상F+B를완료했다. optimizer/새자료학습/CP저장0·원core/파일/tokenizer불변·소유CUDA0이다.
+
+같은131072input의기본/doccausal/MNTP/혼합8+8중앙값은3.889391/4.272104/4.215564/4.176489초다. 혼합은목표별전체targetmean과고정0.5가중을사용하며추가두전체accum을돌리지않는다. default대약7.38%느렸고F+B peak5339.216MiB·후행audit포함peak를별도로검산했다. 문서가시성/손상/지도량이달라loss품질비교나원P013시간직접대조는무효다. 현재uniform15%·예약13의100%치환은완전GPT-BERT/적응형masking재현이아니며제품trainer·causalKD·본학습품질은미완이다. 추가300M금지를유지한다.
+### 2026-10-27 hard 정책과 argmax 전달
+
+`p107_hard_mask_policy_v2_20261027`은CPU6조건20761/0·27CPU회귀85047/0의기술계약이다.32K/262K의경계통계40V=1.25/10MiB와export RNG5056B를분리하며실제자료언어/희귀편향은미측정이다. `p107_argmax_transfer_v1_20261027`은30CPU14216/0뒤가상로짓만사용한GPU77194/0·내부1.745초다.262K full/selected ID획득7.188/4.084ms,allocatedpeak4096.188/4702.526MiB를보고하며생산기본으로자동채택하지않는다. [107§7~8](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md).
+
+속성검사의PolicyConfig.seed오탐은생성자세참조만명확히해회복했고검사기/기준은불변이다. 직접38976/0·CPU30시험65351/0·현재소스전체smoke69526/0·445.947초를회수했다. 원55571/1과두source/profile·실제0은모두보존한다. 모델학습/자료변경/체크포인트0·추가300M금지를유지하며사용자99에따라임시마감한다.

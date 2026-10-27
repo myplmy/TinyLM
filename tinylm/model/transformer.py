@@ -20,6 +20,7 @@ from .ternary import TLinear, ternary  # noqa: F401
 from .modules import (RMSNorm, Attention, MLP, Layer, build_attention,  # noqa: F401
                       build_rope, apply_rope)
 from .ternary import LoRA  # noqa: F401
+from .visibility import prepare_visibility
 
 
 class TiedMLPTransformer(nn.Module):
@@ -748,7 +749,7 @@ class TiedMLPTransformer(nn.Module):
     # ---------- forward ----------
     def forward(self, tokens, mode_override=None, return_aux=False,
                 past_kv=None, use_cache=False, logits_last_only=False, return_hidden=False,
-                return_mtp_hidden=False):
+                return_mtp_hidden=False, attention_mask=None):
         """`past_kv` 는 **owner 층 인덱스 → (k, v)** 딕셔너리다.
 
         ★CLA 주의: KV 를 공유하는 층들은 **캐시도 공유**한다. 그래서 캐시 키는 층 인덱스가
@@ -762,6 +763,14 @@ class TiedMLPTransformer(nn.Module):
             raise ValueError("MTP decode hidden is inference-only and cannot mix with auxiliary returns")
         # Default False keeps the original logits path and public generation contract.
         B, T = tokens.shape
+        explicit_schedule = None
+        if attention_mask is not None:
+            explicit_schedule = self.visit_schedule()
+            attention_mask = prepare_visibility(
+                attention_mask, tokens, cfg, explicit_schedule,
+                mode_override=mode_override, return_aux=return_aux, past_kv=past_kv,
+                use_cache=use_cache, logits_last_only=logits_last_only,
+                return_hidden=return_hidden, return_mtp_hidden=return_mtp_hidden)
         # 캐시가 있으면 이번 forward 의 토큰은 past 뒤에 붙는다 → 절대위치가 past_len 만큼 밀린다.
         past_len = 0
         if past_kv:
@@ -793,7 +802,7 @@ class TiedMLPTransformer(nn.Module):
                 _m._unpack_gen = self._unpack_gen
 
         # ★P031: 기본(infer_repeat=1.0)이면 schedule == range(n_layers) 라 종전과 동일하다.
-        schedule = self.visit_schedule()
+        schedule = self.visit_schedule() if explicit_schedule is None else explicit_schedule
         repeating = len(schedule) != cfg.n_layers
         # ★P049B: 학습 중 반복은 **`train_repeat` 으로만** 허용한다. `infer_repeat` 은 여전히 금지 —
         #   결과 020 이 그 mismatch 를 종결했고, 학습에서 켜면 grad checkpoint 와도 섞인다.
@@ -891,10 +900,19 @@ class TiedMLPTransformer(nn.Module):
             kv = kv_bank[key]
 
             if cfg.grad_checkpoint and self.training:
-                _out = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p, ao=_ao, wa=_want:
-                                  L(inp, k, cos, sin, mp, ao, wa), x, use_reentrant=False)
+                if attention_mask is None:
+                    _out = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p, ao=_ao, wa=_want:
+                                      L(inp, k, cos, sin, mp, ao, wa), x, use_reentrant=False)
+                else:
+                    _out = checkpoint(lambda inp, L=layer, k=kv, mp=mode_p,
+                                      am=attention_mask, rc=cos, rs=sin:
+                                      L(inp, k, rc, rs, mp, attention_mask=am),
+                                      x, use_reentrant=False)
             else:
-                _out = layer(x, kv, cos, sin, mode_p, _ao, _want)
+                if attention_mask is None:
+                    _out = layer(x, kv, cos, sin, mode_p, _ao, _want)
+                else:
+                    _out = layer(x, kv, cos, sin, mode_p, attention_mask=attention_mask)
             if _want:
                 x, _attn_cache[i] = _out
             else:

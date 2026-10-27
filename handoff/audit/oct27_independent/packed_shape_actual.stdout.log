@@ -1,0 +1,21 @@
+Preserve prior93877 ERROR9 and exact2e-5/2e-6 tolerance. Same payload/oracle and originalCPU-made scales, two embedding formats x3 row tiles x4 contexts x4 reference-generated positions=96. Diagnose GPU GEMM-shape effect; no quality/tolerance relaxation, no sourceCP load/training or payload edits. Full-row temporary unpack may raise peak. Diagnostic0 is not a quality or oldgate PASS.
+[runlog] 로그 파일: /home/uranus/tinyLM/test_result/099_log_20261027_P014E_Stage4We_tile_shape_numeric.txt  (387 bytes)
+
+==============================================================================
+[runlog] 2026-10-27 08:22:03  name=P014E_Stage4We_tile_shape_numeric
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p014e_tile_shape.py --mode diagnose --max-wall-sec 900 --profile handoff/audit/oct27_independent/packed_shape_profile_v1.json --profile-sha256 00E0E11553ECD6823AFB07606A00A41C7CEE779A9679555A6D81316FC91BB75D --execute
+==============================================================================
+{"variant": "fp32_unchanged", "tile_rows": 128, "original_allclose": false, "all_exact": false}
+{"variant": "fp32_unchanged", "tile_rows": 512, "original_allclose": false, "all_exact": false}
+{"variant": "fp32_unchanged", "tile_rows": 4096, "original_allclose": true, "all_exact": true}
+{"variant": "ternary5_existing_twn", "tile_rows": 128, "original_allclose": false, "all_exact": false}
+{"variant": "ternary5_existing_twn", "tile_rows": 512, "original_allclose": false, "all_exact": false}
+{"variant": "ternary5_existing_twn", "tile_rows": 4096, "original_allclose": true, "all_exact": true}
+{"status": "CONTROLLED_SHAPES_MEASURED_NOT_ADOPTED", "exit_code": 0, "seconds": 16.92941779800458}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-10-27 08:22:21)
+==============================================================================
+[runlog] 로그 파일: /home/uranus/tinyLM/test_result/099_log_20261027_P014E_Stage4We_tile_shape_numeric.txt  (1,867 bytes)
+Final diagnosis exit=0. Original numeric booleans/exact equality/top1/memory are separate. Prior error stays9 and diagnostic completion does not approve deployment or language quality.
+[runlog] 로그 파일: /home/uranus/tinyLM/test_result/099_log_20261027_P014E_Stage4We_tile_shape_numeric.txt  (2,052 bytes)

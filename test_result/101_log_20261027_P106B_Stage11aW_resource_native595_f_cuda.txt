@@ -1,0 +1,16 @@
+Frozen resource observation: actual picked-token TTFT, fixed32 generated tokens,128/512 prompts, warmup1 measured3. Natural EOS/EOT answers are separate. Physical storage, KV, process RSS and GPU allocator peaks are distinct. No training or quality adoption.
+
+==============================================================================
+[runlog] 2026-10-27 02:32:18  name=P106B_Stage11aW_resource_native595_f_cuda
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_resource_matrix.py --profile handoff/audit/oct27_independent/resource_profile_v2.json --profile-sha256 C53E523BC53A2298A166FF10AEDC4EEFB48E1F8C9C280FE03DD283A66FB962B7 --source-sha256 F9BD28AFB3C7D6FAD88C497CE0C8C4453D5D82913438EB6439CEEFBBCADF16FC --max-wall-sec 1800 --model native595-f --device cuda --execute
+==============================================================================
+{"model": "native595-f", "device": "cuda", "workload": "ko128", "done": true}
+{"model": "native595-f", "device": "cuda", "workload": "en128", "done": true}
+{"model": "native595-f", "device": "cuda", "workload": "ko512", "done": true}
+{"model": "native595-f", "device": "cuda", "workload": "en512", "done": true}
+{"status": "RESOURCE_LANE_COMPLETE_NOT_QUALITY", "model": "native595-f", "device": "cuda", "returncode": 9, "seconds": 14.801426091988105, "error": null}
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.3분  (2026-10-27 02:32:34)
+==============================================================================
+Final lane exit=9; inspect immutable report and actual parent exit. Zero is a resource-lane completion only; not a content PASS or full matrix closure.

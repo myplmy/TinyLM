@@ -1,0 +1,3198 @@
+{
+  "schema": "P107_HARD_MASK_CPU_CONTRACT_COST_V1",
+  "tag": "p107_hard_mask_policy_v2_20261027",
+  "source": {
+    "files": {
+      "tinylm/train/adaptive_masking.py": "E667201C815915CFAF28F3EE2B30E0D37FC5FD0B7F9AB4B671E0CC14C5AB57B4",
+      "tinylm/train/hybrid_mntp.py": "2E38170E64D3203D7B76027D17C951AD17D8FF19536F171C3EBE61E75C152093",
+      "scripts/diag_p107_adaptive_masking.py": "01B967597AA036F7B841754DD42FBCB5464CE2023E6D46D52A71C6A3B94B0A86",
+      "scripts/test_p107_adaptive_masking.py": "453B8CC14095B13E80A90EA1C0CF803C587D26354C96A66C3E22E7CEC904A91E",
+      "scripts/test_p107_adaptive_driver.py": "B2A861BFBBFFF32D2857C3E775274BF2DF0F2582830A8E923E42F1D5D38F8945",
+      "scripts/diag_p106b_resource_matrix.py": "25C4FA11154A05B4AFEF6498EFA871C59A57401D4BA4F3BE3CC69E5452E510B6"
+    },
+    "sha256": "84A275622248BDE41E137F8527383ADD7F810CBA3602BA1176F12509CB67A8BE"
+  },
+  "profile_sha256": "FF4B48A6F7E5F8779232B0E814B8C7F0E002E07020BAB14D53E1C6D4A2E9DB25",
+  "started_at": "2026-10-27T05:17:14.099962+00:00",
+  "status": "CPU_TECHNICAL_COMPLETE_NOT_QUALITY",
+  "cases": [
+    {
+      "vocab": 32768,
+      "condition": "uniform",
+      "status": "CASE_COMPLETE",
+      "attempts": [
+        {
+          "index": 0,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": true,
+          "selection_seconds": 0.0008329940028488636,
+          "materialize_seconds": 0.043016927025746554,
+          "observe_seconds": 3.5099219530820847e-07,
+          "commit_seconds": 6.999471224844456e-08,
+          "selected_targets": 1213,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1213,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14894400785854617
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 602,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14726027397260275
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 198,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16431535269709543
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 88,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1746031746031746
+            }
+          }
+        },
+        {
+          "index": 1,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0004022550128865987,
+          "materialize_seconds": 0.033764705003704876,
+          "observe_seconds": 3.910099621862173e-07,
+          "commit_seconds": 6.00120984017849e-08,
+          "selected_targets": 1208,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1208,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14833005893909626
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 597,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14603718199608612
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 180,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14937759336099585
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 76,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15079365079365079
+            }
+          }
+        },
+        {
+          "index": 2,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0003277729847468436,
+          "materialize_seconds": 0.013717616006033495,
+          "observe_seconds": 6.920017767697573e-07,
+          "commit_seconds": 6.999471224844456e-08,
+          "selected_targets": 1244,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1244,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.15275049115913555
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 626,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1531311154598826
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 165,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.13692946058091288
+            },
+            "fixture_rare_label": {
+              "eligible": 510,
+              "selected": 72,
+              "expected": 76.49999999999999,
+              "represented_threshold_sum": 76.50000303983688,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1411764705882353
+            }
+          }
+        },
+        {
+          "index": 3,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0003489439841359854,
+          "materialize_seconds": 0.01623503799783066,
+          "observe_seconds": 2.500019036233425e-07,
+          "commit_seconds": 1.5998375602066517e-07,
+          "selected_targets": 1261,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1261,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.15483791748526524
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 612,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15088757396449703
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 649,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1587573385518591
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 183,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.1517412935323383
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 76,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1484375
+            }
+          }
+        },
+        {
+          "index": 4,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.00029177500982768834,
+          "materialize_seconds": 0.012350787001196295,
+          "observe_seconds": 2.600136213004589e-07,
+          "commit_seconds": 6.00120984017849e-08,
+          "selected_targets": 1263,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1263,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.1550834970530452
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 621,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15310650887573965
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 642,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15704500978473582
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 180,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14925373134328357
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 78,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15234375
+            }
+          }
+        },
+        {
+          "index": 5,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.00023290302488021553,
+          "materialize_seconds": 0.014852325024548918,
+          "observe_seconds": 4.2101601138710976e-07,
+          "commit_seconds": 2.00001522898674e-07,
+          "selected_targets": 1183,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1183,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14526031434184675
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 563,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1388067061143984
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 620,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15166340508806261
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 168,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.13930348258706468
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 72,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.140625
+            }
+          }
+        },
+        {
+          "index": 6,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0002495250082574785,
+          "materialize_seconds": 0.0113434020022396,
+          "observe_seconds": 2.100132405757904e-07,
+          "commit_seconds": 1.2997770681977272e-07,
+          "selected_targets": 1202,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1202,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.1475933202357564
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 597,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14718934911242604
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 605,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14799412915851273
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 199,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16500829187396351
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 76,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1484375
+            }
+          }
+        },
+        {
+          "index": 7,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.00020641298033297062,
+          "materialize_seconds": 0.012201792997075245,
+          "observe_seconds": 2.8000795282423496e-07,
+          "commit_seconds": 8.000642992556095e-08,
+          "selected_targets": 1223,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1223,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.15017190569744598
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 605,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14799412915851273
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 184,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.15257048092868988
+            },
+            "fixture_rare_label": {
+              "eligible": 508,
+              "selected": 72,
+              "expected": 76.19999999999999,
+              "represented_threshold_sum": 76.20000302791595,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14173228346456693
+            }
+          }
+        }
+      ],
+      "resume_verified": true,
+      "classification": "SYNTHETIC_LABELS_ONLY_NOT_KOREAN_RARITY_OR_NUMERIC_CORPUS",
+      "median_seconds": {
+        "selection_seconds": 0.00029177500982768834,
+        "materialize_seconds": 0.013717616006033495,
+        "observe_seconds": 2.8000795282423496e-07,
+        "commit_seconds": 8.000642992556095e-08
+      }
+    },
+    {
+      "vocab": 32768,
+      "condition": "hard_keep",
+      "status": "CASE_COMPLETE",
+      "attempts": [
+        {
+          "index": 0,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": true,
+          "selection_seconds": 0.001051240018568933,
+          "materialize_seconds": 0.02557074898504652,
+          "observe_seconds": 0.0006428730266634375,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 1,
+            "weights_refreshed": false,
+            "supervised_observations": 1213
+          },
+          "commit_seconds": 0.00025189999723806977,
+          "selected_targets": 1213,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1213,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14894400785854617
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 602,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14726027397260275
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 198,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16431535269709543
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 88,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1746031746031746
+            }
+          }
+        },
+        {
+          "index": 1,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.000515941996127367,
+          "materialize_seconds": 0.016497703996719792,
+          "observe_seconds": 0.000394089991459623,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 2,
+            "weights_refreshed": true,
+            "supervised_observations": 1208
+          },
+          "commit_seconds": 0.0007386460201814771,
+          "selected_targets": 1208,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1208,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14833005893909626
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 597,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14603718199608612
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 180,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14937759336099585
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 76,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15079365079365079
+            }
+          }
+        },
+        {
+          "index": 2,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0020498090016189963,
+          "materialize_seconds": 0.011484377988381311,
+          "observe_seconds": 0.000390844012144953,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 3,
+            "weights_refreshed": false,
+            "supervised_observations": 1267
+          },
+          "commit_seconds": 0.00031391700031235814,
+          "selected_targets": 1267,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1267,
+              "expected": 1221.5999999999979,
+              "represented_threshold_sum": 1221.600001808256,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999974,
+              "realized_rate": 0.1555746561886051
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3524042536247,
+              "represented_threshold_sum": 608.3524053283036,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499882653485268,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 649,
+              "expected": 613.247595746373,
+              "represented_threshold_sum": 613.2475964799523,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15001164279510104,
+              "realized_rate": 0.1587573385518591
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 194,
+              "expected": 185.1200528244916,
+              "represented_threshold_sum": 185.12005366757512,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15362659985434987,
+              "realized_rate": 0.16099585062240665
+            },
+            "fixture_rare_label": {
+              "eligible": 510,
+              "selected": 82,
+              "expected": 73.46527752185199,
+              "represented_threshold_sum": 73.46527729555964,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14404956376833722,
+              "realized_rate": 0.1607843137254902
+            }
+          }
+        },
+        {
+          "index": 3,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0019915799784939736,
+          "materialize_seconds": 0.014424421999137849,
+          "observe_seconds": 0.0006421310245059431,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 4,
+            "weights_refreshed": true,
+            "supervised_observations": 1253
+          },
+          "commit_seconds": 0.0009399179834872484,
+          "selected_targets": 1253,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1253,
+              "expected": 1221.600000000003,
+              "represented_threshold_sum": 1221.60000057891,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000038,
+              "realized_rate": 0.15385559921414538
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 605,
+              "expected": 608.2510670445445,
+              "represented_threshold_sum": 608.2510666139424,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499632808295228,
+              "realized_rate": 0.14916173570019725
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 648,
+              "expected": 613.3489329554585,
+              "represented_threshold_sum": 613.3489339649677,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15003643174057205,
+              "realized_rate": 0.15851272015655576
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 188,
+              "expected": 184.81735125173455,
+              "represented_threshold_sum": 184.81735112145543,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15324821828502036,
+              "realized_rate": 0.1558872305140962
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 70,
+              "expected": 73.76152025203882,
+              "represented_threshold_sum": 73.7615202665329,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14406546924226332,
+              "realized_rate": 0.13671875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0025394110125489533,
+          "materialize_seconds": 0.011965813988354057,
+          "observe_seconds": 0.0005568999913521111,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 5,
+            "weights_refreshed": false,
+            "supervised_observations": 1265
+          },
+          "commit_seconds": 0.00024260097416117787,
+          "selected_targets": 1265,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1265,
+              "expected": 1221.6000000000017,
+              "represented_threshold_sum": 1221.5999989565462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000022,
+              "realized_rate": 0.15532907662082515
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 650,
+              "expected": 608.357453921202,
+              "represented_threshold_sum": 608.3574534505606,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14998951033560207,
+              "realized_rate": 0.16025641025641027
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 615,
+              "expected": 613.2425460787996,
+              "represented_threshold_sum": 613.2425455059856,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500104075535224,
+              "realized_rate": 0.150440313111546
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.1183783194353,
+              "represented_threshold_sum": 188.11837789416313,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1559853883245732,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 80,
+              "expected": 73.49725268077954,
+              "represented_threshold_sum": 73.49725285172462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14354932164214754,
+              "realized_rate": 0.15625
+            }
+          }
+        },
+        {
+          "index": 5,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0028639499796554446,
+          "materialize_seconds": 0.012904229981359094,
+          "observe_seconds": 0.0004140370001550764,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 6,
+            "weights_refreshed": true,
+            "supervised_observations": 1212
+          },
+          "commit_seconds": 0.0005602349992841482,
+          "selected_targets": 1212,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1212,
+              "expected": 1221.5999999999988,
+              "represented_threshold_sum": 1221.5999999046326,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999986,
+              "realized_rate": 0.14882121807465618
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 582,
+              "expected": 608.5390685051552,
+              "represented_threshold_sum": 608.5390685684979,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500342871067937,
+              "realized_rate": 0.14349112426035504
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 630,
+              "expected": 613.0609314948434,
+              "represented_threshold_sum": 613.0609313361347,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14996598128543137,
+              "realized_rate": 0.1541095890410959
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.35392851365768,
+              "represented_threshold_sum": 188.3539285324514,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1561807035768306,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 63,
+              "expected": 73.48048091471748,
+              "represented_threshold_sum": 73.48048113286495,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14351656428655757,
+              "realized_rate": 0.123046875
+            }
+          }
+        },
+        {
+          "index": 6,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0016439169994555414,
+          "materialize_seconds": 0.014459558005910367,
+          "observe_seconds": 0.0003323419950902462,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 7,
+            "weights_refreshed": false,
+            "supervised_observations": 1171
+          },
+          "commit_seconds": 0.00023354499717243016,
+          "selected_targets": 1171,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1171,
+              "expected": 1221.599999999996,
+              "represented_threshold_sum": 1221.5999994017184,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999952,
+              "realized_rate": 0.143786836935167
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 582,
+              "expected": 608.2757220993512,
+              "represented_threshold_sum": 608.2757215462625,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499693594919505,
+              "realized_rate": 0.14349112426035504
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 589,
+              "expected": 613.3242779006449,
+              "represented_threshold_sum": 613.3242778554559,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15003040066062742,
+              "realized_rate": 0.1440802348336595
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 184,
+              "expected": 185.20937668185127,
+              "represented_threshold_sum": 185.2093773353845,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15357328083072244,
+              "realized_rate": 0.15257048092868988
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 78,
+              "expected": 72.39374922016839,
+              "represented_threshold_sum": 72.39374938607216,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14139404144564138,
+              "realized_rate": 0.15234375
+            }
+          }
+        },
+        {
+          "index": 7,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0018226370157208294,
+          "materialize_seconds": 0.013951432018075138,
+          "observe_seconds": 0.0005626810016110539,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 8,
+            "weights_refreshed": true,
+            "supervised_observations": 1207
+          },
+          "commit_seconds": 0.000610620976658538,
+          "selected_targets": 1207,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1207,
+              "expected": 1221.6000000000013,
+              "represented_threshold_sum": 1221.5999994650483,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000016,
+              "realized_rate": 0.1482072691552063
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.399872444367,
+              "represented_threshold_sum": 608.399872019887,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999996855137254,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 596,
+              "expected": 613.2001275556341,
+              "represented_threshold_sum": 613.2001274451613,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000003120245453,
+              "realized_rate": 0.14579256360078277
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 190,
+              "expected": 185.57879476684226,
+              "represented_threshold_sum": 185.57879474759102,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15387959765078132,
+              "realized_rate": 0.15754560530679934
+            },
+            "fixture_rare_label": {
+              "eligible": 508,
+              "selected": 67,
+              "expected": 71.50865066577222,
+              "represented_threshold_sum": 71.50865057110786,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14076506036569336,
+              "realized_rate": 0.13188976377952755
+            }
+          }
+        }
+      ],
+      "resume_verified": true,
+      "classification": "SYNTHETIC_LABELS_ONLY_NOT_KOREAN_RARITY_OR_NUMERIC_CORPUS",
+      "state_export_seconds": 0.000751379004213959,
+      "state_load_seconds": 0.0016990320000331849,
+      "state_storage": {
+        "owned_tensor_storage_bytes": 1310720,
+        "rng_export_bytes": 5056,
+        "state_representation_bytes": 1315776,
+        "native_generator_bytes": null,
+        "scope": "OWNED_TENSOR_STORAGE_PLUS_EXPORTED_RNG;NOT_NATIVE_GENERATOR_RSS_OR_PEAK"
+      },
+      "median_seconds": {
+        "selection_seconds": 0.0019915799784939736,
+        "materialize_seconds": 0.013951432018075138,
+        "observe_seconds": 0.0004140370001550764,
+        "commit_seconds": 0.0005602349992841482
+      },
+      "final_state_sha256": "1C2A4D043DDBEA90D33E3CFC7714A3EC0E5C54C7D4B3057CB06E94B5604259FA",
+      "observed_types": 128,
+      "never_observed_types": 32640
+    },
+    {
+      "vocab": 32768,
+      "condition": "hard_prior",
+      "status": "CASE_COMPLETE",
+      "attempts": [
+        {
+          "index": 0,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": true,
+          "selection_seconds": 0.0009280959784518927,
+          "materialize_seconds": 0.025129937974270433,
+          "observe_seconds": 0.00045011600013822317,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 1,
+            "weights_refreshed": false,
+            "supervised_observations": 1213
+          },
+          "commit_seconds": 0.0002456170041114092,
+          "selected_targets": 1213,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1213,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14894400785854617
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 602,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14726027397260275
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 198,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16431535269709543
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 88,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1746031746031746
+            }
+          }
+        },
+        {
+          "index": 1,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0005675890133716166,
+          "materialize_seconds": 0.015542338020168245,
+          "observe_seconds": 0.00042993799434043467,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 2,
+            "weights_refreshed": true,
+            "supervised_observations": 1208
+          },
+          "commit_seconds": 0.0007523809908889234,
+          "selected_targets": 1208,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1208,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14833005893909626
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 597,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14603718199608612
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 180,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14937759336099585
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 76,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15079365079365079
+            }
+          }
+        },
+        {
+          "index": 2,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.001677301013842225,
+          "materialize_seconds": 0.011831627984065562,
+          "observe_seconds": 0.0004717479750979692,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 3,
+            "weights_refreshed": false,
+            "supervised_observations": 1267
+          },
+          "commit_seconds": 0.00024788102018646896,
+          "selected_targets": 1267,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1267,
+              "expected": 1221.5999999999979,
+              "represented_threshold_sum": 1221.600001808256,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999974,
+              "realized_rate": 0.1555746561886051
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3524042536247,
+              "represented_threshold_sum": 608.3524053283036,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499882653485268,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 649,
+              "expected": 613.247595746373,
+              "represented_threshold_sum": 613.2475964799523,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15001164279510104,
+              "realized_rate": 0.1587573385518591
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 194,
+              "expected": 185.1200528244916,
+              "represented_threshold_sum": 185.12005366757512,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15362659985434987,
+              "realized_rate": 0.16099585062240665
+            },
+            "fixture_rare_label": {
+              "eligible": 510,
+              "selected": 82,
+              "expected": 73.46527752185199,
+              "represented_threshold_sum": 73.46527729555964,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14404956376833722,
+              "realized_rate": 0.1607843137254902
+            }
+          }
+        },
+        {
+          "index": 3,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0029016710177529603,
+          "materialize_seconds": 0.013112937012920156,
+          "observe_seconds": 0.0006015639810357243,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 4,
+            "weights_refreshed": true,
+            "supervised_observations": 1253
+          },
+          "commit_seconds": 0.0008507089805789292,
+          "selected_targets": 1253,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1253,
+              "expected": 1221.600000000003,
+              "represented_threshold_sum": 1221.60000057891,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000038,
+              "realized_rate": 0.15385559921414538
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 605,
+              "expected": 608.2510670445445,
+              "represented_threshold_sum": 608.2510666139424,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499632808295228,
+              "realized_rate": 0.14916173570019725
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 648,
+              "expected": 613.3489329554585,
+              "represented_threshold_sum": 613.3489339649677,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15003643174057205,
+              "realized_rate": 0.15851272015655576
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 188,
+              "expected": 184.81735125173455,
+              "represented_threshold_sum": 184.81735112145543,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15324821828502036,
+              "realized_rate": 0.1558872305140962
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 70,
+              "expected": 73.76152025203882,
+              "represented_threshold_sum": 73.7615202665329,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14406546924226332,
+              "realized_rate": 0.13671875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0032135029905475676,
+          "materialize_seconds": 0.01197718598996289,
+          "observe_seconds": 0.00044062899542041123,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 5,
+            "weights_refreshed": false,
+            "supervised_observations": 1265
+          },
+          "commit_seconds": 0.0002766760007943958,
+          "selected_targets": 1265,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1265,
+              "expected": 1221.6000000000017,
+              "represented_threshold_sum": 1221.5999989565462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000022,
+              "realized_rate": 0.15532907662082515
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 650,
+              "expected": 608.357453921202,
+              "represented_threshold_sum": 608.3574534505606,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14998951033560207,
+              "realized_rate": 0.16025641025641027
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 615,
+              "expected": 613.2425460787996,
+              "represented_threshold_sum": 613.2425455059856,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500104075535224,
+              "realized_rate": 0.150440313111546
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.1183783194353,
+              "represented_threshold_sum": 188.11837789416313,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1559853883245732,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 80,
+              "expected": 73.49725268077954,
+              "represented_threshold_sum": 73.49725285172462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14354932164214754,
+              "realized_rate": 0.15625
+            }
+          }
+        },
+        {
+          "index": 5,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0030603839841205627,
+          "materialize_seconds": 0.011914196977159008,
+          "observe_seconds": 0.0005107719916850328,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 6,
+            "weights_refreshed": true,
+            "supervised_observations": 1212
+          },
+          "commit_seconds": 0.0010472220019437373,
+          "selected_targets": 1212,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1212,
+              "expected": 1221.5999999999988,
+              "represented_threshold_sum": 1221.5999999046326,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999986,
+              "realized_rate": 0.14882121807465618
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 582,
+              "expected": 608.5390685051552,
+              "represented_threshold_sum": 608.5390685684979,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500342871067937,
+              "realized_rate": 0.14349112426035504
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 630,
+              "expected": 613.0609314948434,
+              "represented_threshold_sum": 613.0609313361347,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14996598128543137,
+              "realized_rate": 0.1541095890410959
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.35392851365768,
+              "represented_threshold_sum": 188.3539285324514,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1561807035768306,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 63,
+              "expected": 73.48048091471748,
+              "represented_threshold_sum": 73.48048113286495,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14351656428655757,
+              "realized_rate": 0.123046875
+            }
+          }
+        },
+        {
+          "index": 6,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0015292699972633272,
+          "materialize_seconds": 0.014633098006015643,
+          "observe_seconds": 0.00063341498025693,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 7,
+            "weights_refreshed": false,
+            "supervised_observations": 1172
+          },
+          "commit_seconds": 0.0003410889767110348,
+          "selected_targets": 1172,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1172,
+              "expected": 1221.599999999997,
+              "represented_threshold_sum": 1221.5999995600432,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999963,
+              "realized_rate": 0.14390962671905697
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 580,
+              "expected": 608.2940046390886,
+              "represented_threshold_sum": 608.2940042112023,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14997386702147156,
+              "realized_rate": 0.14299802761341224
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 592,
+              "expected": 613.3059953609082,
+              "represented_threshold_sum": 613.305995348841,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15002592841509496,
+              "realized_rate": 0.14481409001956946
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 190,
+              "expected": 188.46353686820194,
+              "represented_threshold_sum": 188.46353711560369,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15627158944295352,
+              "realized_rate": 0.15754560530679934
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 78,
+              "expected": 71.86803218179637,
+              "represented_threshold_sum": 71.86803196370602,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14036725035507103,
+              "realized_rate": 0.15234375
+            }
+          }
+        },
+        {
+          "index": 7,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.001822798018110916,
+          "materialize_seconds": 0.014477834018180147,
+          "observe_seconds": 0.00042561901500448585,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 8,
+            "weights_refreshed": true,
+            "supervised_observations": 1206
+          },
+          "commit_seconds": 0.0006966060027480125,
+          "selected_targets": 1206,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1206,
+              "expected": 1221.6000000000001,
+              "represented_threshold_sum": 1221.5999992601573,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000002,
+              "realized_rate": 0.1480844793713163
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.4172749121963,
+              "represented_threshold_sum": 608.4172741863877,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500042591006401,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 595,
+              "expected": 613.1827250878039,
+              "represented_threshold_sum": 613.1827250737697,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499957742386996,
+              "realized_rate": 0.14554794520547945
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 192,
+              "expected": 188.82853300789276,
+              "represented_threshold_sum": 188.82853293418884,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1565742396417021,
+              "realized_rate": 0.15920398009950248
+            },
+            "fixture_rare_label": {
+              "eligible": 508,
+              "selected": 67,
+              "expected": 70.98963786746111,
+              "represented_threshold_sum": 70.98963788151741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.13974338162886046,
+              "realized_rate": 0.13188976377952755
+            }
+          }
+        }
+      ],
+      "resume_verified": true,
+      "classification": "SYNTHETIC_LABELS_ONLY_NOT_KOREAN_RARITY_OR_NUMERIC_CORPUS",
+      "state_export_seconds": 0.0007440260087605566,
+      "state_load_seconds": 0.0017300310137216002,
+      "state_storage": {
+        "owned_tensor_storage_bytes": 1310720,
+        "rng_export_bytes": 5056,
+        "state_representation_bytes": 1315776,
+        "native_generator_bytes": null,
+        "scope": "OWNED_TENSOR_STORAGE_PLUS_EXPORTED_RNG;NOT_NATIVE_GENERATOR_RSS_OR_PEAK"
+      },
+      "median_seconds": {
+        "selection_seconds": 0.001822798018110916,
+        "materialize_seconds": 0.013112937012920156,
+        "observe_seconds": 0.0004717479750979692,
+        "commit_seconds": 0.0006966060027480125
+      },
+      "final_state_sha256": "47CD9F20701CA6B4A3C2E43430C6E5A85EA3357C566AF0D457BD64AC47A092B4",
+      "observed_types": 128,
+      "never_observed_types": 32640
+    },
+    {
+      "vocab": 262144,
+      "condition": "uniform",
+      "status": "CASE_COMPLETE",
+      "attempts": [
+        {
+          "index": 0,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": true,
+          "selection_seconds": 0.0003982679918408394,
+          "materialize_seconds": 0.0301753870153334,
+          "observe_seconds": 5.00993337482214e-07,
+          "commit_seconds": 1.3998942449688911e-07,
+          "selected_targets": 1213,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1213,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14894400785854617
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 602,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14726027397260275
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 198,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16431535269709543
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 88,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1746031746031746
+            }
+          }
+        },
+        {
+          "index": 1,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0008556370157748461,
+          "materialize_seconds": 0.021741500997450203,
+          "observe_seconds": 2.709857653826475e-07,
+          "commit_seconds": 1.809967216104269e-07,
+          "selected_targets": 1208,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1208,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14833005893909626
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 597,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14603718199608612
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 180,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14937759336099585
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 76,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15079365079365079
+            }
+          }
+        },
+        {
+          "index": 2,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0006205200043041259,
+          "materialize_seconds": 0.01641580101568252,
+          "observe_seconds": 4.900211934000254e-07,
+          "commit_seconds": 1.9097933545708656e-07,
+          "selected_targets": 1244,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1244,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.15275049115913555
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 626,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1531311154598826
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 165,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.13692946058091288
+            },
+            "fixture_rare_label": {
+              "eligible": 510,
+              "selected": 72,
+              "expected": 76.49999999999999,
+              "represented_threshold_sum": 76.50000303983688,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1411764705882353
+            }
+          }
+        },
+        {
+          "index": 3,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0005291670095175505,
+          "materialize_seconds": 0.01646791899111122,
+          "observe_seconds": 7.110065780580044e-07,
+          "commit_seconds": 1.510197762399912e-07,
+          "selected_targets": 1261,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1261,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.15483791748526524
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 612,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15088757396449703
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 649,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1587573385518591
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 183,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.1517412935323383
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 76,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1484375
+            }
+          }
+        },
+        {
+          "index": 4,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0004616880032699555,
+          "materialize_seconds": 0.015398145013023168,
+          "observe_seconds": 5.2098766900599e-07,
+          "commit_seconds": 1.100124791264534e-07,
+          "selected_targets": 1263,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1263,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.1550834970530452
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 621,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15310650887573965
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 642,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15704500978473582
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 180,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14925373134328357
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 78,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15234375
+            }
+          }
+        },
+        {
+          "index": 5,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0002198080183006823,
+          "materialize_seconds": 0.014154106000205502,
+          "observe_seconds": 2.600136213004589e-07,
+          "commit_seconds": 1.5099067240953445e-07,
+          "selected_targets": 1183,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1183,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14526031434184675
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 563,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1388067061143984
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 620,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15166340508806261
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 168,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.13930348258706468
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 72,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.140625
+            }
+          }
+        },
+        {
+          "index": 6,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0006588730029761791,
+          "materialize_seconds": 0.016353619983419776,
+          "observe_seconds": 7.610069587826729e-07,
+          "commit_seconds": 9.100767783820629e-08,
+          "selected_targets": 1202,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1202,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.1475933202357564
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 597,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14718934911242604
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 605,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14799412915851273
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 199,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16500829187396351
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 76,
+              "expected": 76.79999999999998,
+              "represented_threshold_sum": 76.80000305175781,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1484375
+            }
+          }
+        },
+        {
+          "index": 7,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0007814059790689498,
+          "materialize_seconds": 0.022642848023679107,
+          "observe_seconds": 8.920032996684313e-07,
+          "commit_seconds": 1.8000719137489796e-07,
+          "selected_targets": 1223,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1223,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.15017190569744598
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 605,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14799412915851273
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 184,
+              "expected": 180.9,
+              "represented_threshold_sum": 180.90000718832016,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.15257048092868988
+            },
+            "fixture_rare_label": {
+              "eligible": 508,
+              "selected": 72,
+              "expected": 76.19999999999999,
+              "represented_threshold_sum": 76.20000302791595,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14173228346456693
+            }
+          }
+        }
+      ],
+      "resume_verified": true,
+      "classification": "SYNTHETIC_LABELS_ONLY_NOT_KOREAN_RARITY_OR_NUMERIC_CORPUS",
+      "median_seconds": {
+        "selection_seconds": 0.0006205200043041259,
+        "materialize_seconds": 0.01641580101568252,
+        "observe_seconds": 5.2098766900599e-07,
+        "commit_seconds": 1.510197762399912e-07
+      }
+    },
+    {
+      "vocab": 262144,
+      "condition": "hard_keep",
+      "status": "CASE_COMPLETE",
+      "attempts": [
+        {
+          "index": 0,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": true,
+          "selection_seconds": 0.0013518019986804575,
+          "materialize_seconds": 0.02696932799881324,
+          "observe_seconds": 0.001771709998138249,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 1,
+            "weights_refreshed": false,
+            "supervised_observations": 1213
+          },
+          "commit_seconds": 0.0024246420070994645,
+          "selected_targets": 1213,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1213,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14894400785854617
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 602,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14726027397260275
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 198,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16431535269709543
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 88,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1746031746031746
+            }
+          }
+        },
+        {
+          "index": 1,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.001076498010661453,
+          "materialize_seconds": 0.02073518600082025,
+          "observe_seconds": 0.001747383998008445,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 2,
+            "weights_refreshed": true,
+            "supervised_observations": 1208
+          },
+          "commit_seconds": 0.004731583001557738,
+          "selected_targets": 1208,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1208,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14833005893909626
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 597,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14603718199608612
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 180,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14937759336099585
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 76,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15079365079365079
+            }
+          }
+        },
+        {
+          "index": 2,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.003690090001327917,
+          "materialize_seconds": 0.01490532499155961,
+          "observe_seconds": 0.0018571930122561753,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 3,
+            "weights_refreshed": false,
+            "supervised_observations": 1267
+          },
+          "commit_seconds": 0.002026586007559672,
+          "selected_targets": 1267,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1267,
+              "expected": 1221.5999999999979,
+              "represented_threshold_sum": 1221.600001808256,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999974,
+              "realized_rate": 0.1555746561886051
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3524042536247,
+              "represented_threshold_sum": 608.3524053283036,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499882653485268,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 649,
+              "expected": 613.247595746373,
+              "represented_threshold_sum": 613.2475964799523,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15001164279510104,
+              "realized_rate": 0.1587573385518591
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 194,
+              "expected": 185.1200528244916,
+              "represented_threshold_sum": 185.12005366757512,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15362659985434987,
+              "realized_rate": 0.16099585062240665
+            },
+            "fixture_rare_label": {
+              "eligible": 510,
+              "selected": 82,
+              "expected": 73.46527752185199,
+              "represented_threshold_sum": 73.46527729555964,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14404956376833722,
+              "realized_rate": 0.1607843137254902
+            }
+          }
+        },
+        {
+          "index": 3,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0034326090244576335,
+          "materialize_seconds": 0.03195992100518197,
+          "observe_seconds": 0.0012214939924888313,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 4,
+            "weights_refreshed": true,
+            "supervised_observations": 1253
+          },
+          "commit_seconds": 0.0036370489979162812,
+          "selected_targets": 1253,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1253,
+              "expected": 1221.600000000003,
+              "represented_threshold_sum": 1221.60000057891,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000038,
+              "realized_rate": 0.15385559921414538
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 605,
+              "expected": 608.2510670445445,
+              "represented_threshold_sum": 608.2510666139424,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499632808295228,
+              "realized_rate": 0.14916173570019725
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 648,
+              "expected": 613.3489329554585,
+              "represented_threshold_sum": 613.3489339649677,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15003643174057205,
+              "realized_rate": 0.15851272015655576
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 188,
+              "expected": 184.81735125173455,
+              "represented_threshold_sum": 184.81735112145543,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15324821828502036,
+              "realized_rate": 0.1558872305140962
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 70,
+              "expected": 73.76152025203882,
+              "represented_threshold_sum": 73.7615202665329,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14406546924226332,
+              "realized_rate": 0.13671875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.002624421991640702,
+          "materialize_seconds": 0.018753014999674633,
+          "observe_seconds": 0.001329308986896649,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 5,
+            "weights_refreshed": false,
+            "supervised_observations": 1265
+          },
+          "commit_seconds": 0.0018659390043467283,
+          "selected_targets": 1265,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1265,
+              "expected": 1221.6000000000017,
+              "represented_threshold_sum": 1221.5999989565462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000022,
+              "realized_rate": 0.15532907662082515
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 650,
+              "expected": 608.357453921202,
+              "represented_threshold_sum": 608.3574534505606,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14998951033560207,
+              "realized_rate": 0.16025641025641027
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 615,
+              "expected": 613.2425460787996,
+              "represented_threshold_sum": 613.2425455059856,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500104075535224,
+              "realized_rate": 0.150440313111546
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.1183783194353,
+              "represented_threshold_sum": 188.11837789416313,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1559853883245732,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 80,
+              "expected": 73.49725268077954,
+              "represented_threshold_sum": 73.49725285172462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14354932164214754,
+              "realized_rate": 0.15625
+            }
+          }
+        },
+        {
+          "index": 5,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.002619222999783233,
+          "materialize_seconds": 0.013290442002471536,
+          "observe_seconds": 0.0016168959846254438,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 6,
+            "weights_refreshed": true,
+            "supervised_observations": 1212
+          },
+          "commit_seconds": 0.004221730981953442,
+          "selected_targets": 1212,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1212,
+              "expected": 1221.5999999999988,
+              "represented_threshold_sum": 1221.5999999046326,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999986,
+              "realized_rate": 0.14882121807465618
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 582,
+              "expected": 608.5390685051552,
+              "represented_threshold_sum": 608.5390685684979,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500342871067937,
+              "realized_rate": 0.14349112426035504
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 630,
+              "expected": 613.0609314948434,
+              "represented_threshold_sum": 613.0609313361347,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14996598128543137,
+              "realized_rate": 0.1541095890410959
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.35392851365768,
+              "represented_threshold_sum": 188.3539285324514,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1561807035768306,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 63,
+              "expected": 73.48048091471748,
+              "represented_threshold_sum": 73.48048113286495,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14351656428655757,
+              "realized_rate": 0.123046875
+            }
+          }
+        },
+        {
+          "index": 6,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.003223583014914766,
+          "materialize_seconds": 0.016892536979867145,
+          "observe_seconds": 0.001588881976203993,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 7,
+            "weights_refreshed": false,
+            "supervised_observations": 1171
+          },
+          "commit_seconds": 0.0018676919862627983,
+          "selected_targets": 1171,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1171,
+              "expected": 1221.599999999996,
+              "represented_threshold_sum": 1221.5999994017184,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999952,
+              "realized_rate": 0.143786836935167
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 582,
+              "expected": 608.2757220993512,
+              "represented_threshold_sum": 608.2757215462625,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499693594919505,
+              "realized_rate": 0.14349112426035504
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 589,
+              "expected": 613.3242779006449,
+              "represented_threshold_sum": 613.3242778554559,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15003040066062742,
+              "realized_rate": 0.1440802348336595
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 184,
+              "expected": 185.20937668185127,
+              "represented_threshold_sum": 185.2093773353845,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15357328083072244,
+              "realized_rate": 0.15257048092868988
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 78,
+              "expected": 72.39374922016839,
+              "represented_threshold_sum": 72.39374938607216,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14139404144564138,
+              "realized_rate": 0.15234375
+            }
+          }
+        },
+        {
+          "index": 7,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0026025010156445205,
+          "materialize_seconds": 0.014375868981005624,
+          "observe_seconds": 0.0018616610032040626,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 8,
+            "weights_refreshed": true,
+            "supervised_observations": 1207
+          },
+          "commit_seconds": 0.004259863984771073,
+          "selected_targets": 1207,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1207,
+              "expected": 1221.6000000000013,
+              "represented_threshold_sum": 1221.5999994650483,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000016,
+              "realized_rate": 0.1482072691552063
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.399872444367,
+              "represented_threshold_sum": 608.399872019887,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999996855137254,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 596,
+              "expected": 613.2001275556341,
+              "represented_threshold_sum": 613.2001274451613,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000003120245453,
+              "realized_rate": 0.14579256360078277
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 190,
+              "expected": 185.57879476684226,
+              "represented_threshold_sum": 185.57879474759102,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15387959765078132,
+              "realized_rate": 0.15754560530679934
+            },
+            "fixture_rare_label": {
+              "eligible": 508,
+              "selected": 67,
+              "expected": 71.50865066577222,
+              "represented_threshold_sum": 71.50865057110786,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14076506036569336,
+              "realized_rate": 0.13188976377952755
+            }
+          }
+        }
+      ],
+      "resume_verified": true,
+      "classification": "SYNTHETIC_LABELS_ONLY_NOT_KOREAN_RARITY_OR_NUMERIC_CORPUS",
+      "state_export_seconds": 0.005536472017411143,
+      "state_load_seconds": 0.015556876984192058,
+      "state_storage": {
+        "owned_tensor_storage_bytes": 10485760,
+        "rng_export_bytes": 5056,
+        "state_representation_bytes": 10490816,
+        "native_generator_bytes": null,
+        "scope": "OWNED_TENSOR_STORAGE_PLUS_EXPORTED_RNG;NOT_NATIVE_GENERATOR_RSS_OR_PEAK"
+      },
+      "median_seconds": {
+        "selection_seconds": 0.002624421991640702,
+        "materialize_seconds": 0.016892536979867145,
+        "observe_seconds": 0.0016168959846254438,
+        "commit_seconds": 0.0036370489979162812
+      },
+      "final_state_sha256": "0FE866FC3E1C4D84F1923817EC0555F0DDAB3351D8B61D7830965DBBA38BEC8F",
+      "observed_types": 128,
+      "never_observed_types": 262016
+    },
+    {
+      "vocab": 262144,
+      "condition": "hard_prior",
+      "status": "CASE_COMPLETE",
+      "attempts": [
+        {
+          "index": 0,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": true,
+          "selection_seconds": 0.0011768390249926597,
+          "materialize_seconds": 0.02588823900441639,
+          "observe_seconds": 0.001654507010243833,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 1,
+            "weights_refreshed": false,
+            "supervised_observations": 1213
+          },
+          "commit_seconds": 0.002272523008286953,
+          "selected_targets": 1213,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1213,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14894400785854617
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 602,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14726027397260275
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 198,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.16431535269709543
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 88,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.1746031746031746
+            }
+          }
+        },
+        {
+          "index": 1,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0006795619847252965,
+          "materialize_seconds": 0.017674321978120133,
+          "observe_seconds": 0.0015456000110134482,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 2,
+            "weights_refreshed": true,
+            "supervised_observations": 1208
+          },
+          "commit_seconds": 0.0065928119875025,
+          "selected_targets": 1208,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1208,
+              "expected": 1221.5999999999995,
+              "represented_threshold_sum": 1221.6000485420227,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999994,
+              "realized_rate": 0.14833005893909626
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.3999999999999,
+              "represented_threshold_sum": 608.4000241756439,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 597,
+              "expected": 613.1999999999998,
+              "represented_threshold_sum": 613.2000243663788,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.14603718199608612
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 180,
+              "expected": 180.75,
+              "represented_threshold_sum": 180.7500071823597,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15,
+              "realized_rate": 0.14937759336099585
+            },
+            "fixture_rare_label": {
+              "eligible": 504,
+              "selected": 76,
+              "expected": 75.59999999999998,
+              "represented_threshold_sum": 75.6000030040741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999997,
+              "realized_rate": 0.15079365079365079
+            }
+          }
+        },
+        {
+          "index": 2,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0025434290000703186,
+          "materialize_seconds": 0.014072721998672932,
+          "observe_seconds": 0.0015438369882758707,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 3,
+            "weights_refreshed": false,
+            "supervised_observations": 1267
+          },
+          "commit_seconds": 0.002475118002621457,
+          "selected_targets": 1267,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1267,
+              "expected": 1221.5999999999979,
+              "represented_threshold_sum": 1221.600001808256,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999974,
+              "realized_rate": 0.1555746561886051
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 618,
+              "expected": 608.3524042536247,
+              "represented_threshold_sum": 608.3524053283036,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499882653485268,
+              "realized_rate": 0.15236686390532544
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 649,
+              "expected": 613.247595746373,
+              "represented_threshold_sum": 613.2475964799523,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15001164279510104,
+              "realized_rate": 0.1587573385518591
+            },
+            "fixture_digit_label": {
+              "eligible": 1205,
+              "selected": 194,
+              "expected": 185.1200528244916,
+              "represented_threshold_sum": 185.12005366757512,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15362659985434987,
+              "realized_rate": 0.16099585062240665
+            },
+            "fixture_rare_label": {
+              "eligible": 510,
+              "selected": 82,
+              "expected": 73.46527752185199,
+              "represented_threshold_sum": 73.46527729555964,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14404956376833722,
+              "realized_rate": 0.1607843137254902
+            }
+          }
+        },
+        {
+          "index": 3,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.004216320987325162,
+          "materialize_seconds": 0.028227048984263092,
+          "observe_seconds": 0.0016938319895416498,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 4,
+            "weights_refreshed": true,
+            "supervised_observations": 1253
+          },
+          "commit_seconds": 0.007197132013970986,
+          "selected_targets": 1253,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1253,
+              "expected": 1221.600000000003,
+              "represented_threshold_sum": 1221.60000057891,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000038,
+              "realized_rate": 0.15385559921414538
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 605,
+              "expected": 608.2510670445445,
+              "represented_threshold_sum": 608.2510666139424,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499632808295228,
+              "realized_rate": 0.14916173570019725
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 648,
+              "expected": 613.3489329554585,
+              "represented_threshold_sum": 613.3489339649677,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15003643174057205,
+              "realized_rate": 0.15851272015655576
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 188,
+              "expected": 184.81735125173455,
+              "represented_threshold_sum": 184.81735112145543,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15324821828502036,
+              "realized_rate": 0.1558872305140962
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 70,
+              "expected": 73.76152025203882,
+              "represented_threshold_sum": 73.7615202665329,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14406546924226332,
+              "realized_rate": 0.13671875
+            }
+          }
+        },
+        {
+          "index": 4,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0021870610071346164,
+          "materialize_seconds": 0.01367204001871869,
+          "observe_seconds": 0.0015194900042843074,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 5,
+            "weights_refreshed": false,
+            "supervised_observations": 1265
+          },
+          "commit_seconds": 0.0022136409825179726,
+          "selected_targets": 1265,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1265,
+              "expected": 1221.6000000000017,
+              "represented_threshold_sum": 1221.5999989565462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000022,
+              "realized_rate": 0.15532907662082515
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 650,
+              "expected": 608.357453921202,
+              "represented_threshold_sum": 608.3574534505606,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14998951033560207,
+              "realized_rate": 0.16025641025641027
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 615,
+              "expected": 613.2425460787996,
+              "represented_threshold_sum": 613.2425455059856,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500104075535224,
+              "realized_rate": 0.150440313111546
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.1183783194353,
+              "represented_threshold_sum": 188.11837789416313,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1559853883245732,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 80,
+              "expected": 73.49725268077954,
+              "represented_threshold_sum": 73.49725285172462,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14354932164214754,
+              "realized_rate": 0.15625
+            }
+          }
+        },
+        {
+          "index": 5,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.004950576985720545,
+          "materialize_seconds": 0.03359712500241585,
+          "observe_seconds": 0.0021555600105784833,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 6,
+            "weights_refreshed": true,
+            "supervised_observations": 1212
+          },
+          "commit_seconds": 0.007419664994813502,
+          "selected_targets": 1212,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1212,
+              "expected": 1221.5999999999988,
+              "represented_threshold_sum": 1221.5999999046326,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999986,
+              "realized_rate": 0.14882121807465618
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 582,
+              "expected": 608.5390685051552,
+              "represented_threshold_sum": 608.5390685684979,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500342871067937,
+              "realized_rate": 0.14349112426035504
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 630,
+              "expected": 613.0609314948434,
+              "represented_threshold_sum": 613.0609313361347,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14996598128543137,
+              "realized_rate": 0.1541095890410959
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 176,
+              "expected": 188.35392851365768,
+              "represented_threshold_sum": 188.3539285324514,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1561807035768306,
+              "realized_rate": 0.14593698175787728
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 63,
+              "expected": 73.48048091471748,
+              "represented_threshold_sum": 73.48048113286495,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14351656428655757,
+              "realized_rate": 0.123046875
+            }
+          }
+        },
+        {
+          "index": 6,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.0029160070116631687,
+          "materialize_seconds": 0.0261275939992629,
+          "observe_seconds": 0.002380288002314046,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 7,
+            "weights_refreshed": false,
+            "supervised_observations": 1172
+          },
+          "commit_seconds": 0.003064629010623321,
+          "selected_targets": 1172,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1172,
+              "expected": 1221.599999999997,
+              "represented_threshold_sum": 1221.5999995600432,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14999999999999963,
+              "realized_rate": 0.14390962671905697
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 580,
+              "expected": 608.2940046390886,
+              "represented_threshold_sum": 608.2940042112023,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14997386702147156,
+              "realized_rate": 0.14299802761341224
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 592,
+              "expected": 613.3059953609082,
+              "represented_threshold_sum": 613.305995348841,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15002592841509496,
+              "realized_rate": 0.14481409001956946
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 190,
+              "expected": 188.46353686820194,
+              "represented_threshold_sum": 188.46353711560369,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15627158944295352,
+              "realized_rate": 0.15754560530679934
+            },
+            "fixture_rare_label": {
+              "eligible": 512,
+              "selected": 78,
+              "expected": 71.86803218179637,
+              "represented_threshold_sum": 71.86803196370602,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.14036725035507103,
+              "realized_rate": 0.15234375
+            }
+          }
+        },
+        {
+          "index": 7,
+          "status": "ATTEMPT_COMPLETE",
+          "warmup": false,
+          "selection_seconds": 0.009108357015065849,
+          "materialize_seconds": 0.023217672016471624,
+          "observe_seconds": 0.004234585998347029,
+          "virtual_commit": {
+            "accepted": true,
+            "next_update": 8,
+            "weights_refreshed": true,
+            "supervised_observations": 1206
+          },
+          "commit_seconds": 0.012670313008129597,
+          "selected_targets": 1206,
+          "executed_model_input_tokens": 0,
+          "source_fixture_positions": 8200,
+          "group_audit": {
+            "all": {
+              "eligible": 8144,
+              "selected": 1206,
+              "expected": 1221.6000000000001,
+              "represented_threshold_sum": 1221.5999992601573,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.15000000000000002,
+              "realized_rate": 0.1480844793713163
+            },
+            "fixture_ko_label": {
+              "eligible": 4056,
+              "selected": 611,
+              "expected": 608.4172749121963,
+              "represented_threshold_sum": 608.4172741863877,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1500042591006401,
+              "realized_rate": 0.15064102564102563
+            },
+            "fixture_en_label": {
+              "eligible": 4088,
+              "selected": 595,
+              "expected": 613.1827250878039,
+              "represented_threshold_sum": 613.1827250737697,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1499957742386996,
+              "realized_rate": 0.14554794520547945
+            },
+            "fixture_digit_label": {
+              "eligible": 1206,
+              "selected": 192,
+              "expected": 188.82853300789276,
+              "represented_threshold_sum": 188.82853293418884,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.1565742396417021,
+              "realized_rate": 0.15920398009950248
+            },
+            "fixture_rare_label": {
+              "eligible": 508,
+              "selected": 67,
+              "expected": 70.98963786746111,
+              "represented_threshold_sum": 70.98963788151741,
+              "comparison_dtype": "torch.float32",
+              "expected_rate": 0.13974338162886046,
+              "realized_rate": 0.13188976377952755
+            }
+          }
+        }
+      ],
+      "resume_verified": true,
+      "classification": "SYNTHETIC_LABELS_ONLY_NOT_KOREAN_RARITY_OR_NUMERIC_CORPUS",
+      "state_export_seconds": 0.005593580979621038,
+      "state_load_seconds": 0.016275539994239807,
+      "state_storage": {
+        "owned_tensor_storage_bytes": 10485760,
+        "rng_export_bytes": 5056,
+        "state_representation_bytes": 10490816,
+        "native_generator_bytes": null,
+        "scope": "OWNED_TENSOR_STORAGE_PLUS_EXPORTED_RNG;NOT_NATIVE_GENERATOR_RSS_OR_PEAK"
+      },
+      "median_seconds": {
+        "selection_seconds": 0.0029160070116631687,
+        "materialize_seconds": 0.023217672016471624,
+        "observe_seconds": 0.0016938319895416498,
+        "commit_seconds": 0.0065928119875025
+      },
+      "final_state_sha256": "DC898FA6710162A6F535187F80FEF2CBCA6DC4A2E4C6E3DA9AA44F204A0058DA",
+      "observed_types": 128,
+      "never_observed_types": 262016
+    }
+  ],
+  "models": 0,
+  "optimizer_updates": 0,
+  "checkpoint_writes": 0,
+  "gpu_calls": 0,
+  "quality_claim": false,
+  "torch_version": "2.10.0+cu130",
+  "cpu_threads": 1,
+  "source_corpus_reads": 0,
+  "draw_dtype": "torch.float32",
+  "expected_budget": "ANALYTICAL_FP64;REPRESENTED_THRESHOLDS_RECORDED_SEPARATELY",
+  "cuda_initialized": false,
+  "source_unchanged": true,
+  "exit_code": 0,
+  "seconds": 1.5654896390042268,
+  "ended_at": "2026-10-27T05:17:15.665455+00:00",
+  "process_lifetime_peak_rss_bytes": 698679296
+}

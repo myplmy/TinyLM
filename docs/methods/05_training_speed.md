@@ -29,7 +29,7 @@
 | **cooldown-QAT 융합 스케줄(정렬)** | ⏸**실측완료·귀속 미확정**(결과 015) | v6 (`--anneal-end`·`--decay-frac`) | LR 감쇠와 QAT(어닐)를 겹쳐 중복 full-precision 업데이트 제거 | **정렬 고유 효과가 검출되지 않았다**(−0.0128 = 1.1σ < 2σ) | ★결과 015: `qb_wsd80 − qb_wsd60 = −0.0128`. 15% 스텝 절감(`qb_wsd80_s85` vs `qb_cos` **+0.0050**)은 성립하나 **wsd 성분과 분리 안 됨** → 빠진 칸 `qb_wsd60_s85`(P026 단계5) 전까지 채택 보류. arXiv:2509.22935 |
 | **WSD 스케줄(스텝 절감 레버)** | ✅**측정·연구 recipe 채택** | v6 (`--sched wsd`) | 긴 plateau + 마지막 `decay_frac` 감쇠 | CLI 기본은 아직 cosine이라 명시 플래그 필요 | ★결과 015: 동일 스텝·동일 종료 LR(peak×0.1)에서 cosine 대비 **−0.0755(6.3σ)**. 시간 비용 0(정상상태 ms/step 2502~2520, 스케줄 무관). **dense 에서만 확인** — tied+KD 미검증 |
 | **anneal 동역학 계측** | ✅**A0~A3 실제 완료**(2026-09-15 결과084); 기본 품질 선택과 별개 | `anneal_schedule.py`, `--anneal-audit*` | LR/quant/aux·quant거리/code flip/경계·grad/update를 분리한250step 세팔. 후반 궤적의 지속 차이는 미검출 | 해당 표본의 audit on/off 오염은 사전문턱 통과. 모든 모델의0오버헤드·최적 anneal/STE 보장 아님 | [결과084](../../test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md)가 실행 정본. 초판 A3미실행 표기를2026-10-21 정정. backward 선택은 [리뷰08 §30](08_paper_review2.md)의 별도 미실행 후보 |
-| **seq-length warmup(P013)** | 💡→📌**설계조건 확보** | — (P013) | 초반 짧은 seq 로 어텐션 O(seq²) 절감 | **M 유지 필수** — seq 절반이면 mb 2배 | ★P021B: mb16×seq512(M=8192) 가 표준 mb8×seq1024(M=8192) 대비 **-5.7%**. 단 seq·mb 가 동시에 변해 기여도 분리는 안 됨. 이 값을 이득 상한으로 |
+| **seq-length warmup(P013)** | 🧪**동일token 분할 비용 음성** | 결과106 | 같은1024 x/y 전위치/RNG·131072분모 보존 | micro8에서accum64/32/16으로보전,contextreset 명시 | 1024/512/256 F+B중앙값3.563/3.993/7.974초로현분할 비채택. allocatedpeak4815/3108/2255MiB 감소와 본학습가속은별개. micro-token유지의기존P021B는seq·mb 교락이있는 별도이력 |
 | **데이터 풀 다양성(`--pool-tokens`)** | ✅**측정·조건부 채택** | v6 | 학습토큰은 그대로 두고 샘플 풀만 확대 → 반복 노출 감소 | 토큰화 1회 비용·디스크; pool별 언어비·val이 바뀌면 비교 교락 | 결과 006 log-val −0.12에는 시험지 변화가 섞였다. 같은 common text 방향은 양수지만 큰 pool의 영어 편향이 있다. 언어비를 보존한 exact cache에서만 “무료 품질 레버”로 사용 |
 | **2:4 준정형 희소(GPU)** | ⚠️**GPU work 후보 / wall 음성** | — (P025B) | 희소 텐서코어로 학습·추론 GEMM 가속 가능성을 pack·M별로 분리 | Stage0cW M8192 fwd+dgrad+dense-wgrad+pack/accum event/graph **1.334~1.386×**, 동기 wall **0.926~0.959×** | TLinear·sparse wgrad·optimizer·전체 step 통합 전 채택 금지([082 §13](../../test_result/082_20260913_P025B-import-실패로-2대4-게이트는-미실행이다.md#13-stage0cw-whole-primitive2026-09-22--gpu-work는-양성-동기-wall은-음성)) |
 | **WSL native SDPA/GQA(P060B)** | ⚠️**품질 동급 / cache 정합 미통과** | — (P060B) | K/V repeat와 `enable_gqa` 백엔드를 동일 조건으로 비교 | Stage3 3-seed 속도 평균 0.9988×·reserved -1.986%; 품질 실무상 동급이지만 방향 불일치 | Stage2 cache decode NRMS 0.004489로 미통과; 기본 off 유지([088 §10](../../test_result/088_20260919_P060B-forced-GQA는-문턱을-못-넘었지만-default는-살았다.md#31-최신-누적-판정-stage2wstage3w2026-09-22--품질은-실무상-동급-cache-배포-정합은-미통과)) |
@@ -247,3 +247,10 @@ native 전방+원INT gradient 대조는 실제0으로 닫혔다. 큰 두 재사�
 현재 제품이 해당7pack을 자동 소비하지 않으므로 기본 trainer는 바꾸지 않는다.
 전체 본학습·데이터공급·optimizer·정리까지 포함한 비용과 정식 품질은 별도다.
 공식 FP32 부모3팔의 NS/update 음성8·원허용차도 보존한다.
+
+## 2026-10-27 AdaMuon의 독립 기술 비용
+
+[078 §19](../../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md)의 FP32 V 적응판은 기존 Muon/NorMuon/NS/trainer를 변경하지 않는다. CPU20·비용3회귀와 실제8192목표 기울기의5형상3회 대조가 종료0이었다. 행렬 상태647.25MiB는 Muon의2배이고 현재 검증을 포함한 정상 행렬 step200.750/211.990ms는 Muon48.124/56.004ms보다 길다. 전체 순/역전파·accum·수렴을 포함한 학습속도나 같은 품질까지 시간은 이 비용 진단으로 결정할 수 없다. 공식 BF16판과의 차이·원형 불변·소유 정리0·한계는 결과와 구현 계약을 따른다. 기본 Muon과 추가300M 금지를 유지한다.
+### 2026-10-27 적응형 통계의 GPU 전달 비용
+
+[107§8](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)의 모델 없는32K/262K BF16 로짓 비용77194/0을 회수했다.262K full/selected ID획득 중앙값7.188/4.084ms,allocatedpeak4096.188/4702.526MiB이며 selected의추가635961344B를 기록했다. 로짓 전체4GiB의 CPU전송을 피하고 ID65536/9704B만 전달한다. 실제 F+B·fusedCE·모델 동시상주·본학습 wall 가속 증거가 아니며 새 정책을 자동 채택하지 않는다. 동일한 인과 질문을 반복 학습한 것이 아니라 미측정 전송 구간의 기술 비용이다.

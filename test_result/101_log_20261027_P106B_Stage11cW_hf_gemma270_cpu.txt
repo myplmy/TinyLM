@@ -1,0 +1,13 @@
+Closed Core6 model and exact assets, existing strict loader plus installed HF generate. CPU lane starts with CUDA validation then moves to CPU1, not CPU-only startup evidence. FP32/eager/cache-on, greedy, plain Base prompts, MTP/compile off. Unobserved throughput and streamer TTFT are separate; exact paired token/stop IDs required. No training, checkpoint writes or quality adoption.
+
+==============================================================================
+[runlog] 2026-10-27 04:33:37  name=P106B_Stage11cW_hf_gemma270_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_hf_resources.py --profile handoff/audit/oct27_independent/hf_resource_profile_v6.json --profile-sha256 B635A023E8C7E0CD735E0A704280473A4496FABCA444656835DAEB49A3A305F7 --source-sha256 752FB97868C54C199027304F2AAD0BA24DB7179B0E828869E1E66D4688AFB882 --max-wall-sec 1800 --model gemma270 --device cpu --execute
+==============================================================================
+{"original_error": {"type": "RuntimeError", "message": "HF library already imported before project cache policy"}}
+{"status": "HF_RESOURCE_LANE_ERROR", "model": "gemma270", "device": "cpu", "returncode": 9, "seconds": 1.0964003870030865}
+------------------------------------------------------------------------------
+[runlog] 종료코드 9  소요 0.1분  (2026-10-27 04:33:41)
+==============================================================================
+Final lane exit=9. Read original error, model/cache storage, allocator/RSS, observed vs plain generation and source/core closure. Zero is a technical lane completion only.

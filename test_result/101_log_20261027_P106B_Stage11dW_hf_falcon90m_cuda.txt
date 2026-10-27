@@ -1,0 +1,25 @@
+Closed Core6 model and exact assets, existing strict loader plus installed HF generate. CPU lane starts with CUDA validation then moves to CPU1, not CPU-only startup evidence. FP32/eager/cache-on, greedy, plain Base prompts, MTP/compile off. Unobserved throughput and streamer TTFT are separate; exact paired token/stop IDs required. No training, checkpoint writes or quality adoption.
+
+==============================================================================
+[runlog] 2026-10-27 04:58:05  name=P106B_Stage11dW_hf_falcon90m_cuda
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/tinyLM/data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_hf_resources.py --profile handoff/audit/oct27_independent/hf_resource_recovery_profile_v1.json --profile-sha256 415CAAA18B9EFAECDFF58EDEB0D4F669579EE12EEF4CF1D77C50EE721A076ABC --source-sha256 C8ACB350B74C3C6042507EA8D1DA6CEF7CF7EFA02D12D445A7AC766F1669054A --max-wall-sec 1800 --model falcon90m --device cuda --mode full --execute
+==============================================================================
+[transformers] The fast path is not available because one of `(selective_state_update, causal_conv1d_fn, causal_conv1d_update)` is None. Falling back to the naive implementation. To install follow https://github.com/state-spaces/mamba/#installation and https://github.com/Dao-AILab/causal-conv1d
+
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]
+Loading weights:  49%|████▊     | 188/386 [00:00<00:00, 1862.01it/s]
+Loading weights:  98%|█████████▊| 380/386 [00:00<00:00, 1882.76it/s]
+Loading weights: 100%|██████████| 386/386 [00:00<00:00, 1900.34it/s]
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+{"model": "falcon90m", "device": "cuda", "workload": "ko128", "complete": true}
+{"model": "falcon90m", "device": "cuda", "workload": "en128", "complete": true}
+{"model": "falcon90m", "device": "cuda", "workload": "ko512", "complete": true}
+{"model": "falcon90m", "device": "cuda", "workload": "en512", "complete": true}
+{"status": "HF_RESOURCE_LANE_COMPLETE_NOT_QUALITY", "model": "falcon90m", "device": "cuda", "returncode": 0, "seconds": 54.66685714200139}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.0분  (2026-10-27 04:59:05)
+==============================================================================
+Final lane exit=0. Read original error, model/cache storage, allocator/RSS, observed vs plain generation and source/core closure. Zero is a technical lane completion only.

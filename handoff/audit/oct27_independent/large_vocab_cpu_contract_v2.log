@@ -1,0 +1,33 @@
+E.E...
+======================================================================
+ERROR: test_actual_product_sampler_uses_gemma_eos1 (scripts.test_p014e_large_vocab_deploy.LargeVocabContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p014e_large_vocab_deploy.py", line 73, in test_actual_product_sampler_uses_gemma_eos1
+    row = d.generation(ScriptedModel([7, 1, 9]), cfg, Tokenizer(), [2, 8], 'cpu', 3,
+  File "/home/uranus/tinyLM/scripts/diag_p014e_large_vocab_deploy.py", line 185, in generation
+    _, metadata = gen.sample(forward, cfg, capture, 'FIXED_IDS', max_new=count, temperature=0.,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/infer/generate.py", line 160, in sample
+    past_len = 0 if past is None else next(iter(past.values()))[0].shape[2]
+StopIteration
+
+======================================================================
+ERROR: test_forced_generation_keeps_eos_token_and_full_count (scripts.test_p014e_large_vocab_deploy.LargeVocabContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p014e_large_vocab_deploy.py", line 82, in test_forced_generation_keeps_eos_token_and_full_count
+    row = d.generation(ScriptedModel([7, 1, 9]), cfg, Tokenizer(), [2, 8], 'cpu', 3,
+  File "/home/uranus/tinyLM/scripts/diag_p014e_large_vocab_deploy.py", line 185, in generation
+    _, metadata = gen.sample(forward, cfg, capture, 'FIXED_IDS', max_new=count, temperature=0.,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/infer/generate.py", line 160, in sample
+    past_len = 0 if past is None else next(iter(past.values()))[0].shape[2]
+StopIteration
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.012s
+
+FAILED (errors=2)

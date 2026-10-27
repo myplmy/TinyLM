@@ -242,3 +242,21 @@ actual model 속도는 Stage1Wc 전 `NOT_RUN`이다([069 §10](../../test_result
 ## 2026-10-13 — 학생 MTP 정합 음성과 외부교사 ON 관측
 
 [092 §11](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md)의학생MTP는native와출력/토큰수가달라시간이작아도같은작업량가속으로판정할수없다. 이번시간방향도열세이며원학습헤드저장정밀도만으로회복하지못했다. 새same-prefixquery/rebuild/KV진단만준비했다. [101 §92](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의Gemma는별도가중치/llama.cpp/draft-MTP 계열로양순서24요청의유효x 공급이증가했으나장기품질/연속peak는미확정이다.
+
+## 2026-10-27 완료 실행본의 생성 비용
+
+[101 §§558/560](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은TinyLM5/HF4의CPU/CUDA18행을각새프로세스에서회수했다. 무관찰32토큰/예열1+실측3회와관찰TTFT는별개다. CPU1/GPU2스레드·FP32/MATH·KVon·MTPoff이며native tokenizer/엔진/원학습량차이를보존한다. Q고유storage678.917MiB와Falcon347.792MiB는현재FP32/cache경로의실측이며packed배포의이득이아니다. 실제답변의반복·대상혼동도같이보존했고새지능이나학습가속을채택하지않았다.
+
+## 2026-10-27 원스케일 packed-only 참조 추론
+
+[099 §7](../../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md)은 기존 codec의g128 원scale을 유지한 실제파일·독립loader·CPU/GPU 전체모델 대조다. 전체master/cache 없이 등록storage를 줄였지만 매토큰 타일 언팩/FP32 GEMM이 느려 원형보다 속도가 낮았다. 타일128 GPU 수치오류는 보존하고 같은가중치/기준에서4096행 계산형상으로 수치exact와생성동률을 확인했다. 직접 packed 커널이나 기본 가속 채택이 아니다. 상주·KV·작업버퍼peak·RSS와 답변내용을 분리하며 기존오답/반복도함께보존했다. 큰교사어휘·직접KL/40MiB 전체목표는 별도다.
+
+## 2026-10-27 실제 큰어휘의 lookup/head와 저장·속도 교환
+
+[099 §11](../../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md)은옛G270Tfull의V262144/E256에서원scale/기존TWN표를재사용했다. packed-only CPU19431/0·CUDA58402/0과두형식64로짓exact·ID/종료동률·원CPtensor읽기0·해제0을확인했다. 35소스의성공기준선은재실행하지않고JSON tuple/list 및PathLike guard오류를별도계보로복구했다.
+
+TWN고정storage27.498MiB·반환KV512와의일부합35.218MiB와실제GPUpeak102.960MiB·CPU RSS는별도다. CPU packed0.768~0.820tok/s/GPU9.106~10.055tok/s로각자원형보다느리므로참조언팩을기본가속으로채택하지않는다. 큰표의행별lookup/head청킹기능과언어품질·직접KL·전체40MiB/직접packed커널의미완을구분한다. 실제16답의오답/반복도보존했다.
+
+## 2026-10-27 GPT2 native의 singleton 정책 비용
+
+[101 §562](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)은chunk1/32/512의전체수치진단과같은singleton정책의CPU/CUDA생성을연결했다. prefix모든토큰에서head를계산한비용이TTFT에들어가며bulk-prefill속도나같은정밀도타엔진가속으로쓰지않는다. original1800 CPU HOLD를별도5400상한으로회수했으며실측75.443초다. 같은기기observer on/off ID·종료·KV위치는같았지만CPU/CUDA실제답은달랐고반복/오답이남았다. 원bulk9·32/512수치음성은미해결,exact native model/KV/backend storage·연속peak는미측정이다.

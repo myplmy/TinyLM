@@ -1,0 +1,21 @@
+Sign-before-NS and full FP32 V, RMS0.2 candidate. Strict completed format Muon model is read-only. One FP32/MATH microbatch is NOT a full accum16 update. Disposable full parameter copies and common gradient; two cost orders with same AdamW groups. No body optimizer step, checkpoint write or quality score. Numeric8/error9/actual0 remain distinct.
+
+==============================================================================
+[runlog] 2026-10-27 03:26:54  name=P005b_Stage16W_adamuon_gradient_cost
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p005b_adamuon.py --profile handoff/audit/oct27_independent/adamuon_cost_profile_v2.json --profile-sha256 82DABFECC3A80FDBA5411D959A935FC83551BB5D4E779431E49DF65439EDD5A6 --source-sha256 963096031CFF53A24DCDCA24A845D5D1354CCC0DD47B419D9ED42F7998D590BA --max-wall-sec 900 --execute
+==============================================================================
+/home/uranus/tinyLM/scripts/diag_p005b_adamuon.py:240: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  maximum = max(maximum, float((a - b).abs().max()))
+{"phase": "OPTIMIZER_COST", "order": 1, "arm": "muon", "matrix_state_bytes": 339345408}
+{"phase": "OPTIMIZER_COST", "order": 1, "arm": "normuon", "matrix_state_bytes": 339717632}
+{"phase": "OPTIMIZER_COST", "order": 1, "arm": "adamuon_fp32v", "matrix_state_bytes": 678690816}
+{"phase": "OPTIMIZER_COST", "order": 2, "arm": "adamuon_fp32v", "matrix_state_bytes": 678690816}
+{"phase": "OPTIMIZER_COST", "order": 2, "arm": "normuon", "matrix_state_bytes": 339717632}
+{"phase": "OPTIMIZER_COST", "order": 2, "arm": "muon", "matrix_state_bytes": 339345408}
+{"status": "ADAMUON_COST_COMPLETE_NOT_QUALITY", "returncode": 0, "seconds": 17.752092212002026}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.3분  (2026-10-27 03:27:13)
+==============================================================================
+Final exit=0. Read same-device oracle, actual state bytes, first/steady matrix and AdamW times, original core/cache SHA and owned cleanup. Zero is technical completion only; original Muon/NorMuon full-training negatives and default trainer are unchanged.

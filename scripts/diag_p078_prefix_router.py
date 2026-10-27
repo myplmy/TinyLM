@@ -25,18 +25,21 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
 from scripts import p078_prefix_router as router
 from scripts import diag_p078_route_training as base
+from scripts import p078_body_bridge as bridge
 
 READY = True  # Root reviewed source; real assets/cost/budget/authority still fail closed.
 TAG = 'p078_prefix_router_bootstrap_v3_s1337'
 MODES = ('toy', 'prepare', 'cost', 'budget', 'labels', 'fit', 'evaluate', 'readback')
 CODE = tuple(dict.fromkeys(('scripts/p078_prefix_router.py', 'scripts/test_p078_prefix_router.py',
-    'scripts/diag_p078_prefix_router.py', 'scripts/p078_router_holdout_data.py', 'scripts/p106b_night_qa_data.py', *base.CODE)))
+    'scripts/diag_p078_prefix_router.py', 'scripts/p078_body_bridge.py', 'scripts/test_p078_body_bridge.py',
+    'scripts/p078_router_holdout_data.py', 'scripts/p106b_night_qa_data.py', *base.CODE)))
 MAX_FAMILY = 144000
 sha = router.route.sha
 Hold = base.Hold
 
 
-def namespace(args): return TAG + ('_resourceonly_r1' if args.resource_only_r1 else '')
+def namespace(args):
+    return TAG + ('_resourceonly_r1' if args.resource_only_r1 else '') + ('_bridge20261027' if bridge.selected(args) else '')
 def root_path(relative): return base.path(relative)
 def report_name(args, mode): return 'test_result/evidence/' + namespace(args) + '/' + mode + '/report.json'
 def activity_name(args, mode): return 'test_result/evidence/' + namespace(args) + '/activity_' + mode + '.json'
@@ -58,7 +61,7 @@ def write(args, relative, value):
 
 
 def signature(args):
-    return dict(schema=router.SCHEMA, tag=namespace(args), source_sha256={v: base.digest(root_path(v)) for v in CODE},
+    info = dict(schema=router.SCHEMA, tag=namespace(args), source_sha256={v: base.digest(root_path(v)) for v in CODE},
         corpus=base.CLEAN_CORPUS, corpus_report_sha256=args.corpus_sha256, tokenizer_sha256=base.TOK_SHA,
         router_holdout_report='data_cache/p078_router_holdout_bootstrap_v3_s1337/report.json', router_holdout_sha256=args.holdout_sha256,
         frozen_body=base.PARENT if args.resource_only_r1 else base.cp_name('balanced_count', args),
@@ -75,6 +78,10 @@ def signature(args):
         cost_generation_selection='TWO_LONGEST_TRAIN_PREFIXES_FITTING_FULL_128; length then index; timing only, no answer selection',
         feature_overhead='MEASURE_SEPARATELY; visit equality is not FLOP/token/time equality',
         historical_gate='P078_R2_CROP_R2_NEGATIVE_AND_P070B_NUMERICAL_TOLERANCE_UNCHANGED')
+    if bridge.selected(args):
+        info['historical_body_bridge'] = bridge.contract(args)[2]
+        info['budget_protocol'] = 'FORCED896_PLUS128_ALL_ACTIONS_AND_REAL_LABEL_IO_V1'
+    return info
 
 
 def corpus_rows(args):
@@ -92,7 +99,8 @@ def corpus_rows(args):
 
 def prepare(args):
     from scripts import p078_router_holdout_data as holdout
-    corpus, rows = corpus_rows(args); frozen, fresh = holdout.read_prepared(args.holdout_sha256,args.corpus_sha256)
+    corpus, rows = corpus_rows(args)
+    frozen, fresh = bridge.read_holdout(args) if bridge.selected(args) else holdout.read_prepared(args.holdout_sha256,args.corpus_sha256)
     manifest = frozen['split_manifest']
     return dict(status='ROUTER_SPLIT_PREPARED_BODY_NOT_LOADED', split_manifest=manifest,
         train_rows=len(rows['train']), train_rows_sha256=sha([router.row_sha(r) for r in rows['train']]),
@@ -170,6 +178,8 @@ def spent(args, info):
 
 
 def body_evidence(args):
+    if bridge.selected(args):
+        return bridge.body_evidence(args)
     if args.resource_only_r1:
         return dict(checkpoint=base.PARENT, checkpoint_sha256=base.PARENT_SHA, scientific_body=False,
             label_quality='NOT_MEASURED_RESOURCE_ONLY_PARENT_R1')
@@ -192,7 +202,8 @@ def body_evidence(args):
 def frozen_body(args):
     evidence = body_evidence(args); auth, _ = authority(args, signature(args))
     if auth['body_checkpoint_sha256'] != evidence['checkpoint_sha256']: raise ValueError('root-authorized body differs')
-    with base.loaded(args, 'balanced_count', trained=not args.resource_only_r1) as (torch, model, cfg, tok, core, reference):
+    loader = bridge.loaded(args) if bridge.selected(args) else base.loaded(args, 'balanced_count', trained=not args.resource_only_r1)
+    with loader as (torch, model, cfg, tok, core, reference):
         torch.set_num_threads(router.HEAD['cpu_threads'])
         router.freeze_body(model); before = reference.state_fingerprint(model)
         if before != core or (evidence.get('core_sha256') is not None and core != evidence['core_sha256']):
@@ -211,7 +222,7 @@ def records_and_rows(args, tok):
     report, rows = corpus_rows(args); records = base.encoded(args, report, tok)
     from scripts import p078_router_holdout_data as holdout
     from scripts.diag_p101a_clean_bilingual import masked_record
-    frozen, fresh = holdout.read_prepared(args.holdout_sha256,args.corpus_sha256)
+    frozen, fresh = bridge.read_holdout(args) if bridge.selected(args) else holdout.read_prepared(args.holdout_sha256,args.corpus_sha256)
     rows['val']=fresh; records['val']=[masked_record(row,tok) for row in fresh]
     for split in ('train', 'val'):
         if len(records[split]) != len(rows[split]): raise ValueError('record/row alignment differs')
@@ -247,7 +258,20 @@ def prefix_features(model, record, evidence):
     return p, f, fingerprint
 
 
-def generate(torch, model, cfg, tok, prefix, action):
+def forced_cost_metadata(prefix_ids, decoded_ids, metadata):
+    n = len(prefix_ids)
+    if (metadata.get('generated_tokens') != 128 or metadata.get('max_new') != 128
+            or metadata.get('finish_reason') != 'MAX_NEW_EOS_DISABLED'
+            or metadata.get('stop_at_eos_requested') is not False
+            or metadata.get('stop_at_eos_effective') is not False
+            or metadata.get('stop_token_sequences') not in (None, [])
+            or decoded_ids[:n] != list(prefix_ids) or len(decoded_ids) != n+128):
+        raise ValueError('full128 actual product-sampler tokens with EOS/EOT disabled required')
+    return dict(metadata, prompt_tokens=n, forced_cost_only=True, eos_eot_stops_disabled=True,
+        actual_prompt_ids_equal=True, generated_token_ids=list(decoded_ids[n:]), raw_sampler_metadata=dict(metadata))
+
+
+def generate(torch, model, cfg, tok, prefix, action, *, force_length=False):
     from scripts import interactive_research_infer as ui
     sample, capture_type, forward_type = ui.generation_tools(ROOT)
     if len(prefix.token_ids) + 128 > cfg.max_seq_len: raise Hold('full prefix+128 exceeds context; no shortening or silent truncation')
@@ -260,26 +284,97 @@ def generate(torch, model, cfg, tok, prefix, action):
     with torch.no_grad(), router.action_scope(model, action, prefix) as receipt:
         _, metadata = sample(forward_type(model, 'fp32_math'), cfg, capture, prompt, max_new=128,
             temperature=0., top_k=1, device='cuda', use_cache=False, logits_last_only=True,
-            return_metadata=True, mtp_tokens=1, stop_token_sequences=[[4]])
-        answer, generation = ui.answer_from_tokens(tok, list(prefix.token_ids), capture.decoded_ids, metadata, 128)
+            return_metadata=True, mtp_tokens=1, stop_at_eos=not force_length,
+            stop_token_sequences=[] if force_length else [[4]])
+        if force_length:
+            answer, generation = None, forced_cost_metadata(list(prefix.token_ids),capture.decoded_ids,metadata)
+        else:
+            answer, generation = ui.answer_from_tokens(tok, list(prefix.token_ids), capture.decoded_ids, metadata, 128)
     torch.cuda.synchronize()
     return dict(input_text=prompt, prefix_ids=list(prefix.token_ids), actual_answer=answer, generation=generation,
-        route=receipt, seconds=time.perf_counter() - started, attempts=1, semantic_score=None)
+        route=receipt, seconds=time.perf_counter() - started, attempts=1, semantic_score=None,
+        forced_cost_only=force_length)
+
+
+def label_event(index, row, record, prefix, feature, fingerprint, losses, target, routes):
+    return dict(index=index, split='train', row_sha256=router.row_sha(row),
+        prefix_ids=list(prefix.token_ids), prefix_sha256=prefix.sha256, feature=feature.cpu().tolist(),
+        feature_fingerprint=fingerprint, raw_ce=losses, relative_ce=target, assistant_targets=record.targets,
+        actual_x_tokens=record.x_tokens, first_target_owner=record.segments[len(prefix.token_ids)-1], routes=routes)
+
+
+def deep_size(value, seen=None):
+    seen = set() if seen is None else seen
+    if id(value) in seen:
+        return 0
+    seen.add(id(value)); total = sys.getsizeof(value)
+    if isinstance(value, dict):
+        total += sum(deep_size(k, seen)+deep_size(v, seen) for k, v in value.items())
+    elif isinstance(value, (list, tuple)):
+        total += sum(deep_size(v, seen) for v in value)
+    return total
+
+
+def label_io_probe(args, events, evidence):
+    writer = new_writer(args, 'cost', 'io_labels'); start = time.perf_counter()
+    for row in events:
+        writer.append(row)
+    manifest = writer.close(lineage=dict(schema=router.SCHEMA, complete=True,
+        split='TRAIN64_TIMING_ONLY_NOT_FULL_LABEL_ARTIFACT'))
+    write_seconds = time.perf_counter()-start; start = time.perf_counter()
+    catalog = [router.readonly_plan(evidence['geometry'], evidence['owners'], i, ROOT) for i in range(4)]
+    loaded = []
+    for index, row in enumerate(raw_rows(args, 'cost', manifest, 'io_labels')):
+        validate_label_row(row, index, catalog, evidence)
+        loaded.append(row)
+    if len(loaded) != 64 or sha(loaded) != sha(events):
+        raise ValueError('actual64-label IO roundtrip differs')
+    return dict(rows=64, manifest=manifest, write_seconds=write_seconds,
+        verified_read_seconds=time.perf_counter()-start, parsed_python_bytes=deep_size(loaded),
+        serialized_bytes=sum(s['bytes'] for s in manifest['shards']),
+        scope='REAL_TRAIN64_SERIALIZE_HASH_PARSE_ROW_VERIFY; NOT_CANONICAL_FULL_LABELS')
+
+
+def enhanced_cost(torch, model, cfg, tok, args, records, events, evidence):
+    lengths = [len(router.prefix(r).token_ids) for r in records['val']]
+    if not lengths or max(lengths)+128 > cfg.max_seq_len:
+        raise Hold('all fresh DEV/TEST prefixes must fit full128; no subset/crop')
+    source_index = max(range(len(records['train'])), key=lambda i: (len(router.prefix(records['train'][i]).token_ids), -i))
+    source = router.prefix(records['train'][source_index]).token_ids
+    width = cfg.max_seq_len-128
+    synthetic = router.route.QuestionPrefix(tuple((source*((width+len(source)-1)//len(source)))[:width]))
+    from torch.nn.attention import sdpa_kernel, SDPBackend
+    with torch.no_grad(), sdpa_kernel(SDPBackend.MATH), torch.autocast('cuda', enabled=False):
+        timings = [generate(torch, model, cfg, tok, synthetic, action, force_length=True) for action in (1, 2, 3)]
+    io = label_io_probe(args, events, evidence)
+    available = next(int(line.split()[1])*1024 for line in Path('/proc/meminfo').read_text().splitlines()
+        if line.startswith('MemAvailable:'))
+    estimated = math.ceil(io['parsed_python_bytes']*len(records['train'])/64*2)+len(records['train'])*evidence['feature_width']*4
+    if available < estimated+2*2**30:
+        raise Hold('labels/fit parsed objects and tensor plus2GiB available RAM reserve absent')
+    return dict(forced_generation=timings, synthetic_prefix_tokens=width, train_prefix_source_index=source_index,
+        synthetic_prefix_source='REPEATED_TRAIN_PREFIX_ONLY_FOR_SHAPE_TIMING; NOT_ANSWER_OR_TEST_SELECTION',
+        max_fresh_prefix_tokens=max(lengths), io=io, available_ram_bytes=available,
+        estimated_label_working_bytes=estimated, ram_estimate_not_peak_guarantee=True,
+        full_label_read_passes=3, cleanup_and_metadata_reserve_seconds=900)
 
 
 def cost(args):
     prepared(args); timing = []; encoded_seconds = 0.
     with frozen_body(args) as (torch, model, cfg, tok, evidence):
-        tick = time.perf_counter(); records, _ = records_and_rows(args, tok); encoded_seconds = time.perf_counter() - tick
-        selected_times = []; feature_times = []; rows = records['train'][:64]; features = []; labels = []; visits = targets = 0
+        tick = time.perf_counter(); records, source_rows = records_and_rows(args, tok); encoded_seconds = time.perf_counter() - tick
+        selected_times = []; feature_times = []; rows = records['train'][:64]; features = []; labels = []; visits = targets = 0; events = []
         from torch.nn.attention import sdpa_kernel, SDPBackend
         with torch.no_grad(), sdpa_kernel(SDPBackend.MATH), torch.autocast('cuda', enabled=False):
             for start in range(0, 64, 8):
                 tick = time.perf_counter(); batch = rows[start:start + 8]
-                _, relative, routes = router.trial_labels(model, batch, split='train', pad_id=tok.token_to_id('<pad>') or 0)
-                for record, target in zip(batch, relative):
+                losses, relative, routes = router.trial_labels(model, batch, split='train', pad_id=tok.token_to_id('<pad>') or 0)
+                for offset, (record, target) in enumerate(zip(batch, relative)):
                     feature_tick = time.perf_counter()
-                    _, f, _ = prefix_features(model, record, evidence); features.append(f.cpu()); labels.append(target)
+                    prefix, f, fingerprint = prefix_features(model, record, evidence); features.append(f.cpu()); labels.append(target)
+                    if bridge.selected(args):
+                        index = start+offset
+                        events.append(label_event(index, source_rows['train'][index], record, prefix, f, fingerprint, losses[offset], target, routes))
                     torch.cuda.synchronize(); feature_times.append(time.perf_counter() - feature_tick)
                 torch.cuda.synchronize(); timing.append(time.perf_counter() - tick)
                 visits += sum(r['visits'] for r in routes) * len(batch); targets += sum(r.targets for r in batch) * 3
@@ -297,12 +392,15 @@ def cost(args):
         tick = time.perf_counter()
         with torch.no_grad(): head(((x[:1] - mean) / scale)).tolist()
         head_predict_seconds = time.perf_counter() - tick
+        extra = enhanced_cost(torch, model, cfg, tok, args, records, events, evidence) if bridge.selected(args) else None
         return dict(status='RESOURCE_ONLY_COST8' if args.resource_only_r1 else 'ROUTER_COST8_COMPLETE', body=evidence,
             label_quality='NOT_MEASURED_RESOURCE_ONLY' if args.resource_only_r1 else 'SCIENTIFIC_BODY_COST_ONLY_NOT_QUALITY',
             cost_rows=64, trial_batch_seconds=timing, selected_row_seconds=selected_times, actual_route_row_visits=visits,
             actual_trial_assistant_targets=targets, encoded_seconds=encoded_seconds, head64_seconds=head_seconds, head64_mse=mse,
             generation_timing=generation, generation_train_indices=generation_indices, feature_row_seconds=feature_times,
-            head_predict_seconds=head_predict_seconds, label_artifact_writes=0, body_optimizer_steps=0,
+            head_predict_seconds=head_predict_seconds, label_artifact_writes=64 if extra is not None else 0,
+            canonical_full_label_artifact_writes=0,cost_label_rows_written=64 if extra is not None else 0,body_optimizer_steps=0,
+            enhanced_budget=extra,
             peak_reserved_mib=torch.cuda.max_memory_reserved() / 2**20, gpu_total_mib=torch.cuda.get_device_properties(0).total_memory / 2**20)
 
 
@@ -323,9 +421,35 @@ def forecast(args):
         fit=c['head64_seconds'] * (p['train_rows'] / 64) * 5 * 1.5 + selected_row * ndev * 3 * 1.5 + c['encoded_seconds'] * 2,
         evaluate=(selected_row * ntest * 4 + worst_token * 128 * ntest * 4) * 1.5 + c['encoded_seconds'] * 2,
         readback=300.)
+    extra_reserve = 0
+    if bridge.selected(args):
+        extra = c.get('enhanced_budget')
+        if not isinstance(extra, dict) or extra.get('synthetic_prefix_tokens') != 896:
+            raise Hold('new bridge requires actual bounded generation and label IO cost')
+        forced = extra['forced_generation']; io = extra['io']
+        if (len(forced) != 3 or [v['route']['actual_repeats'] for v in forced] != [1, 2, 3]
+                or any(v.get('forced_cost_only') is not True or v['generation']['generated_tokens'] != 128
+                    or v['generation']['prompt_tokens'] != 896 or type(v['seconds']) not in (int,float) or not math.isfinite(v['seconds']) or v['seconds'] <= 0 for v in forced)
+                or any(v['generation'].get('finish_reason') != 'MAX_NEW_EOS_DISABLED'
+                    or v['generation'].get('eos_eot_stops_disabled') is not True
+                    or len(v['generation'].get('generated_token_ids', [])) != 128 for v in forced)
+                or io.get('rows') != 64 or extra.get('full_label_read_passes') != 3
+                or any(type(io.get(k)) not in (int, float) or not math.isfinite(io[k]) or io[k] <= 0
+                    for k in ('write_seconds', 'verified_read_seconds', 'parsed_python_bytes', 'serialized_bytes'))):
+            raise ValueError('exact three-action896+128 and64-row actual IO timing required')
+        scale = p['train_rows']/64*1.5
+        full_read = io['verified_read_seconds']*scale
+        estimates['labels'] += io['write_seconds']*scale
+        estimates['fit'] += full_read
+        estimates['evaluate'] = (selected_row*ntest*4+max(v['seconds'] for v in forced)*ntest*4)*1.5+c['encoded_seconds']*2+full_read
+        estimates['readback'] += full_read
+        caps = bridge.contract(args)[0]['phase_caps_seconds']
+        if any(estimates[k] > caps[k] for k in estimates):
+            raise Hold('full unchanged labels/head/TEST/raw forecast exceeds a declared worker cap')
+        extra_reserve = extra['cleanup_and_metadata_reserve_seconds']
     for mode in tuple(estimates):
         if root_path(report_name(args, mode)).exists(): closed(args, mode); estimates[mode] = 0.
-    actual = spent(args, signature(args)); _, remaining = authority(args, signature(args)); reserve = sum(estimates.values()) + 600
+    actual = spent(args, signature(args)); _, remaining = authority(args, signature(args)); reserve = sum(estimates.values()) + 600 + extra_reserve
     return dict(status='ROUTER_BUDGET_READY' if reserve <= remaining and actual + reserve <= MAX_FAMILY else 'HOLD_BUDGET',
         fits=reserve <= remaining and actual + reserve <= MAX_FAMILY, body=c['body'], actual_spent_seconds=actual,
         forecasts_seconds=estimates, total_pending_seconds=reserve, remaining_authority_seconds=remaining,
@@ -336,6 +460,19 @@ def require_budget(args):
     result = forecast(args)
     if not result['fits']: raise Hold('all pending labels/fit/DEV/TEST/raw verification do not fit; no shrink fallback')
     return result
+
+
+def actual_phase_admission(args):
+    if not bridge.selected(args):return None
+    expected=bridge.contract(args)[0]['phase_caps_seconds'].get(args.mode)
+    if expected is None or args.max_wall_sec!=expected:
+        raise Hold('actual worker cap must exactly match its pinned bridge phase')
+    if args.mode in ('labels','fit','evaluate','readback'):
+        budget=require_budget(args)
+        if budget['forecasts_seconds'][args.mode]>args.max_wall_sec:
+            raise Hold('actual worker cap does not cover its current full-phase forecast')
+        return budget
+    return None
 
 
 def labels(args):
@@ -351,10 +488,7 @@ def labels(args):
                     raw_ce, relative, routes = router.trial_labels(model, batch, split='train', pad_id=tok.token_to_id('<pad>') or 0)
                     for offset, (record, losses, target) in enumerate(zip(batch, raw_ce, relative)):
                         index = start + offset; prefix, feature, fingerprint = prefix_features(model, record, evidence)
-                        writer.append(dict(index=index, split='train', row_sha256=router.row_sha(rows['train'][index]),
-                            prefix_ids=list(prefix.token_ids), prefix_sha256=prefix.sha256, feature=feature.cpu().tolist(),
-                            feature_fingerprint=fingerprint, raw_ce=losses, relative_ce=target, assistant_targets=record.targets,
-                            actual_x_tokens=record.x_tokens, first_target_owner=record.segments[len(prefix.token_ids) - 1], routes=routes))
+                        writer.append(label_event(index, rows['train'][index], record, prefix, feature, fingerprint, losses, target, routes))
                     targets += sum(r.targets for r in batch) * 3; visits += sum(r['visits'] for r in routes) * len(batch)
                     if start % 1024 == 0: print('[ROUTER_LABEL_PROGRESS] ' + str(start + len(batch)) + '/' + str(len(records['train'])), flush=True)
             manifest = writer.close(lineage=dict(schema=router.SCHEMA, split='TRAIN_ONLY', complete=True, body=evidence)); writer = None; complete = True
@@ -364,22 +498,26 @@ def labels(args):
         if writer is not None and writer._total_rows: writer.close(lineage=dict(complete=complete, partial=True, schema=router.SCHEMA))
 
 
+def validate_label_row(row, index, catalog, evidence):
+    if (row.get('index') != index or row.get('split') != 'train' or row['relative_ce'] != router.relative_ce(row['raw_ce'])
+            or row['prefix_sha256'] != sha(row['prefix_ids']) or len(row['feature']) != evidence['feature_width']
+            or any(type(x) not in (int, float) or not math.isfinite(x) for x in row['feature'])
+            or row['feature_fingerprint'] != sha(dict(spec=router.FEATURE_SPEC, prefix=row['prefix_ids'],
+                body=evidence['core_sha256'], tokenizer=base.TOK_SHA, feature=row['feature']))
+            or type(row.get('assistant_targets')) is not int or row['assistant_targets'] < 1
+            or row.get('first_target_owner', 0) < 1 or len(row.get('routes', [])) != 3
+            or [r['actual_repeats'] for r in row['routes']] != [1, 2, 3]):
+        raise ValueError('independent TRAIN label/feature/prefix/raw denominator differs')
+    for receipt in row['routes']:
+        if type(receipt.get('index')) is not int or not 0 <= receipt['index'] < 4 or receipt != catalog[receipt['index']]:
+            raise ValueError('TRAIN atomic route receipt differs from original source')
+
+
 def verify_labels(args):
     value = closed(args, 'labels'); prepared_value = prepared(args); result = []; targets = visits = 0
     catalog = [router.readonly_plan(value['body']['geometry'], value['body']['owners'], i, ROOT) for i in range(4)]
     for i, row in enumerate(raw_rows(args, 'labels', value['raw_manifest'], 'train_labels')):
-        if (row.get('index') != i or row.get('split') != 'train' or row['relative_ce'] != router.relative_ce(row['raw_ce'])
-                or row['prefix_sha256'] != sha(row['prefix_ids']) or len(row['feature']) != value['body']['feature_width']
-                or any(type(x) not in (int, float) or not math.isfinite(x) for x in row['feature'])
-                or row['feature_fingerprint'] != sha(dict(spec=router.FEATURE_SPEC, prefix=row['prefix_ids'],
-                    body=value['body']['core_sha256'], tokenizer=base.TOK_SHA, feature=row['feature']))
-                or type(row.get('assistant_targets')) is not int or row['assistant_targets'] < 1
-                or row.get('first_target_owner', 0) < 1 or len(row.get('routes', [])) != 3
-                or [r['actual_repeats'] for r in row['routes']] != [1, 2, 3]):
-            raise ValueError('independent TRAIN label/feature/prefix/raw denominator differs')
-        for receipt in row['routes']:
-            if type(receipt.get('index')) is not int or not 0 <= receipt['index'] < 4 or receipt != catalog[receipt['index']]:
-                raise ValueError('TRAIN atomic route receipt differs from original source')
+        validate_label_row(row, i, catalog, value['body'])
         targets += row['assistant_targets'] * 3; visits += sum(r['visits'] for r in row['routes']); result.append(row)
     if (len(result) != prepared_value['train_rows'] or len(result) != value['rows']
             or sha([r['row_sha256'] for r in result]) != prepared_value['train_rows_sha256']
@@ -633,13 +771,14 @@ def verify_lane(lane, entries, evidence):
 
 
 def worker(args):
-    info = signature(args); tick = time.perf_counter(); began = datetime.now(timezone.utc); code = 9; error = None; auth = None; remaining = None
+    info = signature(args); tick = time.perf_counter(); began = datetime.now(timezone.utc); code = 9; error = None; auth = None; remaining = None; error_details = None
     if root_path(report_name(args, args.mode)).exists() or root_path(activity_name(args, args.mode)).exists(): raise FileExistsError('prior router stage preserved')
     try:
         auth, remaining = authority(args, info)
         if os.getpid() != os.getpgrp() or args.max_wall_sec > remaining or spent(args, info) + args.max_wall_sec > MAX_FAMILY:
             raise Hold('new PGID/full cap/current UTC/family40h admission required')
         with base.wall(args.max_wall_sec):
+            actual_phase_admission(args)
             if args.resource_only_r1 and args.mode not in ('prepare', 'cost'): raise Hold('resource-only R1 cannot label/train/select/test scientific head')
             method = dict(prepare=prepare, cost=cost, budget=forecast, labels=labels, fit=fit, evaluate=evaluate, readback=readback)[args.mode]
             result = method(args)
@@ -648,14 +787,17 @@ def worker(args):
             if signature(args) != info: raise ValueError('router/helper/product source changed during stage')
             result.update(input=info, mode=args.mode, authorization=auth, authorization_sha256=args.authorization_sha256)
             write(args, report_name(args, args.mode), result); code = 0
-    except KeyboardInterrupt: code = 130; error = 'KeyboardInterrupt'
-    except Hold as exc: code = 8; error = str(exc); print('[HOLD] ' + str(exc), flush=True)
-    except Exception as exc: code = 9; error = type(exc).__name__; print('[ERROR] ' + type(exc).__name__ + ': ' + str(exc), flush=True)
+    except KeyboardInterrupt as exc:
+        code=130;error='KeyboardInterrupt';error_details=getattr(exc,'p078_body_exit_details',None)
+    except Hold as exc:
+        code=8;error=str(exc);error_details=getattr(exc,'p078_body_exit_details',None);print('[HOLD] '+str(exc),flush=True)
+    except Exception as exc:
+        code=9;error=type(exc).__name__;error_details=getattr(exc,'p078_body_exit_details',None);print('[ERROR] '+type(exc).__name__+': '+str(exc),flush=True)
     finally:
         ended = datetime.now(timezone.utc)
         if code == 0 and ended > datetime.fromisoformat(auth['expires_at']):
             code = 8; error = 'authority expired before activity closure; no COMPLETE'
-        write(args, activity_name(args, args.mode), dict(input=info, mode=args.mode, complete=code == 0, returncode=code, error=error,
+        write(args, activity_name(args, args.mode), dict(input=info, mode=args.mode, complete=code == 0, returncode=code, error=error,error_details=error_details,
             started_at=began.isoformat(), ended_at=ended.isoformat(), seconds=time.perf_counter() - tick,
             pid=os.getpid(), pgid=os.getpgrp(), max_wall_sec=args.max_wall_sec, admission_remaining=remaining,
             authorization=auth, authorization_sha256=args.authorization_sha256, authorization_canonical_sha256=sha(auth),
@@ -667,11 +809,14 @@ def worker(args):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__); p.add_argument('--mode', choices=MODES, required=True)
     p.add_argument('--corpus-sha256'); p.add_argument('--holdout-sha256'); p.add_argument('--authorization'); p.add_argument('--authorization-sha256')
+    p.add_argument('--profile'); p.add_argument('--profile-sha256')
     p.add_argument('--resource-only-r1', action='store_true'); p.add_argument('--max-wall-sec', type=int, default=1800)
     p.add_argument('--worker', action='store_true'); choice = p.add_mutually_exclusive_group(required=True)
     choice.add_argument('--execute', action='store_true'); choice.add_argument('--check-only', action='store_true'); args = p.parse_args(argv)
     args.corpus = base.CLEAN_CORPUS; args.adam_lr = 5e-5; args.muon_lr = 2e-4
     try:
+        if bool(args.profile) != bool(args.profile_sha256):
+            raise ValueError('explicit bridge profile and SHA must be supplied together')
         if args.check_only:
             info = signature(args)
             print('[STATIC_ONLY] ' + json.dumps(dict(ready=READY, sources=len(info['source_sha256']), input_signature_sha256=sha(info),

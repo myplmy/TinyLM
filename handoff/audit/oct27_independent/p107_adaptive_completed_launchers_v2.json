@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "original": "run_P107_Stage2Wb_adaptive_resume_recovery.sh",
+      "done": "run_P107_Stage2Wb_adaptive_resume_recovery-done.sh",
+      "sha256": "CFA53DEF909003EB8A92353268475ED977B73B5DA6FD904A592264A8539513C2",
+      "source_text": "#!/usr/bin/env bash\n# Corrected CPU-only resume invariants; preserve the first actual result.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1\ncommon=(--profile handoff/audit/oct27_independent/p107_adaptive_profile_v3.json --profile-sha256 FF4B48A6F7E5F8779232B0E814B8C7F0E002E07020BAB14D53E1C6D4A2E9DB25 --max-wall-sec 300)\n\"$python_bin\" -B -X utf8 scripts/diag_p107_adaptive_masking.py \"${common[@]}\" --check-only\npreflight=$?\nif (( preflight != 0 )); then exit \"$preflight\"; fi\ntimeout --signal=TERM --kill-after=20s 360s \"$python_bin\" -B -X utf8 scripts/runlog.py --name P107_Stage2Wb_adaptive_resume_recovery --num 107 -- \"$python_bin\" -B -X utf8 scripts/diag_p107_adaptive_masking.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P107_Stage2Wb_adaptive_resume_recovery --num 107 --note \"CPU actual_exit=$result; corrected longEMA/firstwindow resume,27closed tests,six synthetic cases. Models0/GPU0/optimizer0/CP0/corpus0; no quality/speed/bias adoption. Profilev2 was prepared only, NOT_RUN; v1 actual preserved.\"\nexit \"$result\"\n",
+      "actual_tool": 20761,
+      "actual_parent_exit": 0,
+      "report": "test_result/evidence/p107_hard_mask_policy_v2_20261027/cpu/report.json",
+      "deleted": false
+    },
+    {
+      "original": "run_P107_Stage3W_argmax_transfer_cost.sh",
+      "done": "run_P107_Stage3W_argmax_transfer_cost-done.sh",
+      "sha256": "8A0DF7B3FE1C57AC1C69880D9F4BC39F7B41198D799AFB91E466F800DD103E18",
+      "source_text": "#!/usr/bin/env bash\n# Synthetic BF16 logits; no model/optimizer/corpus/checkpoint operations.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1\ncommon=(--profile handoff/audit/oct27_independent/p107_argmax_profile_v1.json --profile-sha256 398DD791EA5DC6B81941609923AD03B6A89D7CDD723E247FB6E034A362AE4886 --max-wall-sec 300)\n\"$python_bin\" -B -X utf8 scripts/diag_p107_adaptive_gpu_transfer.py \"${common[@]}\" --check-only\npreflight=$?\nif (( preflight != 0 )); then exit \"$preflight\"; fi\ntimeout --signal=TERM --kill-after=20s 360s \"$python_bin\" -B -X utf8 scripts/runlog.py --name P107_Stage3W_argmax_transfer_cost --num 107 -- \"$python_bin\" -B -X utf8 scripts/diag_p107_adaptive_gpu_transfer.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P107_Stage3W_argmax_transfer_cost --num 107 --note \"GPU actual_exit=$result; known synthetic BF16 maxima only,32K/262K full/gathered argmax+CPUstats. Models0/training0/optimizer0/corpus0/CP0; no model coexistence, fusedCE, learning speed or quality adoption. Error9/HOLD8 remain separate; raw/profile/source preserved.\"\nexit \"$result\"\n",
+      "actual_tool": 77194,
+      "actual_parent_exit": 0,
+      "report": "test_result/evidence/p107_argmax_transfer_v1_20261027/gpu/report.json",
+      "deleted": false
+    }
+  ],
+  "deleted": 0
+}

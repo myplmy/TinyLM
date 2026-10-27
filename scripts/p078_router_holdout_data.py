@@ -243,6 +243,12 @@ def prepare(args):
 
 
 def read_prepared(expected_sha, corpus_sha):
+    return read_prepared_contract(expected_sha, corpus_sha,
+        expected_source_sha256={p:base.digest(base.path(p)) for p in CODE})
+
+
+def read_prepared_contract(expected_sha, corpus_sha, *, expected_source_sha256):
+    """Explicit producer-source validation; does not authorize a current run."""
     from scripts.p101a_sft_mtp_data import stream_rows
     path=base.path(DIRECTORY+'/report.json')
     if base.digest(path)!=expected_sha: raise ValueError('independent holdout report byte pin differs')
@@ -253,7 +259,7 @@ def read_prepared(expected_sha, corpus_sha):
     seconds=activity.get('seconds'); cap=activity.get('max_wall_sec')
     if (report.get('schema')!=SCHEMA or report.get('status')!='ROUTER_HOLDOUT_READY' or report.get('tokenizer_sha256')!=base.TOK_SHA
             or report['inventory']['original']['corpus_report_sha256']!=corpus_sha
-            or report['source_sha256']!={p:base.digest(base.path(p)) for p in CODE}
+            or report['source_sha256']!=expected_source_sha256
             or activity.get('complete') is not True or activity.get('returncode')!=0
             or activity.get('report_sha256')!=expected_sha or activity.get('corpus_sha256')!=corpus_sha
             or activity.get('source_sha256')!=report['source_sha256']

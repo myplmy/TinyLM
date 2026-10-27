@@ -182,10 +182,9 @@ def loaded(args, arm, trained=False):
         after = os.fstat(stream.fileno())
         if (before.st_size, before.st_mtime_ns, before.st_ino) != (after.st_size, after.st_mtime_ns, after.st_ino): raise ValueError('CP changed during read')
     if not trained: validate_parent_lineage(state, TOK_SHA, 'chat32', tok)
-    elif (state.get('step') != update_count(inputs(args)) or state.get('tokenizer_sha256') != TOK_SHA
-            or state.get('tokenizer_lineage') != 'chat32' or state.get('p078', {}).get('arm') != arm
-            or state['p078'].get('source') != signature(args) or state['p078'].get('dedicated_route_loader_required') is not True):
-        raise ValueError('dedicated matched-policy student loader/header required')
+    else:
+        validate_student_header(state, updates=update_count(inputs(args)), tokenizer_sha256=TOK_SHA,
+            arm=arm, expected_input=signature(args))
     original_cfg = dict(state['cfg']); policy = route.Policy(arm)
     config = dict(original_cfg, grad_checkpoint=True, mtp_aux=False, train_repeat=float(policy.cap), infer_repeat=1., repeat_mode='uniform')
     cfg = TMTConfig(**config)
@@ -272,12 +271,25 @@ def probes(torch, model, cfg, tok, *, limit=None):
     return rows
 
 
-def closed(args, mode, arm):
-    info = signature(args); value = read(report_name(mode, arm, args)); activity = read(activity_name(mode, arm, args))
+def validate_student_header(state, *, updates, tokenizer_sha256, arm, expected_input):
+    """Validate a header against an explicit caller-owned source contract.
+
+    Normal loading supplies the current signature. Historical validation alone
+    grants no runtime authority and never rewrites an old header.
+    """
+    if (state.get('step') != updates or state.get('tokenizer_sha256') != tokenizer_sha256
+            or state.get('tokenizer_lineage') != 'chat32' or state.get('p078', {}).get('arm') != arm
+            or state['p078'].get('source') != expected_input
+            or state['p078'].get('dedicated_route_loader_required') is not True):
+        raise ValueError('dedicated matched-policy student loader/header required')
+
+
+def validate_closed_receipt(value, activity, info, *, report_sha256, expected_tag):
+    """Pure original receipt checks; historical inputs are not current runs."""
     started, ended = (datetime.fromisoformat(activity[k]) for k in ('started_at', 'ended_at'))
     auth = activity.get('authorization', {})
     if (value.get('input') != info or activity.get('input') != info or activity.get('complete') is not True
-            or activity.get('returncode') != 0 or activity.get('report_sha256') != digest(path(report_name(mode, arm, args)))
+            or activity.get('returncode') != 0 or activity.get('report_sha256') != report_sha256
             or type(activity.get('seconds')) not in (int, float) or not math.isfinite(activity['seconds']) or activity['seconds'] < 0
             or started.tzinfo is None or ended.tzinfo is None or started > ended
             or activity.get('pid') != activity.get('pgid') or type(activity.get('pid')) is not int or activity['pid'] <= 0
@@ -287,12 +299,19 @@ def closed(args, mode, arm):
             or activity['admission_remaining'] < activity['max_wall_sec']
             or ended > datetime.fromisoformat(activity['authority_expires_at'])
             or auth.get('schema') != 'P078_TRAIN_EXECUTION_AUTHORIZATION_V1' or auth.get('allow_gpu_training') is not True
-            or auth.get('tag') != namespace(args) or auth.get('input_signature_sha256') != route.sha(info)
+            or auth.get('tag') != expected_tag or auth.get('input_signature_sha256') != route.sha(info)
             or auth.get('max_family_seconds') != 144000 or auth.get('max_worker_seconds', 0) < activity['max_wall_sec']
             or auth.get('expires_at') != activity['authority_expires_at'] or activity.get('authorization_canonical_sha256') != route.sha(auth)
             or value.get('authorization') != auth or value.get('authorization_sha256') != activity.get('authorization_sha256')):
         raise ValueError('closed same-source/input stage required')
     return value
+
+
+def closed(args, mode, arm):
+    info = signature(args)
+    value = read(report_name(mode, arm, args)); activity = read(activity_name(mode, arm, args))
+    return validate_closed_receipt(value, activity, info,
+        report_sha256=digest(path(report_name(mode, arm, args))), expected_tag=namespace(args))
 
 
 def budget(args):

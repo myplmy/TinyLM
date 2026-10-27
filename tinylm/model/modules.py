@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from .ternary import TLinear, LoRA
+from .visibility import validate_visibility
 
 # ---- 어텐션 컴포넌트 레지스트리 (config.attn_kind 로 선택) ----
 ATTENTION_KINDS = {}
@@ -75,7 +76,7 @@ class Attention(nn.Module):
         k = self.k_norm(k)                          # v5: RoPE 전에 정규화
         return apply_rope(k, cos, sin), v
 
-    def forward(self, x, kv, cos, sin, mode_p):
+    def forward(self, x, kv, cos, sin, mode_p, attention_mask=None):
         B, T, _ = x.shape
         c = self.cfg
         q = self.q_proj(x, mode_p).view(B, T, c.n_q_heads, c.head_dim).transpose(1, 2)
@@ -107,7 +108,20 @@ class Attention(nn.Module):
         # ★KV 캐시가 있으면 q_len < kv_len 이다. 이때 `is_causal=True` 를 그대로 쓰면
         #   SDPA 가 마스크를 **좌상단 정렬**해서 완전히 틀린 위치를 가린다(조용히 틀린다).
         #   질의는 절대위치 [past_len, past_len+q_len) 에 있으므로 tril(past_len) 이 맞다.
-        if q_len == kv_len:                                   # 캐시 없음(=prefill 포함)
+        if attention_mask is not None:
+            # The Transformer entry already snapshots and checks nonempty rows.
+            # Never silently fall back to a causal mask on this opt-in path.
+            validate_visibility(attention_mask, batch=B, length=T, device=x.device,
+                                require_nonempty=False)
+            if q_len != kv_len or getattr(c, "return_probs", False):
+                raise ValueError("explicit visibility forbids cached KV and attention-probability capture")
+            if use_gqa:
+                o = F.scaled_dot_product_attention(q, k, v, attn_mask=attention_mask,
+                                                   is_causal=False, enable_gqa=True)
+            else:
+                o = F.scaled_dot_product_attention(q, k, v, attn_mask=attention_mask,
+                                                   is_causal=False)
+        elif q_len == kv_len:                                 # 캐시 없음(=prefill 포함)
             if use_gqa:
                 o = F.scaled_dot_product_attention(q, k, v, is_causal=True, enable_gqa=True)
             else:
@@ -273,7 +287,8 @@ class Layer(nn.Module):
         """
         return self._attn_ref[0] if self._shared_attn else self.attn
 
-    def forward(self, x, kv, cos, sin, mode_p, attn_out=None, want_attn=False):
+    def forward(self, x, kv, cos, sin, mode_p, attn_out=None, want_attn=False,
+                attention_mask=None):
         """★P049 §17.3(`--reuse-attn-on-dup`) — `attn_out`·`want_attn` 두 인자가 추가됐다.
 
         ⚠️**기본값이면 종전과 비트 동일**이다(`attn_out=None`·`want_attn=False`).
@@ -286,13 +301,19 @@ class Layer(nn.Module):
         🚫★**돌려주는 것은 `attn_mod(...)` 의 출력**이지 `gates[0] *` 를 곱한 값이 아니다 —
         게이트는 층 소유라 통과마다 같지만, **곱하기 전 값을 캐시해야 게이트 학습이 산다.**
         """
+        if attention_mask is not None and (attn_out is not None or want_attn):
+            raise ValueError("explicit visibility cannot mix with attention-output reuse")
         ms = None
         if self.use_mode_ln and mode_p is not None:
             ms = (mode_p @ self.mode_scale.flatten(1)).view(*mode_p.shape[:2], 2, -1)
         a = (1 + self.a_scale) if ms is None else (1 + self.a_scale + ms[..., 0, :])
         m = (1 + self.m_scale) if ms is None else (1 + self.m_scale + ms[..., 1, :])
         if attn_out is None:
-            attn_out = self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
+            if attention_mask is None:
+                attn_out = self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin, mode_p)
+            else:
+                attn_out = self.attn_mod(self.ln1(x) * a + self.a_shift, kv, cos, sin,
+                                         mode_p, attention_mask=attention_mask)
         x = x + self.gates[0] * attn_out
         lora = (self.lora_gate, self.lora_up, self.lora_down) if self.has_lora else None
         film = (self.film_scale, self.film_shift) if self.has_film else None

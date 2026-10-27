@@ -1,0 +1,663 @@
+{
+  "schema": "P107_SYNTHETIC_GPU_ARGMAX_TRANSFER_V1",
+  "source": {
+    "files": {
+      "tinylm/train/adaptive_masking.py": "E667201C815915CFAF28F3EE2B30E0D37FC5FD0B7F9AB4B671E0CC14C5AB57B4",
+      "tinylm/train/hybrid_mntp.py": "2E38170E64D3203D7B76027D17C951AD17D8FF19536F171C3EBE61E75C152093",
+      "scripts/diag_p107_adaptive_masking.py": "01B967597AA036F7B841754DD42FBCB5464CE2023E6D46D52A71C6A3B94B0A86",
+      "scripts/test_p107_adaptive_masking.py": "453B8CC14095B13E80A90EA1C0CF803C587D26354C96A66C3E22E7CEC904A91E",
+      "scripts/test_p107_adaptive_driver.py": "B2A861BFBBFFF32D2857C3E775274BF2DF0F2582830A8E923E42F1D5D38F8945",
+      "scripts/diag_p106b_resource_matrix.py": "25C4FA11154A05B4AFEF6498EFA871C59A57401D4BA4F3BE3CC69E5452E510B6",
+      "scripts/diag_p107_adaptive_gpu_transfer.py": "D4D9FEE3910E55778EA2F0EC0CF88248940F894905B0438BB179528EFCE0B2DC",
+      "scripts/test_p107_adaptive_gpu_transfer.py": "EBB33170EA3D82B93174C073089D6DC24C272A8632441BCAC9E889B29B0C4D44",
+      "scripts/interactive_research_infer.py": "403803677BD8FB31FC2AA673E863553C7C9317324EAAB699253CC6385ACCD3B2",
+      "tinylm/model/visibility.py": "7D7E0BC42077585998FF312E707C8E5D8A041CCCD0F7097A070EB38F4D73BABD"
+    },
+    "sha256": "E5BF8A34FEA9FD348723B78368AAA87D73DCB09FD3D4644B940343FEC1BC700B"
+  },
+  "profile_sha256": "398DD791EA5DC6B81941609923AD03B6A89D7CDD723E247FB6E034A362AE4886",
+  "started_at": "2026-10-27T05:26:06.955193+00:00",
+  "status": "GPU_TECHNICAL_COMPLETE_NOT_QUALITY",
+  "blocks": [
+    {
+      "vocab": 32768,
+      "mode": "full",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 536870912,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.428991815075278e-06,
+          "argmax_seconds": 0.009779386018635705,
+          "id_transfer_seconds": 0.00026531299226917326,
+          "total_id_seconds": 0.010049128002719954,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.001632416999200359,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 3.7869904190301895e-06,
+          "argmax_seconds": 0.0009195340098813176,
+          "id_transfer_seconds": 0.0001620379916857928,
+          "total_id_seconds": 0.0010853589919861406,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0025415920244995505,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 3.9069855120033026e-06,
+          "argmax_seconds": 0.0009038450079970062,
+          "id_transfer_seconds": 0.00016685700393281877,
+          "total_id_seconds": 0.0010746089974418283,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0004610739997588098,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 3.947003278881311e-06,
+          "argmax_seconds": 0.0008998179982881993,
+          "id_transfer_seconds": 0.00016844901256263256,
+          "total_id_seconds": 0.0010722140141297132,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0009071609820239246,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 3.9069855120033026e-06,
+        "argmax_seconds": 0.0009038450079970062,
+        "id_transfer_seconds": 0.00016685700393281877,
+        "total_id_seconds": 0.0010746089974418283,
+        "stat_commit_seconds": 0.0009071609820239246
+      }
+    },
+    {
+      "vocab": 32768,
+      "mode": "selected",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 536870912,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.01727432501502335,
+          "argmax_seconds": 0.0002473789791110903,
+          "id_transfer_seconds": 0.0003644620010163635,
+          "total_id_seconds": 0.017886165995150805,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.002217698987806216,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0010863099887501448,
+          "argmax_seconds": 0.00023128901375457644,
+          "id_transfer_seconds": 0.00020730297546833754,
+          "total_id_seconds": 0.0015249019779730588,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.0030809169984422624,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.000540414999704808,
+          "argmax_seconds": 0.00022927499958314002,
+          "id_transfer_seconds": 0.00010624100104905665,
+          "total_id_seconds": 0.0008759310003370047,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.0005967519828118384,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0004908010014332831,
+          "argmax_seconds": 0.00020936699002049863,
+          "id_transfer_seconds": 0.0001375210122205317,
+          "total_id_seconds": 0.0008376890036743134,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.001484526990680024,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 0.000540414999704808,
+        "argmax_seconds": 0.00022927499958314002,
+        "id_transfer_seconds": 0.0001375210122205317,
+        "total_id_seconds": 0.0008759310003370047,
+        "stat_commit_seconds": 0.001484526990680024
+      }
+    },
+    {
+      "vocab": 32768,
+      "mode": "selected",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 536870912,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.004454411013284698,
+          "argmax_seconds": 0.000256286992225796,
+          "id_transfer_seconds": 0.00018249600543640554,
+          "total_id_seconds": 0.0048931940109469,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.0008299050095956773,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0005766329995822161,
+          "argmax_seconds": 0.00022472700220532715,
+          "id_transfer_seconds": 0.00012859399430453777,
+          "total_id_seconds": 0.0009299539960920811,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.001281070988625288,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0005795999895781279,
+          "argmax_seconds": 0.00031571800354868174,
+          "id_transfer_seconds": 0.00019478099420666695,
+          "total_id_seconds": 0.0010900989873334765,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.0005663050105795264,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.000769128993852064,
+          "argmax_seconds": 0.00023024698020890355,
+          "id_transfer_seconds": 0.0001904600067064166,
+          "total_id_seconds": 0.0011898359807673842,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 79495168,
+          "stat_commit_seconds": 0.0008965030137915164,
+          "allocated_peak_bytes": 616393728,
+          "reserved_peak_bytes": 631242752
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 0.0005795999895781279,
+        "argmax_seconds": 0.00023024698020890355,
+        "id_transfer_seconds": 0.0001904600067064166,
+        "total_id_seconds": 0.0010900989873334765,
+        "stat_commit_seconds": 0.0008965030137915164
+      }
+    },
+    {
+      "vocab": 32768,
+      "mode": "full",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 536870912,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 6.452988600358367e-06,
+          "argmax_seconds": 0.001789836009265855,
+          "id_transfer_seconds": 0.0002846699790097773,
+          "total_id_seconds": 0.0020809589768759906,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0007125919801183045,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.9889786168932915e-06,
+          "argmax_seconds": 0.002000536012928933,
+          "id_transfer_seconds": 0.00022528698900714517,
+          "total_id_seconds": 0.0022308119805529714,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0013864909997209907,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.9600203055888414e-06,
+          "argmax_seconds": 0.0009233210003003478,
+          "id_transfer_seconds": 0.00024101699818857014,
+          "total_id_seconds": 0.0011692980187945068,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0006516059802379459,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.36900882050395e-06,
+          "argmax_seconds": 0.0012398500111885369,
+          "id_transfer_seconds": 0.0003494629927445203,
+          "total_id_seconds": 0.0015936820127535611,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0014315180014818907,
+          "allocated_peak_bytes": 536936448,
+          "reserved_peak_bytes": 547356672
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 4.9600203055888414e-06,
+        "argmax_seconds": 0.0012398500111885369,
+        "id_transfer_seconds": 0.00024101699818857014,
+        "total_id_seconds": 0.0015936820127535611,
+        "stat_commit_seconds": 0.0013864909997209907
+      }
+    },
+    {
+      "vocab": 262144,
+      "mode": "full",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 4294967296,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 5.039997631683946e-06,
+          "argmax_seconds": 0.007920228003058583,
+          "id_transfer_seconds": 0.0002905389992520213,
+          "total_id_seconds": 0.008215806999942288,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0031405490008182824,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.518020432442427e-06,
+          "argmax_seconds": 0.006896064995089546,
+          "id_transfer_seconds": 0.00029508001171052456,
+          "total_id_seconds": 0.007195663027232513,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.005889594001928344,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.289002390578389e-06,
+          "argmax_seconds": 0.00684691098285839,
+          "id_transfer_seconds": 0.0003286139981355518,
+          "total_id_seconds": 0.00717981398338452,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.002691987989237532,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 7.144000846892595e-06,
+          "argmax_seconds": 0.007093227002769709,
+          "id_transfer_seconds": 0.00029019100475125015,
+          "total_id_seconds": 0.007390562008367851,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0049154169973917305,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 4.518020432442427e-06,
+        "argmax_seconds": 0.006896064995089546,
+        "id_transfer_seconds": 0.00029508001171052456,
+        "total_id_seconds": 0.007195663027232513,
+        "stat_commit_seconds": 0.0049154169973917305
+      }
+    },
+    {
+      "vocab": 262144,
+      "mode": "selected",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 4294967296,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.051508028991520405,
+          "argmax_seconds": 0.0011826340050902218,
+          "id_transfer_seconds": 0.00023345299996435642,
+          "total_id_seconds": 0.05292411599657498,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.0029999710095580667,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0027589849778451025,
+          "argmax_seconds": 0.0011350630084052682,
+          "id_transfer_seconds": 0.00016223799320869148,
+          "total_id_seconds": 0.004056285979459062,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.005921455012867227,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.003265217994339764,
+          "argmax_seconds": 0.0011374980094842613,
+          "id_transfer_seconds": 0.0001482709776610136,
+          "total_id_seconds": 0.004550986981485039,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.0027743139944504946,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0027210229891352355,
+          "argmax_seconds": 0.0011323979997541755,
+          "id_transfer_seconds": 0.00013324199244379997,
+          "total_id_seconds": 0.003986662981333211,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.006059156003175303,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 0.0027589849778451025,
+        "argmax_seconds": 0.0011350630084052682,
+        "id_transfer_seconds": 0.0001482709776610136,
+        "total_id_seconds": 0.004056285979459062,
+        "stat_commit_seconds": 0.005921455012867227
+      }
+    },
+    {
+      "vocab": 262144,
+      "mode": "selected",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 4294967296,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.02326646400615573,
+          "argmax_seconds": 0.001159931009169668,
+          "id_transfer_seconds": 0.00020896698697470129,
+          "total_id_seconds": 0.0246353620023001,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.002788070007227361,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.002780023991363123,
+          "argmax_seconds": 0.0011471280013211071,
+          "id_transfer_seconds": 0.0001845700026024133,
+          "total_id_seconds": 0.0041117219952866435,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.003989298013038933,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.0032723080075811595,
+          "argmax_seconds": 0.0014859299990348518,
+          "id_transfer_seconds": 0.00018181500490754843,
+          "total_id_seconds": 0.00494005301152356,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.0022609499865211546,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 0.00269228799152188,
+          "argmax_seconds": 0.0011375080212019384,
+          "id_transfer_seconds": 0.00018001199350692332,
+          "total_id_seconds": 0.004009808006230742,
+          "transferred_id_bytes": 9704,
+          "extra_gather_logit_bytes": 635961344,
+          "stat_commit_seconds": 0.0050068900163751096,
+          "allocated_peak_bytes": 4930956288,
+          "reserved_peak_bytes": 4951375872
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 0.002780023991363123,
+        "argmax_seconds": 0.0011471280013211071,
+        "id_transfer_seconds": 0.00018181500490754843,
+        "total_id_seconds": 0.0041117219952866435,
+        "stat_commit_seconds": 0.003989298013038933
+      }
+    },
+    {
+      "vocab": 262144,
+      "mode": "full",
+      "status": "BLOCK_COMPLETE",
+      "selected_targets": 1213,
+      "logit_storage_bytes": 4294967296,
+      "attempts": [
+        {
+          "index": 0,
+          "warmup": true,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.278001142665744e-06,
+          "argmax_seconds": 0.008319532993482426,
+          "id_transfer_seconds": 0.00032933600596152246,
+          "total_id_seconds": 0.008653147000586614,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0027023279981222004,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        },
+        {
+          "index": 1,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.047004040330648e-06,
+          "argmax_seconds": 0.006782579002901912,
+          "id_transfer_seconds": 0.00027303799288347363,
+          "total_id_seconds": 0.007059663999825716,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.005655310000292957,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        },
+        {
+          "index": 2,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 1.0469986591488123e-05,
+          "argmax_seconds": 0.0067882010189350694,
+          "id_transfer_seconds": 0.000217762979445979,
+          "total_id_seconds": 0.0070164339849725366,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.0032584629952907562,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        },
+        {
+          "index": 3,
+          "warmup": false,
+          "status": "ATTEMPT_COMPLETE",
+          "prepare_seconds": 4.457979230210185e-06,
+          "argmax_seconds": 0.007498007005779073,
+          "id_transfer_seconds": 0.0002484010183252394,
+          "total_id_seconds": 0.007750866003334522,
+          "transferred_id_bytes": 65536,
+          "extra_gather_logit_bytes": 0,
+          "stat_commit_seconds": 0.004007704003015533,
+          "allocated_peak_bytes": 4295163904,
+          "reserved_peak_bytes": 4301258752
+        }
+      ],
+      "gold_histogram_exact": true,
+      "median_seconds": {
+        "prepare_seconds": 4.457979230210185e-06,
+        "argmax_seconds": 0.0067882010189350694,
+        "id_transfer_seconds": 0.0002484010183252394,
+        "total_id_seconds": 0.007059663999825716,
+        "stat_commit_seconds": 0.004007704003015533
+      }
+    }
+  ],
+  "allocation_attempts": [
+    {
+      "vocab": 32768,
+      "shape": [
+        8,
+        1024,
+        32768
+      ],
+      "dtype": "bfloat16",
+      "expected_logit_bytes": 536870912
+    },
+    {
+      "vocab": 262144,
+      "shape": [
+        8,
+        1024,
+        262144
+      ],
+      "dtype": "bfloat16",
+      "expected_logit_bytes": 4294967296
+    }
+  ],
+  "models": 0,
+  "optimizer_updates": 0,
+  "checkpoint_writes": 0,
+  "source_corpus_reads": 0,
+  "quality_claim": false,
+  "measures": "SYNTHETIC_EXISTING_LOGITS_ARGMAX_ID_TRANSFER_CPU_COMMIT;NOT_MODEL_TRAINING",
+  "torch_version": "2.10.0+cu130",
+  "cuda_version": "13.0",
+  "idle_before": {
+    "scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE",
+    "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0",
+    "competing_compute_pids": []
+  },
+  "entry_free_bytes": 15817768960,
+  "entry_total_bytes": 17170956288,
+  "final_cuda_cleanup": {
+    "entry": {
+      "allocated_bytes": 0,
+      "reserved_bytes": 0
+    },
+    "before_workspace_clear": {
+      "allocated_bytes": 0,
+      "reserved_bytes": 0
+    },
+    "workspace_clear_available": true,
+    "workspace_clear_called": false,
+    "allocated_bytes": 0,
+    "reserved_bytes": 0
+  },
+  "source_unchanged": true,
+  "final_verification_errors": [],
+  "exit_code": 0,
+  "seconds": 1.7446633259824011,
+  "ended_at": "2026-10-27T05:26:08.699858+00:00"
+}

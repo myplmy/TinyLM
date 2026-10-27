@@ -1,0 +1,91 @@
+test_full_toy_prefill_and_cache_match_product (scripts.test_p014e_packed_g128.PackedContract) ... ERROR
+test_g128_padding_scale_and_tiny_nonzero_roundtrip (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_grad_training_mode_delta_and_activation_dtype_refused (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_linear_allclose_without_full_weight_parameter_or_cache (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_loader_preserves_cpu_rng_and_uses_meta_skeleton (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_missing_or_split_aliases_and_rest_fields_refused (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_new_file_weights_only_fresh_process_without_source_checkpoint (scripts.test_p014e_packed_g128.PackedContract) ... FAIL
+test_noninteger_and_nonfinite_trits_rejected_before_codec (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_nonternary_source_is_not_requantized (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_reserved_byte_padding_zero_scale_and_nan_refused (scripts.test_p014e_packed_g128.PackedContract) ... ok
+test_shared_mlp_aliases_and_nonpersistent_buffers_restored (scripts.test_p014e_packed_g128.PackedContract) ... FAIL
+
+======================================================================
+ERROR: test_full_toy_prefill_and_cache_match_product (scripts.test_p014e_packed_g128.PackedContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p014e_packed_g128.py", line 117, in test_full_toy_prefill_and_cache_match_product
+    a, b = source(ids), deployed(ids)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/transformer.py", line 897, in forward
+    _out = layer(x, kv, cos, sin, mode_p, _ao, _want)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/modules.py", line 303, in forward
+    x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film, lrm)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/modules.py", line 165, in forward
+    tiles = tuple(getattr(self.gate_proj.cfg, "x2_active_tiles", ()) or ())
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1965, in __getattr__
+    raise AttributeError(
+AttributeError: 'PackedGroupLinear' object has no attribute 'cfg'
+
+======================================================================
+FAIL: test_new_file_weights_only_fresh_process_without_source_checkpoint (scripts.test_p014e_packed_g128.PackedContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p014e_packed_g128.py", line 185, in test_new_file_weights_only_fresh_process_without_source_checkpoint
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/transformer.py", line 897, in forward
+    _out = layer(x, kv, cos, sin, mode_p, _ao, _want)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/modules.py", line 303, in forward
+    x = x + self.gates[1] * self.mlp[0](self.ln2(x) * m + self.m_shift, mode_p, lora, film, lrm)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/tinylm/model/modules.py", line 165, in forward
+    tiles = tuple(getattr(self.gate_proj.cfg, "x2_active_tiles", ()) or ())
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1965, in __getattr__
+    raise AttributeError(
+AttributeError: 'PackedGroupLinear' object has no attribute 'cfg'
+
+
+======================================================================
+FAIL: test_shared_mlp_aliases_and_nonpersistent_buffers_restored (scripts.test_p014e_packed_g128.PackedContract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p014e_packed_g128.py", line 133, in test_shared_mlp_aliases_and_nonpersistent_buffers_restored
+    self.assertIs(deployed.layers[1].mlp, deployed.layers[2].mlp)
+AssertionError: [MLP(
+  (gate_proj): PackedGroupLinear()
+  (up_proj): PackedGroupLinear()
+  (down_proj): PackedGroupLinear()
+)] is not [MLP(
+  (gate_proj): PackedGroupLinear()
+  (up_proj): PackedGroupLinear()
+  (down_proj): PackedGroupLinear()
+)]
+
+----------------------------------------------------------------------
+Ran 11 tests in 2.562s
+
+FAILED (failures=2, errors=1)

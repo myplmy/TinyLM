@@ -1,0 +1,58 @@
+{
+  "schema": "P102A_MARGIN4GB_PREFLIGHT_CLOSURE_V1",
+  "whole_static_counts": {
+    "pass": 68,
+    "errors": 2,
+    "actionable_warnings": 0,
+    "accepted_info": 0,
+    "not_run": 6
+  },
+  "own_shell_mode_error_fixed": true,
+  "current_scoped_checks": [
+    {
+      "command": [
+        "scripts/check_shell_entrypoints.py"
+      ],
+      "actual_exit": 0,
+      "stdout": "[PASS] shell entrypoints=38; LF/shebang/mode/bash syntax/runlog/W&B/smoke grammar/Linux queue audit\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/check_batch_flags.py",
+        "run_P102A_Stage2hW_frozen_margin_4gb.sh"
+      ],
+      "actual_exit": 0,
+      "stdout": "=== run_P102A_Stage2hW_frozen_margin_4gb.sh  [OK]  (E0 W0)\n\n총 에러 0건 / 경고 0건\n주의: **이름이 있는지만** 본다. 파서에 있는데 실제로 전달 안 되는 결함은 못 잡는다\n      (2026-08-06 `--doc-filter` 가 그랬다). 그건 `run_smoke_check.bat` 의 몫이다.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "scripts/check_batch_name.py",
+        "--name",
+        "run_P102A_Stage2hW_frozen_margin_4gb.sh"
+      ],
+      "actual_exit": 1,
+      "stdout": "================================================================================================\n  check_batch_name — 계획번호·단계 구분자가 **실재하는가** (2026-09-04 신설)\n================================================================================================\n\n  🚫 파일명 규약 위반 — **1건**\n    ★**run_P102A_Stage2hW_frozen_margin_4gb.sh** — 이름 규약 위반. `run_P<번호>_<단계>_<요약>.bat` 이어야 한다 (예: `run_P084_Stage0_residency.bat`). 🚫계획번호와 단계가 없으면 **어느 계획의 몇 단계인지 파일명이 말하지 않는다**\n\n  ★고치는 법: ①계획서를 먼저 쓰고 ②그 계획서에 단계를 적고 ③그 번호로 개명한다.\n  🚫**배치가 먼저 생기면 계획서가 사후 정당화가 된다.**\n",
+      "stderr": ""
+    }
+  ],
+  "batch_name_sh_support": "BAT-only name checker rejects SH extension; shell-entrypoints and plan stage checks retained; no checker changed",
+  "unrelated_whitelist_files": [
+    "scripts/p106b_corpus_cache.py",
+    "scripts/p106b_corpus_cleanup.py"
+  ],
+  "unrelated_flags": [
+    "--adoptions",
+    "--max-units",
+    "--output-name",
+    "--packet-name",
+    "--unit-documents"
+  ],
+  "own_new_parser_uses_existing_registered_flags": true,
+  "unrelated_files_edited": false,
+  "production_models_and_CE_source_unchanged": true,
+  "source_chain_excludes_cleanup_modules": true,
+  "launch_authority": "User94 latest CPU+GPU4GB permission after17:00; no training",
+  "launcher_sha256": "B560627227D22CA88BD8CA90B3F5E09351983AFE8F15016D30DE16BBCE2180FE"
+}

@@ -1,0 +1,32 @@
+============================================================================================
+  스모크 진단런 계약 — 표 vs 배치 vs 로그
+============================================================================================
+
+  [1] 집합 — 표 11개 · 배치 11개
+      ✅ 일치
+
+  [1b] 항목 중복 — 두 팔이 같은 것을 재는가
+      ✅ 축 11종 · 표지 29종 — 겹치는 팔 없다
+
+  [2] 항목 실재 — 표의 표지가 스크립트 소스에 있는가
+      ✅ 항목 29개 전부 소스에 있다
+
+  [3] 로그 인쇄 — 20261026175754_smoke_codex_oct27_resource_adamuon_v1_efebbd2.txt
+      ✅ test_p101a_sft_mtp.py      exit 0
+      ✅ check_attrs.py             exit 0
+      ✅ check_diag_data.py         exit 0
+      ✅ diag_init_cla_owner.py     exit 0
+      🚫 check_handoff.py: 블록이 없다(안 돌았다)
+      ✅ check_links.py             exit 0
+      ✅ check_return_probs.py      exit 0
+      ✅ diag_sparse34_pack.py      exit 0
+      ✅ mem_runtime.py             exit 0
+      ✅ diag_sft_mask.py           exit 0
+      🚫 check_smoke.py: 블록이 없다(안 돌았다)
+
+  ----------------------------------------------------------------------------------------
+  🚫 **불일치 3건**
+     - Codex 대체 실행 증거 불일치: execution source pins differ
+     - check_handoff.py: 이 로그에 그 팔의 블록이 없다 — 팔이 안 돌았다
+     - check_smoke.py: 이 로그에 그 팔의 블록이 없다 — 팔이 안 돌았다
+  ★표가 틀렸는지 코드가 틀렸는지 먼저 정하세요(함정 34: 4번 중 4번 표가 틀렸다).

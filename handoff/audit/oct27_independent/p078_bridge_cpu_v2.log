@@ -1,0 +1,17 @@
+E......................................................................
+======================================================================
+ERROR: test_actual64_label_io_uses_original_shards_and_row_verifier (scripts.test_p078_body_bridge.BridgeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p078_body_bridge.py", line 148, in test_actual64_label_io_uses_original_shards_and_row_verifier
+    losses, relative, routes=driver.router.trial_labels(model,records[:8],split='train',pad_id=0)
+  File "/home/uranus/tinyLM/scripts/p078_prefix_router.py", line 290, in trial_labels
+    sums, counts, receipt = per_row_ce(model, records, action=action, pad_id=pad_id, width=width, device=device)
+  File "/home/uranus/tinyLM/scripts/p078_prefix_router.py", line 269, in per_row_ce
+    if type(width) is not int or not 1 <= width <= model.cfg.max_seq_len: raise ValueError('bounded fixed execution width required')
+ValueError: bounded fixed execution width required
+
+----------------------------------------------------------------------
+Ran 71 tests in 5.636s
+
+FAILED (errors=1)

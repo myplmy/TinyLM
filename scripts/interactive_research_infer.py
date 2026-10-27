@@ -28,13 +28,14 @@ if str(ROOT) not in sys.path:
 TOKENIZER = 'data_cache/tok-ko-en-32768-chat32.json'
 TOKENIZER_SHA = '9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E'
 METADATA_LIMIT = 2_000_000
-MANIFEST = 'handoff/audit/WIP_20261021_RESEARCH_INFER_MANIFEST.json'
+MANIFEST = 'handoff/audit/oct27_independent/research_infer_manifest_mntp_v1.json'
 MANIFEST_SCHEMA = 'TINYLM_RESEARCH_MANUAL_INFER_MANIFEST_V1'
 REQUIRED_SOURCES = (
     'scripts/interactive_research_infer.py', 'research_infer.sh', 'scripts/shell/tinylm_env.sh',
     'tinylm/__init__.py', 'tinylm/paths.py', 'tinylm/config.py',
     'tinylm/model/__init__.py', 'tinylm/model/transformer.py', 'tinylm/model/modules.py',
     'tinylm/model/ternary.py', 'tinylm/model/ternary_kernel.py',
+    'tinylm/model/visibility.py',
     'tinylm/infer/__init__.py', 'tinylm/infer/generate.py',
     'tinylm/data/__init__.py', 'tinylm/data/prepare.py', 'tinylm/data/loader.py', 'tinylm/data/sft.py',
     'tinylm/chat/__init__.py', 'tinylm/chat/canonical.py', 'tinylm/chat/serialize.py', 'tinylm/chat/tokens.py',
