@@ -108,3 +108,61 @@ CPU가상fixture의직접oracle와고정크기두어휘통계비용을실제완�
 Stage2의 정확한 정책 재개 회귀 뒤 모델 없는 가상 BF16 로짓에서 full/selected argmax를 비교한다. [대안·영향·자원 계약](../docs/research/20261027_적응형_masking의_통계와_재개계약.md)의 B 경로 두 변형이다. 같은 batch8×1024·어휘32768/262144·알려진 정답/오답 ID·고정 선택에 대해 순/역순 warm1/실측3, 준비/gather·reduction·전달·CPU commit·typed peak를 분리한다. 모델 호출·교사·실제 원문·학습·체크포인트0이며 성공은 ID/집계의 직접 oracle·소스 불변·소유 GPU 정리뿐이다. 실제 학습 속도/품질 채택은 하지 않는다. 사전 CPU 회귀·고정 프로필·여유8GiB·300초 내부/360초 외부+kill20초·17시 종결이 선결이다.
 
 실제77194/0·내부1.745초/8블록32회로완료했다.262K full/selected ID획득7.188/4.084ms와peak4096.188/4702.526MiB를분리했고전체known ID/유형histogram/최종소유CUDA0을확인했다. SH전체원문/SHA뒤-done·삭제0이다. 이후check_attrs의별도PolicyConfig.seed오탐을생성자참조세곳으로좁게수리했고,직접검사38976/0·CPU30시험65351/0·현재소스전체smoke69526/0·445.947초/44실행을회수했다. 원smoke55571/1도보존한다. [결과107§8](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md). 제품통합·자료편향·본학습효과는미완이며사용자99에따라새실험을확장하지않는다.
+
+### Stage5W — 명시 문서·LR 스케줄과 분할 디스크 재개
+
+[사전 설계](../docs/research/20261101_P107_문서원천과_디스크재개_설계.md)의 A안을 구현했다.
+원장59의 완료30갱신/메모리재개는 반복하지 않고, 새 명시문서 source·cosine/warmup·실제 디스크 전체재개를 독립 기술선결로 검증한다.
+기존 AdaptiveMNTPTrainer와 LR식·strict 원형 로더·source/정리 helper를 재사용하며 기본 trainer/CLI는 변경하지 않는다.
+
+새 CPU15/0은 실제 부분 optimizer 실패·다른 source/스케줄·손상/부분 shard·overwrite 거부와
+dropout 포함 전체 재개의 exact를 확인했다. 새profile은8BDA8C4334925C178B83856F3DC02A3002888F13E193FAA8B0329F2E79DB8ECD,
+source는0FFBF25801BBAB27D0DEDE10504342A6A5DEF77743C29F1A229E7049A62CAF78다.
+프로필의6갱신/1snapshot은 계획량이며 CPU 준비에서 실제 Native/GPU는0이다.
+
+실제 GPU는 현재 Falcon5 전량 종료·정리 뒤 단일GPU로만 연다. 같은 Native 복사본에서
+명시 합성4문서·micro8×accum16×1024·causal8/MNTP8·BF16AMP/FP32master·MuonRMS4+AdamW를 사용한다.
+prefix2 뒤 새디스크snapshot을16MB 이하 조각으로 저장하고 계속2회와 새optimizer/source/session 복원 후2회를 대조한다.
+8회 지평·warmup2·cosine LR, loss·target·model/optimizer/policy/source/RNG가 같아야 한다.
+원모델/소스 불변·최종CUDA0·실제파일 크기/전체SHA를 검산한다. 디스크 실패 산출물과 연구snapshot은 삭제하지 않는다.
+
+최대900초+정리예비·15시마감, 보수적6GiBallocator/8GB공유증가를 유지한다.
+예상GPU2~5분은 기존 비용으로부터의 추정이며 실제 디스크 시간·약781MB 상태크기는 실측 후 확정한다.
+다른프로세스/정전 복구·실제코퍼스/언어편향·causalKD·생산CLI·본학습지능은 이 기술 게이트로 완료하지 않는다.
+실행SH는 run_P107_Stage5W_document_schedule_disk_resume.sh 이며 현재GPU미실행이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+
+### Stage6W — 같은 어휘 교사 causal KL의 실제 연결 비용
+
+- 사용자 105의 2026-11-01 15시까지 CPU/GPU 권한으로 준비한다. 정제 원천·추가 300M·품질 학습은 수행하지 않는다.
+- 설계는 [교사 연결 설계](../docs/research/20261101_P107_causal_KD_연결_설계.md)를 따른다. 기존 teacher KL 함수를 재사용하고 기본 None 경로를 보존한다. masked micro에는 교사를 호출하지 않는다.
+- 같은 Native595 복사본의 본체·삼진 경로·토크나이저·micro8×accum16·길이1024·checkpoint-on·BF16 AMP·FP32 master·Muon RMS4/AdamW를 고정한다. 명시 합성 문서 4개와 스케줄을 고정하고 None/KL/KL/None 네 블록을 각각 4업데이트한다. 각 블록 첫 회는 준비 비용으로 구분하고 남은 3회씩을 비교한다.
+- 두 팔 모두 같은 동결 교사가 상주한다. 교사 상주 자체의 메모리는 별도 계측한다. 교사는 동일 Native의 기술 대조로서 더 유능한 정답 교사가 아니며, 결과에서 지식·지능 향상이나 Gemma 간 어휘 정렬의 성공을 주장하지 않는다.
+- causal loss는 CE + 0.1×KL(T1)이고 행청크256이다. 기존 causal/masked 각각 절반 가중·clip·optimizer·통계 갱신은 유지한다. 이 계수는 기술 시험 조건이며 최적값 채택이 아니다.
+- 시행 전 CPU 원로그·소스 SHA·원 부모 SHA·토크나이저 SHA를 동결한다. 반복 블록의 loss/model/optimizer/source/policy/RNG가 같고 교사 parameter와 gradient가 불변이어야 한다. 정합 실패는 기술 실패로 보존하며 품질 음성으로 대신하지 않는다.
+- 실제 실행 상한900초, 종료 준비120초, 15시 마감이다. GPU allocator12GiB·공유 시작값 대비 증가14GB·단일 GPU·기존 경쟁 compute 없음으로 제한한다. 실제 여유량이14GB 이하이면 실행하지 않는다. 제한을 없애는 사용자 승인과 물리적 안전 확인은 구분한다.
+- 런처: run_P107_Stage6W_causal_teacher_kl_cost.sh. 새 profile과 출력만 사용한다. 체크포인트 파일은 쓰지 않는다. 정확한 호출·종료코드·원로그·최대 메모리·동결 교사 비용·최종 CUDA 해제를 결과 107에 기록한다.
+
+
+### Stage5W/6W 실행 회수 — 2026-11-01 오후
+
+Stage5W Native 합성6갱신·새디스크 snapshot1개는69640/0·독립76538/0으로 source/RNG/optimizer/모델/정책/스케줄 exact를 확인했다. Stage6W는 CPU40 뒤 합성16갱신10664/0·독립24560/0으로 causal-only KL과 반복 경로 exact·교사 동결을 확인했다. 결과107§15~16이 수치·비용·한계의 정본이다. 완료 SH는 -done과 원형 SHA로 보존했다. 실제 코퍼스·품질·생산 CLI는 미완이고 추가300M은 금지 상태다.
+
+
+### Stage7W — 새 프로세스에서 기존 V1 디스크 경계 재현
+
+Stage5W는 같은 프로세스의 새 optimizer/source/session을 시험했고 OS 프로세스 재시작은 미확인이었다. 원장59의 전체 재개 선결을 위해 이미 종료한 세션69640의 snapshot을 읽기 전용으로 새 Python worker에 로드하고2업데이트만 수행한다. 새 파일 checkpoint를 저장하지 않는다. 이전 실행의 계속 경로와 loss/target/LR 및 model/optimizer/policy/source/RNG/세션 전체 SHA를 대조한다.
+
+기존 snapshot은 KD가 없는 V1 경계다. 현재 코드에서 달라진 원소스는 optional causal KD hook 하나뿐이어야 하며, 원형을 정확 바이트로 보존하고 CPU에서 None 기본4업데이트의 전체 상태 일치를 먼저 증명한다. 저장된 source/스케줄 서명은 의도적으로 보존하되 새 실행 profile은 현재 코드·옛 profile·옛 보고서·독립 판독·디스크 manifest와 CPU 원로그를 모두 SHA로 묶는다. 소스 차이를 무시하거나 옛 source profile을 그대로 현재 실행 승인으로 쓰지 않는다.
+
+대안은 A 기존49조각 읽기 전용 새 프로세스 재현, B 새 snapshot을 만들고 두 프로세스를 새로 학습, C CPU 재개만 유지다. 동일 원형을 활용하면서 추가781MB 저장과 중복 prefix 갱신을 피하는 A를 택한다. 근거·문서 경계·스케줄·토크나이저·micro8×accum16/1024/ckpt-on/BF16·정책은 Stage5W 그대로이며 causal KD는 None이다.
+
+현재 사용자105의 CPU/GPU 권한 안에서300초 상한·마감120초 예비·15시 종료·단일 GPU·할당6GiB/공유증가8GB를 적용한다. 런처는 run_P107_Stage7W_fresh_process_disk_resume.sh이며 출력/태그는 새로 만든다. 정합이 달라지면 결과를 보존하고 임의 허용오차를 추가하지 않는다. 정제 원천·추가300M·의미 품질·전원장애·GPU KD 재개는 시험하지 않는다.
+
+
+### Stage7W 실행 회수 — 2026-11-01 오후
+
+CPU39/0 뒤 새 프로세스 GPU84306/0·독립root86955/0으로 이전 V1 snapshot 읽기 전용2회 재개가 전체 exact였다. 기존49조각은 불변이고 새checkpoint0이다. 실제 정전/본학습 품질은 시험하지 않았다. 결과107§17과 완료 SH/manifest_v4가 원형을 소유한다.

@@ -1,0 +1,15 @@
+
+==============================================================================
+[runlog] 2026-11-01 12:36:07  name=P107_Stage6W_causal_teacher_kl_cost
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p107_causal_kd_cost.py --profile handoff/audit/nov01_afternoon/P107_KD_PROFILE_v1.json --profile-sha256 D365804AF972CC55686D321615B78D2B53E3260CF0751D209AC87BC728E2D25B --mode cost --max-wall-sec 900 --execute
+==============================================================================
+{"block": 0, "mode": "none", "median_seconds": 9.293074902961962, "peak_reserved_bytes": 7012876288}
+{"block": 1, "mode": "causal_kl", "median_seconds": 12.545573250972666, "peak_reserved_bytes": 8491368448}
+{"block": 2, "mode": "causal_kl", "median_seconds": 12.386111470987089, "peak_reserved_bytes": 8239710208}
+{"block": 3, "mode": "none", "median_seconds": 9.404147024033591, "peak_reserved_bytes": 6845104128}
+{"status": "COMPLETE", "exitcode": 0, "report": "/home/uranus/tinyLM/test_result/evidence/p107_causal_kd_cost_v1_20261101/cost/report.json"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 3.4분  (2026-11-01 12:39:28)
+==============================================================================
+actual_exit=0; same resident frozen native teacher in both matched arms. Sixteen full-shape synthetic updates, causal-only KL versus None, repeated trajectory and unchanged teacher required. No corpus, quality or cross-tokenizer claim. Zero checkpoint writes, deadline15:00 KST, final ownedCUDA0.

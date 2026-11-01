@@ -18,6 +18,7 @@ from .adaptive_masking import HardMaskPolicy
 from .hybrid_mntp import causal_batch, mntp_batch, objective_mean, uniform_mntp_selection
 
 SCHEMA = "P107_ADAPTIVE_TRAINING_BOUNDARY_V1"
+KD_SCHEMA = "P107_ADAPTIVE_TRAINING_BOUNDARY_V2_CAUSAL_KD"
 
 
 class SyntheticDocumentStream:
@@ -67,7 +68,8 @@ class AdaptiveMNTPTrainer:
     adaptive: 완료 TRAIN 관측으로 다음 선정 확률을 갱신. 검증 split 관측은 불허한다.
     """
     def __init__(self, model, optimizers, source, *, policy_config, mode,
-                 masked_micros, signature, collect_ids=None, autocast_dtype=None, clip=1.0):
+                 masked_micros, signature, collect_ids=None, autocast_dtype=None, clip=1.0,
+                 causal_distillation=None):
         if (mode not in ("uniform", "observe", "adaptive") or not isinstance(signature, str)
                 or len(signature) != 64 or any(c not in "0123456789ABCDEF" for c in signature)):
             raise ValueError("명시한 mode와 64자리 실행 서명이 필요합니다")
@@ -89,6 +91,20 @@ class AdaptiveMNTPTrainer:
         if len(devices) != 1:
             raise ValueError("단일 장치의 모델만 지원합니다")
         self.device = next(iter(devices))
+        self.causal_distillation = causal_distillation
+        self.kd_contract = None
+        if causal_distillation is not None:
+            from .causal_teacher import CausalTeacherKL
+            if not isinstance(causal_distillation, CausalTeacherKL):
+                raise ValueError("명시한 CausalTeacherKL 연결이 필요합니다")
+            causal_distillation.bind_student(model, policy_config.vocab_size)
+            self.kd_contract = copy.deepcopy(causal_distillation.contract)
+
+    def _validate_teacher(self):
+        if self.causal_distillation is not None:
+            if self.causal_distillation.contract != self.kd_contract:
+                raise ValueError("교사 연결 계약이 생성 이후 바뀌었습니다")
+            self.causal_distillation.bind_student(self.model, self.config.vocab_size)
 
     def _sync(self):
         if self.device.type == "cuda":
@@ -115,6 +131,7 @@ class AdaptiveMNTPTrainer:
     def update(self):
         if self.active or self.dirty:
             raise ValueError("완료 경계 또는 전체 상태 복원이 필요합니다")
+        self._validate_teacher()
         self._sync()
         started = time.perf_counter()
         source_before, rng_before = cpu_copy(self.source.state_dict()), self._rng()
@@ -126,6 +143,9 @@ class AdaptiveMNTPTrainer:
         forward_attempted = False
         metrics = dict(update=self.cursor, executed_input_tokens=0, masked_targets=0, causal_targets=0,
                        model_forwards=0, observed_micro_batches=0, id_seconds=0.0, observe_seconds=0.0)
+        if self.causal_distillation is not None:
+            metrics.update(causal_kd_micro_batches=0, teacher_forwards=0,
+                           causal_ce_mean=0.0, causal_kl_mean=0.0)
         self.model.zero_grad(set_to_none=True)
         try:
             pairs = self.source.next_update()
@@ -166,6 +186,13 @@ class AdaptiveMNTPTrainer:
                     forward_attempted = True
                     logits = self.model(batch.inputs.to(self.device), attention_mask=batch.attention_mask.to(self.device))
                     loss, count = objective_mean(logits, batch.targets.to(self.device))
+                    if kind == "causal" and self.causal_distillation is not None:
+                        loss, kd = self.causal_distillation.loss(logits, batch, loss)
+                        fraction = count / metrics["causal_targets"]
+                        metrics["causal_kd_micro_batches"] += 1
+                        metrics["teacher_forwards"] += kd["teacher_forwards"]
+                        metrics["causal_ce_mean"] += fraction * kd["ce"]
+                        metrics["causal_kl_mean"] += fraction * kd["kl"]
                     scaled = loss * (0.5 * count / metrics[kind + "_targets"])
                 if kind == "masked" and self.policy:
                     at = time.perf_counter()
@@ -221,18 +248,26 @@ class AdaptiveMNTPTrainer:
     def state_dict(self):
         if self.active or self.dirty or any(p.grad is not None for p in self.model.parameters()):
             raise ValueError("gradient가 없는 정상 완료 경계에서만 저장할 수 있습니다")
-        return dict(schema=SCHEMA, signature=self.signature, mode=self.mode, cursor=self.cursor,
+        self._validate_teacher()
+        state = dict(schema=SCHEMA, signature=self.signature, mode=self.mode, cursor=self.cursor,
                     config=asdict(self.config), autocast_dtype=str(self.autocast_dtype), clip=self.clip,
                     masked_micros=self.masked_micros, model=cpu_copy(self.model.state_dict()),
                     optimizers=[cpu_copy(o.state_dict()) for o in self.optimizers],
                     policy=self.policy.state_dict() if self.policy else None,
                     uniform_rng=self.uniform_rng.get_state().clone(), source=cpu_copy(self.source.state_dict()),
                     rng=self._rng(), training=self.model.training)
+        if self.causal_distillation is not None:
+            state.update(schema=KD_SCHEMA, causal_distillation=copy.deepcopy(self.kd_contract))
+        return state
 
     def load_state_dict(self, state):
         if self.active:
             raise ValueError("진행 중 update에는 복원할 수 없습니다")
-        if (state.get("schema") != SCHEMA or state.get("signature") != self.signature
+        self._validate_teacher()
+        expected_schema = SCHEMA if self.causal_distillation is None else KD_SCHEMA
+        if state.get("causal_distillation") != self.kd_contract:
+            raise ValueError("저장 대상 교사 계약이 다릅니다")
+        if (state.get("schema") != expected_schema or state.get("signature") != self.signature
                 or state.get("mode") != self.mode or state.get("masked_micros") != self.masked_micros
                 or state.get("config") != asdict(self.config) or state.get("clip") != self.clip
                 or state.get("autocast_dtype") != str(self.autocast_dtype)
