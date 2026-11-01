@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "original": "run_P106B_Stage14gWa_mmlu_falcon0_logitreuse_full.sh",
+      "current": "run_P106B_Stage14gWa_mmlu_falcon0_logitreuse_full-done.sh",
+      "sha256": "267F97C7AD5064428B0662F20B51EE076B406EC151AD46814898374698CA08B8",
+      "full_shell": "#!/usr/bin/env bash\n# Same official0shot scoring, bounded short8/long4 scheduling; no auto batch search.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 CUBLAS_WORKSPACE_CONFIG=:4096:8\ncommon=(--mode full --arm falcon0 --profile data_cache/p106b_falcon_logitreuse_v1_20261101/profile.json --profile-sha256 A81C7258C81976B7CCE68C6E3E13835E4A18D22F6F3A6EB17EE0D0E640E14621)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_logitreuse.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 2100s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14gWa_mmlu_falcon0_logitreuse_full -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_logitreuse.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14gWa_mmlu_falcon0_logitreuse_full --note \"actual_exit=$result; resource-only114 cost/456-score parity first; full14042 only is benchmark. Fixed prompt/metric/model/FP32, fixed4/1024 with official logit reuse. Existing deadline1.8+300/120reserve,6GiB/8GB unchanged. Final ownedCUDA0/source/assets unchanged required. No training/CP.\"\nexit \"$result\"\n",
+      "actual_exit": 0,
+      "independent_root_exit": 0,
+      "raw_log": "test_result/101_log_20261101_P106B_Stage14gWa_mmlu_falcon0_logitreuse_full.txt",
+      "raw_log_sha256": "A73F80FADAF50A171145405795C24ABDF203F684A3661189B5CC84FEC70F1722",
+      "root_sha256": "3C7750A64AA3C54B710523CE49A7FBB54BF3EC18C2DB31AB401613C95B3B767E"
+    }
+  ],
+  "done": 1,
+  "deleted_files": 0
+}

@@ -1,0 +1,28 @@
+
+==============================================================================
+[runlog] 2026-11-01 04:20:22  name=P106B_Stage8u1W_mmlu_request_lengths_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_official_mmlu.py --mode contract --execute
+==============================================================================
+
+Generating test split: 0 examples [00:00, ? examples/s]
+Generating test split: 100 examples [00:00, 47291.74 examples/s]
+
+Generating dev split: 0 examples [00:00, ? examples/s]
+Generating dev split: 5 examples [00:00, 2518.19 examples/s]
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_mmlu.py", line 328, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_mmlu.py", line 321, in main
+    return prepare_contract()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_official_mmlu.py", line 72, in prepare_contract
+    tasks, _, _ = data.load_tasks(shots)
+  File "/home/uranus/tinyLM/scripts/p106b_official_mmlu.py", line 184, in load_tasks
+    raise ValueError('원문 prompt/선택지/target/metric/fewshot가 변형됨')
+ValueError: 원문 prompt/선택지/target/metric/fewshot가 변형됨
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-11-01 04:20:28)
+==============================================================================
+[runlog] 로그 파일: /home/uranus/tinyLM/test_result/101_log_20261101_P106B_Stage8u1W_mmlu_request_lengths_cpu.txt  (1,523 bytes)
+actual_exit=1; 57 tasks, separate0/5-shot length and original-data contracts. Existing HFLM left context truncation is counted, every choice target kept. No GPU/model/train/CP. Full scores need matched canary/cost/source/time/8GB admission.
+[runlog] 로그 파일: /home/uranus/tinyLM/test_result/101_log_20261101_P106B_Stage8u1W_mmlu_request_lengths_cpu.txt  (1,764 bytes)

@@ -1,0 +1,17 @@
+
+==============================================================================
+[runlog] 2026-11-01 06:21:28  name=P106B_Stage8yWb_gsm8k_broad_cost
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_official_gsm8k.py --mode cost --arm broad --profile data_cache/p106b_gsm8k_official_v1_20261101/profile_v2.json --profile-sha256 0EFFADD069945BEEE4739F4BCCD5D220D2348119FEA3329DBB1E0659A86A46F9 --execute
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt", "checkpoint_sha256": "F3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C", "core_sha256": "B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E", "report_sha256": "079A3C67E85797AFB4978724CBF1C9FD32F9DB1AF4402CAA20283F1F56E89FF4", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "new595-broad-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+Overwriting default num_fewshot of gsm8k from 5 to 5
+
+  0%|          | 0/8 [00:00<?, ?it/s]
+100%|██████████| 8/8 [00:00<00:00, 423.54it/s]
+[BODY_UNCHANGED] B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E (CPU/GPU load + session exit)
+{"status": "LIMITED_COST_DIAGNOSTIC", "model": "new595-broad-q", "mode": "cost", "actual_rows": 8, "final_exit": 0, "wall_seconds": 51.72196644009091}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.9분  (2026-11-01 06:22:24)
+==============================================================================
+actual_exit=0; original5shot/raw prompt and strict/flexible upstream filters. Cost8 is resource-only, full1319 only is benchmark. All scores/responses remain evaluation-only. source/CP/originals and final owned CUDA closure required; no train/teacher/CP/install/download.

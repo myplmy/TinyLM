@@ -1,0 +1,18 @@
+{
+  "records": [
+    {
+      "original": "run_P106B_Stage15aW_gsm8k_longkv_cpu.sh",
+      "current": "run_P106B_Stage15aW_gsm8k_longkv_cpu-done.sh",
+      "actual_exit": 8,
+      "status": "COMPLETED_STRICT_NUMERIC_NEGATIVE_NOT_QUALITY_PASS",
+      "sha256": "05A3DE0F614ACE9CF6BFD63001FF55B2A831A4D96288D6EACEB594AD37E780EF",
+      "full_shell": "#!/usr/bin/env bash\n# CPU replay of existing saved histories only. No new sampled answers, training, or CUDA.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\nexport CUDA_VISIBLE_DEVICES='' HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 TOKENIZERS_PARALLELISM=false\n\"$python_bin\" -B -X utf8 -m scripts.test_p106b_longkv_saved || exit $?\n\"$python_bin\" -B -X utf8 scripts/diag_p106b_longkv_saved.py --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 660s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage15aW_gsm8k_longkv_cpu -- \"$python_bin\" -B -X utf8 scripts/diag_p106b_longkv_saved.py --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage15aW_gsm8k_longkv_cpu --note \"actual_exit=$result; existing Native3 saved histories only, FP32 CPU/MATH, same-history KV/rebuild. Not GPU equivalence, new generation, training, or semantic cause proof. Source/CP binding and CUDA uninitialized required.\"\nexit \"$result\"\n",
+      "raw_log": "test_result/101_log_20261101_P106B_Stage15aW_gsm8k_longkv_cpu.txt",
+      "raw_log_sha256": "BD5A7CAC7ECC8B139C70BBB1B6C4D19BDB0837E3E18031E7BACBADE34F1F9CCC",
+      "root_receipt": "handoff/audit/nov01_independent/LONGKV_ACTUAL_ROOT_v1.json",
+      "root_receipt_sha256": "A213227651010FD3DFB49ED5E9676B835AE0D1A20884111C42B01C2E16D5EB6B"
+    }
+  ],
+  "done": 1,
+  "deleted_files": 0
+}

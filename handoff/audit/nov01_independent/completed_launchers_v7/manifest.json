@@ -1,0 +1,78 @@
+{
+  "records": [
+    {
+      "original": "run_P106B_Stage14bWc_mmlu_falcon0_cost.sh",
+      "current": "run_P106B_Stage14bWc_mmlu_falcon0_cost-done.sh",
+      "sha256": "CC1EBD7AB2823C7CA94E367F1DA0FF454BA6627DE12577FD84E578CEC921D5D5",
+      "full_shell": "#!/usr/bin/env bash\n# Existing strict Falcon90M/HFLM, official MMLU0/5shot, no training/CP/install.\n# Single GPU8GB guard/6GiB allocator; full14042 only after matching114-cost/deadline.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8\nfree_mib=$(timeout 4s /usr/lib/wsl/lib/nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits) || exit 8\nif [[ ! \"$free_mib\" =~ ^[0-9]+$ ]] || (( free_mib * 1048576 < 8000000000 )); then\n    echo '[HOLD] point query does not show8GB free; model not opened.'\n    exit 8\nfi\ncommon=(--mode cost --arm falcon0 --profile data_cache/p106b_falcon_mmlu_v3_20261101/profile.json --profile-sha256 7C1CBADC22F5BF76F604FCE668D82A651CC5BFD1D6DD49D60025B83E981947D7)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 720s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14bWc_mmlu_falcon0_cost -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14bWc_mmlu_falcon0_cost --note \"actual_exit=$result; cost114 is resource-only, full14042 is the benchmark. Same official prompt/labels/group metric and1024-token constraint, model-specific tokenizer lengths disclosed. Actual strict HF loading/full-label canary/unchanged model+source/assets and finalCUDA0 required. No training/CP/install/download.\"\nexit \"$result\"\n",
+      "status": "done",
+      "actual_exit": 0,
+      "full_model_not_run": false,
+      "raw_log": "test_result/101_log_20261101_P106B_Stage14bWc_mmlu_falcon0_cost.txt",
+      "raw_log_sha256": "26008B3F098D793F5B3EBC9F6A50A7D4DD887492361F24AA188539566A09ECCA"
+    },
+    {
+      "original": "run_P106B_Stage14bWd_mmlu_falcon5_cost.sh",
+      "current": "run_P106B_Stage14bWd_mmlu_falcon5_cost-done.sh",
+      "sha256": "617F9EEF58A40B7CEC400546911AAFBB34D65D37264FD879B09491E381F4951B",
+      "full_shell": "#!/usr/bin/env bash\n# Existing strict Falcon90M/HFLM, official MMLU0/5shot, no training/CP/install.\n# Single GPU8GB guard/6GiB allocator; full14042 only after matching114-cost/deadline.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8\nfree_mib=$(timeout 4s /usr/lib/wsl/lib/nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits) || exit 8\nif [[ ! \"$free_mib\" =~ ^[0-9]+$ ]] || (( free_mib * 1048576 < 8000000000 )); then\n    echo '[HOLD] point query does not show8GB free; model not opened.'\n    exit 8\nfi\ncommon=(--mode cost --arm falcon5 --profile data_cache/p106b_falcon_mmlu_v3_20261101/profile.json --profile-sha256 7C1CBADC22F5BF76F604FCE668D82A651CC5BFD1D6DD49D60025B83E981947D7)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 720s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14bWd_mmlu_falcon5_cost -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14bWd_mmlu_falcon5_cost --note \"actual_exit=$result; cost114 is resource-only, full14042 is the benchmark. Same official prompt/labels/group metric and1024-token constraint, model-specific tokenizer lengths disclosed. Actual strict HF loading/full-label canary/unchanged model+source/assets and finalCUDA0 required. No training/CP/install/download.\"\nexit \"$result\"\n",
+      "status": "done",
+      "actual_exit": 0,
+      "full_model_not_run": false,
+      "raw_log": "test_result/101_log_20261101_P106B_Stage14bWd_mmlu_falcon5_cost.txt",
+      "raw_log_sha256": "E61811CCE81D2557836A1605B82C357977A2BEFC83576DBA6F58FE614804916C"
+    },
+    {
+      "original": "run_P106B_Stage14dWa_mmlu_falcon0_tokenbatch_cost.sh",
+      "current": "run_P106B_Stage14dWa_mmlu_falcon0_tokenbatch_cost-done.sh",
+      "sha256": "F77F402971249497D5B477222BAF964B0C606FE419A5AAE8ADEC664FE4E267EF",
+      "full_shell": "#!/usr/bin/env bash\n# Same official0shot scoring, bounded short8/long4 scheduling; no auto batch search.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 CUBLAS_WORKSPACE_CONFIG=:4096:8\ncommon=(--mode cost --arm falcon0 --profile data_cache/p106b_falcon_tokenbatch_v1_20261101/profile.json --profile-sha256 F618BEC9452A64A3B9D4FF3F5EA69060ABA977E064C4584C8A1A2759710FDD35)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_tokenbatch.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 720s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14dWa_mmlu_falcon0_tokenbatch_cost -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_tokenbatch.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14dWa_mmlu_falcon0_tokenbatch_cost --note \"actual_exit=$result; resource-only114 cost/456-score parity first; full14042 only is benchmark. Fixed prompt/metric/model/FP32, short8 long4<=4096 padded positions. Existing deadline1.8+300/120reserve,6GiB/8GB unchanged. Final ownedCUDA0/source/assets unchanged required. No training/CP.\"\nexit \"$result\"\n",
+      "status": "done",
+      "actual_exit": 0,
+      "full_model_not_run": false,
+      "raw_log": "test_result/101_log_20261101_P106B_Stage14dWa_mmlu_falcon0_tokenbatch_cost.txt",
+      "raw_log_sha256": "0E242704875408434A5BDAB2DE99993F898D7EA0F2F0AD84C9E50377692597B0"
+    },
+    {
+      "original": "run_P106B_Stage14fWa_mmlu_falcon0_logitreuse_cost.sh",
+      "current": "run_P106B_Stage14fWa_mmlu_falcon0_logitreuse_cost-done.sh",
+      "sha256": "83CB18E41A0A1698987C7B1050587550EE27DB288CDD167D49F4F3B20A2E11D7",
+      "full_shell": "#!/usr/bin/env bash\n# Same official0shot scoring, bounded short8/long4 scheduling; no auto batch search.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 CUBLAS_WORKSPACE_CONFIG=:4096:8\ncommon=(--mode cost --arm falcon0 --profile data_cache/p106b_falcon_logitreuse_v1_20261101/profile.json --profile-sha256 A81C7258C81976B7CCE68C6E3E13835E4A18D22F6F3A6EB17EE0D0E640E14621)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_logitreuse.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 720s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14fWa_mmlu_falcon0_logitreuse_cost -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_logitreuse.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14fWa_mmlu_falcon0_logitreuse_cost --note \"actual_exit=$result; resource-only114 cost/456-score parity first; full14042 only is benchmark. Fixed prompt/metric/model/FP32, fixed4/1024 with official logit reuse. Existing deadline1.8+300/120reserve,6GiB/8GB unchanged. Final ownedCUDA0/source/assets unchanged required. No training/CP.\"\nexit \"$result\"\n",
+      "status": "done",
+      "actual_exit": 0,
+      "full_model_not_run": false,
+      "raw_log": "test_result/101_log_20261101_P106B_Stage14fWa_mmlu_falcon0_logitreuse_cost.txt",
+      "raw_log_sha256": "93AFE328AD7DB096EE015833B7F92B76C1B0A2FDE228CDC5C192DAA1DFC20E61"
+    },
+    {
+      "original": "run_P106B_Stage14cWc_mmlu_falcon0_full.sh",
+      "current": "run_P106B_Stage14cWc_mmlu_falcon0_full-hold.sh",
+      "sha256": "5C12BC15115D89AD2B6ECE555FD3259E88FCF989EC85C025BB0EA86645592434",
+      "full_shell": "#!/usr/bin/env bash\n# Existing strict Falcon90M/HFLM, official MMLU0/5shot, no training/CP/install.\n# Single GPU8GB guard/6GiB allocator; full14042 only after matching114-cost/deadline.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8\nfree_mib=$(timeout 4s /usr/lib/wsl/lib/nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits) || exit 8\nif [[ ! \"$free_mib\" =~ ^[0-9]+$ ]] || (( free_mib * 1048576 < 8000000000 )); then\n    echo '[HOLD] point query does not show8GB free; model not opened.'\n    exit 8\nfi\ncommon=(--mode full --arm falcon0 --profile data_cache/p106b_falcon_mmlu_v3_20261101/profile.json --profile-sha256 7C1CBADC22F5BF76F604FCE668D82A651CC5BFD1D6DD49D60025B83E981947D7)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 5520s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14cWc_mmlu_falcon0_full -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14cWc_mmlu_falcon0_full --note \"actual_exit=$result; cost114 is resource-only, full14042 is the benchmark. Same official prompt/labels/group metric and1024-token constraint, model-specific tokenizer lengths disclosed. Actual strict HF loading/full-label canary/unchanged model+source/assets and finalCUDA0 required. No training/CP/install/download.\"\nexit \"$result\"\n",
+      "status": "hold",
+      "actual_exit": null,
+      "full_model_not_run": true
+    },
+    {
+      "original": "run_P106B_Stage14cWd_mmlu_falcon5_full.sh",
+      "current": "run_P106B_Stage14cWd_mmlu_falcon5_full-hold.sh",
+      "sha256": "62559F091EDC62FFD8A23FCDC2EC4F1A8A520105258FE0F811B1761A6F809CA6",
+      "full_shell": "#!/usr/bin/env bash\n# Existing strict Falcon90M/HFLM, official MMLU0/5shot, no training/CP/install.\n# Single GPU8GB guard/6GiB allocator; full14042 only after matching114-cost/deadline.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8\nfree_mib=$(timeout 4s /usr/lib/wsl/lib/nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits) || exit 8\nif [[ ! \"$free_mib\" =~ ^[0-9]+$ ]] || (( free_mib * 1048576 < 8000000000 )); then\n    echo '[HOLD] point query does not show8GB free; model not opened.'\n    exit 8\nfi\ncommon=(--mode full --arm falcon5 --profile data_cache/p106b_falcon_mmlu_v3_20261101/profile.json --profile-sha256 7C1CBADC22F5BF76F604FCE668D82A651CC5BFD1D6DD49D60025B83E981947D7)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 5520s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14cWd_mmlu_falcon5_full -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_mmlu.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14cWd_mmlu_falcon5_full --note \"actual_exit=$result; cost114 is resource-only, full14042 is the benchmark. Same official prompt/labels/group metric and1024-token constraint, model-specific tokenizer lengths disclosed. Actual strict HF loading/full-label canary/unchanged model+source/assets and finalCUDA0 required. No training/CP/install/download.\"\nexit \"$result\"\n",
+      "status": "hold",
+      "actual_exit": null,
+      "full_model_not_run": true
+    },
+    {
+      "original": "run_P106B_Stage14eWa_mmlu_falcon0_tokenbatch_full.sh",
+      "current": "run_P106B_Stage14eWa_mmlu_falcon0_tokenbatch_full-hold.sh",
+      "sha256": "5C67288A8585D43B2D1F1746F97E6293793DFB461E314E198336BE30A07034A2",
+      "full_shell": "#!/usr/bin/env bash\n# Same official0shot scoring, bounded short8/long4 scheduling; no auto batch search.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\" || exit $?\neval_python=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport TL_RUNLOG_GIT_SCOPE=codex-safe TL_WANDB_AUTO=0 TZ=Asia/Seoul\nexport HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0\nexport OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 CUBLAS_WORKSPACE_CONFIG=:4096:8\ncommon=(--mode full --arm falcon0 --profile data_cache/p106b_falcon_tokenbatch_v1_20261101/profile.json --profile-sha256 F618BEC9452A64A3B9D4FF3F5EA69060ABA977E064C4584C8A1A2759710FDD35)\n\"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_tokenbatch.py \"${common[@]}\" --check-only || exit $?\ntimeout --signal=TERM --kill-after=20s 2520s \"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14eWa_mmlu_falcon0_tokenbatch_full -- \"$eval_python\" -B -X utf8 scripts/diag_p106b_falcon_tokenbatch.py \"${common[@]}\" --execute\nresult=$?\n\"$python_bin\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage14eWa_mmlu_falcon0_tokenbatch_full --note \"actual_exit=$result; resource-only114 cost/456-score parity first; full14042 only is benchmark. Fixed prompt/metric/model/FP32, short8 long4<=4096 padded positions. Existing deadline1.8+300/120reserve,6GiB/8GB unchanged. Final ownedCUDA0/source/assets unchanged required. No training/CP.\"\nexit \"$result\"\n",
+      "status": "hold",
+      "actual_exit": null,
+      "full_model_not_run": true
+    }
+  ],
+  "done": 4,
+  "hold": 3,
+  "deleted_files": 0
+}

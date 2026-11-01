@@ -34,6 +34,38 @@ Stage0실제종료0·명시정적·현재소스전체스모크·원형봉인뒤�
 
 현재미완이다. 실제문서ID/packing·목표별배치배분·모델/optimizer/RNG정확재개·causal KD와masked CE분리·언어/희귀/숫자편향을확인해야한다. uniform먼저고정하고mask일정/optimizer/context일정을한꺼번에바꾸지않는다. 본학습은정제완료·학습권한뒤에만열고causal기준의공식평가와생성으로최종판정한다.
 
+### Stage4aW/Stage4bW/Stage4cW — 실제 갱신·통계·전체 경계 재개
+
+사용자104가 2026-11-01 11:00 KST까지 이쪽 VRAM8GB 이내 주도 연구를 승인했다.
+[독립 방법/영향/사전 판정](../docs/research/20261101_P107_실제갱신과_경계재개_계약.md)을 따른다.
+현재 원장59의 미완인 실제 model/optimizer와 통계 결합을 새 opt-in 어댑터로 연결한다.
+기존 loader의 문서 경계를 추정하지 않고 명시 가상 source만 쓴다. 제품 CLI/정제자료·causalKD·
+scheduler/GradScaler/compile·본학습 품질은 이 단계의 성공으로 완료 처리하지 않는다.
+
+Stage4aW는 실제 optimizer·observer-only 동률·dropout과 RNG/source 재개·부분 실패 dirty
+거부를 CPU로 검증한다. source를 고정하고 통과한 뒤에만 Stage4bW에서 기존 native595-q의
+micro8×accum16×seq1024, causal8/MNTP8, 같은 Muon RMS4+AdamW·상수 LR·clip으로
+uniform/observe/adaptive-keep를 순/역순 비교한다. 각 warm1/실측3·총24 실제 갱신이다.
+Stage4cW는 완료2회 경계를 BytesIO 직렬화한 뒤 후속2회와 복원 후2회의 모든 상태를 대조한다.
+디스크CP 저장0이며 메모리 직렬화가 전원장애 복구 증거는 아니다.
+
+PyTorch allocator6GiB 상한과 8,000,000,000바이트 증가 감시를 둔다. NVML은 공유 GPU의
+시작값 대비 증가를 표본 감시하므로 정확한 프로세스별 물리 peak로 이름 붙이지 않는다.
+각 GPU worker 내부900초/외부1020초+kill20초·마감120초 여유를 요구한다. CPU 계약 실패,
+정합 불일치, 원CP/소스 변경은 오류9; 시간·자원 감시 중단은 보류8이며 원실패를 보존한다.
+이전 가상 로짓/optimizer 없는 F+B를 새 결과로 재사용하거나 반복 학습 성과로 세지 않는다.
+
+실제 회수: CPU44→45시험·독립CE 갱신 oracle 뒤 새전체smoke106동작/44child/오류0·
+428.255초와 정적70PASS/0ERROR/6NOT_RUN을 확인했다. Stage4bW 실제24갱신은 종료0이며
+uniform/observe/adaptive 중앙값10.163822/10.404444/10.275837초다. 관측만 켜면 모델/optimizer
+갱신이 exact이고 adaptive의 두 순서도 exact였다. Stage4cW 실제6갱신/종료0은 전체 다섯
+상태 해시와 후속loss·선정량의 정확한 메모리 재개를 확인했다. 최대Torch reserved6,417,285,120B·
+공유GPU 표본 증가6,712,983,552B·원CP/source불변·최종 소유CUDA0이다.
+[결과107§12~14](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)에
+원로그·전체SH/SHA를 보존했고 네SH는 -done이다. 실제 삭제/디스크CP/언어품질 판정0이다.
+사전 정합 예측은 충족했으나 제품 CLI/실제 문서/causal KD/scheduler/GradScaler/compile과
+본학습 효율은 미완이며, 적응형 통계가 무료인 것으로 채택하지 않는다.
+
 ## 5. 판정 기준
 
 | 항목 | 기준 |

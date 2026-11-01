@@ -200,6 +200,8 @@ CHECKS = [
      "★fetch 실패의 UTF-8 원문·명령·종료시각이 콘솔과 로그에 함께 남는가"),
     ("test_handoff_entry", ["test_new_handoff_entrypoint.py"],
      "★세션 종료 생성기가 Python isolated mode에서도 형제 모듈을 찾아 실제로 시작하는가"),
+    ("test_handoff_time_provenance", ["test_handoff_time_provenance.py"],
+     "정확 경로의 최초 추가를 다른 이름의 유사 파일과 혼동하지 않고 미래10분 기준을 유지하는가"),
     ("check_proposals", ["check_proposals.py"],
      "제안서 루트의 아홉 절·비용·계측위험·대안·권장안·suffix/status 양식"),
     ("test_check_proposals", ["test_check_proposals.py"],

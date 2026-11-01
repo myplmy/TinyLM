@@ -1,0 +1,113 @@
+{
+  "schema": "TINYLM_ISOLATED_CLEANER_VALIDATION_V1",
+  "implementation": "COMPLETE",
+  "checks": {
+    "cpu_fixture_tests": 34,
+    "cpu_fixture_log": "CPU_TEST_v6.log",
+    "root_cleaner_regression": "PASS",
+    "wip_regression_tests": 31,
+    "static_counts": {
+      "pass": 70,
+      "errors": 0,
+      "actionable_warnings": 0,
+      "accepted_info": 0,
+      "not_run": 6
+    },
+    "static_audit": "STATIC_AUDIT_v3.json",
+    "scoped_text_inventory": true,
+    "static_validation_criteria_unchanged": true,
+    "declared_static_inputs_unchanged": true,
+    "syntax_shell_executable": true,
+    "korean_prose_check": true,
+    "all_artifacts_under_20mb": true
+  },
+  "real_preview": {
+    "command": [
+      "./run_cleanup_isolated_checkpoints.sh"
+    ],
+    "returncode": 0,
+    "real_deletion_performed": false,
+    "checkpoint_count": 364,
+    "identity_unchanged": true,
+    "protected_metadata_unchanged": true,
+    "current_tool_sha256": "A4170F1130EF22258AA0F5CCD5A0E9D6D70C3C2D4F28A9DFE5A7D00626791C5C",
+    "status_counts": {
+      "EMPTY": 15,
+      "ELIGIBLE": 0,
+      "HOLD": 1
+    },
+    "candidates": 0
+  },
+  "actual_checkpoint_deletion": "NOT_RUN",
+  "gpu_model_training": "NOT_RUN",
+  "git_staging_commit": "NOT_RUN",
+  "root_cleaner_source_changed": false,
+  "foreign_flag_whitelist_unchanged": true,
+  "maintenance_registry": {
+    "file": "experiments.tsv",
+    "id": 328,
+    "plan": "-",
+    "queue_default": "READ_ONLY_PREVIEW"
+  },
+  "not_run_checks": [
+    {
+      "name": "check_heldout_defects",
+      "status": "NOT_RUN",
+      "returncode": null,
+      "reason": "protected held-out/dataset content",
+      "output_sha256": null
+    },
+    {
+      "name": "check_eval_pool",
+      "status": "NOT_RUN",
+      "returncode": null,
+      "reason": "data_cache and validation token content",
+      "output_sha256": null
+    },
+    {
+      "name": "registry --scan",
+      "status": "NOT_RUN",
+      "returncode": null,
+      "reason": "broad runs/logs inventory",
+      "output_sha256": null
+    },
+    {
+      "name": "check_handoff",
+      "status": "NOT_RUN",
+      "returncode": null,
+      "reason": "Codex uses the independent session-handoff checker",
+      "output_sha256": null
+    },
+    {
+      "name": "plot_results --verify",
+      "status": "NOT_RUN",
+      "returncode": null,
+      "reason": "broad run JSON verification",
+      "output_sha256": null
+    },
+    {
+      "name": "check_tag_arch",
+      "status": "NOT_RUN",
+      "returncode": null,
+      "reason": "broad run JSON inspection",
+      "output_sha256": null
+    }
+  ],
+  "historical_failures_preserved": [
+    "CPU_TEST_v1.log: 3 CLI 임시 root/소스 경로 실패를 분리해 수정",
+    "STATIC_AUDIT_v1.json: 2 유지보수 등록 누락을 검사 기준 변경 없이 수정"
+  ],
+  "files_sha256": {
+    "scripts/cleanup_isolated_ckpt.py": "A4170F1130EF22258AA0F5CCD5A0E9D6D70C3C2D4F28A9DFE5A7D00626791C5C",
+    "scripts/test_cleanup_isolated_ckpt.py": "B44EA9023624252A05FE680E6182B583C143C363DEFEF6302173AA1D2A2211C4",
+    "run_cleanup_isolated_checkpoints.sh": "1D087FF6FED08FF7F3AE0DCBBC7AE04FF0E5CA1E36CC511B3E01F0BC640739F7",
+    "docs/ISOLATED_CHECKPOINT_CLEANUP.md": "F469272892791B0A9338FEB4F2310B4F14A13B070F5427F08FA964153CA60E2A",
+    "experiments.tsv": "65E376AEDAAD77C15CA34136DD7B6B4C3D8D9E5C067D72271872DCEB4F97DF1B"
+  },
+  "limits": [
+    "격리 합성 스모크 V1만 지원",
+    "실패·미완료·알 수 없는 파일은 HOLD",
+    "기록된 부모/교사 필드와 TSV만 보호 참조로 검사; 아직 기록되지 않은 미래 의존 관계는 별도 검토",
+    "실제 정리 전 동시 작성자를 종료; 이 작업의 unlink는 임시 시험에 한정"
+  ]
+}

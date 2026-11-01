@@ -64,7 +64,7 @@ def claimed(path) -> _dt.datetime | None:
 
 
 def first_commit(path) -> _dt.datetime | None:
-    """그 경로를 **처음 담은** 커밋의 author 시각(로컬). 없으면 None."""
+    """정확 경로를 처음 담은 커밋의 author 시각. 다른 이름의 유사 파일은 추적하지 않는다."""
     try:
         rel = str(Path(path).resolve().relative_to(ROOT)).replace(chr(92), "/")
     except ValueError:
@@ -72,7 +72,7 @@ def first_commit(path) -> _dt.datetime | None:
         return None
     try:
         out = subprocess.run(
-            ["git", "log", "--follow", "--diff-filter=A", "--format=%ad",
+            ["git", "log", "--no-renames", "--diff-filter=A", "--format=%ad",
              "--date=format:%Y-%m-%d %H:%M:%S", "--", rel],
             cwd=str(ROOT), capture_output=True, text=True, timeout=30)
     except (OSError, subprocess.SubprocessError):
@@ -82,7 +82,7 @@ def first_commit(path) -> _dt.datetime | None:
     lines = [l.strip() for l in out.stdout.splitlines() if l.strip()]
     if not lines:
         return None
-    # `--follow` 는 최신부터 준다. **가장 이른 것**을 쓴다.
+    # Git은 최신부터 준다. 정확 경로의 추가들 중 가장 이른 시각을 쓴다.
     stamps = []
     for l in lines:
         try:

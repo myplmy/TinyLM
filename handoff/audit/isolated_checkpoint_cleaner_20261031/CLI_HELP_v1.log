@@ -1,0 +1,19 @@
+usage: cleanup_isolated_ckpt.py [-h] [--interactive | --apply]
+                                [--session-id SESSION_ID] [--output OUTPUT]
+                                [--manifest MANIFEST]
+                                [--manifest-sha256 MANIFEST_SHA256]
+
+격리 합성 스모크 체크포인트 정리. 기본은 읽기 전용이며 모델을 열지 않는다. 지원 범위는
+runs/validation/codex_smoke/<session>/runs/ckpt 뿐이다. 성공 영수증/명령/원로그/결과 JSON으로
+증명하지 못한 파일은 HOLD한다. --interactive 또는 SHA로 고정한 --apply만 실제 파일을 지운다.
+
+options:
+  -h, --help            show this help message and exit
+  --interactive         조회한 목록을 YES로 확인한 뒤 삭제
+  --apply               사용자가 승인한 manifest와 SHA로만 삭제
+  --session-id SESSION_ID
+                        정확한 격리 세션만 조회; 반복 지정 가능
+  --output OUTPUT       조회 목록을 감사 폴더의 새 JSON으로 보존
+  --manifest MANIFEST   --apply에서 사용할 기존 조회 목록
+  --manifest-sha256 MANIFEST_SHA256
+                        검토·승인한 조회 목록의 SHA-256

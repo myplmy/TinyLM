@@ -1,0 +1,36 @@
+
+==============================================================================
+[runlog] 2026-11-01 06:31:43  name=P106B_Stage14aW_falcon_mmlu_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -m unittest scripts.test_p106b_falcon_mmlu
+==============================================================================
+........
+----------------------------------------------------------------------
+Ran 8 tests in 1.286s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-01 06:31:46)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-01 06:31:46  name=P106B_Stage14aW_falcon_mmlu_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_falcon_mmlu.py --mode contract --execute
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_falcon_mmlu.py", line 294, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_falcon_mmlu.py", line 288, in main
+    return prepare_contract()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_falcon_mmlu.py", line 97, in prepare_contract
+    tasks,_,_=data.load_tasks(shots)
+  File "/home/uranus/tinyLM/scripts/p106b_official_mmlu.py", line 163, in load_tasks
+    configure_hf_cache()
+  File "/home/uranus/tinyLM/scripts/prepare_p106b_official_eval.py", line 52, in configure_hf_cache
+    raise RuntimeError('HF library already imported before project cache policy')
+RuntimeError: HF library already imported before project cache policy
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-11-01 06:31:51)
+==============================================================================
+actual_exit=1; CPU8, exact official HF methods/archive/runtime/model metadata and0/5shot full lengths only. AutoModel weights blocked. No GPU/model/benchmark scores/train/CP/download/install.

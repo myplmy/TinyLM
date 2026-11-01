@@ -1,0 +1,17 @@
+
+==============================================================================
+[runlog] 2026-11-01 06:20:28  name=P106B_Stage8yWa_gsm8k_native_cost
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 scripts/diag_p106b_official_gsm8k.py --mode cost --arm native --profile data_cache/p106b_gsm8k_official_v1_20261101/profile_v2.json --profile-sha256 0EFFADD069945BEEE4739F4BCCD5D220D2348119FEA3329DBB1E0659A86A46F9 --execute
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_p106b_native595_v1_s1337_ternary_native.pt", "checkpoint_sha256": "C0610452ABF357868DA1CCDF16D98482D408F2D9D076C634444292023108BDF5", "core_sha256": "C8F2A68232D95C8D4A8EDC455A5D389211806609C2F58E780C6EFF66E497F2DB", "report_sha256": "B06151B1420D2B5DAEC98BF191274BFA8C839B5542DAD23150BA27BC39F88E83", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "native595-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+Overwriting default num_fewshot of gsm8k from 5 to 5
+
+  0%|          | 0/8 [00:00<?, ?it/s]
+100%|██████████| 8/8 [00:00<00:00, 606.77it/s]
+[BODY_UNCHANGED] C8F2A68232D95C8D4A8EDC455A5D389211806609C2F58E780C6EFF66E497F2DB (CPU/GPU load + session exit)
+{"status": "LIMITED_COST_DIAGNOSTIC", "model": "native595-q", "mode": "cost", "actual_rows": 8, "final_exit": 0, "wall_seconds": 50.74121693999041}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.9분  (2026-11-01 06:21:25)
+==============================================================================
+actual_exit=0; original5shot/raw prompt and strict/flexible upstream filters. Cost8 is resource-only, full1319 only is benchmark. All scores/responses remain evaluation-only. source/CP/originals and final owned CUDA closure required; no train/teacher/CP/install/download.

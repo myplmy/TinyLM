@@ -1,0 +1,340 @@
+#!/usr/bin/env python3
+"""Pinned official Core6 likelihood evaluation, never training or generation.
+
+Import is stdlib-only. Cost and full runs have distinct immutable directories.
+Source/data/model admission precedes a single owned GPU model. Official task
+prompts, metrics and complete continuation likelihood are not reimplemented.
+"""
+from __future__ import annotations
+import argparse
+from collections import Counter
+from contextlib import contextmanager
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import sys
+import sysconfig
+import time
+
+ROOT=Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
+MODELS=('native595-f','native595-q','new595-broad-f','falcon90m')
+TASK_COUNTS=dict(piqa=1838,arc_easy=2376,arc_challenge=1172,hellaswag=10042,
+                 winogrande=1267,boolq=3270)
+OUTPUT=ROOT/'test_result/evidence/p106b_official_core6_v2'
+FALCON=ROOT/'HF/models--tiiuae--Falcon-H1-Tiny-90M-Base/snapshots/7994372e93b62822ae25f8bfb19f653649cea3a3'
+FALCON_REFERENCE=ROOT/'test_result/evidence/p106b_night_falcon_v2_s1337/cpu_contract.json'
+CANARY=ROOT/'test_result/evidence/p106b_official_adapter_v1/native595-f/report.json'
+CANARY_SHA='38A2EEEDE0951AD2484405C71B98EDCC35DD42AD8816D79D3CDD8DA58F4F185A'
+FALCON_REFERENCE_SHA='441E07F5CAB51568DFD70E6CD4A307BC875E0186A89819AAA93C133E51C5DB4F'
+DEADLINE=datetime(2026,10,23,7,30,tzinfo=timezone.utc).timestamp()
+ATOL,RTOL=1e-5,1e-4
+SOURCES=('scripts/diag_p106b_official_core6.py','scripts/test_p106b_official_core6.py',
+    'scripts/test_p106b_eval_cache_policy.py',
+    'scripts/p106b_official_tasks.py','scripts/prepare_p106b_official_eval.py',
+    'scripts/p106b_official_lm_adapter.py','scripts/interactive_research_infer.py',
+    'scripts/diag_p101a_mtp_parity.py','tinylm/infer/dialogue.py','scripts/p106b_shards.py')
+OFFLINE=dict(HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1',TRANSFORMERS_OFFLINE='1',USE_HUB_KERNELS='0')
+
+
+def digest(path):
+    h=hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda:stream.read(1<<20),b''):h.update(block)
+    return h.hexdigest().upper()
+
+
+def identity():
+    files={name:digest(ROOT/name) for name in SOURCES}
+    return dict(files=files,sha256=hashlib.sha256(json.dumps(files,sort_keys=True).encode()).hexdigest().upper())
+
+
+def plain(value):
+    from lm_eval.utils import handle_non_serializable
+    return json.loads(json.dumps(value,ensure_ascii=False,allow_nan=False,default=handle_non_serializable))
+
+
+def independent_row(choices,gold,scores):
+    if (type(gold) is not int or not 0<=gold<len(choices) or len(scores)!=len(choices)
+            or any(not isinstance(c,str) or not c for c in choices)
+            or any(isinstance(s,bool) or not isinstance(s,(int,float)) or not math.isfinite(s) or s>0 for s in scores)):
+        raise ValueError('complete finite choice likelihood and integer label required')
+    pred=max(range(len(scores)),key=lambda i:scores[i])
+    norm=max(range(len(scores)),key=lambda i:scores[i]/len(choices[i]))
+    return dict(pred=pred,pred_norm=norm,acc=int(pred==gold),acc_norm=int(norm==gold),
+        random_expectation=1/len(choices),shortest=int(min(range(len(choices)),key=lambda i:len(choices[i]))==gold),
+        longest=int(max(range(len(choices)),key=lambda i:len(choices[i]))==gold),gold=gold)
+
+
+def audit_samples(task,rows,expected):
+    if len(rows)!=expected or [r['doc_id'] for r in rows]!=list(range(expected)):
+        raise ValueError('official evaluation denominator/order differs; no silent skips')
+    audits=[]
+    for row in rows:
+        doc=task.eval_docs[row['doc_id']]
+        choices=task.doc_to_choice(doc)
+        gold=task.doc_to_text(doc) if task.multiple_input else task.doc_to_target(doc)
+        filtered=row['filtered_resps']
+        if len(filtered)!=len(choices) or any(not isinstance(r,(list,tuple)) or len(r)!=2 for r in filtered):
+            raise ValueError('exactly one official likelihood per choice required')
+        check=independent_row(choices,gold,[r[0] for r in filtered])
+        for metric in ('acc','acc_norm'):
+            if metric in row and row[metric]!=check[metric]:raise ValueError('official per-item metric oracle negative')
+        audits.append(check)
+    labels=Counter(r['gold'] for r in audits)
+    random_sum=sum(r['random_expectation'] for r in audits)
+    variance=sum(r['random_expectation']*(1-r['random_expectation']) for r in audits)
+    return dict(rows=expected,correct=sum(r['acc'] for r in audits),
+        correct_norm=sum(r['acc_norm'] for r in audits),random_expected_correct=random_sum,
+        random_independent_sd=math.sqrt(variance),
+        posthoc_majority_correct=max(labels.values()),posthoc_label_counts=dict(labels),
+        shortest_correct=sum(r['shortest'] for r in audits),longest_correct=sum(r['longest'] for r in audits),
+        baseline_policy='DIAGNOSTIC_ONLY; POSTHOC_MAJORITY_IS_NOT_A_TRAINED_OR_PRIOR_BASELINE')
+
+
+def expected_counts(mode):
+    if mode not in ('cost','full'):raise ValueError('explicit cost/full mode required')
+    return {name:32 if mode=='cost' else count for name,count in TASK_COUNTS.items()}
+
+
+def admit_full(cost,signature,model,now):
+    if (cost.get('status')!='LIMITED_COST_DIAGNOSTIC' or cost.get('model')!=model
+            or cost.get('source_identity')!=signature or cost.get('actual_counts')!=expected_counts('cost')
+            or cost.get('policy')!=policy()):
+        raise ValueError('matching closed cost evidence required before full evaluation')
+    timing=cost.get('task_evaluation_seconds',{})
+    if set(timing)!=set(TASK_COUNTS) or any(isinstance(s,bool) or not isinstance(s,(int,float))
+            or not math.isfinite(s) or s<=0 for s in timing.values()):
+        raise ValueError('measured positive per-task evaluation time required')
+    forecast=sum(TASK_COUNTS[name]*seconds/32 for name,seconds in timing.items())*1.5+60
+    if forecast>7200 or now+forecast>DEADLINE:
+        raise ValueError('measured full forecast does not fit 2h/model or 16:30 model deadline')
+    return dict(cost_report_sha256=digest(OUTPUT/model/'cost/report.json'),
+                forecast_seconds=forecast,hard_cap_seconds=min(7200,int(DEADLINE-now)))
+
+
+def policy():
+    return dict(num_fewshot=0,chat_template=False,max_length=1024,batch_size=8,
+        precision='FP32; SDPA_MATH_OR_MODEL_EAGER; TF32_OFF',seed=1337,
+        continuation='COMPLETE_SUM_LOGLIKELIHOOD; TASK_OWNS_ACC_NORM',
+        bos='NO_EXTRA_BOS_FOR_NONEMPTY_CONTEXT; NATIVE_PREFIX_FOR_EMPTY_CONTEXT',
+        use_cache=False,request_cache=False,sqlite_cache=False,logits_cache=False,
+        softmax_dtype='float32',mixed_precision=False,bootstrap_iters=100000)
+
+
+def prerequisites():
+    if digest(CANARY)!=CANARY_SHA:raise ValueError('recorded adapter canary receipt differs')
+    value=json.loads(CANARY.read_text(encoding='utf-8'))
+    if value.get('status')!='OFFICIAL_ADAPTER_GPU_ORACLE_COMPLETE' or value.get('returncode')!=0:
+        raise ValueError('closed real-checkpoint full-label/batch canary required')
+    for name,sha in value['source_sha256'].items():
+        if digest(ROOT/name)!=sha:raise ValueError('prior adapter canary source is stale: '+name)
+    return dict(adapter_canary=str(CANARY.relative_to(ROOT)),adapter_canary_sha256=digest(CANARY))
+
+
+@contextmanager
+def model_runtime(name,torch):
+    if name not in MODELS:raise ValueError('candidate was not preregistered')
+    from scripts.prepare_p106b_official_eval import configure_hf_cache
+    cache_policy=configure_hf_cache()
+    from tinylm import paths
+    if str(paths.HF_DIR)!=cache_policy['environment']['HF_HOME']:
+        raise ValueError('model runtime cache root differs from the admitted policy')
+    from scripts.p106b_official_lm_adapter import research_adapter
+    if name!='falcon90m':
+        with research_adapter(name,runtime_root=Path(sysconfig.get_paths()['purelib']),batch_size=8) as lm:
+            yield lm,dict(kind='EXISTING_STRICT_RESEARCH_RUNTIME',provenance=lm.provenance,
+                          cache_policy=cache_policy)
+        return
+    from scripts.interactive_research_infer import state_fingerprint
+    if digest(FALCON_REFERENCE)!=FALCON_REFERENCE_SHA:raise ValueError('prior strict Falcon CPU receipt differs')
+    reference=json.loads(FALCON_REFERENCE.read_text(encoding='utf-8'))['asset_sha256']
+    if {name:digest(FALCON/name) for name in reference}!=reference:
+        raise ValueError('Falcon immutable local asset differs from prior strict CPU receipt')
+    from transformers import AutoModelForCausalLM,AutoTokenizer
+    from lm_eval.models.huggingface import HFLM
+    tokenizer=AutoTokenizer.from_pretrained(str(FALCON),local_files_only=True,trust_remote_code=False)
+    model,loading=AutoModelForCausalLM.from_pretrained(str(FALCON),local_files_only=True,
+        trust_remote_code=False,dtype=torch.float32,attn_implementation='eager',use_cache=False,output_loading_info=True)
+    if any(loading.get(k) for k in ('missing_keys','unexpected_keys','mismatched_keys','error_msgs')):
+        raise ValueError('complete strict Falcon loading_info required')
+    if model.config.model_type!='falcon_h1' or model.config.use_cache or any(p.dtype!=torch.float32 for p in model.parameters()):
+        raise ValueError('FP32 Falcon eager/no-KV-cache model required')
+    before=state_fingerprint(model)
+    model.eval().to('cuda')
+    lm=HFLM(pretrained=model,tokenizer=tokenizer,backend='causal',max_length=1024,
+        batch_size=8,device='cuda',logits_cache=False,add_bos_token=False,
+        softmax_dtype=torch.float32,mixed_precision_dtype=None,trust_remote_code=False)
+    implementation=sys.modules[type(model).__module__]
+    proof=dict(kind='OFFICIAL_HFLM_PREINSTANTIATED_STRICT_MODEL',asset_sha256=reference,
+        cache_policy=cache_policy,
+        model_class=type(model).__name__,model_config_use_cache=model.config.use_cache,
+        attn_implementation=model.config._attn_implementation,
+        model_source_sha256=digest(implementation.__file__),initial_core_sha256=before,
+        parameters=sum(p.numel() for p in model.parameters()),device=str(lm.device),
+        fast_mamba_path=bool(getattr(implementation,'is_fast_path_available',False)),
+        tokenizer_class=type(tokenizer).__name__,bos_prefix_id=lm.prefix_token_id)
+    try:
+        yield lm,proof
+        after=state_fingerprint(model)
+        proof['final_core_sha256']=after
+        proof['source_assets_unchanged']={name:digest(FALCON/name) for name in reference}==reference
+        if after!=before or not proof['source_assets_unchanged']:raise ValueError('read-only Falcon body/assets changed')
+    finally:
+        lm._model=None
+        model.to('cpu')
+        lm=model=None
+        import gc
+        gc.collect();torch.cuda.empty_cache()
+
+
+def numerical_canary(lm,torch):
+    from lm_eval.api.instance import Instance
+    from scripts.p106b_official_lm_adapter import plan_tokens,padded_batch
+    cases=(('Question: one plus one?\nAnswer:',' two'),('','Hello'),('질문: 사과의 색은?\n답:',' 빨강'))
+    requests=[Instance(request_type='loglikelihood',doc={},arguments=pair,idx=i,
+        metadata=('synthetic_backend_canary',i,1)) for i,pair in enumerate(cases)]
+    observed=lm.loglikelihood(requests,disable_tqdm=True)
+    checks=[]
+    for (context,continuation),actual in zip(cases,observed):
+        ctx,cont=lm._encode_pair(context,continuation) if context else ([lm.prefix_token_id],lm.tok_encode(continuation))
+        vocab=lm.core.vocab_size if hasattr(lm,'core') else lm.model.config.vocab_size
+        plan=plan_tokens(ctx,cont,vocab,1024)
+        pad=lm.core.pad_id if hasattr(lm,'core') else lm.tokenizer.pad_token_id
+        batch=padded_batch([plan],pad,vocab)
+        inputs=torch.tensor(batch['input_ids'],device='cuda',dtype=torch.long)
+        labels=torch.tensor(batch['labels'],device='cuda',dtype=torch.long)
+        if hasattr(lm,'core'):logits=lm.core.score_batch.forward(inputs,use_cache=False)
+        else:logits=lm.model(input_ids=inputs,use_cache=False).logits
+        if logits.dtype!=torch.float32 or tuple(logits.shape)!=(*inputs.shape,vocab):raise ValueError('full FP32 logits required')
+        ce=torch.nn.functional.cross_entropy(logits.reshape(-1,vocab),labels.reshape(-1),ignore_index=-100,reduction='sum')
+        independent=-float(ce)
+        greedy=bool(logits.argmax(-1)[labels!=-100].eq(labels[labels!=-100]).all())
+        close=math.isclose(float(actual[0]),independent,abs_tol=ATOL,rel_tol=RTOL) and actual[1]==greedy
+        checks.append(dict(arguments=[context,continuation],official=list(actual),full_label_ce=[independent,greedy],close=close))
+        del logits,inputs,labels,ce
+    if not all(row['close'] for row in checks):raise ValueError('backend full-label oracle negative')
+    return checks
+
+
+@contextmanager
+def length_observer(lm,writer):
+    original=lm._loglikelihood_tokens
+    totals=dict(requests=0,context_truncated_requests=0,context_tokens_removed=0,continuation_tokens=0)
+    def observe(requests,**kwargs):
+        requests=list(requests)
+        for key,context,continuation in requests:
+            if not context or not continuation or len(continuation)>1024:
+                raise ValueError('full nonempty bounded continuation required; no partial candidate scoring')
+            removed=max(0,len(context)+len(continuation)-1025)
+            writer.append(dict(index=totals['requests'],context_tokens=len(context),continuation_tokens=len(continuation),
+                truncated_context_tokens=removed,key_sha256=hashlib.sha256(json.dumps(key,ensure_ascii=False).encode()).hexdigest().upper()))
+            totals['requests']+=1;totals['context_truncated_requests']+=int(removed>0)
+            totals['context_tokens_removed']+=removed;totals['continuation_tokens']+=len(continuation)
+        return original(requests,**kwargs)
+    lm._loglikelihood_tokens=observe
+    try:yield totals
+    finally:lm._loglikelihood_tokens=original
+
+
+def execute(model,mode,expected_source):
+    signature=identity()
+    if signature['sha256']!=expected_source:raise ValueError('preregistered evaluation source differs')
+    pre=prerequisites();counts=expected_counts(mode)
+    admission=admit_full(json.loads((OUTPUT/model/'cost/report.json').read_text()),signature,model,time.time()) if mode=='full' else dict(hard_cap_seconds=600)
+    if time.time()+admission['hard_cap_seconds']>DEADLINE+1:raise ValueError('model hard cap no longer fits 16:30 deadline')
+    target=OUTPUT/model/mode
+    if target.exists():raise FileExistsError('previous complete/partial evaluation preserved')
+    target.mkdir(parents=True,exist_ok=False)
+    from scripts.prepare_p106b_official_eval import write_report,COMMIT,MANIFEST_SHA
+    from scripts.p106b_shards import ShardWriter
+    report=dict(schema='P106B_OFFICIAL_CORE6_V1',status='STARTED',model=model,mode=mode,
+        source_identity=signature,policy=policy(),prerequisites=pre,admission=admission,
+        expected_counts=counts,framework_commit=COMMIT,data_manifest_sha256=MANIFEST_SHA,
+        training=False,optimizer_updates=0,checkpoint_writes=0,contamination='NOT_AUDITED_ALL_PRETRAINING',
+        started_at=datetime.now(timezone.utc).isoformat())
+    start=time.monotonic();lengths=ShardWriter(target,'token_lengths')
+    try:
+        for key,value in OFFLINE.items():os.environ[key]=value
+        from scripts.p106b_official_tasks import load_tasks
+        tasks,specs,framework=load_tasks()
+        from lm_eval.evaluator import simple_evaluate
+        from lm_eval.tasks import TaskManager
+        # Register the fixed official source once, not once per task. This is
+        # the same immutable manager for cost and full; no source modification.
+        manager=TaskManager()
+        from scripts.p106b_gate_runtime import wall_limit
+        import torch
+        from torch.nn.attention import sdpa_kernel,SDPBackend
+        torch.set_num_threads(4);torch.manual_seed(1337)
+        torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+        remaining=min(admission['hard_cap_seconds'],int(DEADLINE-time.time()))
+        if remaining<60:raise ValueError('CPU initialization left less than60sec before model deadline')
+        # The strict route inspects Parameter._version. Creating Parameters in
+        # inference_mode would remove this safety evidence before model entry.
+        with wall_limit(remaining),sdpa_kernel(SDPBackend.MATH),torch.no_grad():
+            with model_runtime(model,torch) as (lm,model_proof):
+                report['model_proof']=model_proof
+                report['synthetic_numerical_canary']=numerical_canary(lm,torch)
+                sample_manifests={};audits={};official_results={};timing={}
+                # Keep partial task closures in an error report too. Raw shard
+                # manifests are write-once; do not wait for all six tasks.
+                report.update(sample_manifests=sample_manifests,independent_audits=audits,
+                    official_results=official_results,task_evaluation_seconds=timing,actual_counts={})
+                with length_observer(lm,lengths) as lengths_summary:
+                    for name,task in tasks.items():
+                        tick=time.monotonic()
+                        results=simple_evaluate(model=lm,tasks=[task],num_fewshot=0,
+                            task_manager=manager,
+                            batch_size=8,device='cuda',use_cache=None,cache_requests=False,
+                            limit=32 if mode=='cost' else None,bootstrap_iters=100000,log_samples=True,
+                            apply_chat_template=False,fewshot_as_multiturn=False,
+                            random_seed=1337,numpy_random_seed=1337,torch_random_seed=1337,fewshot_random_seed=1337)
+                        torch.cuda.synchronize();timing[name]=time.monotonic()-tick
+                        if set(results['samples'])!={name}:raise ValueError('official task set differs')
+                        rows=results.pop('samples')[name]
+                        audits[name]=audit_samples(task,rows,counts[name])
+                        writer=ShardWriter(target,name+'_samples')
+                        for row in rows:writer.append(plain(row))
+                        sample_manifests[name]=writer.close(lineage=dict(model=model,task=name,framework_commit=COMMIT,mode=mode))
+                        for metric,key in (('acc','correct'),('acc_norm','correct_norm')):
+                            official=results['results'][name].get(metric+',none')
+                            if official is not None and not math.isclose(official,audits[name][key]/counts[name],abs_tol=1e-12):
+                                raise ValueError('official aggregate differs from full raw independent recount')
+                        official_results[name]=plain(results)
+                        report['actual_counts'][name]=counts[name]
+                        print(json.dumps(dict(event='OFFICIAL_TASK_CLOSED',model=model,mode=mode,
+                            task=name,rows=counts[name],seconds=timing[name]),sort_keys=True),flush=True)
+                report['token_lengths_summary']=lengths_summary
+                report.update(evaluation_seconds=sum(timing.values()),task_evaluation_seconds=timing)
+                report.update(official_results=official_results,sample_manifests=sample_manifests,
+                    independent_audits=audits,actual_counts={k:v['rows'] for k,v in audits.items()},
+                    framework_provenance=framework,task_specs=specs)
+        report['sources_unchanged']=identity()==signature
+        if not report['sources_unchanged']:raise ValueError('evaluation sources changed while model was open')
+        report.update(status='LIMITED_COST_DIAGNOSTIC' if mode=='cost' else 'OFFICIAL_CORE6_FULL_COMPLETE',returncode=0)
+    except BaseException as exc:
+        report.update(status='OFFICIAL_CORE6_ERROR',returncode=9,error_type=type(exc).__name__,error=str(exc)[:2000])
+        raise
+    finally:
+        if lengths._total_rows:report['lengths_manifest']=lengths.close(lineage=dict(model=model,mode=mode))
+        report.update(ended_at=datetime.now(timezone.utc).isoformat(),wall_seconds=time.monotonic()-start)
+        write_report(target/'report.json',report)
+    return {key:report[key] for key in ('status','model','mode','actual_counts','evaluation_seconds','wall_seconds')}
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--execute',action='store_true')
+    p.add_argument('--model',choices=MODELS);p.add_argument('--mode',choices=('cost','full'));p.add_argument('--source-sha256')
+    args=p.parse_args()
+    if not args.execute:value=dict(status='SOURCE_ONLY',source_identity=identity(),models=list(MODELS),policy=policy())
+    else:
+        if not args.model or not args.mode:p.error('explicit --model and --mode required')
+        value=execute(args.model,args.mode,args.source_sha256)
+    print(json.dumps(value,ensure_ascii=False,sort_keys=True))
+
+
+if __name__=='__main__':main()

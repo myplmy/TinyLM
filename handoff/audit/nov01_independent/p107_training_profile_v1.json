@@ -1,0 +1,43 @@
+{
+  "schema": "P107_ACTUAL_OPTIMIZER_MASK_LINK_V1",
+  "tag": "p107_actual_train_link_v1_20261101",
+  "authority_directive": 104,
+  "deadline": "2026-11-01T02:00:00+00:00",
+  "source_sha256": "7E9202ED57B6E008F5CFCCF55F1DAAC8514C522352830C74C1D03E7BBA08E69D",
+  "vram_limit_bytes": 8000000000,
+  "allocator_cap_bytes": 6442450944,
+  "corpus_training": false,
+  "output": "test_result/evidence/p107_actual_train_link_v1_20261101",
+  "cpu_contract": {
+    "path": "handoff/audit/nov01_independent/p107_cpu_receipt_v2.json",
+    "sha256": "1F218C4AF541F0E34F1E72D66E22FBED6DE339CE8E29B4C0D2A5FE1FE4FB06AE"
+  },
+  "native_reference": {
+    "path": "handoff/audit/oct27_independent/resource_profile_v4.json",
+    "sha256": "AC7232426DC3E07923F06058589093BE7A03C6018A4EA3580DDC01B32054E342"
+  },
+  "recipe": {
+    "micro_bs": 8,
+    "seq": 1024,
+    "accum": 16,
+    "causal_micros": 8,
+    "masked_micros": 8,
+    "optimizer": "MUON_RMS4_PLUS_ADAMW",
+    "lr": 0.0001,
+    "muon_lr": 0.0004,
+    "clip": 1.0,
+    "mask_rate": 0.15,
+    "ema": 0.2,
+    "refresh_updates": 2,
+    "unseen": "keep",
+    "dropout_rng_source": "STATE_SAVED",
+    "teacher": null,
+    "grad_checkpoint": true,
+    "sdpa": "MATH",
+    "dtype": "BF16_AUTOCAST_FP32_MASTER",
+    "causal_kd": false,
+    "scheduler": "CONSTANT",
+    "compile": false,
+    "observer": "FULL_ARGMAX_CPU_IDS"
+  }
+}
