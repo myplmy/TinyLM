@@ -1,0 +1,174 @@
+{
+  "schema": "P106B_EXACT_LITERAL_GUARD_APPROVALS_V1",
+  "status": "ROOT_REVIEWED_EXACT_SOURCE_BODY_PAIRS",
+  "rows": [
+    {
+      "id": "expanded_train:1174021",
+      "original_text_sha256": "035E85696B69EE54C70DBFC71E8EAF4487AC05B0F1D479410EBD27A7C9C1C1C3",
+      "clean_text_sha256": "331A0990E40C5B470F7BE27E7977EDD68709C81327A003FC5A095AEE0CC001F3",
+      "original": "data_cache/p106b_hold_recovery_v1_20261026_goalc/proposals_v1/review_packets/expanded_train_1174021_original.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/manual_residual_v1/expanded_train_1174021_v2.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/manual_residual_v1/review_1174021_v2.md",
+          "sha256": "8A6317A10A47E607A644449A7D0BE1047F29F2F5E24D34010476AA0FB3D105AF"
+        },
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/literal_guard_recheck_v1/review.md",
+          "sha256": "3F6EC2969E5B554EE1CF167BD2737D7640F431F68E3B6856183B7390E25109EA"
+        }
+      ]
+    },
+    {
+      "id": "expanded_train:1242413",
+      "original_text_sha256": "0275B08A55BCFE77FB4E241D3E44DA07F8EA8257DD6F733C8B15B4C135ACC046",
+      "clean_text_sha256": "EF76D981B1F5F0458F48668D58A8B8D38D9F5FF7A528277A57AF18B55A945D4C",
+      "original": "data_cache/p106b_hold_recovery_v1_20261026_goalc/proposals_v1/review_packets/expanded_train_1242413_original.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/literal_guard_recheck_v1/expanded_train_1242413_recheck_v2.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [
+        "% Example 1: FFT of a DFT-sinusoid % Parameters: N = 64; % Must be a power of two T = 1; % Set sampling rate to 1 A = 1; % Sinusoidal amplitude phi = 0; % Sinusoidal phase f = 0.25; % Frequency (cycles/sample) n = [0:N-1]; % Discrete time axis x = A*cos(2*pi*n*f*T+phi); % Sampled sinusoid X = fft(x); % Spectrum % Plot time data: figure(1); subplot(3,1,1); plot(n,x,'*k'); ni = [0:.1:N-1]; % Interpolated time axis hold on; plot(ni,A*cos(2*pi*ni*f*T+phi),'-k'); grid off; title('Sinusoid at 1/4 the Sampling Rate'); xlabel('Time (samples)'); ylabel('Amplitude'); text(-8,1,'a)'); hold off; % Plot spectral magnitude: magX = abs(X); fn = [0:1/N:1-1/N]; % Normalized frequency axis subplot(3,1,2); stem(fn,magX,'ok'); grid on; xlabel('Normalized Frequency (cycles per sample))'); ylabel('Magnitude (Linear)'); text(-.11,40,'b)'); % Same thing on a dB scale: spec = 20*log10(magX); % Spectral magnitude in dB subplot(3,1,3); plot(fn,spec,'--ok'); grid on; axis([0 1 -350 50]); xlabel('Normalized Frequency (cycles per sample))'); ylabel('Magnitude (dB)'); text(-.11,50,'c)'); cmd = ['print -deps ', '../eps/example1.eps']; disp(cmd); eval(cmd);",
+        "% Example 2 = Example 1 with frequency between bins f = 0.25 + 0.5/N; % Move frequency up 1/2 bin x = cos(2*pi*n*f*T); % Signal to analyze X = fft(x); % Spectrum ... % See Example 1 for plots and such",
+        "% Plot the periodic extension of the time-domain signal plot([x,x],'--ok'); title('Time Waveform Repeated Once'); xlabel('Time (samples)'); ylabel('Amplitude');",
+        "% Windowed, zero-padded data: n = [0:M-1]; % discrete time axis f = 0.25 + 0.5/M; % frequency xw = [w .* cos(2*pi*n*f),zeros(1,(zpf-1)*M)]; % Smoothed, interpolated spectrum: X = fft(xw); % Plot time data: subplot(2,1,1); plot(xw); title('Windowed, Zero-Padded, Sampled Sinusoid'); xlabel('Time (samples)'); ylabel('Amplitude'); text(-50,1,'a)'); % Plot spectral magnitude: spec = 10*log10(conj(X).*X); % Spectral magnitude in dB spec = max(spec,-60*ones(1,nfft)); % clip to -60 dB subplot(2,1,2); plot(fninf,fftshift(spec),'-'); axis([-0.5,0.5,-60,40]); title('Smoothed, Interpolated, Spectral Magnitude (dB)'); xlabel('Normalized Frequency (cycles per sample))'); ylabel('Magnitude (dB)'); grid; text(-.6,40,'b)');",
+        "% Analysis parameters: M = 31; % Window length N = 64; % FFT length (zero padding factor near 2) % Signal parameters: wxT = 2*pi/4; % Sinusoid frequency (rad/sample) A = 1; % Sinusoid amplitude phix = 0; % Sinusoid phase % Compute the signal x: n = [0:N-1]; % time indices for sinusoid and FFT x = A * exp(j*wxT*n+phix); % complex sine [1,j,-1,-j...] % Compute Hann window: nm = [0:M-1]; % time indices for window computation % Hann window = \"raised cosine\", normalization (1/M) % chosen to give spectral peak magnitude at 1/2: w = (1/M) * (cos((pi/M)*(nm-(M-1)/2))).^2; wzp = [w,zeros(1,N-M)]; % zero-pad out to the length of x xw = x .* wzp; % apply the window w to signal x figure(1); subplot(1,1,1); % Display real part of windowed signal and Hann window plot(n,wzp,'-k'); hold on; plot(n,real(xw),'*k'); hold off; title(['Hann Window and Windowed, Zero-Padded, ',... 'Sinusoid (Real Part)']); xlabel('Time (samples)'); ylabel('Amplitude');",
+        "% Compute the spectrum and its alternative forms: Xw = fft(xw); % FFT of windowed data fn = [0:1.0/N:1-1.0/N]; % Normalized frequency axis spec = 20*log10(abs(Xw)); % Spectral magnitude in dB % Since the nulls can go to minus infinity, clip at -100 dB: spec = max(spec,-100*ones(1,length(spec))); phs = angle(Xw); % Spectral phase in radians phsu = unwrap(phs); % Unwrapped spectral phase % Compute heavily interpolated versions for comparison: Nzp = 16; % Zero-padding factor Nfft = N*Nzp; % Increased FFT size xwi = [xw,zeros(1,Nfft-N)]; % New zero-padded FFT buffer Xwi = fft(xwi); % Compute interpolated spectrum fni = [0:1.0/Nfft:1.0-1.0/Nfft]; % Normalized freq axis speci = 20*log10(abs(Xwi)); % Interpolated spec mag (dB) speci = max(speci,-100*ones(1,length(speci))); % clip phsi = angle(Xwi); % Interpolated phase phsiu = unwrap(phsi); % Unwrapped interpolated phase figure(1); subplot(2,1,1); plot(fn,abs(Xw),'*k'); hold on; plot(fni,abs(Xwi),'-k'); hold off; title('Spectral Magnitude'); xlabel('Normalized Frequency (cycles per sample))'); ylabel('Amplitude (linear)'); subplot(2,1,2); % Same thing on a dB scale plot(fn,spec,'*k'); hold on; plot(fni,speci,'-k'); hold off; title('Spectral Magnitude (dB)'); xlabel('Normalized Frequency (cycles per sample))'); ylabel('Magnitude (dB)'); cmd = ['print -deps ', 'specmag.eps']; disp(cmd); eval(cmd); disp 'pausing for RETURN (check the plot). . .'; pause figure(1); subplot(2,1,1); plot(fn,phs,'*k'); hold on; plot(fni,phsi,'-k'); hold off; title('Spectral Phase'); xlabel('Normalized Frequency (cycles per sample))'); ylabel('Phase (rad)'); grid; subplot(2,1,2); plot(fn,phsu,'*k'); hold on; plot(fni,phsiu,'-k'); hold off; title('Unwrapped Spectral Phase'); xlabel('Normalized Frequency (cycles per sample))'); ylabel('Phase (rad)'); grid; cmd = ['print -deps ', 'specphs.eps']; disp(cmd); eval(cmd);",
+        "% sidex.m - Demonstration of the use of FFT cross- % correlation to compute the impulse response % of a filter given its input and output. % This is called \"FIR system identification\". Nx = 32; % input signal length Nh = 10; % filter length Ny = Nx+Nh-1; % max output signal length % FFT size to accommodate cross-correlation: Nfft = 2^nextpow2(Ny); % FFT wants power of 2 x = rand(1,Nx); % input signal = noise %x = 1:Nx; % input signal = ramp h = [1:Nh]; % the filter xzp = [x,zeros(1,Nfft-Nx)]; % zero-padded input yzp = filter(h,1,xzp); % apply the filter X = fft(xzp); % input spectrum Y = fft(yzp); % output spectrum Rxx = conj(X) .* X; % energy spectrum of x Rxy = conj(X) .* Y; % cross-energy spectrum Hxy = Rxy ./ Rxx; % should be the freq. response hxy = ifft(Hxy); % should be the imp. response hxy(1:Nh) % print estimated impulse response freqz(hxy,1,Nfft); % plot estimated freq response err = norm(hxy - [h,zeros(1,Nfft-Nh)])/norm(h); disp(sprintf(['Impulse Response Error = ',... '%0.14f%%'],100*err)); err = norm(Hxy-fft([h,zeros(1,Nfft-Nh)]))/norm(h); disp(sprintf(['Frequency Response Error = ',... '%0.14f%%'],100*err));",
+        "% Illustrate estimation of coherence function 'cohere' % in the Matlab Signal Processing Toolbox % or Octave with Octave Forge: N = 1024; % number of samples x=randn(1,N); % Gaussian noise y=randn(1,N); % Uncorrelated noise f0 = 1/4; % Frequency of high coherence nT = [0:N-1]; % Time axis w0 = 2*pi*f0; x = x + cos(w0*nT); % Let something be correlated p = 2*pi*rand(1,1); % Phase is irrelevant y = y + cos(w0*nT+p); M = round(sqrt(N)); % Typical window length [cxyM,w] = cohere(x,y,M); % Do the work figure(1); clf; stem(w/2,cxyM,'*'); % w goes from 0 to 1 (odd convention) legend(''); % needed in Octave grid on; ylabel('Coherence'); xlabel('Normalized Frequency (cycles/sample)'); axis([0 1/2 0 1]); replot; % Needed in Octave saveplot('../eps/coherex.eps'); % compatibility utility",
+        "cohere(x,y,M)",
+        "cxyN = cohere(x,y,N);"
+      ],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/manual_residual_v1/expanded_train_1242413_v3_review.md",
+          "sha256": "A886E55040E9ABADBFED0370EB040EB55A3AABFED9E97A69DA5C4363AF8814E0"
+        },
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/literal_guard_recheck_v1/review_v2.md",
+          "sha256": "A6AA7500E91B3A6E109B9B805732A1A649BA34422D92C0A969D5A1B7DE8D7D87"
+        }
+      ]
+    },
+    {
+      "id": "expanded_train:1081376",
+      "original_text_sha256": "F5496CBDCA86DDC6BD57B5159DAB3381731952F0EF7D2BF65E7D463218B51C30",
+      "clean_text_sha256": "7D9B5D8600701A919BB48FE01153A5E4DEEFE81FAC22B6A8C6A9FC958E020D83",
+      "original": "data_cache/p106b_hold_recovery_v1_20261026_goalc/proposals_v1/review_packets/expanded_train_1081376_original.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/manual_residual_v1/expanded_train_1081376_v2.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/manual_residual_v1/review_v2.md",
+          "sha256": "249F9E490114447EF91E3D59431C12B1178BC66C8F7ED7FB82272A1E5F47E534"
+        }
+      ]
+    },
+    {
+      "id": "expanded_train:1091850",
+      "original_text_sha256": "2EFC21A29F629E245713FD50649068EBF553458C86EFBFD5447E07466C08B37A",
+      "clean_text_sha256": "E25292165A8DF3B966608B702285F34F4A84434FBFB36454EB6177EDBE1A628E",
+      "original": "data_cache/p106b_hold_resolution_v1_20261027_goalc/inventory_v1/review_packets/expanded_train_1091850.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/family_resolution_v1/expanded_train_1091850.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/family_resolution_v1/review.md",
+          "sha256": "164B8376E5D0CC18C87AE5B05D0E3C18BE842DE6D32750993B8B545AD2F80580"
+        }
+      ]
+    },
+    {
+      "id": "expanded_train:410074",
+      "original_text_sha256": "65F3E7F302A8C529B7AD03942A0E0739F7A18ED2BD6C5F68ED1929431CC95997",
+      "clean_text_sha256": "863919B1FA87ACA28C1F9B450C6A2084C04B0B97361CAD128E1DD9F3D7417AA6",
+      "original": "data_cache/p106b_hold_resolution_v1_20261027_goalc/inventory_v1/review_packets/expanded_train_410074.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/family_resolution_v1/expanded_train_410074.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/family_resolution_v1/review.md",
+          "sha256": "164B8376E5D0CC18C87AE5B05D0E3C18BE842DE6D32750993B8B545AD2F80580"
+        }
+      ]
+    },
+    {
+      "id": "expanded_train:634479",
+      "original_text_sha256": "69D0C1A3C84A15D200B5FC87A67C4559B01BE4E82140BC8F1A5AEF7A963AF47D",
+      "clean_text_sha256": "908016D43940B3C4F4C1B1AE50686B9B28FB893986DC34A22804B4C8D0A28399",
+      "original": "data_cache/p106b_hold_resolution_v1_20261027_goalc/inventory_v1/review_packets/expanded_train_634479.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/family_resolution_v1/expanded_train_634479_v2.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/family_resolution_v1/review_v2.md",
+          "sha256": "4DB207250AF24A77112EE590FC19BD29C00BD0BFED0309C502074BF63E05BD32"
+        },
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/literal_guard_recheck_v1/review.md",
+          "sha256": "BA8E6AE2F55FF015A294F3185561F6569EE164CE6E3611D08342165E0EE96DDA"
+        }
+      ]
+    },
+    {
+      "id": "expanded_train:5639",
+      "original_text_sha256": "19A766D8F3C98410ACD7A86FDE8E4FA07B98E81748CC1FBD4DE397A6EBA46DCF",
+      "clean_text_sha256": "71F8DD049AA432E85FF55156223FA30A7946946DD1111FDA251CA778506048AD",
+      "original": "data_cache/p106b_hold_resolution_v1_20261027_goalc/pending_profile_v1/review_packets/expanded_train_5639.txt",
+      "body": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/profile_resolution_v1/expanded_train_5639.txt",
+      "root_approved": true,
+      "kind": "EXACT_REVIEWED_NONPROGRAM_DELIMITER_PAIR",
+      "evidence": {
+        "path": "handoff/audit/hold_resolution_20261027_goalc/LITERAL_GUARD_ADJUDICATIONS_V1.md",
+        "sha256": "AF80DA326ABC457920CB39E655C41847041900BF895A5AFD6FC3FEAF1B6049DB"
+      },
+      "required_literal_segments": [],
+      "review_inputs": [
+        {
+          "path": "data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/profile_resolution_v1/review.md",
+          "sha256": "1CB0442381FB7E1E5986C6B0AB93E35085D69A082B120C949EF3B7065DD6E3D4"
+        }
+      ]
+    }
+  ],
+  "producer_sha256": "AF08216E5D19E1A8189DDDF28089F02E79CBB945938796C5D98C9229A92659F1",
+  "snapshot_sha256": "541A6CB884FC8FA8E1D0F13FEAF13CAC3261029ED27A6E23FDC8D156758CD5E4",
+  "global_code_guard_waiver": false,
+  "training_authorized": false,
+  "goal_complete": false
+}

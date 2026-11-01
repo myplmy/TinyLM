@@ -1,0 +1,70 @@
+"""Pin every newly terminal purpose source for independent text-only review."""
+from collections import Counter
+from pathlib import Path
+import json
+import sys
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+from scripts import p106b_hold_resolution_inventory as inv
+from scripts import p106b_hold_resolution_policy_v14 as policy
+
+BASE, AUDIT = inv.BASE, Path(__file__).resolve().parent
+out = BASE / "policy_v14_literal_counter_v1"
+inv.require(not out.exists(), "new immutable counter namespace required")
+probe = AUDIT / "policy_v14_purpose_probe_v2.json"
+records = []
+for row in inv.cache.read(probe)["rows"]:
+    if row["decision"] not in {"KEEP", "EDIT"}:
+        continue
+    pin = row["source"]
+    source = ROOT / pin["path"]
+    inv.require(inv.file_sha(source) == pin["sha256"], "counter original changed")
+    raw = source.read_bytes().decode("utf-8")
+    old = policy.previous.propose(dict(id=row["id"], text=raw, complete_eos=True, valid_utf8=True))
+    old_clean = old.get("candidate", old["text"])
+    if old["decision"] in {"KEEP", "EDIT"} and inv.sha(old_clean) == row["clean_text_sha256"]:
+        continue
+    current = policy.propose(dict(id=row["id"], text=raw, complete_eos=True, valid_utf8=True))
+    clean = current.get("candidate", current["text"])
+    inv.require(current["decision"] == row["decision"] and inv.sha(clean) == row["clean_text_sha256"],
+                "new counter proposal differs from probe")
+    path = out / "packets" / (row["id"].replace(":", "_") + "_candidate.txt")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("xb") as stream:
+        stream.write(clean.encode("utf-8"))
+    records.append(dict(id=row["id"], original=pin,
+                        candidate=dict(path=str(path.relative_to(ROOT)), sha256=inv.file_sha(path)),
+                        characters=len(raw), decision=current["decision"], changes=current["changes"],
+                        previous_reasons=old["reasons"], root_approved=False))
+roles = ["context_controls", "historical_review", "context_hangul", "context_latin", "legacy_review"]
+assignments, loads = {role: [] for role in roles}, Counter({role: 0 for role in roles})
+for row in sorted(records, key=lambda value: (-value["characters"], value["id"])):
+    role = {"expanded_train:22517": "historical_review", "expanded_train:518256": "context_latin", "expanded_train:936140": "context_hangul"}[row["id"]]
+    assignments[role].append(row)
+    loads[role] += row["characters"]
+for role, assigned in assignments.items():
+    directory = BASE / "agents" / role / "policy_v14_literal_counter_v1"
+    directory.mkdir(parents=True)
+    lines = ["# v14 정보상자 필드·명시 재위 날짜의 실제 독립 대조", "",
+             "허용 입력은 이 TASK와 아래 정확 original/candidate 전문 및 자기 새 출력뿐이다. 원문·기존 산출물은 덮거나 삭제하지 않는다.",
+             "텍스트 판독과 새 txt/md만 허용한다. 코드/시험/해시/통계/모델/GPU/Git/웹은 금지한다. 정확 지정쌍 diff -u 읽기는 허용한다.",
+             "실제 역사·관계·수량/조건/인용/불확실성/코드/Unicode와 모든 채워진 필드 라벨 및 값을 확인한다. 병렬 연도/팀/출장수 사이 대응을 새로 생성하지 않았는지 확인한다.",
+             "숫자에 /가 있는 날짜는 원문대로 보존하고 수식·함수 호출과 구분한다. 실제 자료명·참고문헌을 URL 부재만으로 지우지 않는다.",
+             "판정은 ACCEPT_CANDIDATE / REVISE_TEXT / EXCLUDE / NEEDS_ROOT. 행마다 실제 판독 범위를 쓰고 수정은 실제 새 source_ID_v2.txt와 필요한 hold.md를 저장한다.",
+             "review.md 표: ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거. 기존 파일이 있으면 더 높은 새 vN만 쓴다. 검수 문구는 md에만 둔다.",
+             "이는 root 채택/외부 사실 검증/실행 성공이 아니다. 현재 contextual 묶음 결과는 보존하고 별도 이 배정도 끝까지 수행한다.", ""]
+    for row in sorted(assigned, key=lambda value: value["id"]):
+        lines += ["## " + row["id"], ""]
+        for label in ["original", "candidate"]:
+            lines += [label + ": `" + str(ROOT / row[label]["path"]) + "`",
+                      label + " SHA: `" + row[label]["sha256"] + "`", ""]
+    with (directory / "TASK.md").open("x", encoding="utf-8") as stream:
+        stream.write(chr(10).join(lines) + chr(10))
+inv.write_json(out / "manifest.json", dict(status="FULL_CHANGED_PURPOSE_COUNTER_REVIEW_NOT_ADMISSION", rows=records,
+               assignments={role: [row["id"] for row in assigned] for role, assigned in assignments.items()},
+               pins={str(path.relative_to(ROOT)): inv.file_sha(path) for path in [probe, Path(__file__),
+                     BASE / "draft_proposals_v11/complete.json", ROOT / "scripts/p106b_hold_resolution_policy_v14.py"]}))
+print(json.dumps(dict(cases=len(records), assignments={role: len(rows) for role, rows in assignments.items()},
+                      characters=dict(loads)), ensure_ascii=False))
+
