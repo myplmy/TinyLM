@@ -1,0 +1,49 @@
+{
+  "checks": [
+    {
+      "command": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-I",
+        "-B",
+        ".agents/skills/session-handoff/scripts/check_handoff_codex.py",
+        "handoff/202611011123_HANDOFF.md",
+        "--hours-target",
+        "3.5"
+      ],
+      "exit": 0,
+      "stdout": "CHECK handoff/202611011123_HANDOFF.md\n  PASS static structure and local links\nSUMMARY files=1 errors=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/handoff_time.py",
+        "handoff/202611011123_HANDOFF.md"
+      ],
+      "exit": 0,
+      "stdout": "================================================================================================\n  ★핸드오프 파일명 시각 감사 — **증거 대조**(통계 휴리스틱 아님)\n  규칙: 파일명 시각 > 최초 존재 증거 + 10분 이면 에러. 한쪽만 본다\n================================================================================================\n\n  검사 1건 · 🚫모순 0건 · ✅정합 1건 · ⚠️건너뜀 0건\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/handoff_queue.py",
+        "--audit",
+        "handoff/202611011123_HANDOFF.md",
+        "--previous",
+        "handoff/202610271445_HANDOFF.md"
+      ],
+      "exit": 0,
+      "stdout": "SUMMARY previous_incomplete=1 errors=0\n",
+      "stderr": ""
+    }
+  ],
+  "whole_wip_closed": false,
+  "new_gpu_runs": 0
+}
