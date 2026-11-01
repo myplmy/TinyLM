@@ -1,0 +1,129 @@
+"""INACTIVE ARCHIVE: production execution rejected by automatic approval review.
+
+The four disposable-fixture tests describe this historical design only.
+Do not execute it or reuse it as a runtime fallback.
+"""
+from pathlib import Path
+import hashlib
+import json
+import os
+import stat
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path(__file__).resolve().parents[3]
+BASE = Path(__file__).resolve().parent
+OWN = [
+    'ai_dev_tool/Codex/08_AI-미보고-내역-자백원장.md',
+    'handoff/202611011123_HANDOFF.md',
+    'handoff/audit/nov01_scope_a/COMMIT_MESSAGE_v3.txt',
+    'handoff/audit/nov01_scope_a/INDEX_RACE_v1.json',
+    'handoff/audit/nov01_scope_a/commit_race_record.py',
+    'handoff/audit/nov01_scope_a/test_commit_race_record.py',
+    'handoff/audit/nov01_scope_a/GIT_TRANSACTION_CPU_v1.log',
+]
+
+
+def git(*args, env=None):
+    return subprocess.run(['git', *args], cwd=ROOT, env=env, check=True,
+                          stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
+
+
+def prepare():
+    cpu = (BASE / 'GIT_TRANSACTION_CPU_v1.log').read_text()
+    if 'Ran 4 tests' not in cpu or not cpu.rstrip().endswith('OK'):
+        raise ValueError('Git transaction CPU fixtures must pass first')
+    plan = json.loads((BASE / 'STAGE_PATHS_v2.json').read_text())
+    raw = git('diff-tree', '--no-commit-id', '--no-renames', '--name-only', '-z',
+              '-r', 'ed2cb42a', '--', *plan['paths'])
+    found = {part.decode() for part in raw.split(bytes([0])) if part}
+    if found != set(plan['paths']):
+        raise ValueError('the ten closing paths were not all saved by the concurrent commit')
+    record = dict(schema='TINYLM_OWN_INDEX_RACE_RECORD_V1',
+                  implementation_commit='c43ef2eb0428c2e53b21ea466bcd0b18e163bfb9',
+                  closing_saved_by_concurrent_commit=git('rev-parse', 'ed2cb42a').decode().strip(),
+                  closing_owned_paths=sorted(found), foreign_commit_contents_investigated=False,
+                  failed_index_verification_exit=1, subsequent_empty_commit_exit=1,
+                  new_commit_from_failed_attempt=0, original_commits_rewritten=False,
+                  git_transaction_cpu_tests=4,
+                  cause='Separate shared-index tool calls raced; failure result was not gated before next call.',
+                  correction='Check every return; wait for public coordination; lock primary index and stage exact files in a temporary index.',
+                  base_head=git('rev-parse', 'HEAD').decode().strip(), paths=OWN,
+                  gpu_model_runs=0, current_full_smoke='NOT_RUN')
+    path = BASE / 'INDEX_RACE_v1.json'
+    with path.open('x', encoding='utf-8') as stream:
+        json.dump(record, stream, ensure_ascii=False, indent=2)
+    print('RACE_RECORD owned_closing_paths=10 foreign_contents_read=0')
+
+
+def commit():
+    record = json.loads((BASE / 'INDEX_RACE_v1.json').read_text())
+    env = dict(os.environ, GIT_OPTIONAL_LOCKS='0')
+    env.pop('GIT_INDEX_FILE', None)
+    gitdir = Path(git('rev-parse', '--absolute-git-dir').decode().strip())
+    if gitdir != ROOT / '.git' or gitdir.is_symlink():
+        raise ValueError('only this exact checkout Git directory is supported')
+    index, lock = gitdir / 'index', gitdir / 'index.lock'
+    if index.is_symlink() or not index.is_file():
+        raise ValueError('regular existing primary index required')
+    fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_CLOEXEC, 0o600)
+    owned_inode = os.fstat(fd).st_ino
+    committed = published = False
+    try:
+        if git('diff', '--cached', '--name-only', '-z', env=env):
+            raise ValueError('nonempty shared index preserved; no staging/commit')
+        if git('rev-parse', 'HEAD', env=env).decode().strip() != record['base_head']:
+            raise ValueError('HEAD changed after preparation; no commit')
+        with tempfile.TemporaryDirectory(prefix='tinylm_scope_a_git_') as temp:
+            private_index = Path(temp) / 'index'
+            own_env = dict(env, GIT_INDEX_FILE=str(private_index))
+            git('read-tree', 'HEAD', env=own_env)
+            git('add', '--', *OWN, env=own_env)
+            raw = git('diff', '--cached', '--no-renames', '--name-only', '-z', env=own_env)
+            names = {part.decode() for part in raw.split(bytes([0])) if part}
+            if names != set(OWN):
+                raise ValueError('temporary index differs from the explicit paths')
+            for name in OWN:
+                path = ROOT / name
+                if path.is_symlink() or path.stat().st_size >= 20_000_000:
+                    raise ValueError('invalid owned payload')
+                if git('show', ':' + name, env=own_env) != path.read_bytes():
+                    raise ValueError('temporary index bytes changed')
+            git('diff', '--cached', '--check', '--', *OWN, env=own_env)
+            if git('rev-parse', 'HEAD', env=env).decode().strip() != record['base_head']:
+                raise ValueError('HEAD changed before commit')
+            git('commit', '--quiet', '-F', str(BASE / 'COMMIT_MESSAGE_v3.txt'), env=own_env)
+            committed = True
+            # Other normal Git transactions cannot acquire index.lock here.
+            # Publish the committed private index using Git's lockfile pattern.
+            os.fchmod(fd, stat.S_IMODE(index.stat().st_mode))
+            data = private_index.read_bytes()
+            with os.fdopen(fd, 'wb') as stream:
+                fd = None
+                stream.write(data)
+                stream.flush()
+                os.fsync(stream.fileno())
+            if lock.stat().st_ino != owned_inode:
+                raise ValueError('primary lock ownership changed')
+            os.replace(lock, index)
+            published = True
+        print(json.dumps(dict(commit=git('rev-parse', 'HEAD').decode().strip(),
+                              exact_owned_paths=len(OWN), shared_index_synchronized=True,
+                              foreign_staged=0, push_pr=0)))
+    finally:
+        if fd is not None:
+            os.close(fd)
+        if not committed and lock.exists() and lock.stat().st_ino == owned_inode:
+            lock.unlink()
+        if committed and not published:
+            print('COMMITTED_BUT_INDEX_SYNC_FAILED: retain owned index.lock for recovery', file=sys.stderr)
+
+
+if __name__ == '__main__':
+    if sys.argv[1:] == ['prepare']:
+        prepare()
+    elif sys.argv[1:] == ['commit']:
+        commit()
+    else:
+        raise SystemExit('one explicit prepare/commit operation required')
