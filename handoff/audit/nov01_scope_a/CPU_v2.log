@@ -1,0 +1,24 @@
+...........F...
+======================================================================
+FAIL: test_shared_whitelist_rows_selected_before_original_stale_predicate (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 213, in test_shared_whitelist_rows_selected_before_original_stale_predicate
+    self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+AssertionError: 1 != 0 : ================================================================================================
+  플래그 화이트리스트 — 파서 <-> 표 양방향 대조
+================================================================================================
+  파서 4개 · 표 1행 — ok 1 · exp 0 · dead 0 · rejected 0
+
+  🚫 ★**표에 없는 새 플래그**: `--init`  (scripts/check_flag_whitelist.py) — `flag_whitelist.tsv` 에 **등급을 적어야** 배치에서 쓸 수 있다
+  🚫 ★**표에 없는 새 플래그**: `--sync`  (scripts/check_flag_whitelist.py) — `flag_whitelist.tsv` 에 **등급을 적어야** 배치에서 쓸 수 있다
+  🚫 ★**표에 없는 새 플래그**: `--verbose`  (scripts/check_flag_whitelist.py) — `flag_whitelist.tsv` 에 **등급을 적어야** 배치에서 쓸 수 있다
+
+  🚫 3건 실패
+  ★**목록은 파서가 소유하고 표는 등급만 소유한다**(함정 18) — `--sync` 가 추가만 해 준다.
+
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.620s
+
+FAILED (failures=1)

@@ -96,7 +96,10 @@ def read_tsv():
             continue
         c = (ln.split("\t") + ["", "", "", ""])[:5]
         rows[c[0]] = tuple(c[1:5])
-    return rows
+    # The original predicates below remain unchanged. Only an explicitly active
+    # worker narrows this shared table to the pinned parser-owning files.
+    from validation_scope import rows_for_selected_sources
+    return rows_for_selected_sources(rows, parser_flags)
 
 
 def write_tsv(rows):

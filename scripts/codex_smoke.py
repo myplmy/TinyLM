@@ -27,7 +27,7 @@ sys.path.insert(0, str(ROOT))
 from scripts.smoke_module import parse_smoke_module
 from scripts.smoke_execution_contract import (
     CANONICAL_SOURCE, CONTRACT_MODULE, NEW_DRIVER, NEW_PROFILE_ID, NEW_SCHEMA,
-    adapt_actions, destinations, execution_source_pins,
+    adapt_actions, destinations, execution_source_pins, scope_collector_actions,
 )
 
 MAX_LOG_BYTES = 20_000_000
@@ -174,6 +174,10 @@ def original_snapshot(root=ROOT, *, expires=None, clock=None, guard=None):
 
 def environment(runtime, log_name, stamp, environ=None):
     env = dict(os.environ if environ is None else environ)
+    # Scope is explicit in collector wrapper argv only. Model/dynamic arms keep
+    # their existing environment and never inherit the validation opt-in.
+    env.pop('TL_VALIDATION_SCOPE', None)
+    env.pop('TL_VALIDATION_SCOPE_SHA256', None)
     env.update(
         TINYLM_DIR=str(runtime), TINYLM_HF=str(runtime / 'HF'),
         HF_HOME=str(runtime / 'HF'), TL_OUTDIR='smoketest_logs',
@@ -191,7 +195,7 @@ def public_environment(env):
     return {key: env[key] for key in ENVIRONMENT_KEYS if key in env}
 
 
-def build_plan(root, session_id, *, guard=None):
+def build_plan(root, session_id, *, guard=None, scope=None):
     root = Path(root).absolute()
     if guard is not None:
         guard()
@@ -203,6 +207,10 @@ def build_plan(root, session_id, *, guard=None):
     changed, edits = adapt_actions(
         actions, driver=NEW_DRIVER,
         contract_args=['--mode', 'contract', '--session-id', session_id])
+    if scope is not None:
+        changed, collector_edits = scope_collector_actions(
+            changed, scope, target['evidence'] / 'collector_reads')
+        edits += collector_edits
     if len(actions) != len(changed):
         raise SafetyError('canonical action count changed')
     for original, actual in zip(actions, changed):
@@ -645,14 +653,20 @@ def contract(root, session_id, environ=None):
 
 
 def check(root, session_id, max_wall_sec):
-    target, actions, changed, edits = build_plan(root, session_id)
+    from scripts.validation_scope import from_environment
+    scope = from_environment()
+    scope_args = {} if scope is None else {'scope': scope}
+    target, actions, changed, edits = build_plan(root, session_id, **scope_args)
     report = metadata(root, session_id, target, actions, changed, edits)
-    pins = execution_source_pins(root)
+    pins = execution_source_pins(root, **scope_args)
     bind_pins(report, pins)
     report.update(mode='check', execute=False, source_pins=pins,
                   max_wall_sec=max_wall_sec, model_execution='NOT_RUN',
                   full_execution_ready=not bool(FULL_EXECUTION_DEPENDENCY_HOLD),
                   full_execution_dependency_hold=FULL_EXECUTION_DEPENDENCY_HOLD)
+    if scope is not None:
+        report.update(validation_scope=scope.evidence(), global_pass_eligible=False,
+                      interpretation='same dynamic arms; two original adaptations plus four explicit input collectors')
     print('[CODEX_SMOKE_CHECK] ' + json.dumps(report, ensure_ascii=False), flush=True)
     return 0
 
@@ -661,6 +675,9 @@ def full(root, session_id, deadline, max_wall_sec, *, clock=None, now=None,
          sleep=None, process_factory=None):
     """Execute once; retain a negative receipt for bounded partial execution."""
     root = Path(root).absolute()
+    from scripts.validation_scope import from_environment
+    scope = from_environment()
+    scope_args = {} if scope is None else {'scope': scope}
     clock = time.monotonic if clock is None else clock
     now = utcnow if now is None else now
     sleep = time.sleep if sleep is None else sleep
@@ -694,7 +711,7 @@ def full(root, session_id, deadline, max_wall_sec, *, clock=None, now=None,
             raise BudgetExpired('absolute deadline cleanup reserve reached')
 
     try:
-        target, actions, changed, edits = build_plan(root, session_id, guard=work_guard)
+        target, actions, changed, edits = build_plan(root, session_id, guard=work_guard, **scope_args)
         for path in (target['runtime'], target['evidence'], target['report']):
             work_guard()
             safe_path(root, path)
@@ -718,6 +735,9 @@ def full(root, session_id, deadline, max_wall_sec, *, clock=None, now=None,
     stamp = started_at.astimezone(timezone.utc).strftime('%Y%m%d%H%M%S')
     env = environment(target['runtime'], target['log_name'], stamp)
     report = metadata(root, session_id, target, actions, changed, edits)
+    if scope is not None:
+        report.update(validation_scope=scope.evidence(), global_pass_eligible=False,
+                      interpretation='same dynamic arms; two original adaptations plus four explicit input collectors')
     report.update(
         started_at=started_at.isoformat(), deadline_utc=deadline.isoformat(),
         max_wall_sec=max_wall_sec, cleanup_reserve_sec=reserve,
@@ -749,7 +769,7 @@ def full(root, session_id, deadline, max_wall_sec, *, clock=None, now=None,
         if old_term != signal.SIG_IGN:
             signal.signal(signal.SIGTERM, interrupt)
             term_installed = True
-        report['source_pins_before'] = execution_source_pins(root, guard=work_guard)
+        report['source_pins_before'] = execution_source_pins(root, guard=work_guard, **scope_args)
         bind_pins(report, report['source_pins_before'])
         report['original_synthetic_before'] = original_snapshot(
             root, expires=work_expires, clock=clock, guard=work_guard)
@@ -850,7 +870,7 @@ def full(root, session_id, deadline, max_wall_sec, *, clock=None, now=None,
                 termination=[]))
         try:
             final_guard()
-            report['source_pins_after'] = execution_source_pins(root, guard=final_guard)
+            report['source_pins_after'] = execution_source_pins(root, guard=final_guard, **scope_args)
             report['source_pins_unchanged'] = (
                 bool(report['source_pins_before'])
                 and report['source_pins_before'] == report['source_pins_after'])

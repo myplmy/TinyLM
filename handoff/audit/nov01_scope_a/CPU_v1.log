@@ -1,0 +1,299 @@
+EEEEEEEE.EEE.E.
+======================================================================
+ERROR: test_caught_read_denial_still_forces_failure (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_9z8qx43n' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 117, in test_caught_read_denial_still_forces_failure
+    scope = self.probe("from pathlib import Path\ntry:\n Path('canary.txt').read_text()\nexcept PermissionError:\n pass\n")
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_child_catches_denial_but_parent_cannot_hide_it (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_cg9sowu6' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 165, in test_child_catches_denial_but_parent_cannot_hide_it
+    scope = self.probe("import subprocess,sys\nsubprocess.run([sys.executable,'-c'," + repr(child) + "])\n",
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_collectors_select_before_any_excluded_read (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_nu7282ow' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 102, in test_collectors_select_before_any_excluded_read
+    scope = self.probe("import glob,json,os\nfrom pathlib import Path\n"
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_explicit_manifest_never_calls_git_status (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_drw90p24' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 222, in test_explicit_manifest_never_calls_git_status
+    scope = self.probe("pass")
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_global_checker_and_scoped_input_sets_really_differ (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/check_attrs.py' is not in the subpath of '/tmp/tl_scope_fixture_3tu9qx1l' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 142, in test_global_checker_and_scoped_input_sets_really_differ
+    scope = self.fx.manifest(["scripts/check_attrs.py", "scripts/owned.py", "tinylm/config.py"],
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_hash_and_unknown_role_and_duplicate_rejected (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_jr1ihs0f' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 77, in test_hash_and_unknown_role_and_duplicate_rejected
+    scope = self.probe("pass")
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_input_change_invalidates_manifest (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_o3afpmii' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 185, in test_input_change_invalidates_manifest
+    scope = self.probe("pass")
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_isolated_python_child_inherits_and_receipt_is_verified (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_qsy1sgyv' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 154, in test_isolated_python_child_inherits_and_receipt_is_verified
+    scope = self.probe("import subprocess,sys\nsubprocess.run([sys.executable,'-I','-B','-X','utf8','-c',"
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_original_attrs_checker_still_detects_owned_defect (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/check_attrs.py' is not in the subpath of '/tmp/tl_scope_fixture_po725yh9' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 129, in test_original_attrs_checker_still_detects_owned_defect
+    scope = self.fx.manifest(["scripts/check_attrs.py", "scripts/owned.py", "tinylm/config.py"],
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_receipt_write_once_and_original_argv_kept (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_ahlw8z5x' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 192, in test_receipt_write_once_and_original_argv_kept
+    scope = self.probe("pass")
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_shared_whitelist_rows_selected_before_original_stale_predicate (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/check_flag_whitelist.py' is not in the subpath of '/tmp/tl_scope_fixture_gya3szy3' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 211, in test_shared_whitelist_rows_selected_before_original_stale_predicate
+    scope = self.fx.manifest(names, command=["scripts/check_flag_whitelist.py"])
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+======================================================================
+ERROR: test_unregistered_child_native_shell_and_mutation_are_not_silent (__main__.ScopeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 79, in _target_key
+    values[0] = candidate.absolute().relative_to(root).as_posix()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 818, in relative_to
+    raise ValueError("{!r} is not in the subpath of {!r}"
+ValueError: '/home/uranus/tinyLM/scripts/probe.py' is not in the subpath of '/tmp/tl_scope_fixture_1x30ixu4' OR one path is relative and the other is absolute.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 178, in test_unregistered_child_native_shell_and_mutation_are_not_silent
+    scope = self.probe(code)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 68, in probe
+    return self.fx.manifest(["scripts/probe.py"], children=children)
+  File "/home/uranus/tinyLM/scripts/test_validation_scope.py", line 45, in manifest
+    return v.Scope(self.path, v.sha256(self.path), root=self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 126, in __init__
+    key = _target_key(argv, self.root)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 81, in _target_key
+    raise ValueError("Python script must be inside scope repository") from exc
+ValueError: Python script must be inside scope repository
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.043s
+
+FAILED (errors=12)

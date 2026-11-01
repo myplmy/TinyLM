@@ -102,6 +102,16 @@ TinyLM은 저사양 CPU·엣지·모바일 배포를 위한 초경량 LLM 아키
 handoff §2는 사용자에게 `관측/의미/사용자 영향/다음 행동`을 설명하고, 내부 hash·검사 전문은
 audit와 상세 절에 둔다.
 
+명시적인 소유 입력 검사에는 scripts/validation_scope.py의 manifest와 고정 SHA를
+TL_VALIDATION_SCOPE/TL_VALIDATION_SCOPE_SHA256으로 함께 제공한다. 기본 USER_GLOBAL은
+바꾸지 않으며 OWN_SCOPED는 파일 집합·제외·검사별 판독과 자식 영수증을 가진 별도 범위다.
+목록 밖 검사는 NOT_RUN이고 범위 밖 판독을 잡아 무시해도 worker는 오류로 닫는다.
+소유 모음은 TINYLM_SCOPED_STATIC_AUDIT_V1을 사용하므로 기존 전역 V1 종결 증거를 대신하지 못한다.
+Python 자식은 명시 target을 전달·검증하며 native/shell·미등록 자식은 거부한다.
+Python audit 경계는 OS sandbox가 아니므로 임의 네이티브 확장의 비접근까지 보증하지 않는다.
+모델·학습 인수는 바꾸지 않고 scope를 모델 환경에 전파하지 않는다. CPU 범위 검증을
+새 전체 smoke·전역 PASS로 승격하지 않으며, 승인된 새 실행창이 없으면 전체는 NOT_RUN이다.
+
 ### 2.3 Windows와 문서 편집
 
 - 긴 문서와 백슬래시가 많은 본문은 셸 문자열 조립으로 쓰지 않고 전용 패치/편집 수단을 쓴다.

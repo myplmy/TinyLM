@@ -21,6 +21,12 @@ NEW_DRIVER = "scripts/codex_smoke.py"
 CODEX_CHECKER = ".agents/skills/session-handoff/scripts/check_handoff_codex.py"
 CONTRACT_MODULE = "scripts/smoke_execution_contract.py"
 CANONICAL_SOURCE = "scripts/batch/tool_smoke.bat"
+SCOPED_COLLECTORS = {
+    "scripts/check_attrs.py": "smoke_check_attrs",
+    "scripts/check_diag_data.py": "smoke_check_diag_data",
+    "scripts/check_links.py": "smoke_check_links",
+    CODEX_CHECKER: "smoke_check_handoff",
+}
 SESSION_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}")
 HISTORICAL_DRIVER = "scripts/p106b_relation_smoke.py"
 HISTORICAL_RUNTIME = "test_result/evidence/local/p106b_relation_bind_v1_s1337/smoke_20261019"
@@ -112,7 +118,35 @@ def adapt_actions(actions, *, driver: str, contract_args):
     return adapted, changes
 
 
-def execution_source_pins(repo_root: Path, *, guard=None) -> dict[str, str]:
+def scope_collector_actions(actions, scope, receipt_dir):
+    """Change only registered source collectors; never the model/training argv."""
+    from scripts.validation_scope import scoped_command
+    adapted, edits, seen = [], [], set()
+    for action in actions:
+        before, after = list(action.argv), list(action.argv)
+        if action.kind == "run" and "--" in before:
+            at = before.index("--")
+            child = before[at + 1:]
+            matches = [path for path in SCOPED_COLLECTORS if path in child]
+            if matches:
+                if len(matches) != 1:
+                    raise ValueError("ambiguous scoped smoke collector")
+                path = matches[0]
+                name = SCOPED_COLLECTORS[path]
+                after[at + 1:] = scoped_command(
+                    child, scope, Path(receipt_dir) / (name + ".json"), name)
+                seen.add(path)
+                edits.append(dict(line=action.line, kind="explicit_input_collector",
+                                  before=before, after=after, scope_command=name))
+        if "run100m.py" in before and before != after:
+            raise ValueError("scope must not change canonical training argv")
+        adapted.append(replace(action, argv=tuple(after)))
+    if seen != set(SCOPED_COLLECTORS):
+        raise ValueError("all source collectors require an explicit scope command")
+    return adapted, edits
+
+
+def execution_source_pins(repo_root: Path, *, guard=None, scope=None) -> dict[str, str]:
     """Hash only bounded source files; never traverse checkpoints or datasets."""
     if guard is not None:
         guard()
@@ -137,7 +171,15 @@ def execution_source_pins(repo_root: Path, *, guard=None) -> dict[str, str]:
                 names.add(path.as_posix())
     source_tree = root / "tinylm"
     _no_links(root, source_tree)
-    if source_tree.exists():
+    if scope is not None:
+        if not scope.unchanged():
+            raise ValueError("scope inputs changed before smoke source pinning")
+        names.update(name for name in scope.inputs
+                     if name.startswith("tinylm/") and name.endswith(".py"))
+        names.add("scripts/validation_scope.py")
+        if not names.issubset(scope.inputs):
+            raise ValueError("every smoke source pin must be an explicit scope input")
+    elif source_tree.exists():
         directories = [source_tree]
         while directories:
             if guard is not None:

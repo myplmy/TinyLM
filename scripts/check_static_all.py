@@ -312,7 +312,12 @@ def _wip_metadata(path: Path | None):
     }
 
 
-def _worktree_manifest(*, evidence_output: Path | None = None, profile="all"):
+def _worktree_manifest(*, evidence_output: Path | None = None, profile="all", scope=None):
+    if scope is not None:
+        # Never enumerate Git/the worktree to discover inputs in OWN_SCOPED.
+        rows = [dict(status="EXPLICIT_INPUT", **entry) for entry in scope.inputs.values()]
+        canonical = json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        return rows, hashlib.sha256(canonical.encode("utf-8")).hexdigest().upper()
     if profile not in ("all", "codex-safe"):
         raise ValueError("known static-audit profile required before Git")
     command = ["git", "-c", "core.quotepath=false", "status", "--porcelain=v1", "--untracked-files=all"]
@@ -349,9 +354,17 @@ def _worktree_manifest(*, evidence_output: Path | None = None, profile="all"):
     return rows, hashlib.sha256(canonical.encode("utf-8")).hexdigest().upper()
 
 
-def _write_evidence(path: Path, payload) -> None:
+def _write_evidence(path: Path, payload, *, exclusive=False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     data = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    if exclusive:
+        if len(data) >= 20_000_000:
+            raise ValueError("scope evidence exceeds result-file size limit")
+        with path.open("xb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        return
     with tempfile.NamedTemporaryFile(
         mode="wb", prefix=path.name + ".", suffix=".tmp", dir=path.parent, delete=False
     ) as stream:
@@ -373,13 +386,44 @@ def main():
     ap.add_argument("--wip", help="evidence가 결합될 exact open WIP path")
     a = ap.parse_args()
 
+    from validation_scope import from_environment, scoped_command
+    try:
+        scope = from_environment()
+    except (ValueError, OSError) as exc:
+        ap.error(str(exc))
+    if scope is not None:
+        if a.profile != "codex-safe" or not a.json_path or not a.wip:
+            ap.error("OWN_SCOPED requires codex-safe, --json and exact --wip")
+        known = {name: ["scripts/" + argv[0], *argv[1:]]
+                 for name, argv, _why in checks_for_profile(a.profile)}
+        if any(known.get(name) != argv for name, argv in scope.commands.items()):
+            ap.error("scope commands must match the existing static checks exactly")
+        if not any(name not in CODEX_SAFE_EXCLUDED for name in scope.commands):
+            ap.error("OWN_SCOPED needs at least one executable registered check")
+
     wip_path = (ROOT / a.wip).resolve() if a.wip else None
     if a.json_path and wip_path is None:
         ap.error("--json requires --wip")
     if wip_path is not None and (not wip_path.is_file() or ROOT not in wip_path.parents):
         ap.error("--wip must be an existing repository file")
+    if scope is not None and wip_path.relative_to(ROOT).as_posix() not in scope.inputs:
+        ap.error("exact WIP must be a pinned scope input")
+    scope_output, scope_reads = None, None
+    if scope is not None:
+        try:
+            scope_output = scope.output_path(ROOT / a.json_path)
+            scope_reads = scope.output_path(scope_output.parent / (scope_output.stem + "_reads"))
+            if scope_output.exists():
+                raise ValueError("existing scope evidence preserved; choose a new output")
+            # An exclusive directory reserves this run before any checker starts.
+            scope_reads.mkdir(parents=True, exist_ok=False)
+        except (ValueError, OSError) as exc:
+            ap.error(str(exc))
 
     print("#" * 100)
+    if scope is not None:
+        print(f"  OWN_SCOPED inputs={len(scope.inputs)} manifest_sha256={scope.digest}")
+        print("  소유 명시 입력만 검사한다. USER_GLOBAL 전수 PASS로 해석할 수 없다.")
     print("  ★정적 게이트 전수 — torch·GPU 를 **전혀 쓰지 않는다**. AI 가 매 갱신 직후 돈다")
     print("  ⚠️ 이것은 `run_smoke_check.bat`(사용자·GPU)의 **대체가 아니라 앞단**이다")
     print("#" * 100)
@@ -387,8 +431,10 @@ def main():
     rows, bad = [], 0
     evidence_checks = []
     for name, argv, why in checks_for_profile(a.profile):
-        if a.profile == "codex-safe" and name in CODEX_SAFE_EXCLUDED:
-            reason = CODEX_SAFE_EXCLUDED[name]
+        if ((a.profile == "codex-safe" and name in CODEX_SAFE_EXCLUDED)
+                or (scope is not None and name not in scope.commands)):
+            reason = (CODEX_SAFE_EXCLUDED[name] if name in CODEX_SAFE_EXCLUDED
+                      else "OWN_SCOPED: command is not registered in the explicit manifest")
             rows.append((name, "NOT_RUN", None, why))
             evidence_checks.append({
                 "name": name, "status": "NOT_RUN", "returncode": None,
@@ -397,10 +443,25 @@ def main():
             if not a.quiet:
                 print(f"\n[NOT_RUN] {name}: {reason}")
             continue
-        r = subprocess.run(command_for_check(name, argv),
+        command = command_for_check(name, argv)
+        scope_receipt = None
+        if scope is not None:
+            scope_receipt = scope_reads / (name.replace(" ", "_") + ".json")
+            command = scoped_command(command, scope, scope_receipt, name)
+        r = subprocess.run(command,
                            cwd=str(ROOT), capture_output=True, text=True,
                            encoding="utf-8", errors="replace")
-        ok = r.returncode == 0
+        scope_record = None
+        if scope_receipt is not None and scope_receipt.is_file():
+            scope_record = json.loads(scope_receipt.read_text(encoding="utf-8"))
+        scope_ok = scope is None or (
+            scope_record is not None and not scope_record.get("scope_violations")
+            and scope_record.get("schema") == "TINYLM_VALIDATION_SCOPE_RECEIPT_V1"
+            and scope_record.get("mode") == "OWN_SCOPED"
+            and scope_record.get("actual_returncode") == r.returncode
+            and scope_record.get("inputs_unchanged") is True
+            and scope_record.get("manifest_sha256") == scope.digest)
+        ok = r.returncode == 0 and scope_ok
         rows.append((name, "PASS" if ok else "ERROR", r.returncode, why))
         output = (r.stdout or "") + (r.stderr or "")
         actionable = output.count("[ACTIONABLE_WARNING]")
@@ -410,6 +471,9 @@ def main():
             "returncode": r.returncode,
             "reason": why,
             "output_sha256": hashlib.sha256(output.encode("utf-8")).hexdigest().upper(),
+            **({"scope_receipt": scope_receipt.relative_to(ROOT).as_posix(),
+                "scope_receipt_sha256": _sha256(scope_receipt) if scope_record else None,
+                "scope_verified": scope_ok} if scope is not None else {}),
         })
         if not ok:
             bad += 1
@@ -425,7 +489,9 @@ def main():
         icon = {"PASS": "✅", "ERROR": "🚫", "NOT_RUN": "⏸"}[status]
         rc_text = "NR" if rc is None else str(rc)
         print(f"  {icon} {name:<22} exit {rc_text:<3}  {why}")
-    print(f"\n  {'✅ 정적 게이트 전부 통과' if bad == 0 else f'🚫 {bad}건 실패'} "
+    verdict = ("✅ 명시 소유 검사 통과 (전역 판정 아님)" if scope is not None
+               else "✅ 정적 게이트 전부 통과") if bad == 0 else f"🚫 {bad}건 실패"
+    print(f"\n  {verdict} "
           f"— 검사 {len(rows)}종")
     if ALWAYS_SHOW:
         print(f"  ★보고 전용 게이트({', '.join(sorted(ALWAYS_SHOW))})는 통과해도 출력을 인쇄한다 — "
@@ -438,7 +504,7 @@ def main():
     print("     정적은 *'이름이 있는가'*, 동적은 *'그 경로가 실제로 도는가'* 를 본다(함정 37).")
     if a.json_path:
         target = (ROOT / a.json_path).resolve()
-        manifest, worktree_sha = _worktree_manifest(evidence_output=target, profile=a.profile)
+        manifest, worktree_sha = _worktree_manifest(evidence_output=target, profile=a.profile, scope=scope)
         counts = {
             "pass": sum(row["status"] == "PASS" for row in evidence_checks),
             "errors": sum(row["status"] == "ERROR" for row in evidence_checks),
@@ -447,19 +513,23 @@ def main():
             "not_run": sum(row["status"] == "NOT_RUN" for row in evidence_checks),
         }
         evidence = {
-            "schema": "TINYLM_STATIC_AUDIT_V1",
+            "schema": ("TINYLM_SCOPED_STATIC_AUDIT_V1" if scope is not None
+                       else "TINYLM_STATIC_AUDIT_V1"),
             "created_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
             "profile": a.profile,
             "wip": _wip_metadata(wip_path),
             "worktree_sha256": worktree_sha,
-            "worktree_scope": ("ALLOWED_PATHS_ONLY_NOT_WHOLE_TREE_CLEAN" if a.profile == "codex-safe" else "DEFAULT_WHOLE_TREE"),
+            "worktree_scope": ("EXPLICIT_OWNED_INPUTS_NOT_GLOBAL" if scope is not None else
+                               "ALLOWED_PATHS_ONLY_NOT_WHOLE_TREE_CLEAN" if a.profile == "codex-safe" else "DEFAULT_WHOLE_TREE"),
             "worktree_manifest": manifest,
             "counts": counts,
             "checks": evidence_checks,
+            **({"validation_scope": scope.evidence(),
+                "global_pass_eligible": False} if scope is not None else {}),
         }
         if ROOT not in target.parents:
             ap.error("--json must stay inside the repository")
-        _write_evidence(target, evidence)
+        _write_evidence(target, evidence, exclusive=scope is not None)
         print(f"  STATIC_AUDIT {target.relative_to(ROOT).as_posix()} profile={a.profile} "
               f"errors={counts['errors']} actionable={counts['actionable_warnings']} "
               f"not_run={counts['not_run']}")
