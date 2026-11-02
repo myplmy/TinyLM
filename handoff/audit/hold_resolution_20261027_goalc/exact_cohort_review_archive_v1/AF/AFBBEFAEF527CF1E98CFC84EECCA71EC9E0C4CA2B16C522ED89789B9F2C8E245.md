@@ -1,0 +1,9 @@
+# TASK_015 독립 판독 — 제품 목록 경계 미결
+
+| ID | 판정 | 실제 판독 범위 | 정확 출력 | 구체 근거 |
+|---|---|---|---|---|
+| 372344 | NEEDS_ROOT | original/candidate 전문 1–39행, 전체 diff(차이 없음), 지정 패킷 0001–0002를 순서대로 이어 original/candidate/diff END와 실제 EOF 확인 | expanded_train_372344_byline_and_member_ui_held_20261103_v2.txt | 연속된 동일 “By Lorena Alvarez” 중 후행 1회만 분리하고, 끝의 회원가입·포인트·로그인 CTA도 별도 보류했다. 5행 “Buy the Paperback:” 바로 뒤의 독립된 6개 책 제목이 실제 서지 목록인지 상품 추천 UI인지 판단이 미결이다. 제목들을 다른 관계로 재구성하지 않고 root에 해당 정확 경계를 질문했다. |
+| 381792 | REVISE_TEXT | original/candidate 전문 1–27행, 전체 diff(차이 없음), 지정 패킷 0001–0002의 모든 순서 조각과 논리 END·실제 EOF 확인 | expanded_train_381792_page_actions_separated_20261103.txt | “Signup to get Hotline emails”, 사진/PDF 다운로드 선택 및 세 차례 “Back to top”은 사이트 동작/탐색 UI라 page_actions_hold_381792_20261103.md에 원형 보존하고 본문에서 분리했다. 날짜·요약·사진 설명/크레딧·지역별 본문·수치·후원 안내는 유지했다. |
+| 39794 | REVISE_TEXT | original/candidate 전문 1–24행, 전체 diff(차이 없음), 지정 패킷 0001–0003 순차 전문으로 original/candidate/diff END 및 실제 EOF 확인 | expanded_train_39794_comment_ui_separated_20261103.txt | “3 thoughts on” 댓글 수 UI 접두만 분리하고 같은 행의 실제 글 제목을 그대로 남겼다. 댓글 뒤의 정확히 반복되는 “LikeLiked by 1 person” 3행은 comment_ui_hold_39794_20261103.md에 보류했다. 세 실제 댓글은 유지했다. |
+| 418945 | REVISE_TEXT | original/candidate 전문 1–92행, 전체 diff(차이 없음), 지정 패킷 0001–0007을 모두 순서대로 이어 original/candidate/diff 논리 END와 실제 EOF 확인 | expanded_train_418945_comment_ui_separated_20261103.txt | “20 thoughts on” 댓글 수 UI 접두는 분리하되 글 제목 “Inequality – Part 2”는 남겼다. 여덟 독립 “LikeLiked by 1 person” 행은 comment_ui_hold_418945_20261103.md에 원형·위치 보존했다. 댓글과 그 안의 실제 “like button” 언급을 포함한 본문은 유지했다. |
+| 419034 | ACCEPT_CANDIDATE | original/candidate 전문 1–142행, 전체 diff(차이 없음), 지정 패킷 0001–0002를 순서대로 읽어 논리 END 및 실제 EOF 확인 | expanded_train_419034_candidate.txt | 메달표의 빈 나라 이름 칸을 채우지 않고 등수·메달 수·합계·순서와 rowspan 반복 행을 그대로 보존했다. 후보가 원문과 일치하며 나라별 귀속 미확인은 table_gap_hold_419034_20261103.md에 기록했다. 연도별/선수별 표제와 참조·관련 항목도 원형대로 둔다. |

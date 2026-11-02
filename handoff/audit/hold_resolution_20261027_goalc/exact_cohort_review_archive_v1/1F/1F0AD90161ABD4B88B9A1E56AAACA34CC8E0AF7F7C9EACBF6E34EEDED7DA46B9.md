@@ -1,0 +1,7 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| 1223585 | REVISE_TEXT | 지정 원문·후보 전문과 `expanded_train_1223585_0001.txt`의 BEGIN/END·EOF; 전체 diff | expanded_train_1223585_birth_conflict_task025_v1.txt | 본문 `1934년 1월 6일`과 분류 `1933년 출생`을 보류했다. 월일·2023년 1월 27일 사망일·출연작과 역할을 보존했고 빈 외부 링크 표제는 후보 정리대로 남겼다. 원형은 `hold_1223585_task025_v1.md`. |
+| 1224982 | REVISE_TEXT | 지정 원문·후보 전문과 순서대로 `expanded_train_1224982_0001.txt`, `expanded_train_1224982_0002.txt`, `expanded_train_1224982_0003.txt`의 연속 경계·논리 END·각 파일 EOF; 전체 diff | expanded_train_1224982_birth_conflict_task025_v1.txt | 본문 `1965년 6월 10일`과 분류 `1967년 출생`만 보류했다. 6월 10일 및 명시된 학력·교수 경력·직함·저서·논문 정보를 유지하고 연도에서 나이를 계산하지 않았다. 원형은 `hold_1224982_task025_v1.md`. |
+| 1237089 | REVISE_TEXT | 지정 원문·후보 전문과 `expanded_train_1237089_0001.txt`의 BEGIN/END·EOF; 전체 diff | expanded_train_1237089_birth_conflict_task025_v1.txt | 본문 `1969년 7월 24일`과 분류 `1966년 출생`을 보류했다. 월일·학력·경력·저서·역서·논문 및 나머지 분류를 보존했다. 원형은 `hold_1237089_task025_v1.md`. |
+| 1241239 | REVISE_TEXT | 지정 원문·후보 전문과 `expanded_train_1241239_0001.txt`의 BEGIN/END·EOF; 전체 diff | expanded_train_1241239_birth_conflict_task025_v1.txt | 본문 `1968년 6월 10일`과 분류 `1960년 출생`을 보류했다. 월일 및 영화별 각본·감독·프로듀서 역할과 나머지 분류를 보존했다. 원형은 `hold_1241239_task025_v1.md`. |
+| 1243343 | REVISE_TEXT | 지정 원문·후보 전문과 `expanded_train_1243343_0001.txt`의 BEGIN/END·EOF; 전체 diff | expanded_train_1243343_birth_conflict_task025_v1.txt | 본문 `1863년 5월 6일`과 분류 `1865년 출생`을 보류했다. 월일·1947년 3월 31일 사망일·가족 관계·건축 경력과 나머지 분류를 보존했다. 후보의 빈 괄호·빈 각주 정리는 유지했다. 원형은 `hold_1243343_task025_v1.md`. |
