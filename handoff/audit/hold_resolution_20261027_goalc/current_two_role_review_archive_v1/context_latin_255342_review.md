@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:255342 | ACCEPT_CANDIDATE | TASK_002 지정 원문·후보 전체; `expanded_train_255342_original_0001`–`0004`, `candidate_0001`–`0004`, `diagnostic_diff_0001` 전체를 순서대로 실제 EOF까지 읽고 전체 차이를 대조함. original 직접 출력의 잘린 부분은 전체 순서뷰로 보완함. | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/resume_guard_counter_20261102_v1/inputs/expanded_train_255342_candidate.txt` | 빈 이름 괄호 `()` 제거는 영문명을 추정하지 않은 빈 선택 표기 정리임. 영향 문장 문법 정리는 원문에 이미 있는 영향 관계와 명시된 대상을 연결하며 사실을 추가하지 않음. 실제 값·범례가 없는 timeline `<div>`와 빈 `타임라인`·`각주`·`외부 링크` 표제 제거를 수용함. `빈스 클라크(: 키보드, 작곡)`는 원문처럼 그대로 남겨 콜론 앞 내용을 만들지 않음. |

@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1081376 | ACCEPT_CANDIDATE | TASK_004 지정 원문·후보 전체; original/candidate 순서뷰 각 0001 및 `diagnostic_diff_0001` 전체를 실제 EOF까지 읽고 전체 차이를 대조함. root 중재에 따라 날짜 충돌을 재판정함. | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/resume_guard_counter_20261102_v1/inputs/expanded_train_1081376_candidate.txt` | 후보처럼 공통 연도 `2004년`, 하기와라정→게로시 합병 관계, 폐지 서술을 본문에 남김. 같은 합병 사건에 대해 원문 도입부의 `2004년 4월 1일`과 연혁의 `2004년 3월 1일`은 상충하므로 어느 쪽도 사실로 선택하지 않고 `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/resume_guard_counter_20261102_v1/expanded_train_1081376_hold_v2.md`에 두 원형 날짜만 보존함. |
