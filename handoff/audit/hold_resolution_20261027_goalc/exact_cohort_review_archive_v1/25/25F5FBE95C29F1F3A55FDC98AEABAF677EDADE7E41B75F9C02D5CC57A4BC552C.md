@@ -1,0 +1,9 @@
+# TASK_010 독립 판독
+
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:208174 | ACCEPT_CANDIDATE | TASK_010 지정 original/candidate 전문과 패킷 0001–0003의 원문·후보·전체 diff를 논리 END 및 EOF까지 판독 | expanded_train_208174_candidate.txt | 기사 제목·시장 설명·인용·기술·수치·출처가 유지된다. 후보는 기사 본문 사이에 반복된 Continue Reading Below UI 두 줄만 제거했다. |
+| expanded_train:208487 | ACCEPT_CANDIDATE | TASK_010 지정 original/candidate 전문과 패킷 0001–0002의 원문·후보·전체 diff를 논리 END 및 EOF까지 판독 | expanded_train_208487_candidate.txt | 허리케인 보도에서 Continue Reading Below가 두 차례 기사 문단 사이에 삽입되어 있다. 후보는 UI 문자열만 없애고 날짜·위치·풍속·거리·대비 시설 및 보도된 사망·피해 수치를 보존한다. |
+| expanded_train:224384 | ACCEPT_CANDIDATE | TASK_010 지정 original/candidate 전문과 패킷 0001–0002의 원문·후보·전체 diff를 논리 END 및 EOF까지 판독 | expanded_train_224384_candidate.txt | Jhansi와 Orchha 관광 안내의 장소·연도·거리·교통 안내가 후보에 보존된다. 맨 끝의 SHARE THIS/TWEET THIS/LOVE THIS 0 네 줄은 독립 본문 내용이 아닌 페이지 공유 UI라 제거한 후보를 수용한다. |
+| expanded_train:229262 | ACCEPT_CANDIDATE | TASK_010 지정 original/candidate 전문과 패킷 0001–0010의 원문·후보·전체 diff를 논리 END 및 EOF까지 판독 | expanded_train_229262_candidate.txt | 기사 시작에 Martin Heavy Head byline이 이미 제목과 함께 있고, 결론 문장 뒤의 동일 단독 byline은 새 제목·본문 없이 참고자료 앞에 반복된다. 후보는 이 말미 중복 한 줄만 제거하고 실제 기사, 인용·각주·출처·Traditional Knowledge Label 문구는 보존한다. |
+| expanded_train:231730 | REVISE_TEXT | TASK_010 지정 original/candidate 전문과 패킷 0001–0010의 원문·후보·전체 diff를 논리 END 및 EOF까지 판독 | expanded_train_231730_revised_task010_v1.txt | 후보가 반복 back to top UI를 제거했지만 Percentage of Respondents와 Education Level Required만 있고 표 값이 전혀 없는 빈 표 조각을 남겼다. 캡션·머리글만 새 본문에서 분리하고, 실제 응답률·Job Zone 표와 나머지 항목은 보존했다. 원형: hold_231730_empty_education_table_task010_v1.md. |

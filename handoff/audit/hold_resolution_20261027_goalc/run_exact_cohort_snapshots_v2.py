@@ -1,0 +1,36 @@
+"""Keep actual process exits for the first separate repeat and birth snapshots."""
+from pathlib import Path
+import json
+import os
+import subprocess
+import sys
+import time
+
+ROOT=Path(__file__).resolve().parents[3]
+AUDIT=Path(__file__).resolve().parent
+sys.path.insert(0,str(ROOT))
+from scripts import p106b_hold_resolution_inventory as inv
+
+env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',
+    MKL_NUM_THREADS='1',RAYON_NUM_THREADS='1',TOKENIZERS_PARALLELISM='false')
+rows=[]
+for cohort in ('repeat_named_roles_counter_v2','remaining_birth_full_counter_v1'):
+    log=AUDIT/(cohort+'_snapshot_v2.log')
+    started=time.time()
+    command=[sys.executable,'-I','-B',str(AUDIT/'collect_exact_cohort_reviews_v1.py'),
+        '--cohort',cohort,'--version','v2']
+    with log.open('xb') as stream:
+        result=subprocess.run(command,cwd=ROOT,env=env,stdout=stream,stderr=subprocess.STDOUT)
+    summary=inv.BASE/(cohort+'_snapshots')/'v2/complete.json'
+    row=dict(cohort=cohort,process_exit_code=result.returncode,elapsed_seconds=time.time()-started,
+        log=dict(path=str(log.relative_to(ROOT)),sha256=inv.file_sha(log)),command=command)
+    if summary.exists():
+        row['snapshot']=dict(path=str(summary.relative_to(ROOT)),sha256=inv.file_sha(summary))
+    rows.append(row)
+    print(json.dumps(row,ensure_ascii=False),flush=True)
+receipt=AUDIT/'EXACT_COHORT_SNAPSHOTS_PROCESS_EXIT_V2.json'
+with receipt.open('x',encoding='utf-8') as stream:
+    json.dump(dict(status='ACTUAL_PROCESS_EXITS_NOT_ADMISSION',rows=rows,
+        producer_sha256=inv.file_sha(Path(__file__)),goal_complete=False,training_authorized=False),stream,ensure_ascii=False,indent=2)
+    stream.write(chr(10))
+raise SystemExit(0 if all(row['process_exit_code']==0 for row in rows) else 1)

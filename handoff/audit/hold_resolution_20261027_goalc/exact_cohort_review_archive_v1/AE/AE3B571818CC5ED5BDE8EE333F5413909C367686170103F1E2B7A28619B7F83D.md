@@ -1,0 +1,82 @@
+# 총괄 정확 재개 허용서 V2: 저장 판독 누락 10건
+
+V1 허용 범위에 아래 자기 TASK005/007의10건을 추가한다. 새 출생 START의 이전 그룹 제한에 대한 명시 예외다.
+허용은 지정 원문/후보/전 연속 패킷/자기 기존 TXT·MD 읽기와 자기 폴더 새 전체 TXT·사유 MD·5열 review_005_vN.md 또는 review_007_vN.md 생성뿐이다.
+V1 및 공유 ROOT_MEDIATION_V1/V2/V3도 읽기 허용. 1403490의 ROOT_EVIDENCE_1403490_CREDIT_V1.md도 정확 근거로 읽는다.
+현재 수집에는 이10건의 저장된 review행이 없다. 과거에 읽었다는 메시지로 완료 처리하지 않고 원문/후보/기존 실제 수정본과 다시 대조해 저장 판독을 남긴다. 코드/Git/웹/해시/타역할/원형 덮기·삭제 금지.
+
+## TASK_005.md
+정확 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/TASK_005.md
+### expanded_train:1317312
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1317312_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1317312_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1317312_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1317312_0002.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1317312_body_page_ui_separated_20261102.txt
+
+### expanded_train:132438
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_132438_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_132438_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_132438_0001.txt
+
+### expanded_train:1325789
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1325789_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1325789_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1325789_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1325789_0002.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1325789_body_navigation_separated_20261102.txt
+
+### expanded_train:1333781
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1333781_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1333781_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1333781_0001.txt
+
+### expanded_train:1336995
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1336995_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1336995_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1336995_0001.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1336995_body_page_ui_separated_20261102.txt
+
+## TASK_007.md
+정확 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/TASK_007.md
+### expanded_train:1383855
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1383855_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1383855_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1383855_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1383855_0002.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1383855_body_feedback_ui_separated_20261102.txt
+
+### expanded_train:1391487
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1391487_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1391487_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1391487_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1391487_0002.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1391487_body_media_ui_separated_20261102.txt
+
+### expanded_train:1403490
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1403490_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1403490_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1403490_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1403490_0002.txt
+
+### expanded_train:1414172
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1414172_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1414172_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0002.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0003.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0004.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0005.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0006.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0007.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0008.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1414172_0009.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1414172_body_navigation_separated_20261102.txt
+
+### expanded_train:1432914
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1432914_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/inputs/expanded_train_1432914_candidate.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1432914_0001.txt
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/repeat_named_roles_counter_v2/reading_packets_v1/expanded_train_1432914_0002.txt
+기존 자기 산출물: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/historical_review/repeat_named_roles_counter_v2/expanded_train_1432914_body_feedback_ui_separated_20261102.txt
+
