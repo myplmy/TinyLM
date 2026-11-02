@@ -1,0 +1,38 @@
+# TASK_009
+START_HERE와 READING_VIEWS를 따른다.
+## expanded_train:481742
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_481742_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_481742_candidate.txt
+## expanded_train:486996
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_486996_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_486996_candidate.txt
+## expanded_train:49003
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_49003_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_49003_candidate.txt
+## expanded_train:490322
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_490322_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_490322_candidate.txt
+## expanded_train:494492
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_494492_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_494492_candidate.txt
+## expanded_train:518762
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_518762_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_518762_candidate.txt
+## expanded_train:531881
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_531881_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_531881_candidate.txt
+## expanded_train:534418
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_534418_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_534418_candidate.txt
+## expanded_train:536695
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_536695_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_536695_candidate.txt
+## expanded_train:577824
+original: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_577824_original.txt
+candidate: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/inputs/expanded_train_577824_candidate.txt
+## 전체 읽기 패킷
+/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/reading_packets/legacy_review_TASK_009.md
+모든 순서 조각과 실제 EOF를 확인한다.
+/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/reading_packets/legacy_review_TASK_009_part_0001.txt chars [0, 6000]
+/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/reading_packets/legacy_review_TASK_009_part_0002.txt chars [6000, 12000]
+/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_field_native_counter_v1/reading_packets/legacy_review_TASK_009_part_0003.txt chars [12000, 14924]

@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:71604 | ACCEPT_CANDIDATE | TASK_004 지정 original 0001, candidate 0001, diagnostic diff 0001–0002를 전체 순서로 EOF까지 판독함. candidate 전체와 hold 전문도 확인함. | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/resume_guard_independent_20261102_v1/inputs/expanded_train_71604_candidate.txt` | 완결된 기본 최단거리 의사코드와 독립적으로 읽히는 경로 복원 설명은 후보에 남아 있음. 경로 복원 루틴은 두 배열 선언에 크기 수식이 빠져 직접 의존하므로 코드와 선언을 함께 원형 hold함: `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/resume_guard_independent_20261102_v1/expanded_train_71604_hold_v1.md`. 원문 선언에는 `dist`의 `(infinity)` 초기화와 `next`의 `initialized to null`이 실제로 있으므로 이 값이 없다고 하지 않으며, 빠진 크기·형식식을 추정하거나 다른 구간의 식으로 채우지 않음. |
