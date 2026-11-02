@@ -1,0 +1,9 @@
+# 再開準備の失敗原型の保存
+
+この見出しは源文ではなく監査記録である。以下の二つは実データ品質の失敗とは区別する。
+
+2026-11-02、`update_wip_resume_closed_cohorts_v2.py`は作業内容と産出物のCAS更新には成功したが、次の行動欄に韓国語でない二文字が入り、WIPの韓国語検査が更新前に拒否した。原スクリプトを保存し、v3でその欄だけ韓国語に直して通常CAS更新に成功した。WIPの進行状態は維持した。
+
+同日、`prepare_guarded_metadata_contract_v1.py`はtext-free親ledgerの全量検証と保護7件・同SHA11位置の収集後に、存在しない`ledger/manifest.json`という固定名をpinしようとしてFileNotFoundErrorで終了した。成果JSONは生成前だった。親built.jsonが実際のmanifestを所有するためv2ではその実在の親契約をpinし、再検証してから保存する。親本文TXT、保護本文、原型キャッシュは読まず、変更していない。
+
+この記録は学習本文に入れない。全体goalの完了・一時停止の根拠にはしない。
