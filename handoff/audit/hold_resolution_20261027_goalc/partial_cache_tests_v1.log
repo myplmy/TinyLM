@@ -1,0 +1,51 @@
+E/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/unittest/case.py:613: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/partial_recovery_roundtrip_d6_uwy6g/data_cache/partial_resolution/cache_partial_v1/ledger/decisions_000000.jsonl'>
+  outcome.errors.clear()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/unittest/case.py:613: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/partial_recovery_roundtrip_d6_uwy6g/data_cache/partial_resolution/cache_partial_v1/hold/positions_000000.jsonl'>
+  outcome.errors.clear()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/unittest/case.py:613: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/partial_recovery_roundtrip_d6_uwy6g/data_cache/partial_resolution/cache_partial_v1/text/val/documents_000000.jsonl'>
+  outcome.errors.clear()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/unittest/case.py:613: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/partial_recovery_roundtrip_d6_uwy6g/data_cache/partial_resolution/cache_partial_v1/text/train/documents_000000.jsonl'>
+  outcome.errors.clear()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/unittest/case.py:613: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/partial_recovery_roundtrip_d6_uwy6g/data_cache/partial_resolution/cache_partial_v1/tokens/val/tokens_000000.bin'>
+  outcome.errors.clear()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/unittest/case.py:613: ResourceWarning: unclosed file <_io.BufferedWriter name='/tmp/partial_recovery_roundtrip_d6_uwy6g/data_cache/partial_resolution/cache_partial_v1/tokens/train/tokens_000000.bin'>
+  outcome.errors.clear()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+................
+======================================================================
+ERROR: test_actual_partial_build_and_full_consumer_preserve_hold (__main__.PartialIntegration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p106b_hold_resolution_partial_cache.py", line 128, in test_actual_partial_build_and_full_consumer_preserve_hold
+    self.execute(root,action)
+  File "/home/uranus/tinyLM/scripts/test_p106b_hold_cache.py", line 51, in execute
+    return self.helper.run_fixture(root,prepared)
+  File "/home/uranus/tinyLM/scripts/test_p106b_corpus_cache.py", line 129, in run_fixture
+    return action(base,adoptions)
+  File "/home/uranus/tinyLM/scripts/test_p106b_hold_cache.py", line 50, in prepared
+    return action(base,adoptions,parent,parent_report)
+  File "/home/uranus/tinyLM/scripts/test_p106b_hold_resolution_partial_cache.py", line 122, in action
+    report=partial.build(base,adoptions,roster)
+  File "/home/uranus/tinyLM/scripts/p106b_hold_resolution_partial_cache.py", line 102, in build
+    report=engine.build(base,adoptions,output_name,proposal_name)
+  File "/home/uranus/tinyLM/scripts/p106b_hold_cache.py", line 251, in build
+    cache.build(base,adoptions,output_name)
+  File "/home/uranus/tinyLM/scripts/p106b_corpus_cache.py", line 305, in build
+    decision,text,reasons,manual=choose(row,overrides,known)
+  File "/home/uranus/tinyLM/scripts/p106b_hold_resolution_cache.py", line 171, in pick
+    value = self.baseline.pick(row, self.baseline.new_overrides, known)
+  File "/home/uranus/tinyLM/scripts/p106b_hold_cache.py", line 114, in pick
+    require(value[0] in ("KEEP","EDIT") and sha(value[1])==self.index.digest(row),"preserved baseline text changed")
+  File "/home/uranus/tinyLM/scripts/p106b_hold_cache.py", line 39, in require
+    if not value:raise ValueError(message)
+ValueError: preserved baseline text changed
+
+----------------------------------------------------------------------
+Ran 17 tests in 1.950s
+
+FAILED (errors=1)

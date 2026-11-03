@@ -1,0 +1,9 @@
+# TASK_190 판독 결과
+
+| ID | 판정 | 실제 판독 범위 | 출력 TXT | 구체 근거 |
+|---|---|---|---|---|
+| 659074 | ACCEPT_CANDIDATE | 고정 판독기 packet 1의 original·candidate·full_diff 전량, 논리 END 및 packet EOF | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_root11_independent_v1/inputs/expanded_train_659074_candidate.txt` | 리드의 1407년 출생·1448년 사망과 분류의 연도가 일치한다. 후보는 원문과 동일하여 명명된 인물, 날짜, 혼인·가족 및 경력 정보를 유지한다. 실제 서지 출처 `Page at www.condottieridiventura.it`가 `각주` 뒤에 있으므로 그대로 보존했다. |
+| 659152 | ACCEPT_CANDIDATE | 고정 판독기 packet 1의 original·candidate·full_diff 전량, 논리 END 및 packet EOF | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_root11_independent_v1/inputs/expanded_train_659152_candidate.txt` | 리드와 분류의 1368년 출생·1429년 사망이 일치한다. 후보는 빈 `각주` 표제만 정리하고 그 외 이름·날짜·혼인·경력·서지 정보를 보존했다. |
+| 659847 | ACCEPT_CANDIDATE | 고정 판독기 packets 1–4의 original·candidate·full_diff 전량, 각 논리 END 및 최종 packet EOF | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_root11_independent_v1/inputs/expanded_train_659847_candidate.txt` | 리드의 1830년 또는 1831년 출생 이설을 유지하고, 단정형 1830년 출생 분류만 제거했다. 1893년 사망, 62세 표기와 경력·출처는 유지했다. 원문에 없는 생년 선택이나 나이 역산은 하지 않았다. |
+| 659977 | ACCEPT_CANDIDATE | 고정 판독기 packets 1–4의 original·candidate·full_diff 전량, 각 논리 END 및 최종 packet EOF | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_root11_independent_v1/inputs/expanded_train_659977_candidate.txt` | 리드·본문의 1832년 출생과 1909년 사망 보고서 내용은 유지했다. 본문에서 1905년 또는 1906년경 랭군/만달레이 사망이라는 기존 불확실성을 보존하고, 그와 다른 단정형 1908년 사망 분류만 제거했다. 빈 `각주` 표제도 정리했으며 명명된 참고 자료와 사진·경력 설명을 보존했다. |
+| 660190 | ACCEPT_CANDIDATE | 고정 판독기 packets 1–3의 original·candidate·full_diff 전량, 각 논리 END 및 최종 packet EOF | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/birth_root11_independent_v1/inputs/expanded_train_660190_candidate.txt` | 리드와 분류의 1812년 출생·1866년 사망이 일치한다. 후보는 빈 `각주` 표제만 제거했으며 명명된 날짜·사건·직무·배상금 액수·참고자료·외부 링크를 유지했다. |

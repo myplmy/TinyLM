@@ -1,0 +1,17 @@
+#!/bin/bash
+set -eu
+if [ "$#" -eq 2 ]; then :
+elif [ "$#" -eq 3 ] && [ "$3" = "--probe" ]; then :
+else
+  echo 'usage: shortcut SOURCE_ID PACKET_NUMBER [--probe]' >&2
+  exit 64
+fi
+exec /home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B -c 'from pathlib import Path
+import hashlib, runpy, sys
+path = Path('"'"'/home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_latin_birth_root11_packet_v2.py'"'"')
+expected = '"'"'76CF37BF4F0F27DADBEC3D8FECFD62E6DA29F4FA387215CF229422DB6B5B3206'"'"'
+if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest().upper() != expected:
+    raise SystemExit('"'"'fixed reader bytes changed; no packet read'"'"')
+arguments = sys.argv[1:]
+sys.argv = [str(path), '"'"'--source-id'"'"', arguments[0], '"'"'--packet'"'"', arguments[1]] + arguments[2:]
+runpy.run_path(str(path), run_name='"'"'__main__'"'"')' "$@"

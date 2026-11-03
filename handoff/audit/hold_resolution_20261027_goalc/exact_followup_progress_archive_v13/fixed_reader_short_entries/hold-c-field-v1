@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eu
+if [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; then
+  echo 'usage: shortcut PAGE SOURCE_ID PACKET_NUMBER [PIECE_NUMBER]' >&2
+  exit 64
+fi
+exec /home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B -c 'from pathlib import Path
+import hashlib, importlib.util, sys
+root = Path('"'"'/home/uranus/tinyLM'"'"')
+path = root / '"'"'handoff/audit/hold_resolution_20261027_goalc/field_scoped_packet_entry_v1.py'"'"'
+expected = '"'"'53C408863DCF2474BD9825DE23EA15D765DCC0F6EDC356CD5767E5C59A18F8CE'"'"'
+if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest().upper() != expected:
+    raise SystemExit('"'"'fixed field entry bytes changed; no packet read'"'"')
+values = sys.argv[1:]
+sys.argv = [str(path), '"'"'--page'"'"', values[0], '"'"'--source-id'"'"', values[1], '"'"'--packet'"'"', values[2], '"'"'--piece'"'"', values[3] if len(values) == 4 else '"'"'1'"'"']
+spec = importlib.util.spec_from_file_location('"'"'fixed_field_entry'"'"', path)
+entry = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(entry)
+entry.cli(root, '"'"'context_controls'"'"', {'"'"'path'"'"': '"'"'handoff/audit/hold_resolution_20261027_goalc/FIELD_BIRTH_ROLES_SHORT_READER_CONFIG_V1.json'"'"', '"'"'sha256'"'"': '"'"'5F9D3991CCC87D814BD97B2026FA25AB14C1FBCEE00FC6E8DFB990312329B8AF'"'"'})' "$@"

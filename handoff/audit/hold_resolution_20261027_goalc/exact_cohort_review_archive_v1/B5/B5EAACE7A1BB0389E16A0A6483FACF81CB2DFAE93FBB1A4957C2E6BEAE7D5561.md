@@ -1,0 +1,4 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:87212 | REVISE_TEXT | TASK_021 지정 packets 0001–0006에서 original·candidate 전문과 전체 diff END까지 순서대로 판독; 새 본문 candidate 전체 diff hunk와 EOF | expanded_train_87212_task021_v1.txt | 후보의 이름/빈 alias 정리와 실제 자회사·이사회·경영진·수치·연도·법적/재정 서술은 유지했다. `예전 이름은 주니퍼 뱅크` 괄호 포장을 닫고 후보에 남은 `루벤 제프리 III ()`만 정리했다. 원문에 내용이 없던 `각주`·`참고 문헌`은 후보대로 제외했으며 실제 URL과 귀속 표기는 보존했다. 근거 MD: `hold_87212_task021_v1.md`. |
+| expanded_train:87350 | REVISE_TEXT | TASK_021 지정 packets 0001–0003에서 original·candidate 전문과 전체 diff END까지 순서대로 판독; 새 본문 candidate 전체 diff hunk와 EOF | expanded_train_87350_task021_v1.txt | 채워진 `자음문자(子音文字)`와 실제 `알리프(ا)` 뒤 빈 병기 슬롯 및 쉼표만 정리했다. 자음·아브자드 설명, 문자 이름/표기/순서, 날짜·역사·불확실성, 실제 관련 항목은 유지했고 미상 transliteration을 생성하지 않았다. 빈 `참조` 표제는 후보가 제거한 상태를 유지했다. 근거 MD: `hold_87350_task021_v1.md`. |
