@@ -1,0 +1,7 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1198645 | REVISE_TEXT | 원문 p1–2; 후보 원문과 바이트 동일 증명; full_diff p4; 새 본문과 전체 diff EOF 확인 | expanded_train_1198645_literal_working_v1.txt | 빈 `On this page:` 표제와 지정 입력에 없는 welcome screen 예고만 제거했다. 포트 설정, 실제 `>>>` 안내, 재시작 키와 오류 설명은 보존했다. 원형 및 이유: `hold_1198645_v1.md`. |
+| expanded_train:1201800 | REVISE_TEXT | 원문 p1–9; 후보 원문과 바이트 동일 증명; full_diff p17; 새 본문과 전체 diff EOF 확인 | expanded_train_1201800_literal_working_v1.txt | 구분자 없이 합쳐진 설치·실행 명령과 손상된 Pyramid/CherryPy 코드, 없는 WSGI/Nginx 예제에 직접 의존하는 도입, 잘린 URL, 빈 기사 예고, 사이트 UI를 분리했다. 완결 설명, 실제 명명·수치·조건·단순 명령과 사용자 댓글은 보존했다. 값·명령·코드 구조는 만들지 않았다. 선택 보류 근거는 `hold_1201800_v3.md`; 이전 메모 파일은 보존한다. |
+| expanded_train:120367 | REVISE_TEXT | 원문 p1–2; 후보 원문과 바이트 동일 증명; full_diff p4; 새 본문과 전체 diff EOF 확인 | expanded_train_120367_literal_working_v1.txt | 기사 뒤에 붙은 WordPress/Twitter widget의 fatal error stack trace만 제거했다. 지진 연구 설명, 인용 조건, 논문 귀속, 기관 안내와 서비스 코멘트는 유지했다. 잘린 오류 원형과 경계 근거: `hold_120367_v1.md`. |
+| expanded_train:1208308 | ACCEPT_CANDIDATE | 원문 p1; 후보 원문과 바이트 동일 증명; full_diff p2–3 및 END 확인 | expanded_train_1208308_candidate.txt | `findVar`, `findString`, `nil` 및 실제 네 선택지를 설명하는 완결 문서다. 특이한 `%` 표기도 원문 그대로이며 보정·삭제할 근거가 없다. |
+| expanded_train:1211105 | REVISE_TEXT | 원문 p1–2; 후보 원문과 바이트 동일 증명; full_diff p4; 새 본문과 전체 diff EOF 확인 | expanded_train_1211105_literal_working_v1.txt | 다섯 실제 인증 호출은 모두 보존하고 각 끝의 불완전한 `<Response >` 출력만 분리했다. 실제 목록이 없는 `including:` 예고만 문장에서 제거했으며 Requests 조직 설명과 뒤의 완결 지침은 유지했다. 원형 및 범위: `hold_1211105_v1.md`. |

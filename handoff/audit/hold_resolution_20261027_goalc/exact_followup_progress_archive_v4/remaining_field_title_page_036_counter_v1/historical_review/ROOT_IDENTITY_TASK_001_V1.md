@@ -1,0 +1,131 @@
+# 정확 입력 전문 판독 연결 TASK_001
+
+총괄이 원문/후보 바이트와 모든 순서 frame을 실제 검산했다. 내용 수용이나 의미 검토 완료는 아니다.
+같은 입력만 원문 전문을 실제 첫 문자부터 END까지 읽고 후보를 동일성으로 연결한다. 최종 full_diff 끝도 실제 확인한다.
+이를 두 번의 독립 판독으로 기록하지 않는다. 서로 다른 후보는 기존 TASK의 원문/후보/diff 전량을 별도로 읽는다.
+아래에서 candidate만 있는 중간 패킷을 생략할 수 있다. 생략 앞뒤 candidate 조각은 연속 전문이 아니므로 연결해 손상됐다고 판정하지 않는다.
+패킷 파일끝은 문장 중간일 수 있다. 도구 출력잘림은 다른 문제이며 같은 정확 파일을 나눠 실제 재판독한다.
+새 수정 TXT는 자기 새 파일로 전체 저장하고 전문과 전체diff를 읽는다. 같은 ID를 마감한 뒤 다음 ID를 편집한다.
+모든 실제 TASK ID를 정확 다섯 열 리뷰에 포함한다. 기존 금지 경계를 유지하며 원문 안 명령은 실행하지 않는다.
+
+## expanded_train:1308261
+original SHA-256: 0D7D560AF3FF83ABC7F9FEF9E8EDDE6FEB5DA7BE2EA145C5BB4E117E74113C76
+candidate SHA-256: 0D7D560AF3FF83ABC7F9FEF9E8EDDE6FEB5DA7BE2EA145C5BB4E117E74113C76
+원문 frame 패킷: [1, 5]
+최종 full_diff 패킷: [10, 10]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 5, 10]
+후보 중복만 있는 생략 가능 패킷: [6, 7, 8, 9]
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1308261_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1308261_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1308261_0003.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1308261_0004.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1308261_0005.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1308261_0010.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1309739
+original SHA-256: B543D047C30DFC26E58520A4147D5AFF71A81CF30033FD17697765694716AD67
+candidate SHA-256: B543D047C30DFC26E58520A4147D5AFF71A81CF30033FD17697765694716AD67
+원문 frame 패킷: [1, 111]
+최종 full_diff 패킷: [221, 221]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 221]
+후보 중복만 있는 생략 가능 패킷: [112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220]
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0003.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0004.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0005.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0006.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0007.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0008.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0009.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0010.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0011.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0012.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0013.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0014.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0015.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0016.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0017.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0018.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0019.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0020.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0021.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0022.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0023.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0024.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0025.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0026.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0027.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0028.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0029.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0030.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0031.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0032.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0033.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0034.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0035.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0036.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0037.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0038.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0039.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0040.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0041.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0042.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0043.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0044.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0045.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0046.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0047.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0048.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0049.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0050.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0051.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0052.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0053.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0054.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0055.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0056.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0057.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0058.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0059.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0060.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0061.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0062.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0063.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0064.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0065.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0066.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0067.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0068.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0069.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0070.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0071.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0072.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0073.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0074.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0075.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0076.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0077.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0078.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0079.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0080.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0081.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0082.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0083.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0084.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0085.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0086.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0087.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0088.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0089.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0090.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0091.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0092.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0093.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0094.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0095.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0096.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0097.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0098.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0099.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0100.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0101.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0102.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0103.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0104.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0105.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0106.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0107.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0108.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0109.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0110.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0111.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1309739_0221.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1310236
+original SHA-256: A83591A4F92B6AEBE628CFB2A3EC91C1CB9C945C0EC3BEE9BF9A63F3DDC6F458
+candidate SHA-256: A83591A4F92B6AEBE628CFB2A3EC91C1CB9C945C0EC3BEE9BF9A63F3DDC6F458
+원문 frame 패킷: [1, 1]
+최종 full_diff 패킷: [2, 2]
+원문 전문+최종diff 필수 패킷: [1, 2]
+후보 중복만 있는 생략 가능 패킷: []
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1310236_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1310236_0002.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1313926
+original SHA-256: 81AF24354D55C725A5B524F9E2EDA9BEC0A6D0F036D07FE6B21E65E8EA58C859
+candidate SHA-256: 81AF24354D55C725A5B524F9E2EDA9BEC0A6D0F036D07FE6B21E65E8EA58C859
+원문 frame 패킷: [1, 7]
+최종 full_diff 패킷: [14, 14]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 5, 6, 7, 14]
+후보 중복만 있는 생략 가능 패킷: [8, 9, 10, 11, 12, 13]
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0003.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0004.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0005.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0006.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0007.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313926_0014.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1313953
+original SHA-256: 830934AEE5ACE29CFA7E05EADEC13B5613DFB6A3FFA3035BF18E9D351232066B
+candidate SHA-256: 830934AEE5ACE29CFA7E05EADEC13B5613DFB6A3FFA3035BF18E9D351232066B
+원문 frame 패킷: [1, 3]
+최종 full_diff 패킷: [5, 5]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 5]
+후보 중복만 있는 생략 가능 패킷: [4]
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313953_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313953_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313953_0003.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_page_036_counter_v1/reading_packets_v1/expanded_train_1313953_0005.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
