@@ -1,0 +1,7 @@
+| ID | 판정 | 실제 판독 범위 | 출력 TXT | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:998737 | ACCEPT_CANDIDATE | 고정 reader packet 1/1; original·candidate·full_diff 각 BEGIN/END와 실제 EOF 확인 | expanded_train_998737_candidate.txt | 원문 리드의 1966년 11월 30일과 분류의 1967년 출생이 충돌한다. 후보는 두 연도를 선택하지 않고 제거하며 월일·직업·학력·생존 표기 및 나머지 정보를 보존한다. 원형 쌍은 hold_998737.md에 기록했다. |
+| expanded_train:998992 | ACCEPT_CANDIDATE | 고정 reader packet 1/1; original·candidate·full_diff 각 BEGIN/END와 실제 EOF 확인 | expanded_train_998992_candidate.txt | 원문 리드의 1923년 출생과 분류의 1922년 출생이 충돌한다. 후보는 두 연도를 선택하지 않고 제거하며 실제 사망일·작품 목록·직업 분류를 보존한다. 원형 쌍은 hold_998992.md에 기록했다. |
+| expanded_train:999065 | ACCEPT_CANDIDATE | 고정 reader packet 1/1; original·candidate·full_diff 각 BEGIN/END와 실제 EOF 확인 | expanded_train_999065_candidate.txt | 원문 리드의 1977년 9월 23일과 분류의 1981년 출생이 충돌한다. 후보는 두 연도를 선택하지 않고 제거하며 월일·직업·아제르바이잔계 및 이란계 분류·생존 표기를 보존한다. 원형 쌍은 hold_999065.md에 기록했다. |
+| expanded_train:999121 | ACCEPT_CANDIDATE | 고정 reader packet 1/1; original·candidate·full_diff 각 BEGIN/END와 실제 EOF 확인 | expanded_train_999121_candidate.txt | 원문 리드의 1935년 8월 12일과 분류의 1938년 출생이 충돌한다. 후보는 두 연도를 선택하지 않고 제거하며 월일·할렘 출생 서술·퀸스 및 맨해셋 출신 분류·직업·생존 표기를 보존한다. 이 위치·분류를 새 출생지 관계로 재해석하지 않는다. 원형 쌍은 hold_999121.md에 기록했다. |
+| expanded_train:999178 | ACCEPT_CANDIDATE | 고정 reader packet 1/1; original·candidate·full_diff 각 BEGIN/END와 실제 EOF 확인 | expanded_train_999178_candidate.txt | 원문 리드의 1991년 1월 5일과 분류의 1992년 출생이 충돌한다. 후보는 두 연도를 선택하지 않고 제거하며 실제 1월 5일과 직업·분류를 보존한다. 괄호 안 빈 라틴 문자 이름을 채우지 않았고 불필요한 쉼표만 정리했다. 원형 쌍은 hold_999178.md에 기록했다. |
