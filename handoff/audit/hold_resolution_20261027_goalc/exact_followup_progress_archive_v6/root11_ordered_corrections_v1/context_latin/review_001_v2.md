@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1018113 | REVISE_TEXT | ROOT_TASK_1018113_V1.md, 원문·기존 선택·working 각 전문/EOF, 원문→선택본문 전체 diff, 48행 원문 EOF, v2 새 본문 전체 및 original→v2 full diff의 EOF, sidecar 전문을 확인했다. | reviewed_1018113_root11_v2.txt | 기존 v1에서 Cartesian Product 표제를 분리 설명의 `In this situation ... disjoint` 문장 바로 앞으로 옮겼다. 이제 해당 전제와 실제 Cartesian Product 설명이 같은 절에 있다. 문장·SQL·수치 내용은 변경하지 않았다. 그 외에는 arity 링크 괄호만 보정하고, 원문 6개 연산 목록에 있는 Union/Set Difference/Cartesian Product 표제를 해당 단락에 붙였으며, p 직접 의존문장·빈 수식/그림 꼬리와 Top comments UI를 hold_1018113_root11_v2.md에 보존했다. 기존 v1 본문과 review_001.md는 보존한다. |

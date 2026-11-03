@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 TXT | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1021004 | REVISE_TEXT | 지정 ROOT_TASK_1021004_V1, original 전문 1–122행/EOF, selected_root11 전문, working_v1 전문 및 original→selected 전체 diff를 판독. 새 v3 전문/EOF, original→v3 전체 diff/EOF와 hold v2 전문을 대조했다. | reviewed_1021004_root11_v3.txt | 완결된 원문 x/y/d 초기화·while·if·failure·return 의사코드를 복원하고, 이름·날짜·8051/97, C/Python 예제/10403·101 및 정수 오버플로 경고를 유지했다. 채워진 `10403 = 101 · 103` 제목은 빈 선행 좌변 포장만 정리했다. g/n 정의·식, sequence mapping·빈 표에 의존하는 설명은 hold_1021004_root11_v2.md에 원형 보존했다. 앞머리 실행시간 비례 주장과 난수 가정·확률적 추측·미증명 한정도 함께 sidecar에 두어 확정형 시간 주장을 남기지 않았다. 코드 실행·계산·수식 보충은 하지 않았다. |
