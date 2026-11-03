@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:106989 | REVISE_TEXT | ROOT_TASK_106989_V1.md와 지정 original/selected_root11/working_v1 각 전문·EOF, original/selected 및 selected/working 비교, 새 본문 전문과 selected 대비 전체 diff 확인 | revise_106989_birthplace_and_conflict_v1.txt | 출생연도 1980/1977은 분리하고 월일 4월 10일과 원문에 있던 중국 베이징 출생지를 복구했다. 선수 경력·포지션·FIFA 출처/날짜·기타 분류는 보존했다. 값 없는 클럽 통계/국제 경기 골 절과 그 2007년 7월 13일 갱신표시는 [hold_106989_birth_year_and_statistics_v1.md](/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/root11_birth_106989_correction_v2/hold_106989_birth_year_and_statistics_v1.md)에 원형 보존했다. |

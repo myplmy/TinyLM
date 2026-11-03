@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1056993 | REVISE_TEXT | ROOT_TASK_1056993_V1.md와 지정 original/selected_root11/working_v1 각 전문·EOF, original/selected 및 selected/working 비교, 새 본문 전문과 selected 대비 전체 diff 확인 | revise_1056993_birth_conflict_v1.txt | 도입·초기 생애·분류의 충돌 생년 1959/1958만 분리했다. 월일 2월 12일, 뉴욕, 아버지 하산 하킴, 원문 나이·활동 관계, 경력·작품·출처와 다른 날짜는 보존했다. 원형 세 주장은 [hold_1056993_birth_year_conflict_v1.md](/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/root11_birth_1056993_correction_v2/hold_1056993_birth_year_conflict_v1.md)에 기록했다. |
