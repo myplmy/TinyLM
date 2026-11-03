@@ -1,0 +1,6 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:9892 | REVISE_TEXT | TASK_021 지정 packet 0001–0002 순서대로 original/candidate 전문 및 full_diff END | expanded_train_9892_historical_review_20261103_v1.txt | 후보가 남긴 제목의 빈 별칭 슬롯만 정리하고 실제 `←` 기호·Pa 표기·본문은 보존했다. 원문/후보의 빈 슬롯과 그 처리 경계는 hold_9892_empty_protactinium_alias_20261103_v1.md에 기록했다. |
+| validation:2283 | REVISE_TEXT | TASK_021 지정 packet 0001–0002 순서대로 original/candidate 전문 및 full_diff END | validation_2283_historical_review_20261103_v2.txt | 명명된 `방향 (제3의 길)`은 보존하고 후행 빈 괄호와 실제 비어 있던 `역대 로고` 표제만 정리했다. 원문 및 후보에서 제거된 빈 별칭·표제는 hold_validation_2283_empty_aliases_and_sections_20261103_v1.md에 보존했다. v1은 빈 표제를 남겨 비선택이다. |
+| validation:2378 | REVISE_TEXT | TASK_021 지정 packet 0001–0002 순서대로 original/candidate 전문 및 full_diff END | validation_2378_historical_review_20261103_v1.txt | 제목의 빈 `()`만 제거했다. 후보가 삭제한 빈 `각주` 표제는 원형 sidecar에 기록하고 실제 연혁·채널명·주파수·외부 링크를 유지했다. 근거: hold_validation_2378_empty_station_alias_20261103_v1.md. |
+| validation:644 | REVISE_TEXT | TASK_021 지정 packet 0001의 original/candidate 전문 및 full_diff END | validation_644_historical_review_20261103_v1.txt | 실제 영문 이름을 유지하고 그 뒤 빈 병기 괄호만 정리했다. 후보가 삭제한 빈 `각주` 표제는 sidecar에 기록했으며 생애 날짜·서술 및 분류를 바꾸지 않았다. 근거: hold_validation_644_empty_alias_20261103_v1.md. |
