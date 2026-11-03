@@ -1,0 +1,16 @@
+# expanded_train:1182842 원형 보류
+
+## 보류 구절
+
+> So what happened? I did some checks and then I found out that the syntax of this specific xml file was something like this:
+
+> So you should use something like this:
+> v_text := replace(replace(replace(trim(v_record.extract(‘/record/Fruit/text()’,’xmlns=”http://www.example.org”‘).getStringVal()),chr(10),”),chr(13),”),chr(9),”);
+
+## 사유와 경계
+
+첫 예고문 바로 뒤에 XML 예시가 없다. XML 구조를 만들지 않도록 예고문만 보류했다. 다음 문장의 Fruit tag, 공백·탭·줄바꿈 관련 설명은 실제로 적혀 있고 독립적으로 읽히므로 보존했다.
+
+마지막 제안은 빈 문자열 인용부호가 완결되지 않은 코드 줄을 가리킨다. 누락된 인용기호나 대체값을 채우지 않고 그 직접 의존 예고와 코드 줄만 분리했다. 앞서 실제로 제시된 `extract(...)` 호출 및 `trim`·`replace` 사용에 대한 정성 권고는 그대로 유지했다. 실행하거나 외부 라이브러리 동작을 검증하지 않았다.
+
+원형 구절은 이 sidecar에만 보존한다.

@@ -1,0 +1,2742 @@
+# controls 후보 원형 복사와 새 작업본 명령
+
+아래 base는 root가 기존 candidate의 바이트만 복사한 입력이다. 정제본·새 고유문서·채택량으로 세지 않는다. base는 수정하지 않고 보존한다.
+자기 source ID 구간을 이 exact 문서의 `rg -n -C 4 -- ID catalog절대경로`로 찾는 metadata 검색만 허용한다. 반드시 이 문서 경로를 명시하며 경로 없는 검색은 금지한다.
+새 working_v1을 noclobber로 만든 뒤 첫 완료리뷰 전 그 신규work 하나만 apply_patch Update File로 좁게 수정할 수 있다. 이미 리뷰로 선택한 work/본문/리뷰는 수정하지 않고 후속 버전으로 남긴다.
+이 문서의 base/work exact 경로 cat 및 둘의 diff만 추가 허용한다. 원문/전체diff의 전문 읽기는 고정reader를 유지한다. START/TASK001–110/READING_VIEWS의 기존 자기 exactMD literal cat도 허용한다. 다른파일·코드·rg/find·raw공유입력읽기허가는아니다.
+
+## validation:1872
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/validation_1872_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/validation_1872_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/validation_1872_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/validation_1872_scoped_working_v1.txt'`
+
+## validation:2606
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/validation_2606_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/validation_2606_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/validation_2606_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/validation_2606_scoped_working_v1.txt'`
+
+## expanded_train:3055
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_3055_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_3055_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_3055_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_3055_scoped_working_v1.txt'`
+
+## expanded_train:4626
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_4626_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_4626_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_4626_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_4626_scoped_working_v1.txt'`
+
+## expanded_train:10469
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_10469_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_10469_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_10469_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_10469_scoped_working_v1.txt'`
+
+## expanded_train:10546
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_10546_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_10546_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_10546_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_10546_scoped_working_v1.txt'`
+
+## expanded_train:11671
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_11671_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_11671_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_11671_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_11671_scoped_working_v1.txt'`
+
+## expanded_train:11888
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_11888_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_11888_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_11888_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_11888_scoped_working_v1.txt'`
+
+## expanded_train:21942
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_21942_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_21942_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_21942_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_21942_scoped_working_v1.txt'`
+
+## expanded_train:27634
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_27634_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_27634_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_27634_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_27634_scoped_working_v1.txt'`
+
+## expanded_train:29971
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_29971_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_29971_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_29971_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_29971_scoped_working_v1.txt'`
+
+## expanded_train:29972
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_29972_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_29972_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_29972_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_29972_scoped_working_v1.txt'`
+
+## expanded_train:34153
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_34153_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_34153_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_34153_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_34153_scoped_working_v1.txt'`
+
+## expanded_train:35007
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_35007_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_35007_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_35007_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_35007_scoped_working_v1.txt'`
+
+## expanded_train:37036
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_37036_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_37036_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_37036_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_37036_scoped_working_v1.txt'`
+
+## expanded_train:37888
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_37888_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_37888_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_37888_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_37888_scoped_working_v1.txt'`
+
+## expanded_train:45139
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_45139_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_45139_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_45139_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_45139_scoped_working_v1.txt'`
+
+## expanded_train:46588
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_46588_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_46588_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_46588_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_46588_scoped_working_v1.txt'`
+
+## expanded_train:46939
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_46939_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_46939_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_46939_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_46939_scoped_working_v1.txt'`
+
+## expanded_train:46959
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_46959_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_46959_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_46959_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_46959_scoped_working_v1.txt'`
+
+## expanded_train:50436
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_50436_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_50436_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_50436_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_50436_scoped_working_v1.txt'`
+
+## expanded_train:50453
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_50453_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_50453_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_50453_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_50453_scoped_working_v1.txt'`
+
+## expanded_train:54499
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_54499_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_54499_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_54499_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_54499_scoped_working_v1.txt'`
+
+## expanded_train:55286
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_55286_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_55286_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_55286_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_55286_scoped_working_v1.txt'`
+
+## expanded_train:55786
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_55786_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_55786_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_55786_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_55786_scoped_working_v1.txt'`
+
+## expanded_train:56462
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_56462_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_56462_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_56462_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_56462_scoped_working_v1.txt'`
+
+## expanded_train:56934
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_56934_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_56934_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_56934_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_56934_scoped_working_v1.txt'`
+
+## expanded_train:56943
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_56943_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_56943_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_56943_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_56943_scoped_working_v1.txt'`
+
+## expanded_train:57214
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_57214_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_57214_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_57214_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_57214_scoped_working_v1.txt'`
+
+## expanded_train:57239
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_57239_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_57239_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_57239_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_57239_scoped_working_v1.txt'`
+
+## expanded_train:57884
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_57884_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_57884_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_57884_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_57884_scoped_working_v1.txt'`
+
+## expanded_train:58320
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_58320_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_58320_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_58320_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_58320_scoped_working_v1.txt'`
+
+## expanded_train:58676
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_58676_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_58676_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_58676_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_58676_scoped_working_v1.txt'`
+
+## expanded_train:58877
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_58877_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_58877_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_58877_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_58877_scoped_working_v1.txt'`
+
+## expanded_train:61135
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_61135_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_61135_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_61135_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_61135_scoped_working_v1.txt'`
+
+## expanded_train:61314
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_61314_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_61314_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_61314_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_61314_scoped_working_v1.txt'`
+
+## expanded_train:62138
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_62138_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_62138_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_62138_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_62138_scoped_working_v1.txt'`
+
+## expanded_train:62210
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_62210_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_62210_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_62210_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_62210_scoped_working_v1.txt'`
+
+## expanded_train:62695
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_62695_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_62695_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_62695_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_62695_scoped_working_v1.txt'`
+
+## expanded_train:69510
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_69510_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_69510_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_69510_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_69510_scoped_working_v1.txt'`
+
+## expanded_train:70061
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_70061_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_70061_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_70061_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_70061_scoped_working_v1.txt'`
+
+## expanded_train:74292
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_74292_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_74292_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_74292_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_74292_scoped_working_v1.txt'`
+
+## expanded_train:75814
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_75814_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_75814_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_75814_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_75814_scoped_working_v1.txt'`
+
+## expanded_train:75946
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_75946_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_75946_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_75946_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_75946_scoped_working_v1.txt'`
+
+## expanded_train:76079
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_76079_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_76079_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_76079_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_76079_scoped_working_v1.txt'`
+
+## expanded_train:76356
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_76356_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_76356_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_76356_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_76356_scoped_working_v1.txt'`
+
+## expanded_train:77325
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_77325_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_77325_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_77325_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_77325_scoped_working_v1.txt'`
+
+## expanded_train:78439
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_78439_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_78439_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_78439_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_78439_scoped_working_v1.txt'`
+
+## expanded_train:79232
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_79232_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_79232_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_79232_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_79232_scoped_working_v1.txt'`
+
+## expanded_train:79433
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_79433_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_79433_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_79433_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_79433_scoped_working_v1.txt'`
+
+## expanded_train:81925
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_81925_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_81925_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_81925_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_81925_scoped_working_v1.txt'`
+
+## expanded_train:84395
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_84395_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_84395_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_84395_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_84395_scoped_working_v1.txt'`
+
+## expanded_train:87522
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_87522_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_87522_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_87522_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_87522_scoped_working_v1.txt'`
+
+## expanded_train:88977
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_88977_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_88977_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_88977_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_88977_scoped_working_v1.txt'`
+
+## expanded_train:91541
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_91541_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_91541_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_91541_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_91541_scoped_working_v1.txt'`
+
+## expanded_train:96436
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_96436_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_96436_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_96436_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_96436_scoped_working_v1.txt'`
+
+## expanded_train:96579
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_96579_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_96579_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_96579_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_96579_scoped_working_v1.txt'`
+
+## expanded_train:97984
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_97984_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_97984_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_97984_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_97984_scoped_working_v1.txt'`
+
+## expanded_train:101550
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_101550_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_101550_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_101550_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_101550_scoped_working_v1.txt'`
+
+## expanded_train:101817
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_101817_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_101817_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_101817_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_101817_scoped_working_v1.txt'`
+
+## expanded_train:103984
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_103984_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_103984_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_103984_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_103984_scoped_working_v1.txt'`
+
+## expanded_train:103988
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_103988_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_103988_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_103988_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_103988_scoped_working_v1.txt'`
+
+## expanded_train:105684
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_105684_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_105684_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_105684_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_105684_scoped_working_v1.txt'`
+
+## expanded_train:106231
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_106231_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_106231_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_106231_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_106231_scoped_working_v1.txt'`
+
+## expanded_train:106267
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_106267_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_106267_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_106267_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_106267_scoped_working_v1.txt'`
+
+## expanded_train:108245
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_108245_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_108245_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_108245_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_108245_scoped_working_v1.txt'`
+
+## expanded_train:108407
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_108407_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_108407_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_108407_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_108407_scoped_working_v1.txt'`
+
+## expanded_train:108412
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_108412_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_108412_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_108412_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_108412_scoped_working_v1.txt'`
+
+## expanded_train:109265
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_109265_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_109265_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_109265_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_109265_scoped_working_v1.txt'`
+
+## expanded_train:110933
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_110933_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_110933_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_110933_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_110933_scoped_working_v1.txt'`
+
+## expanded_train:110948
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_110948_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_110948_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_110948_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_110948_scoped_working_v1.txt'`
+
+## expanded_train:111298
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_111298_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_111298_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_111298_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_111298_scoped_working_v1.txt'`
+
+## expanded_train:112167
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_112167_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_112167_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_112167_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_112167_scoped_working_v1.txt'`
+
+## expanded_train:112670
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_112670_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_112670_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_112670_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_112670_scoped_working_v1.txt'`
+
+## expanded_train:113261
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_113261_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_113261_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_113261_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_113261_scoped_working_v1.txt'`
+
+## expanded_train:114294
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_114294_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_114294_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_114294_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_114294_scoped_working_v1.txt'`
+
+## expanded_train:114621
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_114621_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_114621_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_114621_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_114621_scoped_working_v1.txt'`
+
+## expanded_train:115008
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_115008_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_115008_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_115008_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_115008_scoped_working_v1.txt'`
+
+## expanded_train:116663
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_116663_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_116663_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_116663_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_116663_scoped_working_v1.txt'`
+
+## expanded_train:117138
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_117138_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_117138_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_117138_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_117138_scoped_working_v1.txt'`
+
+## expanded_train:117572
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_117572_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_117572_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_117572_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_117572_scoped_working_v1.txt'`
+
+## expanded_train:120116
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_120116_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_120116_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_120116_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_120116_scoped_working_v1.txt'`
+
+## expanded_train:120217
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_120217_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_120217_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_120217_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_120217_scoped_working_v1.txt'`
+
+## expanded_train:123070
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_123070_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_123070_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_123070_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_123070_scoped_working_v1.txt'`
+
+## expanded_train:125550
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_125550_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_125550_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_125550_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_125550_scoped_working_v1.txt'`
+
+## expanded_train:125687
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_125687_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_125687_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_125687_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_125687_scoped_working_v1.txt'`
+
+## expanded_train:126810
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_126810_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_126810_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_126810_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_126810_scoped_working_v1.txt'`
+
+## expanded_train:126905
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_126905_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_126905_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_126905_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_126905_scoped_working_v1.txt'`
+
+## expanded_train:127302
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_127302_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_127302_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_127302_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_127302_scoped_working_v1.txt'`
+
+## expanded_train:128372
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_128372_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_128372_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_128372_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_128372_scoped_working_v1.txt'`
+
+## expanded_train:129840
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_129840_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_129840_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_129840_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_129840_scoped_working_v1.txt'`
+
+## expanded_train:131970
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_131970_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_131970_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_131970_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_131970_scoped_working_v1.txt'`
+
+## expanded_train:132156
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132156_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132156_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132156_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132156_scoped_working_v1.txt'`
+
+## expanded_train:132414
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132414_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132414_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132414_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132414_scoped_working_v1.txt'`
+
+## expanded_train:132532
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132532_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132532_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132532_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132532_scoped_working_v1.txt'`
+
+## expanded_train:132677
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132677_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132677_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_132677_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_132677_scoped_working_v1.txt'`
+
+## expanded_train:133249
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_133249_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_133249_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_133249_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_133249_scoped_working_v1.txt'`
+
+## expanded_train:133521
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_133521_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_133521_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_133521_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_133521_scoped_working_v1.txt'`
+
+## expanded_train:133778
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_133778_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_133778_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_133778_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_133778_scoped_working_v1.txt'`
+
+## expanded_train:134546
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_134546_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_134546_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_134546_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_134546_scoped_working_v1.txt'`
+
+## expanded_train:136732
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_136732_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_136732_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_136732_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_136732_scoped_working_v1.txt'`
+
+## expanded_train:137826
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_137826_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_137826_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_137826_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_137826_scoped_working_v1.txt'`
+
+## expanded_train:140381
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_140381_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_140381_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_140381_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_140381_scoped_working_v1.txt'`
+
+## expanded_train:142728
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_142728_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_142728_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_142728_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_142728_scoped_working_v1.txt'`
+
+## expanded_train:142874
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_142874_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_142874_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_142874_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_142874_scoped_working_v1.txt'`
+
+## expanded_train:144559
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_144559_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_144559_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_144559_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_144559_scoped_working_v1.txt'`
+
+## expanded_train:147216
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_147216_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_147216_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_147216_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_147216_scoped_working_v1.txt'`
+
+## expanded_train:151723
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_151723_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_151723_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_151723_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_151723_scoped_working_v1.txt'`
+
+## expanded_train:152213
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_152213_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_152213_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_152213_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_152213_scoped_working_v1.txt'`
+
+## expanded_train:152957
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_152957_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_152957_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_152957_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_152957_scoped_working_v1.txt'`
+
+## expanded_train:153814
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_153814_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_153814_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_153814_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_153814_scoped_working_v1.txt'`
+
+## expanded_train:157679
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_157679_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_157679_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_157679_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_157679_scoped_working_v1.txt'`
+
+## expanded_train:159492
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_159492_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_159492_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_159492_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_159492_scoped_working_v1.txt'`
+
+## expanded_train:160747
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_160747_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_160747_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_160747_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_160747_scoped_working_v1.txt'`
+
+## expanded_train:162450
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_162450_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_162450_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_162450_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_162450_scoped_working_v1.txt'`
+
+## expanded_train:162927
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_162927_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_162927_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_162927_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_162927_scoped_working_v1.txt'`
+
+## expanded_train:162931
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_162931_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_162931_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_162931_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_162931_scoped_working_v1.txt'`
+
+## expanded_train:164147
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_164147_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_164147_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_164147_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_164147_scoped_working_v1.txt'`
+
+## expanded_train:170852
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_170852_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_170852_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_170852_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_170852_scoped_working_v1.txt'`
+
+## expanded_train:174321
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_174321_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_174321_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_174321_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_174321_scoped_working_v1.txt'`
+
+## expanded_train:175714
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_175714_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_175714_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_175714_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_175714_scoped_working_v1.txt'`
+
+## expanded_train:176024
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_176024_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_176024_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_176024_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_176024_scoped_working_v1.txt'`
+
+## expanded_train:179791
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_179791_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_179791_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_179791_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_179791_scoped_working_v1.txt'`
+
+## expanded_train:180112
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180112_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180112_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180112_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180112_scoped_working_v1.txt'`
+
+## expanded_train:180129
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180129_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180129_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180129_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180129_scoped_working_v1.txt'`
+
+## expanded_train:180251
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180251_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180251_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180251_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180251_scoped_working_v1.txt'`
+
+## expanded_train:180655
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180655_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180655_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180655_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180655_scoped_working_v1.txt'`
+
+## expanded_train:180702
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180702_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180702_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180702_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180702_scoped_working_v1.txt'`
+
+## expanded_train:180974
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180974_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180974_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_180974_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_180974_scoped_working_v1.txt'`
+
+## expanded_train:181356
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_181356_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_181356_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_181356_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_181356_scoped_working_v1.txt'`
+
+## expanded_train:181440
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_181440_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_181440_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_181440_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_181440_scoped_working_v1.txt'`
+
+## expanded_train:186036
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_186036_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_186036_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_186036_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_186036_scoped_working_v1.txt'`
+
+## expanded_train:187751
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_187751_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_187751_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_187751_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_187751_scoped_working_v1.txt'`
+
+## expanded_train:190287
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_190287_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_190287_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_190287_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_190287_scoped_working_v1.txt'`
+
+## expanded_train:190407
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_190407_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_190407_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_190407_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_190407_scoped_working_v1.txt'`
+
+## expanded_train:191382
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_191382_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_191382_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_191382_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_191382_scoped_working_v1.txt'`
+
+## expanded_train:191614
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_191614_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_191614_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_191614_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_191614_scoped_working_v1.txt'`
+
+## expanded_train:191988
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_191988_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_191988_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_191988_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_191988_scoped_working_v1.txt'`
+
+## expanded_train:192737
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_192737_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_192737_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_192737_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_192737_scoped_working_v1.txt'`
+
+## expanded_train:192983
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_192983_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_192983_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_192983_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_192983_scoped_working_v1.txt'`
+
+## expanded_train:192990
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_192990_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_192990_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_192990_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_192990_scoped_working_v1.txt'`
+
+## expanded_train:197880
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_197880_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_197880_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_197880_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_197880_scoped_working_v1.txt'`
+
+## expanded_train:199965
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_199965_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_199965_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_199965_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_199965_scoped_working_v1.txt'`
+
+## expanded_train:203728
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_203728_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_203728_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_203728_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_203728_scoped_working_v1.txt'`
+
+## expanded_train:203845
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_203845_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_203845_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_203845_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_203845_scoped_working_v1.txt'`
+
+## expanded_train:204760
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_204760_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_204760_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_204760_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_204760_scoped_working_v1.txt'`
+
+## expanded_train:204790
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_204790_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_204790_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_204790_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_204790_scoped_working_v1.txt'`
+
+## expanded_train:207205
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_207205_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_207205_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_207205_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_207205_scoped_working_v1.txt'`
+
+## expanded_train:207623
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_207623_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_207623_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_207623_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_207623_scoped_working_v1.txt'`
+
+## expanded_train:209522
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_209522_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_209522_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_209522_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_209522_scoped_working_v1.txt'`
+
+## expanded_train:212569
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_212569_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_212569_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_212569_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_212569_scoped_working_v1.txt'`
+
+## expanded_train:214205
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_214205_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_214205_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_214205_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_214205_scoped_working_v1.txt'`
+
+## expanded_train:220162
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_220162_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_220162_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_220162_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_220162_scoped_working_v1.txt'`
+
+## expanded_train:220245
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_220245_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_220245_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_220245_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_220245_scoped_working_v1.txt'`
+
+## expanded_train:222874
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_222874_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_222874_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_222874_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_222874_scoped_working_v1.txt'`
+
+## expanded_train:223800
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_223800_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_223800_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_223800_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_223800_scoped_working_v1.txt'`
+
+## expanded_train:223887
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_223887_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_223887_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_223887_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_223887_scoped_working_v1.txt'`
+
+## expanded_train:234154
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_234154_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_234154_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_234154_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_234154_scoped_working_v1.txt'`
+
+## expanded_train:236748
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_236748_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_236748_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_236748_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_236748_scoped_working_v1.txt'`
+
+## expanded_train:247081
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_247081_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_247081_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_247081_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_247081_scoped_working_v1.txt'`
+
+## expanded_train:249660
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_249660_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_249660_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_249660_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_249660_scoped_working_v1.txt'`
+
+## expanded_train:252824
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_252824_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_252824_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_252824_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_252824_scoped_working_v1.txt'`
+
+## expanded_train:255180
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_255180_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_255180_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_255180_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_255180_scoped_working_v1.txt'`
+
+## expanded_train:255383
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_255383_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_255383_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_255383_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_255383_scoped_working_v1.txt'`
+
+## expanded_train:256508
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_256508_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_256508_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_256508_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_256508_scoped_working_v1.txt'`
+
+## expanded_train:257090
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_257090_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_257090_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_257090_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_257090_scoped_working_v1.txt'`
+
+## expanded_train:257581
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_257581_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_257581_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_257581_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_257581_scoped_working_v1.txt'`
+
+## expanded_train:261819
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_261819_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_261819_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_261819_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_261819_scoped_working_v1.txt'`
+
+## expanded_train:265022
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_265022_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_265022_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_265022_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_265022_scoped_working_v1.txt'`
+
+## expanded_train:266022
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_266022_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_266022_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_266022_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_266022_scoped_working_v1.txt'`
+
+## expanded_train:266140
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_266140_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_266140_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_266140_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_266140_scoped_working_v1.txt'`
+
+## expanded_train:270381
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_270381_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_270381_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_270381_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_270381_scoped_working_v1.txt'`
+
+## expanded_train:272652
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_272652_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_272652_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_272652_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_272652_scoped_working_v1.txt'`
+
+## expanded_train:275227
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_275227_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_275227_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_275227_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_275227_scoped_working_v1.txt'`
+
+## expanded_train:275258
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_275258_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_275258_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_275258_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_275258_scoped_working_v1.txt'`
+
+## expanded_train:276009
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_276009_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_276009_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_276009_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_276009_scoped_working_v1.txt'`
+
+## expanded_train:277072
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_277072_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_277072_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_277072_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_277072_scoped_working_v1.txt'`
+
+## expanded_train:279645
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_279645_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_279645_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_279645_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_279645_scoped_working_v1.txt'`
+
+## expanded_train:280212
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_280212_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_280212_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_280212_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_280212_scoped_working_v1.txt'`
+
+## expanded_train:288181
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_288181_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_288181_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_288181_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_288181_scoped_working_v1.txt'`
+
+## expanded_train:288810
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_288810_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_288810_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_288810_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_288810_scoped_working_v1.txt'`
+
+## expanded_train:290260
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_290260_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_290260_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_290260_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_290260_scoped_working_v1.txt'`
+
+## expanded_train:292072
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_292072_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_292072_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_292072_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_292072_scoped_working_v1.txt'`
+
+## expanded_train:292210
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_292210_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_292210_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_292210_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_292210_scoped_working_v1.txt'`
+
+## expanded_train:293131
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_293131_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_293131_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_293131_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_293131_scoped_working_v1.txt'`
+
+## expanded_train:293280
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_293280_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_293280_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_293280_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_293280_scoped_working_v1.txt'`
+
+## expanded_train:301114
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_301114_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_301114_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_301114_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_301114_scoped_working_v1.txt'`
+
+## expanded_train:305358
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_305358_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_305358_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_305358_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_305358_scoped_working_v1.txt'`
+
+## expanded_train:308760
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_308760_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_308760_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_308760_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_308760_scoped_working_v1.txt'`
+
+## expanded_train:310062
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_310062_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_310062_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_310062_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_310062_scoped_working_v1.txt'`
+
+## expanded_train:314339
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_314339_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_314339_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_314339_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_314339_scoped_working_v1.txt'`
+
+## expanded_train:314632
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_314632_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_314632_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_314632_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_314632_scoped_working_v1.txt'`
+
+## expanded_train:316549
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_316549_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_316549_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_316549_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_316549_scoped_working_v1.txt'`
+
+## expanded_train:321099
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_321099_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_321099_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_321099_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_321099_scoped_working_v1.txt'`
+
+## expanded_train:321865
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_321865_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_321865_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_321865_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_321865_scoped_working_v1.txt'`
+
+## expanded_train:322966
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_322966_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_322966_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_322966_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_322966_scoped_working_v1.txt'`
+
+## expanded_train:323227
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_323227_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_323227_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_323227_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_323227_scoped_working_v1.txt'`
+
+## expanded_train:324933
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_324933_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_324933_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_324933_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_324933_scoped_working_v1.txt'`
+
+## expanded_train:325005
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_325005_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_325005_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_325005_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_325005_scoped_working_v1.txt'`
+
+## expanded_train:326563
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_326563_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_326563_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_326563_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_326563_scoped_working_v1.txt'`
+
+## expanded_train:328779
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_328779_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_328779_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_328779_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_328779_scoped_working_v1.txt'`
+
+## expanded_train:330221
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_330221_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_330221_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_330221_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_330221_scoped_working_v1.txt'`
+
+## expanded_train:332549
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_332549_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_332549_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_332549_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_332549_scoped_working_v1.txt'`
+
+## expanded_train:335959
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_335959_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_335959_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_335959_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_335959_scoped_working_v1.txt'`
+
+## expanded_train:336253
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_336253_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_336253_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_336253_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_336253_scoped_working_v1.txt'`
+
+## expanded_train:337439
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_337439_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_337439_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_337439_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_337439_scoped_working_v1.txt'`
+
+## expanded_train:341392
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_341392_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_341392_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_341392_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_341392_scoped_working_v1.txt'`
+
+## expanded_train:345942
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_345942_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_345942_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_345942_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_345942_scoped_working_v1.txt'`
+
+## expanded_train:355073
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_355073_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_355073_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_355073_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_355073_scoped_working_v1.txt'`
+
+## expanded_train:355729
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_355729_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_355729_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_355729_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_355729_scoped_working_v1.txt'`
+
+## expanded_train:363696
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_363696_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_363696_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_363696_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_363696_scoped_working_v1.txt'`
+
+## expanded_train:363697
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_363697_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_363697_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_363697_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_363697_scoped_working_v1.txt'`
+
+## expanded_train:366229
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_366229_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_366229_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_366229_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_366229_scoped_working_v1.txt'`
+
+## expanded_train:367209
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_367209_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_367209_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_367209_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_367209_scoped_working_v1.txt'`
+
+## expanded_train:371492
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_371492_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_371492_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_371492_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_371492_scoped_working_v1.txt'`
+
+## expanded_train:373143
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_373143_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_373143_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_373143_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_373143_scoped_working_v1.txt'`
+
+## expanded_train:381900
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_381900_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_381900_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_381900_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_381900_scoped_working_v1.txt'`
+
+## expanded_train:388112
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_388112_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_388112_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_388112_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_388112_scoped_working_v1.txt'`
+
+## expanded_train:390922
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_390922_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_390922_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_390922_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_390922_scoped_working_v1.txt'`
+
+## expanded_train:391461
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_391461_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_391461_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_391461_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_391461_scoped_working_v1.txt'`
+
+## expanded_train:393074
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_393074_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_393074_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_393074_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_393074_scoped_working_v1.txt'`
+
+## expanded_train:396213
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396213_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396213_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396213_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396213_scoped_working_v1.txt'`
+
+## expanded_train:396446
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396446_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396446_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396446_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396446_scoped_working_v1.txt'`
+
+## expanded_train:396589
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396589_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396589_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396589_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396589_scoped_working_v1.txt'`
+
+## expanded_train:396986
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396986_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396986_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_396986_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_396986_scoped_working_v1.txt'`
+
+## expanded_train:403307
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_403307_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_403307_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_403307_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_403307_scoped_working_v1.txt'`
+
+## expanded_train:405146
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_405146_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_405146_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_405146_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_405146_scoped_working_v1.txt'`
+
+## expanded_train:413486
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_413486_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_413486_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_413486_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_413486_scoped_working_v1.txt'`
+
+## expanded_train:414888
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_414888_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_414888_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_414888_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_414888_scoped_working_v1.txt'`
+
+## expanded_train:415097
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_415097_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_415097_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_415097_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_415097_scoped_working_v1.txt'`
+
+## expanded_train:416048
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_416048_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_416048_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_416048_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_416048_scoped_working_v1.txt'`
+
+## expanded_train:417495
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_417495_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_417495_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_417495_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_417495_scoped_working_v1.txt'`
+
+## expanded_train:420257
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_420257_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_420257_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_420257_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_420257_scoped_working_v1.txt'`
+
+## expanded_train:421006
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_421006_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_421006_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_421006_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_421006_scoped_working_v1.txt'`
+
+## expanded_train:423298
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_423298_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_423298_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_423298_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_423298_scoped_working_v1.txt'`
+
+## expanded_train:424056
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_424056_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_424056_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_424056_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_424056_scoped_working_v1.txt'`
+
+## expanded_train:424898
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_424898_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_424898_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_424898_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_424898_scoped_working_v1.txt'`
+
+## expanded_train:429453
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_429453_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_429453_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_429453_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_429453_scoped_working_v1.txt'`
+
+## expanded_train:430413
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_430413_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_430413_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_430413_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_430413_scoped_working_v1.txt'`
+
+## expanded_train:445995
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_445995_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_445995_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_445995_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_445995_scoped_working_v1.txt'`
+
+## expanded_train:451952
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_451952_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_451952_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_451952_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_451952_scoped_working_v1.txt'`
+
+## expanded_train:459417
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_459417_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_459417_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_459417_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_459417_scoped_working_v1.txt'`
+
+## expanded_train:465584
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_465584_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_465584_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_465584_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_465584_scoped_working_v1.txt'`
+
+## expanded_train:466871
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_466871_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_466871_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_466871_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_466871_scoped_working_v1.txt'`
+
+## expanded_train:468910
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_468910_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_468910_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_468910_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_468910_scoped_working_v1.txt'`
+
+## expanded_train:470789
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_470789_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_470789_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_470789_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_470789_scoped_working_v1.txt'`
+
+## expanded_train:472988
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_472988_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_472988_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_472988_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_472988_scoped_working_v1.txt'`
+
+## expanded_train:474147
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_474147_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_474147_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_474147_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_474147_scoped_working_v1.txt'`
+
+## expanded_train:475979
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_475979_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_475979_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_475979_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_475979_scoped_working_v1.txt'`
+
+## expanded_train:476606
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_476606_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_476606_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_476606_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_476606_scoped_working_v1.txt'`
+
+## expanded_train:478825
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_478825_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_478825_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_478825_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_478825_scoped_working_v1.txt'`
+
+## expanded_train:480434
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_480434_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_480434_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_480434_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_480434_scoped_working_v1.txt'`
+
+## expanded_train:481028
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_481028_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_481028_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_481028_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_481028_scoped_working_v1.txt'`
+
+## expanded_train:483415
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_483415_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_483415_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_483415_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_483415_scoped_working_v1.txt'`
+
+## expanded_train:484451
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_484451_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_484451_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_484451_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_484451_scoped_working_v1.txt'`
+
+## expanded_train:486303
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_486303_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_486303_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_486303_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_486303_scoped_working_v1.txt'`
+
+## expanded_train:489801
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_489801_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_489801_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_489801_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_489801_scoped_working_v1.txt'`
+
+## expanded_train:496719
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_496719_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_496719_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_496719_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_496719_scoped_working_v1.txt'`
+
+## expanded_train:502879
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_502879_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_502879_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_502879_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_502879_scoped_working_v1.txt'`
+
+## expanded_train:515868
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_515868_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_515868_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_515868_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_515868_scoped_working_v1.txt'`
+
+## expanded_train:521410
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_521410_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_521410_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_521410_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_521410_scoped_working_v1.txt'`
+
+## expanded_train:535530
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_535530_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_535530_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_535530_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_535530_scoped_working_v1.txt'`
+
+## expanded_train:539212
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_539212_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_539212_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_539212_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_539212_scoped_working_v1.txt'`
+
+## expanded_train:541395
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_541395_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_541395_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_541395_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_541395_scoped_working_v1.txt'`
+
+## expanded_train:543483
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_543483_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_543483_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_543483_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_543483_scoped_working_v1.txt'`
+
+## expanded_train:545512
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_545512_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_545512_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_545512_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_545512_scoped_working_v1.txt'`
+
+## expanded_train:549334
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_549334_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_549334_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_549334_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_549334_scoped_working_v1.txt'`
+
+## expanded_train:551448
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_551448_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_551448_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_551448_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_551448_scoped_working_v1.txt'`
+
+## expanded_train:553509
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_553509_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_553509_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_553509_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_553509_scoped_working_v1.txt'`
+
+## expanded_train:557202
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_557202_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_557202_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_557202_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_557202_scoped_working_v1.txt'`
+
+## expanded_train:566084
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_566084_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_566084_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_566084_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_566084_scoped_working_v1.txt'`
+
+## expanded_train:579829
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_579829_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_579829_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_579829_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_579829_scoped_working_v1.txt'`
+
+## expanded_train:582983
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_582983_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_582983_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_582983_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_582983_scoped_working_v1.txt'`
+
+## expanded_train:590878
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_590878_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_590878_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_590878_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_590878_scoped_working_v1.txt'`
+
+## expanded_train:592940
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_592940_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_592940_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_592940_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_592940_scoped_working_v1.txt'`
+
+## expanded_train:599034
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_599034_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_599034_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_599034_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_599034_scoped_working_v1.txt'`
+
+## expanded_train:611177
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_611177_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_611177_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_611177_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_611177_scoped_working_v1.txt'`
+
+## expanded_train:624802
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_624802_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_624802_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_624802_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_624802_scoped_working_v1.txt'`
+
+## expanded_train:625404
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_625404_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_625404_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_625404_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_625404_scoped_working_v1.txt'`
+
+## expanded_train:625412
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_625412_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_625412_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_625412_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_625412_scoped_working_v1.txt'`
+
+## expanded_train:628506
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_628506_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_628506_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_628506_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_628506_scoped_working_v1.txt'`
+
+## expanded_train:628514
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_628514_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_628514_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_628514_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_628514_scoped_working_v1.txt'`
+
+## expanded_train:629539
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_629539_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_629539_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_629539_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_629539_scoped_working_v1.txt'`
+
+## expanded_train:640807
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_640807_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_640807_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_640807_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_640807_scoped_working_v1.txt'`
+
+## expanded_train:640999
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_640999_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_640999_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_640999_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_640999_scoped_working_v1.txt'`
+
+## expanded_train:643211
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_643211_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_643211_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_643211_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_643211_scoped_working_v1.txt'`
+
+## expanded_train:644386
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_644386_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_644386_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_644386_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_644386_scoped_working_v1.txt'`
+
+## expanded_train:646224
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_646224_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_646224_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_646224_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_646224_scoped_working_v1.txt'`
+
+## expanded_train:648562
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_648562_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_648562_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_648562_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_648562_scoped_working_v1.txt'`
+
+## expanded_train:649493
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_649493_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_649493_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_649493_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_649493_scoped_working_v1.txt'`
+
+## expanded_train:655105
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_655105_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_655105_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_655105_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_655105_scoped_working_v1.txt'`
+
+## expanded_train:656483
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_656483_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_656483_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_656483_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_656483_scoped_working_v1.txt'`
+
+## expanded_train:660860
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_660860_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_660860_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_660860_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_660860_scoped_working_v1.txt'`
+
+## expanded_train:661672
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_661672_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_661672_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_661672_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_661672_scoped_working_v1.txt'`
+
+## expanded_train:664471
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_664471_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_664471_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_664471_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_664471_scoped_working_v1.txt'`
+
+## expanded_train:664847
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_664847_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_664847_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_664847_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_664847_scoped_working_v1.txt'`
+
+## expanded_train:666297
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_666297_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_666297_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_666297_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_666297_scoped_working_v1.txt'`
+
+## expanded_train:667797
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_667797_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_667797_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_667797_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_667797_scoped_working_v1.txt'`
+
+## expanded_train:667895
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_667895_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_667895_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_667895_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_667895_scoped_working_v1.txt'`
+
+## expanded_train:669442
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_669442_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_669442_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_669442_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_669442_scoped_working_v1.txt'`
+
+## expanded_train:675305
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_675305_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_675305_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_675305_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_675305_scoped_working_v1.txt'`
+
+## expanded_train:679348
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_679348_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_679348_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_679348_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_679348_scoped_working_v1.txt'`
+
+## expanded_train:681695
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_681695_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_681695_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_681695_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_681695_scoped_working_v1.txt'`
+
+## expanded_train:683974
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_683974_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_683974_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_683974_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_683974_scoped_working_v1.txt'`
+
+## expanded_train:684051
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_684051_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_684051_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_684051_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_684051_scoped_working_v1.txt'`
+
+## expanded_train:684052
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_684052_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_684052_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_684052_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_684052_scoped_working_v1.txt'`
+
+## expanded_train:685275
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_685275_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_685275_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_685275_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_685275_scoped_working_v1.txt'`
+
+## expanded_train:686812
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_686812_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_686812_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_686812_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_686812_scoped_working_v1.txt'`
+
+## expanded_train:688370
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688370_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688370_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688370_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688370_scoped_working_v1.txt'`
+
+## expanded_train:688467
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688467_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688467_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688467_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688467_scoped_working_v1.txt'`
+
+## expanded_train:688560
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688560_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688560_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688560_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688560_scoped_working_v1.txt'`
+
+## expanded_train:688651
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688651_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688651_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_688651_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_688651_scoped_working_v1.txt'`
+
+## expanded_train:690133
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_690133_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_690133_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_690133_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_690133_scoped_working_v1.txt'`
+
+## expanded_train:691110
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_691110_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_691110_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_691110_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_691110_scoped_working_v1.txt'`
+
+## expanded_train:695238
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_695238_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_695238_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_695238_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_695238_scoped_working_v1.txt'`
+
+## expanded_train:696228
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_696228_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_696228_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_696228_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_696228_scoped_working_v1.txt'`
+
+## expanded_train:698928
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_698928_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_698928_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_698928_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_698928_scoped_working_v1.txt'`
+
+## expanded_train:702792
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_702792_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_702792_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_702792_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_702792_scoped_working_v1.txt'`
+
+## expanded_train:703113
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_703113_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_703113_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_703113_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_703113_scoped_working_v1.txt'`
+
+## expanded_train:703650
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_703650_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_703650_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_703650_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_703650_scoped_working_v1.txt'`
+
+## expanded_train:707285
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_707285_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_707285_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_707285_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_707285_scoped_working_v1.txt'`
+
+## expanded_train:720547
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_720547_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_720547_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_720547_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_720547_scoped_working_v1.txt'`
+
+## expanded_train:720775
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_720775_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_720775_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_720775_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_720775_scoped_working_v1.txt'`
+
+## expanded_train:724081
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_724081_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_724081_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_724081_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_724081_scoped_working_v1.txt'`
+
+## expanded_train:725211
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_725211_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_725211_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_725211_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_725211_scoped_working_v1.txt'`
+
+## expanded_train:726364
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_726364_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_726364_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_726364_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_726364_scoped_working_v1.txt'`
+
+## expanded_train:726587
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_726587_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_726587_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_726587_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_726587_scoped_working_v1.txt'`
+
+## expanded_train:726754
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_726754_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_726754_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_726754_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_726754_scoped_working_v1.txt'`
+
+## expanded_train:727409
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727409_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727409_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727409_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727409_scoped_working_v1.txt'`
+
+## expanded_train:727556
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727556_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727556_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727556_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727556_scoped_working_v1.txt'`
+
+## expanded_train:727640
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727640_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727640_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727640_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727640_scoped_working_v1.txt'`
+
+## expanded_train:727699
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727699_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727699_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727699_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727699_scoped_working_v1.txt'`
+
+## expanded_train:727700
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727700_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727700_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_727700_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_727700_scoped_working_v1.txt'`
+
+## expanded_train:728541
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_728541_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_728541_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_728541_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_728541_scoped_working_v1.txt'`
+
+## expanded_train:737704
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_737704_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_737704_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_737704_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_737704_scoped_working_v1.txt'`
+
+## expanded_train:737989
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_737989_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_737989_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_737989_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_737989_scoped_working_v1.txt'`
+
+## expanded_train:738305
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_738305_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_738305_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_738305_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_738305_scoped_working_v1.txt'`
+
+## expanded_train:738526
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_738526_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_738526_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_738526_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_738526_scoped_working_v1.txt'`
+
+## expanded_train:739125
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_739125_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_739125_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_739125_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_739125_scoped_working_v1.txt'`
+
+## expanded_train:740107
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_740107_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_740107_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_740107_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_740107_scoped_working_v1.txt'`
+
+## expanded_train:741129
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_741129_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_741129_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_741129_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_741129_scoped_working_v1.txt'`
+
+## expanded_train:741139
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_741139_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_741139_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_741139_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_741139_scoped_working_v1.txt'`
+
+## expanded_train:741143
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_741143_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_741143_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_741143_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_741143_scoped_working_v1.txt'`
+
+## expanded_train:754183
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_754183_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_754183_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_754183_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_754183_scoped_working_v1.txt'`
+
+## expanded_train:754311
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_754311_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_754311_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_754311_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_754311_scoped_working_v1.txt'`
+
+## expanded_train:754787
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_754787_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_754787_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_754787_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_754787_scoped_working_v1.txt'`
+
+## expanded_train:755905
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_755905_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_755905_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_755905_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_755905_scoped_working_v1.txt'`
+
+## expanded_train:757186
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_757186_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_757186_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_757186_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_757186_scoped_working_v1.txt'`
+
+## expanded_train:763547
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_763547_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_763547_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_763547_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_763547_scoped_working_v1.txt'`
+
+## expanded_train:764810
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_764810_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_764810_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_764810_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_764810_scoped_working_v1.txt'`
+
+## expanded_train:765844
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_765844_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_765844_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_765844_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_765844_scoped_working_v1.txt'`
+
+## expanded_train:775143
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_775143_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_775143_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_775143_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_775143_scoped_working_v1.txt'`
+
+## expanded_train:780450
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_780450_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_780450_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_780450_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_780450_scoped_working_v1.txt'`
+
+## expanded_train:781102
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_781102_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_781102_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_781102_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_781102_scoped_working_v1.txt'`
+
+## expanded_train:782868
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_782868_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_782868_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_782868_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_782868_scoped_working_v1.txt'`
+
+## expanded_train:794992
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_794992_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_794992_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_794992_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_794992_scoped_working_v1.txt'`
+
+## expanded_train:795350
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_795350_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_795350_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_795350_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_795350_scoped_working_v1.txt'`
+
+## expanded_train:799613
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_799613_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_799613_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_799613_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_799613_scoped_working_v1.txt'`
+
+## expanded_train:800342
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_800342_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_800342_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_800342_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_800342_scoped_working_v1.txt'`
+
+## expanded_train:802819
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_802819_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_802819_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_802819_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_802819_scoped_working_v1.txt'`
+
+## expanded_train:808636
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808636_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808636_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808636_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808636_scoped_working_v1.txt'`
+
+## expanded_train:808725
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808725_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808725_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808725_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808725_scoped_working_v1.txt'`
+
+## expanded_train:808746
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808746_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808746_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808746_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808746_scoped_working_v1.txt'`
+
+## expanded_train:808973
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808973_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808973_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_808973_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_808973_scoped_working_v1.txt'`
+
+## expanded_train:810483
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_810483_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_810483_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_810483_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_810483_scoped_working_v1.txt'`
+
+## expanded_train:810960
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_810960_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_810960_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_810960_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_810960_scoped_working_v1.txt'`
+
+## expanded_train:811540
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_811540_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_811540_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_811540_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_811540_scoped_working_v1.txt'`
+
+## expanded_train:811663
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_811663_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_811663_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_811663_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_811663_scoped_working_v1.txt'`
+
+## expanded_train:813407
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_813407_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_813407_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_813407_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_813407_scoped_working_v1.txt'`
+
+## expanded_train:814935
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_814935_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_814935_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_814935_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_814935_scoped_working_v1.txt'`
+
+## expanded_train:816540
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_816540_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_816540_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_816540_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_816540_scoped_working_v1.txt'`
+
+## expanded_train:816686
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_816686_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_816686_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_816686_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_816686_scoped_working_v1.txt'`
+
+## expanded_train:818447
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_818447_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_818447_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_818447_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_818447_scoped_working_v1.txt'`
+
+## expanded_train:842799
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_842799_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_842799_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_842799_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_842799_scoped_working_v1.txt'`
+
+## expanded_train:844091
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_844091_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_844091_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_844091_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_844091_scoped_working_v1.txt'`
+
+## expanded_train:853701
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_853701_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_853701_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_853701_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_853701_scoped_working_v1.txt'`
+
+## expanded_train:854617
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_854617_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_854617_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_854617_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_854617_scoped_working_v1.txt'`
+
+## expanded_train:854902
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_854902_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_854902_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_854902_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_854902_scoped_working_v1.txt'`
+
+## expanded_train:857860
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_857860_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_857860_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_857860_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_857860_scoped_working_v1.txt'`
+
+## expanded_train:864702
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_864702_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_864702_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_864702_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_864702_scoped_working_v1.txt'`
+
+## expanded_train:865331
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_865331_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_865331_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_865331_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_865331_scoped_working_v1.txt'`
+
+## expanded_train:867906
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_867906_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_867906_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_867906_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_867906_scoped_working_v1.txt'`
+
+## expanded_train:867943
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_867943_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_867943_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_867943_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_867943_scoped_working_v1.txt'`
+
+## expanded_train:868156
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_868156_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_868156_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_868156_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_868156_scoped_working_v1.txt'`
+
+## expanded_train:899619
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_899619_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_899619_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_899619_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_899619_scoped_working_v1.txt'`
+
+## expanded_train:900585
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_900585_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_900585_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_900585_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_900585_scoped_working_v1.txt'`
+
+## expanded_train:903577
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_903577_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_903577_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_903577_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_903577_scoped_working_v1.txt'`
+
+## expanded_train:908854
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_908854_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_908854_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_908854_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_908854_scoped_working_v1.txt'`
+
+## expanded_train:909046
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_909046_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_909046_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_909046_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_909046_scoped_working_v1.txt'`
+
+## expanded_train:909160
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_909160_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_909160_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_909160_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_909160_scoped_working_v1.txt'`
+
+## expanded_train:916259
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_916259_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_916259_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_916259_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_916259_scoped_working_v1.txt'`
+
+## expanded_train:921234
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_921234_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_921234_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_921234_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_921234_scoped_working_v1.txt'`
+
+## expanded_train:923743
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_923743_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_923743_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_923743_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_923743_scoped_working_v1.txt'`
+
+## expanded_train:923831
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_923831_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_923831_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_923831_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_923831_scoped_working_v1.txt'`
+
+## expanded_train:926464
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_926464_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_926464_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_926464_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_926464_scoped_working_v1.txt'`
+
+## expanded_train:927949
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_927949_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_927949_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_927949_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_927949_scoped_working_v1.txt'`
+
+## expanded_train:930444
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_930444_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_930444_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_930444_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_930444_scoped_working_v1.txt'`
+
+## expanded_train:934200
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_934200_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_934200_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_934200_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_934200_scoped_working_v1.txt'`
+
+## expanded_train:938784
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_938784_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_938784_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_938784_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_938784_scoped_working_v1.txt'`
+
+## expanded_train:940126
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_940126_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_940126_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_940126_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_940126_scoped_working_v1.txt'`
+
+## expanded_train:940193
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_940193_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_940193_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_940193_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_940193_scoped_working_v1.txt'`
+
+## expanded_train:940524
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_940524_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_940524_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_940524_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_940524_scoped_working_v1.txt'`
+
+## expanded_train:947187
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_947187_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_947187_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_947187_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_947187_scoped_working_v1.txt'`
+
+## expanded_train:969120
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_969120_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_969120_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_969120_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_969120_scoped_working_v1.txt'`
+
+## expanded_train:971742
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_971742_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_971742_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_971742_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_971742_scoped_working_v1.txt'`
+
+## expanded_train:973143
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_973143_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_973143_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_973143_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_973143_scoped_working_v1.txt'`
+
+## expanded_train:976300
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_976300_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_976300_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_976300_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_976300_scoped_working_v1.txt'`
+
+## expanded_train:978518
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_978518_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_978518_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_978518_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_978518_scoped_working_v1.txt'`
+
+## expanded_train:989836
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_989836_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_989836_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_989836_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_989836_scoped_working_v1.txt'`
+
+## expanded_train:989984
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_989984_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_989984_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_989984_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_989984_scoped_working_v1.txt'`
+
+## expanded_train:989994
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_989994_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_989994_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_989994_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_989994_scoped_working_v1.txt'`
+
+## expanded_train:990150
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_990150_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_990150_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_990150_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_990150_scoped_working_v1.txt'`
+
+## expanded_train:990168
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_990168_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_990168_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_990168_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_990168_scoped_working_v1.txt'`
+
+## expanded_train:990705
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_990705_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_990705_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_990705_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_990705_scoped_working_v1.txt'`
+
+## expanded_train:992018
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_992018_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_992018_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_992018_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_992018_scoped_working_v1.txt'`
+
+## expanded_train:992169
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_992169_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_992169_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_992169_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_992169_scoped_working_v1.txt'`
+
+## expanded_train:992719
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_992719_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_992719_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_992719_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_992719_scoped_working_v1.txt'`
+
+## expanded_train:993138
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993138_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993138_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993138_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993138_scoped_working_v1.txt'`
+
+## expanded_train:993154
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993154_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993154_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993154_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993154_scoped_working_v1.txt'`
+
+## expanded_train:993259
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993259_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993259_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993259_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993259_scoped_working_v1.txt'`
+
+## expanded_train:993346
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993346_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993346_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993346_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993346_scoped_working_v1.txt'`
+
+## expanded_train:993724
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993724_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993724_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_993724_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_993724_scoped_working_v1.txt'`
+
+## expanded_train:994058
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_994058_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_994058_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_994058_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_994058_scoped_working_v1.txt'`
+
+## expanded_train:994513
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_994513_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_994513_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_994513_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_994513_scoped_working_v1.txt'`
+
+## expanded_train:994585
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_994585_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_994585_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_994585_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_994585_scoped_working_v1.txt'`
+
+## expanded_train:995320
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995320_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995320_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995320_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995320_scoped_working_v1.txt'`
+
+## expanded_train:995527
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995527_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995527_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995527_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995527_scoped_working_v1.txt'`
+
+## expanded_train:995562
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995562_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995562_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995562_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995562_scoped_working_v1.txt'`
+
+## expanded_train:995586
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995586_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995586_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_995586_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_995586_scoped_working_v1.txt'`
+
+## expanded_train:996487
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_996487_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_996487_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_996487_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_996487_scoped_working_v1.txt'`
+
+## expanded_train:996632
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_996632_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_996632_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_996632_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_996632_scoped_working_v1.txt'`
+
+## expanded_train:996680
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_996680_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_996680_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_996680_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_996680_scoped_working_v1.txt'`
+
+## expanded_train:997083
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_997083_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_997083_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_997083_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_997083_scoped_working_v1.txt'`
+
+## expanded_train:998241
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998241_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998241_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998241_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998241_scoped_working_v1.txt'`
+
+## expanded_train:998511
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998511_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998511_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998511_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998511_scoped_working_v1.txt'`
+
+## expanded_train:998693
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998693_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998693_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998693_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998693_scoped_working_v1.txt'`
+
+## expanded_train:998715
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998715_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998715_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998715_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998715_scoped_working_v1.txt'`
+
+## expanded_train:998992
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998992_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998992_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_998992_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_998992_scoped_working_v1.txt'`
+
+## expanded_train:999121
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999121_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999121_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999121_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999121_scoped_working_v1.txt'`
+
+## expanded_train:999313
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999313_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999313_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999313_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999313_scoped_working_v1.txt'`
+
+## expanded_train:999347
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999347_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999347_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999347_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999347_scoped_working_v1.txt'`
+
+## expanded_train:999378
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999378_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999378_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999378_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999378_scoped_working_v1.txt'`
+
+## expanded_train:999580
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999580_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999580_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999580_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999580_scoped_working_v1.txt'`
+
+## expanded_train:999600
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999600_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999600_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_999600_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_999600_scoped_working_v1.txt'`
+
+## expanded_train:1000115
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000115_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000115_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000115_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000115_scoped_working_v1.txt'`
+
+## expanded_train:1000621
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000621_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000621_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000621_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000621_scoped_working_v1.txt'`
+
+## expanded_train:1000649
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000649_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000649_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000649_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000649_scoped_working_v1.txt'`
+
+## expanded_train:1000839
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000839_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000839_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1000839_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1000839_scoped_working_v1.txt'`
+
+## expanded_train:1001110
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001110_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001110_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001110_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001110_scoped_working_v1.txt'`
+
+## expanded_train:1001406
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001406_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001406_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001406_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001406_scoped_working_v1.txt'`
+
+## expanded_train:1001427
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001427_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001427_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001427_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001427_scoped_working_v1.txt'`
+
+## expanded_train:1001571
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001571_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001571_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001571_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001571_scoped_working_v1.txt'`
+
+## expanded_train:1001679
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001679_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001679_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1001679_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1001679_scoped_working_v1.txt'`
+
+## expanded_train:1002591
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1002591_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1002591_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1002591_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1002591_scoped_working_v1.txt'`
+
+## expanded_train:1002737
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1002737_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1002737_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1002737_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1002737_scoped_working_v1.txt'`
+
+## expanded_train:1003470
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1003470_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1003470_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1003470_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1003470_scoped_working_v1.txt'`
+
+## expanded_train:1004172
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004172_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004172_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004172_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004172_scoped_working_v1.txt'`
+
+## expanded_train:1004323
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004323_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004323_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004323_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004323_scoped_working_v1.txt'`
+
+## expanded_train:1004652
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004652_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004652_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004652_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004652_scoped_working_v1.txt'`
+
+## expanded_train:1004728
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004728_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004728_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1004728_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1004728_scoped_working_v1.txt'`
+
+## expanded_train:1005082
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1005082_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1005082_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1005082_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1005082_scoped_working_v1.txt'`
+
+## expanded_train:1005825
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1005825_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1005825_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1005825_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1005825_scoped_working_v1.txt'`
+
+## expanded_train:1006594
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1006594_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1006594_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1006594_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1006594_scoped_working_v1.txt'`
+
+## expanded_train:1007105
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1007105_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1007105_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1007105_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1007105_scoped_working_v1.txt'`
+
+## expanded_train:1007392
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1007392_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1007392_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1007392_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1007392_scoped_working_v1.txt'`
+
+## expanded_train:1007562
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1007562_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1007562_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1007562_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1007562_scoped_working_v1.txt'`
+
+## expanded_train:1008084
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008084_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008084_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008084_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008084_scoped_working_v1.txt'`
+
+## expanded_train:1008290
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008290_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008290_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008290_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008290_scoped_working_v1.txt'`
+
+## expanded_train:1008839
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008839_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008839_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008839_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008839_scoped_working_v1.txt'`
+
+## expanded_train:1008906
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008906_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008906_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1008906_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1008906_scoped_working_v1.txt'`
+
+## expanded_train:1009656
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1009656_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1009656_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1009656_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1009656_scoped_working_v1.txt'`
+
+## expanded_train:1009965
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1009965_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1009965_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1009965_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1009965_scoped_working_v1.txt'`
+
+## expanded_train:1011096
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011096_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011096_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011096_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011096_scoped_working_v1.txt'`
+
+## expanded_train:1011106
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011106_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011106_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011106_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011106_scoped_working_v1.txt'`
+
+## expanded_train:1011397
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011397_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011397_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011397_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011397_scoped_working_v1.txt'`
+
+## expanded_train:1011789
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011789_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011789_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1011789_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1011789_scoped_working_v1.txt'`
+
+## expanded_train:1012044
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012044_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012044_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012044_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012044_scoped_working_v1.txt'`
+
+## expanded_train:1012053
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012053_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012053_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012053_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012053_scoped_working_v1.txt'`
+
+## expanded_train:1012055
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012055_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012055_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012055_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012055_scoped_working_v1.txt'`
+
+## expanded_train:1012093
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012093_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012093_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012093_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012093_scoped_working_v1.txt'`
+
+## expanded_train:1012974
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012974_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012974_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1012974_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1012974_scoped_working_v1.txt'`
+
+## expanded_train:1014213
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1014213_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1014213_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1014213_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1014213_scoped_working_v1.txt'`
+
+## expanded_train:1014625
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1014625_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1014625_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1014625_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1014625_scoped_working_v1.txt'`
+
+## expanded_train:1015454
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1015454_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1015454_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1015454_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1015454_scoped_working_v1.txt'`
+
+## expanded_train:1015484
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1015484_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1015484_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1015484_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1015484_scoped_working_v1.txt'`
+
+## expanded_train:1016094
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016094_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016094_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016094_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016094_scoped_working_v1.txt'`
+
+## expanded_train:1016393
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016393_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016393_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016393_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016393_scoped_working_v1.txt'`
+
+## expanded_train:1016520
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016520_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016520_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016520_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016520_scoped_working_v1.txt'`
+
+## expanded_train:1016806
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016806_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016806_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1016806_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1016806_scoped_working_v1.txt'`
+
+## expanded_train:1017044
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1017044_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1017044_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1017044_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1017044_scoped_working_v1.txt'`
+
+## expanded_train:1017189
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1017189_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1017189_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1017189_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1017189_scoped_working_v1.txt'`
+
+## expanded_train:1018172
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1018172_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1018172_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1018172_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1018172_scoped_working_v1.txt'`
+
+## expanded_train:1028863
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1028863_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1028863_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1028863_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1028863_scoped_working_v1.txt'`
+
+## expanded_train:1038370
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1038370_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1038370_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1038370_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1038370_scoped_working_v1.txt'`
+
+## expanded_train:1045101
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1045101_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1045101_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1045101_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1045101_scoped_working_v1.txt'`
+
+## expanded_train:1046139
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1046139_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1046139_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1046139_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1046139_scoped_working_v1.txt'`
+
+## expanded_train:1052542
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1052542_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1052542_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1052542_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1052542_scoped_working_v1.txt'`
+
+## expanded_train:1054557
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1054557_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1054557_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1054557_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1054557_scoped_working_v1.txt'`
+
+## expanded_train:1060981
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1060981_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1060981_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1060981_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1060981_scoped_working_v1.txt'`
+
+## expanded_train:1065012
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1065012_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1065012_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1065012_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1065012_scoped_working_v1.txt'`
+
+## expanded_train:1065368
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1065368_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1065368_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1065368_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1065368_scoped_working_v1.txt'`
+
+## expanded_train:1074099
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1074099_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1074099_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1074099_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1074099_scoped_working_v1.txt'`
+
+## expanded_train:1075984
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1075984_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1075984_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1075984_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1075984_scoped_working_v1.txt'`
+
+## expanded_train:1089167
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1089167_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1089167_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1089167_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1089167_scoped_working_v1.txt'`
+
+## expanded_train:1100694
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1100694_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1100694_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1100694_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1100694_scoped_working_v1.txt'`
+
+## expanded_train:1109817
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1109817_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1109817_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1109817_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1109817_scoped_working_v1.txt'`
+
+## expanded_train:1116686
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1116686_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1116686_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1116686_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1116686_scoped_working_v1.txt'`
+
+## expanded_train:1121171
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1121171_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1121171_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1121171_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1121171_scoped_working_v1.txt'`
+
+## expanded_train:1122956
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1122956_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1122956_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1122956_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1122956_scoped_working_v1.txt'`
+
+## expanded_train:1138659
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1138659_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1138659_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1138659_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1138659_scoped_working_v1.txt'`
+
+## expanded_train:1140147
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1140147_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1140147_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1140147_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1140147_scoped_working_v1.txt'`
+
+## expanded_train:1143759
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1143759_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1143759_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1143759_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1143759_scoped_working_v1.txt'`
+
+## expanded_train:1157634
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1157634_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1157634_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1157634_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1157634_scoped_working_v1.txt'`
+
+## expanded_train:1158815
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1158815_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1158815_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1158815_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1158815_scoped_working_v1.txt'`
+
+## expanded_train:1162561
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1162561_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1162561_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1162561_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1162561_scoped_working_v1.txt'`
+
+## expanded_train:1163719
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1163719_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1163719_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1163719_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1163719_scoped_working_v1.txt'`
+
+## expanded_train:1168206
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1168206_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1168206_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1168206_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1168206_scoped_working_v1.txt'`
+
+## expanded_train:1170437
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1170437_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1170437_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1170437_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1170437_scoped_working_v1.txt'`
+
+## expanded_train:1178849
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1178849_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1178849_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1178849_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1178849_scoped_working_v1.txt'`
+
+## expanded_train:1184460
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1184460_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1184460_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1184460_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1184460_scoped_working_v1.txt'`
+
+## expanded_train:1188479
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1188479_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1188479_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1188479_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1188479_scoped_working_v1.txt'`
+
+## expanded_train:1196251
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1196251_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1196251_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1196251_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1196251_scoped_working_v1.txt'`
+
+## expanded_train:1198624
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1198624_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1198624_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1198624_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1198624_scoped_working_v1.txt'`
+
+## expanded_train:1198682
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1198682_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1198682_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1198682_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1198682_scoped_working_v1.txt'`
+
+## expanded_train:1198873
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1198873_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1198873_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1198873_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1198873_scoped_working_v1.txt'`
+
+## expanded_train:1200837
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1200837_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1200837_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1200837_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1200837_scoped_working_v1.txt'`
+
+## expanded_train:1203069
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1203069_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1203069_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1203069_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1203069_scoped_working_v1.txt'`
+
+## expanded_train:1215196
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1215196_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1215196_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1215196_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1215196_scoped_working_v1.txt'`
+
+## expanded_train:1236538
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1236538_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1236538_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1236538_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1236538_scoped_working_v1.txt'`
+
+## expanded_train:1237079
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1237079_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1237079_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1237079_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1237079_scoped_working_v1.txt'`
+
+## expanded_train:1238846
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1238846_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1238846_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1238846_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1238846_scoped_working_v1.txt'`
+
+## expanded_train:1238851
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1238851_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1238851_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1238851_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1238851_scoped_working_v1.txt'`
+
+## expanded_train:1242163
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1242163_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1242163_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1242163_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1242163_scoped_working_v1.txt'`
+
+## expanded_train:1246853
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1246853_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1246853_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1246853_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1246853_scoped_working_v1.txt'`
+
+## expanded_train:1252027
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1252027_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1252027_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1252027_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1252027_scoped_working_v1.txt'`
+
+## expanded_train:1253251
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253251_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253251_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253251_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253251_scoped_working_v1.txt'`
+
+## expanded_train:1253259
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253259_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253259_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253259_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253259_scoped_working_v1.txt'`
+
+## expanded_train:1253395
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253395_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253395_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253395_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253395_scoped_working_v1.txt'`
+
+## expanded_train:1253627
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253627_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253627_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1253627_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1253627_scoped_working_v1.txt'`
+
+## expanded_train:1254094
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254094_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254094_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254094_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254094_scoped_working_v1.txt'`
+
+## expanded_train:1254374
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254374_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254374_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254374_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254374_scoped_working_v1.txt'`
+
+## expanded_train:1254530
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254530_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254530_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254530_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254530_scoped_working_v1.txt'`
+
+## expanded_train:1254897
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254897_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254897_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1254897_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1254897_scoped_working_v1.txt'`
+
+## expanded_train:1255075
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1255075_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1255075_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1255075_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1255075_scoped_working_v1.txt'`
+
+## expanded_train:1255513
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1255513_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1255513_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1255513_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1255513_scoped_working_v1.txt'`
+
+## expanded_train:1277447
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1277447_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1277447_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1277447_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1277447_scoped_working_v1.txt'`
+
+## expanded_train:1278398
+base: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1278398_base.txt
+work: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1278398_scoped_working_v1.txt
+`set -C; cat -- '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/scoped_candidate_bases_v1/expanded_train_1278398_base.txt' > '/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_birth_full_counter_v1/expanded_train_1278398_scoped_working_v1.txt'`
+
