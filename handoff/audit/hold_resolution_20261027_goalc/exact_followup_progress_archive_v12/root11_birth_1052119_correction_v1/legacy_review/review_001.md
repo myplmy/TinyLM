@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1052119 | REVISE_TEXT | `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/legacy_review/root11_birth_1052119_correction_v1/expanded_train_1052119_original.txt`, `expanded_train_1052119_selected_root11.txt`, `expanded_train_1052119_working_v1.txt` 전문과 원문→선택본문 및 선택본문→working_v1 전체 diff | expanded_train_1052119_revised_v2.txt | 원문 리드의 `1952년`과 분류 `1968년 출생`은 같은 인물의 서로 다른 생년 표기이므로 양쪽을 사실 선택 없이 sidecar로 보류했다. 선택본문에서 누락된 한자 이름 `姜志勇`을 원문대로 복구하고 월일 8월 27일·제주도 남제주군 서귀면, 직업, 학력, 경력, 논란 문장 및 독립 분류를 보존했다. 값 없는 `역대 선거 결과`·`외부 링크` 표제 제거는 유지했다. 원문·선택본문에 없는 사실이나 연도는 추가하지 않았다. 보류 원형은 `hold_1052119_v2.md`에 기록했다. |

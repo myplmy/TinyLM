@@ -1,0 +1,3 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:1018113 | REVISE_TEXT | 지정 `ROOT_TASK_1018113_V1.md`; 원문·`selected_root11`·`working_v1` 각각 전문/EOF; 원문→선택본문 full diff 전부; 원문 1–48행과 실제 EOF; 선택본문→새 본문 diff 전부와 새 본문 EOF; hold sidecar 전문을 읽었다. | reviewed_1018113_root11_v1.txt | `[arity]`의 기존 앵커/URL에 링크 괄호만 복구했다. `Union`, `Set Difference`, `Cartesian Product` 표제는 앞의 실제 6개 연산 목록에서 가져와 해당 문단에 붙였다. p 식 설명, 빠진 Project 주어 조각, 그림 포인터/빈 수식, 미완 Rename 식/속성 꼬리, 댓글 UI는 hold_1018113_root11_v2.md에 원형 보존했다. 실제 R·K columns 정의, SQL과 결과, disjoint/renaming 관계, Rename의 명명된 설명 및 채워진 논평은 유지했다. 원문 `SELECT * EMPLOYEES WHERE firstName='John';`는 FROM을 삽입하거나 실행/교정하지 않고 보존했다. |
