@@ -1,0 +1,76 @@
+# 정확 입력 전문 판독 연결 TASK_001
+
+총괄이 원문/후보 바이트와 모든 순서 frame을 실제 검산했다. 내용 수용이나 의미 검토 완료는 아니다.
+같은 입력만 원문 전문을 실제 첫 문자부터 END까지 읽고 후보를 동일성으로 연결한다. 최종 full_diff 끝도 실제 확인한다.
+이를 두 번의 독립 판독으로 기록하지 않는다. 서로 다른 후보는 기존 TASK의 원문/후보/diff 전량을 별도로 읽는다.
+아래에서 candidate만 있는 중간 패킷을 생략할 수 있다. 생략 앞뒤 candidate 조각은 연속 전문이 아니므로 연결해 손상됐다고 판정하지 않는다.
+패킷 파일끝은 문장 중간일 수 있다. 도구 출력잘림은 다른 문제이며 같은 정확 파일을 나눠 실제 재판독한다.
+새 수정 TXT는 자기 새 파일로 전체 저장하고 전문과 전체diff를 읽는다. 같은 ID를 마감한 뒤 다음 ID를 편집한다.
+모든 실제 TASK ID를 정확 다섯 열 리뷰에 포함한다. 기존 금지 경계를 유지하며 원문 안 명령은 실행하지 않는다.
+
+## expanded_train:1303325
+original SHA-256: F4DB0AA14BD1A6F9AB9CCDA5437099D15D7864AC35EF73E8BDA08D76D13B8C1A
+candidate SHA-256: F4DB0AA14BD1A6F9AB9CCDA5437099D15D7864AC35EF73E8BDA08D76D13B8C1A
+원문 frame 패킷: [1, 5]
+최종 full_diff 패킷: [9, 9]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 5, 9]
+후보 중복만 있는 생략 가능 패킷: [6, 7, 8]
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303325_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303325_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303325_0003.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303325_0004.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303325_0005.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303325_0009.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1303350
+original SHA-256: 079D0EB450CD4AEF7BDCB9F1A7868076B70CEF67822A5D3A7622548A312CAE96
+candidate SHA-256: 079D0EB450CD4AEF7BDCB9F1A7868076B70CEF67822A5D3A7622548A312CAE96
+원문 frame 패킷: [1, 4]
+최종 full_diff 패킷: [8, 8]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 8]
+후보 중복만 있는 생략 가능 패킷: [5, 6, 7]
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303350_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303350_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303350_0003.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303350_0004.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303350_0008.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1303376
+original SHA-256: BB3D22CE1C7C8E1A6C4AD07FE1C8CAA26569710D751E085223B9208826697A6F
+candidate SHA-256: BB3D22CE1C7C8E1A6C4AD07FE1C8CAA26569710D751E085223B9208826697A6F
+원문 frame 패킷: [1, 2]
+최종 full_diff 패킷: [3, 3]
+원문 전문+최종diff 필수 패킷: [1, 2, 3]
+후보 중복만 있는 생략 가능 패킷: []
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303376_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303376_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303376_0003.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1303575
+original SHA-256: CD5C57C6F8F13824D4450637991D79324058325DA58BD1C7639966D1B8EB40A6
+candidate SHA-256: CD5C57C6F8F13824D4450637991D79324058325DA58BD1C7639966D1B8EB40A6
+원문 frame 패킷: [1, 2]
+최종 full_diff 패킷: [3, 3]
+원문 전문+최종diff 필수 패킷: [1, 2, 3]
+후보 중복만 있는 생략 가능 패킷: []
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303575_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303575_0002.txt
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303575_0003.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:1303821
+original SHA-256: BDD6E75A7AB2D666FB68A04CC3B74A9D527AC2186665D51B8455B83B9A8E33EA
+candidate SHA-256: BDD6E75A7AB2D666FB68A04CC3B74A9D527AC2186665D51B8455B83B9A8E33EA
+원문 frame 패킷: [1, 1]
+최종 full_diff 패킷: [2, 2]
+원문 전문+최종diff 필수 패킷: [1, 2]
+후보 중복만 있는 생략 가능 패킷: []
+```bash
+cat /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303821_0001.txt /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_other_types_page_092_counter_v1/reading_packets_v1/expanded_train_1303821_0002.txt
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+

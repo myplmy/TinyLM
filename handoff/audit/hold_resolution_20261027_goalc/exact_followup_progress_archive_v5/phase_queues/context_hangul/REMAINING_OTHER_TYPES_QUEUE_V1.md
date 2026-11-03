@@ -1,0 +1,399 @@
+# 필드·제목 유형 전량의 다음 배정 순서
+
+필드·제목36페이지의 자기 모든TASK와 중재연결을 마친 뒤, 총괄이 허용한 다음유형 페이지부터 시작한다.
+98페이지 전량이 후속 범위다. 각 페이지/TASK는 분할 단위이며 전체 작업량 상한이 아니다.
+정확 START/TASK/ROOT_IDENTITY를 읽고 지정 원문 전문을 실제 판독한다. controls는 페이지 고정 reader 허가 MD도 먼저 읽는다.
+새 TXT/MD 쓰기는 각 해당 자기 역할/페이지 폴더뿐이다. 코드·시험·해시·웹·Git·모델·GPU·다른 역할/보호자료는 금지다.
+
+## 페이지 1 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_001_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_001_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_001_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 2 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_002_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_002_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_002_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 3 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_003_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_003_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_003_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 4 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_004_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_004_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_004_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 5 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_005_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_005_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_005_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 6 / 125고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_006_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_006_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_006_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 7 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_007_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_007_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_007_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 8 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_008_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_008_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_008_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 9 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_009_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_009_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_009_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 10 / 100고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_010_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_010_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_010_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 11 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_011_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_011_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_011_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 12 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_012_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_012_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_012_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 13 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_013_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_013_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_013_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 14 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_014_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_014_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_014_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 15 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_015_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_015_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_015_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 16 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_016_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_016_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_016_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 17 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_017_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_017_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_017_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 18 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_018_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_018_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_018_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 19 / 104고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_019_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_019_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_019_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 20 / 104고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_020_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_020_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_020_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 21 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_021_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_021_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_021_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 22 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_022_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_022_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_022_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 23 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_023_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_023_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_023_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 24 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_024_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_024_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_024_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 25 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_025_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_025_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_025_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 26 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_026_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_026_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_026_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 27 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_027_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_027_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_027_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 28 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_028_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_028_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_028_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 29 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_029_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_029_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_029_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 30 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_030_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_030_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_030_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 31 / 106고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_031_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_031_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_031_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 32 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_032_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_032_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_032_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 33 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_033_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_033_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_033_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 34 / 105고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_034_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_034_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_034_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 35 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_035_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_035_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_035_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 36 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_036_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_036_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_036_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 37 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_037_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_037_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_037_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 38 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_038_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_038_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_038_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 39 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_039_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_039_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_039_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 40 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_040_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_040_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_040_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 41 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_041_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_041_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_041_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 42 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_042_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_042_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_042_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 43 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_043_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_043_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_043_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 44 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_044_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_044_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_044_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 45 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_045_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_045_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_045_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 46 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_046_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_046_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_046_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 47 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_047_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_047_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_047_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 48 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_048_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_048_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_048_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 49 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_049_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_049_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_049_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 50 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_050_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_050_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_050_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 51 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_051_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_051_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_051_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 52 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_052_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_052_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_052_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 53 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_053_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_053_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_053_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 54 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_054_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_054_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_054_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 55 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_055_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_055_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_055_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 56 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_056_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_056_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_056_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 57 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_057_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_057_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_057_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 58 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_058_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_058_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_058_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 59 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_059_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_059_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_059_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 60 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_060_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_060_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_060_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 61 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_061_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_061_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_061_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 62 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_062_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_062_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_062_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 63 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_063_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_063_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_063_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 64 / 105고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_064_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_064_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_064_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 65 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_065_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_065_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_065_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 66 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_066_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_066_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_066_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 67 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_067_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_067_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_067_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 68 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_068_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_068_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_068_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 69 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_069_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_069_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_069_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 70 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_070_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_070_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_070_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 71 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_071_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_071_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_071_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 72 / 105고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_072_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_072_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_072_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 73 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_073_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_073_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_073_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 74 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_074_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_074_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_074_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 75 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_075_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_075_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_075_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 76 / 114고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_076_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_076_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_076_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 77 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_077_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_077_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_077_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 78 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_078_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_078_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_078_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 79 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_079_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_079_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_079_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 80 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_080_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_080_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_080_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 81 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_081_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_081_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_081_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 82 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_082_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_082_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_082_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 83 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_083_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_083_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_083_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 84 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_084_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_084_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_084_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 85 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_085_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_085_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_085_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 86 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_086_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_086_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_086_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 87 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_087_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_087_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_087_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 88 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_088_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_088_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_088_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 89 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_089_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_089_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_089_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 90 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_090_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_090_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_090_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 91 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_091_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_091_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_091_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 92 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_092_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_092_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_092_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 93 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_093_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_093_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_093_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 94 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_094_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_094_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_094_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 95 / 103고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_095_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_095_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_095_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 96 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_096_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_096_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_096_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 97 / 102고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_097_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_097_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_097_counter_v1/ROOT_IDENTITY_TASK_001_V1.md
+## 페이지 98 / 101고유
+START: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_098_counter_v1/START_HERE.md
+첫 TASK: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_098_counter_v1/TASK_001.md
+동일입력 계획: /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_hangul/remaining_other_types_page_098_counter_v1/ROOT_IDENTITY_TASK_001_V1.md

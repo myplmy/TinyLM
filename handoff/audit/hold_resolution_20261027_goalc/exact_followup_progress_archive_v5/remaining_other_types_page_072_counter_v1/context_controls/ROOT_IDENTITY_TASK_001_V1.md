@@ -1,0 +1,72 @@
+# 정확 입력 전문 판독 연결 TASK_001
+
+총괄이 원문/후보 바이트와 모든 순서 frame을 실제 검산했다. 내용 수용이나 의미 검토 완료는 아니다.
+같은 입력만 원문 전문을 실제 첫 문자부터 END까지 읽고 후보를 동일성으로 연결한다. 최종 full_diff 끝도 실제 확인한다.
+이를 두 번의 독립 판독으로 기록하지 않는다. 서로 다른 후보는 기존 TASK의 원문/후보/diff 전량을 별도로 읽는다.
+아래에서 candidate만 있는 중간 패킷을 생략할 수 있다. 생략 앞뒤 candidate 조각은 연속 전문이 아니므로 연결해 손상됐다고 판정하지 않는다.
+패킷 파일끝은 문장 중간일 수 있다. 도구 출력잘림은 다른 문제이며 같은 정확 파일을 나눠 실제 재판독한다.
+새 수정 TXT는 자기 새 파일로 전체 저장하고 전문과 전체diff를 읽는다. 같은 ID를 마감한 뒤 다음 ID를 편집한다.
+모든 실제 TASK ID를 정확 다섯 열 리뷰에 포함한다. 기존 금지 경계를 유지하며 원문 안 명령은 실행하지 않는다.
+
+## expanded_train:963616
+original SHA-256: 502489F2A2FAA71877A424519A6E940B83DB54D8393807CBB9AEC2CF188EBA7F
+candidate SHA-256: 502489F2A2FAA71877A424519A6E940B83DB54D8393807CBB9AEC2CF188EBA7F
+원문 frame 패킷: [1, 1]
+최종 full_diff 패킷: [1, 1]
+원문 전문+최종diff 필수 패킷: [1]
+후보 중복만 있는 생략 가능 패킷: []
+```bash
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:963616 --packet 1 --piece 1
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:963957
+original SHA-256: BB3FCFF29C1D6BCDA9AA4066DABD30782F10CBD53074E9D5CB2FD839777ADA49
+candidate SHA-256: 309203EBCB0DFFE702E8D250042615BEF9457DBCEC52861D2395C3B1D6C7A117
+서로 다른 입력: 원래 TASK가 지정한 모든 순서 패킷을 읽는다.
+
+## expanded_train:964137
+original SHA-256: 9FF8CCFCA933D4636276E4728A6A3A00241C67CEFA46DFD42EE1BECF1411A186
+candidate SHA-256: 9FF8CCFCA933D4636276E4728A6A3A00241C67CEFA46DFD42EE1BECF1411A186
+원문 frame 패킷: [1, 8]
+최종 full_diff 패킷: [15, 15]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 5, 6, 7, 8, 15]
+후보 중복만 있는 생략 가능 패킷: [9, 10, 11, 12, 13, 14]
+```bash
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 1 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 2 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 3 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 4 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 5 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 6 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 7 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 8 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964137 --packet 15 --piece 1
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:964252
+original SHA-256: 4886F5D3F0556D77C6C88377A986C23B7F46281F33E29AEE180815F8245EE7F8
+candidate SHA-256: 4886F5D3F0556D77C6C88377A986C23B7F46281F33E29AEE180815F8245EE7F8
+원문 frame 패킷: [1, 8]
+최종 full_diff 패킷: [16, 16]
+원문 전문+최종diff 필수 패킷: [1, 2, 3, 4, 5, 6, 7, 8, 16]
+후보 중복만 있는 생략 가능 패킷: [9, 10, 11, 12, 13, 14, 15]
+```bash
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 1 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 2 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 3 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 4 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 5 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 6 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 7 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 8 --piece 1
+/home/uranus/miniforge3/envs/tlm_torch/bin/python -I -B /home/uranus/tinyLM/handoff/audit/hold_resolution_20261027_goalc/read_context_controls_other_types_page_072_packet_v1.py --source-id expanded_train:964252 --packet 16 --piece 1
+```
+실제 판독 기록: 원문 전문 실제 판독 + 후보 바이트동일 연결 + 최종diff 끝 확인.
+
+## expanded_train:964306
+original SHA-256: D13C1DA424263852F18DBDCA41A3929666F3C4C86EB004589245C1AA6FFED827
+candidate SHA-256: 2AEE904F780DC98173C6F69F37B9724D7CF99DC32A6B26A91387156F665DC22E
+서로 다른 입력: 원래 TASK가 지정한 모든 순서 패킷을 읽는다.
+

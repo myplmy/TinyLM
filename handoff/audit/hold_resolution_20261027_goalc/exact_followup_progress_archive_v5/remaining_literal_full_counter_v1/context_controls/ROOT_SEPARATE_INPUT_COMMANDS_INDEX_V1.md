@@ -1,0 +1,27 @@
+# 서로 다른 입력: 전체 명령 목록
+
+이 목록의 정확 자기 TASK 명령 MD만 추가 허용한다. 기존 ROOT_IDENTITY가 nonidentical로 표시한 ID는 이 명령으로 전량 읽는다.
+미판독 NEEDS_ROOT 행은 실제 판독 후 정확 새 리뷰로 교체 연결한다. 원문/후보가 다르다는 이유로 HOLD 결론을 만들지 않는다.
+
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_005_V1.md : expanded_train:1097396
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_017_V1.md : expanded_train:1309712
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_029_V1.md : expanded_train:160591
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_032_V1.md : expanded_train:21001
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_033_V1.md : expanded_train:26284,expanded_train:26348
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_034_V1.md : expanded_train:278844
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_035_V1.md : expanded_train:287750
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_037_V1.md : expanded_train:338463
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_043_V1.md : expanded_train:44107
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_045_V1.md : expanded_train:503431
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_052_V1.md : expanded_train:648819
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_056_V1.md : expanded_train:744240
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_058_V1.md : expanded_train:775515
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_059_V1.md : expanded_train:795112
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_060_V1.md : expanded_train:811186
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_061_V1.md : expanded_train:81945
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_062_V1.md : expanded_train:820794,expanded_train:831546
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_063_V1.md : expanded_train:834495,expanded_train:844100
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_064_V1.md : expanded_train:86590,expanded_train:86639
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_065_V1.md : expanded_train:888524
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_066_V1.md : expanded_train:894853
+- /home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/remaining_literal_full_counter_v1/ROOT_SEPARATE_INPUT_TASK_067_V1.md : expanded_train:91139
