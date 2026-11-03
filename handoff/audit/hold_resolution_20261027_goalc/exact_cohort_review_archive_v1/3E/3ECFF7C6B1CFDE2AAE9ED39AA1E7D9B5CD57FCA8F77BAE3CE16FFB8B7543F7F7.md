@@ -1,0 +1,7 @@
+| ID | 판정 | 실제 판독 범위 | 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:170517 | ACCEPT_CANDIDATE | 지정 원문·후보·전체 diff, packet 1, 논리 END/EOF 확인 | expanded_train_170517_candidate.txt | 1596년 출생과 1630년 사망은 리드·본문·분류에 일치한다. 후보는 비어 있는 이름 괄호만 정리하고 인명·호칭·날짜·경력 관계를 보존한다. |
+| expanded_train:170620 | REVISE_TEXT | 지정 원문·후보·전체 diff, packet 1, 논리 END/EOF 확인; 새 본문 전체와 초기 사본 대비 전체 diff·EOF 확인 | expanded_train_170620_reviewed_second_v1.txt | 원문 리드는 1701년을 대표 표기로 두고 본문은 `1701년생이라고도 하고`와 `1703년(음력 7월 15일)생이라고도 한다`는 두 설을 명시한다. 후보는 이 조건부 문맥을 보존하지만 단정형 `1701년 출생` 분류를 남긴다. 새 본문은 분류 한 줄만 분리하고 리드·두 설·음력 날짜·독립 생애 및 1765년 사망 분류를 유지한다. 분리 원형은 `/home/uranus/tinyLM/data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/birth_root11_independent_v1/hold_170620_v1.md`에 기록했다. 어느 출생 설도 선택하지 않았다. |
+| expanded_train:171249 | ACCEPT_CANDIDATE | 지정 원문·후보·전체 diff, packet 1, 논리 END/EOF 확인 | expanded_train_171249_candidate.txt | 1665년 출생과 1725년 사망은 리드·본문·분류에 일치하며 본문은 61세 사망이라고 별도 표기한다. 후보는 빈 이름 슬롯만 정리하고 실제 연혁·조건·이름을 보존한다. |
+| expanded_train:171554 | ACCEPT_CANDIDATE | 지정 원문·후보·전체 diff, packet 1, 논리 END/EOF 확인 | expanded_train_171554_candidate.txt | 1692년 출생은 리드·본문·분류에 일치하고 1742년 사망도 일치한다. 후보는 빈 이름 슬롯만 정리하며 자녀·계승·번 폐지 관계를 보존한다. |
+| expanded_train:172722 | ACCEPT_CANDIDATE | 지정 원문·후보·전체 diff, packet 1–5, 논리 END/EOF 확인 | expanded_train_172722_candidate.txt | 1331년 출생과 1402년 사망이 리드·분류에 일치한다. 리드의 1402년 5월 10일(음력 4월 9일)과 본문의 태종 2년(1402년) 4월 9일 사망 서술은 음력 표기를 포함한 같은 월일로 연결된다. 후보는 내용 없는 각주 표제만 제거하고 실제 이름·전기·가족·서지 관계를 보존한다. | 
