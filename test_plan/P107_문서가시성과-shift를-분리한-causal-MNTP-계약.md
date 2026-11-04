@@ -166,3 +166,23 @@ Stage5W는 같은 프로세스의 새 optimizer/source/session을 시험했고 O
 ### Stage7W 실행 회수 — 2026-11-01 오후
 
 CPU39/0 뒤 새 프로세스 GPU84306/0·독립root86955/0으로 이전 V1 snapshot 읽기 전용2회 재개가 전체 exact였다. 기존49조각은 불변이고 새checkpoint0이다. 실제 정전/본학습 품질은 시험하지 않았다. 결과107§17과 완료 SH/manifest_v4가 원형을 소유한다.
+
+### Stage8aW/8bW/8cW — 명시 입력 파일과 opt-in CLI 연결: 기술 완료
+
+2026-11-04 사용자107의 선행 연구 뒤 미완료 작업 착수다. [파일별 권한·세 안·영향도](../docs/research/20261104_P107_명시입력과_CLI_연결설계.md)에 따라 기존 source/trainer/session/store를 재사용한다. 기본 run100m와 모델 구조는 바꾸지 않는다. 다른 세션의 정제/보호 데이터·추가300M은 제외한다.
+
+Stage8aW는 입력 파일 SHA·토크나이저·TRAIN split·입장 선언·경로·크기·문서 ID·예약 mask·오류 차단과 기존 source의 경계/재개를 CPU에서 확인한다. 입력 모듈20회귀는0.898초/실제0이며 모델 품질 시험이 아니다. CLI 연결 회귀와 명시 소유 정적·현재 전체 smoke를 마친 뒤에만 GPU를 연다.
+
+새 태그 p107_document_cli_v1_20261104를 첫 GPU 전에 예약한다. 정해진 네 합성 문서 JSONL과 명시 manifest만 사용하고, 원문 의미/권리/누설을 입장 코드가 증명한다고 주장하지 않는다. 실제 TRAIN 입력에는 별도 명시 승인과 정확한 shard/토크나이저를 묶은 근거가 필요하다. 이번 worker는 합성 목적만 허용한다. 구현은16M token/128MB 입력 상한이며75M 전량 streaming 완료가 아니다.
+
+Stage8bW는 기존 Native595-Q·micro8×accum16×seq1024·checkpoint-on·BF16 AMP/FP32 master·Muon RMS4+AdamW·causal8/MNTP8·adaptive keep를 고정한다. 같은 기존8회 지평·warmup2/cosine의 첫2회만 기술 갱신한다. 첫 완료 경계를 새16MB 이하 조각에 저장한 뒤 두번째 경계의 전체 해시를 남긴다. Stage8cW는 새 Python 프로세스에서 같은 입력과 첫 경계를 읽고 두번째 갱신을 재현한다. 원본 model 파일·입력·소스가 불변이고 loss/target/LR/모델/optimizer/정책/source/RNG가 같아야 한다.
+
+논리 입력은2×8×16×1024=262144토큰이다. 새 프로세스의 replay1회를 포함한 물리3갱신/393216토큰은 별도 센다. 작은 합성 풀은 기술 fixture여서 품질 학습의2배 풀 조건을 만족한 것으로 해석하지 않는다. 이미 끝난 적응 통계 비용 격자를 다시 비교하지 않는다. 새 질문은 파일/입장/CLI를 통한 실제 연결·거부·재개가 같은가다.
+
+각 GPU phase600초·마감120초 예비, allocator6GiB·공유 GPU 시작 대비 증가8GB·단일 idle 장치를 확인한다. 예상전체GPU3~10분과 full smoke약8분은 비용 예측이다. 오류9/시간·자원HOLD8/기술종결0을 나누며 정합 실패에 임의 허용오차를 넣지 않는다. CPU/GPU 기술 성공은 본학습 효율·한국어/일상대화·benchmark 개선이 아니다.
+
+예측은 파일 입력의 sampler 계약이 같은 바이트/RNG로 재개될 수 있다는 것이다. 잘못된 입장/토크나이저/부분 파일은 모델 로딩 전에 거부해야 한다. 실제 corpus 편입·편향·전체 학습/GradScaler/compile·외부 교사 결합은 미완으로 남는다. 새 CLI는 기본값에 붙이지 않는다. 실행용 SH는 CPU/메타데이터 봉인 뒤 작성한다.
+
+실행 회수: CPU30/0과 현재 전체 canonical smoke106동작/44자식0 뒤 Stage8b와8c를 실제 수행했다. 새 파일 입력의 논리2회/262144입력과 replay 포함 물리3회/393216입력을 분리한다. run25.721747초·resume14.598884초이고 두번째 갱신 loss/target/LR 및 전체 model/optimizer/policy/source/RNG/세션이 EXACT였다. 새 경계781352215B를49조각으로 보존했고 원 CP/입력/source 불변·최종 CUDA0/0을 독립 root로 검산했다. 파일 거부와 전체 재개의 예측은 확인했으며 자연어 품질·75M streaming·실제 corpus 입장은 확인하지 않았다. [결과107§18](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)이 실제 수치·명령·한계를 소유한다. 두 전체 worker 시간은 수행량이 달라 가속비로 계산하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Resume the exact file-input boundary in a fresh Python/CUDA process.
+# CPU30, complete smoke and the completed Stage8b boundary are prerequisites.
+# One replay update; compare full state, loss, targets and LR, not language quality.
+# Budget: worker600s plus outer cleanup reserve; allocator6GiB/shared8GB.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+PROFILE="handoff/audit/nov04_p107_cli/PROFILE_v1.json"
+SHA="5F35E26BB7A12F5FE92DEEEDA2D100E590D65CE724F1A42EFA480A25136EEF8C"
+"${PY}" -B -X utf8 scripts/runlog.py --num 107 --name P107_Stage8cW_document_cli_fresh_resume --note "P107 explicit fresh-process boundary replay. Exact model/optimizer/policy/source/RNG and loss/target/LR required. No corpus quality or extra300M. Missing/incomplete prior reference cannot become an exact-comparison PASS."
+"${PY}" -B -X utf8 scripts/runlog.py --num 107 --name P107_Stage8cW_document_cli_fresh_resume -- "${PY}" -B -X utf8 scripts/train_p107_documents.py --profile "${PROFILE}" --profile-sha256 "${SHA}" --mode resume --check-only
+"${PY}" -B -X utf8 scripts/runlog.py --num 107 --name P107_Stage8cW_document_cli_fresh_resume -- timeout --signal=TERM --kill-after=20s 720s "${PY}" -B -X utf8 scripts/train_p107_documents.py --profile "${PROFILE}" --profile-sha256 "${SHA}" --mode resume --execute

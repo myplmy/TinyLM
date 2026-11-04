@@ -1,0 +1,27 @@
+Separate recovery phase after Stage6b cleanup failure. Same predeclared four calibration questions and conditions. Existing close_owned_cuda helper plus independent final audits; preserve original failure. No training, checkpoint writes or test selection.
+
+==============================================================================
+[runlog] 2026-11-04 22:12:52  name=P108_Stage6cW_calibration_local_cleanup
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_attenuation_gpu check
+==============================================================================
+{"status": "METADATA_ONLY", "profile_sha256": "2D38865E8CC2DFC2A2E38D5C97C676FD9E1CE1C15F1CE89F7E3F4C7A550C9572", "model_loads": 0, "ids": ["calib_arithmetic_000", "calib_arithmetic_001", "calib_arithmetic_002", "calib_arithmetic_003"]}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-04 22:12:54)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-04 22:12:54  name=P108_Stage6cW_calibration_local_cleanup
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 360s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_attenuation_gpu execute
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt", "checkpoint_sha256": "F3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C", "core_sha256": "B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E", "report_sha256": "079A3C67E85797AFB4978724CBF1C9FD32F9DB1AF4402CAA20283F1F56E89FF4", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "new595-broad-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[LOCAL_ACTUAL] calib_arithmetic_000 {"original": 1, "selected_cap_0.0025": 1, "rank16_unbounded": 2, "input_specific_oracle": 2, "original_after": 1}
+[LOCAL_ACTUAL] calib_arithmetic_001 {"original": 1, "selected_cap_0.0025": 1, "rank16_unbounded": 1, "input_specific_oracle": 2, "original_after": 1}
+[LOCAL_ACTUAL] calib_arithmetic_002 {"original": 1, "selected_cap_0.0025": 1, "rank16_unbounded": 2, "input_specific_oracle": 2, "original_after": 1}
+[LOCAL_ACTUAL] calib_arithmetic_003 {"original": 1, "selected_cap_0.0025": 1, "rank16_unbounded": 1, "input_specific_oracle": 2, "original_after": 1}
+[BODY_UNCHANGED] B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E (CPU/GPU load + session exit)
+[FINAL] {"status": "TECHNICAL_COMPLETE", "actual_exit": 0, "wall_seconds": 3.072881347994553, "vram": {"allocated_peak_bytes": 773903872, "reserved_peak_bytes": 796917760}, "repeated_gold_target_exposures": 8, "final_cuda_cleanup": {"entry": {"allocated_bytes": 8519680, "reserved_bytes": 20971520}, "before_workspace_clear": {"allocated_bytes": 8519680, "reserved_bytes": 20971520}, "workspace_clear_available": true, "workspace_clear_called": true, "allocated_bytes": 0, "reserved_bytes": 0}}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-11-04 22:12:59)
+==============================================================================

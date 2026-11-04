@@ -1,0 +1,21 @@
+P107 file input -> bounded CLI -> existing trainer -> new sharded boundary. Technical two-update fixture only, not corpus quality. Require all CPU/source/input/smoke bindings; preserve partial outputs and original model.
+
+==============================================================================
+[runlog] 2026-11-04 21:36:33  name=P107_Stage8bW_document_cli_boundary
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/train_p107_documents.py --profile handoff/audit/nov04_p107_cli/PROFILE_v1.json --profile-sha256 5F35E26BB7A12F5FE92DEEEDA2D100E590D65CE724F1A42EFA480A25136EEF8C --mode run --check-only
+==============================================================================
+{"status": "METADATA_AND_INPUT_BYTES_VALIDATED", "mode": "run", "input_contract": {"admission_status": "TECHNICAL_FIXTURE_ONLY", "authority_ref": "USER107_BOUNDED_TECHNICAL_ONLY", "documents": 4, "dropped_documents": 0, "duplicate_token_documents": 0, "file_bytes": 109885, "manifest_sha256": "7B12A1DDDAEF0B690D5DCB07F180D60B1E057B0FE66FACFE0B9C92898266CAE7", "purpose": "SYNTHETIC_TECHNICAL", "schema": "P107_DOCUMENT_INPUT_V1", "semantic_rights_leakage_review": "NOT_PERFORMED_BY_THIS_BYTE_CONTRACT", "shards_sha256": "7D432CCBD607F7DF803E217E30C2E4634A76EA7D0CFB81670FF5AC0AE54A219A", "source_sha256_validation": "DECLARED_ONLY_RAW_SOURCE_NOT_READ", "split": "train", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "tokens": 16388, "vocab_size": 32768}, "model_loads": 0, "gpu_runs": 0, "corpus_training": false, "full_training_cli_complete": false}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-04 21:36:34)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-04 21:36:34  name=P107_Stage8bW_document_cli_boundary
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 720s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/train_p107_documents.py --profile handoff/audit/nov04_p107_cli/PROFILE_v1.json --profile-sha256 5F35E26BB7A12F5FE92DEEEDA2D100E590D65CE724F1A42EFA480A25136EEF8C --mode run --execute
+==============================================================================
+[P107_CLI_FINAL] {"mode": "run", "status": "COMPLETE", "actual_exit": 0, "physical_updates": 2, "wall_seconds": 25.721746994997375, "exact_resume": null, "report": "/home/uranus/tinyLM/test_result/evidence/p107_document_cli_v1_20261104/run/report.json"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.5분  (2026-11-04 21:37:03)
+==============================================================================

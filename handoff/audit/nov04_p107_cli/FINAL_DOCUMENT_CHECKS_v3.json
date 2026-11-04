@@ -1,0 +1,105 @@
+{
+  "schema": "P107_P108_FINAL_DOCUMENT_CHECKS_V1",
+  "actual_exit": 0,
+  "wip": "handoff/WIP_20261022_작업원장.md",
+  "wip_sha256": "060FFE4FE8B294AAFE2F5C35A3D53D06DC3291CA56F8BE50D17A4B019BA45805",
+  "wip_unchanged": true,
+  "handoff": "handoff/202611042233_HANDOFF.md",
+  "handoff_sha256": "874E7A700D05DAEBE1AD4946CD5A5985982F61D232A5CA8B3718483E83D65827",
+  "checks": [
+    {
+      "name": "handoff",
+      "argv": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-I",
+        "-B",
+        ".agents/skills/session-handoff/scripts/check_handoff_codex.py",
+        "handoff/202611042233_HANDOFF.md"
+      ],
+      "actual_exit": 0,
+      "stdout": "CHECK handoff/202611042233_HANDOFF.md\n  PASS static structure and local links\nSUMMARY files=1 errors=0\n",
+      "stderr": ""
+    },
+    {
+      "name": "handoff_queue",
+      "argv": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/handoff_queue.py",
+        "--audit",
+        "handoff/202611042233_HANDOFF.md",
+        "--previous",
+        "handoff/202611011123_HANDOFF.md"
+      ],
+      "actual_exit": 0,
+      "stdout": "SUMMARY previous_incomplete=1 errors=0\n",
+      "stderr": ""
+    },
+    {
+      "name": "handoff_time",
+      "argv": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/handoff_time.py",
+        "handoff/202611042233_HANDOFF.md"
+      ],
+      "actual_exit": 0,
+      "stdout": "================================================================================================\n  ★핸드오프 파일명 시각 감사 — **증거 대조**(통계 휴리스틱 아님)\n  규칙: 파일명 시각 > 최초 존재 증거 + 10분 이면 에러. 한쪽만 본다\n================================================================================================\n\n  검사 1건 · 🚫모순 0건 · ✅정합 1건 · ⚠️건너뜀 0건\n",
+      "stderr": ""
+    },
+    {
+      "name": "result_conditions",
+      "argv": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/check_result_conditions.py",
+        "test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md",
+        "test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md"
+      ],
+      "actual_exit": 0,
+      "stdout": "RESULT PASS files=2 signatures=7\n",
+      "stderr": ""
+    },
+    {
+      "name": "result_closure",
+      "argv": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/check_result_closure.py",
+        "--manifest",
+        "handoff/audit/nov04_p107_cli/RESULT_CLOSURE_v1.json"
+      ],
+      "actual_exit": 0,
+      "stdout": "SUMMARY result_closure_errors=0\n",
+      "stderr": ""
+    },
+    {
+      "name": "wip_capsule",
+      "argv": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/wip.py",
+        "--file",
+        "handoff/WIP_20261022_작업원장.md",
+        "--capsule-check"
+      ],
+      "actual_exit": 0,
+      "stdout": "CAPSULE_OK WIP_20261022_작업원장.md chars=3928\n",
+      "stderr": ""
+    }
+  ],
+  "errors": [],
+  "model_loads": 0,
+  "cuda_calls": 0,
+  "global_static_pass": false
+}

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Same fixed calibration diagnosis; reuse the existing owned cuBLAS cleanup.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+sha256sum --check --status <<'PROFILE_HASH'
+2d38865e8cc2dfc2a2e38d5c97c676fd9e1ce1c15f1ce89f7e3f4c7a550c9572  test_result/evidence/p108_attenuation_v1_20261104/new595-broad-q/gpu_profile_v2.json
+PROFILE_HASH
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6cW_calibration_local_cleanup --note "Separate recovery phase after Stage6b cleanup failure. Same predeclared four calibration questions and conditions. Existing close_owned_cuda helper plus independent final audits; preserve original failure. No training, checkpoint writes or test selection."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6cW_calibration_local_cleanup -- "${PY}" -B -X utf8 -m scripts.diag_p108_attenuation_gpu check
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6cW_calibration_local_cleanup -- timeout --signal=TERM --kill-after=20s 360s "${PY}" -B -X utf8 -m scripts.diag_p108_attenuation_gpu execute

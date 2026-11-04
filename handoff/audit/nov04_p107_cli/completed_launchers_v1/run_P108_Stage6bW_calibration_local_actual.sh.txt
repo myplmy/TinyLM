@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Four fixed calibration questions only; gold-conditioned oracle is not deployable.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+sha256sum --check --status <<'PROFILE_HASH'
+89304e14eac50930f89257595730460f6e92e8523a1c870f873cb639df578126  test_result/evidence/p108_attenuation_v1_20261104/new595-broad-q/gpu_profile.json
+PROFILE_HASH
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6bW_calibration_local_actual --note "Four predeclared calibration examples: original/selected/unbounded-rank16/gold-oracle/restored. No new training, checkpoint writing, test selection or dialogue-quality claim. Budget300s plus cleanup; restore original model and cache exactly."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6bW_calibration_local_actual -- "${PY}" -B -X utf8 -m scripts.diag_p108_attenuation_gpu check
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6bW_calibration_local_actual -- timeout --signal=TERM --kill-after=20s 360s "${PY}" -B -X utf8 -m scripts.diag_p108_attenuation_gpu execute

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Verify explicit file input through the existing trainer/session/store.
+# CPU30 and the complete isolated canonical smoke are sealed prerequisites.
+# Two logical synthetic updates only; no corpus or intelligence assessment.
+# Budget: worker600s plus outer cleanup reserve; allocator6GiB/shared8GB.
+# A failed prerequisite stops this dependent phase; independent runs are separate.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+PROFILE="handoff/audit/nov04_p107_cli/PROFILE_v1.json"
+SHA="5F35E26BB7A12F5FE92DEEEDA2D100E590D65CE724F1A42EFA480A25136EEF8C"
+"${PY}" -B -X utf8 scripts/runlog.py --num 107 --name P107_Stage8bW_document_cli_boundary --note "P107 file input -> bounded CLI -> existing trainer -> new sharded boundary. Technical two-update fixture only, not corpus quality. Require all CPU/source/input/smoke bindings; preserve partial outputs and original model."
+"${PY}" -B -X utf8 scripts/runlog.py --num 107 --name P107_Stage8bW_document_cli_boundary -- "${PY}" -B -X utf8 scripts/train_p107_documents.py --profile "${PROFILE}" --profile-sha256 "${SHA}" --mode run --check-only
+"${PY}" -B -X utf8 scripts/runlog.py --num 107 --name P107_Stage8bW_document_cli_boundary -- timeout --signal=TERM --kill-after=20s 720s "${PY}" -B -X utf8 scripts/train_p107_documents.py --profile "${PROFILE}" --profile-sha256 "${SHA}" --mode run --execute

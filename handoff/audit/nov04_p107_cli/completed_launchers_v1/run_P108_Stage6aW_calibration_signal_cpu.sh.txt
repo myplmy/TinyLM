@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Existing calibration only; first-order predictions are not actual accuracy.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+export CUDA_VISIBLE_DEVICES=""
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6aW_calibration_signal_cpu --note "Calibration-only signal diagnosis. Reuse the sealed 580 positions; no model, CUDA, optimizer, checkpoint writing, test reselection or quality claim. Preserve all old negatives."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6aW_calibration_signal_cpu -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_attenuation
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage6aW_calibration_signal_cpu -- timeout --signal=TERM --kill-after=10s 180s "${PY}" -B -X utf8 -m scripts.diag_p108_attenuation

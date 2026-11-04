@@ -1,0 +1,32 @@
+Calibration-only signal diagnosis. Reuse the sealed 580 positions; no model, CUDA, optimizer, checkpoint writing, test reselection or quality claim. Preserve all old negatives.
+
+==============================================================================
+[runlog] 2026-11-04 21:58:49  name=P108_Stage6aW_calibration_signal_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p108_attenuation
+==============================================================================
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.038s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-04 21:58:52)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-04 21:58:52  name=P108_Stage6aW_calibration_signal_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=10s 180s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_attenuation
+==============================================================================
+{"actual_exit": 0, "relative_scales": {"cap_0.0025": 0.014265602578358032, "cap_0.01": 0.05706241031343213, "cap_0.04": 0.2282496412537285}, "status": "TECHNICAL_COMPLETE", "target_counts": {"all": 580, "body": 452, "eot": 128}, "wall_seconds": 0.27523181098513305}
+original {"all": {"mean_first_order_gain": 0.0, "original_positive": 348, "predicted_new_positive": 0, "predicted_positive": 348, "predicted_regressions": 0, "targets": 580}, "body": {"mean_first_order_gain": 0.0, "original_positive": 254, "predicted_new_positive": 0, "predicted_positive": 254, "predicted_regressions": 0, "targets": 452}, "eot": {"mean_first_order_gain": 0.0, "original_positive": 94, "predicted_new_positive": 0, "predicted_positive": 94, "predicted_regressions": 0, "targets": 128}}
+input_specific_oracle {"all": {"mean_first_order_gain": 2.2201468488057765, "original_positive": 348, "predicted_new_positive": 216, "predicted_positive": 564, "predicted_regressions": 0, "targets": 580}, "body": {"mean_first_order_gain": 2.2971921017113406, "original_positive": 254, "predicted_new_positive": 193, "predicted_positive": 447, "predicted_regressions": 0, "targets": 452}, "eot": {"mean_first_order_gain": 1.9480807994830034, "original_positive": 94, "predicted_new_positive": 23, "predicted_positive": 117, "predicted_regressions": 0, "targets": 128}}
+full_ridge_unbounded {"all": {"mean_first_order_gain": 2.025194680769676, "original_positive": 348, "predicted_new_positive": 186, "predicted_positive": 534, "predicted_regressions": 0, "targets": 580}, "body": {"mean_first_order_gain": 2.1151507058932144, "original_positive": 254, "predicted_new_positive": 168, "predicted_positive": 422, "predicted_regressions": 0, "targets": 452}, "eot": {"mean_first_order_gain": 1.7075374670521817, "original_positive": 94, "predicted_new_positive": 18, "predicted_positive": 112, "predicted_regressions": 0, "targets": 128}}
+rank16_unbounded {"all": {"mean_first_order_gain": 0.9662410771463356, "original_positive": 348, "predicted_new_positive": 24, "predicted_positive": 371, "predicted_regressions": 1, "targets": 580}, "body": {"mean_first_order_gain": 0.8725312975181768, "original_positive": 254, "predicted_new_positive": 20, "predicted_positive": 273, "predicted_regressions": 1, "targets": 452}, "eot": {"mean_first_order_gain": 1.2971537364582715, "original_positive": 94, "predicted_new_positive": 4, "predicted_positive": 98, "predicted_regressions": 0, "targets": 128}}
+cap_0.0025 {"all": {"mean_first_order_gain": 0.013784011201454208, "original_positive": 348, "predicted_new_positive": 1, "predicted_positive": 349, "predicted_regressions": 0, "targets": 580}, "body": {"mean_first_order_gain": 0.012447184727573382, "original_positive": 254, "predicted_new_positive": 1, "predicted_positive": 255, "predicted_regressions": 0, "targets": 452}, "eot": {"mean_first_order_gain": 0.018504679687345874, "original_positive": 94, "predicted_new_positive": 0, "predicted_positive": 94, "predicted_regressions": 0, "targets": 128}}
+cap_0.01 {"all": {"mean_first_order_gain": 0.05513604480581683, "original_positive": 348, "predicted_new_positive": 1, "predicted_positive": 349, "predicted_regressions": 0, "targets": 580}, "body": {"mean_first_order_gain": 0.04978873891029353, "original_positive": 254, "predicted_new_positive": 1, "predicted_positive": 255, "predicted_regressions": 0, "targets": 452}, "eot": {"mean_first_order_gain": 0.0740187187493835, "original_positive": 94, "predicted_new_positive": 0, "predicted_positive": 94, "predicted_regressions": 0, "targets": 128}}
+cap_0.04 {"all": {"mean_first_order_gain": 0.22054417922326733, "original_positive": 348, "predicted_new_positive": 3, "predicted_positive": 351, "predicted_regressions": 0, "targets": 580}, "body": {"mean_first_order_gain": 0.1991549556411741, "original_positive": 254, "predicted_new_positive": 2, "predicted_positive": 256, "predicted_regressions": 0, "targets": 452}, "eot": {"mean_first_order_gain": 0.296074874997534, "original_positive": 94, "predicted_new_positive": 1, "predicted_positive": 95, "predicted_regressions": 0, "targets": 128}}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-04 21:58:53)
+==============================================================================
