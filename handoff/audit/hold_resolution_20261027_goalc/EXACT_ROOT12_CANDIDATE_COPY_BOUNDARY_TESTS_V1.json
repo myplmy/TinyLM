@@ -1,0 +1,73 @@
+{
+  "status": "METADATA_BOUNDARY_TESTS_PASS_COPY_RUNTIME_NOT_RUN_BY_ROOT",
+  "cases": [
+    {
+      "case": "valid_C",
+      "returncode": 0,
+      "expected": 0,
+      "output": "{\"status\": \"METADATA_ONLY_COPY_PREFLIGHT_PASS\", \"role\": \"context_controls\", \"task\": 182, \"id\": \"expanded_train:915159\", \"candidate\": {\"path\": \"data_cache/p106b_hold_resolution_v1_20261027_goalc/exact_cohort_rendered_v1/88/88917051F2B10134DFBD2149BA60EDC3E833C1F4ACBCAAE912D9621500398F5D.txt\", \"sha256\": \"88917051F2B10134DFBD2149BA60EDC3E833C1F4ACBCAAE912D9621500398F5D\"}, \"output\": \"data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_controls/root12_independent_admission_counter_v1/expanded_train_915159_root12_working_task182_v987654.txt\", \"task_sha256\": \"CA5F76A4994255F61DA26EA206639EC87620B9BF02CC3F0DEB1E4E52DF076DF1\", \"manifest_sha256\": \"A71B3109889F32F5969298287C7ADA9B1C223130A8603D87B80D2D910A57527D\", \"guard_sha256\": \"7CF0AA8B46DDAED415851EE5F356B78EFBE12F33530B8217F028F86904594306\", \"original_payload_opens\": 0, \"candidate_payload_opens\": 0, \"training_authorized\": false, \"cache_admitted\": false}",
+      "passed": true
+    },
+    {
+      "case": "valid_L",
+      "returncode": 0,
+      "expected": 0,
+      "output": "{\"status\": \"METADATA_ONLY_COPY_PREFLIGHT_PASS\", \"role\": \"context_latin\", \"task\": 166, \"id\": \"expanded_train:111357\", \"candidate\": {\"path\": \"data_cache/p106b_hold_resolution_v1_20261027_goalc/exact_cohort_rendered_v1/09/090FECF7F6712E193F7E9EEB8F4D9BDBD4C005F3BA6E17311589CBF49A76D374.txt\", \"sha256\": \"090FECF7F6712E193F7E9EEB8F4D9BDBD4C005F3BA6E17311589CBF49A76D374\"}, \"output\": \"data_cache/p106b_hold_resolution_v1_20261027_goalc/agents/context_latin/root12_independent_admission_counter_v1/111357_counter_working_v987654.txt\", \"task_sha256\": \"4D020F48A0AF56CCBA86B8608B21DA50C13D4BAF0A37C1CACC4B4ECD05706A5A\", \"manifest_sha256\": \"A71B3109889F32F5969298287C7ADA9B1C223130A8603D87B80D2D910A57527D\", \"guard_sha256\": \"7CF0AA8B46DDAED415851EE5F356B78EFBE12F33530B8217F028F86904594306\", \"original_payload_opens\": 0, \"candidate_payload_opens\": 0, \"training_authorized\": false, \"cache_admitted\": false}",
+      "passed": true
+    },
+    {
+      "case": "wrong_role",
+      "returncode": 2,
+      "expected": 2,
+      "output": "{\"status\": \"COPY_REFUSED\", \"reason\": \"source is outside role assignment\"}",
+      "passed": true
+    },
+    {
+      "case": "wrong_task",
+      "returncode": 2,
+      "expected": 2,
+      "output": "{\"status\": \"COPY_REFUSED\", \"reason\": \"source is outside specified TASK\"}",
+      "passed": true
+    },
+    {
+      "case": "existing_output",
+      "returncode": 2,
+      "expected": 2,
+      "output": "{\"status\": \"COPY_REFUSED\", \"reason\": \"target already exists; preserve it and choose a new version\"}",
+      "passed": true
+    },
+    {
+      "case": "path_escape",
+      "returncode": 2,
+      "expected": 2,
+      "output": "{\"status\": \"COPY_REFUSED\", \"reason\": \"output must be an exact ID/TASK versioned basename\"}",
+      "passed": true
+    },
+    {
+      "case": "restricted_id",
+      "returncode": 2,
+      "expected": 2,
+      "output": "{\"status\": \"COPY_REFUSED\", \"reason\": \"restricted source ID; payload stays closed\"}",
+      "passed": true
+    },
+    {
+      "case": "wrong_basename_id",
+      "returncode": 2,
+      "expected": 2,
+      "output": "{\"status\": \"COPY_REFUSED\", \"reason\": \"output must be an exact ID/TASK versioned basename\"}",
+      "passed": true
+    }
+  ],
+  "input_pins": {
+    "handoff/audit/hold_resolution_20261027_goalc/copy_exact_root12_candidate_v1.py": "0070F6B15C9DE8AD3140B7F3BE02A348ADFC79931235777571F0BF8055275FDA",
+    "handoff/audit/hold_resolution_20261027_goalc/test_copy_exact_root12_candidate_v1.py": "C8DFCD72B4000F85F45053898F1A400373195CC81F1B51AC5F3C0FD37AE87E6A",
+    "tmp/hold-c-root12-copy-v1": "D427EDFA0195E864307F63DFD4D9A243F1097CD25062083B54EC94E0752D740A",
+    "tmp/hold-l-root12-copy-v1": "D2C49DFDCBC1DC8D2E3C318D7941D41C18B19EA83441D0F6D3B559BB5E39B9E8"
+  },
+  "root_txt_creations": 0,
+  "root_original_or_candidate_payload_opens": 0,
+  "static_ast_utf8": "PASS",
+  "runtime_copy_not_run_reason": "TXT creation belongs to assigned agents; root ran check-only.",
+  "goal_complete": false,
+  "training_authorized": false
+}
