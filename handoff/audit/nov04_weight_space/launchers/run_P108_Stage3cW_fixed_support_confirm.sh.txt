@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Frozen TEST, actual-delta row-sign controls and reverse-delta diagnostic.
+# CPU50 and the fixed-support profile must pass first. Expected under 15 min.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3cW_fixed_support_confirm --note "Frozen test128 plus manual dialogue16; primary latent edit, original,3 controls preserving actual delta support/absolute values/spectrum, and reverse delta. Zero training; raw answers and negatives retained."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3cW_fixed_support_confirm -- timeout --signal=TERM --kill-after=20s 2500s "${PY}" -B -X utf8 -m scripts.diag_p108_fixed_support confirm

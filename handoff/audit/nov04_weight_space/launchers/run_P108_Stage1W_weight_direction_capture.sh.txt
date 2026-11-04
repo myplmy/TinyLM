@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Existing completed model, original answers, no-op parity, direction capture.
+# CPU tests and frozen profile must pass. No training or original writes.
+# Estimate: 5 to 30 minutes; actual Torch VRAM recorded; hard limit 5000 sec.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1W_weight_direction_capture --note "Original repair answers and history-order contrasts; zero updates; no-op and final original-core equality required. Natural and forced loops are reported separately."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1W_weight_direction_capture -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space baseline p108w_v1_20261104 new595-broad-q

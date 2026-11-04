@@ -1,0 +1,23 @@
+CPU byte-exact no-op and rollback, original Stage0 failure and Stage1 signed-zero observation preserved; GPU NOT_RUN.
+
+==============================================================================
+[runlog] 2026-11-04 18:30:04  name=P108_Stage0cW_weight_space_byte_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route
+==============================================================================
+...........F..................................
+======================================================================
+FAIL: test_effective_edit_changes_output_and_restores_exact_cache_object (scripts.test_p108_weight_space.RealizationTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p108_weight_space.py", line 74, in test_effective_edit_changes_output_and_restores_exact_cache_object
+    self.assertFalse(torch.equal(model.a(x), original))
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 46 tests in 0.876s
+
+FAILED (failures=1)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-11-04 18:30:07)
+==============================================================================

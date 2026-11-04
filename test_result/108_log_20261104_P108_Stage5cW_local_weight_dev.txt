@@ -1,0 +1,49 @@
+P108 local search: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests.
+
+==============================================================================
+[runlog] 2026-11-04 20:12:49  name=P108_Stage5cW_local_weight_dev
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1300s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_local_linear search
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt", "checkpoint_sha256": "F3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C", "core_sha256": "B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E", "report_sha256": "079A3C67E85797AFB4978724CBF1C9FD32F9DB1AF4402CAA20283F1F56E89FF4", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "new595-broad-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[PROGRESS] original_dev 16/128
+[PROGRESS] original_dev 32/128
+[PROGRESS] original_dev 48/128
+[PROGRESS] original_dev 64/128
+[PROGRESS] original_dev 80/128
+[PROGRESS] original_dev 96/128
+[PROGRESS] original_dev 112/128
+[PROGRESS] original_dev 128/128
+[VARIANT] {"variant": "original_dev", "items": 128, "scored": 128, "exact": 20, "protected_items": 32, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0, "max_new": 53, "generated_tokens": 5417, "seconds": 77.4755900609889, "allocated_peak_bytes": 724696064, "reserved_peak_bytes": 736100352}
+[PROGRESS] cap_0.0025 16/128
+[PROGRESS] cap_0.0025 32/128
+[PROGRESS] cap_0.0025 48/128
+[PROGRESS] cap_0.0025 64/128
+[PROGRESS] cap_0.0025 80/128
+[PROGRESS] cap_0.0025 96/128
+[PROGRESS] cap_0.0025 112/128
+[PROGRESS] cap_0.0025 128/128
+[VARIANT] {"variant": "cap_0.0025", "items": 128, "scored": 128, "exact": 20, "protected_items": 32, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0, "max_new": 53, "generated_tokens": 5418, "seconds": 73.29694411202217, "allocated_peak_bytes": 767612416, "reserved_peak_bytes": 778043392}
+[PROGRESS] cap_0.01 16/128
+[PROGRESS] cap_0.01 32/128
+[PROGRESS] cap_0.01 48/128
+[PROGRESS] cap_0.01 64/128
+[PROGRESS] cap_0.01 80/128
+[PROGRESS] cap_0.01 96/128
+[PROGRESS] cap_0.01 112/128
+[PROGRESS] cap_0.01 128/128
+[VARIANT] {"variant": "cap_0.01", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0, "max_new": 52, "generated_tokens": 5380, "seconds": 75.2493118160055, "allocated_peak_bytes": 767612416, "reserved_peak_bytes": 778043392}
+[PROGRESS] cap_0.04 16/128
+[PROGRESS] cap_0.04 32/128
+[PROGRESS] cap_0.04 48/128
+[PROGRESS] cap_0.04 64/128
+[PROGRESS] cap_0.04 80/128
+[PROGRESS] cap_0.04 96/128
+[PROGRESS] cap_0.04 112/128
+[PROGRESS] cap_0.04 128/128
+[VARIANT] {"variant": "cap_0.04", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0, "max_new": 52, "generated_tokens": 5408, "seconds": 73.27443190998747, "allocated_peak_bytes": 767612416, "reserved_peak_bytes": 778043392}
+[BODY_UNCHANGED] B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E (CPU/GPU load + session exit)
+[FINAL] {"phase": "search", "status": "TECHNICAL_COMPLETE", "selected": {"name": "cap_0.0025", "relative_cap": 0.0025, "requested_delta_sha256": "330EF2AD0B2C682394CE00936127AEDCD1A0BC75505D3A98A2FA0FA0FA9C990E", "selection_split": "DEV_ONLY", "criterion": "STRICT_EXACT_PROTECTED_EMPTY_ECHO_LOOP_DELTA"}, "variants": [{"name": "original_dev", "scored": 128, "exact": 20, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0}, {"name": "cap_0.0025", "scored": 128, "exact": 20, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0}, {"name": "cap_0.01", "scored": 128, "exact": 19, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0}, {"name": "cap_0.04", "scored": 128, "exact": 19, "protected_exact": 0, "loop_indicators": 55, "question_echoes": 0, "empty": 0}], "wall_seconds": 309.25565630799974}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 5.5분  (2026-11-04 20:18:17)
+==============================================================================

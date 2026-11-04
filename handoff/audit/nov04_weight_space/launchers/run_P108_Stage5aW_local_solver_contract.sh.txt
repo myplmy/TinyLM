@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Supervised post-hoc correction of the same completed TinyLM checkpoint.
+# Original checkpoint and other-session data are read-only; no new300M.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5aW_local_solver_contract --note "P108 local prepare: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5aW_local_solver_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route scripts.test_p108_signed_control scripts.test_p108_float_projection scripts.test_p108_local_linear
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5aW_local_solver_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_local_linear prepare

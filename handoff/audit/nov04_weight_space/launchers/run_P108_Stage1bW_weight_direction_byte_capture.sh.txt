@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Existing model, byte-exact no-op and natural-loop contrast. No learning.
+# CPU v2 must pass; expected under 5 minutes, hard cap 5000 seconds.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1bW_weight_direction_byte_capture --note "V2 signed-zero no-op; original repair answers, direction capture and final core equality. Same selected CP and data recipe as v1."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1bW_weight_direction_byte_capture -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space baseline p108w_v2_20261104 new595-broad-q

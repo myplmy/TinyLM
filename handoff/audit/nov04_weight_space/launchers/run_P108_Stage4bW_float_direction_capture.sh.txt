@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# P108 independently trained float model; paired within this checkpoint only.
+# No training, original writes or duplicate float latent/effective search arms.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4bW_float_direction_capture --note "Float paired baseline; original core and source preservation required; Q versus F is descriptive only."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4bW_float_direction_capture -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_float_pair baseline

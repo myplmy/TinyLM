@@ -1,0 +1,188 @@
+"""CPU contracts for P108. No checkpoint/model/GPU quality execution."""
+import math
+from types import SimpleNamespace
+import unittest
+
+import torch
+
+from scripts import p108_weight_space as w
+from scripts.p106b_weight_route import weight_route
+from scripts.test_p106b_weight_route import Mini
+
+
+def fixture():
+    model = Mini()
+    model.layers = [SimpleNamespace(mlp=[SimpleNamespace(down_proj=m)]) for m in (model.a, model.b)]
+    model.visit_schedule = lambda: [0, 1]
+    model.eval()
+    return model
+
+
+class ProjectionTests(unittest.TestCase):
+    def test_projection_removes_only_selected_direction(self):
+        weight = torch.tensor([[1., 2., 3.], [4., 5., 6.]])
+        u = torch.tensor([3., 4.]) / 5
+        delta = w.projection_delta(weight, u, [0, 2], 1.)
+        self.assertTrue(torch.equal(delta[:, 1], torch.zeros(2)))
+        torch.testing.assert_close(u @ (weight + delta)[:, [0, 2]], torch.zeros(2), atol=2e-6, rtol=0)
+        v = torch.tensor([-4., 3.]) / 5
+        torch.testing.assert_close(v @ (weight + delta), v @ weight, atol=2e-6, rtol=0)
+
+    def test_factorized_output_matches_matrix(self):
+        torch.manual_seed(7)
+        weight, x, u = torch.randn(7, 13), torch.randn(5, 13), w.unit_direction(torch.randn(7))
+        cols = [1, 5, 9]
+        delta = w.projection_delta(weight, u, cols, .5)
+        factor = -.5 * (x[:, cols] @ (u @ weight[:, cols]))[:, None] * u
+        torch.testing.assert_close(x @ delta.T, factor, atol=1e-6, rtol=1e-5)
+
+    def test_invalid_columns_rejected(self):
+        for cols in ([], [0, 0], [-1], [3], [True]):
+            with self.subTest(cols=cols), self.assertRaises(ValueError):
+                w.projection_delta(torch.ones(2, 3), torch.ones(2), cols, 1.)
+
+    def test_invalid_gain_and_direction_rejected(self):
+        for gain in (-1, math.nan, math.inf, True):
+            with self.assertRaises(ValueError):
+                w.projection_delta(torch.ones(2, 3), torch.ones(2), [0], gain)
+        for u in (torch.zeros(2), torch.tensor([1., math.nan]), torch.ones(3)):
+            with self.assertRaises(ValueError):
+                w.projection_delta(torch.ones(2, 3), u, [0], 1.)
+
+    def test_random_control_norm_and_seed(self):
+        weight = torch.arange(35, dtype=torch.float32).reshape(5, 7) + .3
+        a = w.matched_random_delta(weight, [1, 4], 2.5, 13)
+        b = w.matched_random_delta(weight, [1, 4], 2.5, 13)
+        self.assertTrue(torch.equal(a, b))
+        self.assertAlmostEqual(float(a.norm()), 2.5, places=5)
+        self.assertEqual(int(a[:, [0, 2, 3, 5, 6]].ne(0).sum()), 0)
+
+
+class RealizationTests(unittest.TestCase):
+    def test_effective_edit_changes_output_and_restores_exact_cache_object(self):
+        model = fixture()
+        with weight_route(model, 'ternary') as route, torch.no_grad():
+            model.freeze_quant()
+            before, cache = model.a.weight.clone(), model.a._wq
+            x = torch.tensor([[.3, -.8]])
+            original = model.a(x).clone()
+            delta = w.projection_delta(cache, torch.tensor([.6, .8]), [0], .5)
+            with w.edit_weights(model, route, [(0, delta)], 'effective') as receipts:
+                self.assertTrue(torch.equal(model.a.weight, before))
+                self.assertFalse(torch.equal(model.a(x), original))
+                self.assertEqual(receipts[0]['latent_changed'], 0)
+                self.assertEqual(receipts[0]['changed_outside_requested'], 0)
+            self.assertIs(model.a._wq, cache)
+            self.assertTrue(torch.equal(model.a(x), original))
+
+    def test_latent_requantization_reports_actual_change_and_restores(self):
+        model = fixture()
+        with weight_route(model, 'ternary') as route, torch.no_grad():
+            model.freeze_quant()
+            before, cache = model.a.weight.clone(), model.a._wq
+            delta = torch.tensor([[.5, 0.], [0., 0.]])
+            with w.edit_weights(model, route, [(0, delta)], 'latent') as receipts:
+                route.assert_active()
+                model.a(torch.ones(1, 2))
+                self.assertGreater(receipts[0]['latent_changed'], 0)
+                self.assertNotEqual(receipts[0]['effective_delta_norm'], receipts[0]['requested_delta_norm'])
+            self.assertTrue(torch.equal(model.a.weight, before))
+            self.assertIs(model.a._wq, cache)
+            model.a(torch.ones(1, 2))
+
+    def test_exception_rolls_back_all_layers(self):
+        model = fixture()
+        with weight_route(model, 'float') as route, torch.no_grad():
+            model.freeze_quant()
+            weights = [m.weight.clone() for m in (model.a, model.b)]
+            caches = [m._wq for m in (model.a, model.b)]
+            with self.assertRaisesRegex(RuntimeError, 'injected'):
+                with w.edit_weights(model, route, [(0, torch.ones(2, 2)), (1, torch.ones(2, 2))], 'latent'):
+                    raise RuntimeError('injected')
+            for m, value, cache in zip((model.a, model.b), weights, caches):
+                self.assertTrue(torch.equal(m.weight, value))
+                self.assertIs(m._wq, cache)
+            model(torch.ones(1, 2))
+
+    def test_noop_is_bit_exact_for_both_realizations_and_routes(self):
+        for mode in ('float', 'ternary'):
+            for realization in ('effective', 'latent'):
+                model = fixture()
+                with weight_route(model, mode) as route, torch.no_grad():
+                    model.freeze_quant()
+                    expected = model(torch.ones(3, 2)).clone()
+                    with w.edit_weights(model, route, [(0, torch.zeros(2, 2))], realization) as receipts:
+                        self.assertTrue(torch.equal(model(torch.ones(3, 2)), expected))
+                        self.assertEqual(receipts[0]['effective_changed'], 0)
+                    self.assertTrue(torch.equal(model(torch.ones(3, 2)), expected))
+
+    def test_prevalidation_prevents_partial_mutation(self):
+        model = fixture()
+        with weight_route(model, 'ternary') as route, torch.no_grad():
+            model.freeze_quant()
+            cache = model.a._wq
+            with self.assertRaises(ValueError):
+                with w.edit_weights(model, route, [(0, torch.ones(2, 2)), (1, torch.ones(7, 3))], 'latent'):
+                    self.fail('must reject before entry')
+            self.assertIs(model.a._wq, cache)
+
+    def test_shared_and_repeated_visits_rejected(self):
+        model = fixture()
+        model.layers[1].mlp[0].down_proj = model.a
+        with self.assertRaises(ValueError):
+            w.down_modules(model)
+        model = fixture()
+        model.visit_schedule = lambda: [0, 1, 0, 1]
+        with self.assertRaises(ValueError):
+            w.down_modules(model)
+
+    def test_unfrozen_and_training_models_rejected(self):
+        model = fixture()
+        with weight_route(model, 'float') as route:
+            with self.assertRaises(ValueError):
+                with w.edit_weights(model, route, [(0, torch.zeros(2, 2))], 'effective'):
+                    pass
+
+
+class OutcomeTests(unittest.TestCase):
+    def test_practice_splits_and_code_answers_are_frozen_disjoint(self):
+        from scripts.diag_p108_weight_space import make_data
+        rows = make_data()
+        from collections import Counter
+        self.assertEqual(Counter(r['split'] for r in rows), dict(repair=64, dev=64, test=128, open=16))
+        formal = [r for r in rows if r['split'] != 'open']
+        self.assertEqual(len({r['question'] for r in formal}), len(formal))
+        self.assertEqual(len({r['id'] for r in rows}), len(rows))
+        self.assertTrue(all(r['expected'] for r in formal))
+
+    def test_paths_reject_alias_traversal_and_unknown_models(self):
+        from scripts.diag_p108_weight_space import locations
+        for tag in ('../bad', 'p108w_v1_20261104/escape', 'unbound'):
+            with self.assertRaises(ValueError):
+                locations(tag, 'new595-broad-q')
+        with self.assertRaises(ValueError):
+            locations('p108w_v1_20261104', 'unknown')
+
+    def test_nonfinite_random_control_rejected(self):
+        with self.assertRaises(ValueError):
+            w.matched_random_delta(torch.ones(2, 3), [0], math.nan, 13)
+
+    def test_repeated_output_is_indicator_not_correctness(self):
+        value = w.repetition_metrics([6, 7, 8] * 8, '가 가 가', '가를 세 번 쓰세요')
+        self.assertTrue(value['loop_indicator'])
+        self.assertTrue(w.exact_answer('가 가 가', '가 가 가'))
+
+    def test_strict_answers_do_not_accept_wrong_prefix(self):
+        self.assertTrue(w.exact_answer(' 5. ', '5'))
+        self.assertFalse(w.exact_answer('5입니다. 6입니다.', '5'))
+        self.assertFalse(w.exact_answer('', '5'))
+
+    def test_copied_question_and_empty_are_separate(self):
+        value = w.repetition_metrics([7], '문맥의 이름을 알려주세요', '문맥의 이름을 알려주세요')
+        self.assertTrue(value['question_echo'])
+        self.assertFalse(value['empty'])
+        self.assertTrue(w.repetition_metrics([], '', '질문')['empty'])
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)

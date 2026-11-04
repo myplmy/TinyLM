@@ -1,0 +1,319 @@
+*** Begin Patch
+*** Update File: /home/uranus/tinyLM/test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md
+@@
+ <!-- /TINYLM_CONDITION_SIGNATURE_V1 -->
++
++## 11. 수행 명령 원형과 완료 런처 정리
++
++실제 수행16개는 실패1시도를 포함한 종료 기록이며 성공16개를 뜻하지 않는다. 미수행3개는 더 엄격한 새 단계로 대체됐으므로 취소 보존한다. 원형/정확 argv/SHA를 아래와 [명령 보존 영수증](../handoff/audit/nov04_weight_space/LAUNCHER_ARCHIVE_v1.json)에 남긴다. 삭제는 봉인된 출력의 반복 실행을 요청하는 뜻이 아니며 재실행에는 새 승인·태그가 필요하다.
++
++### run_P108_Stage0bW_weight_space_contract.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# CPU contracts and write-once profile. No checkpoint execution or GPU.
++# Budget: up to 5 minutes. Any prerequisite failure stops this stage.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0bW_weight_space_contract --note "CPU regression and frozen repair/dev/test; GPU NOT_RUN; original failure preserved."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0bW_weight_space_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0bW_weight_space_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space prepare p108w_v1_20261104 new595-broad-q
++```
++
++### run_P108_Stage0cW_weight_space_byte_contract.sh
++
++실제 종료코드 1. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# CPU46 including signed-zero cache bytes. Fresh v2 profile; original preserved.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0cW_weight_space_byte_contract --note "CPU byte-exact no-op and rollback, original Stage0 failure and Stage1 signed-zero observation preserved; GPU NOT_RUN."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0cW_weight_space_byte_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0cW_weight_space_byte_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space prepare p108w_v2_20261104 new595-broad-q
++```
++
++### run_P108_Stage0dW_weight_space_byte_contract.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# CPU46 with explicit negative-zero fixture and a nonzero projection column.
++# Fresh v2. Prior CPU failures and original GPU observation are preserved.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0dW_weight_space_byte_contract --note "CPU46 byte-exact no-op, nonzero edit and rollback; GPU NOT_RUN. This repairs a zero-column test fixture without changing the research algorithm."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0dW_weight_space_byte_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0dW_weight_space_byte_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space prepare p108w_v2_20261104 new595-broad-q
++```
++
++### run_P108_Stage0eW_fixed_support_contract.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# CPU50 total: P108 contracts plus the actual-delta support/spectrum controls.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0eW_fixed_support_contract --note "Freeze stronger controls before any test answers. Preserve actual quantization spill, requested copies and repeats. CPU only."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0eW_fixed_support_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route scripts.test_p108_signed_control
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0eW_fixed_support_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_fixed_support prepare
++```
++
++### run_P108_Stage1W_weight_direction_capture.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Existing completed model, original answers, no-op parity, direction capture.
++# CPU tests and frozen profile must pass. No training or original writes.
++# Estimate: 5 to 30 minutes; actual Torch VRAM recorded; hard limit 5000 sec.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1W_weight_direction_capture --note "Original repair answers and history-order contrasts; zero updates; no-op and final original-core equality required. Natural and forced loops are reported separately."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1W_weight_direction_capture -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space baseline p108w_v1_20261104 new595-broad-q
++```
++
++### run_P108_Stage1bW_weight_direction_byte_capture.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Existing model, byte-exact no-op and natural-loop contrast. No learning.
++# CPU v2 must pass; expected under 5 minutes, hard cap 5000 seconds.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1bW_weight_direction_byte_capture --note "V2 signed-zero no-op; original repair answers, direction capture and final core equality. Same selected CP and data recipe as v1."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage1bW_weight_direction_byte_capture -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space baseline p108w_v2_20261104 new595-broad-q
++```
++
++### run_P108_Stage2W_weight_direction_search.sh
++
++NOT_RUN·대체되어 취소 보존.
++
++```sh
++#!/usr/bin/env bash
++# Dev-only paired targeted continuous versus latent-requantized edits.
++# Estimate: 10 to 60 minutes. No test selection, no optimizer, no CP save.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage2W_weight_direction_search --note "Dev selection only; original, effective and latent edits. Loop reduction alone is not answer-quality improvement; original rollback required."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage2W_weight_direction_search -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space search p108w_v1_20261104 new595-broad-q
++```
++
++### run_P108_Stage2bW_weight_direction_search.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# V2 dev-only targeted effective/latent edit comparison. No test selection.
++# Estimate 10 to 60 minutes; original core and cache rollback mandatory.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage2bW_weight_direction_search --note "V2 frozen DEV selection; exact, protected copy/repeat, empty, echo, loop and delta norm all retained. No training."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage2bW_weight_direction_search -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space search p108w_v2_20261104 new595-broad-q
++```
++
++### run_P108_Stage3W_weight_direction_confirm.sh
++
++NOT_RUN·대체되어 취소 보존.
++
++```sh
++#!/usr/bin/env bash
++# Frozen winner, original and three norm-matched random controls on heldout.
++# Estimate: 10 to 60 minutes; independent practice is not an official benchmark.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3W_weight_direction_confirm --note "Frozen winner and three random controls; preserve all question-answer pairs; correctness, copies, requested repeats and empty outputs are separate."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3W_weight_direction_confirm -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space confirm p108w_v1_20261104 new595-broad-q
++```
++
++### run_P108_Stage3bW_weight_direction_confirm.sh
++
++NOT_RUN·대체되어 취소 보존.
++
++```sh
++#!/usr/bin/env bash
++# V2 winner fixed before heldout; original plus three norm-matched controls.
++# Estimate 10 to 60 minutes; all raw answers preserved in sub-3MB shards.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3bW_weight_direction_confirm --note "V2 heldout plus ordinary dialogue. These practice results are not an official benchmark or full-training intelligence improvement."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3bW_weight_direction_confirm -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space confirm p108w_v2_20261104 new595-broad-q
++```
++
++### run_P108_Stage3cW_fixed_support_confirm.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Frozen TEST, actual-delta row-sign controls and reverse-delta diagnostic.
++# CPU50 and the fixed-support profile must pass first. Expected under 15 min.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3cW_fixed_support_confirm --note "Frozen test128 plus manual dialogue16; primary latent edit, original,3 controls preserving actual delta support/absolute values/spectrum, and reverse delta. Zero training; raw answers and negatives retained."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage3cW_fixed_support_confirm -- timeout --signal=TERM --kill-after=20s 2500s "${PY}" -B -X utf8 -m scripts.diag_p108_fixed_support confirm
++```
++
++### run_P108_Stage4aW_float_contract.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# P108 independently trained float model; paired within this checkpoint only.
++# No training, original writes or duplicate float latent/effective search arms.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4aW_float_contract --note "Float paired prepare; original core and source preservation required; Q versus F is descriptive only."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4aW_float_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_float_projection
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4aW_float_contract -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_float_pair prepare
++```
++
++### run_P108_Stage4bW_float_direction_capture.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# P108 independently trained float model; paired within this checkpoint only.
++# No training, original writes or duplicate float latent/effective search arms.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4bW_float_direction_capture --note "Float paired baseline; original core and source preservation required; Q versus F is descriptive only."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4bW_float_direction_capture -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_float_pair baseline
++```
++
++### run_P108_Stage4cW_float_unique_search.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# P108 independently trained float model; paired within this checkpoint only.
++# No training, original writes or duplicate float latent/effective search arms.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4cW_float_unique_search --note "Float paired search; original core and source preservation required; Q versus F is descriptive only."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4cW_float_unique_search -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_float_pair search
++```
++
++### run_P108_Stage4dW_float_direction_confirm.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# P108 independently trained float model; paired within this checkpoint only.
++# No training, original writes or duplicate float latent/effective search arms.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4dW_float_direction_confirm --note "Float paired confirm; original core and source preservation required; Q versus F is descriptive only."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage4dW_float_direction_confirm -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_float_pair confirm
++```
++
++### run_P108_Stage5aW_local_solver_contract.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Supervised post-hoc correction of the same completed TinyLM checkpoint.
++# Original checkpoint and other-session data are read-only; no new300M.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5aW_local_solver_contract --note "P108 local prepare: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5aW_local_solver_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route scripts.test_p108_signed_control scripts.test_p108_float_projection scripts.test_p108_local_linear
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5aW_local_solver_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_local_linear prepare
++```
++
++### run_P108_Stage5bW_local_gradient_capture.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Supervised post-hoc correction of the same completed TinyLM checkpoint.
++# Original checkpoint and other-session data are read-only; no new300M.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5bW_local_gradient_capture --note "P108 local capture: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5bW_local_gradient_capture -- timeout --signal=TERM --kill-after=20s 1000s "${PY}" -B -X utf8 -m scripts.diag_p108_local_linear capture
++```
++
++### run_P108_Stage5cW_local_weight_dev.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Supervised post-hoc correction of the same completed TinyLM checkpoint.
++# Original checkpoint and other-session data are read-only; no new300M.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5cW_local_weight_dev --note "P108 local search: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5cW_local_weight_dev -- timeout --signal=TERM --kill-after=20s 1300s "${PY}" -B -X utf8 -m scripts.diag_p108_local_linear search
++```
++
++### run_P108_Stage5dW_local_weight_confirm.sh
++
++실제 종료코드 0. 종료한 시도이며 과학적 채택과 별개다.
++
++```sh
++#!/usr/bin/env bash
++# Supervised post-hoc correction of the same completed TinyLM checkpoint.
++# Original checkpoint and other-session data are read-only; no new300M.
++set -euo pipefail
++cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
++source scripts/shell/tinylm_env.sh
++PY="$(tinylm_python)"
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5dW_local_weight_confirm --note "P108 local confirm: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests."
++"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage5dW_local_weight_confirm -- timeout --signal=TERM --kill-after=20s 2500s "${PY}" -B -X utf8 -m scripts.diag_p108_local_linear confirm
++```
++
+*** End Patch

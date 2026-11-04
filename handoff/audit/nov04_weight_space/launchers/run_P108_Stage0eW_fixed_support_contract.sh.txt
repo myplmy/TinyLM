@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# CPU50 total: P108 contracts plus the actual-delta support/spectrum controls.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0eW_fixed_support_contract --note "Freeze stronger controls before any test answers. Preserve actual quantization spill, requested copies and repeats. CPU only."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0eW_fixed_support_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route scripts.test_p108_signed_control
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0eW_fixed_support_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_fixed_support prepare

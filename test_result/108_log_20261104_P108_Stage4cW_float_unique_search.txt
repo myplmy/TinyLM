@@ -1,0 +1,38 @@
+Float paired search; original core and source preservation required; Q versus F is descriptive only.
+
+==============================================================================
+[runlog] 2026-11-04 19:07:11  name=P108_Stage4cW_float_unique_search
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 5000s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_float_pair search
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_float.pt", "checkpoint_sha256": "2630B4C2862A41CB677AC9CAA89B0F2DD03234C4FD540FCCA6205AA847CF1C71", "core_sha256": "00262611800E81BB117DB68F8053ED0A15A8454FBD9D34AFEFE44DB9A0D21B0D", "report_sha256": "502078D55C1FD104415C15FBB2E9780FC082C3F65FBC9BE6976F8AA4ECCA333F", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "float", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "LATENT_IDENTITY_VIEW", "backward": "IDENTITY", "dedicated_loader_required": true}, "name": "new595-broad-f", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[PROGRESS] original_dev 16/64
+[PROGRESS] original_dev 32/64
+[PROGRESS] original_dev 48/64
+[PROGRESS] original_dev 64/64
+[VARIANT] {"variant": "original_dev", "items": 64, "scored": 64, "exact": 4, "protected_items": 16, "protected_exact": 0, "loop_indicators": 10, "question_echoes": 0, "empty": 0, "max_new": 10, "generated_tokens": 1223, "seconds": 17.983317792997696, "allocated_peak_bytes": 386014208, "reserved_peak_bytes": 392167424}
+[PROGRESS] effective_g0.25 16/64
+[PROGRESS] effective_g0.25 32/64
+[PROGRESS] effective_g0.25 48/64
+[PROGRESS] effective_g0.25 64/64
+[VARIANT] {"variant": "effective_g0.25", "items": 64, "scored": 64, "exact": 4, "protected_items": 16, "protected_exact": 0, "loop_indicators": 9, "question_echoes": 1, "empty": 0, "max_new": 9, "generated_tokens": 1155, "seconds": 15.343700637982693, "allocated_peak_bytes": 447927808, "reserved_peak_bytes": 476053504}
+[PROGRESS] effective_g0.5 16/64
+[PROGRESS] effective_g0.5 32/64
+[PROGRESS] effective_g0.5 48/64
+[PROGRESS] effective_g0.5 64/64
+[VARIANT] {"variant": "effective_g0.5", "items": 64, "scored": 64, "exact": 4, "protected_items": 16, "protected_exact": 0, "loop_indicators": 9, "question_echoes": 1, "empty": 0, "max_new": 8, "generated_tokens": 1134, "seconds": 15.680907466012286, "allocated_peak_bytes": 447927808, "reserved_peak_bytes": 476053504}
+[PROGRESS] effective_g1.0 16/64
+[PROGRESS] effective_g1.0 32/64
+[PROGRESS] effective_g1.0 48/64
+[PROGRESS] effective_g1.0 64/64
+[VARIANT] {"variant": "effective_g1.0", "items": 64, "scored": 64, "exact": 4, "protected_items": 16, "protected_exact": 0, "loop_indicators": 10, "question_echoes": 2, "empty": 0, "max_new": 8, "generated_tokens": 1206, "seconds": 17.650444708997384, "allocated_peak_bytes": 447927808, "reserved_peak_bytes": 476053504}
+[PROGRESS] effective_g2.0 16/64
+[PROGRESS] effective_g2.0 32/64
+[PROGRESS] effective_g2.0 48/64
+[PROGRESS] effective_g2.0 64/64
+[VARIANT] {"variant": "effective_g2.0", "items": 64, "scored": 64, "exact": 0, "protected_items": 16, "protected_exact": 0, "loop_indicators": 14, "question_echoes": 5, "empty": 0, "max_new": 12, "generated_tokens": 1625, "seconds": 24.000594056007685, "allocated_peak_bytes": 447927808, "reserved_peak_bytes": 476053504}
+[BODY_UNCHANGED] 00262611800E81BB117DB68F8053ED0A15A8454FBD9D34AFEFE44DB9A0D21B0D (CPU/GPU load + session exit)
+[FINAL] {"selected": {"name": "effective_g0.25", "realization": "effective", "gain": 0.25, "selection_split": "DEV_ONLY", "criterion": "EXACT_PROTECTED_EMPTY_ECHO_LOOP_DELTA"}, "variants": [{"name": "original_dev", "exact": 4, "scored": 64, "loop_indicators": 10}, {"name": "effective_g0.25", "exact": 4, "scored": 64, "loop_indicators": 9}, {"name": "effective_g0.5", "exact": 4, "scored": 64, "loop_indicators": 9}, {"name": "effective_g1.0", "exact": 4, "scored": 64, "loop_indicators": 10}, {"name": "effective_g2.0", "exact": 0, "scored": 64, "loop_indicators": 14}]}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.6분  (2026-11-04 19:08:50)
+==============================================================================

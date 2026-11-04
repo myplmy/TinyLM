@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# V2 dev-only targeted effective/latent edit comparison. No test selection.
+# Estimate 10 to 60 minutes; original core and cache rollback mandatory.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage2bW_weight_direction_search --note "V2 frozen DEV selection; exact, protected copy/repeat, empty, echo, loop and delta norm all retained. No training."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage2bW_weight_direction_search -- timeout --signal=TERM --kill-after=20s 5000s "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space search p108w_v2_20261104 new595-broad-q

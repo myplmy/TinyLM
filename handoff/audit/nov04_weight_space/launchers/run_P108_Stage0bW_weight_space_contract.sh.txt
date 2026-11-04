@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# CPU contracts and write-once profile. No checkpoint execution or GPU.
+# Budget: up to 5 minutes. Any prerequisite failure stops this stage.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0bW_weight_space_contract --note "CPU regression and frozen repair/dev/test; GPU NOT_RUN; original failure preserved."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0bW_weight_space_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0bW_weight_space_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space prepare p108w_v1_20261104 new595-broad-q

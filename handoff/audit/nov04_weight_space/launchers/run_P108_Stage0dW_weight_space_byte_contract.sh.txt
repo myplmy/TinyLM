@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# CPU46 with explicit negative-zero fixture and a nonzero projection column.
+# Fresh v2. Prior CPU failures and original GPU observation are preserved.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0dW_weight_space_byte_contract --note "CPU46 byte-exact no-op, nonzero edit and rollback; GPU NOT_RUN. This repairs a zero-column test fixture without changing the research algorithm."
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0dW_weight_space_byte_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_weight_space scripts.test_p106b_weight_route
+"${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage0dW_weight_space_byte_contract -- "${PY}" -B -X utf8 -m scripts.diag_p108_weight_space prepare p108w_v2_20261104 new595-broad-q

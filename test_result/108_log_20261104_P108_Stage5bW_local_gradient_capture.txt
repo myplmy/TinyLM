@@ -1,0 +1,21 @@
+P108 local capture: gold-supervised calibration is distinct from unsupervised repair and full training. Preserve raw answers, original core, controls and independent tests.
+
+==============================================================================
+[runlog] 2026-11-04 20:10:30  name=P108_Stage5bW_local_gradient_capture
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1000s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_local_linear capture
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt", "checkpoint_sha256": "F3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C", "core_sha256": "B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E", "report_sha256": "079A3C67E85797AFB4978724CBF1C9FD32F9DB1AF4402CAA20283F1F56E89FF4", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "new595-broad-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[CAPTURE] 16/128 examples
+[CAPTURE] 32/128 examples
+[CAPTURE] 48/128 examples
+[CAPTURE] 64/128 examples
+[CAPTURE] 80/128 examples
+[CAPTURE] 96/128 examples
+[CAPTURE] 112/128 examples
+[CAPTURE] 128/128 examples
+[BODY_UNCHANGED] B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E (CPU/GPU load + session exit)
+[FINAL] {"status": "TECHNICAL_COMPLETE", "calibration_rows": 128, "calibration_target_tokens": 580, "fit": {"keys": 580, "input_dim": 2048, "output_dim": 768, "nominal_rank": 16, "ridge": 0.01, "normalized_target_sq": 724.4926349909675, "untruncated_residual_sq": 44.916842635738675, "rank_residual_sq": 304.11732773776737, "normal_equation_max_abs": 2.425821011892062e-13, "dense_delta_frobenius": 47.94074324160779, "factor_bytes": 180224, "cpu_seconds": 0.28286563901929185}, "vram": {"allocated_peak_bytes": 779488768, "reserved_peak_bytes": 788529152}, "wall_seconds": 5.754719276999822}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.1분  (2026-11-04 20:10:37)
+==============================================================================

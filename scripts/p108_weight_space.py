@@ -1,0 +1,193 @@
+"""Opt-in P108 direction edits. No model loading, file I/O, or default hooks.
+
+Projection is an explicit research intervention, not a truth detector. Latent
+requantization and a continuous effective-cache edit are separate treatments.
+"""
+from __future__ import annotations
+
+from contextlib import contextmanager
+import hashlib
+import math
+import re
+
+import torch
+
+
+def tensor_sha(value):
+    data = value.detach().cpu().contiguous()
+    return hashlib.sha256(data.numpy().tobytes()).hexdigest().upper()
+
+
+def unit_direction(value):
+    if not isinstance(value, torch.Tensor) or value.ndim != 1:
+        raise ValueError('direction must be a vector')
+    if not value.is_floating_point() or not torch.isfinite(value).all():
+        raise ValueError('direction must be finite floating point')
+    norm = value.float().norm()
+    if not bool(norm > 1e-12):
+        raise ValueError('zero direction is not identifiable')
+    return value / norm.to(value.dtype)
+
+
+def projection_delta(weight, direction, columns, gain):
+    if (not isinstance(weight, torch.Tensor) or weight.ndim != 2
+            or not weight.is_floating_point() or not torch.isfinite(weight).all()):
+        raise ValueError('weight must be a finite matrix')
+    if type(gain) not in (int, float) or not math.isfinite(gain) or gain < 0:
+        raise ValueError('gain must be finite and nonnegative')
+    if (not isinstance(columns, (tuple, list)) or not columns
+            or any(type(i) is not int or not 0 <= i < weight.shape[1] for i in columns)
+            or len(set(columns)) != len(columns)):
+        raise ValueError('columns must be distinct valid integers')
+    direction = unit_direction(direction.to(device=weight.device, dtype=weight.dtype))
+    if direction.numel() != weight.shape[0]:
+        raise ValueError('direction and output width differ')
+    delta = torch.zeros_like(weight)
+    selected = weight[:, columns]
+    delta[:, columns] = -float(gain) * direction[:, None] * (direction @ selected)[None, :]
+    if not torch.isfinite(delta).all():
+        raise ValueError('projection overflow')
+    return delta
+
+
+def matched_random_delta(weight, columns, target_norm, seed):
+    if (type(seed) is not int or type(target_norm) not in (int, float)
+            or not math.isfinite(target_norm) or target_norm < 0):
+        raise ValueError('invalid random control specification')
+    gen = torch.Generator(device='cpu').manual_seed(seed)
+    direction = torch.randn(weight.shape[0], generator=gen, dtype=torch.float32).to(weight)
+    delta = projection_delta(weight, direction, columns, 1.)
+    norm = float(delta.norm())
+    if target_norm and not norm:
+        raise ValueError('cannot match a zero random norm')
+    return delta * (target_norm / norm if norm else 0.)
+
+
+def down_modules(model):
+    modules = [(i, layer.mlp[0].down_proj) for i, layer in enumerate(model.layers)]
+    if len({id(module) for _, module in modules}) != len(modules):
+        raise ValueError('P108 v1 requires distinct down modules, shared MLP unsupported')
+    if list(model.visit_schedule()) != list(range(len(modules))):
+        raise ValueError('P108 v1 requires the trained single sequential visit')
+    return modules
+
+
+@contextmanager
+def edit_weights(model, route, edits, realization):
+    """Restore weights AND the exact prior cache objects, including exceptions.
+
+    Each edit is (layer index, finite delta matrix). ``effective`` changes only
+    the cached matrix; ``latent`` changes the parameter then refreshes the
+    owning explicit route. Both report the ACTUAL effective change.
+    """
+    if realization not in ('effective', 'latent') or not isinstance(edits, list) or not edits:
+        raise ValueError('invalid edit realization/list')
+    route.assert_active()
+    if model.training or not getattr(model, '_quant_frozen', False):
+        raise ValueError('only an eval model with frozen quantization is supported')
+    modules = dict(down_modules(model))
+    if len({index for index, _ in edits}) != len(edits):
+        raise ValueError('duplicate edited layer')
+    prepared = []
+    # Validate EVERY layer/delta before the first mutation.
+    for index, delta in edits:
+        if type(index) is not int or index not in modules:
+            raise ValueError('unknown edited layer')
+        module = modules[index]
+        if (not isinstance(delta, torch.Tensor) or delta.shape != module.weight.shape
+                or delta.device != module.weight.device or delta.dtype != module.weight.dtype
+                or not torch.isfinite(delta).all() or module._wq is None):
+            raise ValueError('delta shape/device/dtype/finite/cache contract differs')
+        prepared.append((index, module, delta))
+    saved, receipts = [], []
+    try:
+        with torch.no_grad():
+            for index, module, delta in prepared:
+                latent = module.weight.detach().clone()
+                cache = module._wq
+                effective = cache.detach().clone()
+                saved.append((module, latent, cache))
+                if not bool(delta.ne(0).any()):
+                    # Adding +0 can canonicalize ternary -0 bits. A no-op must
+                    # preserve the exact original cache object and byte hash.
+                    pass
+                elif realization == 'latent':
+                    module.weight.add_(delta)
+                    module.refresh_quant(1.)
+                else:
+                    module._wq = effective + delta
+                actual = module._wq.detach() - effective
+                requested_support = delta.ne(0)
+                receipts.append(dict(layer=index, realization=realization,
+                    requested_delta_norm=float(delta.norm()), effective_delta_norm=float(actual.norm()),
+                    latent_changed=int(module.weight.ne(latent).sum()),
+                    effective_changed=int(actual.ne(0).sum()),
+                    changed_outside_requested=int((actual.ne(0) & ~requested_support).sum()),
+                    effective_before_sha256=tensor_sha(effective),
+                    effective_after_sha256=tensor_sha(module._wq),
+                    requested_actual_max_abs=float((actual - delta).abs().max())))
+        route.assert_active()
+        yield receipts
+    finally:
+        with torch.no_grad():
+            for module, latent, cache in reversed(saved):
+                if not torch.equal(module.weight, latent):
+                    module.weight.copy_(latent)
+                module._wq = cache
+                route._versions[id(module)] = module.weight._version
+                if not torch.equal(module.weight, latent) or module._wq is not cache:
+                    raise RuntimeError('weight/cache rollback failed')
+        route.assert_active()
+
+
+@contextmanager
+def capture_down(model):
+    """Capture only small detached last-position summaries, no training graph."""
+    values, handles = {}, []
+    for index, module in down_modules(model):
+        def hook(_module, args, output, layer=index):
+            if layer in values:
+                raise RuntimeError('unexpected repeated module visit')
+            values[layer] = dict(input=args[0][0, -8:].detach().float().mean(0).cpu(),
+                                 output=output[0, -8:].detach().float().mean(0).cpu())
+        handles.append(module.register_forward_hook(hook))
+    try:
+        yield values
+    finally:
+        for handle in handles:
+            handle.remove()
+
+
+def repetition_metrics(ids, answer, question):
+    # Diagnostic indicators; requested copies/repetitions are NOT correctness labels.
+    counts = {}
+    for i in range(max(0, len(ids) - 2)):
+        gram = tuple(ids[i:i + 3])
+        counts[gram] = counts.get(gram, 0) + 1
+    duplicate = sum(n - 1 for n in counts.values())
+    denominator = max(1, len(ids) - 2)
+    compact = lambda text: re.sub(r'\s+', '', text).strip()
+    a, q = compact(answer), compact(question)
+    return dict(trigram_duplicate_fraction=duplicate / denominator,
+                repeated_trigram_max=max(counts.values(), default=0),
+                loop_indicator=len(ids) >= 12 and duplicate / denominator >= .3,
+                question_echo=bool(len(q) >= 8 and q in a), empty=not bool(a))
+
+
+def exact_answer(answer, expected):
+    def clean(text):
+        return re.sub(r'\s+', '', text.strip().strip('`')).rstrip('.!?')
+    return clean(answer) == clean(expected)
+
+
+def summarize(rows):
+    scored = [row for row in rows if row.get('expected') is not None]
+    protected = [row for row in scored if row.get('protected')]
+    return dict(items=len(rows), scored=len(scored),
+                exact=sum(bool(row['exact']) for row in scored),
+                protected_items=len(protected), protected_exact=sum(bool(row['exact']) for row in protected),
+                loop_indicators=sum(row['diagnostics']['loop_indicator'] for row in rows),
+                question_echoes=sum(row['diagnostics']['question_echo'] for row in rows),
+                empty=sum(row['diagnostics']['empty'] for row in rows),
+                max_new=sum(row['generation']['finish_reason'] == 'MAX_NEW' for row in rows),
+                generated_tokens=sum(row['generation']['generated_tokens'] for row in rows))
