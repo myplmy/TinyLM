@@ -1,0 +1,53 @@
+{
+  "status": "LONG_SAVED_READER_METADATA_BOUNDARY_CHECKS_PASS",
+  "cases": [
+    {
+      "case": "valid_saved",
+      "returncode": 0,
+      "passed": true,
+      "output": "{\"status\": \"SAVED_REVIEW_METADATA_ONLY_PREFLIGHT_PASS\", \"id\": \"expanded_train:217607\", \"pins\": {\"original\": {\"path\": \"data_cache/p106b_hold_resolution_v1_20261027_goalc/remaining_field_title_native_proofs_v1/pages/page_011/inputs/expanded_train_217607_original.txt\", \"sha256\": \"497BA466DE6B5EFFFFEE724848DCC336E5D06686A5B7343B60DF4BF4104C2BED\"}, \"body\": {\"path\": \"data_cache/p106b_hold_resolution_v1_20261027_goalc/exact_cohort_rendered_v1/1F/1FB81E9098AB460DCD7BA3D3D833E69632281C8DB9D2DFC06E8927E2B8BD3F15.txt\", \"sha256\": \"1FB81E9098AB460DCD7BA3D3D833E69632281C8DB9D2DFC06E8927E2B8BD3F15\"}}, \"original_or_body_payload_opens\": 0, \"output_writes\": 0}"
+    },
+    {
+      "case": "restricted_ID",
+      "returncode": 1,
+      "passed": true,
+      "output": "AssertionError: restricted ID; no corpus payload read"
+    },
+    {
+      "case": "unknown_ID",
+      "returncode": 1,
+      "passed": true,
+      "output": "KeyError: 'expanded_train:99999999999'"
+    },
+    {
+      "case": "unreviewed_row",
+      "returncode": 1,
+      "passed": true,
+      "output": "AssertionError: not a saved eligible review"
+    },
+    {
+      "case": "negative_part",
+      "returncode": 1,
+      "passed": true,
+      "output": "AssertionError"
+    },
+    {
+      "case": "existing_diff",
+      "returncode": 1,
+      "passed": true,
+      "output": "AssertionError: new immutable diff artifact required"
+    }
+  ],
+  "static_ast_utf8": "PASS",
+  "input_pins": {
+    "handoff/audit/hold_resolution_20261027_goalc/read_saved_long_review_v1.py": "480FA93F3B503B8C78BC208DCDF6E9FD26EDA20EE7DE30B05D504C78B08226BC",
+    "handoff/audit/hold_resolution_20261027_goalc/read_counter_exact_pair_v1.py": "FFEBACB569D1655DA3250BA19805C3FF473C66080E28B74BCE58B163171B5057"
+  },
+  "observer_scope": "Counter requires unreviewed_payload_open_attempts=0; field/literal require protected_payload_open_attempts=0 and an eligible saved-row status. No missing key defaults to PASS.",
+  "initial_precondition_failure": "First metadata-only valid call stopped on a missing counter-specific field in the field snapshot before source/body reads. Explicit per-cohort observer-key selection corrected it.",
+  "raw_original_or_body_TXT_opens_in_these_check_only_calls": 0,
+  "training_TXT_writes": 0,
+  "goal_complete": false,
+  "training_authorized": false
+}
+
