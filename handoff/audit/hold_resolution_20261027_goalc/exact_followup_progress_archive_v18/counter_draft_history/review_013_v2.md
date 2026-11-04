@@ -1,0 +1,7 @@
+| ID | 판정 | 실제 판독 범위 | 정확 출력 | 구체 근거 |
+|---|---|---|---|---|
+| expanded_train:14838 | ACCEPT_CANDIDATE | TASK 지정 original/candidate/full_diff packet 1 전체 및 각 BEGIN/END 프레임 | 63E07F4DD6B16B9C1AD83C72377F80ECCB47B18C0B26577E9280735DEB469C9B.txt | 지원·가랴쿠·카이타이 연호와 태정제·충숙왕·명종의 실제 기년을 보존하고, 가랴쿠의 빈 괄호 및 내용 없는 사건·탄생·사망 표제만 정리했다. |
+| expanded_train:78505 | ACCEPT_CANDIDATE | TASK 지정 original/candidate/full_diff packet 1 전체 및 각 BEGIN/END 프레임 | 2F10CA6B39B7C47BA32F5A49777A02A2064D39169D02B1452D2CF53E3EB2EE9A.txt | 오가와역의 일반 설명, 도쿄도 항목의 실제 위치·운영자 관계, 다른 지역의 역명, 비슷한 이름 및 같이 보기 항목을 유지하고 빈 별칭 괄호만 정리했다. |
+| expanded_train:27746 | REVISE_TEXT | TASK 지정 original/candidate/full_diff packet 1 전체 및 각 BEGIN/END 프레임; 선택본문과 수정본의 전체 diff 및 EOF 확인 | expanded_train_27746_counter_working_v1.txt | 실제 정의·사용 설명과 채워진 같이 보기 목록은 유지했다. 내용이 없는 다섯 절 표제만 분리했으며 원형과 이유는 hold_27746_v1.md에 정확히 기록했다. |
+| expanded_train:5225 | ACCEPT_CANDIDATE | TASK 지정 original/candidate/full_diff packet 1 전체 및 각 BEGIN/END 프레임 | 2C6F85BFBEB0829FAB45192A4C718B123A497083BFBCD9660076295368D568F7.txt | 정원·엔랴쿠 연호와 덕종·원성왕·강왕의 기년, 로타르 1세의 실제 탄생 항목을 보존하고 엔랴쿠의 빈 괄호와 내용 없는 사건·문화·사망 표제만 정리했다. |
+| expanded_train:5412 | ACCEPT_CANDIDATE | TASK 지정 original/candidate/full_diff packet 1 전체 및 각 BEGIN/END 프레임 | 2ECB036EC8E042D7464C21D7EA1CBB011C6C8356D45A9AC525F160B52D7FB6BC.txt | 대중·닌주 연호, 선종·문성왕·대이진 기년 및 상대등 김안의 실제 사망 항목을 보존하고 닌주의 빈 괄호와 내용 없는 사건·문화·탄생 표제만 정리했다. |
