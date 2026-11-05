@@ -1,0 +1,6 @@
+# Hold — expanded_train:6309
+
+- Disposition: `REVISE_TEXT` in Task 247. V2 pair parts 1–2 were read to `SOURCE_DATA_VIEW_EOF`, covering the full original and all candidate change ranges. Original SHA-256: `7989A8EE1DBC77C5B766C3EC13BB1A874DAF6BE8E70034CC52E128568725D746`; candidate SHA-256: `C37D8EEE60F06F7B2AA31334E3A052DBAFC7174B410EDCD87DAD9B8A948CAF8F`.
+- The candidate removed a few blank punctuation fields and an empty external-link label but left many missing symbols, equations, theorem statements, and proof fragments. The new body keeps the readable cyclic-group definition, prose definitions of order and exponent after removing blank symbol slots, classification, and complete statements that cyclic groups are finitely generated abelian groups and their subgroups and quotients are cyclic.
+- Formula-dependent definitions/proofs and the incomplete divisibility, identity, equivalence, and finite-abelian-group decomposition fragments were omitted. No variables, formulas, conclusions, or proofs were reconstructed or evaluated. The full new body and full original-to-new `diff -u` were read (exit 1, differences present); final LF was checked. No mathematical result was externally verified.
+
