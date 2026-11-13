@@ -1,0 +1,39 @@
+
+==============================================================================
+[runlog] 2026-11-13 12:41:53  name=P106B_Stage7uW_dskdv2_native_hidden_teacher
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1850s data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -m scripts.diag_p106b_dskdv2_hidden teacher
+==============================================================================
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]
+Loading weights:   0%|          | 1/320 [00:00<00:57,  5.51it/s]
+Loading weights:  69%|██████▉   | 220/320 [00:00<00:00, 956.24it/s]
+Loading weights: 100%|██████████| 320/320 [00:00<00:00, 799.61it/s]
+`pretrained` model kwarg is not of type `str`. Many other model arguments may be ignored. Please do not launch via accelerate or use `parallelize=True` if passing an existing model this way.
+Passed an already-initialized model through `pretrained`, assuming single-process call to evaluate() or custom distributed integration
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 16, "accepted": 73}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 32, "accepted": 130}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 48, "accepted": 206}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 64, "accepted": 256}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 80, "accepted": 317}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 96, "accepted": 368}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 112, "accepted": 449}
+[DSKDV2_HIDDEN_PROGRESS] {"rows": 128, "accepted": 538}
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_dskdv2_hidden.py", line 177, in <module>
+    if __name__=='__main__':main()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_dskdv2_hidden.py", line 174, in main
+    (prepare if args.phase=='prepare'else teacher)()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_dskdv2_hidden.py", line 162, in teacher
+    if obj is not None:report[key]=obj.close(lineage=dict(tag=TAG,profile_sha256=exact.digest(BASE/'profile.json')))
+  File "/home/uranus/tinyLM/scripts/p106b_shards.py", line 79, in close
+    raise ValueError("empty sharded corpus is forbidden")
+ValueError: empty sharded corpus is forbidden
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 1.2분  (2026-11-13 12:43:07)
+==============================================================================

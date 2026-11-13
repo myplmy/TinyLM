@@ -1,0 +1,47 @@
+CPU contracts for sign-preserving latent edits and fixed-scale native codes. Check actual TLinear requantization, no-op bytes, full prevalidation, exact rollback, sealed packets and group-matched random controls. No checkpoint/model/GPU execution or intelligence claim.
+
+==============================================================================
+[runlog] 2026-11-05 05:46:49  name=P108_Stage7aW_native_scale_contract
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p108_native_scale scripts.test_p108_weight_space
+==============================================================================
+.......F.......EE..................
+======================================================================
+ERROR: test_data_counts_source_split_and_boolean_balance (scripts.test_p108_native_scale.Practice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p108_native_scale.py", line 146, in test_data_counts_source_split_and_boolean_balance
+    rows = data.make_data()
+  File "/home/uranus/tinyLM/scripts/p108_native_practice.py", line 113, in make_data
+    validate(rows)
+  File "/home/uranus/tinyLM/scripts/p108_native_practice.py", line 130, in validate
+    raise ValueError('fresh split/source prompt overlap')
+ValueError: fresh split/source prompt overlap
+
+======================================================================
+ERROR: test_rule_numeric_answers_and_strict_scoring (scripts.test_p108_native_scale.Practice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p108_native_scale.py", line 150, in test_rule_numeric_answers_and_strict_scoring
+    for row in data.make_data():
+  File "/home/uranus/tinyLM/scripts/p108_native_practice.py", line 113, in make_data
+    validate(rows)
+  File "/home/uranus/tinyLM/scripts/p108_native_practice.py", line 130, in validate
+    raise ValueError('fresh split/source prompt overlap')
+ValueError: fresh split/source prompt overlap
+
+======================================================================
+FAIL: test_random_control_preserves_group_transition_histogram (scripts.test_p108_native_scale.NativeAlgebra)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p108_native_scale.py", line 78, in test_random_control_preserves_group_transition_histogram
+    self.assertFalse(torch.equal(a, target))
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.173s
+
+FAILED (failures=1, errors=2)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.2분  (2026-11-05 05:46:58)
+==============================================================================

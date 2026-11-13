@@ -1,0 +1,29 @@
+
+==============================================================================
+[runlog] 2026-11-13 12:09:27  name=P106B_Stage7pW_actd_determinism_actual
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1850s data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -m scripts.diag_p106b_actd_determinism actual
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_determinism.py", line 94, in <module>
+    if __name__=='__main__':main()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_determinism.py", line 91, in main
+    (prepare if args.phase=='prepare'else run)()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_determinism.py", line 76, in run
+    try:build_runner()()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_consumer.py", line 65, in run
+    teacher_report_sha256=d.inventory.digest(d.BASE/'teacher/report.json'),ce_denominator=772,
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_anchor.py", line 27, in digest
+    def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest().upper()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 1126, in read_bytes
+    with self.open(mode='rb') as f:
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/pathlib.py", line 1119, in open
+    return self._accessor.open(self, mode, buffering, encoding, errors,
+FileNotFoundError: [Errno 2] No such file or directory: '/home/uranus/tinyLM/test_result/evidence/p106b_actd_determinism_v1_20261113/teacher/report.json'
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-11-13 12:09:35)
+==============================================================================

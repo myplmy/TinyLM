@@ -1,0 +1,28 @@
+{
+  "schema": "P108_CPU_LAUNCHER_HISTORY_V1",
+  "deleted": false,
+  "items": [
+    {
+      "original": "run_P108_Stage7aW_native_scale_contract.sh",
+      "done": "run_P108_Stage7aW_native_scale_contract-done.sh",
+      "bytes": 918,
+      "sha256": "9EAB545B188E2CF70E0F2712D9EC1A5E83C0E6F7FC7F45E1C20C113165EBDC1C",
+      "body": "#!/usr/bin/env bash\n# Native scale, discrete code, rollback and exact sidecar CPU contracts.\n# No assets, model loading, CUDA, optimizer or intelligence claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7aW_native_scale_contract --note \"CPU contracts for sign-preserving latent edits and fixed-scale native codes. Check actual TLinear requantization, no-op bytes, full prevalidation, exact rollback, sealed packets and group-matched random controls. No checkpoint/model/GPU execution or intelligence claim.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7aW_native_scale_contract -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_native_scale scripts.test_p108_weight_space\n",
+      "actual_exit": 1,
+      "raw_log": "test_result/108_log_20261105_P108_Stage7aW_native_scale_contract.txt",
+      "log_sha256": "D10CC8C83605C100B3AC6014FA28B80700793A7F284F19D7541326B4D7BD463E",
+      "source_snapshot_before_cpu": false
+    },
+    {
+      "original": "run_P108_Stage7aWb_native_scale_contract.sh",
+      "done": "run_P108_Stage7aWb_native_scale_contract-done.sh",
+      "bytes": 894,
+      "sha256": "9E1125FF41EAFECA638B282A0CDD4410B6F500B9EF4C5D4DD415CABFD8C20DAD",
+      "body": "#!/usr/bin/env bash\n# Repair duplicate practice prompts and the identifiable random-control fixture.\n# Preserve Stage7aW failure; do not execute any model/GPU/optimizer.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7aWb_native_scale_contract --note \"Preserve first CPU failure. Fresh source identity uses actual facts, distinct actor pairs, and matched controls with a proper nontrivial transition subset. All native scale/packet/rollback criteria remain unchanged. No assets or GPU.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7aWb_native_scale_contract -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_native_scale scripts.test_p108_weight_space\n",
+      "actual_exit": 0,
+      "raw_log": "test_result/108_log_20261105_P108_Stage7aWb_native_scale_contract.txt",
+      "log_sha256": "DFD0B3F9AB10BD7C9D35C089938F5F0AFE6A5A28A615CB6BFC0CBBF07366FC90",
+      "source_snapshot_before_cpu": false
+    }
+  ]
+}

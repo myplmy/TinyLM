@@ -1,0 +1,91 @@
+User109 deadline 5Nov17KST. Dev128 only: original, shared-delta continuous/latent gain1, sign-only and frozen native codes at gain0.5/1/2. Retain scales; deduplicate actual matrix identities without counting aliases as runs. Native codes are not latent deployment. Restore CP/core/cache; no optimizer or test-guided selection.
+
+==============================================================================
+[runlog] 2026-11-05 06:04:37  name=P108_Stage7cW_native_scale_dev
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1900s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_native_scale search p108_native_v1_20261105
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt", "checkpoint_sha256": "F3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C", "core_sha256": "B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E", "report_sha256": "079A3C67E85797AFB4978724CBF1C9FD32F9DB1AF4402CAA20283F1F56E89FF4", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "new595-broad-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[PROGRESS] original_dev 16/128
+[PROGRESS] original_dev 32/128
+[PROGRESS] original_dev 48/128
+[PROGRESS] original_dev 64/128
+[PROGRESS] original_dev 80/128
+[PROGRESS] original_dev 96/128
+[PROGRESS] original_dev 112/128
+[PROGRESS] original_dev 128/128
+[VARIANT] {"variant": "original_dev", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 39, "question_echoes": 0, "empty": 0, "max_new": 36, "generated_tokens": 3898, "seconds": 59.06192079704488, "allocated_peak_bytes": 724757504, "reserved_peak_bytes": 736100352}
+[PROGRESS] continuous_common_g1_dev 16/128
+[PROGRESS] continuous_common_g1_dev 32/128
+[PROGRESS] continuous_common_g1_dev 48/128
+[PROGRESS] continuous_common_g1_dev 64/128
+[PROGRESS] continuous_common_g1_dev 80/128
+[PROGRESS] continuous_common_g1_dev 96/128
+[PROGRESS] continuous_common_g1_dev 112/128
+[PROGRESS] continuous_common_g1_dev 128/128
+[VARIANT] {"variant": "continuous_common_g1_dev", "items": 128, "scored": 128, "exact": 18, "protected_items": 32, "protected_exact": 0, "loop_indicators": 39, "question_echoes": 0, "empty": 0, "max_new": 37, "generated_tokens": 3895, "seconds": 57.443824296002276, "allocated_peak_bytes": 776662016, "reserved_peak_bytes": 799014912}
+[PROGRESS] requant_common_g1_dev 16/128
+[PROGRESS] requant_common_g1_dev 32/128
+[PROGRESS] requant_common_g1_dev 48/128
+[PROGRESS] requant_common_g1_dev 64/128
+[PROGRESS] requant_common_g1_dev 80/128
+[PROGRESS] requant_common_g1_dev 96/128
+[PROGRESS] requant_common_g1_dev 112/128
+[PROGRESS] requant_common_g1_dev 128/128
+[VARIANT] {"variant": "requant_common_g1_dev", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 40, "question_echoes": 0, "empty": 0, "max_new": 40, "generated_tokens": 4117, "seconds": 59.395057680027094, "allocated_peak_bytes": 776662016, "reserved_peak_bytes": 799014912}
+[NATIVE] {"name": "native_sign_g0.5_dev", "exact": 19, "loop_indicators": 39, "native_changed": 0, "evaluation_alias_of": "original_dev"}
+[PROGRESS] native_sign_g1.0_dev 16/128
+[PROGRESS] native_sign_g1.0_dev 32/128
+[PROGRESS] native_sign_g1.0_dev 48/128
+[PROGRESS] native_sign_g1.0_dev 64/128
+[PROGRESS] native_sign_g1.0_dev 80/128
+[PROGRESS] native_sign_g1.0_dev 96/128
+[PROGRESS] native_sign_g1.0_dev 112/128
+[PROGRESS] native_sign_g1.0_dev 128/128
+[VARIANT] {"variant": "native_sign_g1.0_dev", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 39, "question_echoes": 0, "empty": 0, "max_new": 36, "generated_tokens": 3898, "seconds": 58.08978782000486, "allocated_peak_bytes": 787721216, "reserved_peak_bytes": 819986432}
+[NATIVE] {"name": "native_sign_g1.0_dev", "exact": 19, "loop_indicators": 39, "native_changed": 3, "evaluation_alias_of": null}
+[PROGRESS] native_sign_g2.0_dev 16/128
+[PROGRESS] native_sign_g2.0_dev 32/128
+[PROGRESS] native_sign_g2.0_dev 48/128
+[PROGRESS] native_sign_g2.0_dev 64/128
+[PROGRESS] native_sign_g2.0_dev 80/128
+[PROGRESS] native_sign_g2.0_dev 96/128
+[PROGRESS] native_sign_g2.0_dev 112/128
+[PROGRESS] native_sign_g2.0_dev 128/128
+[VARIANT] {"variant": "native_sign_g2.0_dev", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 40, "question_echoes": 0, "empty": 0, "max_new": 38, "generated_tokens": 3987, "seconds": 58.51838207698893, "allocated_peak_bytes": 787721216, "reserved_peak_bytes": 819986432}
+[NATIVE] {"name": "native_sign_g2.0_dev", "exact": 19, "loop_indicators": 40, "native_changed": 433, "evaluation_alias_of": null}
+[PROGRESS] native_codes_g0.5_dev 16/128
+[PROGRESS] native_codes_g0.5_dev 32/128
+[PROGRESS] native_codes_g0.5_dev 48/128
+[PROGRESS] native_codes_g0.5_dev 64/128
+[PROGRESS] native_codes_g0.5_dev 80/128
+[PROGRESS] native_codes_g0.5_dev 96/128
+[PROGRESS] native_codes_g0.5_dev 112/128
+[PROGRESS] native_codes_g0.5_dev 128/128
+[VARIANT] {"variant": "native_codes_g0.5_dev", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 39, "question_echoes": 0, "empty": 0, "max_new": 36, "generated_tokens": 3898, "seconds": 57.60333752603037, "allocated_peak_bytes": 775138304, "reserved_peak_bytes": 819986432}
+[NATIVE] {"name": "native_codes_g0.5_dev", "exact": 19, "loop_indicators": 39, "native_changed": 3, "evaluation_alias_of": null}
+[PROGRESS] native_codes_g1.0_dev 16/128
+[PROGRESS] native_codes_g1.0_dev 32/128
+[PROGRESS] native_codes_g1.0_dev 48/128
+[PROGRESS] native_codes_g1.0_dev 64/128
+[PROGRESS] native_codes_g1.0_dev 80/128
+[PROGRESS] native_codes_g1.0_dev 96/128
+[PROGRESS] native_codes_g1.0_dev 112/128
+[PROGRESS] native_codes_g1.0_dev 128/128
+[VARIANT] {"variant": "native_codes_g1.0_dev", "items": 128, "scored": 128, "exact": 19, "protected_items": 32, "protected_exact": 0, "loop_indicators": 41, "question_echoes": 0, "empty": 0, "max_new": 39, "generated_tokens": 4080, "seconds": 62.120034589024726, "allocated_peak_bytes": 775138304, "reserved_peak_bytes": 819986432}
+[NATIVE] {"name": "native_codes_g1.0_dev", "exact": 19, "loop_indicators": 41, "native_changed": 692, "evaluation_alias_of": null}
+[PROGRESS] native_codes_g2.0_dev 16/128
+[PROGRESS] native_codes_g2.0_dev 32/128
+[PROGRESS] native_codes_g2.0_dev 48/128
+[PROGRESS] native_codes_g2.0_dev 64/128
+[PROGRESS] native_codes_g2.0_dev 80/128
+[PROGRESS] native_codes_g2.0_dev 96/128
+[PROGRESS] native_codes_g2.0_dev 112/128
+[PROGRESS] native_codes_g2.0_dev 128/128
+[VARIANT] {"variant": "native_codes_g2.0_dev", "items": 128, "scored": 128, "exact": 18, "protected_items": 32, "protected_exact": 0, "loop_indicators": 38, "question_echoes": 1, "empty": 0, "max_new": 37, "generated_tokens": 3895, "seconds": 57.79627106297994, "allocated_peak_bytes": 775138304, "reserved_peak_bytes": 819986432}
+[NATIVE] {"name": "native_codes_g2.0_dev", "exact": 18, "loop_indicators": 38, "native_changed": 6802, "evaluation_alias_of": null}
+[BODY_UNCHANGED] B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E (CPU/GPU load + session exit)
+[FINAL] {"phase": "search", "status": "DEV_CANDIDATE_SEALED", "wall_seconds": 479.0614708759822, "report": "test_result/evidence/p108_native_v1_20261105/new595-broad-q/search/report.json"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 8.8분  (2026-11-05 06:13:24)
+==============================================================================

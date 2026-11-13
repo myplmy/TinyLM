@@ -1,0 +1,28 @@
+User109: teacher-only MTP pilot of four English-source/English-output candidates. Preserve V3; old quota replay, exact seven existing sources, original source indices. Controlled pause8 requires independent manifest/cursor/server checks, then root reading before any long resume. No student or training approval.
+
+==============================================================================
+[runlog] 2026-11-05 07:34:17  name=P106B_Stage4ft2cW_english_controlled_pilot
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1100s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p106b_nov05_english_production --mode pilot --max-wall-sec 900 --deadline-utc 2026-11-05T06:30:00+00:00 --stop-file tmp/P106B_Stage4ft2cW_STOP
+==============================================================================
+[DEFICIT_ANSWER] {"source_id": "245", "language": "en", "task": "qa", "turn": 1, "attempt": 1, "final": "QUESTION: What is the official name of the Azores?\nANSWER: The official name is the Autonomous Region of the Azores.\nNOTE:", "structural_reason": ""}
+[DEFICIT_ANSWER] {"source_id": "320", "language": "en", "task": "qa", "turn": 1, "attempt": 1, "final": "QUESTION: Who was the plowboy from Vale Regis's errand?\nANSWER: The plowboy's errand was to bring an apology for the faithless Mirabel, who had broken his engagement.\nNOTE: The text states the plowboy was the herald of misfortune who brought Mirabel's apology for breaking his engagement.", "structural_reason": ""}
+[DEFICIT_ANSWER] {"source_id": "600", "language": "en", "task": "qa", "turn": 1, "attempt": 1, "final": "QUESTION: What was the old capital of Owari Province before it was moved to a more strategic location in present-day Nagoya?\nANSWER: The old capital was Kiyosu.\nNOTE:", "structural_reason": ""}
+[DEFICIT_ANSWER] {"source_id": "1950", "language": "en", "task": "qa", "turn": 1, "attempt": 1, "final": "Based on the provided text and list of answers, here is a list of questions:\n\n1. Who was killed?\n2. How old was he?\n3. Who killed him?\n4. How old was she?\n5. Was she found guilty?\n6. On what charge?\n7. Has she been sentenced?\n8. Who is her lawyer?\n9. Did she have it easy as a child?\n10. What did she suffer from?\n11. Has she committed any other crimes?\n12. Did her ex treat her well?\n13. What did he do to her?\n14. Where was the case held?\n15. What year was he killed?\n16. What about the trial?\n17. Did she regret what she did?\n18. Was their relationship always abusive?\n19. Who prosecuted her?\n20. Did she go to her ex's funeral?\n21. Has it been a short legal process?\n\nQUESTION: Who was the victim in the murder case involving Jodi Arias?\nANSWER: The victim was Travis Alexander, who was 30 years old.\nNOTE:", "structural_reason": "text before QUESTION header"}
+[DEFICIT_ANSWER] {"source_id": "1950", "language": "en", "task": "qa", "turn": 1, "attempt": 2, "final": "QUESTION: Who was the victim in the murder case involving Jodi Arias?\nANSWER: The victim was Travis Alexander, who was 30 years old and was killed in 2008.\nNOTE: The source states that a jury found Jodi Arias, 34, guilty of first-degree murder in the killing of her ex-boyfriend, Travis Alexander.", "structural_reason": ""}
+[DEFICIT_FINAL] {"status": "PRODUCTION_PAUSED", "returncode": 8, "accepted_groups": 4, "new_train_x_tokens": 3380, "new_train_x_per_sec": 21.627773124638534, "teacher_deficit_tokens": {"ko": 22918960, "en": 21984056}, "task_deficit_tokens": {"ko:qa": 11328276, "ko:json": 4550636, "ko:multiturn": 3290048, "en:qa": 11929030, "en:json": 4313441, "en:multiturn": 1991585}, "validation_deficit_tokens": {"ko": 1221573, "en": 1142075}, "estimated_remaining_sec": 2076173.803989377, "error": "pilot group cap reached before further source filtering"}
+[SUPPORTED8H_MEMORY] {"schema": "P106B_VRAM_TIMEOUT_RETRY_V1", "maximum_attempts": 3, "per_query_timeout_sec": 5, "retry_delay_sec": 0.2, "calls": 30, "successful_queries": 30, "timeout_attempts": 0, "recovered_calls": 0, "fatal_calls": 0, "unobserved_query_window_sec": 0.0, "events": [], "event_count": 0, "omitted_event_count": 0, "event_chain_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855", "measurement_coverage": "SAMPLED_ONLY", "observed_global_peak_mib": 8721, "observed_min_free_mib": 7341, "continuous_peak_verified": false, "oom_safety": "NOT_ESTABLISHED", "scope": "Only subprocess.TimeoutExpired retries; no GPU reset/model restart; gaps never interpolated"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 8  소요 2.9분  (2026-11-05 07:37:13)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-05 07:37:13  name=P106B_Stage4ft2cW_english_controlled_pilot
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p106b_nov05_english_readback pilot
+==============================================================================
+[ENGLISH_CLOSED] {"mode": "pilot", "closed_batches": 1, "cursor": [5, 1949], "last_batch_candidates": 4, "status": "PRODUCTION_PAUSED", "returncode": 8, "parent_files_unchanged": true, "owned_teacher_closed": true}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.5분  (2026-11-05 07:38:44)
+==============================================================================
+Controlled pilot closure verified. Root source/answer review remains required; this is not a quality PASS or75M completion.

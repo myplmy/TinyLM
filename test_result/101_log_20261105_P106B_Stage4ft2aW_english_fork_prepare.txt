@@ -1,0 +1,40 @@
+CPU only: preserve V3, replay prior quotas, pin seven existing English sources, verify English-only source order and strict management suffix. No teacher, new production or training.
+
+==============================================================================
+[runlog] 2026-11-05 07:21:56  name=P106B_Stage4ft2aW_english_fork_prepare
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_nov05_english_production
+==============================================================================
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.001s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-05 07:21:56)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-05 07:21:56  name=P106B_Stage4ft2aW_english_fork_prepare
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p106b_nov05_english_production --mode prepare
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_production.py", line 256, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_production.py", line 250, in main
+    prepare()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_production.py", line 185, in prepare
+    request = producer.tasks.payload(source, 'en', task, 1337)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_production.py", line 121, in payload
+    return without_example(original_payload(*args, **kwargs))
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_production.py", line 34, in without_example
+    raise ValueError('exact producer example suffix changed')
+ValueError: exact producer example suffix changed
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 1.8분  (2026-11-05 07:23:44)
+==============================================================================

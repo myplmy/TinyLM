@@ -1,0 +1,27 @@
+
+==============================================================================
+[runlog] 2026-11-13 11:06:32  name=P108_Stage19cW_joint_write_actual
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1850s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_joint_write actual
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_float.pt", "checkpoint_sha256": "2630B4C2862A41CB677AC9CAA89B0F2DD03234C4FD540FCCA6205AA847CF1C71", "core_sha256": "00262611800E81BB117DB68F8053ED0A15A8454FBD9D34AFEFE44DB9A0D21B0D", "report_sha256": "502078D55C1FD104415C15FBB2E9780FC082C3F65FBC9BE6976F8AA4ECCA333F", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "float", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "LATENT_IDENTITY_VIEW", "backward": "IDENTITY", "dedicated_loader_required": true}, "name": "new595-broad-f", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[BODY_UNCHANGED] 00262611800E81BB117DB68F8053ED0A15A8454FBD9D34AFEFE44DB9A0D21B0D (CPU/GPU load + session exit)
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p108_joint_write.py", line 201, in run
+    if not torch.allclose(actual,predicted,atol=1e-5,rtol=1e-4):raise RuntimeError('joint actual module response differs from registered linear edit')
+RuntimeError: joint actual module response differs from registered linear edit
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p108_joint_write.py", line 249, in <module>
+    if __name__=='__main__':main()
+  File "/home/uranus/tinyLM/scripts/diag_p108_joint_write.py", line 246, in main
+    (prepare if a.phase=='prepare' else run)()
+  File "/home/uranus/tinyLM/scripts/diag_p108_joint_write.py", line 240, in run
+    if failure is not None:raise failure
+RuntimeError: RuntimeError('joint actual module response differs from registered linear edit')
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.6분  (2026-11-13 11:07:06)
+==============================================================================

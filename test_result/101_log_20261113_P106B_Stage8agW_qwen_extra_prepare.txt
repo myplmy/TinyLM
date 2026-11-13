@@ -1,0 +1,26 @@
+
+==============================================================================
+[runlog] 2026-11-13 08:22:10  name=P106B_Stage8agW_qwen_extra_prepare
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1850s data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -m scripts.diag_p106b_qwen35_extra prepare
+==============================================================================
+
+Generating test split: 0 examples [00:00, ? examples/s]
+Generating test split: 5153 examples [00:00, 138326.56 examples/s]
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_qwen35_extra.py", line 220, in <module>
+    if __name__=='__main__':main()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_qwen35_extra.py", line 217, in main
+    (prepare() if a.phase=='prepare' else run(a.phase))
+  File "/home/uranus/tinyLM/scripts/diag_p106b_qwen35_extra.py", line 79, in prepare
+    model=qfixed.q.MODEL,sources=sources,references=references,belebele_identity=b.identity(),lambada_identity=l.identity(),
+  File "/home/uranus/tinyLM/scripts/diag_p106b_belebele.py", line 74, in identity
+    raise ValueError("동결된 LAMBADA/HF/Falcon helper source가 변경됐다")
+ValueError: 동결된 LAMBADA/HF/Falcon helper source가 변경됐다
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 1.2분  (2026-11-13 08:23:24)
+==============================================================================

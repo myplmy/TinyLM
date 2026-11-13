@@ -10,11 +10,13 @@ ROOT = Path(__file__).resolve().parents[3]
 OUT = Path(__file__).resolve().parent
 REL = OUT.relative_to(ROOT).as_posix()
 VERSION = sys.argv[1] if len(sys.argv) == 2 else "v1"
-assert VERSION in ("v1", "v2", "v3", "v4", "v5")
+assert VERSION in ("v1", "v2", "v3", "v4", "v5", "v6", "v7")
 VOLATILE = {"tmp/COORD_EXPERIMENT_01a0b33b.md"}
-SNAPSHOT_AUDIT = json.loads((OUT / "SNAPSHOT_LINK_BASE_AUDIT_v2.json").read_text())
+SNAPSHOT_AUDIT = json.loads((OUT / "SNAPSHOT_LINK_BASE_AUDIT_v3.json").read_text())
 assert SNAPSHOT_AUDIT["status"] == "ORIGINAL_BASE_VERIFIED"
 IMMUTABLE_COPIES = {row["snapshot"]: row["sha256"] for row in SNAPSHOT_AUDIT["snapshots"]}
+PENDING_RECONCILIATION = json.loads((OUT / "OWN_PENDING_RECONCILIATION_v1.json").read_text())
+RUNTIME_LOCKS = set(PENDING_RECONCILIATION["runtime_locks_preserved"])
 
 
 def sha(path):
@@ -28,7 +30,7 @@ def write_new(path, value):
 
 
 def excluded(name):
-    return name.startswith((".git/", ".claude/", ".agents/", ".codex/", "HF/", "data_cache/",
+    return name in RUNTIME_LOCKS or name.startswith((".git/", ".claude/", ".agents/", ".codex/", "HF/", "data_cache/",
         "runs/", "smoketest_logs/", "datasets/TinyDataset/", "handoff/audit/hold_resolution_",
         "handoff/audit/hold_recovery_", "handoff/audit/source_cleanup_")) or name in (
         "CLAUDE.md", "scripts/flag_whitelist.tsv", "handoff/WIP_20261027_작업원장.md", "train-logs.txt")
@@ -36,6 +38,7 @@ def excluded(name):
 
 old = json.loads((ROOT / "handoff/audit/nov13_value_edit/STATIC_INPUTS_v46_final.json").read_text())
 owned = {row["path"] for row in old["inputs"] if row["role"] == "owned" and not excluded(row["path"])}
+owned.update(row["path"] for row in PENDING_RECONCILIATION["owned_pending"])
 prefixes = {"/".join(Path(name).parts[:3]) for name in owned
             if name.startswith(("handoff/audit/", "test_result/evidence/"))}
 prefixes.add(REL)
@@ -44,10 +47,13 @@ for prefix in prefixes:
         if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
             name = path.relative_to(ROOT).as_posix()
             assert not path.is_symlink(), name
-            owned.add(name)
+            if not excluded(name):
+                owned.add(name)
 owned.update(("docs/methods/07_corpus_selection.md", "docs/methods/10_benchmarks.md",
     "docs/research/20261101_KoBEST5_공식평가_준비범위.md",
     "docs/research/20261113_주도실험_채택재검토와_정리결과.md",
+    "test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md",
+    "test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md",
     "run_P078_Stage3Wc_prefix_router_full.sh", "run_P078_Stage3Wc_prefix_router_full-hold.sh"))
 deleted = json.loads((OUT / "EXACT_CLEANUP_PLAN_v2.json").read_text())["launchers"]
 owned.update(r["path"] for r in deleted)
@@ -92,11 +98,11 @@ for name in owned:
     if path.is_file() and name not in VOLATILE and name not in IMMUTABLE_COPIES and not name.endswith((".paths", ".pyc")):
         inputs[name] = dict(path=name, role="owned", sha256=sha(path))
 manifest = dict(old)
-manifest["exclusions"] = list(old["exclusions"]) + sorted(VOLATILE) + sorted(IMMUTABLE_COPIES)
-manifest["immutable_snapshot_audit"] = f"{REL}/SNAPSHOT_LINK_BASE_AUDIT_v2.json"
+manifest["exclusions"] = list(old["exclusions"]) + sorted(VOLATILE) + sorted(IMMUTABLE_COPIES) + sorted(RUNTIME_LOCKS)
+manifest["immutable_snapshot_audit"] = f"{REL}/SNAPSHOT_LINK_BASE_AUDIT_v3.json"
 manifest["inputs"] = [inputs[k] for k in sorted(inputs)]
 manifest["parent_manifest"] = "handoff/audit/nov13_value_edit/STATIC_INPUTS_v46_final.json"
-manifest["note"] = "삭제 영수증 이후 현재 존재하는 소유 코드/문서만 검증한다. 가변 공개 조정문과 원래 기준경로를 별도 검증한 불변 계획 사본7개는 제외한다. 사본은 Git 저장하며 공용 검사기는 바꾸지 않는다. 전역 판정 아님."
+manifest["note"] = "독립 Git pending 재고로 결과2개·원로그41개와 역사 근거 누락을 보완했다. 가변 공개 조정문·빈 runtime lock과 원래 기준경로를 별도 검증한 불변 계획 사본13개는 제외한다. 사본은 Git 저장하며 공용 검사기는 바꾸지 않는다. 전역 판정 아님."
 scope = OUT / f"STATIC_INPUTS_{VERSION}.json"
 write_new(scope, manifest)
 print(json.dumps(dict(scope=str(scope.relative_to(ROOT)), sha256=sha(scope), paths=len(paths),

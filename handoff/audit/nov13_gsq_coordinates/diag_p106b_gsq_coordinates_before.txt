@@ -1,0 +1,183 @@
+"""Full-model optimizer mechanics, deliberately no answer-quality evaluation."""
+from contextlib import ExitStack, contextmanager
+import json
+from pathlib import Path
+import sys
+import time
+from unittest.mock import patch
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import diag_p106b_gsq_objective as cost
+from scripts import p106b_gsq_coordinates as coordinates
+
+BASE = ROOT/'test_result/evidence/p106b_gsq_coordinates_v1_20261105'
+SCHEMA = 'P106B_GSQ_COORDINATE_MECHANICS_V1'
+UPDATES = 256
+GAIN = 200.
+SOURCE = cost.SOURCE + ('scripts/p106b_gsq_coordinates.py',
+    'scripts/diag_p106b_gsq_coordinates.py', 'scripts/test_p106b_gsq_coordinates.py')
+POLICY = dict(cost.POLICY, warmup_updates=1, timed_updates=255,
+    total_updates=UPDATES, optimizer='LOGIT_ADAMW_OR_LION_SCALE_NORM_ADAMW',
+    effective_logit_gain=GAIN, logit_lr=1e-4, original_strength=4.6,
+    scale_norm_lr=1e-5, repeated_train128_mechanics=True,
+    validation=False, benchmark=False, model_quality=False)
+
+
+@contextmanager
+def configured():
+    with ExitStack() as stack:
+        for name, value in dict(BASE=BASE, SCHEMA=SCHEMA,
+                                SOURCE=SOURCE, POLICY=POLICY).items():
+            stack.enter_context(patch.object(cost, name, value))
+        yield
+
+
+def gradient_stats(torch, bridge):
+    result = {}
+    for kind in ('mask_logit', 'sign_logit', 'scale'):
+        gradients = [getattr(bank, kind).grad for bank in bridge.banks.values()]
+        if any(value is None for value in gradients):
+            raise RuntimeError('missing gradient: '+kind)
+        values = torch.stack([torch.stack((g.detach().double().square().sum(),
+            g.detach().abs().max().double(), (g.detach() != 0).sum().double()))
+            for g in gradients])
+        result[kind] = dict(l2=float(values[:, 0].sum().sqrt()),
+            max_abs=float(values[:, 1].max()), nonzero=int(values[:, 2].sum()))
+    return result
+
+
+def code_stats(torch, bridge, initial):
+    totals = dict(code_changed=0, mask_changed=0, nonzero_sign_changed=0,
+                  initial_nonzero=0, current_nonzero=0, elements=0)
+    movements = {kind: [] for kind in ('mask_logit', 'sign_logit', 'scale')}
+    for key, bank in bridge.banks.items():
+        old_code, old_scale = initial[key]
+        old_mask = old_code != 0
+        mask = bank.mask_logit.detach() >= 0
+        sign = bank.sign_logit.detach() >= 0
+        code = mask.to(torch.int8)*(2*sign.to(torch.int8)-1)
+        counts = torch.stack(((code != old_code).sum(), (mask != old_mask).sum(),
+            ((sign != (old_code > 0)) & old_mask).sum(), old_mask.sum(), mask.sum()))
+        for name, number in zip(list(totals)[:5], counts.tolist()):
+            totals[name] += int(number)
+        totals['elements'] += code.numel()
+        strength = POLICY['original_strength']/GAIN
+        references = dict(mask_logit=torch.where(old_mask, strength, -strength),
+            sign_logit=old_code.float()*strength, scale=old_scale)
+        for kind, reference in references.items():
+            delta = getattr(bank, kind).detach()-reference
+            movements[kind].append(torch.stack((delta.double().square().sum(),
+                delta.abs().max().double(), torch.tensor(delta.numel(), device=delta.device,
+                                                         dtype=torch.float64))))
+    movement = {}
+    for kind, parts in movements.items():
+        parts = torch.stack(parts)
+        movement[kind] = dict(l2=float(parts[:, 0].sum().sqrt()),
+            max_abs=float(parts[:, 1].max()), elements=int(parts[:, 2].sum()))
+    return dict(**totals, parameter_displacement=movement,
+                not_a_quality_measure=True)
+
+
+def measure(torch, model, rows, arm, started, maximum):
+    from tinylm.train.mtp_sft import Record, pad_records
+    from tinylm.train import alm
+    bridge = coordinates.scaled_bridge(model, gain=GAIN, strength=4.6)
+    model.cfg.grad_checkpoint = True
+    model.train()
+    records = [Record(list(r['record']['x']), list(r['record']['y']),
+                      list(r['record']['segments'])) for r in rows]
+    totals = dict(ce_targets=sum(r['ce_targets'] for r in rows),
+                  kl_chunks=sum(r['kd_chunks'] for r in rows))
+    initial = {}
+    with torch.no_grad():
+        for key, bank in bridge.banks.items():
+            code = ((bank.mask_logit >= 0).to(torch.int8)
+                    *(2*(bank.sign_logit >= 0).to(torch.int8)-1))
+            initial[key] = code, bank.scale.detach().clone()
+    events = []
+    directory = BASE/arm
+    with bridge.installed(), (directory/'events.jsonl').open('x', encoding='utf-8') as stream:
+        parameters = bridge.parameters_for_optimizer()
+        optimizers = coordinates.optimizer_pair(bridge, arm)
+        starting_codes = code_stats(torch, bridge, initial)
+        if starting_codes['code_changed']:
+            raise RuntimeError('coordinate reparameterization changed initial codes')
+        for update in range(UPDATES):
+            cost.guard(started, maximum)
+            for optimizer in optimizers:
+                optimizer.zero_grad(set_to_none=True)
+            torch.cuda.synchronize()
+            begin = time.perf_counter()
+            ce_sum = kl_sum = 0.
+            for micro in range(16):
+                cost.guard(started, maximum)
+                selected = records[micro*8:(micro+1)*8]
+                x, y, _ = pad_records(selected, 0, 'cuda', fixed_width=1024, batch_size=8)
+                chunks = [dict(chunk, row=i) for i, row in enumerate(rows[micro*8:(micro+1)*8])
+                          for chunk in row['chunks']]
+                with bridge.realization(6110500+update*16+micro):
+                    with torch.autocast('cuda', dtype=torch.bfloat16):
+                        terms = bridge.loss_terms(x, y, chunks, temperature=100., head_chunk=64)
+                        loss = alm.normalized_loss(terms['ce_sum'], totals['ce_targets'],
+                            terms['kl_sum'], totals['kl_chunks'], weight=1.)
+                    bridge.backward(loss)
+                ce_sum += float(terms['ce_sum'].detach())
+                kl_sum += float(terms['kl_sum'].detach())
+                del terms, loss, x, y
+            detailed = update == 0 or (update+1) % 32 == 0
+            gradients = gradient_stats(torch, bridge) if detailed else None
+            norm = torch.nn.utils.clip_grad_norm_(parameters, 1., error_if_nonfinite=True)
+            for optimizer in optimizers:
+                optimizer.step()
+            bridge.project()
+            torch.cuda.synchronize()
+            event = dict(update=update+1, warmup=update==0,
+                seconds=time.perf_counter()-begin, ce_sum=ce_sum, kl_sum=kl_sum,
+                grad_norm_before_clip=float(norm), ce_targets=totals['ce_targets'],
+                kd_chunks=totals['kl_chunks'], actual_x_tokens=sum(len(r.x) for r in records),
+                padded_slots=131072, deterministic_codes=None, gradients_before_clip=gradients)
+            if detailed:
+                event['deterministic_codes'] = code_stats(torch, bridge, initial)
+            stream.write(json.dumps(event, allow_nan=False)+chr(10))
+            stream.flush()
+            events.append(event)
+            if detailed:
+                print('[GSQ_COORDINATE_PROGRESS] '+json.dumps(dict(arm=arm, **event)), flush=True)
+        bank_inventory = bridge.inventory()
+    return dict(events=events, starting_codes=starting_codes,
+        bank_inventory=bank_inventory, updates=len(events),
+        measured_update_seconds=sum(e['seconds'] for e in events[1:])/(len(events)-1),
+        quality_evaluation=False, checkpoint_saving=False,
+        final_codes=events[-1]['deterministic_codes'],
+        mechanics_only='TRAIN128 repeated256 times; not normal4epoch or intelligence evidence')
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('mode', choices=('prepare', 'run'))
+    parser.add_argument('--arm', choices=('adamw', 'lion'))
+    parser.add_argument('--max-wall-sec', type=int, default=2400)
+    args = parser.parse_args()
+    with configured():
+        if args.mode == 'prepare':
+            cost.prepare()
+            cost.write(BASE/'ADAM_BOUND_v1.json', dict(
+                schema=SCHEMA, assumption='Fresh moments, wd0, finite gradients, real arithmetic',
+                initial_nonzero_margin=4.6, original_lr=1e-5,
+                movement_bounds={str(n):coordinates.adam_coordinate_bound(n, 1e-5)
+                                 for n in (32, 256, 2289, 10000)},
+                fixed_horizons_are_examples_not_claimed_main_training_update_counts=True,
+                floating_point_formal_proof=False, quality_inference=False))
+            return 0
+        if args.arm is None or not 600 <= args.max_wall_sec <= 3600:
+            parser.error('explicit arm and600..3600-second diagnostic budget required')
+        with patch.object(cost, 'measure', measure):
+            return cost.execute(args.arm, args.max_wall_sec)
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

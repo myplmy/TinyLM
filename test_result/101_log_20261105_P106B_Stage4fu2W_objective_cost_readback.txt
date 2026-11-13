@@ -1,0 +1,75 @@
+Independent stdlib readback of both completed cost reports, actual inputs/assistant/KD counts, warmup exclusion, peaks, source checkpoint and final CUDA. High preclip norms and sparse targets are disclosed. No model or quality evaluation.
+
+==============================================================================
+[runlog] 2026-11-05 09:08:10  name=P106B_Stage4fu2W_objective_cost_readback
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 scripts/diag_p106b_gsq_cost_readback.py
+==============================================================================
+{
+  "schema": "P106B_GSQ_COST_ROOT_READBACK_V1",
+  "status": "TECHNICAL_COST_CLOSED_NOT_QUALITY_ADOPTION",
+  "profile_sha256": "182D240CAE4D660EF494E5573712B4FA68F05DD9C4A41D8003E492E6BB196DB6",
+  "reports": {
+    "ste": {
+      "report_sha256": "013A6D5791AAB01932FB078FF127EEF0E6AA724EDC9C3E99A76E6D4E5A0EB85F",
+      "mean_update_seconds": 3.2480103209964,
+      "update_seconds": [
+        3.8300020550377667,
+        3.1668054109904915,
+        3.3292152310023084
+      ],
+      "peak_allocated_bytes": 3488554496,
+      "peak_reserved_bytes": 3586129920,
+      "maximum_preclip_grad_norm": 129.4065704345703,
+      "wall_seconds": 13.770618551003281,
+      "original_checkpoint_unchanged": true,
+      "final_cuda_allocated": 0,
+      "final_cuda_reserved": 0
+    },
+    "gsq": {
+      "report_sha256": "E959F0627CAEDE52B48A68BB5CD4D821A2D39756212FE710A2C6F501B6238A44",
+      "mean_update_seconds": 4.3818416300055105,
+      "update_seconds": [
+        4.938902880996466,
+        4.451852997997776,
+        4.311830262013245
+      ],
+      "peak_allocated_bytes": 7599192576,
+      "peak_reserved_bytes": 7728005120,
+      "maximum_preclip_grad_norm": 143.88385009765625,
+      "wall_seconds": 17.477970880048815,
+      "original_checkpoint_unchanged": true,
+      "final_cuda_allocated": 0,
+      "final_cuda_reserved": 0
+    }
+  },
+  "time_ratio_gsq_over_ste": 1.3490848848846275,
+  "peak_reserved_ratio": 2.154970760233918,
+  "actual_input_tokens_per_update": {
+    "ko": 18357,
+    "en": 13859
+  },
+  "assistant_targets_per_update": {
+    "ko": 277,
+    "en": 495
+  },
+  "exposures": {
+    "ephemeral_optimizer_updates": 6,
+    "actual_input_tokens": 193296,
+    "assistant_targets": 4632,
+    "kd_chunks": 3366,
+    "padded_slots": 786432
+  },
+  "flags": [
+    "PRECLIP_GRAD_NORM_OVER100_CLIP1_APPLIED_NOT_STABILITY_PASS",
+    "TWO_TIMED_UPDATES_NO_STEADY_STATE_UNCERTAINTY",
+    "SPARSE_ASSISTANT_TARGETS_NOT_FULL_NTP_THROUGHPUT",
+    "COMMON_ADAM_LR_IS_COST_CONTROL_NOT_A_VALIDATED_CATEGORICAL_LEARNING_RATE"
+  ],
+  "model_quality": "NOT_RUN",
+  "benchmark": "NOT_RUN",
+  "deployment": "NOT_RUN"
+}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-05 09:08:10)
+==============================================================================

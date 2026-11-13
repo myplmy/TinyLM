@@ -1,0 +1,127 @@
+Frozen native candidate versus original, fixed latent anchor and three per-group transition-matched native controls. New test256 plus seen16/fresh16 open answers; preserve correct requested repeats/copies. Count exact, loops, echo and failures separately. Root reads actual answers; no general intelligence claim or reselection on test.
+
+==============================================================================
+[runlog] 2026-11-05 06:16:07  name=P108_Stage8W_native_scale_confirm
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1900s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p108_native_scale confirm p108_native_v1_20261105
+==============================================================================
+[MODEL] {"checkpoint": "runs/ckpt/m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt", "checkpoint_sha256": "F3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C", "core_sha256": "B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E", "report_sha256": "079A3C67E85797AFB4978724CBF1C9FD32F9DB1AF4402CAA20283F1F56E89FF4", "manifest_sha256": "6B61BE684AE795A00C5FB9C4E58AF74D91A32D3EDDA8BDD8B8151B1B569EFEDF", "tokenizer_sha256": "9716F40E4C504D6AF37DDE76CCA578E30B45E9CA86C8B6BB79B2FA095D3AC88E", "quantization_route": {"schema": "P106B_WEIGHT_ROUTE_V1", "mode": "ternary", "scope": "TLINEAR_WEIGHTS_ONLY", "master_dtype": "fp32", "compute_policy": "CALLER_MATCHED_BF16_AMP_TRAIN_FP32_MATH_EVAL", "forward": "ORIGINAL_ANNEALED_TERNARY", "backward": "ORIGINAL_STE_WINDOW", "dedicated_loader_required": true}, "name": "new595-broad-q", "gpu_point_query": {"scope": "NVML_POINT_QUERY_ONLY_NOT_CONTINUOUS_OR_OOM_GUARANTEE", "gpu_uuid": "GPU-3d5ef2e7-8bee-31ee-4c65-57bb54d044b0", "competing_compute_pids": []}, "project_cache_directories": "EXISTING_ONLY_NO_NEW_PROJECT_CACHE_DIRECTORIES", "root": "/home/uranus/tinyLM", "precision": "FP32_MATH", "body_check_scope": "CPU_LOAD_GPU_LOAD_AND_SESSION_EXIT"}
+[PROGRESS] original_test 16/288
+[PROGRESS] original_test 32/288
+[PROGRESS] original_test 48/288
+[PROGRESS] original_test 64/288
+[PROGRESS] original_test 80/288
+[PROGRESS] original_test 96/288
+[PROGRESS] original_test 112/288
+[PROGRESS] original_test 128/288
+[PROGRESS] original_test 144/288
+[PROGRESS] original_test 160/288
+[PROGRESS] original_test 176/288
+[PROGRESS] original_test 192/288
+[PROGRESS] original_test 208/288
+[PROGRESS] original_test 224/288
+[PROGRESS] original_test 240/288
+[PROGRESS] original_test 256/288
+[PROGRESS] original_test 272/288
+[PROGRESS] original_test 288/288
+[VARIANT] {"variant": "original_test", "items": 288, "scored": 256, "exact": 41, "protected_items": 64, "protected_exact": 0, "loop_indicators": 103, "question_echoes": 6, "empty": 0, "max_new": 97, "generated_tokens": 10367, "seconds": 151.50115432497114, "allocated_peak_bytes": 737340416, "reserved_peak_bytes": 757071872}
+[PROGRESS] requant_common_g1_test 16/288
+[PROGRESS] requant_common_g1_test 32/288
+[PROGRESS] requant_common_g1_test 48/288
+[PROGRESS] requant_common_g1_test 64/288
+[PROGRESS] requant_common_g1_test 80/288
+[PROGRESS] requant_common_g1_test 96/288
+[PROGRESS] requant_common_g1_test 112/288
+[PROGRESS] requant_common_g1_test 128/288
+[PROGRESS] requant_common_g1_test 144/288
+[PROGRESS] requant_common_g1_test 160/288
+[PROGRESS] requant_common_g1_test 176/288
+[PROGRESS] requant_common_g1_test 192/288
+[PROGRESS] requant_common_g1_test 208/288
+[PROGRESS] requant_common_g1_test 224/288
+[PROGRESS] requant_common_g1_test 240/288
+[PROGRESS] requant_common_g1_test 256/288
+[PROGRESS] requant_common_g1_test 272/288
+[PROGRESS] requant_common_g1_test 288/288
+[VARIANT] {"variant": "requant_common_g1_test", "items": 288, "scored": 256, "exact": 42, "protected_items": 64, "protected_exact": 0, "loop_indicators": 98, "question_echoes": 5, "empty": 0, "max_new": 96, "generated_tokens": 9995, "seconds": 146.62305423396174, "allocated_peak_bytes": 776662016, "reserved_peak_bytes": 799014912}
+[PROGRESS] targeted_test 16/288
+[PROGRESS] targeted_test 32/288
+[PROGRESS] targeted_test 48/288
+[PROGRESS] targeted_test 64/288
+[PROGRESS] targeted_test 80/288
+[PROGRESS] targeted_test 96/288
+[PROGRESS] targeted_test 112/288
+[PROGRESS] targeted_test 128/288
+[PROGRESS] targeted_test 144/288
+[PROGRESS] targeted_test 160/288
+[PROGRESS] targeted_test 176/288
+[PROGRESS] targeted_test 192/288
+[PROGRESS] targeted_test 208/288
+[PROGRESS] targeted_test 224/288
+[PROGRESS] targeted_test 240/288
+[PROGRESS] targeted_test 256/288
+[PROGRESS] targeted_test 272/288
+[PROGRESS] targeted_test 288/288
+[VARIANT] {"variant": "targeted_test", "items": 288, "scored": 256, "exact": 41, "protected_items": 64, "protected_exact": 0, "loop_indicators": 103, "question_echoes": 6, "empty": 0, "max_new": 97, "generated_tokens": 10367, "seconds": 151.25149977201363, "allocated_peak_bytes": 775138304, "reserved_peak_bytes": 799014912}
+[PROGRESS] native_random_17_test 16/288
+[PROGRESS] native_random_17_test 32/288
+[PROGRESS] native_random_17_test 48/288
+[PROGRESS] native_random_17_test 64/288
+[PROGRESS] native_random_17_test 80/288
+[PROGRESS] native_random_17_test 96/288
+[PROGRESS] native_random_17_test 112/288
+[PROGRESS] native_random_17_test 128/288
+[PROGRESS] native_random_17_test 144/288
+[PROGRESS] native_random_17_test 160/288
+[PROGRESS] native_random_17_test 176/288
+[PROGRESS] native_random_17_test 192/288
+[PROGRESS] native_random_17_test 208/288
+[PROGRESS] native_random_17_test 224/288
+[PROGRESS] native_random_17_test 240/288
+[PROGRESS] native_random_17_test 256/288
+[PROGRESS] native_random_17_test 272/288
+[PROGRESS] native_random_17_test 288/288
+[VARIANT] {"variant": "native_random_17_test", "items": 288, "scored": 256, "exact": 41, "protected_items": 64, "protected_exact": 0, "loop_indicators": 103, "question_echoes": 6, "empty": 0, "max_new": 97, "generated_tokens": 10367, "seconds": 152.37744209199445, "allocated_peak_bytes": 787721216, "reserved_peak_bytes": 819986432}
+[PROGRESS] native_random_29_test 16/288
+[PROGRESS] native_random_29_test 32/288
+[PROGRESS] native_random_29_test 48/288
+[PROGRESS] native_random_29_test 64/288
+[PROGRESS] native_random_29_test 80/288
+[PROGRESS] native_random_29_test 96/288
+[PROGRESS] native_random_29_test 112/288
+[PROGRESS] native_random_29_test 128/288
+[PROGRESS] native_random_29_test 144/288
+[PROGRESS] native_random_29_test 160/288
+[PROGRESS] native_random_29_test 176/288
+[PROGRESS] native_random_29_test 192/288
+[PROGRESS] native_random_29_test 208/288
+[PROGRESS] native_random_29_test 224/288
+[PROGRESS] native_random_29_test 240/288
+[PROGRESS] native_random_29_test 256/288
+[PROGRESS] native_random_29_test 272/288
+[PROGRESS] native_random_29_test 288/288
+[VARIANT] {"variant": "native_random_29_test", "items": 288, "scored": 256, "exact": 41, "protected_items": 64, "protected_exact": 0, "loop_indicators": 103, "question_echoes": 6, "empty": 0, "max_new": 97, "generated_tokens": 10367, "seconds": 153.52224089298397, "allocated_peak_bytes": 787721216, "reserved_peak_bytes": 819986432}
+[PROGRESS] native_random_43_test 16/288
+[PROGRESS] native_random_43_test 32/288
+[PROGRESS] native_random_43_test 48/288
+[PROGRESS] native_random_43_test 64/288
+[PROGRESS] native_random_43_test 80/288
+[PROGRESS] native_random_43_test 96/288
+[PROGRESS] native_random_43_test 112/288
+[PROGRESS] native_random_43_test 128/288
+[PROGRESS] native_random_43_test 144/288
+[PROGRESS] native_random_43_test 160/288
+[PROGRESS] native_random_43_test 176/288
+[PROGRESS] native_random_43_test 192/288
+[PROGRESS] native_random_43_test 208/288
+[PROGRESS] native_random_43_test 224/288
+[PROGRESS] native_random_43_test 240/288
+[PROGRESS] native_random_43_test 256/288
+[PROGRESS] native_random_43_test 272/288
+[PROGRESS] native_random_43_test 288/288
+[VARIANT] {"variant": "native_random_43_test", "items": 288, "scored": 256, "exact": 41, "protected_items": 64, "protected_exact": 0, "loop_indicators": 103, "question_echoes": 6, "empty": 0, "max_new": 97, "generated_tokens": 10367, "seconds": 149.44927510700654, "allocated_peak_bytes": 787721216, "reserved_peak_bytes": 819986432}
+[BODY_UNCHANGED] B7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E (CPU/GPU load + session exit)
+[FINAL] {"phase": "confirm", "status": "GATE_NEGATIVE", "wall_seconds": 908.5142505129916, "report": "test_result/evidence/p108_native_v1_20261105/new595-broad-q/confirm/report.json"}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 16.6분  (2026-11-05 06:32:44)
+==============================================================================
