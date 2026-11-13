@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# User111/112; forward-only exhaustive head screen, then dev and sealed test.
+# About 10 to 25 minutes, one completed float model. No training or CP writes.
+# Reference loss is only a candidate signal; real answers determine the report.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+exec "${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage10bW_wsp_headscan_actual -- timeout --signal=TERM --kill-after=20s 1850s "${PY}" -B -X utf8 -m scripts.diag_p108_wsp_headscan run

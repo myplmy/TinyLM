@@ -1,0 +1,29 @@
+User109 bounded7200s teacher-only candidate generation. Exact four V5 article/question/answer pairs reviewed; old V3 sources and checkpoints immutable. Same MTP and sampling. Formal corpus admission, student quality and75M completion are not established.
+
+==============================================================================
+[runlog] 2026-11-05 08:07:50  name=P106B_Stage4ft3cW_english_candidate_window2h
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 7500s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p106b_nov05_english_passage --mode resume --max-wall-sec 7200 --deadline-utc 2026-11-05T06:30:00+00:00 --stop-file tmp/P106B_Stage4ft3cW_STOP
+==============================================================================
+[SUPPORTED8H_MEMORY] {"schema": "P106B_VRAM_TIMEOUT_RETRY_V1", "maximum_attempts": 3, "per_query_timeout_sec": 5, "retry_delay_sec": 0.2, "calls": 0, "successful_queries": 0, "timeout_attempts": 0, "recovered_calls": 0, "fatal_calls": 0, "unobserved_query_window_sec": 0.0, "events": [], "event_count": 0, "omitted_event_count": 0, "event_chain_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855", "measurement_coverage": "SAMPLED_ONLY", "observed_global_peak_mib": null, "observed_min_free_mib": null, "continuous_peak_verified": false, "oom_safety": "NOT_ESTABLISHED", "scope": "Only subprocess.TimeoutExpired retries; no GPU reset/model restart; gaps never interpolated"}
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_passage.py", line 170, in <module>
+    raise SystemExit(main())
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_passage.py", line 166, in main
+    return base.execute(args)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_nov05_english_production.py", line 224, in execute
+    rc = supported.execute(args)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_supported_production8h.py", line 251, in execute
+    return producer.production(resume=args.mode == "resume", max_wall_sec=seconds)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_gemma_deficit_production.py", line 140, in production
+    last=list(control.batch_reports())[-1][1]
+  File "/home/uranus/tinyLM/scripts/diag_p106b_supported_production8h.py", line 100, in batches
+    raise ValueError("different generation contract in destination")
+ValueError: different generation contract in destination
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 1.4분  (2026-11-05 08:09:13)
+==============================================================================

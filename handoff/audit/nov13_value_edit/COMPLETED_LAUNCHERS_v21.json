@@ -1,0 +1,19 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V21",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 589,
+      "source": "run_P106B_Stage7atW_dwa_band_symmetry_cpu.sh",
+      "target": "run_P106B_Stage7atW_dwa_band_symmetry_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Existing CPU DP only: directional cross band and explicit unbanded self terms.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7atW_dwa_band_symmetry_cpu -- timeout 120s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dwa_band_symmetry\n",
+      "sha256": "411F570472D18ECBF88666F6DF1AAE4829997DDC84FFE94CE8DB3FC201BF5220",
+      "actual_tool_session": 63215,
+      "exit_code": 1,
+      "log": "test_result/101_log_20261113_P106B_Stage7atW_dwa_band_symmetry_cpu.txt",
+      "log_sha256": "A134042B6DEF713268D0ABFE9A6EA0613721E0DFD187A52BA528C215FFFF8B0C",
+      "status": "OUTPUT_PARENT_ERROR_BEFORE_MATH"
+    }
+  ]
+}

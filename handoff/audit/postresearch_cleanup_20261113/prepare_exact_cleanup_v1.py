@@ -1,0 +1,164 @@
+"""현재 승인 범위의 정확 삭제 계획. 원본 모델 로딩·삭제·TSV 수정0."""
+from pathlib import Path
+import hashlib
+import importlib.util
+import json
+import re
+import stat
+
+ROOT = Path(__file__).resolve().parents[3]
+OUT = Path(__file__).resolve().parent
+
+
+def read(path):
+    return json.loads((ROOT / path).read_text(encoding="utf-8"))
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            value.update(block)
+    return value.hexdigest().upper()
+
+
+def identity(path):
+    info = path.lstat()
+    assert stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and not path.is_symlink(), path
+    return dict(dev=info.st_dev, ino=info.st_ino, size=info.st_size,
+                mtime_ns=info.st_mtime_ns, ctime_ns=info.st_ctime_ns,
+                blocks_bytes=info.st_blocks * 512)
+
+
+def module(name, relative):
+    spec = importlib.util.spec_from_file_location(name, ROOT / relative)
+    result = importlib.util.module_from_spec(spec)
+    import sys
+    sys.modules[name] = result
+    spec.loader.exec_module(result)
+    return result
+
+
+def save(name, value):
+    raw = (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode()
+    assert len(raw) < 20_000_000
+    with (OUT / name).open("xb") as stream:
+        stream.write(raw)
+
+
+def main():
+    ckpt = module("checkpoint_metadata", "scripts/checkpoint_optimizer_archive.py")
+    cleaner = module("checkpoint_cleaner", "scripts/cleanup_ckpt.py")
+    isolated = module("isolated_cleaner", "scripts/cleanup_isolated_ckpt.py")
+    old = read("handoff/audit/checkpoint_retention_20261105_v1/PLAN_v1.json")
+    protected = {Path(r["path"]).name for r in old["preserved"] if r.get("optimizer_fields")}
+    assert len(protected) == 39
+    protected.update(old["explicit9"])
+    parent_refs = cleaner.derived_protection()
+    intermediates = read("handoff/audit/postresearch_cleanup_20261113/ROOT_INTERMEDIATE_PLAN_v1.json")["candidates"]
+    checkpoints = []
+    for row in intermediates:
+        assert row["eligible"]
+        path = ROOT / row["path"]
+        assert path.name not in protected and path.name not in parent_refs
+        payload = ckpt.metadata(path)
+        opt = payload["optimizer_fields"]
+        assert not opt, (path, opt)
+        checkpoints.append(dict(path=row["path"], identity=identity(path), sha256=digest(path), metadata=payload,
+            kind="RETIRED_INTERMEDIATE_EPOCH", final=row["final"],
+            reason="완료된 실험의 중간 epoch. 최종/선정 endpoint 별도 보존·현재 소스/부모 참조0·optimizer 없음."))
+    inventory = read("handoff/audit/postresearch_cleanup_20261113/CKPT_INVENTORY_BEFORE_v1.json")
+    synth_holds = []
+    reports = {}
+    for sid in sorted({Path(r["path"]).parts[3] for r in inventory["isolated"]}):
+        relative = Path("test_result/evidence/codex_smoke") / sid / "smoke_report.json"
+        report = read(str(relative))
+        assert report["complete"] and not report["interrupted"] and not report["timed_out"]
+        assert not report["snapshot_errors"] and not report["safety_errors"] and report["source_pins_unchanged"]
+        trains = {}
+        for action, receipt in zip(report["action_manifest"], report["receipts"]):
+            child = isolated.child_argv(action)
+            if "run100m.py" not in child:
+                continue
+            stem, arch = isolated.training_stem(child)
+            assert receipt["returncode"] == 0 and receipt["status"] == "COMPLETE" and receipt["launch_state"] == "OWNED"
+            assert receipt["executed_argv"] == action["argv"]
+            result_path = Path("runs/validation/codex_smoke") / sid / "runs/logs" / (stem + ".json")
+            result = read(str(result_path))
+            assert result["preset"] == "tiny" and result["data"] == "synthetic" and result["arch"] == arch
+            assert result["tag"] == stem and isinstance(result["final"], dict)
+            trains[stem] = dict(command=child, result=str(result_path), result_sha256=digest(ROOT / result_path))
+        reports[sid] = dict(path=str(relative), sha256=digest(ROOT / relative),
+                            overall_returncode=report["returncode"], failed_calls=report["failed_calls"],
+                            source_pins=report["source_pins_before"], training_commands=trains,
+                            raw_log=report["log"], raw_log_sha256=digest(ROOT / report["log"]))
+    for row in inventory["isolated"]:
+        path = ROOT / row["path"]
+        if path.name in protected or path.name in parent_refs:
+            synth_holds.append(dict(path=row["path"], reason="기존 보호 또는 모호한 basename 부모 참조 보존"))
+            continue
+        sid = Path(row["path"]).parts[3]
+        stem = path.name.removesuffix("_best.pt").removesuffix(".pt")
+        assert stem in reports[sid]["training_commands"]
+        checkpoints.append(dict(path=row["path"], identity=identity(path), sha256=digest(path),
+            kind="REGENERABLE_SYNTHETIC", session_id=sid,
+            reason="합성 tiny의 정확 생성명령·각 학습 자식종료0·결과/원로그 보존. 전체 smoke의 독립 정적실패는 그대로 보존."))
+    ids = sorted(reports)
+    busy = isolated.busy_sessions(ROOT, ids, [(row.get("session_id", "root"), row["identity"]) for row in checkpoints])
+    assert not busy, busy
+    source_paths = list((ROOT / "scripts").glob("*.py"))
+    source_paths += [p for p in ROOT.glob("*.sh") if not p.stem.endswith(("-done", "-cancel", "-hold"))]
+    source_paths += [p for p in ROOT.glob("*.bat") if not p.stem.endswith(("-done", "-cancel", "-hold"))]
+    sources = [(str(p.relative_to(ROOT)), p.read_text(encoding="utf-8", errors="replace")) for p in source_paths]
+    recent = read("handoff/audit/nov13_value_edit/FINAL_RESULT_READBACK_v2.json")
+    pinned = {r["preserved"]: r for r in recent["launchers"]}
+    raw_logs = list((ROOT / "test_result").glob("*_log_*.txt"))
+    launchers, launcher_holds = [], []
+    paths = sorted({*ROOT.glob("*-done.sh"), *ROOT.glob("*-cancel.sh"),
+                    *ROOT.glob("*-done.bat"), *ROOT.glob("*-cancel.bat")})
+    for path in paths:
+        rel = path.name
+        original = path.name.replace("-done.", ".").replace("-cancel.", ".")
+        raw = path.read_bytes()
+        sha = hashlib.sha256(raw).hexdigest().upper()
+        refs = [name for name, text in sources if rel in text]
+        logs = []
+        reason = None
+        if rel in pinned:
+            row = pinned[rel]
+            assert sha == row["sha256"]
+            if row.get("log"):
+                log = ROOT / row["log"]
+                assert digest(log) == row["log_sha256"]
+                logs.append(dict(path=row["log"], sha256=row["log_sha256"]))
+        else:
+            needle = Path(original).stem.removeprefix("run_")
+            for log in raw_logs:
+                if needle in log.stem:
+                    text = log.read_text(encoding="utf-8", errors="replace")
+                    if re.search(r"\[runlog\] 종료코드 -?\d+", text):
+                        logs.append(dict(path=str(log.relative_to(ROOT)), sha256=digest(log)))
+            if "-done." in rel and not logs:
+                reason = "완결 원로그의 정확 연결 미확인"
+        if refs:
+            reason = "현재 실행 소스의 직접 참조가 남음"
+        row = dict(path=rel, original=original, identity=identity(path), sha256=sha,
+                   command_text=raw.decode("utf-8"), raw_logs=logs, references=refs)
+        (launcher_holds if reason else launchers).append(dict(**row, **({"reason": reason} if reason else {})))
+    save("LAUNCHER_FULLTEXT_v1.json", dict(schema="NOV13_LAUNCHER_TEXT_ARCHIVE_V1", launchers=launchers, holds=launcher_holds))
+    save("SYNTHETIC_PROVENANCE_v1.json", reports)
+    preserve = [r for r in inventory["root"] if r["path"] not in {x["path"] for x in checkpoints}]
+    save("EXACT_CLEANUP_PLAN_v1.json", dict(schema="NOV13_EXACT_CLEANUP_V1",
+        authority="2026-11-13 현재 사용자119~120의 적격 런처/체크포인트 정리 지시",
+        checkpoints=checkpoints, launchers=launchers, launcher_holds=launcher_holds,
+        synthetic_holds=synth_holds, preserve_root_metadata=preserve,
+        protected39=sorted({Path(r["path"]).name for r in old["preserved"] if r.get("optimizer_fields")}), preserve9=old["explicit9"],
+        p107=read("handoff/audit/checkpoint_retention_20261105_v1/APPROVED_SCOPE_v1.json")["p107"],
+        source_files_checked=len(sources), no_model_load=True, gpu=0))
+    print("root_intermediate", len(intermediates), "synthetic_delete", len(checkpoints)-len(intermediates),
+          "synthetic_hold", len(synth_holds), "launchers_delete", len(launchers), "launchers_hold", len(launcher_holds))
+    print("checkpoint_GiB", sum(r["identity"]["size"] for r in checkpoints)/2**30)
+
+
+if __name__ == "__main__":
+    main()

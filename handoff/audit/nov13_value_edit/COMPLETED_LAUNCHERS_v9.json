@@ -1,0 +1,73 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V9",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 543,
+      "source": "run_P106B_Stage8aibW_qwen_belebele_full.sh",
+      "target": "run_P106B_Stage8aibW_qwen_belebele_full-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Official KO and EN900 each, frozen plans and independent full raw recount.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8aibW_qwen_belebele_full -- timeout --signal=TERM --kill-after=20s 10850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra belebele\n\n",
+      "sha256": "ED96A161BD77B1D8A57C42AE02E92F91792C8D86B33CC7A1C1144184362E0831",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8aibW_qwen_belebele_full.txt",
+      "log_sha256": "88ECE7EBA0178DF045AAE5378B38AC6495952DF546F534C0071708F4D59824B1",
+      "status": "EXECUTED_SCOPED_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 554,
+      "source": "run_P108_Stage20cW_joint_precision_actual.sh",
+      "target": "run_P108_Stage20cW_joint_precision_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same four packets and5percent cap; exact native replay, local/global, rollback. No training or CP.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage20cW_joint_precision_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p108_joint_precision actual\n",
+      "sha256": "470F9CB0F924FC3C2F6E426F8F449303EE1CF25A8BE4625D5101A9DACBDD8EC6",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage20cW_joint_precision_actual.txt",
+      "log_sha256": "430833B03913D46120E3FE778A8C3E447A2E4C1E7597A838565B5A84280F22EC",
+      "status": "EXECUTED_SCOPED_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 556,
+      "source": "run_P106B_Stage7pW_actd_determinism_actual.sh",
+      "target": "run_P106B_Stage7pW_actd_determinism_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same immutable CE/ACTD ABBA function with strict deterministic process policy. No updates or CP.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7pW_actd_determinism_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_actd_determinism actual\n",
+      "sha256": "CF047711270E625537E4D9D4EDB1B06E352CFABEFF46828A2F55303E12674C84",
+      "exit_code": 1,
+      "log": "test_result/101_log_20261113_P106B_Stage7pW_actd_determinism_actual.txt",
+      "log_sha256": "6F65390E86874755FEA5241DEE3E14CBCDAE8773B0EA1C9842E35DBF18826A5A",
+      "status": "EXECUTED_PREMODEL_PATH_ERROR"
+    },
+    {
+      "id": 557,
+      "source": "run_P106B_Stage7qW_actd_determinism_mirror_cpu.sh",
+      "target": "run_P106B_Stage7qW_actd_determinism_mirror_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU2 and byte-identical original teacher report copy for immutable consumer provenance. GPU0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7qW_actd_determinism_mirror_cpu -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_actd_determinism_v2 prepare\n",
+      "sha256": "2F080F7276F51D1A738E3D03AF4D9CE0DF8E776206ACC458BB82144253A8EE7B",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7qW_actd_determinism_mirror_cpu.txt",
+      "log_sha256": "0BE2B4108094D4AB700B9F30A37E0FB511EE4A9D0E42295523F14AC8CBD835D6",
+      "status": "EXECUTED_SCOPED_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 559,
+      "source": "run_P106B_Stage7sW_dskdv2_native_hidden_cpu.sh",
+      "target": "run_P106B_Stage7sW_dskdv2_native_hidden_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Full-width native head observation CPU4. No model assets or GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7sW_dskdv2_native_hidden_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_dskdv2_native\n",
+      "sha256": "58C3F7659608E3F657F11A00A3619800070D117C5CBF6F92DBB2A1A40FFB7572",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7sW_dskdv2_native_hidden_cpu.txt",
+      "log_sha256": "285ECDF2EB63D2B1B34179359D2C3FABB7DF3D43F1367DD14F6A68B3450BD22C",
+      "status": "EXECUTED_SCOPED_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 560,
+      "source": "run_P106B_Stage7tW_dskdv2_native_hidden_prepare.sh",
+      "target": "run_P106B_Stage7tW_dskdv2_native_hidden_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze original128, exact557, native-head CPU proof and four prefix canaries. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7tW_dskdv2_native_hidden_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_hidden prepare\n",
+      "sha256": "C60C81C14A321B68970DE599ACD9434927706DCEE9148FF2408309567D8D15C3",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7tW_dskdv2_native_hidden_prepare.txt",
+      "log_sha256": "5B0E6C42E18C42E147E065D721CCD394711C3C2682D24F3947A5069CE0679A9E",
+      "status": "EXECUTED_SCOPED_COMPLETE_QUALITY_SEPARATE"
+    }
+  ]
+}

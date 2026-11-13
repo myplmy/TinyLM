@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# User111/112; fixed two heads, partial attenuation and strict dev gate.
+# About 5 to 15 minutes, one completed float model. No training or CP writes.
+# Test only if exact improves and protected/loop/echo/empty are not worse.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+exec "${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage11bW_partial_head_actual -- timeout --signal=TERM --kill-after=20s 950s "${PY}" -B -X utf8 -m scripts.diag_p108_wsp_partial_head run

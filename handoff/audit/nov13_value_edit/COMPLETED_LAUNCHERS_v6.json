@@ -1,0 +1,29 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V6",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 548,
+      "source": "run_P106B_Stage7lW_dskdv2_cpu.sh",
+      "target": "run_P106B_Stage7lW_dskdv2_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Full-vocabulary dual-space sums, exact byte ETA, projector initialization and gradient contracts.\n# CPU only. No model, GPU, optimizer, checkpoint, download or installation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7lW_dskdv2_cpu -- timeout --signal=TERM --kill-after=20s 180s \"${PY}\" -B -X utf8 -m unittest -v scripts.test_p106b_dskdv2_contract\n",
+      "sha256": "DE056E46123C6063251C539FDD12F1A10204A93263C29EE9539D66BE9E2BE7EE",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7lW_dskdv2_cpu.txt",
+      "log_sha256": "0AC8A25A76F71FFD7F17A2F0958A43D8EF9166DB4DDFB47CEC8692042BB82934",
+      "status": "EXECUTED_CPU_NOT_QUALITY_CLAIM"
+    },
+    {
+      "id": 549,
+      "source": "run_P106B_Stage7mW_dskdv2_exact_inventory.sh",
+      "target": "run_P106B_Stage7mW_dskdv2_exact_inventory-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same original TRAIN128, exact gold-token byte-span inventory; not a native teacher signal or quality score.\n# CPU only. Requires Stage7l contracts. No model, GPU, optimizer, checkpoint, download or installation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7mW_dskdv2_exact_inventory -- timeout --signal=TERM --kill-after=20s 330s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_contract\n",
+      "sha256": "6F7D2A6F0C1208AB8F06AF438C34DE57A653EE0A592F056252189F1CE1DA8AD9",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7mW_dskdv2_exact_inventory.txt",
+      "log_sha256": "D3F153260C3855CC5783BB026E0702D3900D7BB07F325BB89F0047732D2112F8",
+      "status": "EXECUTED_CPU_NOT_QUALITY_CLAIM"
+    }
+  ]
+}

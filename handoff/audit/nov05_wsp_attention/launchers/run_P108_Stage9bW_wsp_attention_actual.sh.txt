@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# User111/112 to 5Nov17KST. Completed float model, no training or checkpoint writes.
+# Estimated 15 to 35 minutes, one GPU. CPU contracts and frozen profile required.
+# Dev selects heads/sites; test never reselects. Compare exact/protected/loop/echo.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+exec "${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage9bW_wsp_attention_actual -- timeout --signal=TERM --kill-after=20s 2450s "${PY}" -B -X utf8 -m scripts.diag_p108_wsp_attention run

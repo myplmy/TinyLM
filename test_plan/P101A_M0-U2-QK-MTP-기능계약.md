@@ -218,6 +218,76 @@ CPT의 pool≥2× 규칙은 승인된 고정자료 SFT 반복실험의근거로�
 정의된독립변수 이외에는 바꾸지않고, actualquality를읽은뒤설정을 결정한다.
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+## 2026-11-13 Stage3ndW — PAD 실제 기울기와 Muon 증폭 경로
+
+### 왜·질문·예측
+
+원장114의 PAD 후속을 사용자115의 새 CPU/GPU 허가에서 수행한다. 이미 끝난 CPU7/322,
+4epoch membership, eager ABBA와 CE/head의 동일gradient 재생은 반복하지 않는다.
+기존 PAD의 두 실제 gradient가 저장되지 않았으므로 같은 첫128대화·16×8을 한 번씩만
+다시 계산하고 기존 Muon trace helper에 전달한다. Q1은 PAD 입력폭 때문에 생긴 작은
+gradient 차이가 clip, BF16 cast, NS 반복, 실제 update 중 어디서 커지는가다.
+Q2는 같은 실제 gradient를 넣은 재생이 exact이며 FP32 NS 대조에서 update 차이가 줄어드는가다.
+CE/head에서 관측한 증폭 가설이 PAD에도 맞을 수 있지만, 실제 쌍의 실패가 재현되지 않거나
+다른 단계가 원인일 수 있다. 기존85/157 음성과 허용값을 바꾸지 않는다.
+
+### 권한·영향·세 안
+
+| 경로 | 동작 | 근거 | 제외 |
+|---|---|---|---|
+| scripts/diag_p101a_padding_muon.py 및 test, 새 Stage3nd SH | 독립 Nov13 driver·회귀·실제 실행 | 사용자115/원장114 | 옛 Oct23/24 authority main 호출·monkeypatch0 |
+| 새 evidence/p101a_padding_muon_v1_20261113, 자기 audit | source/profile·stats/hash·원로그 | 같은 기록 위임 | tensor/CP 파일쓰기0, 원형·타정제·TinyDataset 제외 |
+| P101A/결과092/목록/기준표/METHODS/COMPASS/자기WIP/registry | 결과·상태 연쇄 기록 | 같은 위임 | Git·설치·새환경·추가300M0 |
+
+| 안 | 장점 | 단점·영향 | 비용 |
+|---|---|---|---|
+| A, 선택: 실제 PAD gradient+NS trace | 남은 구체 원인을 직접 확인 | 원래 gradient 두 개만 재계산 필요 | CPU 준비 뒤 GPU 약5~15분 예상 |
+| B: compiled/MTP 속도부터 측정 | whole-wall 가속 가설에 가까움 | 수치 채택 선결이 미해결 | A 뒤 조건부 |
+| C: 전체704×네폭 다시 학습 | 전체시간 직접 비교 | 알려진 수치 쟁점·V3 감독결함을 둔 중복 비용 | 이번에는 미실행 |
+
+새 driver는 기존 one_update/pad_records/목적함수/기울기 clip과 기존 private NS observer·replay를
+재사용한다. 제품·optimizer·데이터·기존 helper의 호출 규약은 바꾸지 않는다. 회귀는
+실제 helper 연결·기한·두정책·same-input·동일기울기 재생·CPU 메모리 상한을 검증한다.
+
+### 단계·판정·비용·한계
+
+1. source-only/CPU: 새태그와현재소스·원 CP·V3 corpus/tokenizer SHA를 동결한다.
+   V3는 알려진 감독 결함의 NOT_ADMITTED 제어 자료이며 정식 학습 편입이 아니다.
+2. actual: 같은 CPU 부모 원형으로 fixed1024/crop128 각 FP32 MATH 한 update, micro8×accum16,
+   ckptON/R1/CLA2/MTP OFF/compile OFF/TF32 OFF, Adam5e-5/Muon2e-4/clip1.
+   모든157 raw/clipped gradient와85 Muon input/output/buffer/update를 CPU RAM으로 회수한다.
+3. 같은 actual gradient의 fresh optimizer 재생과 실제 update exact 대조, paired original BF16 NS와
+   FP32 NS 대조를 기존 replay_all로 수행한다. 대표3행렬의 cast 및0~5 NS prefix를 비교한다.
+   FP32 진단은 기본 Muon 정밀도 변경·채택이 아니다.
+4. source/asset와 부모 SHA, 객체 소멸/명시 workspace 해제/최종 CUDA0을 독립 확인한다.
+
+수치 판정은 기존 loss/norm1e-5/1e-4, gradient/update2e-6/1e-5를 그대로 쓴다.
+기존 허용값은 GPU에서 새로 보정한 오차율·품질 문턱이 아니며 위반 수/실제차를 보고한다.
+기술 종료와 numerical-negative를 나누고, 비교 자체를 실행한 도구는 오류가 없으면0으로 닫는다.
+일반 언어/정답/본학습 지능·compile/MTP 가속은 NOT_RUN이다.
+
+옛14000MiB admission은 그대로 두고 호출하지 않는다. 새 작업의 입장은 이전 FP32 MATH
+peak reserved4110MiB와 캡처/NS의 별도 메모리 분석을 근거로 free8192MiB 이상을 요구한다.
+CPU capture/scratch8GiB·system reserve2GiB 상한을 기존 memory_plan으로 확인한다.
+메모리 기준의 별도 설계이며 수치 허용치를 완화하지 않는다. 실제point·peak·정리 전후를 남긴다.
+전체상한3600초/Nov13 16:45 모델정리, 원 CP·자료·로그 보존, 새 tensor/CP쓰기0이다.
+
+현재 계획만 작성했으며 CPU/prepare/실제는 후속 근거로 갱신한다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 2026-11-05 공유 PAD 분석 검토 — 기존 완료분 재사용, 새 실험 NOT_RUN
+
+[공유 분석 대조](../docs/research/20261105_P101A_PAD_공유분석_대조.md)와
+[CPU 재집계](../handoff/audit/nov05_padding_reference/READBACK_v1.json)를 남겼다.
+기존128배수 BF16 eager1.6219256배·전체4epoch membership·FP3285/157 음성은 재실행하지 않았다.
+V3는 알려진 감독 결함의 NOT_ADMITTED 제어 자료이며 생산 편입 증거가 아니다.
+24.12/27.00분은 당시 실제x21.62M/704update의 고정1024 기록으로 새300M 시간에 복사하지 않는다.
+
+조건부 후속 Stage3ndW는 기존 CE/Muon 동일gradient 재생(결과093§14/18)을 반복하지 않고,
+PAD의 실제 두 gradient가 필요할 때 한 update만 회수해 NS 저정밀 증폭 경로를 대조한다.
+이 수치 계약 뒤에 q128 실제 compile/MTP·1024tail·h1~h4 분모·최종후처리 peak를 점검하고
+필요한 경우만32/64 histogram과 비용 비교로 넓힌다. 새 런처/실행/기본채택은 아직 없고 원장에 후속으로 남긴다.
+
 ### Stage3nbW — 2026-10-23 진단기 팔 교체 시 남은 GPU 할당의 원인 분리
 
 Stage3nW는 fixed FP32 한 update와 BF16 fixed6update 뒤 다음 팔 입장에서 GPU 할당이
@@ -523,5 +593,144 @@ Stage3nbW 무모델 canary에서 tensor 삭제/GC/empty_cache 뒤8,519,680B가 �
 고정한 전체 본학습 완료 후 비교한다. 가속은 그 본학습과 최종 평가까지의 전체 시간 단축을
 목표로 한다. 기준표§1/P102A 최신 절이 정본이다. 완료 wrapper의 전문은 날짜별 archive로
 보존 후 정리했으며 이는 MTP/추론 방법 전체의 폐기나 품질 승인을 뜻하지 않는다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage3neW — 실제 4회 membership의 폭 통계와 compiled PAD 비용 선결 (2026-11-13)
+
+### 목적과 선행 근거
+
+사용자115의 새 CPU·GPU 시간창에서 원장114의 남은 부분을 수행한다. 결과092§25가 실제
+PAD의 raw/clipped/state 정합과 BF16 NS 증폭을 확인했으므로 같은 추적을 다시 하지 않는다.
+기존 eager128 가속1.622배를 compiled/MTP 전체 비용으로 확대하지 않고, 먼저 빠진32/64의
+정확한 폭 histogram·제곱항과 동일 optimizer group의 경계를 닫는다.
+
+### 영향·권한·선택
+
+새 scripts의 CPU inventory/회귀와 새 namespace p101a_padding_shapes_v1_20261113,
+본 계획/결과092/기준표/목록/나침반/자기원장만 소유한다. 기존 pad_records/count_record/
+encoder/shuffle/모델/optimizer를 재사용하며 제품 코드와 이전 봉인은 수정하지 않는다.
+V3는 결함이 알려진 비용·수치 대조용 NOT_ADMITTED 원형이다. 이 점검을 정제/본학습 준비
+완료나 새300M 허가로 해석하지 않는다. 보호 TinyDataset/타정제/원CP쓰기/삭제/설치/Git0이다.
+
+| 안 | 내용 | 장점 | 한계·비용 |
+|---|---|---|---|
+| A, 선택 | 실제4회 순서의 32/64/128 폭·제곱항·h1~h4 분모를 CPU 재고 | 남은 미확인을 정확히 닫고 필요한 전체128행 group만 선정 | CPU 수분, 속도/품질 판정 아님 |
+| B, A 이후 설계 | 같은 선정 group으로 실제 compiled/MTP 비용 비교 | compile/shape/후처리의 미측정 비용 확인 | GPU·컴파일 추가시간; 별도 봉인/CPU/정적 후 실행 |
+| C | 704회 전체를 정책마다 다시 학습 | 전체 wall 관측 | 이미 완료한 학습 반복·자료 문제와 섞임; 이번 미실행 |
+
+### CPU 고정 계약과 후속 실행 선결
+
+1. 부모/토크나이저/원 V3 report·train/val shard의 SHA를 재검산한다. 원천은 읽기만 하고
+   수정/정제하지 않는다. 새 tokenizer·모델 로딩 없이 기존 encoder를 사용한다.
+2. seed1337~1340의 실제4회 shuffle을 기존 batches로 생성한다. ordered128와16×8을 유지하고
+   실제 len(rec.x)로 32/64/128을 반올림한다. 실제 x/y/owner prefix와 h1~h4 update 분모는
+   고정1024와 동일해야 한다. 마지막 supervised token 검색으로 폭을 줄이지 않는다.
+3. 정책별 sum(BW), sum(BW^2), 정확 histogram, 최대폭,1024 tail수, 고유/처리 x,
+   고유/처리 target 질량을 기록한다. 평균폭의 제곱으로 제곱항을 대체하지 않는다.
+4. 모든 실제 폭, 가장 긴 record, 높은 target밀도,32/64 반올림이 달라지는 경계를 덮는
+   최소한의 완전한 optimizer group 집합을 greedy로 고른다. 전역 최소 최적성은 주장하지 않는다.
+   원래 epoch/update 위치·순서·계수 일정을 보존하고 평가정답을 선정에 쓰지 않는다.
+5. 기존4회 membership 집계와 x/슬롯이 다르면 중단하고 원인을 확인한다. 새 보고서는
+   작은 통계/그룹 ID만 저장하며 거대한 tensor·모델·원문 사본을 만들지 않는다.
+
+CPU 시험은 실제 prefix/분모 보존, 반올림 경계, 제곱항, greedy 전체폭 coverage를 검사한다.
+후속 compiled 비용은 이 재고 뒤 별도 세부절/새 profile로 고정하고 기존 Muon 수치 음성을
+통과로 바꾸지 않는다. 기본 NS 변경·본학습 채택은 이 단계에서 하지 않는다.
+
+Stage3ne1W는 CPU 재고에서 x5405444는 같지만 감독552829 대 옛552609를 검출해 종료1이었다.
+원인: 새 driver가 일반 engine.encoded를 호출해 명시 supervised_assistant_turns를 적용하는
+기존 clean.encoded 소비 경로를 빠뜨렸다. 원문변경이나 V4의 분모와 혼동하지 않는다.
+원실패 소스/SHA와 원로그는 보존한다. 새ne0Wb CPU13에 두턴 allowlist 소비 회귀를 추가하고
+ne2W는 기존 masked consumer를 직접 재사용한 v2 namespace로 수행한다. 옛 문턱은 유지한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage3nfW — 실제 compiled backbone·MTP 조건의 PAD 비용 (2026-11-13)
+
+### 목적·조건·판정 경계
+
+원장114의 남은 비용 질문이다. Stage3ne2W에서 실제32/64/128의 제곱항과 전체폭을 덮는
+완전한 optimizer group7개를 회수했다. 기존 eager128 ABBA/704학습/NS추적은 반복하지 않는다.
+새 질문은 같은 전체128행·16×8·denominator에서 torch.compile(mode=default)의 첫 shape
+비용과 정상상태, guard/recompile/fallback, MTP ON/OFF, 고정폭 후처리 peak가 어떤가다.
+
+기본 제품 Muon의 BF16 NS를 유지해 기존 compiled 비용과 방법이 달라지는 것을 피한다.
+§25의 수치 음성85와 FP32 NS 진단은 그대로다. 이 비용 실험이 수치 음성을 통과시키거나
+제품 채택을 승인하지 않는다. 양자별 최적704 전체시간·지능효과도 단기결과로 확정하지 않는다.
+V3는 알려진 감독결함이 있는 NOT_ADMITTED 비용 대조이며 새 정제/본학습 편입이 아니다.
+
+### 영향과 세 안
+
+| 안 | 내용 | 장점 | 한계/비용 |
+|---|---|---|---|
+| A, 선택 | 같은7group의 fixed1024 vs crop128을 compiled ABBA로 NTP/MTP 각각 비교 | 이미 실측한 eager와 다른 실제 미완 비용 확인 | 드문 긴/높은밀도 경계표본이라 전체분포 대표성이 아님; GPU각약15~30분 |
+| B, A 후 기술완결이면 수행 | 같은 방법의 crop64·crop32 대조 | 더촘촘한 폭의 compile 비용까지 비교 | 팔 수/캐시/시간 증가; 허가시각·남은예산을 점검 |
+| C | 각정책704 본학습 재실행 | 전체 wall 직접관측 | 자료정제금지·기존본학습 중복·품질축 혼합으로 제외 |
+
+새 diag/test/SH와 p101a_padding_compiled_v1_20261113 namespace, 자기 audit와 문서연쇄만
+수정한다. 기존 encoder/pad_records/count_record/components/optimizer/모델은 재사용하며
+제품·과거봉인·원CP/로그/원자료/타정제/TinyDataset·설치·다운로드·Git·추가300M 변경0이다.
+사용자115의 Nov13 17:00 CPU·GPU 위임 안에서 총괄이 실행한다. 환경 hook는 변경하지 않는다.
+새 컴파일 캐시는 tmp의 이 연구 전용 경로에 두고 결과 원문이나 CP로 staging하지 않는다.
+기존 환경/패키지를 재사용하며 새 환경이나 설치는 하지 않는다. 파일 삭제도0이다.
+
+### 고정 실행 계약
+
+1. CPU 재고 v2의 원JSON/source/실제원천 SHA와 기존 부모/토크나이저를 고정한다.
+   group7개는 absolute update26/72/142/332/549/590/629의 원래 순서로 실행한다.
+   각 group의 ordered-record SHA·x·h1~h4 분모와 micro16×8은 원형 그대로다.
+2. NTP와 MTP를 별도 phase로 나눈다. 같은 phase의 고정/crop은 같은 parent 초기 core,
+   MTP head 초기값·seed1337·옵티마이저 fresh·adam5e-5/muon2e-4·clip1·checkpointON·
+   BF16 autocast·TF32OFF·R1·CLA2·dropout0·max_seq_len1024를 쓴다.
+   MTP 계수는 각 원래 absolute update/704에서 계산하며 쌍 사이에 바꾸지 않는다.
+3. 각 phase는 fixed/crop/crop/fixed의4독립 block이다. 매 block 새 모델/optimizer와
+   별도 비어 있는 Inductor cache·Dynamo reset을 쓰고 compile은 mode=default,
+   dynamic 인자 미지정이다. head/CE는 기존처럼 compiled backbone 바깥의 base에서 호출한다.
+4. 첫7업데이트는 모든 실행 shape의 최초사용 비용을 포함한 cold cycle, 같은7개를 다시
+   실행하는 다음 cycle은 steady 후보로 기록한다. 둘 다 실제 전체 optimizer update이며
+   노출을 세고 CP로 저장하지 않는다. steady라고 불러도 새 graph가 생기면 그대로 기록한다.
+5. 실행 폭은 실제 rec.x 길이로만 정한다. x=ids[:-1]/y=labels[1:]·assistant owner·MTP창·
+   update전체 분모·clip/step 시점·실제출력층 valid gather는 그대로다. 전 micro count와
+   계획 분모가 다르면 즉시 중단한다. PAD 위치 수로 loss를 나누지 않는다.
+6. 구간별 wall, forward/backward를 포함한 update, first-use/steady 시간, graph 수,
+   guard 실패·graph break·recompile/fallback 근거를 수집한다. 속도 실행에서 profiler는 끈다.
+   내부 counter API가 없는 경우 해당 항목은 미측정으로 남기고0으로 쓰지 않는다.
+7. 마지막에는 같은512 DEV를 고정1024·no_grad로 처리해 그 후처리까지 peak에 포함한다.
+   이 CE는 finite/target 계약만 확인하며 소규모 품질·지능 점수로 보고하거나 선택에 쓰지 않는다.
+   학습 peak와 후처리 포함 peak, allocated/reserved, NVML point를 별도로 남긴다.
+8. 매 block 모델/optimizer/compiled callable·quant cache를 해제하고 Dynamo reset/기존
+   작업공간 정리 후 allocated/reserved0을 요구한다. 원CP·source·자료 SHA도 재검산한다.
+
+CPU는 정책범위/그룹정렬·원형 SHA/전horizon 분모/704 계수와 소유옵티마이저 계약을 검사한다.
+소유 정적과 새 profile/preflight 후 GPU를 실행하며 phase상한3600초·최소 free8192MiB,
+종료정리15분·디스크여유16GiB를 요구한다. 캐시 용량과20MB미만 결과파일을 보고한다.
+각 block에서 읽은 부모/준비/compile/학습/고정폭 DEV/정리 시간은 분리하고 phase전체 wall도
+보존한다. 짧은7group의 평균을 전체704에 곱해 완료시간을 보장하지 않는다.
+
+인터페이스 이력: nf0W CPU6/nf1W 봉인은 완료했지만 소유정적 v14가 신규--mtp/--quantum의
+공유등급 누락을 검출했다. GPU는0이며 v1 profile/소스 snapshot/원로그/실패 audit를 보존한다.
+타세션의 dirty flag_whitelist.tsv를 수정하거나 검사기를 완화하지 않는다. 이미P101A SFT의
+NTP/MTP 학습·비용·추론 팔에 등급exp가 있는 --arm을 재사용해 ntp_q128/mtp_q128/
+ntp_q64/mtp_q64/ntp_q32/mtp_q32를 명시열거한다. 이것은 실행허가를 뜻하지 않으며
+같은 원형/선정/수식/모델의 인터페이스 수리다. positional로 옵션을 숨기는 방법은 사용하지 않는다.
+새 v2/Stage3ngW에서 CPU7의 여섯팔 대응을 확인하고 전체 소유 정적을 다시 닫는다.
+v1의 미실행GPU6개는 -cancel로 남기고 v2가 같은 연구를 대체한다. 삭제는0이다.
+
+| 새 단계 | 범위 |
+|---|---|
+| Stage3ng0W | 부모 프로세스/종료/분모/정렬·기존exp arm 대응 CPU7 |
+| Stage3ng1W | v2 source/7group/부모/토크나이저/기존환경 봉인 |
+| Stage3ng2Wa / Stage3ng2Wb | NTP / MTP의 crop128 대 fixed compiled ABBA |
+| Stage3ng2Wc / Stage3ng2Wd | 같은 NTP / MTP의 crop64 대조,128 기술완결 후 |
+| Stage3ng2We / Stage3ng2Wf | 같은 NTP / MTP의 crop32 대조,기한/선결 점검 후 |
+
+실제 회수: Nov13 04:38~05:00의 NTP128/MTP128 각ABBA4child가 종료0·원형/초기화/실노출
+대응·최종CUDA0으로 끝났다. 결과092§27에서 steady 약39% 절약과 새cache 전체 약2배 비용,
+peak allocated45MiB 증가를 함께 보고했다. 정상구간 가속 예측은 지지됐지만 전체시간/메모리
+절감 예측은 이 짧은 범위에서 지지되지 않았다. 기본NS 수치음성/품질 미평가는 그대로다.
+후속64/32 양모드도06:37까지모두종료0·24child/CUDA0으로회수했다. 결과092§28이정본이다.
+새cache 전체비용1.922~2.026배/steady35.39~42.60%절약·croppeak증가24.30/45MiB를구분한다.
+짧은측정의원인·비용선결을완료했으나전체704/품질/기본학습채택은하지않는다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.

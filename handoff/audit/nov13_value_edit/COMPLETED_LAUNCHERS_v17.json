@@ -1,0 +1,43 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V17",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 581,
+      "source": "run_P106B_Stage7alW_projector1024_adapter_cpu.sh",
+      "target": "run_P106B_Stage7alW_projector1024_adapter_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same optimization code and private output/selector; no shared mutation CPU3. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7alW_projector1024_adapter_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_dskdv2_projector1024\n",
+      "sha256": "4A44A193112A2685C8DEF73E0E9ACB77D2F2CAAB75EB3C6ABF4AF1B400CD7F67",
+      "actual_tool_session": 31507,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7alW_projector1024_adapter_cpu.txt",
+      "log_sha256": "16C422309F499F17086F51DFE310EB3D6ED28BF03E0FE8A06A76C8E9FBFDC947",
+      "status": "EXECUTED_PROJECTOR_ONLY_NO_STUDENT_QUALITY_ADOPTION"
+    },
+    {
+      "id": 582,
+      "source": "run_P106B_Stage7amW_projector1024_prepare.sh",
+      "target": "run_P106B_Stage7amW_projector1024_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Closed native1024/4113 and original136 held positions preserved. Model0/GPU0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7amW_projector1024_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_projector1024 prepare\n",
+      "sha256": "37E699FDA73FF3492F892F53904E5A321D518B5F99EF40FC5C9A9306817A03AB",
+      "actual_tool_session": 31507,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7amW_projector1024_prepare.txt",
+      "log_sha256": "76976CE420F75F01110577800CD3ECF1DEDA41CF782D236938B8905B437E8A8C",
+      "status": "EXECUTED_PROJECTOR_ONLY_NO_STUDENT_QUALITY_ADOPTION"
+    },
+    {
+      "id": 583,
+      "source": "run_P106B_Stage7anW_projector1024_warmup.sh",
+      "target": "run_P106B_Stage7anW_projector1024_warmup-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same immutable projector-only kernel, full TRAIN1024 features, fixed100 updates. Student0/CP0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7anW_projector1024_warmup -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_projector1024 actual\n",
+      "sha256": "A5CAD56313AF9237C613741AE7B2DDE6D757BC428E48A88ABEE068B62BDAF4CE",
+      "actual_tool_session": 61652,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7anW_projector1024_warmup.txt",
+      "log_sha256": "AB92DAD53E0C8CB6344354A1A7D5C67702E31F73BF9AAEC2ED724432734EAEA1",
+      "status": "EXECUTED_PROJECTOR_ONLY_NO_STUDENT_QUALITY_ADOPTION"
+    }
+  ]
+}

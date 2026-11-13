@@ -1,0 +1,293 @@
+{
+  "schema": "TINYLM_EXECUTED_LAUNCHERS_ARCHIVE_V1",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 461,
+      "source": "run_P108_Stage12aW_value_covariance_cpu.sh",
+      "done": "run_P108_Stage12aW_value_covariance_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Value/covariance contracts. CPU only, no model loading or CP writes.\n# Expect 20 related tests and explicit nonzero failures before prepare.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12aW_value_covariance_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_value_edit scripts.test_p108_wsp_attention\n",
+      "sha256": "F64BFFDCED968D62A1C7583867FD6960632E817DFD539442018AF6DF505EF646",
+      "log": "test_result/108_log_20261113_P108_Stage12aW_value_covariance_cpu.txt",
+      "log_sha256": "3214F6C80CD8501F5FDC7178033CF504E03158049C388A7E072DAE0D6449102A",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 462,
+      "source": "run_P108_Stage12bW_value_covariance_prepare.sh",
+      "done": "run_P108_Stage12bW_value_covariance_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# New Nov13 source/data/authority freeze. CPU only, existing local inputs.\n# Stop on any mismatch; preserve all earlier profiles and original files.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12bW_value_covariance_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit prepare\n",
+      "sha256": "75236898A805191F99396220FB08BFF6A49DBA73714E38A5569913F31B510F37",
+      "log": "test_result/108_log_20261113_P108_Stage12bW_value_covariance_prepare.txt",
+      "log_sha256": "93088EC834876F2E32AD7CDBE29AB223694A13680E5ADA5963CA7C787F2667D8",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 463,
+      "source": "run_P108_Stage12cW_value_covariance_actual.sh",
+      "done": "run_P108_Stage12cW_value_covariance_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115 Nov13 authorization. Optimized values and covariance rank-one edit.\n# About 20 to 60 minutes, expected 4GiB; two-hour hard phase limit.\n# No base-weight optimizer, original CP saves or official-test selection.\n# Read oracle, dev selection, held-out paraphrases, protection and rollback.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12cW_value_covariance_actual -- timeout --signal=TERM --kill-after=20s 7250s \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit run\n",
+      "sha256": "6C50D33CB527258E674296BB02CCFF6620F0A71D872A897854DC5801A43AA7C5",
+      "log": "test_result/108_log_20261113_P108_Stage12cW_value_covariance_actual.txt",
+      "log_sha256": "DB661EFF938FCBB0681F4FD42E240DC12B966448E679ADC593C641E0A308C75F",
+      "exit_code": 1,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 464,
+      "source": "run_P108_Stage12aWc_value_route_cpu.sh",
+      "done": "run_P108_Stage12aWc_value_route_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Preserve strict TLinear master flags and differentiate only the value tensor.\n# CPU21: original20 plus actual route interaction regression.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12aWc_value_route_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_value_edit scripts.test_p108_wsp_attention\n",
+      "sha256": "B75F987A2C84D15215F09D9CD84439F04725A0E39416A603AE1E6EDFE9404DC1",
+      "log": "test_result/108_log_20261113_P108_Stage12aWc_value_route_cpu.txt",
+      "log_sha256": "4FACBD1E1DD08D73957175F1C429F39C79A8BF8191DB5C337C0754F28265E369",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 465,
+      "source": "run_P108_Stage12bWb_value_route_prepare.sh",
+      "done": "run_P108_Stage12bWb_value_route_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Fresh v2 profile after strict-route/value-only gradient repair.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12bWb_value_route_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit prepare\n",
+      "sha256": "B218E2760067F6499AF933638C40F031754F9BB9C56BFCA477183EA37E74CE13",
+      "log": "test_result/108_log_20261113_P108_Stage12bWb_value_route_prepare.txt",
+      "log_sha256": "2E86DF90138C0F822FEFC8720594889AB780572060A7C94B9AB5D73F17692A14",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 466,
+      "source": "run_P108_Stage12cWb_value_route_actual.sh",
+      "done": "run_P108_Stage12cWb_value_route_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115; value-only autograd with original strict master flags unchanged.\n# v1 source/error preserved. Same data and scientific conditions, fresh v2.\n# Expected 20 to 60 minutes, about 4GiB, hard phase 7200 seconds.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12cWb_value_route_actual -- timeout --signal=TERM --kill-after=20s 7250s \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit run\n",
+      "sha256": "168862D407474647ACD2D6D221A289CE341041ABF59DC88C8858126364F9B6AC",
+      "log": "test_result/108_log_20261113_P108_Stage12cWb_value_route_actual.txt",
+      "log_sha256": "81BA8FF8AA9F9CBF964DEA21F83BDC6D1847A8F06CC70077DED9CBDFC8A9489C",
+      "exit_code": 1,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 467,
+      "source": "run_P108_Stage12aWd_value_cache_cpu.sh",
+      "done": "run_P108_Stage12aWd_value_cache_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU22: actual edit/rollback then auxiliary value differentiation.\n# Verify fresh identity views without changing masters or product defaults.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12aWd_value_cache_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_value_edit scripts.test_p108_wsp_attention\n",
+      "sha256": "6DA37E8996924B4FEA565E87CA556961006BD9A2ECBCC6081B4B98A9CDDD27B6",
+      "log": "test_result/108_log_20261113_P108_Stage12aWd_value_cache_cpu.txt",
+      "log_sha256": "2E30C3B381BDCF51FBDB2B985493CF6048BDDE924E71755825486E56B1AE2A3A",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 468,
+      "source": "run_P108_Stage12bWc_value_cache_prepare.sh",
+      "done": "run_P108_Stage12bWc_value_cache_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# New v3 source profile; v1/v2 failures and exact source snapshots retained.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12bWc_value_cache_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit prepare\n",
+      "sha256": "E09364F77E4A556CB6AB65A41E7B79DA0C4CA46663DF2AEADD44652464544ED6",
+      "log": "test_result/108_log_20261113_P108_Stage12bWc_value_cache_prepare.txt",
+      "log_sha256": "628CBFE3D2424FA7C72AEAC23A8FFB5AA701042334965BC877D3695D8965D783",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 469,
+      "source": "run_P108_Stage12cWc_value_cache_actual.sh",
+      "done": "run_P108_Stage12cWc_value_cache_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115; v3 rebases float identity views after exact edit rollback.\n# Same scientific conditions; preserve small rank-one packets for replay.\n# Expected 20 to 60 minutes, about 4GiB; no original CP write or base optimizer.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage12cWc_value_cache_actual -- timeout --signal=TERM --kill-after=20s 7250s \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit run\n",
+      "sha256": "DC560057C2D31D6632FAFBB709154F7BFAFE1A2BE10BD69EA077B56F5AE4DB08",
+      "log": "test_result/108_log_20261113_P108_Stage12cWc_value_cache_actual.txt",
+      "log_sha256": "881590388C9023AB8688041AA6F47EFA676DE58FF0920EDF5F7BAAB2EEB907FA",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 470,
+      "source": "run_P101A_Stage3nd0W_padding_muon_cpu.sh",
+      "done": "run_P101A_Stage3nd0W_padding_muon_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# New PAD bridge and existing actual NS replay contracts, CPU only.\n# No model load or GPU. Keep original numeric tolerance and old authorities.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nd0W_padding_muon_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p101a_padding_muon scripts.test_p102a_head_muon_trace\n",
+      "sha256": "74C849B3B63CA1B12EF7F0D452B05E0BF82C252D76E558C36DB1D1C4C4784F7F",
+      "log": "test_result/092_log_20261113_P101A_Stage3nd0W_padding_muon_cpu.txt",
+      "log_sha256": "51CE99169560C94637A9187F1182D0427B6142118B926CB0DC4F76B98AD5A3BB",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 471,
+      "source": "run_P101A_Stage3nd1W_padding_muon_prepare.sh",
+      "done": "run_P101A_Stage3nd1W_padding_muon_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze Nov13 authority, exact existing V3 assets and original sources/rules.\n# Metadata/source reads only, no model load. V3 is not admitted for training.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nd1W_padding_muon_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p101a_padding_muon prepare\n",
+      "sha256": "76FF06D0481DE5976CDA6773E295B1FB747E77C18277DED0DA9900AD5AD9AA08",
+      "log": "test_result/092_log_20261113_P101A_Stage3nd1W_padding_muon_prepare.txt",
+      "log_sha256": "EFC563C80F0D2D459C7F600BB77A3CF7ED3F49A55885D82771E0CC59FDEBF3E7",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 472,
+      "source": "run_P101A_Stage3nd2W_padding_muon_actual.sh",
+      "done": "run_P101A_Stage3nd2W_padding_muon_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115 Nov13. Exact PAD raw/clipped/NS trace and original-vs-FP32 NS replay.\n# About 5 to 15 minutes, prior FP32 MATH peak reserved4110MiB, admission8192MiB.\n# Two temporary updates only; no CP/tensor files or training-quality judgment.\n# Read pair counts, actual replay exactness, NS prefixes and final CUDA zero.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nd2W_padding_muon_actual -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_padding_muon run\n",
+      "sha256": "862A8917A211196646B8C7517B0F0204217801149F3C1D32442547D5369F36DF",
+      "log": "test_result/092_log_20261113_P101A_Stage3nd2W_padding_muon_actual.txt",
+      "log_sha256": "263CF8FFFAC929DFEE612478DE504F5398F084D6DBBCDC8B477FFB2F8D2A9C5E",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 473,
+      "source": "run_P108_Stage13aW_relative_value_cpu.sh",
+      "done": "run_P108_Stage13aW_relative_value_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU23: relative value units, disjoint factual subjects and actual route.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage13aW_relative_value_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_value_edit scripts.test_p108_wsp_attention\n",
+      "sha256": "B1A9E852DA17DD77BBBA5CEA5CD7A711EF944A77CF11829B77B7C478023B87DB",
+      "log": "test_result/108_log_20261113_P108_Stage13aW_relative_value_cpu.txt",
+      "log_sha256": "BCE82D7BE416C393EED63CC6BF97060ACF7C0AD5D6DB83C579131845B05A0E25",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 474,
+      "source": "run_P108_Stage13bW_relative_value_prepare.sh",
+      "done": "run_P108_Stage13bW_relative_value_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze relative coordinates, four fit/dev-only calibrations and eight new facts.\n# Old test answers do not select the new coefficient or layer.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage13bW_relative_value_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit prepare\n",
+      "sha256": "78CD1B0C8097B546224A5BF914798414C0D72AFB4921C10E838C8D006DA2242C",
+      "log": "test_result/108_log_20261113_P108_Stage13bW_relative_value_prepare.txt",
+      "log_sha256": "084172072CD19978E5AF7746E12BCFE34860DBDCA09BD4759190CA6D747F5BC6",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 475,
+      "source": "run_P108_Stage13cW_relative_value_actual.sh",
+      "done": "run_P108_Stage13cW_relative_value_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115 until Nov13 17KST. Relative value optimizer, same objective/caps.\n# Expected 10 to 20 minutes, about 4GiB, hard phase7200s.\n# Old four facts are fit/dev-only controls; new eight have frozen paraphrases.\n# No original CP write or base optimizer; inspect meaning and format separately.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage13cW_relative_value_actual -- timeout --signal=TERM --kill-after=20s 7250s \"${PY}\" -B -X utf8 -m scripts.diag_p108_value_edit run\n",
+      "sha256": "B1C5B1D98DE7F55C65F3766A90508BBDA2263F0BFDD7959F426B46A7FC83B2FA",
+      "log": "test_result/108_log_20261113_P108_Stage13cW_relative_value_actual.txt",
+      "log_sha256": "47B27C940DDAA219D2822CA6E829DECA5C5C9185F4B5338E1C7A6CFE63694F18",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 476,
+      "source": "run_P108_Stage14aW_nullspace_cpu.sh",
+      "done": "run_P108_Stage14aW_nullspace_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU21: finite target/protected key interpolation, oracle-only selection and route.\n# No model load or GPU. Reject infeasible protected spans and unsafe norms.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage14aW_nullspace_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_nullspace_write scripts.test_p108_nullspace_driver scripts.test_p108_value_edit\n",
+      "sha256": "DFADFFD8A506C01198C809794ECF32B39505EA3CB3BE05024E068D1E7C3E8AF8",
+      "log": "test_result/108_log_20261113_P108_Stage14aW_nullspace_cpu.txt",
+      "log_sha256": "C8730B4BC5B0CE97321343519D1A016C3EB3C013E18D0BF91658E76D007889BB",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 477,
+      "source": "run_P108_Stage14bW_nullspace_prepare.sh",
+      "done": "run_P108_Stage14bW_nullspace_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Fit-oracle-only source selection, actual value packets and finite protection.\n# Reused paraphrases are explicitly not an independent new test.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage14bW_nullspace_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_nullspace_write prepare\n",
+      "sha256": "A85AC27DC744201B5E80C2ADEE619E7D6000AD557DB8A588141384DB7B7BDEEB",
+      "log": "test_result/108_log_20261113_P108_Stage14bW_nullspace_prepare.txt",
+      "log_sha256": "78F0F78DAAE28177B0360BC9EA7CEDD5A73566FB9DFA2F30A0194F08CB95DA5D",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 478,
+      "source": "run_P108_Stage14cW_nullspace_actual.sh",
+      "done": "run_P108_Stage14cW_nullspace_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: frozen completed float model, same optimized values, protected keys.\n# About 5 to 15 minutes, expected4GiB. Fit-only layer gate; no value optimizer.\n# Up to5 percent matrix norm is primary; over5 to20 percent is diagnostic only.\n# Inspect oracle/actual logits, fit transfer, reused paraphrases and protection.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage14cW_nullspace_actual -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p108_nullspace_write run\n",
+      "sha256": "245776389ABDDCF5B86FF782CDA7A09DA6D884E8C64453693CA434B857087A66",
+      "log": "test_result/108_log_20261113_P108_Stage14cW_nullspace_actual.txt",
+      "log_sha256": "7F0858C11CBF207260BC5745F99ED91553B67DD34F297E7AD0580C9247829B8A",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 479,
+      "source": "run_P106B_Stage4fu4W_coordinate_window_cpu.sh",
+      "done": "run_P106B_Stage4fu4W_coordinate_window_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU27: coordinate/objective mechanics plus explicit new window callback.\n# Old Nov5 execution authority remains unchanged; no model or GPU run.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu4W_coordinate_window_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_gsq_coordinate_window scripts.test_p106b_gsq_coordinates scripts.test_p106b_gsq_objective\n",
+      "sha256": "A508C6E8AB53D0DE4D3E616FEF5EBC4DD0B8E0B82C2BCE3B02913697ACF0247C",
+      "log": "test_result/101_log_20261113_P106B_Stage4fu4W_coordinate_window_cpu.txt",
+      "log_sha256": "8FEAC40982D871CB502DF0F278ACD8D7F1BF1D5014CB5F3DF04BB649BED9C5AA",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 480,
+      "source": "run_P106B_Stage4fu5W_coordinate_window_prepare.sh",
+      "done": "run_P106B_Stage4fu5W_coordinate_window_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: exact completed Q model CPU load and copied TRAIN128 source freeze.\n# No GPU model or source rewrite. This is not corpus admission.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu5W_coordinate_window_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_coordinate_window prepare\n",
+      "sha256": "7FB807FC5F53BBC9491AE63827329DB4F306EC7C7BB1B1C766C8F6BE736010B0",
+      "log": "test_result/101_log_20261113_P106B_Stage4fu5W_coordinate_window_prepare.txt",
+      "log_sha256": "DBCAE2CD77EBB5CDBAB459D97F15D791A774911A5A706BB0ADCA7BB2492FEE95",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 481,
+      "source": "run_P106B_Stage4fu6Wa_coordinate_adam256.sh",
+      "done": "run_P106B_Stage4fu6Wa_coordinate_adam256-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115 Nov13. Full-model coordinate AdamW mechanical256, not quality training.\n# Expected20 to30 minutes, prior GSQ reserved7.20GiB; free10240MiB required.\n# Same repeatedTRAIN128/gain200/LR/noise as Lion. No CP save or teacher call.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu6Wa_coordinate_adam256 -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_coordinate_window run --arm adamw\n",
+      "sha256": "6D787A287F0828C03E73A4679D830960F4446AA8DF52453B9597905B49CF9A90",
+      "log": "test_result/101_log_20261113_P106B_Stage4fu6Wa_coordinate_adam256.txt",
+      "log_sha256": "29E7D0B27BB3F536ACA586CE2E04CA9F616370389A6E772BE7C4C372783C5135",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 483,
+      "source": "run_P108_Stage15aW_key_transport_cpu.sh",
+      "done": "run_P108_Stage15aW_key_transport_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU19: finite response geometry, intervention isolation and prior route guards.\n# No model load or GPU. Counterfactual flags are not truth/probe predictions.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage15aW_key_transport_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_key_transport scripts.test_p108_value_edit scripts.test_p108_nullspace_driver\n",
+      "sha256": "5B57C8EF769FECCCEFFA1CFBF61E0C06BC3EF59A1DF97F71E9864CCB0440470E",
+      "log": "test_result/108_log_20261113_P108_Stage15aW_key_transport_cpu.txt",
+      "log_sha256": "81D145A19D1263EC5D5AA179548042A8A3A9043E76B1375366AC90CC10790C8B",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 484,
+      "source": "run_P108_Stage15bW_key_transport_prepare.sh",
+      "done": "run_P108_Stage15bW_key_transport_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze the same5 selected cases/layers/values and19 already used questions.\n# CPU/source only. No new target optimization or independent test claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage15bW_key_transport_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_key_transport prepare\n",
+      "sha256": "C8313E581409B06DFEA83305FE368EA4E760552544A1D675C9A97A5618A5D98B",
+      "log": "test_result/108_log_20261113_P108_Stage15bW_key_transport_prepare.txt",
+      "log_sha256": "2CC30A9087148CC7CD99F0F28B1AD4C89E8F0207DD8EE6A74FA72F14CAF632F0",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 486,
+      "source": "run_P101A_Stage3ne0W_padding_shapes_cpu.sh",
+      "done": "run_P101A_Stage3ne0W_padding_shapes_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU12:32/64 execution boundaries plus prior128 crop/CLA/target contracts.\n# No saved model, original data or GPU in this synthetic regression.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3ne0W_padding_shapes_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p101a_padding_shapes scripts.test_p101a_padding_crop\n",
+      "sha256": "C0E3F5606EE3195A073635D109C6B8DBCFCA541F58D90B49ABDEF5E907C208A4",
+      "log": "test_result/092_log_20261113_P101A_Stage3ne0W_padding_shapes_cpu.txt",
+      "log_sha256": "F1403E224AF57F1514E18B4B9DEFDC7379DC53FA4134618722AC6CAC6E3BCED6",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 487,
+      "source": "run_P101A_Stage3ne1W_padding_shapes_inventory.sh",
+      "done": "run_P101A_Stage3ne1W_padding_shapes_inventory-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Exact4-epoch32/64/128 histogram, squared slots and full-group boundary coverage.\n# CPU source/tokenizer only. Known defective V3 is not newly admitted for training.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport TOKENIZERS_PARALLELISM=false\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3ne1W_padding_shapes_inventory -- \"${PY}\" -B -X utf8 -m scripts.diag_p101a_padding_shapes\n",
+      "sha256": "9E4814D9563090B0B0CFB81A00EEC13C67103A7D080B40134606A23278D99F67",
+      "log": "test_result/092_log_20261113_P101A_Stage3ne1W_padding_shapes_inventory.txt",
+      "log_sha256": "6DD0E31A0FF7AE288B81D39CDA710BE6753F53C403C0F8D7BD14BF30185AE179",
+      "exit_code": 1,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    },
+    {
+      "id": 488,
+      "source": "run_P101A_Stage3ne0Wb_masked_shapes_cpu.sh",
+      "done": "run_P101A_Stage3ne0Wb_masked_shapes_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU13: explicit corrected-turn consumer plus32/64 and prior128 contracts.\n# Preserve failed generic-encoder inventory; no original data/model/GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3ne0Wb_masked_shapes_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p101a_padding_shape_driver scripts.test_p101a_padding_shapes scripts.test_p101a_padding_crop\n",
+      "sha256": "7B68EB9E2F69CBC355200A2B36851B9511CCD3E6A56E6C1459CB41BFEDFFD448",
+      "log": "test_result/092_log_20261113_P101A_Stage3ne0Wb_masked_shapes_cpu.txt",
+      "log_sha256": "4C1A239CE7CB415AF20C5AEBE3A959A6F1E0E8CD726D8E1D60DE0F9D3D3A1253",
+      "exit_code": 0,
+      "meaning": "EXECUTED_NOT_SUCCESS_CLAIM"
+    }
+  ]
+}

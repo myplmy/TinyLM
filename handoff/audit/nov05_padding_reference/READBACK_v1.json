@@ -1,0 +1,110 @@
+{
+  "schema": "P101A_SHARED_REFERENCE_READBACK_20261105_V1",
+  "new_gpu_execution": false,
+  "source_hashes": {
+    "test_result/evidence/p101a_padding_gpu_v1_s1337_workspace_v2/timing/report.json": "F7CFE9D88F4C0E76D461EF33495CF03DAA3337C6BDC199F6093B6649185BC2FE",
+    "test_result/evidence/p101a_padding_gpu_v1_s1337_workspace_v2/correctness/report.json": "11D45F4A75A7ACB728761642FBD12A1DB1E335C7CC89D53AA8F650F34FF2B918",
+    "handoff/audit/WIP_20261022_PADDING_EPOCH_MEMBERSHIP_V2.json": "4C5F296E1B9A1C5B77294935B721B9BEDE2695A5DD3DD8109629B4AE88A33F3D",
+    "test_result/evidence/p101a_sft_mtp_cleanbilingual_v3_s1337/parent_ntp/report.json": "BD1D96D20DCF7E73CFAE9E341B575FF2A39B7DBB577A89FE711759F40EEEE0C3",
+    "test_result/evidence/p101a_sft_mtp_cleanbilingual_v3_s1337/parent_mtp/report.json": "3DFFBF3DCDCB5EEA50F0C76239DB4789EF21384A182A55997F628A59C44D17AD",
+    "handoff/audit/WIP_20261025_FP32_PARENT_ROOT_CLOSURE.json": "61F52586B88F789B4EF6375A716824C1E41FB67BD0BD5BE023250EDB3CA7A6FC"
+  },
+  "timing": {
+    "fixed1024": {
+      "measured_updates": 8,
+      "distinct_record_group_hashes": 4,
+      "actual_x": 245684,
+      "h1_targets": 27434,
+      "slots": 1048576,
+      "wall_seconds": 28.38133441899481,
+      "peak_allocated_mib": 2605.89892578125,
+      "peak_reserved_mib": 2740.0,
+      "max_width": 1024,
+      "events_seconds": {
+        "backbone_forward_ms": 8.593939289093017,
+        "head_forward_ms": 0.3690835537910461,
+        "backward_ms": 18.45576531982422
+      },
+      "optimizer_seconds": 0.4638250274658203
+    },
+    "crop128": {
+      "measured_updates": 8,
+      "distinct_record_group_hashes": 4,
+      "actual_x": 245684,
+      "h1_targets": 27434,
+      "slots": 501760,
+      "wall_seconds": 17.49854256600156,
+      "peak_allocated_mib": 2544.10400390625,
+      "peak_reserved_mib": 2680.0,
+      "max_width": 896,
+      "events_seconds": {
+        "backbone_forward_ms": 6.3785614624023435,
+        "head_forward_ms": 0.3110493121147156,
+        "backward_ms": 9.908715267181396
+      },
+      "optimizer_seconds": 0.45968418884277346
+    }
+  },
+  "speedup": 1.6219256153445458,
+  "time_reduction": 0.38344891372372225,
+  "peak_reduction_mib": 61.794921875,
+  "four_epoch_fixed_slots": 92274688,
+  "four_epoch_actual_x": 21621776,
+  "four_epoch_crop_slots": {
+    "32": 37755392,
+    "64": 39193600,
+    "128": 42364928
+  },
+  "r1": {
+    "32": 0.40916304154829547,
+    "64": 0.4247492009943182,
+    "128": 0.45911754261363635
+  },
+  "r2_128": 0.22875144264914773,
+  "width_histogram_128": {
+    "256": 325,
+    "384": 6178,
+    "512": 2902,
+    "640": 999,
+    "768": 491,
+    "896": 313,
+    "1024": 56
+  },
+  "maximum_1024_microbatches": 56,
+  "width32_64_histogram": "NOT_AVAILABLE_FROM_THIS_RECEIPT",
+  "correctness": {
+    "status": "NUMERICAL_DIAGNOSTIC_NEGATIVE",
+    "gradients_close": true,
+    "optimizer_state_close": true,
+    "updated_parameters_close": false,
+    "failed_parameters": 85,
+    "total_parameters": 157,
+    "updated_max_abs": 2.1696090698242188e-05
+  },
+  "corpus_quality": "KNOWN_V3_SUPERVISION_DEFECTS; NOISY_CONTROL_FOR_NUMERICS_AND_PERFORMANCE_ONLY; NOT_ADMITTED",
+  "compiled_baselines": {
+    "ntp": {
+      "whole_wall_seconds": 1447.0807438200027,
+      "updates": 704,
+      "update_seconds_sum": 1326.8348710780847,
+      "first_update_seconds": 40.357259317999706,
+      "steady_average_seconds": 1.8299823780371052,
+      "actual_processed_x_tokens": 21621776,
+      "peak_allocated_mib": 2889.142578125,
+      "corpus_sha256": "7D52695308B0D8122B3ABE42CC7E396BFF3F94E811E5F379FFA85F259ED4EB20"
+    },
+    "mtp": {
+      "whole_wall_seconds": 1620.1618173720017,
+      "updates": 704,
+      "update_seconds_sum": 1496.8279767689928,
+      "first_update_seconds": 42.318864222997945,
+      "steady_average_seconds": 2.0690030050440895,
+      "actual_processed_x_tokens": 21621776,
+      "peak_allocated_mib": 2898.14404296875,
+      "corpus_sha256": "7D52695308B0D8122B3ABE42CC7E396BFF3F94E811E5F379FFA85F259ED4EB20"
+    }
+  },
+  "later_same_gradient_replay": "ALREADY_PERFORMED_FOR_CE_PATH_SEE_RESULT093_SECTIONS14_18_NOT_PAD_SPECIFIC_REPLAY",
+  "production_adopted": false,
+  "new_full_training": false
+}

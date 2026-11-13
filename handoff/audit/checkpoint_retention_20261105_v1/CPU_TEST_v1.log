@@ -1,0 +1,28 @@
+test_corrupt_stage_never_replaces_original (__main__.ArchiveTests) ... ok
+test_fingerprint_detects_lost_alias (__main__.ArchiveTests) ... ok
+test_fingerprint_detects_metadata_and_dtype_changes (__main__.ArchiveTests) ... ok
+test_fingerprint_detects_tensor_mutation (__main__.ArchiveTests) ... ok
+test_metadata_counts_combined_optimizer_and_preserves_shared_storage (__main__.ArchiveTests) ... ERROR
+test_only_optimizer_root_fields_removed (__main__.ArchiveTests) ... ok
+test_reject_optimizer_free_and_incomplete_checkpoint (__main__.ArchiveTests) ... ok
+test_retained_graph_roundtrip_bytes_views_and_aliases (__main__.ArchiveTests) ... ok
+test_safe_rejects_parent_escape (__main__.ArchiveTests) ... ok
+test_scope_forbids_extra_paths_fields_and_dense_deletion (__main__.ArchiveTests) ... ok
+test_signed_zero_and_nan_tensor_bits_survive (__main__.ArchiveTests) ... ok
+
+======================================================================
+ERROR: test_metadata_counts_combined_optimizer_and_preserves_shared_storage (__main__.ArchiveTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_cleanup_optimizer_archive.py", line 85, in test_metadata_counts_combined_optimizer_and_preserves_shared_storage
+    meta = codec.metadata(stream)
+  File "/home/uranus/tinyLM/scripts/checkpoint_optimizer_archive.py", line 58, in metadata
+    value = MetadataOnly(io.BytesIO(archive.read(pickles[0].filename))).load()
+  File "/home/uranus/tinyLM/scripts/checkpoint_optimizer_archive.py", line 33, in find_class
+    raise ValueError('unsupported checkpoint metadata global')
+ValueError: unsupported checkpoint metadata global
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.030s
+
+FAILED (errors=1)

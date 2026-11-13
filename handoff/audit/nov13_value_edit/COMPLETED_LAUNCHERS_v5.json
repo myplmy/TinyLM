@@ -1,0 +1,51 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V5",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 540,
+      "source": "run_P106B_Stage8ag1W_qwen_extra_cpu.sh",
+      "target": "run_P106B_Stage8ag1W_qwen_extra_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Official-function globals isolation and full-task ETA/token-plan checks. CPU only.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8ag1W_qwen_extra_cpu -- timeout --signal=TERM --kill-after=20s 180s \"${PY}\" -B -X utf8 -m unittest -v scripts.test_p106b_qwen35_extra scripts.test_p106b_qwen35_extra_driver\n\n",
+      "sha256": "80FDC87278122B135A00B2B1E8E126B96F3ED9B20E0BA788103359C5C3B23B6F",
+      "status": "EXECUTED_NOT_QUALITY_CLAIM",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8ag1W_qwen_extra_cpu.txt",
+      "log_sha256": "57F83DB4882B69C275918290E39CE1D28F0C2E77452DC7D33DC6BF221099BE25"
+    },
+    {
+      "id": 541,
+      "source": "run_P106B_Stage8agbW_qwen_extra_prepare.sh",
+      "target": "run_P106B_Stage8agbW_qwen_extra_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same local official KO/EN900 and LAMBADA5153; native pre-output token-only freeze.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8agbW_qwen_extra_prepare -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra prepare\n\n",
+      "sha256": "9D50A9FD0DF01EC72E14B384298B610D2A8AA19C5A0AA30E8BF97F1724399D2F",
+      "status": "EXECUTED_NOT_QUALITY_CLAIM",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8agbW_qwen_extra_prepare.txt",
+      "log_sha256": "ABA68AB5B2EFF675F5EB3806A5BB7E2EE2FA34DE9916FD27BFAB650BBF965C78"
+    },
+    {
+      "id": 545,
+      "source": "run_P108_Stage19aW_joint_write_cpu.sh",
+      "target": "run_P108_Stage19aW_joint_write_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Joint covariance/trust-region KKT, matched spectral controls and fit-only choice. CPU only.\n# Expected at most20minutes and4GiB point budget. No optimizer, CP save or product changes.\n# Single registered phase. Required contract failure stops and preserves raw evidence.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage19aW_joint_write_cpu -- timeout --signal=TERM --kill-after=20s 180s \"${PY}\" -B -X utf8 -m unittest -v scripts.test_p108_joint_write scripts.test_p108_joint_driver\n\n",
+      "sha256": "D1D18D22172175A76125E0B89A2DF147A329EA58102111CC590E8EC56FBABFA9",
+      "status": "EXECUTED_NOT_QUALITY_CLAIM",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage19aW_joint_write_cpu.txt",
+      "log_sha256": "CD842C406AB2C1F273B3C55D3DC221A228BE2A3DDDE6C782A2AA8DFE44A79EDA"
+    },
+    {
+      "id": 546,
+      "source": "run_P108_Stage19bW_joint_write_prepare.sh",
+      "target": "run_P108_Stage19bW_joint_write_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze all48 existing values, same68 prompts and common layer8; no model or GPU.\n# Expected at most20minutes and4GiB point budget. No optimizer, CP save or product changes.\n# Single registered phase. Required contract failure stops and preserves raw evidence.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage19bW_joint_write_prepare -- timeout --signal=TERM --kill-after=20s 300s \"${PY}\" -B -X utf8 -m scripts.diag_p108_joint_write prepare\n\n",
+      "sha256": "A20BA9DF45C2060CBFBE0383953FF40399E88A1519A335231E29E1FC168C4EAD",
+      "status": "EXECUTED_NOT_QUALITY_CLAIM",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage19bW_joint_write_prepare.txt",
+      "log_sha256": "DA290F196B34A2CF9BF23C1DBA572563ECEAA1CD5DFC053EC9966BA2A893F9F9"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V19",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 586,
+      "source": "run_P106B_Stage7aqW_softdtw_gpu_component.sh",
+      "target": "run_P106B_Stage7aqW_softdtw_gpu_component-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Isolated existing Triton: FP64 DP component loss/gradient/cost, no model or full DWA claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexport TRITON_CACHE_DIR=\"${PWD}/data_cache/p106b_softdtw_gpu_v1_20261113/triton\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7aqW_softdtw_gpu_component -- timeout --signal=TERM --kill-after=20s 1200s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_softdtw_gpu actual\n",
+      "sha256": "4668D89233BC66372B05B38379B3798B3DA2DEE0622E5188EED7BBC06A9769C4",
+      "actual_tool_session": 44558,
+      "exit_code": 1,
+      "log": "test_result/101_log_20261113_P106B_Stage7aqW_softdtw_gpu_component.txt",
+      "log_sha256": "1D02D2C99ED138D7327B58D6D09FE8800CD1DBBE1A6BE4F622EA4020E99E0DB7",
+      "status": "EXECUTED_IMPLEMENTATION_ERROR_V1_PRESERVED"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V14",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 572,
+      "source": "run_P106B_Stage7acW_gradient_geometry_cpu.sh",
+      "target": "run_P106B_Stage7acW_gradient_geometry_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Exact scalar geometry, opposite/orthogonal/zero gradients and invalid space CPU5. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7acW_gradient_geometry_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_gradient_geometry\n",
+      "sha256": "B5736368AC8E86E365F199DB4662A6F34B014BED76B7FD272D63E56676620D75",
+      "actual_tool_session": 78044,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7acW_gradient_geometry_cpu.txt",
+      "log_sha256": "9B67106D3C7C1846B14638D682B88D8F10FC470DB391EF0D297FBFF65EFC7AD4",
+      "status": "EXECUTED_GRADIENT_DIAGNOSTIC_QUALITY_NOT_RUN"
+    },
+    {
+      "id": 573,
+      "source": "run_P106B_Stage7adW_dskdv2_gradient_geometry.sh",
+      "target": "run_P106B_Stage7adW_dskdv2_gradient_geometry-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# One body forward pass128; separate native CE/student-KL/teacher-KL/projector-CE gradients. No updates.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7adW_dskdv2_gradient_geometry -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_gradient_geometry\n",
+      "sha256": "35D41B4A0C710D259DF8CA1CCEDEC21FAD219D61EBB51280381FC5368B5133BB",
+      "actual_tool_session": 76967,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7adW_dskdv2_gradient_geometry.txt",
+      "log_sha256": "265DED58B89BFFB4D2478B62CD18636182792D888F73E953EDE4E7C4B686984B",
+      "status": "EXECUTED_GRADIENT_DIAGNOSTIC_QUALITY_NOT_RUN"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# User111/112 forward-only intervention CPU contract. No model or GPU.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+exec "${PY}" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage9aW_wsp_attention_cpu -- "${PY}" -B -X utf8 -m unittest scripts.test_p108_wsp_attention

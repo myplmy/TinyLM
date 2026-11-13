@@ -1,0 +1,55 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V13",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 568,
+      "source": "run_P106B_Stage7yW_native_bridge_cpu.sh",
+      "target": "run_P106B_Stage7yW_native_bridge_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Native factored losses/VJP, stop-gradient and exact position frame CPU6. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7yW_native_bridge_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_dskdv2_bridge\n",
+      "sha256": "E25F4717BA8F8C2A58AB893C933B52F737145863029F0B46ED4AFBBC9C67039E",
+      "exit_code": 0,
+      "actual_tool_session": 34529,
+      "log": "test_result/101_log_20261113_P106B_Stage7yW_native_bridge_cpu.txt",
+      "log_sha256": "D93920346F54F28495F0715351856B4E5941DDBF4FA195D334419E7764DFC9B1",
+      "status": "EXECUTED_ENGINEERING_COMPLETE_QUALITY_NOT_RUN"
+    },
+    {
+      "id": 569,
+      "source": "run_P106B_Stage7zW_native_bridge_projection.sh",
+      "target": "run_P106B_Stage7zW_native_bridge_projection-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Actual native CPU head projection538. Same bank recomputed, body0/GPU0/update0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7zW_native_bridge_projection -- timeout --signal=TERM --kill-after=20s 950s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_bridge cpu-native\n",
+      "sha256": "BED674FED9C6B7351DDBF7025250E4A1B897A6B069F43E9B56FB12D9B213FB6E",
+      "exit_code": 0,
+      "actual_tool_session": 58801,
+      "log": "test_result/101_log_20261113_P106B_Stage7zW_native_bridge_projection.txt",
+      "log_sha256": "4E848B4614D8C2B6354359561C9F6054ED03CA3AB1B4699D9DCB3FCFF1208552",
+      "status": "EXECUTED_ENGINEERING_COMPLETE_QUALITY_NOT_RUN"
+    },
+    {
+      "id": 570,
+      "source": "run_P106B_Stage7aaW_native_teacher_head_gate.sh",
+      "target": "run_P106B_Stage7aaW_native_teacher_head_gate-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Original-position full native teacher head versus chunk. No teacher or student body.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7aaW_native_teacher_head_gate -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_bridge head\n",
+      "sha256": "927212A42700C5AAF1D43EBD3D6CDA794492E1F03882B07D3C245AA74BDB0F9A",
+      "exit_code": 0,
+      "actual_tool_session": 20080,
+      "log": "test_result/101_log_20261113_P106B_Stage7aaW_native_teacher_head_gate.txt",
+      "log_sha256": "A0E71B8614552BE4AEFCBAC53A520193D1D7C7F29734DABF73DB702DBF079845",
+      "status": "EXECUTED_ENGINEERING_COMPLETE_QUALITY_NOT_RUN"
+    },
+    {
+      "id": 571,
+      "source": "run_P106B_Stage7abW_native_dualspace_gradient_cost.sh",
+      "target": "run_P106B_Stage7abW_native_dualspace_gradient_cost-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same128 rows/CE772/KD538: CE,KD,KD,CE backward. Strict determinism. No update or CP.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7abW_native_dualspace_gradient_cost -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_bridge student\n",
+      "sha256": "FE9767171BA55A7C2E6AC85F6092B59BCCCCC64D0F5D5F80662136C60EF3879C",
+      "exit_code": 0,
+      "actual_tool_session": 49907,
+      "log": "test_result/101_log_20261113_P106B_Stage7abW_native_dualspace_gradient_cost.txt",
+      "log_sha256": "D65336833D3DF6D93EE5DC80DE7F594449E4285A895A353F5CA3AD50EC9D4BA2",
+      "status": "EXECUTED_ENGINEERING_COMPLETE_QUALITY_NOT_RUN"
+    }
+  ]
+}

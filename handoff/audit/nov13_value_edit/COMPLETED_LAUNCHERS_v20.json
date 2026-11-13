@@ -1,0 +1,33 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V20",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 587,
+      "source": "run_P106B_Stage7arW_softdtw_v2_prepare.sh",
+      "target": "run_P106B_Stage7arW_softdtw_v2_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Independent loop-state construction; same CPU3 and original FP64 tolerances. Preserve v1 failure.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7arW_softdtw_v2_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_softdtw_gpu_v2 prepare\n",
+      "sha256": "669ABF3C2AED0A7E70CC667E3CA4F31A2501C456757ACEBEFB63619BF2589970",
+      "actual_tool_session": 30665,
+      "exit_code": 0,
+      "exit_evidence": "closed_runlog",
+      "log": "test_result/101_log_20261113_P106B_Stage7arW_softdtw_v2_prepare.txt",
+      "log_sha256": "4931F54C338C320BD6B4D71858C405C82971FD5D96340B887BC0E5083CCC2E20",
+      "status": "EXECUTED_COMPONENT_ONLY"
+    },
+    {
+      "id": 588,
+      "source": "run_P106B_Stage7asW_softdtw_gpu_v2.sh",
+      "target": "run_P106B_Stage7asW_softdtw_gpu_v2-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Separate two rolling state tensors. Same exact DP, dtype, shapes, source reference and error gates.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexport TRITON_CACHE_DIR=\"${PWD}/data_cache/p106b_softdtw_gpu_v2_20261113/triton\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7asW_softdtw_gpu_v2 -- timeout --signal=TERM --kill-after=20s 1200s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_softdtw_gpu_v2 actual\n",
+      "sha256": "9A2641F4B6F0F0E4214BF08F5E81C87A0DF662DD1B802B61E14E9C26FE00EDDB",
+      "actual_tool_session": 33061,
+      "exit_code": 0,
+      "exit_evidence": "actual_tool_and_closed_runlog",
+      "log": "test_result/101_log_20261113_P106B_Stage7asW_softdtw_gpu_v2.txt",
+      "log_sha256": "F4A396A650146BC3780B91B856D4129DC517D0F43C481843C3062111E08F5CAA",
+      "status": "EXECUTED_COMPONENT_ONLY"
+    }
+  ]
+}

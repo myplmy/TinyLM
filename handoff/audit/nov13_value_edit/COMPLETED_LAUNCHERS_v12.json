@@ -1,0 +1,19 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V12",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 567,
+      "source": "run_P108_Stage21cW_distributed_residual_actual.sh",
+      "target": "run_P108_Stage21cW_distributed_residual_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same absolute budget: single11 versus conditional8/11 plus three matched distributed controls. No training or CP.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage21cW_distributed_residual_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p108_distributed_residual actual\n",
+      "sha256": "86F0E76D92C3A3D7849A8741BC9A130C0AD4946C53DAC514BD7331C0F3261DA3",
+      "exit_code": 0,
+      "actual_tool_session": 14694,
+      "log": "test_result/108_log_20261113_P108_Stage21cW_distributed_residual_actual.txt",
+      "log_sha256": "ED8098A14619FF858A8799911B85CE165F36DC20C8ACD2F536DA7BAFAA811B9E",
+      "status": "EXECUTED_PILOT_NEGATIVE_NO_ADOPTION"
+    }
+  ]
+}

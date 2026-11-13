@@ -1,0 +1,37 @@
+{
+  "actual_tool_session": 44558,
+  "actual_tool_exit": 1,
+  "internal_returncode": 9,
+  "report_sha256": "D5E16F47E20FF136C90F48A7340A7E26D2837A347E08AA3E4BF3830DC74C6C85",
+  "profile_sha256": "0226B750CEE2848ABB14EAE235F0E355D552AA70381865593B07FC84B429109B",
+  "failing_shape": [
+    8,
+    12
+  ],
+  "atol": 1e-09,
+  "rtol": 1e-08,
+  "generated_ir_path": "data_cache/p106b_softdtw_gpu_v1_20261113/triton/DWFMRPKXIXMQ7ATPDHY3SO3MDRNDBUC2KWQV3UA5RI4MWLFYES3A/_forward.ttir",
+  "generated_ir_sha256": "838C27E44F6FA1DE2AA27FBF2907B076EE665A49C1AE053B8A7A51245D63F2E9",
+  "generated_ir_recurrence_lines": [
+    "    %prev = scf.for %d = %c0_i32 to %c19_i32 step %c1_i32 iter_args(%prev_9 = %cst_5) -> (tensor<16xf64>)  : i32 {",
+    "      %b_18 = tt.gather %prev_9[%jm_8] {axis = 0 : i32} : (tensor<16xf64>, tensor<16xi32>) -> tensor<16xf64> loc(#loc92)",
+    "      %c_20 = tt.gather %cst_5[%jm_8] {axis = 0 : i32} : (tensor<16xf64>, tensor<16xi32>) -> tensor<16xf64> loc(#loc95)",
+    "      scf.yield %value_46 : tensor<16xf64> loc(#loc70)"
+  ],
+  "diagnosis": "두prev의tensoralias초기화작성에서loop-carried값은하나였고diag는초기inf상수였다.",
+  "final_cuda_cleanup": {
+    "entry": {
+      "allocated_bytes": 0,
+      "reserved_bytes": 2097152
+    },
+    "before_workspace_clear": {
+      "allocated_bytes": 0,
+      "reserved_bytes": 0
+    },
+    "workspace_clear_available": true,
+    "workspace_clear_called": false,
+    "allocated_bytes": 0,
+    "reserved_bytes": 0
+  },
+  "quality_claim": false
+}

@@ -1,0 +1,257 @@
+#!/usr/bin/env python3
+"""Forward-only head localization: exact reference loss then real generation.
+
+All candidates are temporary O-column edits in one completed float model.
+Reference losses select candidates on DEV only, never update parameters.
+The shared sealed test is reused, not a new independent replication.
+"""
+import argparse
+from datetime import datetime, timezone
+import gc
+import json
+from pathlib import Path
+import random
+import time
+import traceback
+import torch
+import torch.nn.functional as F
+
+from scripts import diag_p108_wsp_attention as previous
+from scripts import p108_wsp_attention as wsp
+from scripts import p108_weight_space as repair
+from scripts import diag_p108_weight_space as common
+from scripts import interactive_research_infer as manual
+from scripts.p108_balanced_practice import StrictWriter
+from scripts.p106b_shards import ShardWriter, verify as verify_shards
+from scripts.diag_p107_hybrid_mntp import close_owned_cuda
+
+ROOT=Path(__file__).resolve().parents[1]
+TAG='p108_wsp_headscan_v3_20261105'
+BASE=ROOT/'test_result/evidence'/TAG
+SOURCES=('scripts/diag_p108_wsp_headscan.py','scripts/test_p108_wsp_headscan.py',
+         'scripts/diag_p108_wsp_attention.py','scripts/p108_wsp_attention.py',
+         'scripts/p108_weight_space.py','scripts/diag_p108_weight_space.py',
+         'scripts/p108_balanced_practice.py','scripts/p106b_shards.py',
+         'scripts/diag_p107_hybrid_mntp.py')
+
+
+def components(logits,prefix_length,answer_ids):
+    if (logits.ndim!=3 or logits.shape[0]!=1 or prefix_length<1 or not answer_ids
+            or any(type(t) is not int or t in (2,4) for t in answer_ids)
+            or logits.shape[1]!=prefix_length+len(answer_ids)):
+        raise ValueError('reference causal positions differ')
+    labels=torch.tensor(answer_ids+[4],device=logits.device,dtype=torch.long)
+    selected=logits[0,prefix_length-1:]
+    losses=F.cross_entropy(selected,labels,reduction='none')
+    body,eos=losses[:-1].mean(),losses[-1]
+    result=torch.stack((body,eos,(body+eos)/2))
+    if not torch.isfinite(result).all():raise ValueError('nonfinite reference score')
+    return result
+
+
+def prepare():
+    if BASE.exists():raise FileExistsError('headscan namespace already exists')
+    parent=previous.verify()
+    sources=dict(manual.required_source_pins())
+    sources.update({name:manual.file_sha(ROOT/name) for name in SOURCES})
+    rows=common.read_json(previous.BASE/'data.json')['rows']
+    source_out=previous.BASE/'actual'
+    source_manifest=common.read_json(source_out/'answers_shards_manifest.json')
+    verify_shards(source_out,source_manifest)
+    closed=common.read_json(source_out/'report.json')
+    if closed['status']!='TECHNICAL_COMPLETE_QUALITY_SEPARATE' or not closed['registered_core_unchanged']:
+        raise ValueError('closed reusable source is not intact')
+    reuse_paths=[source_out/'report.json',source_out/'answers_shards_manifest.json']
+    reuse_paths += [source_out/r['path'] for r in source_manifest['shards']]
+    reuse_paths += sorted(source_out.glob('*_edit.json'))
+    reuse_inputs={str(path.relative_to(ROOT)):manual.file_sha(path) for path in reuse_paths}
+    dev=[r for r in rows if r['split']=='dev']
+    selected=[]
+    for family in sorted({r['family'] for r in dev}):
+        family_rows=[r for r in dev if r['family']==family]
+        selected.extend([family_rows[0]['id'],family_rows[-1]['id']])
+    BASE.mkdir(parents=True)
+    (BASE/'initial_plan.md').write_bytes((ROOT/previous.PLAN).read_bytes())
+    p=dict(schema='P108_WSP_HEADSCAN_V1',tag=TAG,model=previous.MODEL,authority=[111,112],
+        deadline=previous.DEADLINE.isoformat(),max_phase_seconds=1800,max_new=64,sources=sources,
+        parent_profile_sha256=manual.file_sha(previous.BASE/'profile.json'),
+        data_path=str((previous.BASE/'data.json').relative_to(ROOT)),data_sha256=parent['data_sha256'],
+        plan_sha256=manual.file_sha(BASE/'initial_plan.md'),manifest_sha256=parent['manifest_sha256'],
+        calibration_dev_ids=selected,top_candidates=4,random_seeds=[23117,23129,23143],
+        screen_objective='MEAN_OVER_ROWS_OF_HALF_MEAN_ANSWER_NLL_PLUS_HALF_CORRECT_EOT_NLL',
+        reuse_inputs=reuse_inputs,reuse_original_and_identical_head_answers=True,
+        selection_split='DEV_ONLY',test_reselection=False,reused_test_not_independent=True,
+        gradient_calls=0,updates=0,training_tokens=0,checkpoint_writes=0)
+    common.write_json(BASE/'profile.json',p)
+    print('[PREPARED] '+str(BASE.relative_to(ROOT)),flush=True)
+
+
+def verify():
+    p=common.read_json(BASE/'profile.json')
+    if p['schema']!='P108_WSP_HEADSCAN_V1' or p['authority']!=[111,112] or p['deadline']!=previous.DEADLINE.isoformat():
+        raise ValueError('headscan authority/schema drift')
+    for name,sha in p['sources'].items():
+        if manual.file_sha(ROOT/name)!=sha:raise ValueError('headscan source drift: '+name)
+    for name,sha in p['reuse_inputs'].items():
+        if manual.file_sha(ROOT/name)!=sha:raise ValueError('closed reused evidence drift: '+name)
+    if manual.file_sha(previous.BASE/'profile.json')!=p['parent_profile_sha256']:
+        raise ValueError('preserved parent profile changed')
+    if manual.file_sha(ROOT/p['data_path'])!=p['data_sha256'] or manual.file_sha(BASE/'initial_plan.md')!=p['plan_sha256']:
+        raise ValueError('headscan frozen input changed')
+    if manual.canonical_sha(manual.verify_manifest())!=p['manifest_sha256']:
+        raise ValueError('original model manifest changed')
+    return p
+
+
+def fixtures(active,rows,ids):
+    result=[]
+    selected={r['id']:r for r in rows if r['split']=='dev'}
+    for key in ids:
+        row=selected[key]
+        prefix=common.prompt_ids(active,row['question'])
+        answer=active['tokenizer'].encode(row['expected']).ids
+        if active['tokenizer'].decode(answer,skip_special_tokens=False)!=row['expected']:
+            raise ValueError('literal reference answer token roundtrip differs')
+        if len(prefix)+len(answer)>active['cfg'].max_seq_len:
+            raise ValueError('reference exceeds trained context')
+        result.append((torch.tensor([prefix+answer],device='cuda',dtype=torch.long),len(prefix),answer))
+    return result
+
+
+def score(active,fixed,budget):
+    from torch.nn.attention import sdpa_kernel,SDPBackend
+    total=torch.zeros(3,device='cuda')
+    with torch.no_grad(),sdpa_kernel(SDPBackend.MATH):
+        for inputs,prefix,answer in fixed:
+            budget.check();active['route'].assert_active()
+            logits=active['model'](inputs,logits_last_only=False)
+            total+=components(logits,prefix,answer)
+    values=(total/len(fixed)).cpu().tolist()
+    return dict(body_nll=values[0],correct_eot_nll=values[1],objective=values[2],rows=len(fixed))
+
+
+def run():
+    p=verify();budget=previous.Budget(p);budget.check();out=BASE/'actual'
+    if out.exists():raise FileExistsError('headscan actual output exists')
+    raw=ShardWriter(out,'answers',limit=3_000_000);writer=StrictWriter(raw)
+    rows=common.read_json(ROOT/p['data_path'])['rows']
+    report=dict(schema=p['schema'],status='RUNNING',variants=[],head_scores=[],training_tokens=0,
+                optimizer_updates=0,gradient_calls=0,checkpoint_writes=0,reused_test_not_independent=True)
+    report.update(executed_answer_rows=0,reused_answer_rows=0)
+    source_out=previous.BASE/'actual'
+    source_report=common.read_json(source_out/'report.json')
+    source_manifest=common.read_json(source_out/'answers_shards_manifest.json')
+    source_rows=[]
+    for shard in source_manifest['shards']:
+        source_rows.extend(json.loads(line) for line in (source_out/shard['path']).read_text(encoding='utf-8').splitlines())
+    reuse={('dev',None):'original_dev',('confirm',None):'original_confirm'}
+    variants={r['variant'] for r in source_rows}
+    for path in sorted(source_out.glob('*_edit.json')):
+        entry=common.read_json(path);spec=entry.get('spec',entry.get('match',{}))
+        if 'head' not in spec or 'key' not in spec:continue
+        stem=path.stem.removesuffix('_edit')
+        for split in ('dev','confirm'):
+            if stem+'_'+split in variants:reuse[(split,(spec['key'],spec['head']))]=stem+'_'+split
+    failure=None;fixed=delta=modules=chosen=None
+    def evaluate(active,split,name,head_identity=None):
+        items=[r for r in rows if r['split']==split or (split=='confirm' and r['split'] in ('test','open'))]
+        reused=reuse.get((split,head_identity))
+        if reused is not None:
+            old_rows={r['id']:r for r in source_rows if r['variant']==reused}
+            answers=[]
+            for item in items:
+                old_row=old_rows[item['id']]
+                if any(old_row[k]!=item[k] for k in ('question','expected','split','family','protected')):
+                    raise ValueError('reused prompt/answer condition differs')
+                row=dict(old_row,variant=name,reused_from_variant=reused,
+                    reused_source_report_sha256=manual.file_sha(source_out/'report.json'))
+                writer.append(row);answers.append(row)
+            summary=repair.summarize(answers)
+            summary.update(seconds=0,reused=True,reused_source_variant=reused)
+            report['reused_answer_rows']+=len(answers)
+            print('[REUSED] '+name+' from '+reused+' rows='+str(len(answers)),flush=True)
+        else:
+            answers,summary=common.evaluate(active,items,writer,name,budget,p['max_new'])
+            report['executed_answer_rows']+=len(answers)
+        report['variants'].append(dict(name=name,**summary))
+        common.write_json(out/(name+'_summary.json'),summary)
+        return answers,summary
+    try:
+        with manual.selected_runtime(manual.resolve_model(previous.MODEL)) as active:
+            torch.set_num_threads(4);torch.cuda.reset_peak_memory_stats()
+            report['origin']={k:active[k] for k in ('name','checkpoint_sha256','core_sha256','tokenizer_sha256')}
+            if report['origin']!=source_report['origin']:raise ValueError('reused source model/core differs')
+            fixed=fixtures(active,rows,p['calibration_dev_ids'])
+            report['baseline_reference']=score(active,fixed,budget)
+            modules=wsp.outputs(active['model']);heads=active['cfg'].n_q_heads
+            for key,module in modules.items():
+                if not key.startswith('attention:'):continue
+                for head in range(heads):
+                    delta=wsp.head_delta(module,heads,head)
+                    with wsp.edit(active['model'],active['route'],[(key,delta)]) as receipt:
+                        value=score(active,fixed,budget)
+                    item=dict(key=key,head=head,width=len(wsp.head_columns(module,heads,head)),**value,receipt=receipt[0])
+                    report['head_scores'].append(item)
+                common.write_json(out/(key.replace(':','_')+'_screen.json'),dict(rows=report['head_scores'][-heads:]))
+                print('[SCREEN] '+key+' '+str(len(report['head_scores']))+' heads',flush=True)
+            ranking=sorted(report['head_scores'],key=lambda r:(r['objective'],r['key'],r['head']))
+            candidates=ranking[:p['top_candidates']]
+            common.write_json(out/'frozen_screen_candidates.json',dict(calibration_ids=p['calibration_dev_ids'],candidates=candidates))
+            dev,base=evaluate(active,'dev','original_dev')
+            probe=dev[0];_,parity=manual.emit(active,probe['question'],max_new=p['max_new'])
+            if parity['generated_ids']!=probe['generation']['generated_ids']:
+                raise RuntimeError('live baseline reuse parity failed')
+            report['live_reuse_probe_token_parity']=True
+            for item in candidates:
+                key,head=item['key'],item['head'];delta=wsp.head_delta(modules[key],heads,head)
+                name='screen_'+key.replace(':','_')+f'_head{head}'
+                with wsp.edit(active['model'],active['route'],[(key,delta)]):
+                    _,summary=evaluate(active,'dev',name+'_dev',(key,head))
+                item['dev']=summary;item['name']=name
+            def criterion(r):
+                s=r['dev'];return (s['exact'],s['protected_exact'],-s['empty'],-s['question_echoes'],-s['loop_indicators'],-r['objective'])
+            chosen=max(candidates,key=criterion)
+            frozen=dict(selection_split='DEV_ONLY',test_reselection=False,chosen=chosen,original_dev=base,
+                        random_seeds=p['random_seeds'],test_reused=True)
+            common.write_json(out/'frozen_selection.json',frozen)
+            report['selection_sha256']=manual.file_sha(out/'frozen_selection.json');report['selected']=frozen
+            evaluate(active,'confirm','original_confirm')
+            delta=wsp.head_delta(modules[chosen['key']],heads,chosen['head'])
+            with wsp.edit(active['model'],active['route'],[(chosen['key'],delta)]):
+                evaluate(active,'confirm','selected_confirm',(chosen['key'],chosen['head']))
+            options=[(key,head) for key in modules if key.startswith('attention:') for head in range(heads)
+                     if (key,head)!=(chosen['key'],chosen['head'])]
+            controls=[]
+            used=set()
+            for seed in p['random_seeds']:
+                available=[v for v in options if v not in used]
+                key,head=random.Random(seed).choice(available);used.add((key,head))
+                controls.append(dict(seed=seed,key=key,head=head,matched='HEAD_COUNT_WIDTH_NOT_NORM'))
+                delta=wsp.head_delta(modules[key],heads,head)
+                with wsp.edit(active['model'],active['route'],[(key,delta)]):
+                    evaluate(active,'confirm',f'random{seed}_confirm',(key,head))
+            report['random_controls']=controls
+            probe=dev[0];_,after=manual.emit(active,probe['question'],max_new=p['max_new'])
+            if after['generated_ids']!=probe['generation']['generated_ids']:
+                raise RuntimeError('final headscan rollback token parity failed')
+            report['final_rollback_token_parity']=True
+        report['registered_core_unchanged']=True;report['status']='TECHNICAL_COMPLETE_QUALITY_SEPARATE'
+    except BaseException as exc:
+        failure=exc;report['status']='HOLD' if isinstance(exc,TimeoutError) else 'ERROR';report['error']=repr(exc);traceback.print_exc()
+    finally:
+        manifest=raw.close(lineage=dict(profile_sha256=manual.file_sha(BASE/'profile.json')))
+        verify_shards(out,manifest)
+        fixed=delta=modules=chosen=module=None
+        gc.collect();close_owned_cuda(torch,report);verify()
+        report['wall_seconds']=time.monotonic()-budget.start
+        common.write_json(out/'report.json',report)
+    print('[FINAL] '+json.dumps(dict(status=report['status'],heads=len(report['head_scores']),wall_seconds=report['wall_seconds'])),flush=True)
+    if failure is not None:raise failure
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('phase',choices=('prepare','run'))
+    args=parser.parse_args();prepare() if args.phase=='prepare' else run()
+
+
+if __name__=='__main__':main()

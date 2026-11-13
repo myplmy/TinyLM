@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# User111 unfinished item64 CPU recovery. No checkpoint, data, model load or GPU.
+# Original empty suite and first finite-gradient failure remain in raw evidence.
+set -euo pipefail
+cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
+source scripts/shell/tinylm_env.sh
+PY="$(tinylm_python)"
+exec "${PY}" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu3Wb_coordinate_cpu_contract -- "${PY}" -B -X utf8 -m unittest scripts.test_p106b_gsq_coordinates scripts.test_p106b_gsq_objective

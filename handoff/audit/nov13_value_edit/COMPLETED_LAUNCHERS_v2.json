@@ -1,0 +1,143 @@
+{
+  "schema": "TINYLM_LAUNCHER_TRANSITION_V1",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 482,
+      "source": "run_P106B_Stage4fu6Wb_coordinate_lion256.sh",
+      "target": "run_P106B_Stage4fu6Wb_coordinate_lion256-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115 Nov13. Full-model coordinate Lion mechanical256, not quality training.\n# Expected20 to30 minutes. Same source/exposure/gain/noise as AdamW.\n# Includes all finite/sparse prevalidation cost; no CP save or teacher call.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu6Wb_coordinate_lion256 -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_coordinate_window run --arm lion\n",
+      "sha256": "8C3B1959A6E3BC3D191E87873CE7DC5783C63F0763E5DB2A9EC70A15FE9F9F8E",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/101_log_20261113_P106B_Stage4fu6Wb_coordinate_lion256.txt",
+      "log_sha256": "B32C84D06042DFFD9B7CA11B642DD4336FDB3AD0380078FE272FC90E6093DC9E",
+      "exit_code": 9
+    },
+    {
+      "id": 485,
+      "source": "run_P108_Stage15cW_key_transport_actual.sh",
+      "target": "run_P108_Stage15cW_key_transport_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115 Nov13: subject-only fixed value/actual matrix response/global edit.\n# About3 to10 minutes, expected4GiB,1800sec bounded. Preserve reused answers.\n# Diagnostic involvement only; no optimizer, original CP writes or adoption.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage15cW_key_transport_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p108_key_transport run\n",
+      "sha256": "05ABB1A7F40742B72E8E78944D8E1E9533DF6CEA3F508CF2F62CB0C5B56378DE",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/108_log_20261113_P108_Stage15cW_key_transport_actual.txt",
+      "log_sha256": "71989964B2EDD6BAA7067045E62DB9096853725BFFCC2FA7B9775182D6466021",
+      "exit_code": 0
+    },
+    {
+      "id": 489,
+      "source": "run_P101A_Stage3ne2W_masked_shapes_inventory.sh",
+      "target": "run_P101A_Stage3ne2W_masked_shapes_inventory-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Correct original masked consumer; exact4-pass32/64/128 shape inventory.\n# CPU only. Defective V3 remains NOT_ADMITTED, no parameter tensor load.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport TOKENIZERS_PARALLELISM=false\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3ne2W_masked_shapes_inventory -- \"${PY}\" -B -X utf8 -m scripts.diag_p101a_padding_shapes\n",
+      "sha256": "AFF9257B4D598917E996698B7FD36607137E1D8DA83A6EA1691890CC14F6A119",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/092_log_20261113_P101A_Stage3ne2W_masked_shapes_inventory.txt",
+      "log_sha256": "A2483034FCBE41A92797677BA7D3AA8752DECA0D637BEE00585E3D27C2082C3B",
+      "exit_code": 0
+    },
+    {
+      "id": 490,
+      "source": "run_P106B_Stage4fv0W_logtail_cpu.sh",
+      "target": "run_P106B_Stage4fv0W_logtail_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU33: tail7 and private driver2 plus GSQ/objective24. No GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fv0W_logtail_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_alm_logtail scripts.test_p106b_gsq_logtail_driver scripts.test_p106b_gsq_coordinates scripts.test_p106b_gsq_objective\n",
+      "sha256": "7C7C1CA3B36C42FCAD519FE969D408BA4B27478CC7608681DC7524BEA4FF88A9",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/101_log_20261113_P106B_Stage4fv0W_logtail_cpu.txt",
+      "log_sha256": "32D61A1FBF1A269013234E70A350DBCD160B815DA7042EE46DC0A84E1A5B0C06",
+      "exit_code": 0
+    },
+    {
+      "id": 491,
+      "source": "run_P106B_Stage4fv1W_logtail_prepare.sh",
+      "target": "run_P106B_Stage4fv1W_logtail_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze same TRAIN128/closedQ/numeric tail/source. No model load or GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fv1W_logtail_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_logtail prepare\n",
+      "sha256": "DB8262C6630BD813DCE455D80F73EB4C13D86753D1AEFE99DE7A141A851FA249",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/101_log_20261113_P106B_Stage4fv1W_logtail_prepare.txt",
+      "log_sha256": "291CF77ABB96581E59A814C0317D28504F22B178F51338A91AE1024BD7DA3521",
+      "exit_code": 0
+    },
+    {
+      "id": 492,
+      "source": "run_P106B_Stage4fv2Wa_logtail_adam256.sh",
+      "target": "run_P106B_Stage4fv2Wa_logtail_adam256-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: finite-logit tail and GSQ Adam256. About30 to45min, free10240MiB. No quality/CP.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fv2Wa_logtail_adam256 -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_logtail run --arm adamw\n",
+      "sha256": "B9B60DC3B1F1B6837BD2EDECEA33D330AF85B88CD546398856E49BF9B0A4144C",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/101_log_20261113_P106B_Stage4fv2Wa_logtail_adam256.txt",
+      "log_sha256": "4C8C14C532F02A47C06E935458BC9E4580283B3C49E6C8E5D5DD4779B201AE76",
+      "exit_code": 0
+    },
+    {
+      "id": 494,
+      "source": "run_P101A_Stage3nf0W_compiled_padding_cpu.sh",
+      "target": "run_P101A_Stage3nf0W_compiled_padding_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU6: original group masses/order, owned child timeout and SIGTERM cleanup.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf0W_compiled_padding_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p101a_compiled_padding\n",
+      "sha256": "C18AFC3DC755F30D73CE3B6F98B967A87955D73BB974B71BCAE2DCE22622D918",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/092_log_20261113_P101A_Stage3nf0W_compiled_padding_cpu.txt",
+      "log_sha256": "2DBD2BBC5B73BD30FCCEB0F73093EC6145E6A57119BA078E745BAB01E592AA9B",
+      "exit_code": 0
+    },
+    {
+      "id": 495,
+      "source": "run_P101A_Stage3nf1W_compiled_padding_prepare.sh",
+      "target": "run_P101A_Stage3nf1W_compiled_padding_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Freeze closed shape inventory, old assets/source and installed compiler versions.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf1W_compiled_padding_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding prepare\n",
+      "sha256": "E2A194EF1674744E8C5460F1ACC5028EF5FAED79994431C691D340EDC70245E3",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "log": "test_result/092_log_20261113_P101A_Stage3nf1W_compiled_padding_prepare.txt",
+      "log_sha256": "1055E0F2023828AD14F1C747D0E91DBC236DE5F2A72C3FDFBE113A1F11D78A4E",
+      "exit_code": 0
+    },
+    {
+      "id": 496,
+      "source": "run_P101A_Stage3nf2Wa_ntp_crop128_compiled.sh",
+      "target": "run_P101A_Stage3nf2Wa_ntp_crop128_compiled-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: compiled fixed/crop128 ABBA, ntp. Four fresh processes; resource only, no CP/quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf2Wa_ntp_crop128_compiled -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding run --mtp ntp --quantum 128\n",
+      "sha256": "3A242F73A1D85549D0AFD09FA3828CDABD9D2298AECA8DB43D96D176C9D3F7E1",
+      "status": "NOT_RUN_REPLACED_INTERFACE_V2"
+    },
+    {
+      "id": 497,
+      "source": "run_P101A_Stage3nf2Wb_mtp_crop128_compiled.sh",
+      "target": "run_P101A_Stage3nf2Wb_mtp_crop128_compiled-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: compiled fixed/crop128 ABBA, mtp. Four fresh processes; resource only, no CP/quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf2Wb_mtp_crop128_compiled -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding run --mtp mtp --quantum 128\n",
+      "sha256": "3A7EA0DEACEFCC362D728FC4B0737378031FD48A30B828F36BE769629DA13BC2",
+      "status": "NOT_RUN_REPLACED_INTERFACE_V2"
+    },
+    {
+      "id": 498,
+      "source": "run_P101A_Stage3nf2Wc_ntp_crop64_compiled.sh",
+      "target": "run_P101A_Stage3nf2Wc_ntp_crop64_compiled-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: compiled fixed/crop64 ABBA, ntp. Four fresh processes; resource only, no CP/quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf2Wc_ntp_crop64_compiled -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding run --mtp ntp --quantum 64\n",
+      "sha256": "3A28D23737026C39AA4706A4E33DC0956560BE14C729381701A094CF5BE11607",
+      "status": "NOT_RUN_REPLACED_INTERFACE_V2"
+    },
+    {
+      "id": 499,
+      "source": "run_P101A_Stage3nf2Wd_mtp_crop64_compiled.sh",
+      "target": "run_P101A_Stage3nf2Wd_mtp_crop64_compiled-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: compiled fixed/crop64 ABBA, mtp. Four fresh processes; resource only, no CP/quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf2Wd_mtp_crop64_compiled -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding run --mtp mtp --quantum 64\n",
+      "sha256": "24863102F08C1B1395E930BC1F3F0873E2319BF8B8E0719A80840D439CF36F65",
+      "status": "NOT_RUN_REPLACED_INTERFACE_V2"
+    },
+    {
+      "id": 500,
+      "source": "run_P101A_Stage3nf2We_ntp_crop32_compiled.sh",
+      "target": "run_P101A_Stage3nf2We_ntp_crop32_compiled-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: compiled fixed/crop32 ABBA, ntp. Four fresh processes; resource only, no CP/quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf2We_ntp_crop32_compiled -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding run --mtp ntp --quantum 32\n",
+      "sha256": "262E5B30A86930BF188E20B9DDE52820CB5FC5BFE8D395550AA3688DEE6A41AF",
+      "status": "NOT_RUN_REPLACED_INTERFACE_V2"
+    },
+    {
+      "id": 501,
+      "source": "run_P101A_Stage3nf2Wf_mtp_crop32_compiled.sh",
+      "target": "run_P101A_Stage3nf2Wf_mtp_crop32_compiled-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# User115: compiled fixed/crop32 ABBA, mtp. Four fresh processes; resource only, no CP/quality.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 092 --name P101A_Stage3nf2Wf_mtp_crop32_compiled -- timeout --signal=TERM --kill-after=20s 3650s \"${PY}\" -B -X utf8 -m scripts.diag_p101a_compiled_padding run --mtp mtp --quantum 32\n",
+      "sha256": "C8812AE93E0B911D1DC993EDE8654983695D1D8205EB01F41C08983FE9689CA3",
+      "status": "NOT_RUN_REPLACED_INTERFACE_V2"
+    }
+  ]
+}

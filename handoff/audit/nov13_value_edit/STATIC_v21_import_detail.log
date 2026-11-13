@@ -1,0 +1,23 @@
+================================================================================================
+  check_imports — 저장소 모듈의 `from A import B` 에서 B 가 A 에 있는가 (ast 전용)
+================================================================================================
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 495, in _worker
+    runpy.run_path(target[0], run_name="__main__")
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 289, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 96, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "scripts/check_imports.py", line 209, in <module>
+    sys.exit(main())
+  File "scripts/check_imports.py", line 160, in main
+    t2 = parse(tgt)
+  File "scripts/check_imports.py", line 53, in parse
+    return ast.parse(io.open(path, encoding="utf-8").read(), filename=str(path))
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 306, in audit
+    self.deny("unlisted repository read", name)
+  File "/home/uranus/tinyLM/scripts/validation_scope.py", line 290, in deny
+    raise PermissionError("OWN_SCOPED boundary: " + reason)
+PermissionError: OWN_SCOPED boundary: unlisted repository read

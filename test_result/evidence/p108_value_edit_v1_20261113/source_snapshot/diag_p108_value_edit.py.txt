@@ -1,0 +1,316 @@
+#!/usr/bin/env python3
+"""Frozen-model value optimization, covariance write, and held-out paraphrases.
+
+Root-owned Nov13 authority. No base-weight optimizer, original CP writes,
+official test feedback, downloads or product defaults are involved.
+"""
+import argparse
+from contextlib import contextmanager
+from datetime import datetime, timezone
+import gc
+import json
+from pathlib import Path
+import time
+import traceback
+import torch
+import torch.nn.functional as F
+from torch.nn.attention import sdpa_kernel, SDPBackend
+from scripts import interactive_research_infer as manual
+from scripts import p108_value_edit as core
+from scripts import p108_wsp_attention as wsp
+from scripts import p108_weight_space as metrics
+from scripts import diag_p108_weight_space as common
+from scripts.p106b_shards import ShardWriter, verify as verify_shards
+from scripts.diag_p107_hybrid_mntp import close_owned_cuda
+
+ROOT = Path(__file__).resolve().parents[1]
+TAG = 'p108_value_edit_v1_20261113'
+BASE = ROOT / 'test_result/evidence' / TAG
+PLAN = 'test_plan/P108_직접가중치-방향수리와-학습개입.md'
+MODEL = 'new595-broad-f'
+DEADLINE = datetime(2026, 11, 13, 8, tzinfo=timezone.utc)
+SOURCES = ('scripts/p108_value_edit.py', 'scripts/diag_p108_value_edit.py',
+           'scripts/test_p108_value_edit.py', 'scripts/p108_wsp_attention.py',
+           'scripts/p108_weight_space.py', 'scripts/diag_p108_weight_space.py',
+           'scripts/p106b_shards.py', 'scripts/diag_p107_hybrid_mntp.py')
+
+
+class Budget:
+    def __init__(self, seconds=7200): self.start, self.seconds = time.monotonic(), seconds
+    def check(self):
+        if time.monotonic() - self.start > self.seconds or (DEADLINE - datetime.now(timezone.utc)).total_seconds() < 900:
+            raise TimeoutError('Nov13 phase budget or authority reserve reached')
+
+
+def protected_rows():
+    rows = []
+    for i in range(16):
+        en = i % 2 == 1
+        word = ('blue', 'book', 'chair', 'lamp')[i // 4] if en else ('파랑', '책', '의자', '등')[i // 4]
+        repeat = i % 4 >= 2
+        expected = ' '.join([word] * 3) if repeat else f'KEY-{i+314}-END'
+        question = ((f'Write {word} exactly three times separated by spaces.' if en else
+                     f'{word}을 공백으로 구분하여 정확히 세 번 적으세요.') if repeat else
+                    (f'Copy the following string exactly: {expected}' if en else f'다음 문자열만 그대로 적으세요: {expected}'))
+        rows.append(dict(id=f'preserve:{i}', split='protect', fact=None, subject=None, family='repeat' if repeat else 'copy',
+                         language='en' if en else 'ko', question=question, expected=expected, protected=True))
+    return rows
+
+
+def prepare():
+    if BASE.exists(): raise FileExistsError('fresh namespace required')
+    if datetime.now(timezone.utc) >= DEADLINE: raise TimeoutError('Nov13 authority expired')
+    manifest = manual.verify_manifest()
+    rows = core.facts() + protected_rows()
+    calibration = [r['question'] for r in common.make_data() if r['split'] == 'repair'] + list(common.OPEN)
+    calibration += [f'자료 {i+731}: 가람은 책을 읽고 누리는 산책합니다. 누가 책을 읽습니까?' for i in range(48)]
+    if len(calibration) != 128 or set(calibration) & {r['question'] for r in rows}:
+        raise ValueError('calibration count or exact overlap mismatch')
+    common.write_json(BASE/'data.json', dict(rows=rows, calibration_questions=calibration,
+        provenance='CODE_AUTHORED_COMMON_FACTS_NOT_OFFICIAL_BENCHMARK;CALIBRATION_TEXT_NOT_POPULATION_COVARIANCE'))
+    (BASE/'initial_plan.md').write_bytes((ROOT/PLAN).read_bytes())
+    sources = dict(manual.required_source_pins())
+    sources.update({p: manual.file_sha(ROOT/p) for p in SOURCES})
+    profile = dict(schema='P108_VALUE_EDIT_V1', tag=TAG, authority_directive=115, deadline=DEADLINE.isoformat(),
+        model=MODEL, sources=sources, data_sha256=manual.file_sha(BASE/'data.json'),
+        plan_sha256=manual.file_sha(BASE/'initial_plan.md'), manifest_sha256=manual.canonical_sha(manifest),
+        layers=[2, 5, 8, 11], value_steps=40, value_lr=.5, kl_weight=.0625, value_regularization=.01,
+        value_norm_cap=.75, matrix_relative_cap=.05, covariance_ridge_ratio=.01,
+        random_seeds=[713, 719, 727], max_phase_seconds=7200, max_new=64,
+        base_optimizer_updates=0, base_training_tokens=0, checkpoint_writes=0,
+        selection='PER_FACT_DEV_EXACT_THEN_ANCHOR_KL_THEN_DEV_NLL_THEN_SMALL_NORM',
+        test_selection=False, precision='FP32_MATH_TF32_OFF', cache=True, mtp=False, recurrence='R1')
+    common.write_json(BASE/'profile.json', profile)
+    print('[PREPARED] '+TAG, flush=True)
+
+
+def verify():
+    p = common.read_json(BASE/'profile.json')
+    if p['schema'] != 'P108_VALUE_EDIT_V1' or p['authority_directive'] != 115 or p['deadline'] != DEADLINE.isoformat():
+        raise ValueError('frozen authority/schema mismatch')
+    for name, sha in p['sources'].items():
+        if manual.file_sha(ROOT/name) != sha: raise ValueError('frozen source changed: '+name)
+    for name, key in (('data.json', 'data_sha256'), ('initial_plan.md', 'plan_sha256')):
+        if manual.file_sha(BASE/name) != p[key]: raise ValueError('frozen input changed: '+name)
+    if manual.canonical_sha(manual.verify_manifest()) != p['manifest_sha256']:
+        raise ValueError('selected models changed')
+    return p
+
+
+def pack(active, row):
+    from tinylm.chat.serialize import serialize
+    text = serialize(dict(messages=manual.prompt_messages(row['question'])), 'chatml', add_generation_prompt=True)
+    enc = active['tokenizer'].encode(text)
+    answer = active['tokenizer'].encode(row['expected']).ids
+    x, target, start = core.target_window(enc.ids, answer)
+    pos = None
+    if row.get('subject'):
+        where = text.index(row['subject'])
+        pos = core.subject_position(enc, where, where+len(row['subject']))
+    if len(x) > active['cfg'].max_seq_len: raise ValueError('no target truncation allowed')
+    return dict(x=torch.tensor([x], device='cuda'), targets=torch.tensor(target, device='cuda'),
+                start=start, position=pos, prompt_ids=enc.ids, row=row)
+
+
+def target_nll(active, item):
+    with sdpa_kernel(SDPBackend.MATH):
+        hidden = active['model'](item['x'], return_hidden=True)
+        logits = active['model']._head_logits(hidden[:, item['start']:])
+    if logits.shape[1] != len(item['targets']): raise RuntimeError('target shift mismatch')
+    return F.cross_entropy(logits[0], item['targets'])
+
+
+def prompt_log_probs(active, row):
+    ids = common.prompt_ids(active, row['question'])
+    with sdpa_kernel(SDPBackend.MATH):
+        return F.log_softmax(active['model'](torch.tensor([ids], device='cuda'), logits_last_only=True)[0, -1], dim=-1)
+
+
+def encode_position(active, row):
+    item = pack(active, dict(row, expected=row.get('expected') or 'x'))
+    return item['position']
+
+
+@contextmanager
+def oracle(active, module, row, delta):
+    with core.inject(module, encode_position(active, row), delta): yield
+
+
+def generated(active, row, writer, variant):
+    answer, generation = manual.emit(active, row['question'], max_new=64)
+    terminal = len(generation['terminal_ids'])
+    ids = generation['generated_ids'][:-terminal] if terminal else generation['generated_ids']
+    result = dict(row, variant=variant, answer=answer, generation=generation,
+                  exact=None if row['expected'] is None else metrics.exact_answer(answer, row['expected']),
+                  diagnostics=metrics.repetition_metrics(ids, answer, row['question']))
+    writer.append(result)
+    return result
+
+
+def optimize_value(active, module, fits, anchors, p, budget):
+    packed = [pack(active, r) for r in fits]
+    zero = torch.zeros(active['cfg'].dim, device='cuda')
+    keys, norms = [], []
+    with torch.no_grad():
+        for item in packed:
+            cap = {}
+            with core.inject(module, item['position'], zero, capture=cap): target_nll(active, item)
+            keys.append(cap['key']); norms.append(float(cap['value'].norm()))
+        refs = [prompt_log_probs(active, r).detach() for r in anchors]
+    key = torch.stack(keys).mean(0).detach().cpu()
+    norm = sum(norms)/len(norms)
+    delta = torch.nn.Parameter(zero.clone())
+    opt = torch.optim.Adam([delta], lr=p['value_lr'])
+    trace = []; exposures = 0
+    for step in range(p['value_steps']):
+        budget.check(); opt.zero_grad(set_to_none=True)
+        loss = delta.square().sum()*p['value_regularization']/max(norm**2, 1e-12)
+        nlls = []; kls = []
+        for item in packed:
+            with core.inject(module, item['position'], delta): nll = target_nll(active, item)
+            nlls.append(nll); exposures += len(item['targets'])
+        loss = loss + torch.stack(nlls).mean()
+        for row, ref in zip(anchors, refs):
+            with oracle(active, module, row, delta): logp = prompt_log_probs(active, row)
+            kls.append(F.kl_div(logp, ref, log_target=True, reduction='sum'))
+        loss = loss + p['kl_weight']*torch.stack(kls).mean()
+        if not torch.isfinite(loss): raise RuntimeError('nonfinite optimized value loss')
+        loss.backward()
+        if delta.grad is None or not torch.isfinite(delta.grad).all(): raise RuntimeError('missing/nonfinite value gradient')
+        opt.step()
+        with torch.no_grad():
+            cap = p['value_norm_cap']*norm
+            delta.mul_(min(1., cap/max(float(delta.norm()), 1e-30)))
+        if step % 10 == 0 or step+1 == p['value_steps']:
+            trace.append(dict(step=step, nll=float(torch.stack(nlls).mean().detach()),
+                              anchor_kl=float(torch.stack(kls).mean().detach()), value_norm=float(delta.norm().detach())))
+    result = delta.detach().cpu()
+    return key, result, dict(trace=trace, base_value_norm=norm, actual_value_norm=float(result.norm()),
+                             value_optimizer_updates=p['value_steps'], value_gradient_calls=p['value_steps'],
+                             supervised_target_token_exposures=exposures)
+
+
+def run():
+    p = verify(); budget = Budget(p['max_phase_seconds']); budget.check()
+    out = BASE/'actual'
+    if out.exists(): raise FileExistsError('actual output already exists')
+    writer = ShardWriter(out, 'answers', limit=3_000_000)
+    data = common.read_json(BASE/'data.json'); rows = data['rows']; facts = list(dict.fromkeys(r['fact'] for r in rows if r['fact']))
+    report = dict(schema=p['schema'], tag=TAG, status='RUNNING', candidates=[], confirmations=[],
+                  base_optimizer_updates=0, base_training_tokens=0, checkpoint_writes=0, authority_directive=115)
+    failure = None; modules = module = delta = edit = invs = targets = active = None
+    try:
+        with manual.selected_runtime(manual.resolve_model(MODEL)) as active:
+            torch.set_num_threads(4); torch.cuda.reset_peak_memory_stats()
+            report['origin'] = {k: active[k] for k in ('name', 'checkpoint_sha256', 'core_sha256', 'tokenizer_sha256')}
+            modules = wsp.outputs(active['model']); invs = {}; keys = {layer: [] for layer in p['layers']}
+            handles = []
+            for layer in p['layers']:
+                def save(_module, args, _output, layer=layer): keys[layer].append(args[0][0, -8:].detach().cpu())
+                handles.append(modules[f'mlp:{layer}'].register_forward_hook(save))
+            try:
+                with torch.no_grad():
+                    for question in data['calibration_questions']:
+                        budget.check(); ids = common.prompt_ids(active, question)
+                        with sdpa_kernel(SDPBackend.MATH): active['model'](torch.tensor([ids], device='cuda'), logits_last_only=True)
+            finally:
+                for handle in handles: handle.remove()
+            report['covariance'] = {}
+            for layer in p['layers']:
+                matrix = torch.cat(keys.pop(layer)); inverse, stats = core.inverse_second_moment(matrix, p['covariance_ridge_ratio'])
+                invs[layer] = inverse; report['covariance'][str(layer)] = stats
+            matrix = inverse = keys = handles = None
+            baseline = {}
+            for row in rows:
+                budget.check(); baseline[row['id']] = generated(active, row, writer, 'original')
+            report['baseline'] = metrics.summarize(list(baseline.values()))
+            selected = []
+            with core.freeze_parameters(active['model']):
+                for fact in facts:
+                    items = [r for r in rows if r['fact'] == fact]; fits = [r for r in items if r['split'] == 'fit']; dev = next(r for r in items if r['split'] == 'dev')
+                    sub = fits[0]['subject']; ko = fits[0]['language'] == 'ko'
+                    anchors = [dict(fits[0], id=f'{fact}:anchor:{i}', question=q, expected=None) for i, q in enumerate(
+                        ([f'{sub}에 관해 간단히 소개하세요.', f'{sub}에 관한 정보를 알려주세요.'] if ko else
+                         [f'Give a short introduction to {sub}.', f'Tell me something about {sub}.']))]
+                    references = [prompt_log_probs(active, a).detach() for a in anchors]
+                    candidates = []
+                    for layer in p['layers']:
+                        budget.check(); module = modules[f'mlp:{layer}']
+                        key, value, optimization = optimize_value(active, module, fits, anchors, p, budget)
+                        oracle_rows = []
+                        for row in fits:
+                            with oracle(active, module, row, value.to(module.weight)):
+                                oracle_rows.append(generated(active, row, writer, f'{fact}:layer{layer}:oracle_fit'))
+                        edit, stats = core.rank_one(key, value, invs[layer]); stats['relative_weight_norm'] = float(edit.norm())/float(module.weight.norm())
+                        candidate = dict(fact=fact, layer=layer, optimization=optimization, write=stats,
+                                         oracle_fit=metrics.summarize(oracle_rows), rejected=stats['relative_weight_norm'] > p['matrix_relative_cap'])
+                        if not candidate['rejected']:
+                            delta = edit.to(module.weight)
+                            with wsp.edit(active['model'], active['route'], [(f'mlp:{layer}', delta)]) as receipt:
+                                dev_row = generated(active, dev, writer, f'{fact}:layer{layer}:edited_dev')
+                                with torch.no_grad():
+                                    dev_nll = float(target_nll(active, pack(active, dev)))
+                                    kl = sum(float(F.kl_div(prompt_log_probs(active, a), ref, log_target=True, reduction='sum')) for a, ref in zip(anchors, references))/len(anchors)
+                            candidate.update(dev_exact=bool(dev_row['exact']), dev_nll=dev_nll, anchor_kl=kl, receipt=receipt)
+                            candidates.append((candidate, edit))
+                        report['candidates'].append(candidate)
+                        common.write_json(out/f'{fact}_layer{layer}_fit.json', candidate)
+                        print('[VALUE] '+json.dumps(dict(fact=fact, layer=layer, oracle_exact=candidate['oracle_fit']['exact'],
+                            rejected=candidate['rejected'], dev_exact=candidate.get('dev_exact'), dev_nll=candidate.get('dev_nll')), ensure_ascii=False), flush=True)
+                    if not candidates:
+                        selected.append(dict(fact=fact, status='ALL_MATRIX_CAP_REJECTED')); continue
+                    chosen, chosen_edit = min(candidates, key=lambda pair:(not pair[0]['dev_exact'], pair[0]['anchor_kl'], pair[0]['dev_nll'], pair[0]['write']['delta_norm']))
+                    common.write_json(out/(fact+'_frozen_selection.json'), dict(chosen=chosen, selection_split='DEV_ONLY', test_selection=False))
+                    layer = chosen['layer']; module = modules[f'mlp:{layer}']; confirm = [r for r in items if r['split'] == 'test']
+                    confirm += [r for r in rows if r['split'] == 'protect' or (r['split'] == 'dev' and r['fact'] != fact)]
+                    arms = [('edited', chosen_edit)]
+                    for seed in p['random_seeds']:
+                        gen = torch.Generator().manual_seed(seed)
+                        left = torch.randn(chosen_edit.shape[0], generator=gen); right = torch.randn(chosen_edit.shape[1], generator=gen)
+                        rand = left[:, None]*right[None, :]; rand *= chosen_edit.norm()/rand.norm()
+                        arms.append((f'random{seed}', rand))
+                    result = dict(fact=fact, chosen=chosen, baseline=metrics.summarize([baseline[r['id']] for r in confirm]), arms=[])
+                    for name, cpu_delta in arms:
+                        budget.check(); delta = cpu_delta.to(module.weight)
+                        with wsp.edit(active['model'], active['route'], [(f'mlp:{layer}', delta)]) as receipt:
+                            values = []
+                            for row in confirm:
+                                budget.check(); values.append(generated(active, row, writer, f'{fact}:{name}:confirm'))
+                        result['arms'].append(dict(name=name, all=metrics.summarize(values), own_paraphrases=metrics.summarize([r for r in values if r['fact']==fact]), receipt=receipt))
+                    report['confirmations'].append(result); common.write_json(out/(fact+'_confirm.json'), result)
+                    selected.append(dict(fact=fact, layer=layer, status='CONFIRMED', delta_sha256=metrics.tensor_sha(chosen_edit)))
+                    references = candidates = chosen_edit = arms = values = rand = left = right = cpu_delta = delta = module = None
+                    print('[FACT_COMPLETE] '+fact, flush=True)
+            report['selected_facts'] = selected
+            report['registered_core_unchanged'] = True
+            modules = module = delta = edit = invs = targets = None
+            report['peak_allocated_bytes'] = torch.cuda.max_memory_allocated(); report['peak_reserved_bytes'] = torch.cuda.max_memory_reserved()
+        active = None
+        report['status'] = 'TECHNICAL_COMPLETE_QUALITY_SEPARATE'
+    except BaseException as exc:
+        failure = exc; report['status'] = 'ERROR'; report['error'] = repr(exc); traceback.print_exc()
+    finally:
+        modules = module = delta = edit = invs = targets = active = None
+        references = candidates = chosen_edit = arms = values = rand = left = right = cpu_delta = None
+        gc.collect()
+        try:
+            close_owned_cuda(torch, report)
+        except BaseException as cleanup_error:
+            report['cleanup_error'] = repr(cleanup_error)
+            report['status'] = 'ERROR'
+            if failure is None: failure = cleanup_error
+        manifest = writer.close(lineage=dict(profile_sha256=manual.file_sha(BASE/'profile.json'))); verify_shards(out, manifest)
+        report.update(seconds=time.monotonic()-budget.start, answer_rows=manifest['rows'],
+                      profile_sha256=manual.file_sha(BASE/'profile.json'))
+        common.write_json(out/'report.json', report)
+    if failure is not None: raise failure
+    print('[COMPLETE] '+json.dumps(dict(status=report['status'], seconds=report['seconds'], rows=report['answer_rows'])), flush=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(); parser.add_argument('phase', choices=['prepare', 'run'])
+    args = parser.parse_args()
+    (prepare if args.phase == 'prepare' else run)()
+
+
+if __name__ == '__main__': main()

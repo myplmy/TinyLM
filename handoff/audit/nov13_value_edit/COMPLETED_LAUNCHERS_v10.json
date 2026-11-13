@@ -1,0 +1,62 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V10",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 544,
+      "source": "run_P106B_Stage8ajbW_qwen_lambada_full.sh",
+      "target": "run_P106B_Stage8ajbW_qwen_lambada_full-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Official default5153, complete target word loglikelihood and greedy; full recount.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8ajbW_qwen_lambada_full -- timeout --signal=TERM --kill-after=20s 10850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra lambada\n\n",
+      "sha256": "CFF8A3B00E7A0B5F4F25996C39AB08EC32E2935E618CD57E27B3E906CDFD4C8A",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8ajbW_qwen_lambada_full.txt",
+      "log_sha256": "E05AC5A82AF807B9A92D7CBE86CC6BEF46D524DF6C13704C272579C3693F74EE",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 558,
+      "source": "run_P106B_Stage7rW_actd_determinism_mirror_actual.sh",
+      "target": "run_P106B_Stage7rW_actd_determinism_mirror_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same deterministic ABBA function and teacher cache; corrected copied-report provenance only.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7rW_actd_determinism_mirror_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_actd_determinism_v2 actual\n",
+      "sha256": "C463F331DEF74F5E86EDEB1F7768E9A330705216C8DC76F559EEE61810D8C68C",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7rW_actd_determinism_mirror_actual.txt",
+      "log_sha256": "0C8E132A1E0792EA192307246197DB96E7F9E2DED764001926B911370A9771A2",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 561,
+      "source": "run_P106B_Stage7uW_dskdv2_native_hidden_teacher.sh",
+      "target": "run_P106B_Stage7uW_dskdv2_native_hidden_teacher-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Original fixed teacher full-width head observations, normalized hidden and exact native top1. No training.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7uW_dskdv2_native_hidden_teacher -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_hidden teacher\n",
+      "sha256": "60770FD0D6311784F70048C04B29C0C97AF7E255FFDCE8A756F3170941403214",
+      "exit_code": 1,
+      "log": "test_result/101_log_20261113_P106B_Stage7uW_dskdv2_native_hidden_teacher.txt",
+      "log_sha256": "2246DF8BBD7F94BA3FE87877ECD00F474CAFFB0E3CBA406B568CB50B3F91A2F4",
+      "status": "EXECUTED_FINALIZER_ERROR_CLOSED_SUBARTIFACT_ONLY"
+    },
+    {
+      "id": 562,
+      "source": "run_P106B_Stage7vW_dskdv2_cache_recovery_cpu.sh",
+      "target": "run_P106B_Stage7vW_dskdv2_cache_recovery_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Finite feature headers, exact native mapping and independent finalizer CPU3. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7vW_dskdv2_cache_recovery_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_dskdv2_recovery\n",
+      "sha256": "6F93599B49392357D19BB8CE8273A92B463A00E432EE739B042CF45260B7EF00",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7vW_dskdv2_cache_recovery_cpu.txt",
+      "log_sha256": "99CFE1E974627A74A6F9D570E79DB9D4FC613573721E96AF5B9BAB40C622EE03",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 563,
+      "source": "run_P106B_Stage7wW_dskdv2_cache_recovery_prepare.sh",
+      "target": "run_P106B_Stage7wW_dskdv2_cache_recovery_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Recover only closed128 cache subartifacts from exit1; exact source/feature validation. GPU0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7wW_dskdv2_cache_recovery_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_hidden_recovery prepare\n",
+      "sha256": "B9EE3C6B47353FE723BBDBCFD3DBC8FE39D0F96EBB48B8A64087CFD3C65CA408",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7wW_dskdv2_cache_recovery_prepare.txt",
+      "log_sha256": "1D582D51E1BFE13BA65D90E4491718CAE98DCD5C0CF7FDC816125515D178EEF1",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    }
+  ]
+}

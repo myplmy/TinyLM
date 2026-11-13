@@ -1,0 +1,21 @@
+
+==============================================================================
+[runlog] 2026-11-13 07:54:33  name=P106B_Stage7iW_actd_top128_prepare
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 650s data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python -B -X utf8 -m scripts.diag_p106b_actd_topk prepare
+==============================================================================
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_topk.py", line 290, in <module>
+    if __name__=='__main__':main()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_topk.py", line 287, in main
+    (prepare if args.phase=='prepare' else teacher)()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_actd_topk.py", line 126, in prepare
+    if len(overrides)!=12 or len(special_true)!=21:raise ValueError('inspected added False12/True21 contract changed')
+ValueError: inspected added False12/True21 contract changed
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.3분  (2026-11-13 07:54:53)
+==============================================================================

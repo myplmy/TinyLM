@@ -1,0 +1,56 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V4",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 535,
+      "source": "run_P106B_Stage8ag0W_qwen_extra_cpu.sh",
+      "target": "run_P106B_Stage8ag0W_qwen_extra_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Official-function globals isolation and full-task ETA/token-plan checks. CPU only.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8ag0W_qwen_extra_cpu -- timeout --signal=TERM --kill-after=20s 180s \"${PY}\" -B -X utf8 -m unittest -v scripts.test_p106b_qwen35_extra scripts.test_p106b_qwen35_extra_driver\n\n",
+      "sha256": "2BED75E3668F3DEBD944278200138B8CBF9D3015148B2B4F2005A93E478094AD",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8ag0W_qwen_extra_cpu.txt",
+      "log_sha256": "E6ED78DF7B6EFA28DF40F4317F2ACCD5C1F34F31ED477485408E306EE85B22FB"
+    },
+    {
+      "id": 536,
+      "source": "run_P106B_Stage8agW_qwen_extra_prepare.sh",
+      "target": "run_P106B_Stage8agW_qwen_extra_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same local official KO/EN900 and LAMBADA5153; native pre-output token-only freeze.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8agW_qwen_extra_prepare -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra prepare\n\n",
+      "sha256": "806D11827FD99E6BA13AA5ED683A6339535EC1D0BCA75556A07FD51DD3807A9F",
+      "status": "EXECUTED_NOT_SUCCESS_CLAIM",
+      "exit_code": 1,
+      "log": "test_result/101_log_20261113_P106B_Stage8agW_qwen_extra_prepare.txt",
+      "log_sha256": "8297B48E286B2D8186DB6B784773DB6769176F57DE8B2F8BD292133CFB89043F"
+    },
+    {
+      "id": 537,
+      "source": "run_P106B_Stage8ahW_qwen_extra_cost.sh",
+      "target": "run_P106B_Stage8ahW_qwen_extra_cost-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# After closed Core6 and exact legacy gate. Three32-document cost; not quality.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8ahW_qwen_extra_cost -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra cost\n\n",
+      "sha256": "8CAA6EA1589F5478F1CDE8BAE2843FCFD84D88C0E2C700E37755995E70F0AE51",
+      "status": "NOT_RUN_REPLACED",
+      "exit_code": null
+    },
+    {
+      "id": 538,
+      "source": "run_P106B_Stage8aiW_qwen_belebele_full.sh",
+      "target": "run_P106B_Stage8aiW_qwen_belebele_full-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# Official KO and EN900 each, frozen plans and independent full raw recount.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8aiW_qwen_belebele_full -- timeout --signal=TERM --kill-after=20s 10850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra belebele\n\n",
+      "sha256": "B4C2F2046FEC6B38263CDD1DCE137A6B5D1088EBD57834D32438C18A26EEC391",
+      "status": "NOT_RUN_REPLACED",
+      "exit_code": null
+    },
+    {
+      "id": 539,
+      "source": "run_P106B_Stage8ajW_qwen_lambada_full.sh",
+      "target": "run_P106B_Stage8ajW_qwen_lambada_full-cancel.sh",
+      "command_text": "#!/usr/bin/env bash\n# Official default5153, complete target word loglikelihood and greedy; full recount.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8ajW_qwen_lambada_full -- timeout --signal=TERM --kill-after=20s 10850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra lambada\n\n",
+      "sha256": "5E6751FD00CCC12F2D5B07D7B0355366CFD39C066BB047F7B8ED58E26A9387F5",
+      "status": "NOT_RUN_REPLACED",
+      "exit_code": null
+    }
+  ]
+}

@@ -1,5 +1,36 @@
 # 6. 학습 품질·안정
 
+2026-11-13 [101§591~593](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):
+Qwen3.5 고정1024 scorer가원가변폭FP32음성을보존한채새prefix16/직접CE·순서검사를통과했고
+공식cost192/576닫힘뒤full을수행중이다. 학생개선으로귀속하지않는다. ACTD는literal중복항·
+고유보집합/전체분모·문자경계·owner의CPU60과정적어휘대응을구현했으나TRAIN128export에
+top-k분포가없어실제캐시/학생학습/품질은미완이다. ALM을ACTD로재명명하지않는다.
+추가CPU15/원형재준비는CE772를보존한각770위치를닫았다. 최근접미래28(max6)/left0을
+구분하고raw22/config33호출누락은모델전CPU에서수리했다. 실제top128/93M미분은full뒤다.
+exact legacy 입력확인도별도CPU3/봉인만끝났으며GPU전이다. 기존모델수치음성을취소하지않는다.
+
+2026-11-13 [101§589~590](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):
+원GSQ Adam256/코드0과Lion66완료+67 ALM경계오류를 보존했다. 확률clip 없는 유한logit
+log-tail CPU33 뒤 새 두 팔256을 완주했다. ordinary CE0은89/7986위치, 원검사 경계는0/57
+chunk였고 새Lion의 최종 코드331845개가 바뀌었다. 이 수치 경로의 실제 필요성과 좌표 이동을
+확인했지만 제품ALM/기본학습변경·답변품질·일상대화·본학습 채택은0이다.
+
+2026-11-05 원장64의 연구용 GSQ 좌표/Lion 초안은 빈 시험0건을 실제12계약으로 보완했다.
+뒤쪽 NaN/sparse gradient를 모든group 변경 전에 거부하는 방어를 넣고 기존objective12와24통과했다.
+첫11중1실패 원로그는 결과101§588에 보존한다. 기본Muon·실제학생학습은 바꾸지 않았고
+두256update GPU 기계진단과 추가검증 비용/품질은 NOT_RUN이다.
+
+2026-11-05 [PAD 공유분석 대조](../research/20261105_P101A_PAD_공유분석_대조.md):
+기존 crop128 BF16 eager ABBA1.6219256배와Muon update85/157 음성을 원JSON으로 재집계했다.
+CE에서 이미 수행한 같은gradient/NS재생을 반복하지 않는다. PAD의 실제gradient쌍·현재자료 분모·compiled/MTP 비용은 별도 미완이며 예상 단축을 실측이나 기본채택으로 승격하지 않는다.
+
+2026-11-05 [101§584·586](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):
+기존binary Gumbel/ALM을재사용한hard GSQ bridge는공유bank/embedding/head·같은microbatch
+realization·checkpoint·분모·원복CPU12와전체모델기술3update를통과했다. clip전norm은양팔
+100이상이고실제clip1이다. GSQ/STE시간1.349배·예약peak2.155배이며공통Adam lr1e-5는
+categorical logit의본학습적합성검증이아니다. source/cursor·teacher품질과분리하고
+본학습지능·양자화복원·40MBpacked배포는NOT_RUN으로유지한다.
+
 발산 없이, 주어진 예산에서 더 좋은 최종 모델을 얻는 기법.
 
 | 기법 | 상태 | 버전 | 작동원리(개선 기여) | 트레이드오프 | 특기 |

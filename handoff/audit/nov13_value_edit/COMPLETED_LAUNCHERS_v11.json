@@ -1,0 +1,40 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V11",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 564,
+      "source": "run_P106B_Stage7xW_dskdv2_cache_recovery_actual.sh",
+      "target": "run_P106B_Stage7xW_dskdv2_cache_recovery_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Replay only four source rows/eight forwards. Original exit1 and all128 cached rows preserved.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7xW_dskdv2_cache_recovery_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_hidden_recovery actual\n",
+      "sha256": "E6957924F546F89655BADC95BF65FD976B331EE6FE7E5F10B9938C96CA8A1170",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7xW_dskdv2_cache_recovery_actual.txt",
+      "log_sha256": "696D4D0D23FE0C6F1819C40AA4EB76074AE6595C40D7E967D4ACE8F60434B4B8",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 565,
+      "source": "run_P108_Stage21aW_distributed_residual_cpu.sh",
+      "target": "run_P108_Stage21aW_distributed_residual_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Signed gates, recomputed residuals and combined physical-budget CPU5. No model or GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage21aW_distributed_residual_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p108_distributed_residual\n",
+      "sha256": "8A3A91DEC22497DA74A613C928C95A86E5EAC6E9D040408C935172FAF5E88B72",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage21aW_distributed_residual_cpu.txt",
+      "log_sha256": "B44559BDEEADD45349153B8935103A52E5AAB88BA6ED4747A2A7CC2A1C887486",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    },
+    {
+      "id": 566,
+      "source": "run_P108_Stage21bW_distributed_residual_prepare.sh",
+      "target": "run_P108_Stage21bW_distributed_residual_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Reuse original layer11 values and original68/oracle24; freeze source and matched-budget contract. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage21bW_distributed_residual_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_distributed_residual prepare\n",
+      "sha256": "6F59CA8093DCF4EB82AAB305F6E4E6F38F7444FB171730CB9F79ED4E411AD884",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage21bW_distributed_residual_prepare.txt",
+      "log_sha256": "3C727595564D82230C21BB0FCCB9F1BD95F4128DF56721448E2C4182442EBD74",
+      "status": "EXECUTED_SCOPE_COMPLETE_QUALITY_SEPARATE"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V15",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 574,
+      "source": "run_P106B_Stage7aeW_projector_root_cpu.sh",
+      "target": "run_P106B_Stage7aeW_projector_root_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Declared root grouping; bilingual siblings, order invariance and invalid metadata CPU5. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7aeW_projector_root_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_projector_split\n",
+      "sha256": "51C4913C799CFB5F106E11AC93FE57768E7647B206ABEA6CB01EAA6CD9451702",
+      "actual_tool_session": 18702,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7aeW_projector_root_cpu.txt",
+      "log_sha256": "E5EDF017D575CD0987DA68DD563F9D095AE1BED9EE8D7AC37FEE17AC0FFBFB06",
+      "status": "EXECUTED_PROJECTOR_ONLY_NO_STUDENT_QUALITY_ADOPTION"
+    },
+    {
+      "id": 575,
+      "source": "run_P106B_Stage7afW_projector_warmup_prepare.sh",
+      "target": "run_P106B_Stage7afW_projector_warmup_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Original TRAIN128 root-disjoint projector calibration split. Model0/GPU0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7afW_projector_warmup_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_projector_warmup prepare\n",
+      "sha256": "7B8F4F1C7053E9E5606A50E6D5B29B5D1A70845C8C831786AE37585E26244CF1",
+      "actual_tool_session": 18702,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7afW_projector_warmup_prepare.txt",
+      "log_sha256": "1B6C81B6A63E1C1806CA24143DD31A332ADD867C002ADAFD2B9DCB57BC7D2FBD",
+      "status": "EXECUTED_PROJECTOR_ONLY_NO_STUDENT_QUALITY_ADOPTION"
+    },
+    {
+      "id": 576,
+      "source": "run_P106B_Stage7agW_projector_only_warmup.sh",
+      "target": "run_P106B_Stage7agW_projector_only_warmup-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Only new projector100 updates; original student/teacher bodies0, CP0. No quality adoption.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7agW_projector_only_warmup -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_projector_warmup actual\n",
+      "sha256": "1112566AB2403F998E979D4835B755051F0592B58D1071391E11FBEDB038BA76",
+      "actual_tool_session": 35734,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7agW_projector_only_warmup.txt",
+      "log_sha256": "4681A2847C1CADF13CE609F954879A5DB0F2B679960F1CCE269B2A0FD7C7A967",
+      "status": "EXECUTED_PROJECTOR_ONLY_NO_STUDENT_QUALITY_ADOPTION"
+    }
+  ]
+}

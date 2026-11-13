@@ -1,0 +1,31 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V18",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 584,
+      "source": "run_P106B_Stage7aoW_dwa_ingredients_cpu.sh",
+      "target": "run_P106B_Stage7aoW_dwa_ingredients_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# DWA ingredients only: token-weight policies, path-enumerated/finite-difference Soft-DTW CPU8 and small reference cost.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7aoW_dwa_ingredients_cpu -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dwa_reference\n",
+      "sha256": "3A4EFEC3653B1582E859103F60FF8E0A627F0E6A4B2185A2B0C5BEA4446F5575",
+      "actual_tool_session": 12501,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7aoW_dwa_ingredients_cpu.txt",
+      "log_sha256": "9434FDADB236A2F89F21EE83376A6E3D8427105E276208911C993BF18CED927F",
+      "status": "EXECUTED_COMPONENT_ONLY_MODEL_NOT_RUN"
+    },
+    {
+      "id": 585,
+      "source": "run_P106B_Stage7apW_softdtw_gpu_prepare.sh",
+      "target": "run_P106B_Stage7apW_softdtw_gpu_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU3 interface and fixed FP64 loss/gradient gates. No GPU/model or installation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7apW_softdtw_gpu_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_softdtw_gpu prepare\n",
+      "sha256": "C0C6E341F7BCE00873293ADF29458330CAF0F746DE75B3BF99E76EB3E9E1FCA4",
+      "actual_tool_session": 80872,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7apW_softdtw_gpu_prepare.txt",
+      "log_sha256": "98E8268228CEE8A7E9B6F7B09F215E46264573190D6E18035674F289C253F437",
+      "status": "EXECUTED_COMPONENT_ONLY_MODEL_NOT_RUN"
+    }
+  ]
+}

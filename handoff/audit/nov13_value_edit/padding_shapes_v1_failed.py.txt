@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""CPU-only exact four-epoch shapes and bounded full-group selection."""
+from collections import Counter
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import time
+from scripts import p101a_padding_shapes as core
+from scripts import diag_p101a_padding_gpu as pad
+
+ROOT=Path(__file__).resolve().parents[1]
+TAG='p101a_padding_shapes_v1_20261113';BASE=ROOT/'test_result/evidence'/TAG
+PLAN='test_plan/P101A_M0-U2-QK-MTP-기능계약.md'
+OLD='handoff/audit/WIP_20261022_PADDING_EPOCH_MEMBERSHIP_V2.json'
+DEADLINE=datetime(2026,11,13,8,tzinfo=timezone.utc)
+SOURCES=('scripts/p101a_padding_shapes.py','scripts/diag_p101a_padding_shapes.py','scripts/test_p101a_padding_shapes.py')
+
+
+def inventory():
+    if BASE.exists():raise FileExistsError('new CPU shapes namespace required')
+    if datetime.now(timezone.utc)>=DEADLINE:raise TimeoutError('Nov13 authority expired')
+    started=time.perf_counter()
+    from tokenizers import Tokenizer
+    import torch
+    from tinylm.train.mtp_sft import count_record
+    from scripts import diag_p101a_sft_mtp as engine
+    if torch.cuda.is_initialized():raise RuntimeError('CPU inventory must not initialize CUDA')
+    report=engine.corpus_report(ROOT/pad.CORPUS);assets=pad.asset_manifest(engine,report)
+    tokenizer=Tokenizer.from_file(str(ROOT/pad.TOKENIZER))
+    records=engine.encoded(ROOT/pad.CORPUS,report,tokenizer)['train']
+    counts={id(r):count_record(r) for r in records}
+    old=json.loads((ROOT/OLD).read_text());groups=[];epochs=[];all_hist={q:Counter() for q in core.POLICIES}
+    for epoch in range(4):
+        hist={q:Counter() for q in core.POLICIES};mass={str(h):0 for h in (1,2,3,4)};actual=0
+        for index,batch in enumerate(engine.batches(records,epoch)):
+            if len(batch)!=16 or any(len(m)!=8 for m in batch):raise ValueError('complete original group required')
+            widths={str(q):[core.width([len(r.x) for r in m],q) for m in batch] for q in core.POLICIES}
+            den={str(h):sum(counts[id(r)][h] for m in batch for r in m) for h in (1,2,3,4)}
+            n=sum(len(r.x) for m in batch for r in m);actual+=n
+            for h in mass:mass[h]+=den[h]
+            for q in core.POLICIES:hist[q].update(widths[str(q)])
+            groups.append(dict(epoch=epoch,index=index,absolute_update=epoch*176+index,widths=widths,
+                actual_x_tokens=n,denominators=den,max_record=max(len(r.x) for m in batch for r in m),
+                ordered_records_sha256=pad.identity([[pad.record_value(r) for r in m] for m in batch])))
+        summaries={str(q):core.histogram_summary(hist[q]) for q in core.POLICIES}
+        expected=old['epochs'][epoch]
+        if actual!=old['actual_x_per_pass'] or mass['1']!=old['h1_targets_per_pass']:
+            raise ValueError('old four-pass real input/target mass changed')
+        for q in core.POLICIES:
+            if summaries[str(q)]['slots']!=expected['cropped_input_slots'][str(q)]:raise ValueError('old slots changed')
+            all_hist[q].update(hist[q])
+        if summaries['128']['histogram']!=expected['width_frequencies_128']:raise ValueError('old128 histogram changed')
+        epochs.append(dict(epoch=epoch,shuffle_seed=1337+epoch,actual_x_tokens=actual,denominators=mass,policies=summaries))
+    selection=core.select_groups(groups)
+    if len(groups)!=704:raise ValueError('old704 complete membership changed')
+    for name,sha in assets.items():
+        if pad.digest(ROOT/name)!=sha:raise ValueError('asset changed during CPU inventory')
+    if torch.cuda.is_initialized():raise RuntimeError('unexpected CUDA initialization')
+    sources=pad.source_manifest();sources.update({name:pad.digest(ROOT/name) for name in SOURCES})
+    BASE.mkdir();(BASE/'initial_plan.txt').write_bytes((ROOT/PLAN).read_bytes())
+    result=dict(schema='P101A_PADDING_SHAPES_V1',tag=TAG,authority_directive=115,deadline=DEADLINE.isoformat(),
+        status='CPU_INVENTORY_COMPLETE_NOT_SPEED_OR_QUALITY',sources=sources,assets=assets,
+        prior_membership_sha256=pad.digest(ROOT/OLD),plan_sha256=pad.digest(BASE/'initial_plan.txt'),
+        rows=len(records),epochs=epochs,policies={str(q):core.histogram_summary(all_hist[q]) for q in core.POLICIES},
+        actual_x_tokens=sum(e['actual_x_tokens'] for e in epochs),selection=selection,
+        selected_groups=[groups[i] for i in selection['indices']],model_loads=0,cuda_initialized=False,
+        checkpoint_writes=0,known_defective_v3_not_admitted=True,seconds=time.perf_counter()-started)
+    pad.write_new(BASE/'report.json',result)
+    print('[CPU_SHAPES] '+json.dumps(dict(status=result['status'],seconds=result['seconds'],selected=len(selection['indices']),
+        policies={q:dict(slots=s['slots'],pair_ratio=s['pair_ratio'],max_width=s['max_width']) for q,s in result['policies'].items()})),flush=True)
+
+
+if __name__=='__main__':inventory()

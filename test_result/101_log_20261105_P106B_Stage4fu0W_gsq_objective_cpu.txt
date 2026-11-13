@@ -1,0 +1,43 @@
+User109 technical CPU contracts for hard GSQ versus native STE on the same CE/ALM objective. Shared banks, mask denominators, gradients, layer/head checkpoint reuse and exact source restoration. No dataset, model checkpoint, GPU or student-quality evaluation.
+
+==============================================================================
+[runlog] 2026-11-05 08:04:27  name=P106B_Stage4fu0W_gsq_objective_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_gsq_objective -v
+==============================================================================
+test_all_gsq_parameter_kinds_receive_finite_signal (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_exception_restores_source_parameters_accessors_and_caches (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_layer_and_head_checkpoint_match_gradients (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_mask_denominators_and_scalar_objective (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_missing_backward_fails_after_cache_restoration (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_one_head_realization_across_chunks_and_backward_recompute (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_optimizer_owns_unique_banks_and_norms_not_original_masters (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_real_update_does_not_edit_original_matrix_bytes (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_same_initial_hard_numeric_values (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_sampling_is_seeded_and_does_not_consume_dropout_rng (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+test_shared_physical_weight_and_main_head_use_one_bank (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... FAIL
+test_training_forward_is_hard_ternary (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests) ... ok
+
+======================================================================
+FAIL: test_shared_physical_weight_and_main_head_use_one_bank (scripts.test_p106b_gsq_objective.ObjectiveBridgeTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p106b_gsq_objective.py", line 59, in test_shared_physical_weight_and_main_head_use_one_bank
+    self.assertIs(model.layers[1].mlp, model.layers[2].mlp)
+AssertionError: [MLP(
+  (gate_proj): TLinear()
+  (up_proj): TLinear()
+  (down_proj): TLinear()
+)] is not [MLP(
+  (gate_proj): TLinear()
+  (up_proj): TLinear()
+  (down_proj): TLinear()
+)]
+
+----------------------------------------------------------------------
+Ran 12 tests in 1.033s
+
+FAILED (failures=1)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-11-05 08:04:30)
+==============================================================================

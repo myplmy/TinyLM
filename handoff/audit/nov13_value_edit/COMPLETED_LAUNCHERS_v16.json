@@ -1,0 +1,55 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V16",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 577,
+      "source": "run_P106B_Stage7ahW_calibration_reuse_cpu.sh",
+      "target": "run_P106B_Stage7ahW_calibration_reuse_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Exact original root/record/teacher/student identities for feature reuse CPU6. Model0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7ahW_calibration_reuse_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p106b_dskdv2_reuse\n",
+      "sha256": "FD4C4222BFDEF5EB7B82C74B5974F180AD90003C6A22DC858FA0D3C746076C25",
+      "actual_tool_session": 19379,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7ahW_calibration_reuse_cpu.txt",
+      "log_sha256": "85466E509EB23813DB273E862AB6381D46B21601E6DB5162AA6F096AC777A460",
+      "status": "EXECUTED_ENGINEERING_ONLY_NO_STUDENT_QUALITY"
+    },
+    {
+      "id": 578,
+      "source": "run_P106B_Stage7aiW_calibration1024_prepare.sh",
+      "target": "run_P106B_Stage7aiW_calibration1024_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Closed original TRAIN1024 only. Reuse128, preserve exact/HOLD and CE. No new source admission.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7aiW_calibration1024_prepare -- timeout --signal=TERM --kill-after=20s 650s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_calibration1024 prepare\n",
+      "sha256": "DACF6E7E65061F805465B6854F8001749E4D3ADA85F2F61C6ABC253C7560A7BD",
+      "actual_tool_session": 19379,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7aiW_calibration1024_prepare.txt",
+      "log_sha256": "A9A9FB27ADFE09970AF572F2B431176C66A4660B9FC760B4F9400577DEB73243",
+      "status": "EXECUTED_ENGINEERING_ONLY_NO_STUDENT_QUALITY"
+    },
+    {
+      "id": 579,
+      "source": "run_P106B_Stage7ajW_calibration1024_teacher.sh",
+      "target": "run_P106B_Stage7ajW_calibration1024_teacher-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Qualified fixed teacher features: reuse128 without rerun, new896 at most plus two causal calls. Student0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7ajW_calibration1024_teacher -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_calibration1024 actual\n",
+      "sha256": "077CB8BFDAF5E8B69D1349410BF1D01FBFA870DD8E9C7CA0420A23F770ACE8F6",
+      "actual_tool_session": 49991,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7ajW_calibration1024_teacher.txt",
+      "log_sha256": "509D74A86E81A25A371463773F65A0D73D02EB0D0732053C2C5E0217E9D5E2E4",
+      "status": "EXECUTED_ENGINEERING_ONLY_NO_STUDENT_QUALITY"
+    },
+    {
+      "id": 580,
+      "source": "run_P106B_Stage7akW_dvlm_hybrid_visibility_cpu.sh",
+      "target": "run_P106B_Stage7akW_dvlm_hybrid_visibility_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Actual Qwen gated-delta primitive CPU branch/fork and mask probe. No model/checkpoint/GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7akW_dvlm_hybrid_visibility_cpu -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dvlm_hybrid_visibility\n",
+      "sha256": "A1D0E8BACA8DF43549B6B68ED3CC3D994204978AE193A308A063CA0714288E18",
+      "actual_tool_session": 75798,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7akW_dvlm_hybrid_visibility_cpu.txt",
+      "log_sha256": "E0A9360B65418914F1D232F34DD0E1041E3B0D1120EC2DAB5C4FB3319D7A8057",
+      "status": "EXECUTED_ENGINEERING_ONLY_NO_STUDENT_QUALITY"
+    }
+  ]
+}

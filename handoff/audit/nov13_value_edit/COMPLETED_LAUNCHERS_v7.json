@@ -1,0 +1,29 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V7",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 550,
+      "source": "run_P106B_Stage7n0W_dskdv2_head_cpu.sh",
+      "target": "run_P106B_Stage7n0W_dskdv2_head_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Bounded native safetensor row ordering, shape, duplicate and finite contracts. CPU only.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7n0W_dskdv2_head_cpu -- timeout --signal=TERM --kill-after=20s 180s \"${PY}\" -B -X utf8 -m unittest -v scripts.test_p106b_dskdv2_heads\n",
+      "sha256": "AE1D8CE40D6FC1BB3939E35CE61FD97736377F9592E713BE51146ED342058F9E",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7n0W_dskdv2_head_cpu.txt",
+      "log_sha256": "B8CFE5BD88772FC463CE548DF546F6709904A804676D0D11F4BA6A99589F97DF",
+      "status": "EXECUTED_CPU_HEAD_NOT_MODEL_QUALITY"
+    },
+    {
+      "id": 551,
+      "source": "run_P106B_Stage7nW_dskdv2_native_head_init_cpu.sh",
+      "target": "run_P106B_Stage7nW_dskdv2_native_head_init_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Guarded completed93M CPU head/VJP and exact shared-byte real-head pseudoinverse initialization.\n# CPU only; at most15minutes. No teacher model, body forward, optimizer, CP save or installation.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7nW_dskdv2_native_head_init_cpu -- timeout --signal=TERM --kill-after=20s 930s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_dskdv2_heads\n",
+      "sha256": "63D2D8BAECE0269909AE9461D7DC65571E639EBACD714DE88A508653D493BE91",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7nW_dskdv2_native_head_init_cpu.txt",
+      "log_sha256": "D75301C7199250A183DDEFD7C6D1BA135BF8467EBD054E7F95071D37B5875301",
+      "status": "EXECUTED_CPU_HEAD_NOT_MODEL_QUALITY"
+    }
+  ]
+}

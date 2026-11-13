@@ -1,0 +1,795 @@
+# TinyLM 체크포인트 판정 (cleanup_ckpt.py 의 유일한 진실 원천)
+# 2026-11-01 새 격리스모크 nov01_adaptive_training_v1의 66개를 별도 기록: 논리3129671844B/할당3129819136B(약2.914734GiB).
+# 완료영수증/33합성명령/원로그/결과와 정확66경로·identity/기록시각을 검산했다. 가중치 로딩/내용해시·전역참조/프로세스검사·실제삭제0이며 삭제적격/승인은 미확정이다.
+# 정확 목록은 handoff/audit/nov01_independent/nov01_smoke_checkpoint_inventory_v1.json. 같은 basename을 일반 delete행에 넣지 않으며 향후 별도 참조·사용중 재검사와 정확 승인이 필요하다.
+# 2026-10-31 사용자102 실제 정리 완료: 합성1120개(일반64+격리1056) 삭제, 연구9개는 우선 keep으로 변경·보존.
+# 삭제 파일 논리53100048882B, 할당53102247936B. WSL available 실측 증가53102014464B(약49.455GiB), 같은구간 Windows Z 증가0B.
+# 현재 일반 runs/ckpt 364개/237188938102B이며 keep305·hold59·현재존재delete0·미등록0이다.
+# 원로그/판정733개와 연구9개의 전후SHA 불변, 나머지일반모델364개 identity 불변. 디렉터리/로그/보고서 삭제0.
+# exact 삭제1120경로/이벤트/보존/실측은 handoff/audit/checkpoint_retention_20261031/DELETE_MANIFEST_v1.json 및 DELETE_RECEIPT_v1.json 참조.
+# 아래 사용자101의1129후보·56.24GiB는 삭제 전 역사 스냅샷이다. 현재 미삭제 후보로 재인용하지 않는다.
+# 2026-10-31 메타데이터/소비 참조 재검토: runs/ckpt 428파일 240214237480B(223.716942GiB).
+# 현재 일반 삭제후보73개 10313197095B(9.604913GiB)이며 부모·교사/계보 보호와 충돌0. 실제삭제0.
+# 격리 스모크16실행의 합성1056개는 별도 정확경로 후보로 50074749504B(46.635745GiB).
+# 둘을 합친 검토후보1129개 60387946599B(56.240658GiB). Windows 호스트/VHDX 즉시 회수량이 아님.
+# 격리 파일은 runs/validation/codex_smoke/<session>/runs/ckpt/ 아래다. 같은 basename을 이 TSV 운영행에 섞지 않는다.
+# 현 cleanup_ckpt.py는 일반 runs/ckpt만 처리하므로 격리1056개는 삭제하지 않는다. 후속 실제삭제에는 별도 정확경로 승인/재검산 필요.
+# exact 1056경로·16개 종료영수증/raw SHA·일반73·보존/누락14·현재 미열림과 G2정정은 handoff/audit/checkpoint_retention_20261031/review_v3.json 참조.
+# 정리 판단 설명: handoff/audit/checkpoint_retention_20261031/README.md. 원체크포인트·로그·캐시 삭제/변환과 GPU/모델실행/Git0.
+# 2026-10-26 새 format+Muon 전체300M의 닫힌 비교 앵커를 추가한다. 새 판정이며 전역 용량 재조사나 삭제 승인이 아니다.
+keep	p106b_native_format_training_v1_20261026_format_muon_train_format_muon.pt	355.85	2026-10-26 Stage10dWb 실제2289회/300023808targets·fresh core·동일format의NorMuon 대조와공식평가 입력으로보존. 실제373134469B/SHA BA27205E45FF8FD8749F9706706CFEBAAF50CBA158C515D75D97B3A3B5FCD288/core727D097408621CE6F66E3679711F41885BD539D91F76F712B82E3A893548AEDD. source47 전용엄격loader·weight-only/optimizer0/Git제외·packed배포크기아님. 부모가중치복사0·root실제종료0/소유정리0,공식Core6 40.0891%와24실답회수완료·반복/질문재출력잔존.  영구전량필수로해석하지않음.
+# 2026-10-21 재검토: 현재 연구6종은 수동메뉴/공개·프롬프트 재현/부모 참조가 남아 keep이며 영구필수라는 뜻은 아니다. 정확경로/크기/SHA는 handoff/audit/WIP_20261021_CHECKPOINT_SCOPED_INVENTORY.json 참조. 같은6종 총 2238807774B.
+# 새 격리 스모크 66개/3129671844B는 이후 삭제검토 후보일 뿐 승인/삭제0이다. 기본 runs/ckpt와 같은 basename을 쓰므로 자동정리 delete행으로 잘못 넣지 않는다. 위 감사의 정확한 runs/validation/codex_smoke/oct21_final_approved_v1/runs/ckpt/ 경로목록으로만 추후 별도승인한다.
+keep	m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_ternary.pt	355.85	2026-10-21 새595M 삼진부모의동일22528행4pass704 완료·닫힌strict검산과원형바이트SHA대조. 실제373134853B/SHAF3D1F0FBEDBFC1A336195F2E8C6005127057FF7929C2E21AD37BE252A2DA911C/coreB7B0BC4F213D8C01EC1C620ADDD724FD69FE291D926AB2F628EF0168C638CB9E. 공개6종/독립수동정합 입력으로keep. weight-only/optimizer0·Git제외·삭제변환0·packed크기아님. grad34.663982/clip704; 실제대화실패와보관필요성은별개이며영구전량필수로읽지않음.
+keep	m100s10_ko-en_broad4_p106b_native_broad4_recovery_v2_s1337_ternary.pt	355.85	2026-10-21 old299M 삼진부모의동일22528행4pass704와닫힌strict검산완료. 실제373134789B/SHA39A68CA0B712074F2EAE1073DFF3A3C01AA661F356244A86A626E1F74365681F/core157ACFC7B1FE994396DEF7F4CEA32974B4A9804D570CF7CACCD26C786D922697. Stage4fl실제답/Stage4fo공개6종·수동메뉴대응입력으로keep. weight-only/optimizer0·Git제외/packed크기아님; DEV2.175016/native32 3.555809는품질완료아님. grad19.522158/clip704. 개별완료를전량영구필수로해석하지않음.
+keep	m100s10_ko-en_broad4_p106b_native595_broad_v1_s1337_float.pt	355.85	2026-10-21 새595M 실수부모의동일22528행4pass704·닫힌strict검산완료. 실제373134853B/SHA2630B4C2862A41CB677AC9CAA89B0F2DD03234C4FD540FCCA6205AA847CF1C71/core00262611800E81BB117DB68F8053ED0A15A8454FBD9D34AFEFE44DB9A0D21B0D. Stage4fn실제답/Stage4fo공개6종·독립수동검증입력으로keep. weight-only/optimizer0·Git제외/packed크기아님; DEV감소는정답성보장아님. grad30.58033/clip704이며개별완료를영구전량필수로읽지않음.
+keep	m100s10_ko-en_broad4_p106b_native_broad4_recovery_v2_s1337_float.pt	355.85	2026-10-21 old299M 실수부모의Broad4/704·동일22528행4pass 완료와닫힌strict검산. 373134725B/SHA357D2EA6A9F20918B260E1AA983AFC092F0139481356B2E6DF1EDD71F88D68A2/core3E51FA3449A9A02B6F06A627D5C5297A9B1958EBA9CE3C8E4604AD881CBC6818. Stage4fl실제답/Stage4fo공개6종·new595M교과와대응입력으로keep. weight-only/optimizer0/Git제외·packed배포크기/일반QA완료아님. grad24.876925/clip704·개별완료를영구전량필수로읽지않음.
+keep	m100s10_ko-en_p106b_native595_v1_s1337_float_native.pt	355.85	2026-10-21 Native595 실수4543/595460096targets 완료·root CP바이트SHA/닫힌4543쌍crop·일정/재로드native32검산. 373134277B/SHA7DF60C47605B654520C510E2758D559213AABCB7ED1090424BDC0D50BC9413BA/coreE21E7023D5F289E2EBA2C65127491CB8016232A538E0619E63068BA095D4E3DD. Stage4fn새부모SFT/Stage4fo공개평가·재현입력으로 keep. weight-only/optimizer0/Git제외·정확재개/packed배포크기아님. fixed32 CE3.203985751·QA/전체VAL미확립.
+keep	m100s10_ko-en_p106b_native595_v1_s1337_ternary_native.pt	355.85	2026-10-21 Native595 삼진4543/595460096targets 완료·root CP SHA/닫힌4543원형검산. 373134277B/SHAC0610452ABF357868DA1CCDF16D98482D408F2D9D076C634444292023108BDF5/coreC8F2A68232D95C8D4A8EDC455A5D389211806609C2F58E780C6EFF66E497F2DB. Stage4fn새부모SFT/Stage4fo공개평가·원문재검산 입력으로 keep. weight-only/optimizer0/Git제외·정확재개/packed배포크기 아님. fixed32 CE3.357963562, QA/전체VAL 미확립.
+keep	m100s10_ko-en_p106b_headwise_muon_v1_s1337_float_sft.pt	355.85	2026-10-20 QK headwise384 완료·기존floatSFT와1694원답/재검산 대조앵커(101§390/392~393). 실제373134533B/SHA9BBB10F04A56ED5C5242291D17B93C85327E94AB6332BEA6E44826E1DE93CB95/core6BC4C009DA1F5D8071672FF47C6FCCB904B85693A41862C24D57FE0B2EDFBD45. weight-only/optimizer0·Git제외/삭제변환0·packed배포크기아님. TEST613→612/1024·자연10/128동일로기본비채택이며영구필수라는뜻아님.
+#
+# ★규약 (experiments.tsv 와 같은 구조. 2026-08-19 사용자 지시로 TSV 화)
+#   1. `run_cleanup_checkpoints.bat` 은 이 파일에서 **delete 로 판정된 것만** 후보로 삼는다.
+#   2. **여기 없는 파일은 절대 안 지운다**(화이트리스트 방식). 새 체크포인트는 기본이 `hold` 다.
+#   3. ★**살아 있는 실험이 참조하는 것은 `keep`** 이고, why 열에 **어느 실험이 쓰는지** 적는다.
+#      그게 없으면 다음 세션이 "왜 남겼는지" 를 모르고 지운다.
+#   4. 열은 TAB 구분. `#` 로 시작하는 줄은 주석.
+#   5. 판정을 바꾸려면 **이 파일만** 고친다. 배치·스크립트는 안 고친다.
+#   ★6. (2026-08-20 신설) **`_best` 를 파일명만 보고 delete 로 적지 않는다.**
+#      denseb_best 사고 — 규칙을 *역할* 이 아니라 *이름* 에 걸어서 부모 계보의 유일본이
+#      삭제 후보가 됐다. 기계 방어 3중(cleanup_ckpt.py G1 파생보호 / G2 판정일관성 /
+#      G3 부모계보 정규식)을 넣었지만, **새 best 의 기본 판정은 `hold`** 로 적는다.
+#
+# verdict : keep=현재 보존(현재 입력/역사 재현 앵커 포함; 영구 전량 필수 아님) / hold=판단·후속 미확정(안 지움) / delete=삭제 검토 후보(현재 지시의 삭제 허가 아님)
+# file    : runs/ckpt/ 아래 파일명
+# mb      : 실측 크기(MiB=bytes/1048576; 과거 MB 표기 교정). 정확 bytes와 현재 할당량은 해당 실사 JSON 참조
+# why     : ★왜 이 판정인가. keep 이면 **어느 실험이 쓰는가**
+# 2026-10-11 재검토: keep에는 현재 입력과 역사 재현 앵커가 섞여 있다. 전부 현재 실행 필수라는 뜻이 아니다.
+# 위 2026-10-11 실사의 WSL ext4 내부 여유 649.84GiB와 Z 호스트 여유 355.76GiB는 과거값이다. 2026-10-31 호스트 여유로 재인용하지 않으며 실제 삭제/변환/VHD 축소0.
+# 미참조 70개 개별 판정: 신규 delete9(6.7874GiB)·keep54·hold7. exact proof와 손실 범위는 handoff/audit/WIP_20261011_CHECKPOINT_REVIEW.md 참조.
+#
+verdict	file	mb	why
+keep	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_cleanbilingual_v3_s1337_parent_mtp.pt	358.09	2026-10-31 목록 누락 회수. P101A p101a_sft_mtp_cleanbilingual_v3_s1337/parent_mtp의 704회 완료 대조/원답·MTP 또는 direct/trace 재현 앵커. 결과092 §19~24. 작동 음성과 지능효과 미입증을 보존하며 같은 완료 학습을 반복하지 않기 위해 현재 keep; 영구전량필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_cleanbilingual_v3_s1337_parent_ntp.pt	355.85	2026-10-31 목록 누락 회수. P101A p101a_sft_mtp_cleanbilingual_v3_s1337/parent_ntp의 704회 완료 대조/원답·MTP 또는 direct/trace 재현 앵커. 결과092 §19~24. 작동 음성과 지능효과 미입증을 보존하며 같은 완료 학습을 반복하지 않기 위해 현재 keep; 영구전량필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_cleanbilingual_v3_s1337_scratch_mtp.pt	358.09	2026-10-31 목록 누락 회수. P101A p101a_sft_mtp_cleanbilingual_v3_s1337/scratch_mtp의 704회 완료 대조/원답·MTP 또는 direct/trace 재현 앵커. 결과092 §19~24. 작동 음성과 지능효과 미입증을 보존하며 같은 완료 학습을 반복하지 않기 위해 현재 keep; 영구전량필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_cleanbilingual_v3_s1337_scratch_ntp.pt	355.85	2026-10-31 목록 누락 회수. P101A p101a_sft_mtp_cleanbilingual_v3_s1337/scratch_ntp의 704회 완료 대조/원답·MTP 또는 direct/trace 재현 앵커. 결과092 §19~24. 작동 음성과 지능효과 미입증을 보존하며 같은 완료 학습을 반복하지 않기 위해 현재 keep; 영구전량필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_verified_direct_v3_s1337_parent_ntp.pt	355.85	2026-10-31 목록 누락 회수. P101A p101a_sft_mtp_verified_direct_v3_s1337/parent_ntp의 128회 완료 대조/원답·MTP 또는 direct/trace 재현 앵커. 결과092 §19~24. 작동 음성과 지능효과 미입증을 보존하며 같은 완료 학습을 반복하지 않기 위해 현재 keep; 영구전량필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_verified_trace_v3_s1337_parent_ntp.pt	355.85	2026-10-31 목록 누락 회수. P101A p101a_sft_mtp_verified_trace_v3_s1337/parent_ntp의 128회 완료 대조/원답·MTP 또는 direct/trace 재현 앵커. 결과092 §19~24. 작동 음성과 지능효과 미입증을 보존하며 같은 완료 학습을 반복하지 않기 위해 현재 keep; 영구전량필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p078_route_training_v1_s1337_cleanv3_balanced_count.pt	355.85	2026-10-31 목록 누락 회수. P078 balanced_count의 완료 방문정책 대조본. 결과066 §13~15와 원 source/header 대조용 keep. balanced_count는 실제 prefix 라우터29790의 동결 본체이며 나머지 팔은 방문정책·원답 재현 대조. 현재계보 보존이며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p078_route_training_v1_s1337_cleanv3_fixed_shuffle_r2.pt	355.85	2026-10-31 목록 누락 회수. P078 fixed_shuffle_r2의 완료 방문정책 대조본. 결과066 §13~15와 원 source/header 대조용 keep. balanced_count는 실제 prefix 라우터29790의 동결 본체이며 나머지 팔은 방문정책·원답 재현 대조. 현재계보 보존이며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p078_route_training_v1_s1337_cleanv3_uniform_r2.pt	355.85	2026-10-31 목록 누락 회수. P078 uniform_r2의 완료 방문정책 대조본. 결과066 §13~15와 원 source/header 대조용 keep. balanced_count는 실제 prefix 라우터29790의 동결 본체이며 나머지 팔은 방문정책·원답 재현 대조. 현재계보 보존이며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p078_route_training_v1_s1337_cleanv3_update_shuffle_r2.pt	355.85	2026-10-31 목록 누락 회수. P078 update_shuffle_r2의 완료 방문정책 대조본. 결과066 §13~15와 원 source/header 대조용 keep. balanced_count는 실제 prefix 라우터29790의 동결 본체이며 나머지 팔은 방문정책·원답 재현 대조. 현재계보 보존이며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p106b_alm_train_float_v2_s1337_alm.pt	355.86	2026-10-31 목록 누락 회수. P106B p106b_alm_train_float_v2_s1337/alm의 동일32업데이트 CE/ALM·실수/삼진 대조 및 실제 원답 재검산 앵커. 결과101 §472~474와 §459 이후 계보. 유형 선정 통계/자료 효과와 분리할 현재 keep; 소형손실을 지능개선으로 판정하지 않으며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p106b_alm_train_float_v2_s1337_ce.pt	355.86	2026-10-31 목록 누락 회수. P106B p106b_alm_train_float_v2_s1337/ce의 동일32업데이트 CE/ALM·실수/삼진 대조 및 실제 원답 재검산 앵커. 결과101 §472~474와 §459 이후 계보. 유형 선정 통계/자료 효과와 분리할 현재 keep; 소형손실을 지능개선으로 판정하지 않으며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p106b_alm_train_ternary_v1_s1337_alm.pt	355.86	2026-10-31 목록 누락 회수. P106B p106b_alm_train_ternary_v1_s1337/alm의 동일32업데이트 CE/ALM·실수/삼진 대조 및 실제 원답 재검산 앵커. 결과101 §472~474와 §459 이후 계보. 유형 선정 통계/자료 효과와 분리할 현재 keep; 소형손실을 지능개선으로 판정하지 않으며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_p106b_alm_train_ternary_v1_s1337_ce.pt	355.86	2026-10-31 목록 누락 회수. P106B p106b_alm_train_ternary_v1_s1337/ce의 동일32업데이트 CE/ALM·실수/삼진 대조 및 실제 원답 재검산 앵커. 결과101 §472~474와 §459 이후 계보. 유형 선정 통계/자료 효과와 분리할 현재 keep; 소형손실을 지능개선으로 판정하지 않으며 영구필수 아님. 정확 bytes·과거 report SHA·현재 참조는 handoff/audit/checkpoint_retention_20261031/review_v1.json 참조. 새 파일해시/모델로딩/삭제0.
+keep	m100s10_ko-en_content_p106b_content_recovery_v1_s1337_token.pt	355.8	2026-10-19 Stage4ewWd token384/4pass 완료·현재1694실답/paired readback 입력. 실제373133445B/SHA1A30EF9B8683440CEB0F6261316D7AAF4AA2067D89103042F2107A14DADA5329. MiB·weight-only/optimizer0/Git제외/삭제변환0. 손실감소는일반품질PASS/영구필수아님.
+keep	m100s10_ko-en_content_p106b_content_recovery_v1_s1337_content.pt	355.8	2026-10-19 Stage4ewWe 양384회 목적함수 대조의 현재1694실답/3388 paired 재현 입력. 실제373133445B/SHA7B7A9E2886F3E52C812EEB0EEE9E6A5FC0E69711B573DB88698C86FA20C793EE. MiB·weight-only/optimizer0/Git제외/삭제변환0. 일반품질 비채택이나 원형 재현을 보존하며 전부 영구필수라는 뜻은 아님.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_interleaved_v2_s1337_fact1_epoch1.pt	356.2	373534269B·2026-10-16 P106B interleaved runtimeV2 학습곡선/선결재현의 중간epoch1·현재일차평가 입력 아님, 후속검토 전 보류; 삭제/변환0.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_interleaved_v2_s1337_fact1_epoch2.pt	356.2	373534269B·2026-10-16 P106B interleaved runtimeV2 학습곡선/선결재현의 중간epoch2·현재일차평가 입력 아님, 후속검토 전 보류; 삭제/변환0.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_interleaved_v2_s1337_fact1_epoch3.pt	356.2	373534269B·2026-10-16 P106B interleaved runtimeV2 학습곡선/선결재현의 중간epoch3·현재일차평가 입력 아님, 후속검토 전 보류; 삭제/변환0.
+keep	m100s10_ko-en_relation_dense_chat32_p106b_relation_interleaved_v2_s1337_fact1.pt	356.2	373534269B·2026-10-16 P106B interleaved runtimeV2 현재Stage4cdWb 신규root/자연32 대조 endpoint·최종4패스/688, source687EBC... 보존; 삭제/변환0.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact1_epoch1.pt	356.2	373534205B·2026-10-16 P106B fact1 중간epoch1/172회·학습곡선용. 현재다음순서대조 입력 아님; 자동영구필수/삭제판정 없이 보류.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact1_epoch2.pt	356.2	373534205B·2026-10-16 P106B fact1 중간epoch2/344회·학습곡선용. 현재다음순서대조 입력 아님; 자동영구필수/삭제판정 없이 보류.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact1_epoch3.pt	356.2	373534205B·2026-10-16 P106B fact1 중간epoch3/516회·DEV곡선/후속검토용. 아직일차최종으로승격하지않았고삭제/변환0.
+keep	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact1.pt	356.2	373534205B·2026-10-16 실제관계1876/3072 endpoint와새Stage4cdW 순서대조의저장blocked입력. SHA219EAA.../101§173~174 보존·삭제/변환0.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact0_epoch1.pt	356.2	373534205B·2026-10-16 P106B 관계필드 fact0 중간epoch1/172회. history·곡선 검토용이며 현재일차평가 입력 아님; 삭제/변환 없이 보류.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact0_epoch2.pt	356.2	373534205B·2026-10-16 P106B 관계필드 fact0 중간epoch2/344회. history·곡선 검토용이며 현재일차평가 입력 아님; 삭제/변환 없이 보류.
+hold	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact0_epoch3.pt	356.2	373534205B·2026-10-16 P106B 관계필드 fact0 중간epoch3/516회. DEV손실최저지만TEST로승격하지 않았음; 후속선택/재현 검토 전 보류·삭제0.
+keep	m100s10_ko-en_relation_dense_chat32_p106b_relation_fields_v1_s1337_fact0.pt	356.2	373534205B·2026-10-16 P106B Stage4bzW 실제답/새public128의 현재 일차4epoch/688회 입력. 최종SHA/원형101§171 보존·삭제/변환0.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat_epoch1.pt	355.9	373140289B·2026-10-16 P106B 중간epoch1·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat_epoch2.pt	355.9	373140289B·2026-10-16 P106B 현재TEST전 DEV최저epoch2 후속 입력; raw/history/SHA 보존. 삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat_epoch3.pt	355.9	373140289B·2026-10-16 P106B 중간epoch3·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_repeat.pt	355.9	373140289B·2026-10-16 P106B 현재primary/정상반복 최종4epoch 입력; raw/history/SHA 보존. 삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast_epoch1.pt	355.9	373140289B·2026-10-16 P106B 중간epoch1·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast_epoch2.pt	355.9	373140289B·2026-10-16 P106B TEST전 DEV최저epoch2 후속과 현재관계필드fact0/1 공통부모 B14847... 입력; raw/history/SHA 보존. 삭제/변환없음.
+hold	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast_epoch3.pt	355.9	373140289B·2026-10-16 P106B 중간epoch3·수치history만현재소비/실제새답미평가. 영구필수아님; 활성후속종료후재현필요를검토할보류후보이며삭제승인아님.
+keep	m100s10_ko-en_dualqa_dense_chat32_p106b_dualqa_curriculum_v1_s1337_contrast.pt	355.9	373140289B·2026-10-16 P106B 현재primary/정상반복 최종4epoch 입력; raw/history/SHA 보존. 삭제/변환없음.
+keep	m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span0.pt	356.6	2026-10-16 현재P106B dualqa공통부모/추론비교점; producer.PARENT/course.load_parent가정확SHA180104를참조. 결과101§153/163~167·삭제/변환없음.
+keep	m100s10_ko-en_grounded_span_dense_chat32_p106b_grounded_span_exec_v3_s1337_span03.pt	356.6	2026-10-16 역사96회위치.3 ablation앵커·현재새교육부모아님. 결과101§153~154 paired재현보존정책이며모든keep이현재실행필수라는뜻아님. 삭제/변환없음.
+keep	m100R1c_ko-en_300M_mC_ct.pt	726.9	압축 교사(037). REVIEW2 가 KD 를 유지하면 표준 교사 후보
+keep	m100R1c_ko-en_300M_mC_e128svd.pt	677.8	임베딩 에너지-대가 법칙의 두 점 중 하나(030 §10.3.1)
+hold	m100R1c_ko-en_300M_mC_e192svd.pt	702.4	2026-10-11 A 개별 재감사 — P046 E192 KD/SVD의 역사 비교점. 기존 why의 int8 후속 미종결 여부와 새 압축 연구의 비교 입력 필요가 불명확하여 영구 keep 대신 hold. E192 무KD와 동일 모델이 아님; 원결과030 §10 보존.
+keep	m100R1c_ko-en_300M_mC_g16.pt	672.9	레버표 정본(029). P045 단계2 가 비교했다
+keep	m100R1c_ko-en_300M_mC_g16_nokd.pt	672.9	★레버×KD 상호작용 증거(029 §6). 무KD 레버표의 유일한 점
+keep	m100R1c_ko-en_300M_mC_g16_s2.pt	672.9	구 판정 문서 승계(20260813)
+keep	m100R1c_ko-en_300M_mC_g256a.pt	726.9	α그룹 축 종결 근거(036)
+keep	m100R1c_ko-en_300M_mC_initonly.pt	726.9	무KD 기준선. REVIEW2 가 KD 를 빼면 새 대조군이 된다(038 §9)
+keep	m100R1c_ko-en_300M_mC_initonly_s2.pt	726.9	무KD 시드 반복. σ 표의 유일한 표본(038 §9)
+keep	m100R1c_ko-en_300M_mC_kdonly.pt	726.9	구 판정 문서 승계(20260813)
+hold	m100R1c_ko-en_300M_mC_optbf16.pt	484.7	2026-10-11 A 개별 재감사 — BF16 optimizer 상태의 역사 품질 대조(035 §12,051). 최근 마스터/상태 정밀도 연구의 새 비교 입력 필요는 미확정하여 영구 keep 대신 hold. 저장 크기만으로 FP32 모델과 동일하다고 보지 않음.
+keep	m100R1c_ko-en_300M_mC_r20.pt	726.9	★P062 단계0/0b 가 쓴다. 재귀 축의 유일한 학습 산출물
+keep	m100R1c_ko-en_300M_mC_solo.pt	726.9	구 판정 문서 승계(20260813)
+keep	m100R1c_ko-en_300M_mC_wsd.pt	726.9	공용 대조군. 모든 메모리 레버가 이것과 비교된다(기준표 §2.2c)
+keep	m100R1c_ko-en_300M_mC_wsd_s2.pt	726.9	σ 측정(039). 시드 반복의 정본
+keep	m100R1d_ko-en_300M_mC_d36.pt	970.7	★P057 단계1 의 비교 대상(044 §8). 깊이 축의 유일한 산출물
+keep	m100R1d_ko-en_300M_mC_d36_ag2.pt	754.6	2026-10-11 A 개별 재감사 — P057/P073의 깊이·attention 공유·CLA 교락을 가르는 독립 구조 비교점(044/058). 현재 MLP만 복원하는 P093B와 다른 축이므로 저조한 현재 지시답이나 같은 파일 크기만으로 삭제하지 않음. 현재 실행 필수와 별도 keep.
+keep	m100R1p_ko-en_300M_mC_p1c1.pt	588.5	효율선(032)
+keep	m100R1q_ko-en_300M_mC_p1c1g16.pt	534.5	효율선 볼록성(032 §8)
+keep	m100_ko-en_300M_dense.pt	1516.8	정본 교사. --init-from / --kd 가 전부 이것을 읽는다
+keep	m100_ko-en_300M_mA_g4s34_k4.pt	834.9	구 판정 문서 승계(20260813)
+keep	m100_ko-en_300M_p12d.pt	1516.8	구 판정 문서 승계(20260813)
+keep	m100_ko-en_300M_p6d.pt	1516.8	구 판정 문서 승계(20260813)
+keep	m100_ko-en_300M_p6d_s2.pt	1516.8	구 판정 문서 승계(20260813)
+keep	m100_ko-en_600M_p6d.pt	1516.8	구 판정 문서 승계(20260813)
+delete	m100R1a_ko-en_300M_mA_wsd.pt	834.9	완료한 초기 REVIEW1/희소 역사 모델; 현재 런처·기본 진단 입력·부모 참조 0, JSON·결과 보존(2026-09-23 검수)
+keep	m100_ko-en_300M_denseb.pt	1516.8	부모 dense 재생성 계보 보호(PROTECTED_RE); 과거 dense_best 사고 재발 방지(2026-09-23 검수)
+delete	m100_ko-en_300M_mB_g8s34_k4.pt	726.9	완료한 초기 REVIEW1/희소 역사 모델; 현재 런처·기본 진단 입력·부모 참조 0, JSON·결과 보존(2026-09-23 검수)
+keep	m100_ko-en_300M_mC_g8_k4.pt	726.9	bench_infer·mem_runtime·paired_eval·diag_kvcache 기본 모델 입력; 현 도구 계약을 위해 final 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_p6t.pt	726.9	완료한 300/600M 풀 역사 대조; 현재 런처·기본 진단·부모 참조 0, 결과006·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_p6tk.pt	969.2	완료한 300/600M 풀 역사 대조; 현재 런처·기본 진단·부모 참조 0, 결과006·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_g8.pt	726.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g16.pt	672.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g4_s34.pt	834.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g8.pt	726.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g8_dyn4.pt	726.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g8_k2.pt	726.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g8_k4.pt	726.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kd_g8_s34.pt	726.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_300M_t_kdinit.pt	834.9	초기 300M-pool 타잉/KD 역사 팔; 현재 런처·기본 진단·부모 참조 0, 결과·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_600M_p6t.pt	726.9	완료한 300/600M 풀 역사 대조; 현재 런처·기본 진단·부모 참조 0, 결과006·JSON 보존(2026-09-23 검수)
+delete	m100_ko-en_600M_p6tk.pt	969.2	완료한 300/600M 풀 역사 대조; 현재 런처·기본 진단·부모 참조 0, 결과006·JSON 보존(2026-09-23 검수)
+hold	m100R1c_ko-en_300M_mC_e192svd_best.pt	702.4	2026-10-31 G2 판정 불일치 정정: 대응 본체 e192svd.pt가 hold이므로 best도 hold. 현재 실파일 없음; 복구될 때 이름만 보고 삭제하지 않으며 표의 과거 크기는 역사값. 기존 best 하향편향 문구만으로 삭제할 수 없음.
+delete	m100R1c_ko-en_300M_mC_g16_nokd_best.pt	672.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1c_ko-en_300M_mC_gqa_off250.pt	726.9	250스텝 벤치. 기준표 §2.3 품질 판정 금지. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_gqa_off250_best.pt	726.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1c_ko-en_300M_mC_gqa_on250.pt	726.9	250스텝 벤치. 기준표 §2.3 품질 판정 금지. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_gqa_on250_best.pt	726.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1c_ko-en_300M_mC_kdc_1024_250.pt	726.9	250스텝 벤치. 기준표 §2.3 품질 판정 금지. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_kdc_1024_250_best.pt	726.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1c_ko-en_300M_mC_kdc_2048_250.pt	726.9	250스텝 벤치. 기준표 §2.3 품질 판정 금지. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_kdc_2048_250_best.pt	726.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1c_ko-en_300M_mC_kdc_off250.pt	726.9	250스텝 벤치. 기준표 §2.3 품질 판정 금지. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_kdc_off250_best.pt	726.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1c_ko-en_300M_mC_r20_best.pt	726.9	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1d_ko-en_300M_mC_d36_ag2_best.pt	754.6	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	m100R1d_ko-en_300M_mC_d36_best.pt	970.7	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+keep	m100_ko-en_300M_denseb_best.pt	1516.8	부모 dense 재생성 계보 보호(PROTECTED_RE); 과거 dense_best 사고 재발 방지(2026-09-23 검수)
+keep	tiny_synthetic_2M_dense.pt	49.77	cleanup G1 파생보호 대상 — tiny_synthetic_2M_kd_c0가 init_from_src로 실제 참조하므로 현 계약에서는 삭제 금지
+keep	tiny_synthetic_2M_dense_best.pt	49.77	cleanup G1이 부모의 best 형제까지 보호한다 — tiny 계보 예외 계약을 별도 승인하기 전 보존
+delete	tiny_synthetic_2M_sm_ag.pt	41.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_ag_best.pt	41.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_base.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_base_best.pt	43.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_kd.pt	40.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_kd_best.pt	40.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_nockpt.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_nockpt_best.pt	43.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_s34.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_s34_best.pt	43.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_sched.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_sched_best.pt	43.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_seed.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_seed_best.pt	43.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+delete	tiny_synthetic_2M_sm_split.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_split_best.pt	43.01	best 는 하향 편향이라 판정에 안 쓴다(015). paired_eval 은 final 만 읽는다
+keep	m100R1c_ko-en_300M_mC_a01.pt	726.9	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P055 KD alpha=0.1 팔의 종료 결과042 §12: 표준 KD 제거, 곡선/원 JSON/명령 보존. 다른 alpha 팔과 같다는 뜻 아님. mC_initonly/mC_wsd·정본 dense 보존, 현재 소비·부모참조0. 삭제시 이 alpha 모델의 새 입력 재평가/정확 resume는 불가; 목록 판정만.
+keep	m100R1c_ko-en_300M_mC_a03.pt	726.9	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P055 KD alpha=0.3 팔의 종료 결과042 §12: 표준 KD 제거, 곡선/원 JSON/명령 보존. 다른 alpha 팔과 같다는 뜻 아님. mC_initonly/mC_wsd·정본 dense 보존, 현재 소비·부모참조0. 삭제시 이 alpha 모델의 새 입력 재평가/정확 resume는 불가; 목록 판정만.
+keep	m100R1c_ko-en_300M_mC_a07.pt	726.9	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P055 KD alpha=0.7 팔의 종료 결과042 §12: 표준 KD 제거, 곡선/원 JSON/명령 보존. 다른 alpha 팔과 같다는 뜻 아님. mC_initonly/mC_wsd·정본 dense 보존, 현재 소비·부모참조0. 삭제시 이 alpha 모델의 새 입력 재평가/정확 resume는 불가; 목록 판정만.
+keep	m100R1d_ko-en_300M_mC_d36_ag4.pt	619.6	★★상주 379.7MB(기준선 −15.9%). REVIEW2 모델안 1순위 후보(044 §9)
+delete	m100R1c_ko-en_300M_mC_a01_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_mC_a03_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_mC_a07_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag4_best.pt	619.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+
+# ────────────────────────────────────────────────────────────────────────
+# ★2026-08-26 추가 (사용자 지시 11) — 디스크에 있는데 표에 없던 84개를 전수 판정했다.
+#   🚫**표에 없으면 기본 hold 라 안 지워지지만, why 가 없으면 다음 세션이 '왜 남겼는지'
+#      를 모른다**(규약 3). 특히 ★**표준모델 `mC_d36_ag4_nokd` 가 표에 없었다.**
+# ────────────────────────────────────────────────────────────────────────
+keep	m100R1d_ko-en_300M_mC_d36_ag4_nokd.pt	619.6	★★표준모델(B.6). REVIEW3 안 B 의 기준점이고 P073 단계2·P074 가 대조군으로 쓴다
+keep	m100R1c_ko-en_300M_mC_cla1.pt	760.7	★P073 단계2 의 대조군(ag1/cla1). 결과 058
+keep	m100R1d_ko-en_300M_mC_d36_ag4_cla1.pt	626.3	2026-10-11 A 개별 재감사 — P057/P073의 깊이·attention 공유·CLA 교락을 가르는 독립 구조 비교점(044/058). 현재 MLP만 복원하는 P093B와 다른 축이므로 저조한 현재 지시답이나 같은 파일 크기만으로 삭제하지 않음. 현재 실행 필수와 별도 keep.
+keep	m100R1d_ko-en_300M_mC_d36_ag8_nokd.pt	552.1	★P073 단계2 의 cla2 쪽 짝. 결과 044 §11
+keep	m100R1c_ko-en_300M_QT0.pt	1076.1	★★P067 단계1d(재판정)가 읽는다. common_bpb 가 OOM 으로 못 끝냈다
+keep	m100R1c_ko-en_300M_Q256T.pt	1076.1	★★P067 단계1d(재판정)가 읽는다. 7.8시간짜리 런이다
+keep	m100R1c_ko-en_300M_Q64T.pt	740.5	★★P067 단계1d(재판정)가 읽는다. 8.1시간짜리 런이다
+keep	m100R1c_ko-en_300M_mC_r20_nokd.pt	726.9	★P062 단계4(R=3)의 대조군이고 P072 층지도 4모델 중 하나
+keep	m100R1d_ko-en_300M_mC_d36_ag4_r20_nokd.pt	619.6	★REVIEW3 안 B 의 재귀 항 실측본. 결과 047 §11
+keep	m100_ko-en_300M_dense2.pt	1516.8	★부모 계보. P054 안 C 가 이것으로 mC_init2 를 만들었다(결과 040)
+keep	m100R1c_ko-en_300M_mC_e192_nokd.pt	702.4	★E 곡선의 무KD 점. 결과 030 §11 이 세 점으로 볼록성을 보였다
+keep	m100R1c_ko-en_300M_mC_e128_nokd.pt	677.8	★E 곡선의 무KD 점. 위와 같은 표
+keep	m100R1d_ko-en_300M_mC_d36_ag4_g32.pt	565.6	★타잉 상한 실측(결과 029 §11). 볼록성 반증의 근거점
+keep	m100R1d_ko-en_300M_mC_d36_ag16_nokd.pt	518.3	★어텐션 곡선 3점 중 하나. 결과 044 §11
+keep	m100R1d_ko-en_300M_mC_d36_ag4_e128.pt	570.5	★임베딩 랭크 x 깊이 교차점. 결과 030 §11
+delete	m100R1c_ko-en_300M_pq_q3_mb2.pt	1076.1	250스텝 프로브. 기준표 §2.3 품질 판정 금지. 수치는 결과 053 에 있다
+delete	m100R1c_ko-en_300M_pq_q3_mb2_best.pt	1076.1	250스텝 프로브. 기준표 §2.3 품질 판정 금지. 수치는 결과 053 에 있다
+delete	m100R1c_ko-en_300M_mC_ck250.pt	726.9	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_ck250_best.pt	726.9	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_nock250.pt	726.9	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_mC_nock250_best.pt	726.9	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_pb_r20_ckpt.pt	726.9	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1c_ko-en_300M_pb_r20_ckpt_best.pt	726.9	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1d_ko-en_300M_pb_d36_ckpt_cc.pt	619.6	250스텝 프로브. 수치는 결과문서에 있다
+delete	m100R1d_ko-en_300M_pb_d36_ckpt_cc_best.pt	619.6	250스텝 프로브. 수치는 결과문서에 있다
+delete	tiny_synthetic_2M_ce_c0.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_ce_c0_best.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_ce_c16.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_ce_c16_best.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_ce_c64.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_ce_c64_best.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_kd_c0.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_kd_c0_best.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_kd_c64.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_kd_c64_best.pt	52.5	P071 청킹 등가성 팔(tiny). ✅종결 = 결과 054. 배치가 매번 재생성한다
+delete	tiny_synthetic_2M_sm_cechunk.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_cechunk_best.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_cla1.pt	43.76	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_cla1_best.pt	43.77	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_inplace.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_inplace_best.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_reuseattn.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_reuseattn_best.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_wqbf16.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_wqbf16_best.pt	43.01	스모크. run_smoke_check.bat 이 매번 재생성한다
+delete	m100R1c_ko-en_300M_Q256T_best.pt	1076.1	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100R1c_ko-en_300M_Q64T_best.pt	740.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_QT0_best.pt	1076.1	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100R1c_ko-en_300M_mC_cla1_best.pt	760.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_mC_e128_nokd_best.pt	677.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_mC_e192_nokd_best.pt	702.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_init2.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_init2_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_mg256_nokd.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_mg256_nokd_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_mC_r20_nokd_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_r20in_nokd.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_r20in_nokd_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_r20ra_nokd.pt	726.9	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P049 reuse-attn-on-dup 품질 기각·축 종결(결과041 §17.8). 원 JSON/원답/명령과 비교 부모 mC_r20_nokd는 보존, 현재 P070/P070B의 순서/셔플/라우터 시험 입력 아님. G0/G1·현재 소비 참조0. 삭제시 옛 reuse-attn 학습팔의 새 입력 재평가/정확 resume는 불가; 목록 판정만.
+delete	m100R1c_ko-en_300M_mC_r20ra_nokd_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_sp12_4.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_sp12_4_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_sp2_14.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_sp2_14_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_sp4_12.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_sp4_12_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_std2b.pt	484.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_std2b_best.pt	484.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_wqbf16.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_wqbf16_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag16_nokd_best.pt	518.3	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag4_cla1_best.pt	626.3	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag4_e128_best.pt	570.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag4_g32_best.pt	565.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag4_nokd_best.pt	619.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag4_r20_nokd_best.pt	619.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag8_nokd_best.pt	552.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100_ko-en_300M_dense2_best.pt	1516.8	init_from_src 파생보호: mC_init2의 부모 best 형제; 삭제 금지(2026-09-23 검수)
+keep	m100_ko-en_300M_dnc_r1.pt	1516.8	2026-10-11 A 개별 재감사 — 결과049 §9의 동일 시드 재생성 비결정성 바닥 3표본 중 해당 팔. 같은 인쇄 손실은 같은 가중치 증명 아님; 새 평가에서 자/조건을 재확인할 수 있는 재현 앵커로 keep, 현재 실행 필수와 구분.
+delete	m100_ko-en_300M_dnc_r1_best.pt	1516.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100_ko-en_300M_dnc_r2.pt	1516.8	2026-10-11 A 개별 재감사 — 결과049 §9의 동일 시드 재생성 비결정성 바닥 3표본 중 해당 팔. 같은 인쇄 손실은 같은 가중치 증명 아님; 새 평가에서 자/조건을 재확인할 수 있는 재현 앵커로 keep, 현재 실행 필수와 구분.
+delete	m100_ko-en_300M_dnc_r2_best.pt	1516.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100_ko-en_300M_dnc_r3.pt	1516.8	2026-10-11 A 개별 재감사 — 결과049 §9의 동일 시드 재생성 비결정성 바닥 3표본 중 해당 팔. 같은 인쇄 손실은 같은 가중치 증명 아님; 새 평가에서 자/조건을 재확인할 수 있는 재현 앵커로 keep, 현재 실행 필수와 구분.
+delete	m100_ko-en_300M_dnc_r3_best.pt	1516.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+# ★2026-09-04 자동 판정 135행 (scripts/ckpt_audit.py) — 규칙은 tiny_* 와 steps<500 둘뿐이고 나머지는 hold 다
+keep	m100_ko-en_300M_d20_dense.pt	1516.8	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100_ko-en_300M_d20_dense_best.pt	1516.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100_ko-en_300M_eq_t20_ag4.pt	666.2	2026-10-11 A 개별 재감사 — 결과059의 같은 유니크 용량에서 블록별/순환 방문·방문수 곡선의 해당 팔 보존. 현재 실행 필수는 아니지만 사용자가 요청한 P070/P070B 순차/반복/셔플/라우터 연구의 기존 구조 대조점. 같은 크기여도 동등/중복 가중치로 보지 않음.
+delete	m100_ko-en_300M_eq_t20_ag4_best.pt	666.2	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_eq_t20_ag8.pt	524.4	2026-10-11 A 개별 재감사 — 결과059의 같은 유니크 용량에서 블록별/순환 방문·방문수 곡선의 해당 팔 보존. 현재 실행 필수는 아니지만 사용자가 요청한 P070/P070B 순차/반복/셔플/라우터 연구의 기존 구조 대조점. 같은 크기여도 동등/중복 가중치로 보지 않음.
+delete	m100R1c_ko-en_300M_eq_t20_ag8_best.pt	524.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_G270Tfull.pt	1398.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_G270Tfull_best.pt	1398.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_G270Tnarrow.pt	1398.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100R1c_ko-en_300M_G270Tnarrow_best.pt	1398.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100R1c_ko-en_300M_G270Tprobe.pt	1398.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100R1c_ko-en_300M_G270Tprobe_best.pt	1398.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+keep	m100R1c_ko-en_300M_GT0full.pt	1398.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_GT0full_best.pt	1398.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_GT0probe.pt	1398.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100R1c_ko-en_300M_GT0probe_best.pt	1398.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+keep	m100R1c_ko-en_300M_mC_cla1_ag4.pt	558.2	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_cla1_ag4_best.pt	558.2	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla1_ag4_r20.pt	558.2	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_cla1_ag4_r20_best.pt	558.2	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla1_ag4_r20_s2.pt	558.2	2026-10-11 A 개별 재감사 — 결과039/067의 독립 시드·재귀/깊이 노이즈 판정자 표본 보존. 일부 조건의 ckpt 교락도 포함한 별도 원형이므로 이름/유사 점수로 복제 취급하지 않음. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100R1c_ko-en_300M_mC_cla1_ag4_r20_s2_best.pt	558.2	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla1_ag4_r20_s3b.pt	558.2	2026-10-11 A 개별 재감사 — 결과039/067의 독립 시드·재귀/깊이 노이즈 판정자 표본 보존. 일부 조건의 ckpt 교락도 포함한 별도 원형이므로 이름/유사 점수로 복제 취급하지 않음. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100R1c_ko-en_300M_mC_cla1_ag4_r20_s3b_best.pt	558.2	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla1_ag4_r20nc.pt	558.2	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_cla1_ag4_r20nc_best.pt	558.2	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla2_ag4.pt	551.4	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_cla2_ag4_best.pt	551.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla2_ag4_r20.pt	551.4	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_cla2_ag4_r20_best.pt	551.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla2_ag4_r20_s2.pt	551.4	2026-10-11 A 개별 재감사 — 결과039/067의 독립 시드·재귀/깊이 노이즈 판정자 표본 보존. 일부 조건의 ckpt 교락도 포함한 별도 원형이므로 이름/유사 점수로 복제 취급하지 않음. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100R1c_ko-en_300M_mC_cla2_ag4_r20_s2_best.pt	551.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla2_ag4_r20_s3.pt	551.4	2026-10-11 A 개별 재감사 — 결과039/067의 독립 시드·재귀/깊이 노이즈 판정자 표본 보존. 일부 조건의 ckpt 교락도 포함한 별도 원형이므로 이름/유사 점수로 복제 취급하지 않음. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100R1c_ko-en_300M_mC_cla2_ag4_r20_s3_best.pt	551.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_cla2_ag4_r30.pt	551.4	2026-10-11 A 개별 재감사 — R2/R3 품질·방문수·CPU 속도의 독립 비교점(047/058/014). 요청된 P070/P070B 재귀 패턴 연구가 이어지므로 동일 크기의 R2 모델과 중복으로 취급하지 않음. 현재 실행 필수와 별도 keep.
+delete	m100R1c_ko-en_300M_mC_cla2_ag4_r30_best.pt	551.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+hold	m100R1c_ko-en_300M_mC_e128_nc.pt	677.8	2026-10-11 A 개별 재감사 — P075 E128 품질 분기는 종결이나 결과060 §4~§6의 속도 +12.1% 원인 미검증이 남음. 현재 실행 필수 아님·영구 keep 근거는 약하므로 hold, 이 W4 후속을 폐기할지 결정 전 삭제 후보로 승격하지 않음.
+hold	m100R1c_ko-en_300M_mC_e128_nc_best.pt	677.8	2026-10-31 G2 판정 불일치 정정: 대응 본체 e128_nc.pt가 후속 미확정 hold이므로 best도 hold. 현재 실파일 없음; 복구 시 대응 부모/교사·현재후속을 재확인. 과거9월15일 best삭제와10월11일 본체hold가 어긋난 행을 보수적으로 맞춤.
+keep	m100R1c_ko-en_300M_mC_film_nokd.pt	727.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_film_nokd_best.pt	727.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_initonly_nc.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_initonly_nc_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100R1c_ko-en_300M_mC_initonly_s2_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_initonly_s3.pt	726.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1c_ko-en_300M_mC_initonly_s3_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1c_ko-en_300M_mC_r30_nokd.pt	726.9	2026-10-11 A 개별 재감사 — R2/R3 품질·방문수·CPU 속도의 독립 비교점(047/058/014). 요청된 P070/P070B 재귀 패턴 연구가 이어지므로 동일 크기의 R2 모델과 중복으로 취급하지 않음. 현재 실행 필수와 별도 keep.
+delete	m100R1c_ko-en_300M_mC_r30_nokd_best.pt	726.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100R1d_ko-en_300M_mC_d36_ag8_cla1.pt	558.8	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100R1d_ko-en_300M_mC_d36_ag8_cla1_best.pt	558.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2.pt	1206.0	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_r20.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_r20_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_r20_s2.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_r20_s2_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_dense.pt	1233.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_dense_best.pt	1233.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_dense_s2.pt	1233.1	2026-10-11 A 개별 재감사 — P079/P088의 깊이·독립 시드·pool 이관/heldout 대조 중 해당 원형(067/075). 현재 실제 답변 부모로 자동 승격하지 않고 비교 원형 keep. 같은 preset의 다른 학습 상태로 대체하지 않음.
+delete	m100s12_ko-en_300M_d16_dense_s2_best.pt	1233.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_g4.pt	720.0	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_g4_best.pt	720.0	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_g4_r20.pt	720.0	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_g4_r20_best.pt	720.0	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s2_ko-en_300M_d6_dense.pt	523.8	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s2_ko-en_300M_d6_dense_best.pt	523.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s2_ko-en_300M_eq_d6_r80.pt	523.8	2026-10-11 A 개별 재감사 — 결과059의 같은 유니크 용량에서 블록별/순환 방문·방문수 곡선의 해당 팔 보존. 현재 실행 필수는 아니지만 사용자가 요청한 P070/P070B 순차/반복/셔플/라우터 연구의 기존 구조 대조점. 같은 크기여도 동등/중복 가중치로 보지 않음.
+delete	m100s2_ko-en_300M_eq_d6_r80_best.pt	523.8	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_d8_dense.pt	665.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s4_ko-en_300M_d8_dense_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_d8_dense_s2.pt	665.7	2026-10-11 A 개별 재감사 — 결과039/067의 독립 시드·재귀/깊이 노이즈 판정자 표본 보존. 일부 조건의 ckpt 교락도 포함한 별도 원형이므로 이름/유사 점수로 복제 취급하지 않음. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100s4_ko-en_300M_d8_dense_s2_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_d8_dense_s3.pt	665.7	2026-10-11 A 개별 재감사 — 결과039/067의 독립 시드·재귀/깊이 노이즈 판정자 표본 보존. 일부 조건의 ckpt 교락도 포함한 별도 원형이므로 이름/유사 점수로 복제 취급하지 않음. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100s4_ko-en_300M_d8_dense_s3_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_d8_g2.pt	544.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s4_ko-en_300M_d8_g2_best.pt	544.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_eq_d8_dense.pt	665.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s4_ko-en_300M_eq_d8_dense_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_eq_d8_r20.pt	665.7	2026-10-11 A 개별 재감사 — 결과059의 같은 유니크 용량에서 블록별/순환 방문·방문수 곡선의 해당 팔 보존. 현재 실행 필수는 아니지만 사용자가 요청한 P070/P070B 순차/반복/셔플/라우터 연구의 기존 구조 대조점. 같은 크기여도 동등/중복 가중치로 보지 않음.
+delete	m100s4_ko-en_300M_eq_d8_r20_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_eq_d8_r30.pt	665.7	2026-10-11 A 개별 재감사 — 결과059의 같은 유니크 용량에서 블록별/순환 방문·방문수 곡선의 해당 팔 보존. 현재 실행 필수는 아니지만 사용자가 요청한 P070/P070B 순차/반복/셔플/라우터 연구의 기존 구조 대조점. 같은 크기여도 동등/중복 가중치로 보지 않음.
+delete	m100s4_ko-en_300M_eq_d8_r30_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_eq_d8_r40.pt	665.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s4_ko-en_300M_eq_d8_r40_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s4_ko-en_300M_eq_d8_r60.pt	665.7	2026-10-11 A 개별 재감사 — 결과059의 같은 유니크 용량에서 블록별/순환 방문·방문수 곡선의 해당 팔 보존. 현재 실행 필수는 아니지만 사용자가 요청한 P070/P070B 순차/반복/셔플/라우터 연구의 기존 구조 대조점. 같은 크기여도 동등/중복 가중치로 보지 않음.
+delete	m100s4_ko-en_300M_eq_d8_r60_best.pt	665.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s6_ko-en_300M_d10_dense.pt	807.5	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s6_ko-en_300M_d10_dense_best.pt	807.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_lrm.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_lrm_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_lrm_probe.pt	929.1	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100s8_ko-en_300M_d12_cla2_r20_lrm_probe_best.pt	929.1	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+keep	m100s8_ko-en_300M_d12_cla2_r20_p300_e1.pt	929.1	2026-10-11 A 개별 재감사 — 결과073의 동일 300M 풀 1/2/4epoch 대응 곡선 중 해당 모델. 사용자의 반복/증강 연구가 이어지므로 단순 중복으로 삭제하지 않음; 새 SFT 부모로 자동 사용하지 않으며 현재 실행 필수와 별도 keep.
+delete	m100s8_ko-en_300M_d12_cla2_r20_p300_e1_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_p300_e2.pt	929.1	2026-10-11 A 개별 재감사 — 결과073의 동일 300M 풀 1/2/4epoch 대응 곡선 중 해당 모델. 사용자의 반복/증강 연구가 이어지므로 단순 중복으로 삭제하지 않음; 새 SFT 부모로 자동 사용하지 않으며 현재 실행 필수와 별도 keep.
+delete	m100s8_ko-en_300M_d12_cla2_r20_p300_e2_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_s2.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s2_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r30.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r30_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2e_r20.pt	935.9	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2e_r20_best.pt	935.9	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100s8_ko-en_300M_d12_cla2e_r20_probe.pt	935.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100s8_ko-en_300M_d12_cla2e_r20_probe_best.pt	935.9	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+keep	m100s8_ko-en_300M_d12_dense.pt	949.4	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_dense_best.pt	949.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_dense_s2.pt	949.4	2026-10-11 A 개별 재감사 — P079/P088의 깊이·독립 시드·pool 이관/heldout 대조 중 해당 원형(067/075). 현재 실제 답변 부모로 자동 승격하지 않고 비교 원형 keep. 같은 preset의 다른 학습 상태로 대체하지 않음.
+delete	m100s8_ko-en_300M_d12_dense_s2_best.pt	949.4	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_g4.pt	605.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_g4_best.pt	605.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_g4_r20.pt	605.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_g4_r20_best.pt	605.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_g4_r30.pt	605.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_g4_r30_best.pt	605.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	tiny_synthetic_2M_sm_claedge.pt	49.27	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_claedge_best.pt	49.27	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_densecla.pt	49.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_densecla_best.pt	49.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_denseinit.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_denseinit_best.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_denserep.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_denserep_best.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_embrank.pt	43.01	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_embrank_best.pt	43.01	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_film.pt	40.06	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_film_best.pt	40.07	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_kdchunk.pt	40.01	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_kdchunk_best.pt	40.01	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_lrm.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_lrm_best.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_tieddepth.pt	43.01	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_tieddepth_best.pt	43.01	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+# ★2026-09-04 자동 판정 128행 (scripts/ckpt_audit.py) — 규칙은 tiny_* 와 steps<500 둘뿐이고 나머지는 hold 다
+keep	m100s10_ko-en_1200M_d14_cla2_norecur_t1200.pt	1067.6	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_1200M_d14_cla2_norecur_t1200_best.pt	1067.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_300M_d14_cla2_blockr2.pt	1067.6	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_300M_d14_cla2_blockr2_best.pt	1067.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_300M_d14_cla2_norecur.pt	1067.6	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_300M_d14_cla2_norecur_best.pt	1067.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_300M_d14_cla2_norecur_muon15.pt	420.3	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_300M_d14_cla2_norecur_muon15_best.pt	420.3	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_300M_d14_cla2_norecur_s2.pt	1067.6	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_300M_d14_cla2_norecur_s2_best.pt	1067.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_300M_d14_cla2_progr2.pt	1067.6	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_300M_d14_cla2_progr2_best.pt	1067.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_600M_d14_cla2_norecur_muon15_t600.pt	420.3	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_600M_d14_cla2_norecur_muon15_t600_best.pt	420.3	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s10_ko-en_600M_d14_cla2_norecur_t600.pt	1067.6	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s10_ko-en_600M_d14_cla2_norecur_t600_best.pt	1067.6	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_1200M_d16_cla2_norecur_muon15_t1200.pt	836.3	P005b Stage12의 1.2B jordan15 비교군 — P088 Stage10 완료 뒤에도 final 필요
+delete	m100s12_ko-en_1200M_d16_cla2_norecur_muon15_t1200_best.pt	836.3	P088 Stage10 결과 075 §19와 final이 정본; P005b Stage12 paired_eval은 final만 사용하고 부모·교사 참조 없음
+keep	m100s12_ko-en_1200M_d16_cla2_norecur_t1200.pt	1206.1	P005b Stage12의 1.2B AdamW 비교군 — RMS4·jordan15와 동일 조건 비교 전 삭제 금지
+delete	m100s12_ko-en_1200M_d16_cla2_norecur_t1200_best.pt	1206.1	P088 Stage8 결과와 final이 정본; P005b Stage12 paired_eval은 final만 사용하고 부모·교사 참조 없음
+keep	m100s12_ko-en_300M_d16_cla2_blockr2.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_blockr2_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_norecur.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_norecur_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_norecur_muon15.pt	466.5	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_norecur_muon15_best.pt	466.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_norecur_p12.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_norecur_p12_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_norecur_s2.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_norecur_s2_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_r20_muon15.pt	466.5	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_r20_muon15_best.pt	466.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_r20_p12_t300.pt	1206.1	2026-10-11 A 개별 재감사 — P079/P088의 깊이·독립 시드·pool 이관/heldout 대조 중 해당 원형(067/075). 현재 실제 답변 부모로 자동 승격하지 않고 비교 원형 keep. 같은 preset의 다른 학습 상태로 대체하지 않음.
+delete	m100s12_ko-en_300M_d16_cla2_r20_p12_t300_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_cla2_r20_p12_t600.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_300M_d16_cla2_r20_p12_t600_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_300M_d16_g4_muon15.pt	304.5	P086 Stage2의 타잉×Muon 정본이자 P093 구조조건부 직접공유의 내부 비교 근거
+delete	m100s12_ko-en_300M_d16_g4_muon15_best.pt	304.5	P086 결과 072 §12는 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s12_ko-en_600M_d16_cla2_norecur_muon15_t600.pt	466.5	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_600M_d16_cla2_norecur_muon15_t600_best.pt	466.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s12_ko-en_600M_d16_cla2_norecur_t600.pt	1206.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s12_ko-en_600M_d16_cla2_norecur_t600_best.pt	1206.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s14_ko-en_300M_d18_cla2_norecur.pt	1344.5	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s14_ko-en_300M_d18_cla2_norecur_best.pt	1344.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s14_ko-en_300M_d18_cla2_norecur_muon15.pt	512.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s14_ko-en_300M_d18_cla2_norecur_muon15_best.pt	512.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s14_ko-en_300M_d18_cla2_norecur_s2.pt	1344.5	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s14_ko-en_300M_d18_cla2_norecur_s2_best.pt	1344.5	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s14_ko-en_600M_d18_cla2_norecur_muon15_t600.pt	512.7	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s14_ko-en_600M_d18_cla2_norecur_muon15_t600_best.pt	512.7	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_ag2_muon15.pt	615.6	P045B 직접 attention 공유 기각 정본이며 P093의 재실행 없는 직접공유 대조군
+delete	m100s8_ko-en_300M_d12_ag2_muon15_best.pt	615.6	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_norecur.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_norecur_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_norecur_muon15.pt	374.0	P045B dense 기준 final이며 P093 직접·구조조건부 공유의 공통 대조군
+delete	m100s8_ko-en_300M_d12_cla2_norecur_muon15_best.pt	374.0	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_norecur_s2.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_norecur_s2_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_adamw.pt	929.1	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_300M_d12_cla2_r20_adamw_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon10.pt	374.0	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon10_best.pt	374.0	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon15.pt	374.0	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon15_best.pt	374.0	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon20.pt	374.0	P005b Stage10·11의 재귀 jordan20 비교군 — 시드·600M 전이 완료 전 final 필요
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon20_best.pt	374.0	P005/P005b 판정은 final paired_eval를 사용; 후속 Stage10·11도 final만 참조
+keep	m100s8_ko-en_300M_d12_cla2_r20_p12_t300.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_p12_t300_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_p12_t600.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_p12_t600_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_p300_e4.pt	929.1	2026-10-11 A 개별 재감사 — 결과073의 동일 300M 풀 1/2/4epoch 대응 곡선 중 해당 모델. 사용자의 반복/증강 연구가 이어지므로 단순 중복으로 삭제하지 않음; 새 SFT 부모로 자동 사용하지 않으며 현재 실행 필수와 별도 keep.
+delete	m100s8_ko-en_300M_d12_cla2_r20_p300_e4_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_p6_t1200.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_p6_t1200_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms2.pt	651.6	P005b Stage2에서 RMS4에 밀린 팔; 결과 078에 final·paired 수치가 있고 후속 계획이 참조하지 않음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms2_best.pt	651.6	RMS2 팔 자체가 종결됐고 결과 078의 판정은 final 기준; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_r20_rms4.pt	651.6	P005b Stage10·11의 재귀 RMS4 기준 final — 시드·600M 전이 완료 전 필요
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_best.pt	651.6	P005b 후속 paired_eval은 final만 참조; 결과 078에 수치 보존
+keep	m100s8_ko-en_300M_d12_cla2_r20_s34.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s34_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_adamw.pt	929.1	P005 Stage1 100M 대조는 300M Stage2로 대체됐고 결과 076에 보존; 활성 부모·교사·후속 비교 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_adamw_best.pt	929.1	같은 100M 격자 종결; 판정은 final·공통 bpb로 문서화됨
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon1.pt	374.0	P005 Stage1 100M 격자 열세 팔; 300M 본런으로 대체되고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon15.pt	374.0	P005 Stage1 100M 격자 팔; 300M 본런과 상단 격자로 대체되고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon15_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon1_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon30.pt	374.0	P005 Stage1b 100M 괄호 팔; 300M Stage3b가 상단을 다시 측정했고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon30_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon45.pt	374.0	P005 Stage1b 100M 열세 팔; 결과 076에 수치 보존, 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon45_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon5.pt	374.0	P005 Stage1 100M 격자 팔; 300M 본런으로 대체되고 결과 076에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_s763_muon5_best.pt	374.0	같은 100M 격자 종결; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm.pt	374.5	P086 dense-body vector LRM은 결과 072 §13에서 종결; 값·paired 판정이 문서화되고 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm_best.pt	374.5	같은 종결 팔; 판정은 final 기준이며 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm_ctrl.pt	374.0	P086 vector LRM 동시 대조는 결과 072 §13에 보존; 직접공유용 대조는 별도 P045B final을 유지
+delete	m100s8_ko-en_300M_d12_cla2_r20_vlrm_ctrl_best.pt	374.0	같은 종결 대조; 판정은 final 기준이며 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_g2_muon15.pt	507.6	P045B 직접 MLP g2 기각 정본이며 P093의 재실행 없는 직접공유 대조군
+delete	m100s8_ko-en_300M_d12_g2_muon15_best.pt	507.6	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_g4_muon15.pt	435.5	P045B 직접 MLP g4 기각 정본이며 P093의 재실행 없는 직접공유 대조군
+delete	m100s8_ko-en_300M_d12_g4_muon15_best.pt	435.6	P045B 결과 079는 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_600M_d12_cla2_norecur_t600.pt	929.1	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_600M_d12_cla2_norecur_t600_best.pt	929.1	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+keep	m100s8_ko-en_600M_d12_cla2_r20_muon15_t600.pt	374.0	2026-09-15 22:15 감사 K1 — 공식 비교 정본인 final 보존; _best 단독 삭제 시 G2 정합 유지와 재현성 보존
+delete	m100s8_ko-en_600M_d12_cla2_r20_muon15_t600_best.pt	374.0	2026-09-15 22:15 감사 D1 — 과거 _best 실파일 비교·로드 0건, 향후 명시 비교계획 없음; 대응 final 보존
+delete	m100w384s24_ko-en_300M_w384_d28_probe.pt	586.3	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100w384s24_ko-en_300M_w384_d28_probe_best.pt	586.3	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+keep	m100w512s16_ko-en_300M_w512_d20_parent.pt	728.3	P089 폭 실험의 init_from_src 실제 부모와 best 형제; 파생보호 대상(2026-09-23 검수)
+keep	m100w512s16_ko-en_300M_w512_d20_parent_best.pt	728.3	P089 폭 실험의 init_from_src 실제 부모와 best 형제; 파생보호 대상(2026-09-23 검수)
+delete	m100w512s24_ko-en_300M_w512_d28_probe.pt	980.6	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	m100w512s24_ko-en_300M_w512_d28_probe_best.pt	980.6	250스텝 프로브 - 품질 판정 사용 금지(기준표 2.3). 판정 근거는 역할이지 _best 접미사가 아니다(TSV 규칙 6)
+delete	tiny_synthetic_2M_sm_denseblock.pt	49.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_denseblock_best.pt	49.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_muon.pt	49.8	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_muon_best.pt	49.8	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_muonrms.pt	49.8	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_muonrms_best.pt	49.8	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_muonwd.pt	49.8	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_muonwd_best.pt	49.8	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_s34_dense.pt	49.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_s34_dense_best.pt	49.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_tiedlrm.pt	43.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_tiedlrm_best.pt	43.02	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_tiedmuon.pt	43.0	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_tiedmuon_best.pt	43.0	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_vlrm.pt	49.84	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_2M_sm_vlrm_best.pt	49.84	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_4M_sm_ckpttok.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+delete	tiny_synthetic_4M_sm_ckpttok_best.pt	49.77	tiny 스모크 - run_smoke_check.bat 이 매번 재생성한다
+# ★2026-09-15 사람 재판정 32행 — 결과 076/077/078과 P005b/P089/P093 후속 참조를 대조함. `_best`는 이름이 아니라 역할로 판정
+keep	m100s10_ko-en_300M_d14_cla2_norecur_muon20.pt	743.9	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s10_ko-en_300M_d14_cla2_norecur_muon20_best.pt	743.9	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4.pt	743.9	P005b Stage9 승자 final; Stage10·11 전이 전 기준으로 보존
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_best.pt	743.9	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+keep	m100s12_ko-en_300M_d16_cla2_norecur_muon20.pt	836.2	P005b Stage9 형상 전이의 jordan20 final; Stage10 시드 전이의 seed1337 기준
+delete	m100s12_ko-en_300M_d16_cla2_norecur_muon20_best.pt	836.3	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s12_ko-en_300M_d16_cla2_norecur_rms4.pt	836.2	P005b Stage9 승자 final; Stage10 시드 전이의 seed1337 기준
+delete	m100s12_ko-en_300M_d16_cla2_norecur_rms4_best.pt	836.3	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+keep	m100s14_ko-en_300M_d18_cla2_norecur_muon20.pt	928.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s14_ko-en_300M_d18_cla2_norecur_muon20_best.pt	928.6	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s14_ko-en_300M_d18_cla2_norecur_rms4.pt	928.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s14_ko-en_300M_d18_cla2_norecur_rms4_best.pt	928.6	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_norecur_muon20.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_300M_d12_cla2_norecur_muon20_best.pt	651.6	P005b 결과 078은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_norecur_rms4.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_300M_d12_cla2_norecur_rms4_best.pt	651.6	P005b 결과 078과 후속 비교는 final 기준; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon15_mwd01.pt	651.6	P005b Stage3에서 matrix WD 0.1이 악화; 결과 078에 final·paired 수치가 있고 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon15_mwd01_best.pt	651.6	같은 기각 팔; 판정은 final 기준이며 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon25.pt	651.6	P005 Stage3b 상단 곡선의 중간점; ×25·×30 동급이고 오른쪽 경계가 열린 상태라 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon25_best.pt	651.6	P005 결과 076은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon30.pt	651.6	P005 Stage3b 현재 우측 최선점; 상단 괄호가 열려 있어 final 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon30_best.pt	651.6	P005 결과 076은 final paired_eval로 판정; 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_mwd01.pt	651.6	P005b Stage3에서 matrix WD 0.1이 악화; 결과 078에 final·paired 수치가 있고 후속 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_mwd01_best.pt	651.6	같은 기각 팔; 판정은 final 기준이며 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms6.pt	651.6	P005b Stage2b에서 RMS4와 동급이고 단순한 RMS4를 유지하기로 판정; 결과 078에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms6_best.pt	651.6	같은 종결 팔; 판정은 final 기준이며 부모·교사 참조 없음
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms8.pt	651.6	P005b Stage2b에서 RMS4보다 악화되어 상단 폐쇄; 결과 078에 수치 보존
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms8_best.pt	651.6	같은 종결 팔; 판정은 final 기준이며 부모·교사 참조 없음
+keep	m100w512s10_ko-en_300M_w512_d14_muon15_b.pt	391.5	P089 Stage2b 폭 대가 분해점; Stage3·4 재승인 판단 전 final 보존
+delete	m100w512s10_ko-en_300M_w512_d14_muon15_b_best.pt	391.5	P089 결과 077은 final paired_eval로 판정; 부모·교사 참조 없음
+keep	m100w512s24_ko-en_300M_w512_d28_muon15_b.pt	686.0	P089 Stage2b 깊이 회복점; 폭 축 보류 결론과 후속 재승인 판단의 final 정본
+delete	m100w512s24_ko-en_300M_w512_d28_muon15_b_best.pt	686.0	P089 결과 077은 final paired_eval로 판정; 부모·교사 참조 없음
+# ★2026-09-23 자동 판정 108행 (scripts/ckpt_audit.py) — 정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold
+keep	m100R1c_ko-en_300M_p076_s2_mean.pt	516.9	P076 mean/middle 부모 집약 후속의 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100R1c_ko-en_300M_p076_s2_mean_best.pt	516.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100R1c_ko-en_300M_p076_s2_middle.pt	516.9	P076 mean/middle 부모 집약 후속의 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100R1c_ko-en_300M_p076_s2_middle_best.pt	516.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100R1c_ko-en_300M_p076_s2_normmean.pt	516.9	P076 Stage2 norm_mean 열세(064); mean/middle final과 JSON 보존(2026-09-23 검수)
+delete	m100R1c_ko-en_300M_p076_s2_normmean_best.pt	516.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-control-v2_300M_p097_ctrl_v2.pt	743.9	P097 Stage4W 공통평가·P100 원답안 기준선 입력 final; best만 삭제(2026-09-23 직접 검수)
+delete	m100s10_ko-en-control-v2_300M_p097_ctrl_v2_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024.pt	743.9	2026-10-11 A 개별 재감사 — P097 control/FineWeb2 독립 시드 쌍의 해당 팔(결과090). 코퍼스·토크나이저와 함께 비교하는 원형이며 한영/SFT source의 교락 재평가 가능성을 보존. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415.pt	743.9	2026-10-11 A 개별 재감사 — P097 control/FineWeb2 독립 시드 쌍의 해당 팔(결과090). 코퍼스·토크나이저와 함께 비교하는 원형이며 한영/SFT source의 교락 재평가 가능성을 보존. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100s10_ko-en-control-v2_300M_p097_ctrl_v2_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-edu-v2_300M_p097_edu_v2.pt	743.9	P097 Stage4W 공통평가·P100 원답안 기준선 입력 final; best만 삭제(2026-09-23 직접 검수)
+delete	m100s10_ko-en-edu-v2_300M_p097_edu_v2_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-fw2_300M_p097_fw2.pt	743.9	P097 Stage4W 공통평가·P100 원답안 기준선 입력 final; best만 삭제(2026-09-23 직접 검수)
+delete	m100s10_ko-en-fw2_300M_p097_fw2_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-fw2_300M_p097_fw2_s2024.pt	743.9	2026-10-11 A 개별 재감사 — P097 control/FineWeb2 독립 시드 쌍의 해당 팔(결과090). 코퍼스·토크나이저와 함께 비교하는 원형이며 한영/SFT source의 교락 재평가 가능성을 보존. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100s10_ko-en-fw2_300M_p097_fw2_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-fw2_300M_p097_fw2_s31415.pt	743.9	2026-10-11 A 개별 재감사 — P097 control/FineWeb2 독립 시드 쌍의 해당 팔(결과090). 코퍼스·토크나이저와 함께 비교하는 원형이며 한영/SFT source의 교락 재평가 가능성을 보존. 현재 실행 필수와 별도 역사 재현 keep.
+delete	m100s10_ko-en-fw2_300M_p097_fw2_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en-madlad_300M_p097_madlad.pt	743.9	P097 Stage4W 공통평가·P100 원답안 기준선 입력 final; best만 삭제(2026-09-23 직접 검수)
+delete	m100s10_ko-en-madlad_300M_p097_madlad_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr15.pt	743.9	6차 리뷰 A CLA2 LR 후보·길이 전이 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr15_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr15_s2024.pt	743.9	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr15_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr15_s31415.pt	743.9	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr15_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr20.pt	743.9	P005b CLA2 LR2.0 세 seed 열세(078 §16); LR1.5/1.0 final과 JSON 보존(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr20_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr20_s2024.pt	743.9	P005b CLA2 LR2.0 세 seed 열세(078 §16); LR1.5/1.0 final과 JSON 보존(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr20_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr20_s31415.pt	743.9	P005b CLA2 LR2.0 세 seed 열세(078 §16); LR1.5/1.0 final과 JSON 보존(2026-09-23 검수)
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_lr20_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4_s2024.pt	743.9	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_d14_cla2_norecur_rms4_s31415.pt	743.9	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s10_ko-en_300M_d14_cla2_norecur_rms4_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p060b_q_off_s1337.pt	743.9	2026-10-11 A 개별 재감사 — P060B forced/default SDPA-GQA 3시드 쌍의 해당 팔(결과088). 짧은 태그 템플릿으로 역할이 지정되므로 완전 파일명 조회0이 미사용 증명 아님; CPU/KV/후속 백엔드 재평가에 쌍 전체 keep.
+delete	m100s10_ko-en_300M_p060b_q_off_s1337_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p060b_q_off_s2024.pt	743.9	2026-10-11 A 개별 재감사 — P060B forced/default SDPA-GQA 3시드 쌍의 해당 팔(결과088). 짧은 태그 템플릿으로 역할이 지정되므로 완전 파일명 조회0이 미사용 증명 아님; CPU/KV/후속 백엔드 재평가에 쌍 전체 keep.
+delete	m100s10_ko-en_300M_p060b_q_off_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p060b_q_off_s31415.pt	743.9	2026-10-11 A 개별 재감사 — P060B forced/default SDPA-GQA 3시드 쌍의 해당 팔(결과088). 짧은 태그 템플릿으로 역할이 지정되므로 완전 파일명 조회0이 미사용 증명 아님; CPU/KV/후속 백엔드 재평가에 쌍 전체 keep.
+delete	m100s10_ko-en_300M_p060b_q_off_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p060b_q_on_s1337.pt	743.9	2026-10-11 A 개별 재감사 — P060B forced/default SDPA-GQA 3시드 쌍의 해당 팔(결과088). 짧은 태그 템플릿으로 역할이 지정되므로 완전 파일명 조회0이 미사용 증명 아님; CPU/KV/후속 백엔드 재평가에 쌍 전체 keep.
+delete	m100s10_ko-en_300M_p060b_q_on_s1337_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p060b_q_on_s2024.pt	743.9	2026-10-11 A 개별 재감사 — P060B forced/default SDPA-GQA 3시드 쌍의 해당 팔(결과088). 짧은 태그 템플릿으로 역할이 지정되므로 완전 파일명 조회0이 미사용 증명 아님; CPU/KV/후속 백엔드 재평가에 쌍 전체 keep.
+delete	m100s10_ko-en_300M_p060b_q_on_s2024_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p060b_q_on_s31415.pt	743.9	2026-10-11 A 개별 재감사 — P060B forced/default SDPA-GQA 3시드 쌍의 해당 팔(결과088). 짧은 태그 템플릿으로 역할이 지정되므로 완전 파일명 조회0이 미사용 증명 아님; CPU/KV/후속 백엔드 재평가에 쌍 전체 keep.
+delete	m100s10_ko-en_300M_p060b_q_on_s31415_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p060b_s1w_off250.pt	743.9	P060B Stage1W 250-step 진단 완료; pair 도구는 JSON만 읽고 300M final은 보존(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p060b_s1w_off250_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p060b_s1w_on250.pt	743.9	P060B Stage1W 250-step 진단 완료; pair 도구는 JSON만 읽고 300M final은 보존(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p060b_s1w_on250_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s1_dense30.pt	743.9	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P092 종료한 30M 4팔/100M dynamic25의 추가 가중치. 결과083 §9~§13·원 JSON/원로그/재현명령 보존, 현재 병목 진단은 보존하는 s2 dense100/static50/dynamic50만 읽음. G0/G1·현재 소비 참조0. 삭제시 이 팔의 새 입력 추론/정확 resume는 복구 불가; 목록 판정만이며 실제 삭제 별도 승인.
+delete	m100s10_ko-en_300M_p092_s1_dense30_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s1_dynamic25.pt	824.7	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P092 종료한 30M 4팔/100M dynamic25의 추가 가중치. 결과083 §9~§13·원 JSON/원로그/재현명령 보존, 현재 병목 진단은 보존하는 s2 dense100/static50/dynamic50만 읽음. G0/G1·현재 소비 참조0. 삭제시 이 팔의 새 입력 추론/정확 resume는 복구 불가; 목록 판정만이며 실제 삭제 별도 승인.
+delete	m100s10_ko-en_300M_p092_s1_dynamic25_best.pt	824.7	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s1_dynamic50.pt	824.7	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P092 종료한 30M 4팔/100M dynamic25의 추가 가중치. 결과083 §9~§13·원 JSON/원로그/재현명령 보존, 현재 병목 진단은 보존하는 s2 dense100/static50/dynamic50만 읽음. G0/G1·현재 소비 참조0. 삭제시 이 팔의 새 입력 추론/정확 resume는 복구 불가; 목록 판정만이며 실제 삭제 별도 승인.
+delete	m100s10_ko-en_300M_p092_s1_dynamic50_best.pt	824.7	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s1_static50.pt	824.7	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P092 종료한 30M 4팔/100M dynamic25의 추가 가중치. 결과083 §9~§13·원 JSON/원로그/재현명령 보존, 현재 병목 진단은 보존하는 s2 dense100/static50/dynamic50만 읽음. G0/G1·현재 소비 참조0. 삭제시 이 팔의 새 입력 추론/정확 resume는 복구 불가; 목록 판정만이며 실제 삭제 별도 승인.
+delete	m100s10_ko-en_300M_p092_s1_static50_best.pt	824.7	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s2_dense100.pt	743.9	P092 30M/100M 품질 추세·Stage3Wb 병목 진단의 final 증거; best만 삭제(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p092_s2_dense100_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s2_dynamic25.pt	824.7	2026-10-31 사용자102 명시 지시로 종료 연구9개를 우선 보존한다. 이전 삭제후보 판정은 적용하지 않는다. 원가중치와 원로그/판정은 유지하며 향후 별도 재검토 전 삭제 금지. 이전 사유: 2026-10-11 A 개별 재감사 — P092 종료한 30M 4팔/100M dynamic25의 추가 가중치. 결과083 §9~§13·원 JSON/원로그/재현명령 보존, 현재 병목 진단은 보존하는 s2 dense100/static50/dynamic50만 읽음. G0/G1·현재 소비 참조0. 삭제시 이 팔의 새 입력 추론/정확 resume는 복구 불가; 목록 판정만이며 실제 삭제 별도 승인.
+delete	m100s10_ko-en_300M_p092_s2_dynamic25_best.pt	824.7	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s2_dynamic50.pt	824.7	P092 30M/100M 품질 추세·Stage3Wb 병목 진단의 final 증거; best만 삭제(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p092_s2_dynamic50_best.pt	824.7	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_300M_p092_s2_static50.pt	824.7	P092 30M/100M 품질 추세·Stage3Wb 병목 진단의 final 증거; best만 삭제(2026-09-23 검수)
+delete	m100s10_ko-en_300M_p092_s2_static50_best.pt	824.7	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s10_ko-en_600M_d14_cla2_norecur_rms4_t600.pt	743.9	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s10_ko-en_600M_d14_cla2_norecur_rms4_t600_best.pt	743.9	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s12_ko-en_1200M_d16_cla2_norecur_rms4_t1200.pt	836.3	6차 리뷰 C 깊이·optimizer/길이 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s12_ko-en_1200M_d16_cla2_norecur_rms4_t1200_best.pt	836.3	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s12_ko-en_300M_d16_cla2_norecur_muon20_s2.pt	836.3	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s12_ko-en_300M_d16_cla2_norecur_muon20_s2_best.pt	836.3	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s12_ko-en_300M_d16_cla2_norecur_rms4_s2.pt	836.3	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s12_ko-en_300M_d16_cla2_norecur_rms4_s2_best.pt	836.3	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s12_ko-en_600M_d16_cla2_norecur_rms4_t600.pt	836.3	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s12_ko-en_600M_d16_cla2_norecur_rms4_t600_best.pt	836.3	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s14_ko-en_600M_d18_cla2_norecur_rms4_t600.pt	928.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s14_ko-en_600M_d18_cla2_norecur_rms4_t600_best.pt	928.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_d12_cla2_r20_muon20_s2.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_300M_d12_cla2_r20_muon20_s2_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_d12_cla2_r20_rms4_s2.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_300M_d12_cla2_r20_rms4_s2_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_p098_r2_ctrl_s1337.pt	651.6	P098 3-seed paired 및 향후 재귀 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p098_r2_ctrl_s1337_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_p098_r2_ctrl_s2024.pt	651.6	P098 3-seed paired 및 향후 재귀 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p098_r2_ctrl_s2024_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_p098_r2_ctrl_s31415.pt	651.6	P098 3-seed paired 및 향후 재귀 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p098_r2_ctrl_s31415_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_p098_r2_reinject_s1337.pt	651.6	P098 3-seed paired 및 향후 재귀 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p098_r2_reinject_s1337_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_p098_r2_reinject_s2024.pt	651.6	P098 3-seed paired 및 향후 재귀 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p098_r2_reinject_s2024_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_300M_p098_r2_reinject_s31415.pt	651.6	P098 3-seed paired 및 향후 재귀 대조 final 보존; best만 삭제(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p098_r2_reinject_s31415_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p35b_a3_e60.pt	651.6	P035B Stage1 A3 완료·G2 미성립(084); A4 미개방, trajectory JSON/audit 보존(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p35b_a3_e60_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p35b_a3_e80.pt	651.6	P035B Stage1 A3 완료·G2 미성립(084); A4 미개방, trajectory JSON/audit 보존(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p35b_a3_e80_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p35b_a3_off80.pt	651.6	P035B Stage1 A3 완료·G2 미성립(084); A4 미개방, trajectory JSON/audit 보존(2026-09-23 검수)
+delete	m100s8_ko-en_300M_p35b_a3_off80_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_600M_d12_cla2_r20_muon20_t600.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_600M_d12_cla2_r20_muon20_t600_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+keep	m100s8_ko-en_600M_d12_cla2_r20_rms4_t600.pt	651.6	2026-10-11 A 개별 재감사 — P005/P005b의 깊이·LR·Muon/RMS·시드·300M/600M 전이 중 해당 비교점. 현재 선호 레시피를 고르는 역사 대조와 향후 별도 압축/재귀의 조건 재확인을 위해 keep. 현재 학습의 필수 부모라고 주장하지 않음.
+delete	m100s8_ko-en_600M_d12_cla2_r20_rms4_t600_best.pt	651.6	final 짝 실존·현 런처/평가기 exact 참조 0·부모/교사 보호 0을 직접 확인. 결과 JSON/문서 보존; best 대신 final 사용(2026-09-23 검수)
+# ★2026-09-26 자동 판정 6행 (scripts/ckpt_audit.py) — 정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold
+keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337.pt	743.9	P090B chat32 사전학습 부모 final; 후속 3계보 SFT·형식 비교의 실제 init 후보(2026-09-26). 2026-10-19 Stage4er 세 팔 원초기값 및 Stage5Wa 이력 진단의 현재 입력으로 CPU byte/본체 지문 확인. 현재 소비 필요와 영구 최우수 판정을 구분함.
+keep	m100s10_ko-en_300M_dense_chat32_p090b_s1337_best.pt	743.9	P090B chat32 부모 best 유일본; best val 대 final 차이와 SFT 부모 선정 전 보존(2026-09-26)
+keep	m100s12_ko-en_100M_dense_p102a_t0_s1337.pt	836.2	P102A T0 100M 기존 final; C 단계 원인분리·조건부 ABBA 공통 crop 대조가 실제로 읽음(2026-09-26)
+delete	m100s12_ko-en_100M_dense_p102a_t0_s1337_best.pt	836.3	P102A ABBA 고정 crop·결과093 §10~§11 회수 완료; final 보존, 현재 best 참조·G1 부모보호 0(2026-09-27 직접 재검수)
+keep	m100s12_ko-en_100M_dense_p102a_t1_s1337.pt	836.2	P102A T1 100M 기존 final; C 단계 원인분리·조건부 ABBA 공통 crop 대조가 실제로 읽음(2026-09-26)
+delete	m100s12_ko-en_100M_dense_p102a_t1_s1337_best.pt	836.3	P102A ABBA 고정 crop·결과093 §10~§11 회수 완료; final 보존, 현재 best 참조·G1 부모보호 0(2026-09-27 직접 재검수)
+# ★2026-09-27 자동 판정 14행 (scripts/ckpt_audit.py) — 정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold
+keep	m100R1c_ko-en_300M_p076_b3_ag2_attnorm_s1337.pt	444.9	P076 Stage2eWb 동일 crop paired의 정확 최종 입력; 평가 전 삭제 금지(결과064 §11)
+delete	m100R1c_ko-en_300M_p076_b3_ag2_attnorm_s1337_best.pt	444.9	P076 Stage2eWb는 final만 읽음; final 보존·현재 best 참조/G1 부모보호 0, 결과 JSON의 best 수치만 보존(2026-09-27 검수)
+keep	m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337.pt	444.9	P076 Stage2eWb 동일 crop paired의 정확 최종 대조 입력; 평가 전 삭제 금지(결과064 §11)
+delete	m100R1c_ko-en_300M_p076_b3_ag2_mean_s1337_best.pt	444.9	P076 Stage2eWb는 final만 읽음; final 보존·현재 best 참조/G1 부모보호 0, 결과 JSON의 best 수치만 보존(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_a_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_a_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_b_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t0abba_b_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_a_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_a_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_b_s1337.pt	836.3	P102A T1 ABBA 사용자 완료·고정2929 crop/JSON 결과093 §10~§11 보존, T1 기본 미채택; 현재 런처/부모/후속 S축 입력 0(2026-09-27 검수)
+delete	m100s12_ko-en_100M_dense_p102a_t1abba_b_s1337_best.pt	836.3	같은 ABBA 완료 팔의 best; final/JSON/고정 crop 정본 존재, 현재 best/부모 참조 0(2026-09-27 검수)
+delete	tiny_synthetic_2M_sm_ag_attnorm.pt	41.0	tiny synthetic smoke 산출물 - 다음 smoke에서 재생성
+delete	tiny_synthetic_2M_sm_ag_attnorm_best.pt	41.0	tiny synthetic smoke 산출물 - 다음 smoke에서 재생성
+# ★2026-09-30 자동 판정 2행 (scripts/ckpt_audit.py) — 정확한 tiny synthetic smoke만 delete, 나머지는 길이와 무관하게 hold
+hold	m100R1c_ko-en_300M_p106b_s2g_tagged_pilot_s1337.pt	206.3	P106B 13행 반복 2업데이트의 유일한 이전 SFT 배선 checkpoint(결과101 §19). C4의 답변 퇴화·tokenizer 계보 비교가 끝나기 전 삭제 판정 보류; 현재 교사/부모 입력으로 승격하지 않음(2026-09-30 검수)
+hold	m100R1c_ko-en_300M_p106b_s3c_repeat4_s1337.pt	206.3	P106B C4 정확4pass 결과101 후속 원형. SFT-val 개선과 base full-val +0.01844 악화·고정답 8/8 형식/내용 실패의 동일 가중치 증거라 원답/계보 재감사 전 보존; 현재 지능 채택 아님(2026-09-30 검수)
+# 2026-10-11 metadata/parent/teacher/현재코드 참조 재검토 — 모델본문 로드/삭제0; 아래mb는bytes/2^20 MiB
+keep	m100R1c_ko-en_300M_p106b_s3l_contract_a_s1337.pt	206.3	P106B legacy A의정확generation-path audit 입력; p106b_education_followup ARMS와진단계보 보존(2026-10-11 재검토)
+hold	m100R1c_ko-en_300M_p106b_s3l_feedback_a_s1337.pt	206.3	2026-10-11 A 개별 재감사 — P106B feedback legacy A의유일한실물음성가중치. 현재exact입력0이나교정자료/학습원형의역할·부모대조종결미확정; 이름/짧은학습만으로삭제금지(2026-10-11); 현재 70개 재감사에서도 후속 교정/뷰 실패와의 대응 원형 보존 필요. 본문 미로드·삭제 금지.
+hold	m100s10_ko-en_300M_dense_chat32_p106d_ruleviews_v1_s1337_fixed.pt	355.8	2026-10-11 A 개별 재감사 — P106D v1 fixed 음성원형·대응v1 views와쌍보존. 새4096/128update/조건명시대조가미완이므로부정결과만으로삭제하지않음(2026-10-11); 현재 70개 재감사에서도 후속 교정/뷰 실패와의 대응 원형 보존 필요. 본문 미로드·삭제 금지.
+hold	m100s10_ko-en_300M_dense_chat32_p106d_ruleviews_v1_s1337_views.pt	355.8	2026-10-11 A 개별 재감사 — P106D v1 views 음성원형·fixed와같은source/노출의쌍보존. 새대조뒤재판정전keep/삭제승격보류(2026-10-11); 현재 70개 재감사에서도 후속 교정/뷰 실패와의 대응 원형 보존 필요. 본문 미로드·삭제 금지.
+keep	m100s10_ko-en_300M_p106b_s3k_contract_chat32_s1337.pt	355.8	P106B chat32 B의정확generation-path audit 입력·ARMS 계보. 첫답/형식원인대조와자기부모비교를위해보존(2026-10-11)
+hold	m100s10_ko-en_300M_p106b_s3k_feedback_chat32_s1337.pt	355.8	2026-10-11 A 개별 재감사 — P106B feedback chat32 B의유일한실물음성가중치. 후행교정/실제답비교의필요성미종결; 원형report만으로가중치복구불가(2026-10-11); 현재 70개 재감사에서도 후속 교정/뷰 실패와의 대응 원형 보존 필요. 본문 미로드·삭제 금지.
+keep	m100s10_ko-en_300M_p106b_s4_refill300m_chat32_s1337.pt	355.9	P106B 실제약300M refill final; mixed/refill multiaxis의정확자식입력과epoch/망각대조 계보 보존(2026-10-11)
+# 2026-10-15: exact18 new completed arms only; mb column is MiB; old verdicts unchanged; no checkpoint deletion.
+hold	m100s10_ko-en_context_replay_dense_chat32_p106b_context_replay_v2_s1337_sft_only.pt	355.8	2026-10-15 p106b_context_replay_v2_s1337/sft_only/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_context_replay_dense_chat32_p106b_context_replay_v2_s1337_replay025.pt	355.8	2026-10-15 p106b_context_replay_v2_s1337/replay025/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_context_replay_dense_chat32_p106b_context_replay_v2_s1337_replay100.pt	355.8	2026-10-15 p106b_context_replay_v2_s1337/replay100/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_context_orpo_dense_chat32_p106b_context_orpo_v1_s1337_pair_zero.pt	355.8	2026-10-15 p106b_context_orpo_v1_s1337/pair_zero/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_context_orpo_dense_chat32_p106b_context_orpo_v1_s1337_pair010.pt	355.8	2026-10-15 p106b_context_orpo_v1_s1337/pair010/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_context_orpo_dense_chat32_p106b_context_orpo_v1_s1337_pair030.pt	355.8	2026-10-15 p106b_context_orpo_v1_s1337/pair030/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_context_orpo_dense_chat32_p106b_context_orpo_v1_s1337_positive030.pt	355.8	2026-10-15 p106b_context_orpo_v1_s1337/positive030/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_aux_v1_s1337_aux0.pt	355.9	2026-10-15 p106b_binding_aux_v1_s1337/aux0/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_aux_v1_s1337_aux03.pt	355.9	2026-10-15 p106b_binding_aux_v1_s1337/aux03/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_aux_v1_s1337_aux100.pt	355.9	2026-10-15 p106b_binding_aux_v1_s1337/aux100/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_aux_v1_s1337_auxperm100.pt	355.9	2026-10-15 p106b_binding_aux_v1_s1337/auxperm100/final: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_aux_v1_s1337_auxdense100.pt	355.9	2026-10-15 p106b_binding_aux_v1_s1337/auxdense100/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_aux0.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/aux0/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_aux0_epoch1.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/aux0/epoch1: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_aux0_epoch2.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/aux0/epoch2: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_aux0_epoch3.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/aux0/epoch3: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_auxdense100.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/auxdense100/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_auxdense100_epoch1.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/auxdense100/epoch1: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_auxdense100_epoch2.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/auxdense100/epoch2: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_binding_aux_dense_chat32_p106b_binding_scale_v1_s1337_auxdense100_epoch3.pt	355.9	2026-10-15 p106b_binding_scale_v1_s1337/auxdense100/epoch3: P106B 완료연구의 역사재현/epoch곡선용; 현재실행필수로단정하지않고 후속삭제검토 전 보류; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_joint_decimal_trim_v1_s1337_digits0.pt	355.9	2026-10-15 p106b_joint_decimal_trim_v1_s1337/digits0/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_joint_decimal_trim_v1_s1337_digits1.pt	355.9	2026-10-15 p106b_joint_decimal_trim_v1_s1337/digits1/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_state_update_aux_v1_s1337_aux0.pt	355.9	2026-10-15 p106b_state_update_aux_v1_s1337/aux0/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+keep	m100s10_ko-en_binding_aux_dense_chat32_p106b_state_update_aux_v1_s1337_aux100.pt	355.9	2026-10-15 p106b_state_update_aux_v1_s1337/aux100/final: P106B 현재조건/최종대조의 재현앵커; 작은선택부모 또는 실제pair의 endpoint; 결과101 §114~147 및새최종회수. 모델파일삭제/변환없음.
+hold	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_first_epoch1.pt	355.9	2026-10-16 원문 QA3 V2 first epoch1: 현재 고정final 평가에는 불필요한 학습곡선/선택연구용 보류; 영구 필수로 단정하지 않음. 결과101 §180 이후 참조; 모델 삭제/변환0.
+hold	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_first_epoch2.pt	355.9	2026-10-16 원문 QA3 V2 first epoch2: 현재 고정final 평가에는 불필요한 학습곡선/선택연구용 보류; 영구 필수로 단정하지 않음. 결과101 §180 이후 참조; 모델 삭제/변환0.
+hold	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_first_epoch3.pt	355.9	2026-10-16 원문 QA3 V2 first epoch3: 현재 고정final 평가에는 불필요한 학습곡선/선택연구용 보류; 영구 필수로 단정하지 않음. 결과101 §180 이후 참조; 모델 삭제/변환0.
+keep	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_first.pt	355.9	2026-10-16 원문 QA3 V2 first epoch4: Stage4chWb 실제 답 평가의 사전고정 최종 endpoint; 현재 소비 참조로 보존. 결과101 §180 이후 참조; 모델 삭제/변환0.
+hold	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_three_epoch1.pt	355.9	2026-10-16 원문 QA3 V2 three epoch1: 현재 고정final 평가에는 불필요한 학습곡선/추가연구용 보류; 영구 필수로 단정하지 않음. 결과101 후속 참조; 모델 삭제/변환0.
+hold	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_three_epoch2.pt	355.9	2026-10-16 원문 QA3 V2 three epoch2: 현재 고정final 평가에는 불필요한 학습곡선/추가연구용 보류; 영구 필수로 단정하지 않음. 결과101 후속 참조; 모델 삭제/변환0.
+hold	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_three_epoch3.pt	355.9	2026-10-16 원문 QA3 V2 three epoch3: 현재 고정final 평가에는 불필요한 학습곡선/추가연구용 보류; 영구 필수로 단정하지 않음. 결과101 후속 참조; 모델 삭제/변환0.
+keep	m100s10_ko-en_originalqa3_dense_chat32_p106b_original_qa3_v2_s1337_three.pt	355.9	2026-10-16 원문 QA3 V2 three epoch4: Stage4chWb 실제 답 평가의 사전고정 최종 endpoint; 현재 소비 참조로 보존. 결과101 후속 참조; 모델 삭제/변환0.
+keep	m100s10_ko-en_repairrole_dense_chat32_p106b_repair_role_v1_s1337_raw_repeat.pt	355.9	2026-10-16 repair-role raw_repeat final4: 실제216회 완료·Stage4cqW 사전고정5endpoint 소비; 원형/교정×역할대조의 현재 기준팔. 373140289B/SHA F95821E6E4CAF694D2625B47AF505B5B5980512EF4C35C4E242355CCB4C7729D. optimizer미저장·모델삭제/변환0·Git제외.
+keep	m100s10_ko-en_repairrole_dense_chat32_p106b_repair_role_v1_s1337_repair_repeat.pt	355.9	2026-10-16 repair-role repair_repeat final4: 실제216회 완료·Stage4cqW 고정5endpoint의 교정/반복팔; 373140289B/SHA 08932F20286BA905DB3D9A4A8382681A5D443FF30374581CDEEFE8559A8B999A. optimizer미저장·가중치삭제/변환0·Git제외.
+keep	m100s10_ko-en_repairrole_dense_chat32_p106b_repair_role_v1_s1337_raw_role.pt	355.9	2026-10-16 repair-role raw_role final4: 실제216회 완료·Stage4cqW 고정5endpoint의 원형/역할팔; 373140289B/SHA 7E584E9F0B99CCFC73D12ED9B36376F214990F5860C85F4A413C096B9438B838. optimizer미저장·가중치삭제/변환0·Git제외.
+keep	m100s10_ko-en_repairrole_dense_chat32_p106b_repair_role_v1_s1337_repair_role.pt	355.9	2026-10-16 repair-role repair_role final4: 실제216회 완료·Stage4cqW 고정5endpoint의 교정/역할팔; 373140289B/SHA 0210E99E72937AFA58B83B719D3EE3F3D12C50423F978E0947CA6DB8EEC67807. optimizer미저장·가중치삭제/변환0·Git제외.
+keep	m100s10_ko-en_evidencerecovery_dense_chat32_p106b_evidence_recovery_v1_s1337_complete_replay.pt	355.9	2026-10-16 충분기록 반복 final4: 실제216회·추가4pass 완료, Stage4cvW의 고정3endpoint 대조용. 373140289B/SHA F0F10C7A99AC9788AB9B67DE543AA2D6496B4D2848D8EA57CC34CC0F80827A08. 현재 소비 keep·중간CPT/optimizer저장0·Git제외·삭제변환0.
+keep	m100s10_ko-en_evidencerecovery_dense_chat32_p106b_evidence_recovery_v1_s1337_evidence_recovery.pt	355.9	2026-10-16 정보복구 final4: 실제216회·추가4pass 완료, Stage4cvW 고정3endpoint의 충분/부족·보충/갱신 대조용. 373140289B/SHA E9707AA2ABB55054DA226A6303A0EEAD8BA0B653029E24AFAD2A63D86E729E42. 현재 소비 keep·중간CPT/optimizer저장0·Git제외·삭제변환0.
+keep	m100s10_ko-en_evidencepref_dense_chat32_p106b_evidence_preference_v1_s1337_sft_only.pt	355.9	2026-10-16 충분성 SFT final64: 373140289B/SHA B0DE3769A73BFDAD6438F0AF650A1091DE2E56C2301398F5CB8A0D039856BBA4 실물검산. ddW/dfW 소비완료·현재결과 재현/회귀 대조군 보존; 모델기본채택이나 영구필수 주장이 아님. 원본/optimizer삭제0·Git제외.
+keep	m100s10_ko-en_evidencepref_dense_chat32_p106b_evidence_preference_v1_s1337_orpo010.pt	355.9	2026-10-16 충분성 ORPO0.1 final64: 373140289B/SHA 0F8A387F8B2A0F4422B35C920330C162280A85E05BF3EBE4FBD72A88AB613D90 실물검산. ddW/dfW 소비완료·현재결과 재현/회귀 대조군 보존; 전체승자 비채택/영구필수 주장이 아님. 원본/optimizer삭제0·Git제외.
+# 2026-10-17 08:10 야간 새12파일의 실물 SHA/크기 일치 검산: 합계 4,477,565,116B(4.170057GiB). 현재 동결 source/원답/본체 재현이 소비하므로 연구 참조로 보존한다. 기존177GiB 전체를 필수로 승격하지 않으며 삭제/변환0. 이후 대표 보관/소비 종료 여부는 별도 판정한다.
+keep	m100s10_ko-en_night_dense_chat32_p106b_night_grounded_v2_s1337_ce.pt	355.8	2026-10-17 E970 뒤 CE640: 동결 실제 평가/대응 검산의 현재 기준팔; SHA EE60CBE496D24E8EB95621A3EE53E9F6578491476BE335C4F11AC863981DBEB4. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_dense_chat32_p106b_night_grounded_v2_s1337_consistent.pt	355.8	2026-10-17 E970 뒤 KL640: 같은 원답/보존 대조의 현재 비교팔; SHA 31A0C1AE69D916DD7108C9B6F5D792B49787E89DAF042E11FE2FA64BB26981CA. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_diversity_scope_v2_s1337.pt	355.8	2026-10-17 고유32k 한 번640: 현재 전량 평가/순서 진단/준거 확장 소비,최종과DEV 대표 같은 파일; SHA 52DC5E3536A562130C852FF45B14533A3FC6EB9A59F38DD97A9F5486B159895D. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_foundation_v1_s1337_base_qa.pt	355.8	2026-10-17 원P090B 뒤 QA640 final4: 고유량/순서/부모 대조 현재 기준팔; SHA D2FE6C2E739086840F0DC2E97714916DFAEAFC8957395FFC4E8507FCA9C8F5A5. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_foundation_v1_s1337_base_qa_best.pt	355.8	2026-10-17 같은 QA의 DEV2 대표: 실제 전량/같은64 비교가 소비,파일명만으로 삭제 금지; SHA F3B3F3F5669A5A426FC8438A982AD5170795B489220FF98C81A67E5CD36AA66B. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_foundation_v1_s1337_cpt_qa.pt	355.8	2026-10-17 추가원문298.975M 뒤 QA640 final4: 같은 학습량 비교/준거 소비; SHA 50229166BD74059A9D47D39E7051A267A472A67B818066E39817E43CF2473DCD. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_foundation_v1_s1337_cpt_qa_best.pt	355.8	2026-10-17 추가원문 뒤 QA DEV1 대표: 같은64/전량 비교가 소비,TEST 선택 아님; SHA 9C05510D41B9BF816CDCFA915B1DBB3418B0BD8F2852C217C1EA093B9BD0A1B0. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_foundation_v1_s1337_native.pt	355.8	2026-10-17 추가원문298.975M native: QA 후속 계보와 별도 부모64/준거의 현재 입력; SHA D6ECF7127A719A08ED396B39A51285DD9F20568880F21049DF56149E01A53A11. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_prompt_v1_s1337_prompt0.pt	355.8	2026-10-17 입력본문 보조0 final4: beta0.1 같은 팔/전량 평가의 현재 기준; SHA 7090E4EC34B2BE44AD9130B653F82019B9196EC2EAD18CAEA86005E5335B24FB. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_prompt_v1_s1337_prompt0_best.pt	355.8	2026-10-17 입력본문 보조0 DEV1: 실제 전량 비교가 소비,최종4와 별도 대표; SHA 38F336816BA8E2FAFB632463ADC036BFF213BEAAF350EDC5530CC48F6341C7DB. 현재 동결 source/원답 검산의 실물 참조 때문에 보존하며 전역승자/영구필수 주장은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_prompt_v1_s1337_prompt01.pt	355.8	2026-10-17 입력본문 보조0.1 final4: 실제640/373133637B/SHA BD34B778A3154D20FC4DF39E65BC58AD8E55548089B30541EEBBB0A2208A4397 검산. 실제8lane/최종-DEV/대응/준거/질문묶음 검산 완료의 현재 재현 입력이며 전역 채택은 아님. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_night_p106b_night_prompt_v1_s1337_prompt01_best.pt	355.8	2026-10-17 입력본문 보조0.1 DEV2: 실제373124101B/SHA 2EDEB86DCB1974F1CCBA2696ED27AEE3254DB8B00457D7EC32D67B026B52195D 검산. 실제8lane/대응/준거/질문묶음 검산 완료의 현재 재현 입력,DEV 전용 선택이며 최종/seed와 구분. optimizer미저장·가중치Git제외·삭제/변환0.
+keep	m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_ce.pt	355.8	2026-10-19 현재Stage4erWa old2x4/4질문CPU source와A/CF원형재현의CE768 입력. 실제373133445B/SHA7DDC52E19C20B2FC27CA72761C7BDC6ED726F20233F075D646BAEBA43CB58D0A. 표크기는MiB이며packed/배포상주아님. optimizer미저장/Git제외/삭제변환0,전역승자/영구필수아님.
+keep	m100s10_ko-en_relation_p106b_relation_bind_v1_s1337_contrast.pt	355.8	2026-10-19 현재Stage4erWb old2x4/4질문CPU source와A/CF원형재현의대조768 입력. 실제373133445B/SHA354F5A9C91126D0A633F084DFA10AB9ADF630956CBEE10535B79386A0B32527A. 표크기는MiB이며packed/배포상주아님. optimizer미저장/Git제외/삭제변환0,전역승자/영구필수아님.
+keep	m100s10_ko-en_night_p106b_cpt_unique32k_v1_s1337.pt	355.8	2026-10-19 현재Stage4epWc/Wd/We의native부모+고유32k640 최종/DEV4 동일파일·4조합8영역실답/원형판독 입력. 실제373133637B/SHAD9FD5D7B766FE563FBD3E36510D7049461B51C5E5D1BCD3D077E44622409B13B. 표크기는MiB,weight-only/optimizer0/Git제외/삭제변환0,범용품질승격아님.
+keep	m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_ce.pt	355.8	2026-10-19 Stage4erYa의CE4양성896 완료·Stage4erZa/R의1758실답/4후보대응 현재입력. 실제373133445B/SHA C7310160A50361146936D97EC8567E5EE93C1B2230DC647745E78FDC77DA2406. 표크기는MiB·weight-only/optimizer0/Git제외/삭제변환0. DEV감소는품질PASS/영구필수판정아님.
+keep	m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_role_only.pt	355.8	2026-10-19 Stage4erYb의ROLE_ONLY4 896 완료·Stage4erZb/R의1758실답/4후보 대응 현재입력. 실제373133445B/SHA D9B0188CA7C7A4C7881BB45195B929B066034CB2AF6E9D0E136F4EF134C1AD45. MiB·weight-only/optimizer0·가중치Git제외/삭제변환0. DEV감소를품질PASS/영구필수로보지않음.
+keep	m100s10_ko-en_300M_dense_chat32_p106d_ruleviews_v3_length_s1337_fixed.pt	355.8	2026-10-19 실제 CPU 준비로 존재/계보를 확인한 기존128회 fixed. Stage5Wb/Wd의546조건 및 실제 이력 판독 현재 입력. 373133509B/SHA C67DD70767FC51A8FABAC51B69382470246566C941A912BFF60BADB412B50559. 기존 결과73은 gold 이력 후속 답이며 독립 첫답 성공/영구필수 아님. 삭제/변환0.
+keep	m100s10_ko-en_300M_dense_chat32_p106d_ruleviews_v3_length_s1337_views.pt	355.8	2026-10-19 실제 CPU 준비로 존재/계보를 확인한 기존128회 views. Stage5Wc/Wd의546조건 및 실제 이력 판독 현재 입력. 373133509B/SHA 17DA44EB681FA3C6113DD886A43B5379034291A8ADAC48CE8789F6D9C7D3892F. 기존 결과68은 gold 이력 후속 답이며 독립 첫답 성공/영구필수 아님. 삭제/변환0.
+hold	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_v1_s1337_parent_mtp.pt	358.1	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 375486463B, 표 크기는 MiB.
+hold	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_v1_s1337_parent_ntp.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133637B, 표 크기는 MiB.
+hold	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_v1_s1337_scratch_mtp.pt	358.1	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 375486463B, 표 크기는 MiB.
+hold	m100s10_ko-en_32M_dense_chat32_p101a_sft_mtp_v1_s1337_scratch_ntp.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133637B, 표 크기는 MiB.
+hold	m100s10_ko-en_8M_dense_chat32_p101a_sft_mtp_lrhi_v2_s1337_parent_ntp.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133637B, 표 크기는 MiB.
+hold	m100s10_ko-en_8M_dense_chat32_p101a_sft_mtp_lrlo_v2_s1337_parent_ntp.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133637B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_binding_course_v1_s1337_lookup_balanced.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_context_broad_v2_s1337_ntp_hi.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_context_broad_v2_s1337_ntp_mid.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_context_clarify_v1_s1337_mtp_hi.pt	358.1	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 375486335B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_context_clarify_v1_s1337_ntp_hi.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_context_clarify_v1_s1337_ntp_lo.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_source_course_v1_s1337_reference_lm.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_source_course_v1_s1337_sft_only.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+hold	m100s10_ko-en_context4pass_dense_chat32_p106b_source_format_mix_v1_s1337_sft_only.pt	355.8	2026-10-19 파일 메타데이터 재고에서 미등록을 확인하여 임시 hold. 현재 소비/역사 재현 필요성의 개별 판정은 미완료이며 삭제허가가 아님. payload/hash/tensor 열람과 실제삭제0. 실제 373133509B, 표 크기는 MiB.
+keep	m100s10_ko-en_subject_role_p106b_subject_role_v1_s1337_all_axes.pt	355.8	2026-10-19 Stage4erYc ALL_AXES4 896 완료·Stage4erZc/R의1758실답/4후보 현재 입력. 실제373133445B/SHA D43BBA5FC298568A93FA72AB6ED382F7B0512B569FEFD9AD649789A15CD89D08. MiB·weight-only/optimizer0·가중치Git제외/삭제변환0. 손실감소는실답PASS/영구필수아님.
+keep	m100s10_ko-en_question_transfer_p106b_question_transfer_v2_s1337_fixed_last.pt	355.8	2026-10-19 Stage4euTa fixed_last 384회/4epoch 완료, 현재 평가는 완료했고 재현·후속 원인분리용으로 보존한다. 실제373133445B/SHA052B5FFB49112A0EE5294BB539A37A355DC5D2BD6A7E1F276D37FE6615B7E0FF. 크기는MiB·weight-only/optimizer0·가중치Git제외·삭제/변환0. DEV감소를실답PASS/영구필수로보지않음.
+keep	m100s10_ko-en_question_transfer_p106b_question_transfer_v2_s1337_varied_last.pt	355.8	2026-10-19 Stage4euTb varied_last 384회/4epoch 완료, 현재 평가는 완료했고 재현·후속 원인분리용으로 보존한다. 실제373133445B/SHAC24C463059DCA167A0F3AAE34391FDD5E1C6FF1C2EFE4E60E50B5B47B95B772F. 크기는MiB·weight-only/optimizer0·가중치Git제외·삭제/변환0. DEV감소를실답PASS/영구필수로보지않음.
+keep	m100s10_ko-en_question_transfer_p106b_question_transfer_v2_s1337_fixed_balanced.pt	355.8	2026-10-19 Stage4euTc fixed_balanced 384회/4epoch 완료. 현재 평가는 완료했고 재현·후속 원인분리용으로 보존한다. 실제373133445B/SHA E2B53169A4ED452EF3222A211D87503E8224E5B5C8D9EE8BF55ED2E271953D77. 크기는MiB·weight-only/optimizer0·가중치Git제외·삭제/변환0. DEV감소를실답PASS/영구필수로보지않음.
+keep	m100s10_ko-en_question_transfer_p106b_question_transfer_v2_s1337_varied_balanced.pt	355.8	2026-10-19 Stage4euTd varied_balanced 384회/4epoch 완료. 현재 평가는 완료했고 재현·후속 원인분리용으로 보존한다. 실제373133445B/SHA10AF22B61B2E89FE56BB35C7895CEBF4DADBD9D9560CF9693A04F106E28F041B. 크기는MiB·weight-only/optimizer0·가중치Git제외·삭제/변환0. 손실 감소는실답PASS/영구필수가 아님.
+keep	m100s10_ko-en_p106b_native_weight_route_v1_s1337_ternary_native.pt	355.85	2026-10-19 새scratch 삼진 native2281/298975232targets 완료·자기SFT/route교차/공개평가 현재 입력. 실제373134213B/SHA AF3644F5AA515AC1C5E02154582396D080B77E7CD7827F0D32A9EB947ECE747C. 정식 route metadata loader 필요, weight-only/optimizer0·Git제외/삭제변환0. 고정32crop CE를일반품질/영구필수로승격안함.
+keep	m100s10_ko-en_p106b_native_weight_route_v1_s1337_float_native.pt	355.85	2026-10-20 같은scratch 초기값/동일crop float native2281·298975232targets 완료·자기SFT/교차/공개평가 입력. 373134213B/SHA FBC0AF70CDD9BAFD2011825B404BF336B138B21CBC137C0086833D7A1FDD9508. 전용float route loader 필수·공용대화메뉴 미검증·weight-only/optimizer0·Git제외. native32 CE3.377575를일반QA/영구필수로승격안함.
+keep	m100s10_ko-en_p106b_native_resume_v2_s1337_ternary_sft.pt	355.85	2026-10-20 자기삼진native의동일SFT384완료·실제1694답완료·현재경로교차/공개벤치입력. 실제373134341B/SHA AA7066F94C52B49F2E9765280C7D6654B75C23392E613FC9D09023FCF437C3C9/core FEDF297ED39EEF263CC91E73F4583BBADF45F0738540E8813B9DC232ADCADDC9. 전용엄격loader·weight-only/optimizer0·Git제외·삭제변환0. 제한과제/종료성공을일반대화성공/영구필수로보지않음.
+keep	m100s10_ko-en_p106b_native_resume_v2_s1337_float_sft.pt	355.85	2026-10-20 자기실수native의동일SFT384완료·실제1694답완료·현재경로교차/공개벤치/headwise대조baseline입력. 실제373134341B/SHA 4B47B1195FB96C5ED44963A9A33012D1FDEDFF55FDF81416E319DCD8F2F89AE3/core 352A66D97D362DC412DC04407615D5E17F366C6938E9A6BEC3C9683874358267. 전용float엄격loader·weight-only/optimizer0·Git제외·삭제변환0. native32 CE3.402745·JSON성공만으로일반대화/영구필수로승격안함.
+keep	m100s10_ko-en_broad_p106b_broad_resume_v3_s1337_mixed.pt	355.85	2026-10-20 원P090B E854·22528행2pass/mixed352 실제학습완료(101§377). 완료실답/공개벤치·재계수 대조앵커로보존. 실제373133445B/SHA 1BB66E289289A22F4CA8F15020BBC2EDF0DDB0DD8210DD198AA08CEEC2178F0D/core D694FF401CC8BC31037300DA1F9A151F77592CB198A71DC89F06D0461F83ABDC. weight-only/optimizer0·Git제외·삭제변환0·packed배포크기아님. 실제1694/공개벤치·재계수완료(101§379~389)이며일반대화성공/영구필수로보지않음.
+keep	m100s10_ko-en_broad_p106b_broad_resume_v3_s1337_staged.pt	355.85	2026-10-20 원P090B E854·22528행2pass/staged352 완료(101§378). 완료실제답/공개벤치·순서대조재현앵커. 실제373133445B/SHA 07C72A498B8D2B9DBB1CAEF2E646A001BF6A860C44C940001CC298F94568EDE1/core 93F4E860973B6F509B6EDFA23504F38D2663F4129F894B6897E5A16B96A687C0. weight-only/optimizer0·Git제외·삭제변환0·packed배포크기아님. 양학습총노출일치와일반대화성공은별개.
+
+keep	p106b_native_format_training_v1_20261026_format_normuon_train_format_normuon.pt	355.85	2026-10-26 Stage10dWc 실제2289회/300023808 targets·같은fresh core/format/offset의Muon 대응 본학습. actual0/6199.775928초, 373134469B/SHA A04FE972EE11B3D4B3090F5F93CBAE89BEC93549E3FE8B2148DF15AA91BC7BB5/core C7A6DFAB83FE15EF4DBF85F6C83F9F7F0AD2642071BB20AE66CEF480DF977E2D. 공식Core6 38.8417%, 24실답 반복/질문재출력 잔존. 독립 비교 앵커로보존·비채택이며 영구필수아님. weight-only/정확optimizer재개불가·Git제외·packed아님·삭제변환0.
+
+# 2026-11-01 오후 P107 문서/스케줄 재개의 연구 snapshot1개를 새 격리 경로에 보존했다.
+# payload781352215B/49조각(각16MB이하), 일반 inference CP가 아니며 basename delete행을 만들지 않는다. 정확 목록/49SHA 검산/재개 근거는 handoff/audit/nov01_afternoon/P107_DISK_CHECKPOINT_INVENTORY_v1.json; 가중치 staging·삭제0, 별도 프로세스/전원장애 미시험.

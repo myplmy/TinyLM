@@ -236,8 +236,38 @@ fp32 상주와 int8 상주가 갈린다.**
 
 ### 2.6 예약·사용중 태그 네임스페이스 (충돌 금지)
 
+2026-11-05 사용자111·112의 WSP 후속은 `p108_wsp_attn_v1_20261105`,
+`p108_wsp_headscan_v3_20261105`, `p108_wsp_partial_v1_20261105`다.
+headscan 준비v1/v2는 NOT_RUN 원형을 보존한다. [결과108§16~18](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md)의 동일 완료F/FP32/R1/cache/greedy 안에서만 비교한다.
+head 정답2→8/10/128·반복49→13/144와 echo2→21/144를 함께 보존하며 비채택이다.
+부분감쇠는 새test NOT_RUN이고 원CP/학습/새CP0이다. 새로운 일반품질 판정자나 기본 recipe로 승격하지 않는다.
+
 | P108 직접 편집 태그 | 범위 | 상태 |
 |---|---|---|
+| `p106b_gsq_coordinates_v2_20261113` | 기존64+64 TRAIN128을동일gain200/CEALM으로반복한AdamW/Lion 각256 기술진단 | 새115/Nov13 authority·CPU27·명시guard/output로저수준measure만재사용. 옛main/기한수정0·작은학습품질/75M/추가300M/CP저장0 |
+| `p108_nullspace_v1_20261113` | 값이 이미fit oracle를회복한5사실만, 같은층/값의비표적fit키와generic키 보호 | Stage14: fit-only선정·유한SVD보호·실제쓰기와oracle로짓대조. 반복평가된표현은독립test아님,5%주범위/20%큰편집진단,본체/valueoptimizer0 |
+| `p108_key_transport_v1_20261113` | Stage14의같은5사례/층/value와기존19문항에서주어한위치반사실 | Stage15: 고정값/실제행렬응답/전체쓰기대응으로문맥성·key이동·비표적관여분리. 새최적화/층선정/독립test/CP0 |
+| `p101a_padding_shapes_v1_20261113` | V3 실제4회704 group의32/64/128 폭·h1~h4 질량 CPU재고 | Stage3ne0W CPU12→3ne1W 정확hist/제곱항/경계group선정. 옛x/slots/128hist일치필수·V3_NOT_ADMITTED/모델로드/GPU0; compiled속도는후속 |
+| `p101a_padding_shapes_v2_20261113` | 같은V3의명시supervised턴을지키는기존masked consumer | v1 generic경로감독552829 불일치/종료1을보존. ne0Wb CPU13→ne2W로옛552609/전체membership문턱유지. 코드일반화/새자료채택아님 |
+| `p106b_gsq_logtail_v1_20261113` | 동일128TRAIN/완료Q와새finite-logit ALM tail·Adam/Lion각256 기계대조 | 기존Adam256 코드0/Lion66완료+67 q1오류를보존. CE본문/목표/분모/잡음같음·log-tail reduction만별도. 확률clip/본학습품질/CP0 |
+| `p101a_padding_compiled_v1_20261113` | 같은7전체group의fixed/crop ABBA·NTP/MTP별fresh4PID와새compiler캐시 | Stage3nf: CPU6/봉인후128우선·64/32후속. cold7+steady7·고정1024 DEV후처리/graph/원형/해제. 기존Muonnumeric음성유지·704/품질/CP0 |
+| `p101a_padding_compiled_v2_20261113` | 같은실험의기존exp --arm 여섯조건 인터페이스 | v1신규flag 등급누락/정적실패·GPU0을보존. Stage3ng CPU7/봉인/전체소유정적후실행. 공유등급표·검사기변경0·수식/선정/NS같음 |
+| `p108_query_value_v1_20261113` | Stage13 같은12가족/48층후보의 마지막 prompt 위치 value40 대 기존subject | 결과108§24: CPU26·753.53초/1668답/실제fit22/24·표현1/16이나모든norm7.4~10.6%/보호손상. 기본비채택·CP0·원복/CUDA0 |
+| `p108_query_covariance_v1_20261113` | Stage16 같은12 selected value/층의 마지막위치 공분산/항등rank-one 대 기존hard쓰기 | 결과108§25:566.973초·원답2324=재사용444+신규1880·fit18/21,dev0/3,공개표현각1/16. 보호84→84/65,작은norm도일반화/보호불충분·비채택·원복/CUDA0 |
+| `p108_query_transport_v1_20261113` | Stage17 같은52질문의 고정 last value·실제 국소response·전체쓰기 | 결과108§26:39.783초/312행·공개15/16은fixed도불충분. fixed dev4가공분산응답0/일반3으로변화·단독원인아님. 새최적화/CP0·원복/CUDA0 |
+| `p106b_qwen35_fixedshape_v1_20261113` | 같은Qwen3.5 FP32/native토큰/공식Core6에서B1x1024 body/fullhead 고정대직전가변폭 | 결과101§591:CPU31·canary69.346초/16prefix차0·직접CE/순서통과·원FP32음성보존. cost192/576/203.147초닫힘·full19965/67106진행. 설치/다운로드/학습/CP0 |
+| `p106b_actd_anchor_v1_20261113` | ACTD literal중복/고유보집합·전체분모·문자경계/owner와실제Qwen/Tiny정적어휘 | 결과101§592:CPU60·재고2.528초·대응247811/HOLD509. 기존TRAIN128export top-k0이라학습준비미완·모델/GPU/학습0 |
+| `p108_value_relative_v1_20261113` | 원출력norm 상대좌표, 기존한국어4사실 fit/dev만 paired; 새8사실/표현전이 | Stage12 실제보정중앙9.7%의단위문제를별도로진단. 같은목표/40회/층/5%행렬상한. 옛test선정0·새일반지능증거아님 |
+| `p101a_padding_muon_v1_20261113` | 원V3/부모·첫128대화의 PAD-specific raw/clipped/NS·실제재생, fixed1024/crop128 | 원장114/115, CPU21 통과. 기존CE 재생을새성과로반복하지않고 실제PAD쌍만회수. 기본NS/허용차불변,FP32NS는진단만. 본학습/compile/MTP/품질은별도 |
+| `p108_value_edit_v1_20261113` | 완료 new595-broad-f, 주어 마지막 토큰의 최적화 value와 공분산 rank-one | 첫 actual은 동결과 strict route 충돌로 종료1. baseline56/core 원복·예외 잔여 CUDA·소스 원형 보존. 품질 음성 아님 |
+| `p108_value_edit_v2_20261113` | v1과 같은 한영8사실·층·목표/선정, value-only autograd와 실패 참조 해제 수리 | 사용자115/P108§14: 실제 route 회귀를 더한 CPU21 통과. baseline56 재사용/parity 검증. 본체 optimizer0; 새 표현 전이는 실행 후 판정 |
+| `p108_value_edit_v3_20261113` | 같은 조건에서 편집 원복 뒤 autograd용 identity view 갱신, 작은 rank-one 재적용 패킷 보존 | v2의 둘째 후보 진입 cache 오류·소스 원형을 보존하고 CPU22로 조합 회귀. 첫v1/v2는 품질 음성이 아니며 새 실제 결과와 구분 |
+| `p108_native_v1_20261105/new595-broad-q` | 원scale 부호/삼진 코드·연속/잠재 대조,새 dev128/test256/일상32 | 결과108§15: CPU39·dev 고유8팔·독립6팔 실제0. 코드0.5/3변경은 원본/random3과41/256·보호0/64·반복103/288·일상32 동일로 비채택. 선택 밖0·원복·CUDA0,새 학습/CP쓰기0 |
+| p106b_completeness_v2_20261105 | Fixed24 source/question pair, same seeds/MTP/budgets | 101§581:54 requests/48 candidates. Extra completeness cue not adopted; label parsing is not correctness |
+| p106b_english_visible_v4_20261105 | Four controlled English candidates | 101§582:3380 input/72 targets, reader0. Source instruction interference; not included in V5 |
+| p106b_english_passage_v5_20261105 | Typed article, four pilot plus59 candidates | 101§583/585/587:30.128309M cumulative inputs,44.871691M shortage. Role errors and no remaining supported source; formal admission false |
+| p106b_gsq_objective_v1_20261105 | CPU-only full-bank cost preparation | 101§584:CPU5 and exact128 records/CP load. No GPU;17 original sources preserved before API separation |
+| p106b_gsq_objective_v2_20261105 | Full93.225M hard STE/GSQ, same CE/ALM and geometry | 101§586:three technical updates per arm, original CP unchanged/CUDA0. GSQ time1.349x/reserved peak2.155x, preclip norm over100. Main-training quality and packed deployment NOT_RUN |
 | `p108j_v1_20261104/new595-broad-q` | 마지막 down의 정답 margin 민감도→ridge/SVD 사후 보정, 새 balanced128/128/256 | 결과108§8~10: 첫 GPU 전 예약·CPU61/실제FD4 통과.580지도위치·원본 불변. dev20→20/19/19, 독립 원본/보정/무작위3팔 모두34/256·교정0으로 비채택. 새300M/배포/지능 채택 금지 |
 | `p108_attenuation_v1_20261104/new595-broad-q` | 기존580 calibration 위치의 저랭크/상한 감쇠와 첫4문항 실제 teacher-forced 개입 | 결과108§13: CPU6·hook6/7·실제복구0. 선형 평균 신호2.025→0.966→0.0138,고정4문항 body0/0/2/4정답. 입력별 gold oracle은 배포 능력이 아니다. 첫 정리 실패 보존·기존 test34/256 비채택 유지 |
 | `p108w_v1_20261104/new595-broad-q` | 무학습 원본64·첫 방향 수집 | 결과108§1.2: signed-zero no-op SHA 차이 보존. search/confirm 미실행 |
@@ -4169,3 +4199,102 @@ Falcon의 공식 문맥 로짓 재사용ON/TinyOFF·모델/토크나이저/사�
 [101§579](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)는 공통1024 문맥의 Native/Broad/Falcon 각각0/5shot 여섯 MMLU 전량과 동일 순열 대조를 확정했다. Falcon5의 앞문맥 절단과 모델별 어휘/사전학습 차이를 보존하며 공개 긴문맥 leaderboard와 동일시하지 않는다. Tiny 품질·학습 개선의 증거로 삼지 않는다.
 
 [107§15~16](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)은 명시 합성 문서·micro8×accum16·1024·BF16 AMP/FP32 master·checkpoint-on·Muon RMS4/AdamW·cosine/warmup 계약을 고정한다. None 기본 경로와 V1 상태는 그대로다. causal-only KD는 같은 tokenizer/교사 SHA·CE+계수×KL·별도 V2 상태로 명시하며 masked CE에는 교사를 호출하지 않는다. 합성 기술시험·전체 디스크 재개와 실제 언어 편향/본학습 효과는 별개다.
+
+### 2026-11-13 ACTD 실제 top128·정확 legacy 입력 선결
+
+결과101§593/계획P106B Stage8af·7i~7k가 소유한다. 두 새 namespace는
+p106b_qwen35_legacy_fixed_v1_20261113과 p106b_actd_top128_v1_20261113이다.
+원32k encoder/같은128 TRAIN은 x32216/CE772를 유지하며 GPU/optimizer/CP0의 CPU 준비다.
+기존 scalar ALM을 ACTD top128로 재명명하지 않는다. 원 teacher raw22와 config33의 합성은
+실 frontend 계약이며 새 caller 누락의 exit1을 보존한 뒤 metadata-only ID 회귀와 새15시험/
+7ib 준비19.344737초로 수리했다. 원 파일·library·진행중 평가 source는 변경하지 않았다.
+
+실제 prefix 위치는 두 정책 각770·문자내2HOLD이고 CE772는 전부 유지한다. 최근접은
+미래28위치(max6문자), causal-left는0이다. predictor 합집합695이며 top128 신호는 미수집이다.
+새 False12 literal은 원-byte/단독 decode를 대조해 첫 student subtoken으로 대응한다.
+나머지 미매핑 top128 ID가 하나라도 있으면 전체 위치 HOLD이며 원128 분포를 보존한다.
+학생전체어휘분모·전역 CE/ACTD 분모·한번shift/owner·EOS2와EOT4를 유지한다.
+
+Qwen 새16prefix canary의 문자열과 기존 실패문자열은 다르다. 원 hybrid_canary bytecode의
+정확입력을 fixed body/head에 연결하는 보완CPU3/봉인 뒤, 현재 full19965/67106의 종료·정리와
+실제exit0에 조건부로 GPU를 수행한다. 이 보완 전 full 점수를 최종 검증됐다고 발표하지 않는다.
+그다음 실제TRAIN128 teacher top128과93M CE-only/CE+ACTD ABBA 미분·비용을 직렬로 검사한다.
+본체 optimizer/CP/새 작은학습품질0이며 정제 전 추가300M 금지는 유지한다.
+
+
+### 2026-11-13 한 공동쓰기와 추가 공식평가의 사전 계약
+
+결과108§27/계획P108§21/Stage19는 기존12가족별 편집 합계와 한 물리 모델을 구별한다.
+같은48값/fit24로만 공통layer8을 골랐고, 공분산·고정5% Frobenius 구의 다중key 해를 쓴다.
+원core/CP·자료·후행질문을 유지하며 같은afterSHA의 전체68답·국소대조/random3를 회수한다.
+CPU11/봉인만 완료했고 실제 모델·새답·품질은 GPU전이다. 새 optimizer/CP 저장은0이다.
+
+결과101§594의 Qwen 추가 공식 V2는 기존7모델 scorer/identity를 변경하지 않는다. 과거
+interactive의 MANIFEST/REQUIRED_SOURCES 두 대입문만 바뀌고 나머지 AST가 같은지 확인해
+현재 별도 source를 봉인했다. 기존 완결 token-only1800/5153는 전량 검증해 재사용하고
+공식 KO/EN900각·LAMBADA5153의 원 metric/정답을 유지한다. q-only 보조 비절단900과 기존
+7모델 공통898의 분모 차이를 표에 명시한다. 공식 Core6 full의 실제0/CUDA0와 정확 legacy
+보완이 선결이며, 비용3task각32의 ETA가 마감에 맞을 때만 전량을 실행한다. 작은 점수 발표0,
+벤치마크 정답 학습0·기존7모델 재평가0·설치/다운로드0이다.
+### P108 Stage20 정밀도 복구 네임스페이스 — 2026-11-13
+
+`p108_joint_precision_v1_20261113`은 `p108_joint_write_v1_20261113`의 원실패를
+보존하고 같은4패킷·layer8·5%한도·68질문을 재사용한다. 원혼합 차분 문턱은 그대로
+보고하며 실제 FP32 F.linear EXACT와 FP64 선형성을 별도로 확인한다. 새로운 가치 최적화나
+모델 학습이 아니고 추가300M·CP저장0이다. 판정·권한은 P108 Stage20과 정밀도 복구 계약을
+따른다. 등록552~554, 실행 전 상태는 NOT_RUN이다.
+
+### Nov13 P108 Stage21·DSKD 복구 이름
+
+`p108_distributed_residual_v1_20261113`은P108§23/다층잔차계약의signed-gate·같은절대예산 단독11/순차8+11 대조다. 기존Stage20의한층packet을재실행하지않으며원value11/원형을재사용한다. CPU5/봉인완료,실제GPU는별도다.
+`p106b_dskdv2_hidden_recovery_v2_20261113`은101§601의원종료1부분캐시128/538대응을CPU전량검증하고4행/8호출로실제재생한복구다. 원V1의없는report/peak를채우지않는다. 추가300M/optimizer/CP0·corpus_admitted=false를유지한다.
+
+### 2026-11-13 DSKDv2 native bridge 진단 namespace
+
+`p106b_dskdv2_bridge_v1_20261113`: 기존128/CE772/actual native수락538, exact zero-lookahead,
+CPU은행/실제투영→head고정frame/chunk수치→93M양공간backward 비용이다. 전체vocab32768/248320을
+유지한다. update0이므로 기존300M recipe나정식품질판정을 바꾸지 않는다. CPU/GPU실제종료는
+각 root영수증으로 별도 닫고 최초실패를 보존한다. 계획Stage7y/z/aa/ab와 연결계약 참고.
+
+### 2026-11-13 DSKDv2 gradient geometry 별도 namespace
+
+`p106b_dskdv2_geometry_v1_20261113`: Stage7ab의큰norm을본체/공유embedding/투영·손실별로
+분리하는update0 진단이다. 원128/CE772/KD538을유지하며새본학습/생산계수를선택하지않는다.
+
+### 2026-11-13 projector-only warmup 별도 namespace
+
+`p106b_dskdv2_projector_warmup_v1_20261113`: 원128/538을선언root별분리해새투영만100update.
+학습lr1e-3·clip1·head동결·원본체forward/update0·CP저장0. 생산recipe/정식품질채택아니다.
+
+### 2026-11-13 native calibration1024 namespace
+
+`p106b_dskdv2_calibration1024_v1_20261113`은동결TRAIN1024의native표현수집이며옛128을
+그대로참조해중복teacher0·새896이하와2prefix만실행한다. 원CE/exact/HOLD보존·새corpus
+편입false·학생학습/update/CP0이다. 정제전추가300M금지와전체품질채택금지를유지한다.
+
+### 2026-11-13 native projector1024 namespace
+
+`p106b_dskdv2_projector1024_v1_20261113`: 동일기존투영100step커널·root분리·원보류136을
+유지하고native위치538→4113으로확장한다. 학생/원본체update0·투영100·CP0·품질채택0이다.
+
+### 2026-11-13 DWA CPU reference namespace
+
+`p106b_dwa_reference_v1_20261113`은명시동결entropy가중과bounded CPU Soft-DTW요소만
+검사한다. 전체DWA/native교육/생산속도/품질채택으로승격하지않는다. 전체모델/GPU/update0이다.
+
+### 2026-11-13 Soft-DTW GPU component namespace
+
+`p106b_softdtw_gpu_v1_20261113`은FP64단일cost/Tritonanti-diagonal forward·backward부품이다.
+작은독립참조/큰경로성질·cold/warm만검사하며모델/전체DWA/생산학습/품질주장0이다.
+
+후속 `p106b_softdtw_gpu_v2_20261113`은 초기 상태 alias 작성만 수리했다. 원수학/형상/
+FP64/gamma0.1/atol1e-9/rtol1e-8을 유지했고 actual33061/0으로 작은6형상 독립 참조와
+큰3형상 전치/경로 성질을 통과했다. 원 v1 actual44558/1은 보존한다. 전체 DWA는 미완이다.
+
+`p106b_dwa_band_symmetry_v2_20261113`은 고정4 seed의 CPU 수학 fixture다. 모델/어휘/
+teacher 없이 명시 unbanded-self·방향별 cross band 변형만 검산하며 전체 DWA 품질은
+판정하지 않는다. 원 parent 누락 종료1과 새 actual61143/0은 결과101§611에 분리했다.
+
+`p106b_softdtw_large_cpu_v1_20261113`은 원GPU seed/형상/RNG를 복원해 별도 행 단위
+CPU DP의 큰3손실만 원값과 대조한다. 큰gradient는NOT_RUN·GPU재실행0이며 결과101§612
+actual27359/0에서 큰 loss 차이0을 확인했다. 원입력/문턱과 GPU 보고서는 변경하지 않았다.

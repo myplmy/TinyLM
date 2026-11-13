@@ -1,0 +1,28 @@
+
+==============================================================================
+[runlog] 2026-11-13 15:02:03  name=P106B_Stage7aqW_softdtw_gpu_component
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=timeout --signal=TERM --kill-after=20s 1200s /home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p106b_softdtw_gpu actual
+==============================================================================
+[SOFTDTW_SMALL] {"shape": [1, 1], "cold_compile_forward_backward_seconds": 2.6092319500166923, "value": 1.2530742268846062, "warm": [{"wall_seconds": 0.0012955550046171993, "cuda_event_span_ms": 1.076159954071045}, {"wall_seconds": 0.0007701799913775176, "cuda_event_span_ms": 0.7460160255432129}, {"wall_seconds": 0.0005120530258864164, "cuda_event_span_ms": 0.4747839868068695}, {"wall_seconds": 0.0007286540057975799, "cuda_event_span_ms": 0.6994879841804504}, {"wall_seconds": 0.0007208210008684546, "cuda_event_span_ms": 0.6929600238800049}], "warm_wall_median_seconds": 0.0007286540057975799, "peak_allocated_bytes": 3072, "peak_reserved_bytes": 2097152, "reference_forward_backward_seconds": 0.08276780400774442, "loss_abs_difference": 0.0, "gradient_max_abs": 0.0, "independent_loss_close": true, "independent_gradient_close": true}
+[SOFTDTW_SMALL] {"shape": [1, 17], "cold_compile_forward_backward_seconds": 0.15192054299404845, "value": 14.721160710644616, "warm": [{"wall_seconds": 0.0010858500027097762, "cuda_event_span_ms": 1.046463966369629}, {"wall_seconds": 0.000623067986452952, "cuda_event_span_ms": 0.5969600081443787}, {"wall_seconds": 0.0007047639810480177, "cuda_event_span_ms": 0.6751999855041504}, {"wall_seconds": 0.0006340850086417049, "cuda_event_span_ms": 0.6045439839363098}, {"wall_seconds": 0.0008734010043554008, "cuda_event_span_ms": 0.849120020866394}], "warm_wall_median_seconds": 0.0007047639810480177, "peak_allocated_bytes": 3072, "peak_reserved_bytes": 2097152, "reference_forward_backward_seconds": 0.0013429899991024286, "loss_abs_difference": 0.0, "gradient_max_abs": 0.0, "independent_loss_close": true, "independent_gradient_close": true}
+[SOFTDTW_SMALL] {"shape": [17, 1], "cold_compile_forward_backward_seconds": 0.118181360012386, "value": 17.228608989847537, "warm": [{"wall_seconds": 0.0007774070254527032, "cuda_event_span_ms": 0.753055989742279}, {"wall_seconds": 0.0006872530211694539, "cuda_event_span_ms": 0.6796479821205139}, {"wall_seconds": 0.0005041620170231909, "cuda_event_span_ms": 0.4891520142555237}, {"wall_seconds": 0.0006963270134292543, "cuda_event_span_ms": 0.6747840046882629}, {"wall_seconds": 0.0007682659779675305, "cuda_event_span_ms": 0.7487999796867371}], "warm_wall_median_seconds": 0.0006963270134292543, "peak_allocated_bytes": 3072, "peak_reserved_bytes": 2097152, "reference_forward_backward_seconds": 0.0017080690013244748, "loss_abs_difference": 3.552713678800501e-15, "gradient_max_abs": 0.0, "independent_loss_close": true, "independent_gradient_close": true}
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/diag_p106b_softdtw_gpu.py", line 98, in actual
+    work(torch,p,report,start);report.update(status='GPU_SOFTDTW_COMPONENT_VERIFIED_NATIVE_DWA_NOT_RUN',returncode=0)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_softdtw_gpu.py", line 69, in work
+    if not row['independent_loss_close']or not row['independent_gradient_close']:raise ValueError('original FP64 CPU reference comparison failed')
+ValueError: original FP64 CPU reference comparison failed
+Traceback (most recent call last):
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/uranus/tinyLM/scripts/diag_p106b_softdtw_gpu.py", line 116, in <module>
+    parser=argparse.ArgumentParser();parser.add_argument('phase',choices=['prepare','actual']);a=parser.parse_args();(prepare if a.phase=='prepare'else actual)()
+  File "/home/uranus/tinyLM/scripts/diag_p106b_softdtw_gpu.py", line 111, in actual
+    if failure:raise failure
+RuntimeError: ValueError('original FP64 CPU reference comparison failed')
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.1분  (2026-11-13 15:02:08)
+==============================================================================

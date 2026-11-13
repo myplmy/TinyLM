@@ -1,0 +1,38 @@
+
+==============================================================================
+[runlog] 2026-11-13 01:29:57  name=P108_Stage12aWb_value_route_regression_failure
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -m unittest scripts.test_p108_value_edit.ValueContracts.test_real_float_route_value_gradient_preserves_master_contract
+==============================================================================
+E
+======================================================================
+ERROR: test_real_float_route_value_gradient_preserves_master_contract (scripts.test_p108_value_edit.ValueContracts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/uranus/tinyLM/scripts/test_p108_value_edit.py", line 86, in test_real_float_route_value_gradient_preserves_master_contract
+    output = model(torch.ones(1, 4, 2))
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1787, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/scripts/test_p106b_weight_route.py", line 56, in forward
+    output = self.b(self.a(all_x))
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1776, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1882, in _call_impl
+    return inner()
+  File "/home/uranus/miniforge3/envs/tlm_torch/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1830, in inner
+    result = forward_call(*args, **kwargs)
+  File "/home/uranus/tinyLM/scripts/p106b_weight_route.py", line 206, in _guarded_forward
+    _check_linear(module)
+  File "/home/uranus/tinyLM/scripts/p106b_weight_route.py", line 108, in _check_linear
+    raise ValueError('ordinary live FP32-master TLinear required')
+ValueError: ordinary live FP32-master TLinear required
+
+----------------------------------------------------------------------
+Ran 1 test in 0.111s
+
+FAILED (errors=1)
+------------------------------------------------------------------------------
+[runlog] 종료코드 1  소요 0.0분  (2026-11-13 01:29:58)
+==============================================================================

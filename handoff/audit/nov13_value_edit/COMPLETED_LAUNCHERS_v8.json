@@ -1,0 +1,106 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V8",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 523,
+      "source": "run_P106B_Stage8aeW_qwen35_fixed_full.sh",
+      "target": "run_P106B_Stage8aeW_qwen35_fixed_full-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Full official Core6 only after closed canary/cost and measured deadline admission.\n# Internal budget also reserves15minutes before User115 Nov13 17:00KST.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8aeW_qwen35_fixed_full -- timeout --signal=TERM --kill-after=20s 30050s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_fixedshape full\n",
+      "sha256": "9236AFDAE3AD3F6DE9114C794034D3A031D2C730EEBF9804A647D1AC14C001CD",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8aeW_qwen35_fixed_full.txt",
+      "log_sha256": "DDFCA88041DD83336C9F023E442583DB393F853D463B4AF58BD4EECE5BAB785C",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 528,
+      "source": "run_P106B_Stage8afW_legacy_fixed_actual.sh",
+      "target": "run_P106B_Stage8afW_legacy_fixed_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# After closed full run only: exact original prefix through fixed B1x1024/full head.\n# Existing evaluation environment only; no install, download or new environment.\n# Stop on a required contract error. Preserve all raw artifacts; no quality claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8afW_legacy_fixed_actual -- timeout --signal=TERM --kill-after=20s 1250s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_legacy_fixed actual\n\n",
+      "sha256": "E5EB39028361A54978A0A01885FA3CC13202A74ECBD2837E3A3F82F8385BAF38",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8afW_legacy_fixed_actual.txt",
+      "log_sha256": "1335CEDDB69DB280B84C7315048113C20088FDADFE063932A4FDE161698283A9",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 531,
+      "source": "run_P106B_Stage7jW_actd_top128_teacher.sh",
+      "target": "run_P106B_Stage7jW_actd_top128_teacher-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Qualified exact-legacy teacher only. Native top128, whole-position HOLD, no gold forcing.\n# Existing evaluation environment only; no install, download or new environment.\n# Stop on a required contract error. Preserve all raw artifacts; no quality claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7jW_actd_top128_teacher -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_actd_topk teacher\n\n",
+      "sha256": "D1C08ADA608B5F8B83284225F25A85E8D8D48EF243A881238A5138864DDC9541",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7jW_actd_top128_teacher.txt",
+      "log_sha256": "43DE67E02D2D8899B422C66192DA9CBE0CC0CF30DEFC4DDCEA1C61600002DDEB",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 532,
+      "source": "run_P106B_Stage7kW_actd_head_gradient_cost.sh",
+      "target": "run_P106B_Stage7kW_actd_head_gradient_cost-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Same full93M CE and ACTD ABBA gradient/cost only; optimizer and checkpoint writes zero.\n# Existing evaluation environment only; no install, download or new environment.\n# Stop on a required contract error. Preserve all raw artifacts; no quality claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7kW_actd_head_gradient_cost -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_actd_consumer\n\n",
+      "sha256": "E744E505B131928BB7DA082C8899802B0DA568B47CA2D8EA0270489D52A716B2",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7kW_actd_head_gradient_cost.txt",
+      "log_sha256": "887429D8287E81BD2D766B9F414F897C14064DA6A48101594407889403FBF37C",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 542,
+      "source": "run_P106B_Stage8ahbW_qwen_extra_cost.sh",
+      "target": "run_P106B_Stage8ahbW_qwen_extra_cost-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# After closed Core6 and exact legacy gate. Three32-document cost; not quality.\n# Existing eval environment; no download, install, new environment, training or checkpoint.\n# Required gates fail closed. Each phase owns fresh output and retains raw failures.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage8ahbW_qwen_extra_cost -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_qwen35_extra cost\n\n",
+      "sha256": "4405B9044B15B3FE1E997E153DABC9D7B6A18BFCE2C1F5E43476A9819DE87887",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage8ahbW_qwen_extra_cost.txt",
+      "log_sha256": "CDB1AFEEDA90B5171EB78F48B9F81CCEC6C954F75B622C31A9BA0710C80102B4",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 547,
+      "source": "run_P108_Stage19cW_joint_write_actual.sh",
+      "target": "run_P108_Stage19cW_joint_write_actual-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# One shared packet for all questions, fixed5percent cap, local/global/random and rollback.\n# Expected at most20minutes and4GiB point budget. No optimizer, CP save or product changes.\n# Single registered phase. Required contract failure stops and preserves raw evidence.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=4\nexport MKL_NUM_THREADS=4\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage19cW_joint_write_actual -- timeout --signal=TERM --kill-after=20s 1850s \"${PY}\" -B -X utf8 -m scripts.diag_p108_joint_write actual\n\n",
+      "sha256": "F88CA2C2E8B754B6B8A0522538B119F615331FF18714FA51CFB26C93BB6C094E",
+      "exit_code": 1,
+      "log": "test_result/108_log_20261113_P108_Stage19cW_joint_write_actual.txt",
+      "log_sha256": "E7FA658BC7B88D47AEB047AB5D6DFE184270C02DED655BA099329441F18906C7",
+      "status": "EXECUTED_TECHNICAL_ERROR_QUALITY_INCOMPLETE"
+    },
+    {
+      "id": 552,
+      "source": "run_P108_Stage20aW_joint_precision_cpu.sh",
+      "target": "run_P108_Stage20aW_joint_precision_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Exact FP32 replay and frozen packet/one-shot replacement CPU contracts. Models and GPU0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage20aW_joint_precision_cpu -- \"${PY}\" -B -X utf8 -m scripts.test_p108_joint_precision\n",
+      "sha256": "68B2EC75F0464CB73B39877985F76B12ABED8495D01C7204FEAB433042633677",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage20aW_joint_precision_cpu.txt",
+      "log_sha256": "3350BF78D754AFC3CED16747EA09454DB271F870E3290C71C5FF5DBBD5D0C32C",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 553,
+      "source": "run_P108_Stage20bW_joint_precision_reuse.sh",
+      "target": "run_P108_Stage20bW_joint_precision_reuse-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Reuse original failed run, complete188 responses and four frozen packets. GPU0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage20bW_joint_precision_reuse -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_joint_precision prepare\n",
+      "sha256": "02A9A501E2C029427310682D0B0E4DE908B3CB21A5834CA2F3F3C3A410DA4594",
+      "exit_code": 0,
+      "log": "test_result/108_log_20261113_P108_Stage20bW_joint_precision_reuse.txt",
+      "log_sha256": "88CB5968B0E76B0581811C4D2F61909BE40CCCD4FC4C4220B2D46D2821A3720D",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    },
+    {
+      "id": 555,
+      "source": "run_P106B_Stage7oW_actd_determinism_cpu.sh",
+      "target": "run_P106B_Stage7oW_actd_determinism_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# CPU3 and sealed reuse of original teacher/cache/gradient negative. No model loading or GPU.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=data_cache/p106b_official_eval_runtime/core6_env_20261023/bin/python\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\nexport CUDA_VISIBLE_DEVICES=\"\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7oW_actd_determinism_cpu -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_actd_determinism prepare\n",
+      "sha256": "51CC1919E9222B3F7B0A69457D24E8389A0AD9F2008BDEF23066DC0109F0336D",
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7oW_actd_determinism_cpu.txt",
+      "log_sha256": "2545F5E72E4C85C0DB80FC805F849433C777A1453EAB17C506AB0B407C0D6F61",
+      "status": "EXECUTED_RESULT_SCOPE_SEPARATE"
+    }
+  ]
+}

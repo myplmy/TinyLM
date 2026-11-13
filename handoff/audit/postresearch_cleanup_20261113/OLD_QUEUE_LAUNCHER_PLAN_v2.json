@@ -1,0 +1,722 @@
+{
+  "schema": "NOV13_OLD_QUEUE_LAUNCHERS_V1",
+  "launchers": [
+    {
+      "source": "run_P108_Stage7aWc_native_protocol_contract.sh",
+      "target": "run_P108_Stage7aWc_native_protocol_contract-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Native CPU integration before the first sealed model execution.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7aWc_native_protocol_contract --note \"Native scale and fresh data CPU checks plus alias identity, completed-budget rejection and exact/protected selection ordering. Preserve earlier failure and 35-test pass. No model assets, GPU or optimizer.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7aWc_native_protocol_contract -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p108_native_scale scripts.test_p108_weight_space\n",
+      "sha256": "EC4C9C9B673F8D35791A69A6B0395D2CCA205744F0C5CA67D6DBF24B5156CC5D",
+      "identity": {
+        "dev": 2096,
+        "ino": 1343847,
+        "size": 787,
+        "mtime_ns": 1793825699547376580,
+        "ctime_ns": 1793825699547376580,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/108_log_20261105_P108_Stage7aWc_native_protocol_contract.txt",
+          "sha256": "B7C694A38FE1B6FF107CA6DACBFF07B30D3D6016E60BE107AE5396400CBAAD48",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P108_Stage7bW_native_scale_prepare.sh",
+      "target": "run_P108_Stage7bW_native_scale_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Seal sources, original-model bindings and separate new dev/test inputs.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7bW_native_scale_prepare --note \"Prepare user109-only native profile before GPU. Reuse old natural-loop direction tensor, not old evaluation answers. Verify new scored prompts, model and tokenizer bindings. No model loading, CUDA, optimizer or original writes.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7bW_native_scale_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_native_scale prepare p108_native_v1_20261105\n",
+      "sha256": "8F651E1D9EF1C0759EF32257E29777348E86FF4C58A914F7B0EC53730FB9F9F1",
+      "identity": {
+        "dev": 2096,
+        "ino": 1343848,
+        "size": 800,
+        "mtime_ns": 1793825701626533584,
+        "ctime_ns": 1793825701626533584,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/108_log_20261105_P108_Stage7bW_native_scale_prepare.txt",
+          "sha256": "48A34B1E05AE590105B601A1C041BB809A7780DE9AB8BEA204A68C38790AC4F0",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft0W_supported_resume_ready.sh",
+      "target": "run_P106B_Stage4ft0W_supported_resume_ready-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Read-only original-source, exact replay and local MTP asset checks.\n# No teacher/model/GPU/server, production, original writes or quality claim.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft0W_supported_resume_ready --note \"User109 next-work preflight only. Verify exact old V3 inputs, successful pause pilot, public-source SHA, all closed batch bytes and actual quota/cursor replay, current MTP weights/libraries. No teacher process, model loading, GPU, new data admission, downloads or original writes.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft0W_supported_resume_ready -- timeout --signal=TERM --kill-after=10s 1200s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_supported_ready handoff/audit/nov05_teacher_resume/PREFLIGHT_v1.json\n",
+      "sha256": "B523817D052D64558A771AC9408FB35BB6502C081718DE5D919D9FCD9481C3C7",
+      "identity": {
+        "dev": 2096,
+        "ino": 1345031,
+        "size": 1012,
+        "mtime_ns": 1793827965393296184,
+        "ctime_ns": 1793827965393296184,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft0W_supported_resume_ready.txt",
+          "sha256": "09BAF75AB658CA4DB92780591EB4A9DA6F9DCF82D33BE84E405091B90172BFBD",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P108_Stage8bW_native_answer_readback.sh",
+      "target": "run_P108_Stage8bW_native_answer_readback-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage8bW_native_answer_readback --note \"Read-only sealed answer comparison. Verify all 1728 rows, native/random paired answers and final cleanup. No model, selection changes or quality promotion.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage8bW_native_answer_readback -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_native_readback\n",
+      "sha256": "64F092D278A092B3D54E4640688206C15A971F27BB1EB9CB29C071FC7CDDDA92",
+      "identity": {
+        "dev": 2096,
+        "ino": 1345087,
+        "size": 629,
+        "mtime_ns": 1793828329382474855,
+        "ctime_ns": 1793828329382474855,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/108_log_20261105_P108_Stage8bW_native_answer_readback.txt",
+          "sha256": "326782DFE4A9E03024A0422FE04BFC850878F222F3100C1BA5A4F2626CBA3ECC",
+          "exit_code": 1
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P108_Stage8cW_native_mixed_schema_readback.sh",
+      "target": "run_P108_Stage8cW_native_mixed_schema_readback-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage8cW_native_mixed_schema_readback --note \"Separate recovery after optional open-item source_group was incorrectly assumed. Require identical optional-field presence and values. Preserve prior reader failure and all raw model outputs. No model or selection changes.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage8cW_native_mixed_schema_readback -- \"${PY}\" -B -X utf8 -m scripts.diag_p108_native_readback\n",
+      "sha256": "A12D3639FA0AB5EA4F28B1945C07758E077EE6FADE26D37DA08943F31FF4C9E2",
+      "identity": {
+        "dev": 2096,
+        "ino": 1345103,
+        "size": 708,
+        "mtime_ns": 1793828360864511929,
+        "ctime_ns": 1793828360864511929,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/108_log_20261105_P108_Stage8cW_native_mixed_schema_readback.txt",
+          "sha256": "E41B5BACB6DD14A443E32CAD7B0451FEDFA0B9AF21D8AFBC8EC4B9AA3901C51B",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft1aW_completeness_prepare.sh",
+      "target": "run_P106B_Stage4ft1aW_completeness_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1aW_completeness_prepare --note \"CPU only: preserve V3, freeze 24 real sources and fixed questions, verify that both payloads differ only by the explicit completeness system suffix. No model or production admission.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1aW_completeness_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_completeness prepare\n",
+      "sha256": "D37F37557E9B0647E74B527A128C719016A551D940415941973E9417E4754027",
+      "identity": {
+        "dev": 2096,
+        "ino": 1345521,
+        "size": 672,
+        "mtime_ns": 1793828929139637229,
+        "ctime_ns": 1793828929139637229,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft1aW_completeness_prepare.txt",
+          "sha256": "DB666EAF13B0BFB23492F43FCD662B9D52E9E10CACBFA62CCD6FD97FA780668C",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft1cW_completeness_closure_prepare.sh",
+      "target": "run_P106B_Stage4ft1cW_completeness_closure_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1cW_completeness_closure_prepare --note \"CPU recovery before any model execution: freeze v2 with startup-zero-row reporting and real shard close API. Preserve the v1 prepared profile; no old files overwritten.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1cW_completeness_closure_prepare -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_completeness\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1cW_completeness_closure_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_completeness prepare\n",
+      "sha256": "99A2CC43B9B61F8FA9CBDA0A537A59A9774B574954C7F74C7735C0FDBF97AEAE",
+      "identity": {
+        "dev": 2096,
+        "ino": 1345544,
+        "size": 847,
+        "mtime_ns": 1793829080502737155,
+        "ctime_ns": 1793829080502737155,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft1cW_completeness_closure_prepare.txt",
+          "sha256": "05F3E52309D28E97716BDD6BC9818AB445B51A37A65B7BD273626CD82370D339",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft1dW_fixed_question_completeness_pair.sh",
+      "target": "run_P106B_Stage4ft1dW_fixed_question_completeness_pair-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'PROFILE_HASH'\n969601da9a484e09d4e7b2f1fa7f7b829c58022fc09afa2d46016ca794795087  test_result/evidence/p106b_completeness_v2_20261105/profile.json\nPROFILE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1dW_fixed_question_completeness_pair --note \"User109 bounded teacher-only GPU pair. Same 24 actual sources/fixed questions, seed, MTP ON, thinking1024/output3072/context8192 and sampler; alternate order. Only explicit completeness system suffix differs. Structure retries at most3; semantic automatic judgement0; old batches/student training0.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft1dW_fixed_question_completeness_pair -- timeout --signal=TERM --kill-after=20s 1900s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_completeness execute\n",
+      "sha256": "673E210F5DF58277362323691F8DB3A329492FFCB8CDAC34AC788A31223EE3AE",
+      "identity": {
+        "dev": 2096,
+        "ino": 1345565,
+        "size": 1014,
+        "mtime_ns": 1793829209002420545,
+        "ctime_ns": 1793829209002420545,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft1dW_fixed_question_completeness_pair.txt",
+          "sha256": "A44193698E81DC1FECD9F2B328D019B69074C6882FDF9693554433FE5FB52DD5",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft2aW_english_fork_prepare.sh",
+      "target": "run_P106B_Stage4ft2aW_english_fork_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2aW_english_fork_prepare --note \"CPU only: preserve V3, replay prior quotas, pin seven existing English sources, verify English-only source order and strict management suffix. No teacher, new production or training.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2aW_english_fork_prepare -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_english_production\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2aW_english_fork_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_production --mode prepare\n",
+      "sha256": "832964DB1BFFCB05F06F911B00AEB4D555B61250D48198286AC0C623B14DB6A4",
+      "identity": {
+        "dev": 2096,
+        "ino": 1346501,
+        "size": 856,
+        "mtime_ns": 1793830912125336558,
+        "ctime_ns": 1793830912125336558,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft2aW_english_fork_prepare.txt",
+          "sha256": "B5F763D6E6037102D3183DCB9490F62B6F7506EBE07B53C3391167654A9D8F4B",
+          "exit_code": 1
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft2bW_english_prompt_block_prepare.sh",
+      "target": "run_P106B_Stage4ft2bW_english_prompt_block_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2bW_english_prompt_block_prepare --note \"Preserve the first CPU preflight failure: visible-source guidance follows the exact management example. Remove exactly one known block and preserve its trailing guidance. No source or teacher output filtering.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2bW_english_prompt_block_prepare -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_english_production\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2bW_english_prompt_block_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_production --mode prepare\n",
+      "sha256": "4A7122D494FA28109C8291ED5ED099E5A7DEDDAF58E1912EAF647CB6823C4AB2",
+      "identity": {
+        "dev": 2096,
+        "ino": 1346575,
+        "size": 907,
+        "mtime_ns": 1793831149795859293,
+        "ctime_ns": 1793831149795859293,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft2bW_english_prompt_block_prepare.txt",
+          "sha256": "D703D8DF45124220065C1FC6747E13C8BD30D9D11BE5305D5BC92487D6BABD52",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft2cW_english_controlled_pilot.sh",
+      "target": "run_P106B_Stage4ft2cW_english_controlled_pilot-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'PREPARE_HASH'\n465c07ff8b9fb48f6a3688e7d335f3ba8065079c4bd4fe4584a6071d7fe9ec25  handoff/audit/nov05_teacher_resume/english_v4/PREPARE_v1.json\nPREPARE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2cW_english_controlled_pilot --note \"User109: teacher-only MTP pilot of four English-source/English-output candidates. Preserve V3; old quota replay, exact seven existing sources, original source indices. Controlled pause8 requires independent manifest/cursor/server checks, then root reading before any long resume. No student or training approval.\"\nset +e\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2cW_english_controlled_pilot -- timeout --signal=TERM --kill-after=20s 1100s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_production --mode pilot --max-wall-sec 900 --deadline-utc 2026-11-05T06:30:00+00:00 --stop-file tmp/P106B_Stage4ft2cW_STOP\nworker_rc=$?\nset -e\nif [[ \"$worker_rc\" != 0 && \"$worker_rc\" != 8 ]]; then exit \"$worker_rc\"; fi\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2cW_english_controlled_pilot -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_readback pilot\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft2cW_english_controlled_pilot --note \"Controlled pilot closure verified. Root source/answer review remains required; this is not a quality PASS or75M completion.\"\n",
+      "sha256": "08C9BA3E2389FBCDB9531B7053E5DADB8279EE61FE89283898A3A389B4018694",
+      "identity": {
+        "dev": 2096,
+        "ino": 1346750,
+        "size": 1617,
+        "mtime_ns": 1793831580024179140,
+        "ctime_ns": 1793831580024179140,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft2cW_english_controlled_pilot.txt",
+          "sha256": "FB3814655F8C638125867EB9E5BA8F7BA35850D76BF6966BB43DA012AB4C7B36",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft3aW_typed_article_prepare.sh",
+      "target": "run_P106B_Stage4ft3aW_typed_article_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3aW_typed_article_prepare --note \"CPU only: exact typed article boundary, UTF8 byte trace, preserve all original source messages/IDs/splits/ordinals, dual V3-parent/new-view replay. Unknown structures remain unsupported. No teacher or semantic output filter.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3aW_typed_article_prepare -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_english_production scripts.test_p106b_nov05_english_passage\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3aW_typed_article_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_passage --mode prepare\n",
+      "sha256": "995CD48FF5196E72073196A1BD2E17023AC1596FAFC02EE34329B625B06B3795",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347327,
+        "size": 939,
+        "mtime_ns": 1793832364607123286,
+        "ctime_ns": 1793832364607123286,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft3aW_typed_article_prepare.txt",
+          "sha256": "477BB9D93DF47AD3B6EF3CBCF994464F8DC4C86ADB593CF70E2CAECF1AE79839",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft3bW_typed_article_pilot.sh",
+      "target": "run_P106B_Stage4ft3bW_typed_article_pilot-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'PREPARE_HASH'\ncccb1c896791adc9459311e138a90e5fb64a17dc6b31915e1e86eb3de2be723f  handoff/audit/nov05_teacher_resume/english_view_v5/PREPARE_v1.json\nPREPARE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3bW_typed_article_pilot --note \"User109: English-only teacher MTP pilot, four candidates. Teacher/student see the same complete typed article; source question/answer lists are preserved in raw but excluded from inputs. V3 parent identity/split/cursor remain intact. No student, semantic output filtering or full-quality claim.\"\nset +e\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3bW_typed_article_pilot -- timeout --signal=TERM --kill-after=20s 1100s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_passage --mode pilot --max-wall-sec 900 --deadline-utc 2026-11-05T06:30:00+00:00 --stop-file tmp/P106B_Stage4ft3bW_STOP\nworker_rc=$?\nset -e\nif [[ \"$worker_rc\" != 0 && \"$worker_rc\" != 8 ]]; then exit \"$worker_rc\"; fi\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3bW_typed_article_pilot -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_passage --mode read-pilot\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3bW_typed_article_pilot --note \"Technical pilot closure verified; root must read the exact four article/question/answer pairs before any long resume. Controlled pause is not student improvement or75M completion.\"\n",
+      "sha256": "877E36F4B1B3041CBD8ED2607A4D946D88B704D17FB003812DBFDC20F98DAF75",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347499,
+        "size": 1648,
+        "mtime_ns": 1793832641368930997,
+        "ctime_ns": 1793832641368930997,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft3bW_typed_article_pilot.txt",
+          "sha256": "B6651BD7AB090107EAAC0C70476AE97A66677EFE3B30BE9770972BF79269E12D",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft3cW_english_candidate_window2h.sh",
+      "target": "run_P106B_Stage4ft3cW_english_candidate_window2h-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'PREPARE_HASH'\ncccb1c896791adc9459311e138a90e5fb64a17dc6b31915e1e86eb3de2be723f  handoff/audit/nov05_teacher_resume/english_view_v5/PREPARE_v1.json\nPREPARE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3cW_english_candidate_window2h --note \"User109 bounded7200s teacher-only candidate generation. Exact four V5 article/question/answer pairs reviewed; old V3 sources and checkpoints immutable. Same MTP and sampling. Formal corpus admission, student quality and75M completion are not established.\"\nset +e\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3cW_english_candidate_window2h -- timeout --signal=TERM --kill-after=20s 7500s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_passage --mode resume --max-wall-sec 7200 --deadline-utc 2026-11-05T06:30:00+00:00 --stop-file tmp/P106B_Stage4ft3cW_STOP\nworker_rc=$?\nset -e\nif [[ \"$worker_rc\" != 0 && \"$worker_rc\" != 8 ]]; then exit \"$worker_rc\"; fi\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3cW_english_candidate_window2h -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_passage --mode read-window\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3cW_english_candidate_window2h --note \"Closed candidate window and source replay verified. Worker8 is a controlled pause; downstream quality and training remain unapproved. Read raw questions/answers before another window.\"\n\n",
+      "sha256": "5EBC50B94E76259C256BA1F8C77CA6AEC2D9F22E8BA4A3F9836BABA177E41805",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347700,
+        "size": 1644,
+        "mtime_ns": 1793833425776775709,
+        "ctime_ns": 1793833425776775709,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft3cW_english_candidate_window2h.txt",
+          "sha256": "EBCA1F44BC38FA6169A3CFA99EB061669F8B10BCA7D3A5CD94A40FED3496006A",
+          "exit_code": 1
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4fu0W_gsq_objective_cpu.sh",
+      "target": "run_P106B_Stage4fu0W_gsq_objective_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0W_gsq_objective_cpu --note \"User109 technical CPU contracts for hard GSQ versus native STE on the same CE/ALM objective. Shared banks, mask denominators, gradients, layer/head checkpoint reuse and exact source restoration. No dataset, model checkpoint, GPU or student-quality evaluation.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0W_gsq_objective_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_gsq_objective -v\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0W_gsq_objective_cpu --note \"Technical CPU contracts complete. Actual full-geometry GPU cost and main-training quality remain NOT_RUN.\"\n\n",
+      "sha256": "C1C02449C56A17C4B03689D56026CCEB9C441A611BA8191E224E3519D8E4E8FF",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347701,
+        "size": 940,
+        "mtime_ns": 1793833427864363219,
+        "ctime_ns": 1793833427864363219,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu0W_gsq_objective_cpu.txt",
+          "sha256": "F3E674A54753A73B87152FEA2C0B19B20BE6A8AE527F1293172310AA6BD42DAE",
+          "exit_code": 1
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4fu0bW_shared_bank_contract_cpu.sh",
+      "target": "run_P106B_Stage4fu0bW_shared_bank_contract_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0bW_shared_bank_contract_cpu --note \"Preserve Stage4fu0W failure: the fixture compared per-layer mode containers rather than the shared physical MLP. Verify underlying MLP identity plus the original twelve GSQ/STE/ALM contracts. No original model code or scientific threshold changed.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0bW_shared_bank_contract_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_gsq_objective -v\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0bW_shared_bank_contract_cpu --note \"CPU technical contracts complete. Full-geometry GPU cost, packed export and main-training quality remain NOT_RUN.\"\n\n",
+      "sha256": "B1E1BEE9B8D86C1F8008FF2CE0B7CF970B90278C5C67D17473C16044590902C9",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347722,
+        "size": 960,
+        "mtime_ns": 1793833533422802583,
+        "ctime_ns": 1793833533422802583,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu0bW_shared_bank_contract_cpu.txt",
+          "sha256": "5CA4E00AE397AC10ACA175D56AFE7C67942BD2A67043A6E7F786B7EAF7B4D55D",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft3dW_resume_reader_prefix_cpu.sh",
+      "target": "run_P106B_Stage4ft3dW_resume_reader_prefix_cpu-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3dW_resume_reader_prefix_cpu --note \"Preserve Stage4ft3cW preteacher contract failure. Test the versioned latest-batch reader, then execute the exact V5 resume prefix through source/pilot/input/cursor checks and stop before teacher assets, server or a new batch. Frozen V5 generation code and inputs remain unchanged.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3dW_resume_reader_prefix_cpu -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_english_resume scripts.test_p106b_nov05_english_passage scripts.test_p106b_nov05_english_production -v\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3dW_resume_reader_prefix_cpu -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_resume prepare-resume\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3dW_resume_reader_prefix_cpu --note \"Real resume prefix complete before assets. No candidate, model, server, GPU or student-quality claim.\"\n\n",
+      "sha256": "F0AD9B1C484EDB1EEA88FD8639A7D175185939288C2BDD8FF8262E738A4F25C2",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347794,
+        "size": 1250,
+        "mtime_ns": 1793834047941995913,
+        "ctime_ns": 1793834047941995913,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft3dW_resume_reader_prefix_cpu.txt",
+          "sha256": "B7018300A3B09E660427D7327443A5B2585572A431B79B0C0FE58DFC75A7A2FA",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft3eW_checked_resume_window2h.sh",
+      "target": "run_P106B_Stage4ft3eW_checked_resume_window2h-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'RESUME_HASH'\ne7f1ad81bef9d98ca9dfac2ff1e07a20b3f94f66eb76655bbedcd65b51dc4bf3  handoff/audit/nov05_teacher_resume/english_view_v5/resume_adapter_v1/PREPARE_v1.json\nRESUME_HASH\nsha256sum --check --status <<'SOURCE_HASH'\n65642d71ad7ff4b7e175c067b3dda880769c23c9851828906a92f7c6c3917892  scripts/diag_p106b_nov05_english_resume.py\nSOURCE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3eW_checked_resume_window2h --note \"User109 V5 candidate resume after actual CPU prefix closure. Preserve the failed preteacher439 log. Only latest-batch reader version routing changes; frozen source, pilot, prompt, sampler and quota inputs remain identical. Bound7200s, absolute15:30KST stop. No student or full-quality claim.\"\nset +e\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3eW_checked_resume_window2h -- timeout --signal=TERM --kill-after=20s 7500s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_resume --mode resume --max-wall-sec 7200 --deadline-utc 2026-11-05T06:30:00+00:00 --stop-file tmp/P106B_Stage4ft3eW_STOP\nworker_rc=$?\nset -e\nif [[ \"$worker_rc\" != 0 && \"$worker_rc\" != 8 ]]; then exit \"$worker_rc\"; fi\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3eW_checked_resume_window2h -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_english_resume --mode read-window\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft3eW_checked_resume_window2h --note \"Closed candidate window, replay, original files and owned teacher exit verified. Worker8 remains controlled pause; semantic admission and student training remain NOT_RUN.\"\n\n",
+      "sha256": "949A285AD08DD2740A3E396D713967FEF82DDE27005B2A27C8697F1F48E7580C",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347824,
+        "size": 1834,
+        "mtime_ns": 1793834271495613465,
+        "ctime_ns": 1793834271495613465,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft3eW_checked_resume_window2h.txt",
+          "sha256": "5F70FE93DC93B011878E3CCEC3CFA56292A774A24078B9171FFE9CC3EDA7FCD6",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4fu0cW_gsq_full_geometry_prepare.sh",
+      "target": "run_P106B_Stage4fu0cW_gsq_full_geometry_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0cW_gsq_full_geometry_prepare --note \"CPU cost-input contracts then exact completed checkpoint CPU load and fixed closed TRAIN cache128 selection. No forward, CUDA, new teacher call, checkpoint save or quality evaluation. Standard micro8/accum16/1024 geometry; future three-update timing only.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0cW_gsq_full_geometry_prepare -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_gsq_objective_cost -v\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0cW_gsq_full_geometry_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_objective prepare\n\n",
+      "sha256": "A4251BA09CF7F227AECDFD01C5E3E98B2646DEC8C7A4839ABC6110E6581F7882",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347825,
+        "size": 919,
+        "mtime_ns": 1793834273595873350,
+        "ctime_ns": 1793834273595873350,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu0cW_gsq_full_geometry_prepare.txt",
+          "sha256": "8E599A487570713A87D390A186A853C905A7A137489ABE49481BCBCD141ADAFC",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4fu0dW_cost_record_api_prepare.sh",
+      "target": "run_P106B_Stage4fu0dW_cost_record_api_prepare-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0dW_cost_record_api_prepare --note \"Preserve cost v1 CPU preparation and frozen seventeen sources; no GPU was run in v1. Use product Record/pad API directly instead of importing the old whole ALM experiment driver for record construction. Same exact128 rows, checkpoint, objective and policy; fresh v2 cost namespace.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0dW_cost_record_api_prepare -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_gsq_objective_cost -v\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu0dW_cost_record_api_prepare -- \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_objective prepare\n\n",
+      "sha256": "1D5758EE6B6E1AA109EAF6632BC6ABA688C46E5E9946F4223560A20F8F008319",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347951,
+        "size": 939,
+        "mtime_ns": 1793834812347163710,
+        "ctime_ns": 1793834812347163710,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu0dW_cost_record_api_prepare.txt",
+          "sha256": "270FC812FE992509833F817D5F1C49830FB3B5A1819C4D5163DD7BB30A64D5CB",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4fu1aW_ste_objective_cost.sh",
+      "target": "run_P106B_Stage4fu1aW_ste_objective_cost-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'PROFILE_HASH'\n182d240cae4d660ef494e5573712b4fa68f05dd9c4a41d8003e492e6bb196db6  test_result/evidence/p106b_gsq_objective_v2_20261105/profile.json\nPROFILE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu1aW_ste_objective_cost --note \"User109 technical cost only, after owned teacher has exited. Full completed model, same closed128 TRAIN records, micro8/accum16/1024, checkpoint, BF16, AdamW, CE plus native ALM weight1. Warmup1 plus measured2 updates. No answer-quality claim, checkpoint save or extra300M. OOM and cleanup failures remain errors.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu1aW_ste_objective_cost -- timeout --signal=TERM --kill-after=20s 930s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_objective cost --arm ste --max-wall-sec 900\n\n",
+      "sha256": "C4D18A809CA5416C08DC63062FB6D2D30EC0CB159F5B60F655EE34DF0A08B4EA",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347967,
+        "size": 1018,
+        "mtime_ns": 1793834883722414330,
+        "ctime_ns": 1793834883722414330,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu1aW_ste_objective_cost.txt",
+          "sha256": "2344B638E80CD049F5DD78DDCBD2707193E7779AA560C5652CF9C752D8652A2D",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4fu1bW_gsq_objective_cost.sh",
+      "target": "run_P106B_Stage4fu1bW_gsq_objective_cost-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nsha256sum --check --status <<'PROFILE_HASH'\n182d240cae4d660ef494e5573712b4fa68f05dd9c4a41d8003e492e6bb196db6  test_result/evidence/p106b_gsq_objective_v2_20261105/profile.json\nPROFILE_HASH\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu1bW_gsq_objective_cost --note \"User109 technical cost only, after owned teacher has exited. Full completed model, same closed128 TRAIN records, micro8/accum16/1024, checkpoint, BF16, AdamW, CE plus native ALM weight1. Warmup1 plus measured2 updates. No answer-quality claim, checkpoint save or extra300M. OOM and cleanup failures remain errors.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu1bW_gsq_objective_cost -- timeout --signal=TERM --kill-after=20s 930s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_gsq_objective cost --arm gsq --max-wall-sec 900\n\n",
+      "sha256": "40B83D51901BC5964064473D9A9C5A24BC3FDB6086319626EF9F9F6AEBF03CF8",
+      "identity": {
+        "dev": 2096,
+        "ino": 1347969,
+        "size": 1018,
+        "mtime_ns": 1793834885795966085,
+        "ctime_ns": 1793834885795966085,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu1bW_gsq_objective_cost.txt",
+          "sha256": "8C808D172AA5B7D93C8EFE346AB543A01728A4E2AFEF9EC0EFAF7B5B2501E9F9",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft4aW_source_census_cpu_contract.sh",
+      "target": "run_P106B_Stage4ft4aW_source_census_cpu_contract-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4aW_source_census_cpu_contract --note \"User109 CPU remaining-source census. Reuse original English iterator and quota profile, preserve original indices/cursor, and write technical eligibility only. No teacher, GPU, source text cleaning, admission, new download or other-session corpus access.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4aW_source_census_cpu_contract -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_source_census -v\n\n",
+      "sha256": "B33422FB0051F6C7116A7FDB1F16EDA1BF7512048C399199A07D90F09D8C74AB",
+      "identity": {
+        "dev": 2096,
+        "ino": 1348150,
+        "size": 757,
+        "mtime_ns": 1793836017987437594,
+        "ctime_ns": 1793836017987437594,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft4aW_source_census_cpu_contract.txt",
+          "sha256": "20739D65CB859A4CD1391038B7DC2E543683EF1EC368142BBFC6BA39ED1BF3A2",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft4bW_remaining_source_cpu_census.sh",
+      "target": "run_P106B_Stage4ft4bW_remaining_source_cpu_census-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4bW_remaining_source_cpu_census --note \"User109 CPU remaining-source census. Reuse original English iterator and quota profile, preserve original indices/cursor, and write technical eligibility only. No teacher, GPU, source text cleaning, admission, new download or other-session corpus access.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4bW_remaining_source_cpu_census -- timeout --signal=TERM --kill-after=20s 3750s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_source_census --max-wall-sec 3600 --stop-file tmp/P106B_Stage4ft4bW_CENSUS_STOP\n\n",
+      "sha256": "DDBDC9FDCD5B7EBD791D19E4B50C8C4EF1883A88294C240FD4E0FF62C813C6C7",
+      "identity": {
+        "dev": 2096,
+        "ino": 1348151,
+        "size": 858,
+        "mtime_ns": 1793836019127586104,
+        "ctime_ns": 1793836019127586104,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft4bW_remaining_source_cpu_census.txt",
+          "sha256": "ACD685A8B76A42ACCF783970FF71F6AFEF8A3FF3D02E59119FD59CE85EB6CC47",
+          "exit_code": 1
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft4cW_occurrence_index_cpu_contract.sh",
+      "target": "run_P106B_Stage4ft4cW_occurrence_index_cpu_contract-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4cW_occurrence_index_cpu_contract --note \"Before any corpus census, retain duplicate source occurrences with exact original ordinals while reporting unique concept counts separately. A future consumer must not lose the original later-occurrence path after a failed source. Four CPU contracts; no corpus/GPU.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4cW_occurrence_index_cpu_contract -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_source_census -v\n\n",
+      "sha256": "99913D3E460B3005C8E9450F0D36C5FD329F2F1F110FCF620ADEFB8C09B608DB",
+      "identity": {
+        "dev": 2096,
+        "ino": 1348247,
+        "size": 774,
+        "mtime_ns": 1793836304700806671,
+        "ctime_ns": 1793836304700806671,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft4cW_occurrence_index_cpu_contract.txt",
+          "sha256": "DB8AE2288301ED87EC68E72B3E1918EA0B2826A965E321C27E35FE078D9032E3",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft4dW_empty_census_cpu_contract.sh",
+      "target": "run_P106B_Stage4ft4dW_empty_census_cpu_contract-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4dW_empty_census_cpu_contract --note \"Preserve census v1 exit1 after seven files: common corpus writer correctly forbids zero rows. New v2 writes an explicit eligibility report with no empty corpus manifest. Same source/cursor/quota; no teacher, GPU, source cleaning or admission.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4dW_empty_census_cpu_contract -- \"${PY}\" -B -X utf8 -m unittest scripts.test_p106b_nov05_source_census -v\n\n",
+      "sha256": "C0E528CF25868084FA20515C53FBD82F63456E075AF0E057CB830480785E1331",
+      "identity": {
+        "dev": 2096,
+        "ino": 1348806,
+        "size": 743,
+        "mtime_ns": 1793837094129722286,
+        "ctime_ns": 1793837094129722286,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft4dW_empty_census_cpu_contract.txt",
+          "sha256": "F1F2685A68F85F15032B319A6081D3E8E37B6C7B210F323BD7B65EFDAC5F659C",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P106B_Stage4ft4eW_empty_census_closed_recount.sh",
+      "target": "run_P106B_Stage4ft4eW_empty_census_closed_recount-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4eW_empty_census_closed_recount --note \"Preserve census v1 exit1 after seven files: common corpus writer correctly forbids zero rows. New v2 writes an explicit eligibility report with no empty corpus manifest. Same source/cursor/quota; no teacher, GPU, source cleaning or admission.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4ft4eW_empty_census_closed_recount -- timeout --signal=TERM --kill-after=20s 3750s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_nov05_source_census --max-wall-sec 3600 --stop-file tmp/P106B_Stage4ft4eW_CENSUS_STOP\n\n",
+      "sha256": "DC30E45995734CF14393F236A6F73C542BDDE4BF71867961F270C343E481FF0D",
+      "identity": {
+        "dev": 2096,
+        "ino": 1348807,
+        "size": 846,
+        "mtime_ns": 1793837096159335579,
+        "ctime_ns": 1793837096159335579,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4ft4eW_empty_census_closed_recount.txt",
+          "sha256": "9A999055B10FD6D2D37CBB14FCEAD3BFD8695DB7E75CFA73C961C345F45883A0",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": true
+    },
+    {
+      "source": "run_P108_Stage7cW_native_scale_dev.sh",
+      "target": "run_P108_Stage7cW_native_scale_dev-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# User109: shared desired delta, native lattice constraints and sealed dev only.\n# About 10 to 25 minutes, one GPU; no optimizer or checkpoint writes.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nsha256sum --check --status <<'PROFILE_HASH'\n77263dfcdde3b7233491f69f23b282a743b993550ef243520dc5731cdab09e65  test_result/evidence/p108_native_v1_20261105/new595-broad-q/profile.json\nPROFILE_HASH\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7cW_native_scale_dev --note \"User109 deadline 5Nov17KST. Dev128 only: original, shared-delta continuous/latent gain1, sign-only and frozen native codes at gain0.5/1/2. Retain scales; deduplicate actual matrix identities without counting aliases as runs. Native codes are not latent deployment. Restore CP/core/cache; no optimizer or test-guided selection.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage7cW_native_scale_dev -- timeout --signal=TERM --kill-after=20s 1900s \"${PY}\" -B -X utf8 -m scripts.diag_p108_native_scale search p108_native_v1_20261105\n",
+      "sha256": "0FB01972481113E027E30E5164218EC2A6191F31A0557959261BFD204CD0923F",
+      "identity": {
+        "dev": 2096,
+        "ino": 1344283,
+        "size": 1177,
+        "mtime_ns": 1793826232713536435,
+        "ctime_ns": 1793826232713536435,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/108_log_20261105_P108_Stage7cW_native_scale_dev.txt",
+          "sha256": "A96AFEFA07DE4719ED49061BE7F5DF1466827A4AC1859C368F552A5F3655BA3E",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": "LATEST_SCOPE_NOT_INCLUDED_CHILD_COMMAND_VERIFIED",
+      "child_command_matches_raw_log": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=20s",
+        "1900s",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "scripts.diag_p108_native_scale",
+        "search",
+        "p108_native_v1_20261105"
+      ]
+    },
+    {
+      "source": "run_P108_Stage8W_native_scale_confirm.sh",
+      "target": "run_P108_Stage8W_native_scale_confirm-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Requires a sealed nonzero native candidate; never choose on test answers.\n# About 10 to 20 minutes, one GPU; preserve original weights and all answers.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nsha256sum --check --status <<'PROFILE_HASH'\n77263dfcdde3b7233491f69f23b282a743b993550ef243520dc5731cdab09e65  test_result/evidence/p108_native_v1_20261105/new595-broad-q/profile.json\nPROFILE_HASH\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage8W_native_scale_confirm --note \"Frozen native candidate versus original, fixed latent anchor and three per-group transition-matched native controls. New test256 plus seen16/fresh16 open answers; preserve correct requested repeats/copies. Count exact, loops, echo and failures separately. Root reads actual answers; no general intelligence claim or reselection on test.\"\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 108 --name P108_Stage8W_native_scale_confirm -- timeout --signal=TERM --kill-after=20s 1900s \"${PY}\" -B -X utf8 -m scripts.diag_p108_native_scale confirm p108_native_v1_20261105\n",
+      "sha256": "0591149B393616602B4B38DC33A0FBCDE26C389228846C75B84796B0C1670172",
+      "identity": {
+        "dev": 2096,
+        "ino": 1344284,
+        "size": 1197,
+        "mtime_ns": 1793826233889056802,
+        "ctime_ns": 1793826233889056802,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/108_log_20261105_P108_Stage8W_native_scale_confirm.txt",
+          "sha256": "0699ECF712C36D58851FCA27E00C7DFE8CC06FF69A4BA14121136A48AC5E9A74",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": "LATEST_SCOPE_NOT_INCLUDED_CHILD_COMMAND_VERIFIED",
+      "child_command_matches_raw_log": [
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=20s",
+        "1900s",
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "scripts.diag_p108_native_scale",
+        "confirm",
+        "p108_native_v1_20261105"
+      ]
+    },
+    {
+      "source": "run_P106B_Stage4fu2W_objective_cost_readback.sh",
+      "target": "run_P106B_Stage4fu2W_objective_cost_readback-done.sh",
+      "command_text": "#!/usr/bin/env bash\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\nPY=\"$(tinylm_python)\"\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=1\nexport MKL_NUM_THREADS=1\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu2W_objective_cost_readback --note \"Independent stdlib readback of both completed cost reports, actual inputs/assistant/KD counts, warmup exclusion, peaks, source checkpoint and final CUDA. High preclip norms and sparse targets are disclosed. No model or quality evaluation.\"\n\"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage4fu2W_objective_cost_readback -- \"${PY}\" -B -X utf8 scripts/diag_p106b_gsq_cost_readback.py\n\n",
+      "sha256": "A49E412FEC9382912C06A4086CFDEAF363F5C1125CF81B14149BF0D4CBE1C08D",
+      "identity": {
+        "dev": 2096,
+        "ino": 1348866,
+        "size": 719,
+        "mtime_ns": 1793837285870731143,
+        "ctime_ns": 1793837285870731143,
+        "blocks_bytes": 4096
+      },
+      "logs": [
+        {
+          "path": "test_result/101_log_20261105_P106B_Stage4fu2W_objective_cost_readback.txt",
+          "sha256": "3A3479CEDFE72B33526486D90785B8E8E49C1C29C318ABE6A7681449C8FD12C4",
+          "exit_code": 0
+        }
+      ],
+      "source_pin_match": "LATEST_SCOPE_NOT_INCLUDED_CHILD_COMMAND_VERIFIED",
+      "child_command_matches_raw_log": [
+        "/home/uranus/miniforge3/envs/tlm_torch/bin/python",
+        "-B",
+        "-X",
+        "utf8",
+        "scripts/diag_p106b_gsq_cost_readback.py"
+      ]
+    }
+  ],
+  "holds": [
+    {
+      "source": "run_P078_Stage3Wc_prefix_router_full.sh",
+      "target": "run_P078_Stage3Wc_prefix_router_full-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Prefix-only learned router on an already completed frozen balanced704 body.\n# CPU prepared fresh512 holdout must exist; actual cost8 gates all further work.\n# Unmeasured total; current estimate1.5h is provisional, hard family40h.\n# Body training is not repeated. Dependency failure stops this pipeline only.\nset -uo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nsource scripts/shell/tinylm_env.sh\npython_bin=\"$(tinylm_python)\"\nstamp=\"$(date +%H%M%S)\"\nname=\"P078_Stage3Wc_prefix_router_full_${stamp}\"\n\"$python_bin\" -B -X utf8 scripts/runlog.py --name P078_Stage3Wc_prefix_router_full_\"$stamp\" --num 066 --note 'V2 scientific router: require prepared fresh512 holdout and closed balanced_count704 body, exact source/corpus/holdout/body/current authority. Current1.5h estimate is UNMEASURED; cost8 plus fresh pending-budget gate owns admission within40h. Body frozen, labels TRAIN only, DEV chooses head, TEST four fixed policies once. Read actual answers; CE is not truth. No R1 fallback or automatic adoption.'\nif [[ -z \"${TL_P078_ROUTER_AUTHORIZATION:-}\" || -z \"${TL_P078_ROUTER_AUTHORIZATION_SHA256:-}\" || -z \"${TL_P078_ROUTER_HOLDOUT_SHA256:-}\" ]]; then\n    \"$python_bin\" -B -X utf8 scripts/runlog.py --name P078_Stage3Wc_prefix_router_full_\"$stamp\" --num 066 --note 'HOLD8: separately approved router authority+SHA and exact CPU holdout report SHA required. Balanced body704 is closed; router labels/head/evaluation are NOT_RUN. No GPU or model started.'\n    exit 8\nfi\ncommon=(--corpus-sha256 7D52695308B0D8122B3ABE42CC7E396BFF3F94E811E5F379FFA85F259ED4EB20 --holdout-sha256 \"$TL_P078_ROUTER_HOLDOUT_SHA256\" --authorization \"$TL_P078_ROUTER_AUTHORIZATION\" --authorization-sha256 \"$TL_P078_ROUTER_AUTHORIZATION_SHA256\" --execute)\nfor mode in cost budget labels fit evaluate readback; do\n    case \"$mode\" in\n        labels) cap=21600 ;;\n        fit) cap=7200 ;;\n        evaluate) cap=14400 ;;\n        *) cap=1200 ;;\n    esac\n    \"$python_bin\" -B -X utf8 scripts/runlog.py --name P078_Stage3Wc_prefix_router_full_\"$stamp\" --num 066 -- \"$python_bin\" -B -X utf8 scripts/diag_p078_prefix_router.py --mode \"$mode\" --max-wall-sec \"$cap\" \"${common[@]}\"\n    result=$?\n    [[ \"$result\" == 0 ]] || exit \"$result\"\ndone\n",
+      "sha256": "C01D4EC57C6E5C138C67EEFEE645E03EF256FBDD677EB1DD8CF5C887E9284285",
+      "identity": {
+        "dev": 2096,
+        "ino": 250140,
+        "size": 2236,
+        "mtime_ns": 1792739451596519996,
+        "ctime_ns": 1792739451596519996,
+        "blocks_bytes": 4096
+      },
+      "logs": [],
+      "source_pin_match": false,
+      "hold_target": "run_P078_Stage3Wc_prefix_router_full-hold.sh",
+      "hold_reason": "새 fresh512/별도 권한을 요구하는 미실행 경로다. 과거 historical router 완료와 구분하고 실행 큐에서 보류한다."
+    }
+  ],
+  "reason": "완료 원로그와 소스봉인은 있으나 원래 이름이 남아 메뉴에 재노출됐다. 명령 보존 후 -done 처리·삭제한다.",
+  "parent_plan_sha256": "D2A1D5E3CC6F003C53DF83A7053A98BC75CE3311AE6EF8930DB07EC15DFD0BA2"
+}

@@ -1,0 +1,44 @@
+Preserve Stage4ft3cW preteacher contract failure. Test the versioned latest-batch reader, then execute the exact V5 resume prefix through source/pilot/input/cursor checks and stop before teacher assets, server or a new batch. Frozen V5 generation code and inputs remain unchanged.
+
+==============================================================================
+[runlog] 2026-11-05 08:14:12  name=P106B_Stage4ft3dW_resume_reader_prefix_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m unittest scripts.test_p106b_nov05_english_resume scripts.test_p106b_nov05_english_passage scripts.test_p106b_nov05_english_production -v
+==============================================================================
+test_a_mixed_v5_batch_is_still_rejected (scripts.test_p106b_nov05_english_resume.ResumeVersionTests) ... ok
+test_parent_destination_keeps_the_original_v3_reader (scripts.test_p106b_nov05_english_resume.ResumeVersionTests) ... ok
+test_runtime_restores_the_original_reader_after_failure (scripts.test_p106b_nov05_english_resume.ResumeVersionTests) ... ok
+test_v5_latest_batch_uses_its_declared_view_not_parent_version (scripts.test_p106b_nov05_english_resume.ResumeVersionTests) ... ok
+test_exception_restores_replay_version (scripts.test_p106b_nov05_english_passage.ArticleViewTests) ... ok
+test_inline_or_empty_article_fails (scripts.test_p106b_nov05_english_passage.ArticleViewTests) ... ok
+test_original_messages_are_not_modified (scripts.test_p106b_nov05_english_passage.ArticleViewTests) ... ok
+test_parent_v3_and_new_view_versions_are_separate (scripts.test_p106b_nov05_english_passage.ArticleViewTests) ... ok
+test_unknown_or_multiple_boundaries_fail (scripts.test_p106b_nov05_english_passage.ArticleViewTests) ... ok
+test_utf8_byte_slice_matches_complete_article (scripts.test_p106b_nov05_english_passage.ArticleViewTests) ... ok
+test_changed_example_fails_instead_of_broad_text_replacement (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_duplicate_management_example_is_rejected (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_exact_source_rows_keep_their_order_and_objects (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_new_input_mismatch_precedes_any_candidate_admission (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_non_english_metadata_is_rejected (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_only_exact_management_example_is_removed (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_parent_batch_count_mismatch_precedes_new_replay (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+test_unapproved_source_is_not_opened (scripts.test_p106b_nov05_english_production.EnglishForkTests) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.005s
+
+OK
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 0.0분  (2026-11-05 08:14:12)
+==============================================================================
+
+==============================================================================
+[runlog] 2026-11-05 08:14:12  name=P106B_Stage4ft3dW_resume_reader_prefix_cpu
+[runlog] cwd=/home/uranus/tinyLM
+[runlog] cmd=/home/uranus/miniforge3/envs/tlm_torch/bin/python -B -X utf8 -m scripts.diag_p106b_nov05_english_resume prepare-resume
+==============================================================================
+[RESUME_PREFIX] {"schema": "P106B_V5_RESUME_READER_SEAM_V1", "status": "ACTUAL_RESUME_PREFIX_VERIFIED_BEFORE_TEACHER", "source_sha256": "65642D71AD7FF4B7E175C067B3DDA880769C23C9851828906A92F7C6C3917892", "view_source_sha256": "F6B1FC8A2A895A183E9B126CAD858686592E233A6E86FBC9DF26754BF8ECC6DC", "generation_inputs_sha256": "F522247A33724A62E4EC4ED6B6006B90B9480E378791BD85D4AEC30CA728E9E3", "pilot_report_sha256": "AE43316A15515172FDEC24BE84C04F7187C674A3E6976D911F60274E9EC71C8D", "root_review_sha256": "C8BED5FD3E83134C95BBBDAB6455FE77F299D6739787F9E2D0D32BB9FAE850C8", "prepared_sha256": "CCCB1C896791ADC9459311E138A90E5FB64A17DC6B31915E1E86EB3DE2BE723F", "old_original_files_unchanged": true, "teacher_started": false, "gpu_query": false, "new_batch_created": false, "change": "Only latest-batch enumeration accepts the already declared V5 article contract. No prompt, source, sampler, quota or generation-contract changes."}
+------------------------------------------------------------------------------
+[runlog] 종료코드 0  소요 1.3분  (2026-11-05 08:15:29)
+==============================================================================
+Real resume prefix complete before assets. No candidate, model, server, GPU or student-quality claim.

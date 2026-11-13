@@ -1,0 +1,3010 @@
+{
+  "schema": "NOV13_METHOD_REGISTRY_CENSUS_V1",
+  "sources": [
+    "docs/methods/01_architecture.md",
+    "docs/methods/02_memory.md",
+    "docs/methods/03_knowledge_quality.md",
+    "docs/methods/04_context_length.md",
+    "docs/methods/05_training_speed.md",
+    "docs/methods/06_training_quality.md",
+    "docs/methods/07_corpus_selection.md",
+    "docs/methods/08_paper_review.md",
+    "docs/methods/08_paper_review2.md",
+    "docs/methods/09_training_memory.md",
+    "docs/methods/10_benchmarks.md",
+    "docs/methods/11_tokenizer.md",
+    "docs/methods/12_inference_speed.md"
+  ],
+  "rows": [
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 7,
+      "method": "**prelude/coda 분리** (2+2 완전 독립)",
+      "status_as_written": "✅",
+      "row": "| **prelude/coda 분리** (2+2 완전 독립) | ✅ | v4~ | 첫·마지막 층은 임베딩 입력/lm_head 출력 조정이라 질적으로 다름. 공유 풀에 넣으면 중간층 자유도로 회복 불가. 2+2 독립이 단일 최대 이득 | 독립층만큼 메모리 약간↑ | 근거: Tying the Loop(EPFL). 전층 타잉 대비 격차 0.097~0.202로 최대 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 8,
+      "method": "**어텐션 층별 독립**",
+      "status_as_written": "✅",
+      "row": "| **어텐션 층별 독립** | ✅ | v4~ | 타이드 레이어를 구별시키는 건 라우터가 아니라 어텐션. Q/O·(소유)K/V를 층마다 둠 | MLP 대비 파라미터 작아 유지비 저렴 | ablation: 어텐션 풀면 손실 0.03~0.058 개선 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 9,
+      "method": "**MLP만 g층 타잉** (`mlp_group=4`)",
+      "status_as_written": "✅",
+      "row": "| **MLP만 g층 타잉** (`mlp_group=4`) | ✅ | v4~ | 파라미터 75%인 MLP를 4층씩 1그룹으로 공유 → 메모리 대폭↓ | 손실 격차(+0.05~0.07 예상, 실측 +0.118@300M undertrained) | g=2/6/8 스윕 가능. 큰 모델일수록 타잉 손해↓ |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 10,
+      "method": "**CLA2** (인접 2층 K/V 공유)",
+      "status_as_written": "✅",
+      "row": "| **CLA2** (인접 2층 K/V 공유) | ✅ | v4~ | K/V를 그룹 첫 층만 계산·저장, 나머지 재사용 → KV 캐시·메모리 절반 | 표현력 소폭 | 가중치 타잉과 무관한 별도 축. Q/O는 층별 독립 유지 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 11,
+      "method": "**Factorized embedding** (V×E+E×d, E=256)",
+      "status_as_written": "✅",
+      "row": "| **Factorized embedding** (V×E+E×d, E=256) | ✅ | v4~ | 임베딩을 저랭크 분해 → 임베딩이 더는 메모리 바닥이 아님. lm_head도 전치 공유로 저렴 | 로짓 랭크가 E로 제한 | 임베딩 메모리 최대 9배↓(64k+E=512 조합 시) |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 12,
+      "method": "**adaLN** (층별 scale/shift/gate)",
+      "status_as_written": "✅",
+      "row": "| **adaLN** (층별 scale/shift/gate) | ✅ | v4~ | 공유 MLP라도 층별 정규화 게인으로 입력을 다르게 변조 → 층 차별화 | 거의 공짜(파라미터 미미) | mode-delta와 동등 효과 확인(0.0134 vs 0.0132) |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 13,
+      "method": "**QK-norm** (q·k 내적 전 RMSNorm)",
+      "status_as_written": "✅",
+      "row": "| **QK-norm** (q·k 내적 전 RMSNorm) | ✅ | v5 | 어텐션 로짓 폭주 억제 → 학습 안정 | 없음(파라미터 없는 RMSNorm) | v4 NaN 발산의 주원인 해결. 메모리·FLOPs 중립 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 14,
+      "method": "**depth-delta** (층간 저랭크 델타)",
+      "status_as_written": "🚫",
+      "row": "| **depth-delta** (층간 저랭크 델타) | 🚫 | v4 폐기 | (기각) rank_spectrum_v3 측정: excess/비용 효율 전 항목 1.0 미만 | — | \"같은 메모리면 레이어 하나 더\"에 항상 짐 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 15,
+      "method": "**mode routing / mode-delta**",
+      "status_as_written": "🧪",
+      "row": "| **mode routing / mode-delta** | 🧪 | v4~ (기본 off) | 토큰별 모드 라우팅 + 모드별 델타 | 라우터·델타 파라미터·연산 | `n_modes=1, mode_rank=0` 기본. adaLN만으로 충분 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 16,
+      "method": "**Ternary-LoRA 완화** (RRT식 층별 LoRA)",
+      "status_as_written": "🧪",
+      "row": "| **Ternary-LoRA 완화** (RRT식 층별 LoRA) | 🧪 | v6 (`--lora-rank`) | 공유 MLP 위에 층별 저랭크 보정 → 각 층 특화로 격차↓ | 메모리: fp16 r=16 → 1.46×, **ternary r=32 → 1.71×** | U=0 초기화로 시작 시 항등. 근거: RRT(ICLR 2025) |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 17,
+      "method": "**FiLM 층별 조건화**",
+      "status_as_written": "🧪",
+      "row": "| **FiLM 층별 조건화** | 🧪 | v6 (`--mlp-film`) | 공유 MLP 은닉을 층별 scale/shift로 변조 → 거의 공짜 차별화 | 파라미터 ~65K(≈0.13MB) → **감축 1.81× 유지** | LoRA보다 저렴한 rank-0 대안. shift/scale=0 초기화 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 18,
+      "method": "**깊고 얇게 + 공유** (`m100d`: 2+24+2, g6)",
+      "status_as_written": "🧪",
+      "row": "| **깊고 얇게 + 공유** (`m100d`: 2+24+2, g6) | 🧪 | v6 (프리셋) | MLP 그룹 수는 유지(4), 깊이만↑ → 감축비 개선(~2.27× vs 자기 dense) | 절대 메모리 +2.5MB·연산 +40% | 근거: MobileLLM. 자체 dense와 별도 비교 필요 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 19,
+      "method": "**★연속 블록 공유(immediate sharing)**",
+      "status_as_written": "✅**외부 검증됨**",
+      "row": "| **★연속 블록 공유(immediate sharing)** | ✅**외부 검증됨** | v4~ | 우리 `mid_mlps[j // g]` 는 **연속 g 층이 같은 MLP** 를 쓴다 = MobileLLM 의 *immediate block-wise weight sharing* 과 동일 형태 | 없음(이미 그렇게 돼 있다) | ★MobileLLM(arXiv:2402.14905)이 **모델 크기 증가 0·지연 오버헤드 미미**로 125M/350M 에서 **+0.7/0.8%p** 보고. **우리 설계 선택이 독립적으로 지지된다.** 그리고 이 배치가 **캐시 지역성 이득**(결과 014 §11: 층당 g8 0.913 ^< g4 1.022 ^< dense 1.163ms)과 **언팩 묶기**(P034 3C)를 가능하게 하는 전제다 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 20,
+      "method": "**★층별 LoRA 로 타잉 완화(RRT)**",
+      "status_as_written": "🧪**재부상**",
+      "row": "| **★층별 LoRA 로 타잉 완화(RRT)** | 🧪**재부상** | v6 (`--lora-rank`, **기본 off**) | 공유 MLP 위에 층별 저랭크 보정. RRT 가 **layer-wise LoRA** 로 타잉 제약을 푸는 것과 동일 | 메모리 ternary r=32 → 1.71×(2.09× 대비 손해) | ★**현 후보 mA·mC 는 LoRA·FiLM 이 전부 꺼져 있다**(`mlp_lora_rank=0`). 구 측정은 **둘 다 도움**이었다(`t_lora32` 3.9220 / `t_film` 3.9420 vs `t_base` 3.9558). 근거: RRT(arXiv:2410.20672). **타잉 격차 +0.15~0.17 은 6배 토큰에도 안 닫혔고**(결과 006), 남은 유일한 품질 축이 이것이다 → **P008 재개 근거** |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 21,
+      "method": "**prelude/coda 3+3 확장**",
+      "status_as_written": "💡",
+      "row": "| **prelude/coda 3+3 확장** | 💡 | — | 경계 독립층↑로 격차↓ | 감축 1.81→1.55× | 격차가 크면(+0.15↑) 후퇴 옵션 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 22,
+      "method": "**KDA 3:1 하이브리드 + NoPE**",
+      "status_as_written": "🔜",
+      "row": "| **KDA 3:1 하이브리드 + NoPE** | 🔜 | — | 선형 어텐션으로 KV 대폭↓ | GPU 전용 chunkwise 커널(CPU 없음) | 컨텍스트 로드맵. 4번 참조 |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 23,
+      "method": "~~층별 LoRA·FiLM 완화~~",
+      "status_as_written": "🚫**KD 조건에서 기각**",
+      "row": "| ~~층별 LoRA·FiLM 완화~~ | 🚫**KD 조건에서 기각** | v6 | 공유 MLP 를 층마다 특화 | 메모리(LoRA 1.94×) / FiLM 0.13MB | 🚫**세 측정이 한 방향**: KD 없음 LoRA −0.0338·FiLM −0.0138 → KD 있음 둘 합쳐 −0.0065 → **KD+g8+paired FiLM 단독 +0.0003**(결과 027). **KD 가 그 자리를 차지했다.** 부수: 조건화 장치는 `grad_max` 를 키운다(FiLM 2.2배, LoRA 6.20) |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 24,
+      "method": "**★LM 헤드가 추론 고정비의 주범**(신규)",
+      "status_as_written": "💡",
+      "row": "| **★LM 헤드가 추론 고정비의 주범**(신규) | 💡 | — (C-1·C-2) | 디코드 시간 = `a + b×층통과` 에서 **`a` = 3.3~4.3ms = 전체의 14~19%**. LM 헤드가 토큰당 **8.6M MAC**(층 하나 6.2M 보다 크다) + 32,768 vocab top-k | 로짓 랭크·샘플링 품질 | ~`a` −30~50% → 전체 −5~9%. **P046(E=128)이 절반을 노린다.** top-k partial sort 는 **값싼 즉효 후보**(C-2) |"
+    },
+    {
+      "source": "docs/methods/01_architecture.md",
+      "line": 25,
+      "method": "**깊고 얇게**(`m100d` 2+24+2, g6)",
+      "status_as_written": "🧪 프리셋 존재·미측정",
+      "row": "| **깊고 얇게**(`m100d` 2+24+2, g6) | 🧪 프리셋 존재·미측정 | v6 | MLP 그룹 수 유지, 깊이만↑ | 절대 메모리 +2.5MB·연산 +40% | 📄MobileLLM 근거. **자체 dense 와 별도 비교 필요**(D-8) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 12,
+      "method": "**g128 삼진 양자화**",
+      "status_as_written": "✅",
+      "row": "| **g128 삼진 양자화** | ✅ | v4~ | 가중치를 {-α,0,+α} 3진 + g128 그룹 스케일 → 약 1.95bpw | 품질 소폭(어닐로 완화) | llama.cpp Q2_0_g128 / T-MAC 호환. TWN 임계+L2 alpha |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 13,
+      "method": "**MLP 타잉 (g=4)**",
+      "status_as_written": "✅",
+      "row": "| **MLP 타잉 (g=4)** | ✅ | v4~ | 중간 MLP를 4층 1그룹 공유 → 파라미터 132.5M→72.9M | 손실 격차 | 감축 **1.82×**. 메모리 축의 최대 기여 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 14,
+      "method": "**CLA2**",
+      "status_as_written": "✅",
+      "row": "| **CLA2** | ✅ | v4~ | KV를 2층 공유 → **KV 엔트리 절반** | ★**+0.0195**(결과 058 §13) | ★**이관됨 → [`04_context_length.md`](04_context_length.md) §4.1.** 📄arXiv:2405.12981 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 15,
+      "method": "**Factorized embedding**",
+      "status_as_written": "✅",
+      "row": "| **Factorized embedding** | ✅ | v4~ | V×E+E×d 저랭크 → 임베딩 메모리 바닥 제거 | 로짓 랭크 E 제한 | (a)64k+(b)E=512 조합 시 9.2× |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 16,
+      "method": "**g 스윕 (g=6, 8, 16)**",
+      "status_as_written": "✅**측정**",
+      "row": "| **g 스윕 (g=6, 8, 16)** | ✅**측정** | v6 | 공유 강도↑ → 감축↑ | 손실↑ | g=8 → **2.07×**(63.5M, KD 후 +0.005), g=16 → **2.26×**(58.8M, +0.018). **g8 을 권장 상한**(g4→g8 이득 1.15×뿐). ★결과 006: **격차는 토큰 6배에도 불변(+0.15~0.17)** → 용량 상한이며 학습 부족 아님 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 17,
+      "method": "**Ternary-LoRA (저비트)**",
+      "status_as_written": "🧪",
+      "row": "| **Ternary-LoRA (저비트)** | 🧪 | v6 | 격차 복원을 저비트 LoRA로 → 품질 복원하며 메모리 거의 유지 | r·bits 의존 | r=32 ternary → 1.71× (fp16은 1.46×) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 18,
+      "method": "**3:4 희소 삼진(1.25bpw)**",
+      "status_as_written": "✅**측정**",
+      "row": "| **3:4 희소 삼진(1.25bpw)** | ✅**측정** | v6 (`--sparse34`) | 4-블록마다 \\|w\\|최소 1개 0강제 → 3개만 ±1, 5비트 무낭비 = 1.25bpw. 타잉과 곱셈누적 | **희소 단독 비용 +0.035(g4) / +0.056(g8) — 타잉과 경합해 초선형 악화**. 학습시간 영향 0(+1%) | ★결과 008: **g8_s34 10.3MB(3.00×)/+0.061**, **g4_s34 11.7MB(2.64×)/+0.036** (둘 다 `≤+0.07` 성립, \\|g\\|max 0.6). **300M 풀 기준이라 공정풀 재검증 필요**(REVIEW1). 실이득은 CPU 5비트 패킹 전제. Sherry/Sparse-BitNet 정합. P016 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 19,
+      "method": "**어텐션 g=2**",
+      "status_as_written": "💡",
+      "row": "| **어텐션 g=2** | 💡 | — | 어텐션까지 부분 공유 | 층 차별화↓(비싼 영역) | 메모리가 더 필요할 때만 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 20,
+      "method": "**vocab 64k 축소 / 1-bit 임베딩**",
+      "status_as_written": "🔜",
+      "row": "| **vocab 64k 축소 / 1-bit 임베딩** | 🔜 | — | 임베딩·lm_head 추가 축소 | 한국어 토큰 증가/토크나이저 재학습 | 1.7B 확장 시 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 22,
+      "method": "**★LUT 기반 mpGEMM(T-MAC/bitnet.cpp)**",
+      "status_as_written": "💡**최우선**",
+      "row": "| **★LUT 기반 mpGEMM(T-MAC/bitnet.cpp)** | 💡**최우선** | — (P014) | **역양자화 없이** 삼진 가중치를 룩업테이블로 곱셈누적. 곱셈을 테이블 조회로 치환 | 커널 구현·플랫폼별 SIMD | ⚠️**2026-08-07 코드 실사**: 라이선스 MIT ✅ · TL 활성값 F32 ✅ · **그러나 스케일이 텐서당 1개**(우리 g128 = 428K개)라 **재양자화 필수·로짓 동등성 불가**. TL 은 shape 하드코딩(3200/8640), **I2_S 는 shape 무관**. ★**우리가 필요한 물건이 이미 오픈소스로 존재한다.** T-MAC(arXiv:2407.00088)은 mpGEMM 을 **dequant 없이** 수행, bitnet.cpp(arXiv:2502.11880)의 **TL**(Ternary Lookup Table)·**I2_S**(Int2+Scale, **무손실**)가 x86 **2.37~6.17×**·에너지 **−71.9~82.2%**, ARM 1.37~5.07×. **우리 `_wq_from_i8()` 는 정확히 그 반대(매번 fp32 복원)를 하고 있다** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 23,
+      "method": "**★임베딩·헤드 fp32**",
+      "status_as_written": "✅★**설계 완료 2026-08-21 → [P034 §11](../../test_plan/P034_실행시메모리-실측및패킹추론경로.md)**",
+      "row": "| **★임베딩·헤드 fp32** | ✅★**설계 완료 2026-08-21 → [P034 §11](../../test_plan/P034_실행시메모리-실측및패킹추론경로.md)** | v6 | 상주 33.0MB 중 **32.0MB 가 `emb.weight`**. `quantize_embedding=True` 는 **회계 플래그일 뿐** — 임베딩은 한 번도 양자화된 적이 없다 | 헤드가 임베딩과 **tie** 돼 있어 int8 저장 시 **forward 마다 32.0MB 복원**(+3.3ms/토큰) | ★2026-08-06 발견. `packed_mb` 27.1MB 는 임베딩 쪽에서도 **없는 포맷을 가정**한다. 어휘 축소는 P039 가 닫음(빈도0 0.28%). 남은 길 = **LUT 커널 / 스트리밍 matvec**(위 행과 같은 물건) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 24,
+      "method": "**int8 언팩 캐시(타잉 전용)**",
+      "status_as_written": "✅**확정(3차)**",
+      "row": "| **int8 언팩 캐시(타잉 전용)** | ✅**확정(3차)** | v6 (`--unpack-cache`) | 타이된 층이 **같은 MLP 객체**를 g번 부르는데 언팩은 호출당 1회 → **유니크 모듈당 1회**로 | 동시 fp32 버퍼 1벌(≈18.9MB) | 1차 실패(016 §13, 무장 범위) → **3차 확정: mC **+42.7%** / mA **+33.7%**, 대조군 p6d **0.975×**(016 §15). 게이트 로짓 0 + **상주 MB ON/OFF 일치**. 층당 절감 **1.54~1.60 ms/언팩**(두 모델 4% 안). int8 감속이 −67% → **약 −53%** 로 완화. ⚠️**LUT 커널(P014)이 오면 무의미해지는 임시 방편** — 거긴 언팩 자체가 없다 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 25,
+      "method": "**어휘 축소**",
+      "status_as_written": "🚫**폐기**",
+      "row": "| **어휘 축소** | 🚫**폐기** | — | 32,768 → 24,000 으로 임베딩 26.7% 감축 | 토크나이저 + 전 모델 재학습 | 🚫**결과 025 가 닫았다** — `ko-en` 597M 전량 스캔에서 **빈도0 이 53개(0.16%)** 뿐이고 본문 토큰은 0.0%. 잘라낼 것이 **0.05MB** 다. 부수: **타잉 헤드에서 Magikarp 노름 휴리스틱의 부호가 역전**(미사용 노름이 오히려 크다, 비 1.599) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 85,
+      "method": "**★임베딩 랭크 축소(E 256→128)**",
+      "status_as_written": "🧪**준비완료**",
+      "row": "| **★임베딩 랭크 축소(E 256→128)** | 🧪**준비완료** | v6 (`--emb-rank`, P046) | `emb = V×E + E×dim` 이라 E 에 **선형**. int8 이후 상주 87.1MB 중 **32.0MB 가 emb.weight** | **로짓 랭크가 E 로 제한**된다(헤드 tie) | ⚙**상주 −18.8%**(→70.7MB), packed 2.07→**2.22×**. 같은 3.5h 를 쓰는 g16(−5.3%)의 **3.5배**. ⚠️`--init-from` 이 임베딩에 안 걸린다(shape 불일치 → 건너뛰고 경고) = **교락** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 86,
+      "method": "**★타잉 상한 g16**",
+      "status_as_written": "🧪**준비완료**",
+      "row": "| **★타잉 상한 g16** | 🧪**준비완료** | v6 (`--mlp-group 16`, P045) | `n_middle=16` 이라 **구조적 상한**. 중간 유니크 MLP 2→1 | 품질(구 측정 +0.0128, 분해능 안) | ⚙상주 **−5.3%**, packed **2.24×**. **타잉 축을 종결**하는 것이 본 목적 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 87,
+      "method": "**★prelude/coda 1+1**(신규 아이디어)",
+      "status_as_written": "💡",
+      "row": "| **★prelude/coda 1+1**(신규 아이디어) | 💡 | — (A-6) | 유니크 MLP 6→4(g8). 결과 002 의 \"2+2 가 최대 이득\" 은 **전층 타잉 대비**였다 | ⚠️**품질 리스크가 g16 보다 클 것으로 추정** — prelude/coda 는 임베딩 입출력 조정 | ⚙삼진 54.85→**45.4M**, 상주 **−14%**, packed **2.38×**. **구현 0**(프리셋 필드) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 88,
+      "method": "★**KV 캐시 bf16/int8**",
+      "status_as_written": "★**1순위로 승격**",
+      "row": "| ★**KV 캐시 bf16/int8** | ★**1순위로 승격** | — (A-1 → **P077**) | KV **15.0~54.0 MiB** 를 dtype 으로 나눈다 | ⚠️**품질 대가 0회 측정** | ★★**이관됨 → [`04_context_length.md`](04_context_length.md) §4.4.** 🚫종전 *\"상주 대비 작다\"* 는 **안 B 조립 전의 판단**이고 지금은 **예산의 절반 이상**이다 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 89,
+      "method": "**삼진 α 를 fp16 으로**(신규)",
+      "status_as_written": "💡",
+      "row": "| **삼진 α 를 fp16 으로**(신규) | 💡 | — (A-5) | α 가 `(O, I//128)` fp32 = mC 428K×4B = **1.7MB** | 정밀도 소폭 | ⚙**−0.85MB**. ★본 이득은 **packed 회계의 `SCALE_BITS=16` 과 정합**해지는 것 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 90,
+      "method": "~~어휘 축소~~",
+      "status_as_written": "🚫**폐기**",
+      "row": "| ~~어휘 축소~~ | 🚫**폐기** | — | 32,768 → 24,000 | — | 🚫**결과 025**: `ko-en` 597M 전량 스캔 빈도0 **53/32,768 = 0.16%** → 잘라낼 것이 **0.05MB** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 91,
+      "method": "~~헤드 untie 로 임베딩 int8~~",
+      "status_as_written": "🚫**계산상 역효과**",
+      "row": "| ~~헤드 untie 로 임베딩 int8~~ | 🚫**계산상 역효과** | — (A-3) | tie 를 풀면 임베딩만 int8 가능 | 헤드가 **+8.4M 파라미터** | 🚫⚙임베딩 −23.8MB 이나 헤드 **+33.6MB** → **순 +10MB 손해**. 계산해 보고 접었다 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 160,
+      "method": "현재 최선 저장(packed)",
+      "status_as_written": "**9.6 MB** = ✅**목표 안**",
+      "row": "| 현재 최선 저장(packed) | **9.6 MB** = ✅**목표 안** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 166,
+      "method": "**1**",
+      "status_as_written": "★★**상주식에 bpw 가 없다** — 삼진을 **fp32 로 들고 계산**한다",
+      "row": "| **1** | ★★**상주식에 bpw 가 없다** — 삼진을 **fp32 로 들고 계산**한다 | **×32**(1.71bpw → 32bit 2벌 = 64bit) | 🚫**LUT 커널 없이는 못 고친다** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 167,
+      "method": "**2**",
+      "status_as_written": "**fp32 2벌**(latent + dequant 사본)",
+      "row": "| **2** | **fp32 2벌**(latent + dequant 사본) | ×2 | ⏸ **P034 단계2**(`drop_latent`) — 구현됨, **긴 런 검증 미완** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 168,
+      "method": "**3**",
+      "status_as_written": "★**임베딩 32.75 MiB 가 fp32**",
+      "row": "| **3** | ★**임베딩 32.75 MiB 가 fp32** | int8 상주 86.94 중 **32.75 = 38%** · fp32 상주 379.7 중 **8.6%** | ✅★**설계 완료 2026-08-21** — [P034 §11](../../test_plan/P034_실행시메모리-실측및패킹추론경로.md). ★**tie 해체가 아니라 청크 복원**(P053 수법) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 169,
+      "method": "**4**",
+      "status_as_written": "활성·**KV 캐시**",
+      "row": "| **4** | 활성·**KV 캐시** | ★**15.0~54.0 KB/token → 1024ctx 15.0~54.0 MiB**(결과 016 §24 실측) | 🚫★**부차적이 아니다 — 예산의 절반 이상.** [`04_context_length.md`](04_context_length.md) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 190,
+      "method": "★**T-MAC**(arXiv:2407.00088)",
+      "status_as_written": "mpGEMM 을 **역양자화 없이** LUT 로 → **원인 1 을 없앤다**",
+      "row": "| ★**T-MAC**(arXiv:2407.00088) | mpGEMM 을 **역양자화 없이** LUT 로 → **원인 1 을 없앤다** | 🚫**미착수** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 191,
+      "method": "★**bitnet.cpp I2_S**(arXiv:2502.11880)",
+      "status_as_written": "Int2+Scale **무손실**, shape 무관",
+      "row": "| ★**bitnet.cpp I2_S**(arXiv:2502.11880) | Int2+Scale **무손실**, shape 무관 | 🚫**미착수** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 192,
+      "method": "~~`_weight_int8pack_mm`~~",
+      "status_as_written": "int8 GEMM. **삼진을 모르고** 실측 **6.5배 느렸다**",
+      "row": "| ~~`_weight_int8pack_mm`~~ | int8 GEMM. **삼진을 모르고** 실측 **6.5배 느렸다** | 🚫**종결**(028 §12·§13) |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 231,
+      "method": "**1**",
+      "status_as_written": "★★**P014 안 A/B — LUT 커널(T-MAC / bitnet.cpp I2_S)**",
+      "row": "| **1** | ★★**P014 안 A/B — LUT 커널(T-MAC / bitnet.cpp I2_S)** | ★**원인 1(×32)을 없앤다. 유일한 진짜 길** | 크다(커널·플랫폼 SIMD) | 🚫**미착수.** 계획서만 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 232,
+      "method": "**2**",
+      "status_as_written": "★**P034 단계5 — 임베딩 양자화 5종**",
+      "row": "| **2** | ★**P034 단계5 — 임베딩 양자화 5종** | 원인 3(32.75 MiB) | ✅★**설계 완료 2026-08-21**. 구현 ⚙260줄(★**bf16 만이면 40줄**) | ⏸ **구현 선결** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 233,
+      "method": "**3**",
+      "status_as_written": "**P034 단계2 긴 런 검증** — `drop_latent`",
+      "row": "| **3** | **P034 단계2 긴 런 검증** — `drop_latent` | 원인 2(×2). **커널 불필요** | 소 | ⏸ 구현됨, **긴 런 미검증** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 234,
+      "method": "**4**",
+      "status_as_written": "★**캐시 작업집합 실측**",
+      "row": "| **4** | ★**캐시 작업집합 실측** | M.3.4 — *\"우리가 재는 상주가 실제 캐시 압력인가\"* | 도구 신규 | 🚫**한 번도 안 함** |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 235,
+      "method": "**5**",
+      "status_as_written": "**P034B — 패킹 회계 시뮬레이터**",
+      "row": "| **5** | **P034B — 패킹 회계 시뮬레이터** | 5비트 패킹 없이 저장 축 판정 | GPU 0 | 🚫 계획만 |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 236,
+      "method": "**6**",
+      "status_as_written": "`mC_e192svd` 의 **int8 상주** 측정",
+      "row": "| **6** | `mC_e192svd` 의 **int8 상주** 측정 | 함정 24(경로별 순위 역전) | `mem_runtime.py`, 수 분 | ⏸ |"
+    },
+    {
+      "source": "docs/methods/02_memory.md",
+      "line": 237,
+      "method": "**7**",
+      "status_as_written": "⚙**`m100R1q` 실학습**",
+      "row": "| **7** | ⚙**`m100R1q` 실학습** | 저장·상주 최선점의 **실측 품질** | 3.3h | ⏸ 계산값만 있다 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 21,
+      "method": "**KD (내부 dense 교사)**",
+      "status_as_written": "✅**측정·300M 표준에서 제거**",
+      "row": "| **KD (내부 dense 교사)** | ✅**측정·300M 표준에서 제거** | v6 (`--kd`) | dense 로짓을 FKL로 따라감 | 교사 forward·큰 KL VRAM. **어휘 일치 필수** | P002에서는 부모초기화와 함께 좋아 보였으나 P050 분해 후 loss 감소 기여는 **부모 +0.1386 vs KD −0.0032**: 절대크기 43배이며 KD 부호는 악화 방향(loss +0.0032). 300M 두 seed에서 KD가 +0.0208/+0.0219 나빴다. 단 100M에서는 **−0.110**으로 예산 의존 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 22,
+      "method": "**부모초기화 (average-init)**",
+      "status_as_written": "✅**측정·채택**",
+      "row": "| **부모초기화 (average-init)** | ✅**측정·채택** | v6 (`--init-from`) | 공유 MLP를 dense 그룹 g층 평균으로 초기화 → 수렴·격차 개선 | dense 체크포인트 필요 | P050 실측 loss 감소 기여 **+0.1386**, KD 기여 **−0.0032의 절대크기보다 43배**. 외부 대형 vocab에서는 shape 불일치로 현재 사용 불가 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 23,
+      "method": "**더 많은 토큰 / 더 긴 학습**",
+      "status_as_written": "✅**측정(부분 기각)**",
+      "row": "| **더 많은 토큰 / 더 긴 학습** | ✅**측정(부분 기각)** | — | undertraining 해소 → 절대 품질↑ | GPU 시간(선형) | ★결과 006: 절대품질은 개선되나 **수확체감 급격**(100→300M **-0.66**, 300→600M **-0.18**). **\"타잉 격차↓\" 부분은 기각** — 격차가 6배 토큰에서 +0.149→+0.168→+0.166 로 평평. 300M은 파라미터당 ~4토큰(Chinchilla ~20) |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 24,
+      "method": "★★**반복 노출(epoch-equivalent)**",
+      "status_as_written": "✅**1·2·4회 측정·paired 회수**",
+      "row": "| ★★**반복 노출(epoch-equivalent)** | ✅**1·2·4회 측정·paired 회수** | P087/P088 | ★**풀을 고정하고 draw·steps를 늘린다.** Loader가 복원추출 random crop이라 순차 epoch가 아니라 `draw/pool`의 편의명이다 | 학습시간 ×N, WSD 절대 지평도 함께 증가. ★**배포 상주 증가 0** | [결과 073](../../test_result/073_20260904_P087-두-번째-epoch은-과적합-없이-0.1155를-준다.md): 같은 300M pool에서 **3.64328→3.52781→3.45344**, 과적합 징후 0. Stage3 누락 paired는 3.3728 vs3.5844, Δ−0.2116·t−246.93로 회수됐다. 단일시드 checkpoint 판정이며 4회 역사 런을 신규 후보 SH로 반복하지 않는다 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 25,
+      "method": "**★데이터 풀 다양성**",
+      "status_as_written": "✅**측정·조건부 채택**",
+      "row": "| **★데이터 풀 다양성** | ✅**측정·조건부 채택** | v6 (`--pool-tokens`) | 학습토큰 고정, 샘플 풀만 확대 → 기대 유니크 토큰 증가 | 토큰화 1회·디스크. 학습시간 증가 **0**. 한국어 원천 소진 시 언어비 교락 | 결과 006의 로그-val `−0.1196`은 pool별 시험지 변화와 섞였다. 같은 영어 common text에서는 300M draw의 pool 600M→1.2B가 **bpb 1.2878→1.2728(−0.0150)**였으나 큰 pool은 영어 비중도 높다([결과 075](../../test_result/075_20260905_P088-토큰은-스텝이었고-full-val-은-학습데이터였다.md)). 다양성 방향은 유지하되 **언어비를 보존하고**, 풀이 다른 로그 val은 직접 비교하지 않는다 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 27,
+      "method": "**EMA / 체크포인트 병합**",
+      "status_as_written": "🧪",
+      "row": "| **EMA / 체크포인트 병합** | 🧪 | v6 (`--ema`) | 최근 가중치 평균 → 무료 품질 향상 | decay 스케일 주의(6번) | 근거 WSM/EMA(2025) |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 31,
+      "method": "**bits-per-byte 지표**",
+      "status_as_written": "✅**공통 원문 구현·적용범위 제한**",
+      "row": "| **bits-per-byte 지표** | ✅**공통 원문 구현·적용범위 제한** | `scripts/common_bpb.py` | 같은 raw text의 byte당 손실로 이종 tokenizer 비교 | corpus·언어·오염에 의존 | Qwen/Gemma 교차비교의 유효 경로. 현재 정본은 영문 SQuAD train context라 한국어 지능을 못 재며, P075 dev overlap 12%와 split이 달라 train을 재감사해야 함 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 32,
+      "method": "**★★SEO 스팸 필터로 학습**",
+      "status_as_written": "✅**측정**",
+      "row": "| **★★SEO 스팸 필터로 학습** | ✅**측정** | v6 (`--doc-filter`, P028 단계3) | [결과 018](../../test_result/018_20260731190000_P037-단계1-경계는정상-원인은스팸문서.md)이 실측한 서명(대형 ∧ 줄바꿈~0% ∧ 줄 고유율 100%)으로 문서 제외 후 **그 데이터로 학습** | 학습 예산 고정 시 **유니크 텍스트 13% 감소** | ★재학습 결과 **−0.296 nats(24.7σ)** — 우리가 측정한 **가장 큰 단일 품질 개선**이고 **아키텍처가 아니라 데이터**에서 나왔다. `ko-edu-en` 열세의 **63%가 스팸**이었다([결과 011 §2](../../test_result/011_20260730135000_P028-단계0-캐시진단.md)) |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 33,
+      "method": "**`ko-en` 표준 train 스팸 감사**",
+      "status_as_written": "✅**측정·필터 재학습 종결**",
+      "row": "| **`ko-en` 표준 train 스팸 감사** | ✅**측정·필터 재학습 종결** | [P047](../../test_result/031_20260807_P047-ko-en은-깨끗하다-기준선이-안전하다.md) | 같은 SEO 서명으로 표준 train 전수 검사 | 추가 필터의 기대효과가 비용보다 작음 | 366,819문서 중 6개, 문자 **0.06229%**, 예상 **−0.00098 nats**. `ko-en` 기준선은 안전하며 이 사유의 전 기준선 재학습은 하지 않음 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 34,
+      "method": "**어휘 재학습(필터 데이터로)**",
+      "status_as_written": "💡**가설·미측정**",
+      "row": "| **어휘 재학습(필터 데이터로)** | 💡**가설·미측정** | — (D-7) | 결과 018은 val의 SEO 서명만 측정했으며 tokenizer 20만 표본과의 교집합은 측정하지 않았다. 필터 후 어휘가 좋아질 가능성은 별도 가설 | **전 모델 재학습** | 표준 `ko-en`은 P047에서 거의 깨끗했다. bpb −0.01~0.05는 실측이 아닌 기존 추정이므로 tokenizer-sample audit 전 우선순위 승격 금지 |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 35,
+      "method": "~~FiLM 층별 조건화~~",
+      "status_as_written": "🚫**기각**",
+      "row": "| ~~FiLM 층별 조건화~~ | 🚫**기각** | v6 (`--mlp-film`, P044/P044B) | 공유 MLP 은닉을 층별 scale/shift 로 | 0.13MB(정직하게 계상됨) | 결과 027 paired **+0.0003**(SE 0.0004, t=0.65); [P044B 무KD 재검증](../../test_result/063_20260831_P044B-FiLM-은-무KD-표준조건에서도-자를-못-넘는다-종결.md)도 **+0.0003**. 원인은 KD가 자리를 차지해서가 아니라 **이 규모에서 FiLM 자체가 무효**. 부수: `grad_max` 0.847→**1.855** |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 56,
+      "method": "내부 dense KD, 300M",
+      "status_as_written": "무KD 3.6776 vs KD 3.6984, 두 시드 대가 +0.0208/+0.0219, VRAM 12.47→5.07 GiB",
+      "row": "| 내부 dense KD, 300M | 무KD 3.6776 vs KD 3.6984, 두 시드 대가 +0.0208/+0.0219, VRAM 12.47→5.07 GiB | ✅**표준조건에서는 제거 유지** |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 58,
+      "method": "Qwen3-0.6B-Base",
+      "status_as_written": "`Q256T 1.3363` vs `QT0 1.3440` common-bpb = **−0.0077**",
+      "row": "| Qwen3-0.6B-Base | `Q256T 1.3363` vs `QT0 1.3440` common-bpb = **−0.0077** | ⚠️**좋은 방향이나 0.008 분해능 미만·단일 시드**. ✅2026-09-02 로그 원본 대조 완료 — 이 두 수가 정본이다(결과 053 §S1.7.1) |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 59,
+      "method": "Gemma 3 270M",
+      "status_as_written": "250-step backward/VRAM probe, 14.77GB, full 예상 8.8h. `grad_max`: 무KD GT0 36.9, KD 118.8(narrow 488.8)",
+      "row": "| Gemma 3 270M | 250-step backward/VRAM probe, 14.77GB, full 예상 8.8h. `grad_max`: 무KD GT0 36.9, KD 118.8(narrow 488.8) | 🚫**품질 미측정 + 모두 기존 수치 안정성 gate 실패. KD 원인 미분리, matched N0 안정화 전 full 금지** |"
+    },
+    {
+      "source": "docs/methods/03_knowledge_quality.md",
+      "line": 60,
+      "method": "외부 KD의 지능 평가",
+      "status_as_written": "외부 tokenizer를 bench/generate가 못 읽음",
+      "row": "| 외부 KD의 지능 평가 | 외부 tokenizer를 bench/generate가 못 읽음 | 🚫**현재 불가. 평가 배선이 선결** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 18,
+      "method": "KV 의 위치",
+      "status_as_written": "*\"작아서 무시\"*",
+      "row": "| KV 의 위치 | *\"작아서 무시\"* | 🚫**예산 36 MiB 중 15.0 ~ 54.0 MiB** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 25,
+      "method": "`mC_cla2_ag4`",
+      "status_as_written": "10",
+      "row": "| `mC_cla2_ag4` | 10 | **15.0** | 15.0 | 16.8 | ✅**31.8** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 26,
+      "method": "`mC_initonly_nc`",
+      "status_as_written": "10",
+      "row": "| `mC_initonly_nc` | 10 | 15.0 | 15.0 | 19.8 | ✅34.8 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 27,
+      "method": "`mC_d36_ag4_nokd`",
+      "status_as_written": "18",
+      "row": "| `mC_d36_ag4_nokd` | 18 | 27.0 | 27.0 | 18.2 | 🚫45.2 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 28,
+      "method": "`mC_cla1_ag4`",
+      "status_as_written": "20",
+      "row": "| `mC_cla1_ag4` | 20 | 30.0 | 30.0 | 16.9 | 🚫46.9 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 29,
+      "method": "`mC_cla1_ag4_r20`",
+      "status_as_written": "**36**",
+      "row": "| `mC_cla1_ag4_r20` | **36** | **54.0** | 54.0 | 16.9 | 🚫**70.9** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 39,
+      "method": "**RoPE** (theta 10000)",
+      "status_as_written": "✅",
+      "row": "| **RoPE** (theta 10000) | ✅ | `modules.py` | — | — | 학습 seq **1024** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 40,
+      "method": "★**CLA2**(Cross-Layer Attention)",
+      "status_as_written": "✅**기본**",
+      "row": "| ★**CLA2**(Cross-Layer Attention) | ✅**기본** | `--cla-group 2` | ★**엔트리 절반**(20→10) | ★**+0.0195** | ★[결과 058 §13](../../test_result/058_20260823_P073-CLA2는-공짜가-아니다-어텐션-결과-전부가-교락됐다.md) · 📄[arXiv:2405.12981](https://arxiv.org/abs/2405.12981) |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 41,
+      "method": "**CLA1**(층별 독립)",
+      "status_as_written": "✅",
+      "row": "| **CLA1**(층별 독립) | ✅ | `--cla-group 1` | 🚫**엔트리 2배** | −0.0195 | 동상 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 42,
+      "method": "**GQA / `attn_group`**",
+      "status_as_written": "✅",
+      "row": "| **GQA / `attn_group`** | ✅ | `--attn-group 4` | ✅**KV 무관** | — | 결과 016 §24 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 43,
+      "method": "★**재귀**(looped)",
+      "status_as_written": "✅",
+      "row": "| ★**재귀**(looped) | ✅ | `--train-repeat`/`--infer-repeat` | 🚫**바퀴마다 새 엔트리** | −0.0107 | [결과 047 §14](../../test_result/047_20260814_P062-단계0-스케줄을-맞추니-0.2427이-돌아왔다.md) |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 61,
+      "method": "int8 KV",
+      "status_as_written": "8bit",
+      "row": "| int8 KV | 8bit | 자명 | ✅ | 우리 산술 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 71,
+      "method": "`mC_cla2_ag4`",
+      "status_as_written": "31.8 ✅",
+      "row": "| `mC_cla2_ag4` | 31.8 ✅ | **24.3** | **20.6** | ⚙**17.7** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 72,
+      "method": "`mC_initonly_nc`",
+      "status_as_written": "34.8 ✅",
+      "row": "| `mC_initonly_nc` | 34.8 ✅ | 27.3 | 23.6 | ⚙20.7 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 73,
+      "method": "`mC_d36_ag4_nokd`",
+      "status_as_written": "45.2 🚫",
+      "row": "| `mC_d36_ag4_nokd` | 45.2 🚫 | **31.7** ✅ | 24.9 | ⚙20.0 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 74,
+      "method": "`mC_cla1_ag4`",
+      "status_as_written": "46.9 🚫",
+      "row": "| `mC_cla1_ag4` | 46.9 🚫 | **31.9** ✅ | 24.4 | ⚙18.8 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 75,
+      "method": "`mC_cla1_ag4_r20`",
+      "status_as_written": "70.9 🚫",
+      "row": "| `mC_cla1_ag4_r20` | 70.9 🚫 | 43.9 🚫 | **30.4** ✅ | ⚙**20.3** ✅ |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 88,
+      "method": "★**StreamingLLM**",
+      "status_as_written": "**attention sink** — 처음 몇 토큰의 KV 만 남기면 window attention 이 회복된다. 미세조정 불필요, 최대 **400만 토큰**, 최대 **22.2배** 가속",
+      "row": "| ★**StreamingLLM** | **attention sink** — 처음 몇 토큰의 KV 만 남기면 window attention 이 회복된다. 미세조정 불필요, 최대 **400만 토큰**, 최대 **22.2배** 가속 | 🚫**우리 Stage0 음성**: 싱크≈2%, 가운데 질량16.3~20.1% 삭제([결과070](../../test_result/070_20260902_P081-싱크는-있지만-2퍼센트다-가운데를-버리면-13에서-28퍼센트를-버린다.md)) | 📄[arXiv:2309.17453](https://arxiv.org/abs/2309.17453) (ICLR 2024) |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 100,
+      "method": "**재귀 요약**(recursive summarization)",
+      "status_as_written": "오래된 대화를 요약으로 접고 최근 N턴은 원문 유지",
+      "row": "| **재귀 요약**(recursive summarization) | 오래된 대화를 요약으로 접고 최근 N턴은 원문 유지 | ✅**아키텍처 무관** — 응용 계층 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 128,
+      "method": "**지금**",
+      "status_as_written": "fp32 KV, seq 1024",
+      "row": "| **지금** | fp32 KV, seq 1024 | **31.8** | ✅**여유 4.2** | — |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 129,
+      "method": "★**1**",
+      "status_as_written": "**bf16 KV**",
+      "row": "| ★**1** | **bf16 KV** | ⚙**24.3** | ✅여유 11.7 | ⚙1h 구현 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 130,
+      "method": "**2**",
+      "status_as_written": "**int8 KV**(KIVI 축 분리)",
+      "row": "| **2** | **int8 KV**(KIVI 축 분리) | ⚙**20.6** | ✅여유 15.4 | ⚙2h |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 131,
+      "method": "**3**",
+      "status_as_written": "seq **2048** + bf16",
+      "row": "| **3** | seq **2048** + bf16 | ⚙**31.8** | ✅**여유 4.2** | 학습 필요 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 132,
+      "method": "**4**",
+      "status_as_written": "seq **4096** + int8",
+      "row": "| **4** | seq **4096** + int8 | ⚙**37.4** | 🚫**초과 1.4** | + StreamingLLM |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 161,
+      "method": "★★**1**",
+      "status_as_written": "**bf16 KV**",
+      "row": "| ★★**1** | **bf16 KV** | **−25%** | ⚙낮음(학습 산술이 이미 bf16) | ⚙1h | ✅★**즉시. 가장 싸다** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 162,
+      "method": "★**2**",
+      "status_as_written": "**int8 KV**",
+      "row": "| ★**2** | **int8 KV** | −36% | ⚠️미상 | ⚙2h | ✅**1 이 성공하면** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 163,
+      "method": "**3**",
+      "status_as_written": "**컨텍스트 축소 512**",
+      "row": "| **3** | **컨텍스트 축소 512** | −50% | 🚫**높다**(응용 제약) | 0 | ⚠️**최후 수단** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 164,
+      "method": "**4**",
+      "status_as_written": "**StreamingLLM**",
+      "row": "| **4** | **StreamingLLM** | 컨텍스트를 늘린다 | 🚫Stage0의 가운데 질량 손실 | 재설계 전 0h | 🚫**현행 sink4+window256 중단(결과070)** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 165,
+      "method": "**5**",
+      "status_as_written": "**KIVI 2bit**",
+      "row": "| **5** | **KIVI 2bit** | −69% | ⚠️미상 | ⚙6h+커널 | ⏸**2 의 결과를 보고** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 166,
+      "method": "🚫**6**",
+      "status_as_written": "`cla_group 4`",
+      "row": "| 🚫**6** | `cla_group 4` | −50% | 🚫**⚙+0.04 이상 추정** | ⚙0.5h | 🚫**품질 대가가 급증한다**(4.1 의 g1→g2 가 이미 +0.0195) |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 181,
+      "method": "[arXiv:2402.02750](https://arxiv.org/abs/2402.02750)",
+      "status_as_written": "KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache (ICML 2024)",
+      "row": "| [arXiv:2402.02750](https://arxiv.org/abs/2402.02750) | KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache (ICML 2024) | ✅초록 + 방법 요지 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 182,
+      "method": "[arXiv:2309.17453](https://arxiv.org/abs/2309.17453)",
+      "status_as_written": "Efficient Streaming Language Models with Attention Sinks (ICLR 2024)",
+      "row": "| [arXiv:2309.17453](https://arxiv.org/abs/2309.17453) | Efficient Streaming Language Models with Attention Sinks (ICLR 2024) | ✅초록 |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 183,
+      "method": "[arXiv:2405.12981](https://arxiv.org/abs/2405.12981)",
+      "status_as_written": "Reducing Transformer Key-Value Cache Size with Cross-Layer Attention",
+      "row": "| [arXiv:2405.12981](https://arxiv.org/abs/2405.12981) | Reducing Transformer Key-Value Cache Size with Cross-Layer Attention | ✅초록 — ★**우리 `cla_group` 의 원전** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 198,
+      "method": "🚫*\"멀티스레드는 디코드를 가속하지 않는다 (결과 014 §10)\"*",
+      "status_as_written": "★**배포 경로에서는 가속한다** — 결과 014 §12.3 이 **+69%** 를 쟀다(언팩이 병렬화된다). §10 은 **fp32 경로**에서만 옳았다",
+      "row": "| 🚫*\"멀티스레드는 디코드를 가속하지 않는다 (결과 014 §10)\"* | ★**배포 경로에서는 가속한다** — 결과 014 §12.3 이 **+69%** 를 쟀다(언팩이 병렬화된다). §10 은 **fp32 경로**에서만 옳았다 | **경로를 붙여 인용한다** |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 199,
+      "method": "🚫*\"KV 캐시 int8/4bit … 상주 86.9MB 대비 작다 — 긴 컨텍스트를 목표로 할 때만 값어치\"*",
+      "status_as_written": "★**안 B 조립 후 가중치가 16.8~19.8 MiB 가 됐다.** KV 15~54 는 **작지 않고 절반 이상**이다",
+      "row": "| 🚫*\"KV 캐시 int8/4bit … 상주 86.9MB 대비 작다 — 긴 컨텍스트를 목표로 할 때만 값어치\"* | ★**안 B 조립 후 가중치가 16.8~19.8 MiB 가 됐다.** KV 15~54 는 **작지 않고 절반 이상**이다 | ★**1순위 레버로 승격**(4.4) |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 200,
+      "method": "🚫*\"KV 캐시 로드맵 (28층, 1.7B 구성 가정)\"*",
+      "status_as_written": "**우리 아키텍처가 아니다.** 층·차원·타잉이 전부 다르다",
+      "row": "| 🚫*\"KV 캐시 로드맵 (28층, 1.7B 구성 가정)\"* | **우리 아키텍처가 아니다.** 층·차원·타잉이 전부 다르다 | ★**우리 두 규모로 다시 씀**(4.3) |"
+    },
+    {
+      "source": "docs/methods/04_context_length.md",
+      "line": 202,
+      "method": "*\"KDA 3:1 하이브리드 + NoPE\"* · *\"InfiniteHiP\"*",
+      "status_as_written": "근거 링크가 없었고 확인 못 했다",
+      "row": "| *\"KDA 3:1 하이브리드 + NoPE\"* · *\"InfiniteHiP\"* | 근거 링크가 없었고 확인 못 했다 | ⏸**미확인 목록으로 내림**(4.5) |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 10,
+      "method": "**bf16 autocast**",
+      "status_as_written": "✅",
+      "row": "| **bf16 autocast** | ✅ | v4~ | 텐서코어 활용, GradScaler 불필요 | — | 주 matmul이 bf16이라 TF32 이득은 제한적 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 11,
+      "method": "**torch.compile**",
+      "status_as_written": "✅",
+      "row": "| **torch.compile** | ✅ | v5~ | 그래프 컴파일·커널 융합 | 첫 스텝 컴파일 수 분 | \"Not enough SMs\"로 max_autotune GEMM은 생략 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 12,
+      "method": "**pin_memory + non_blocking**",
+      "status_as_written": "✅",
+      "row": "| **pin_memory + non_blocking** | ✅ | v4~ | H2D 전송을 연산과 겹침 | — | Loader가 이미 적용 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 13,
+      "method": "**TF32 + cudnn.benchmark**",
+      "status_as_written": "🧪",
+      "row": "| **TF32 + cudnn.benchmark** | 🧪 | v6 | fp32 matmul→TF32, 고정 shape 오토튠 | 소폭(주연산 bf16이라) | `set_float32_matmul_precision('high')` |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 14,
+      "method": "**reduce-overhead (CUDA그래프)**",
+      "status_as_written": "🧪",
+      "row": "| **reduce-overhead (CUDA그래프)** | 🧪 | v6 (`--compile-mode`) | 커널 런치·파이썬 오버헤드를 그래프로 묶음 → 10~25% 가능 | grad accum과 충돌 → 각 forward 전 `cudagraph_mark_step_begin()` 필요(v6에서 처리), VRAM 약간↑ | 연산 바운드라 이득 불확실. 문제 시 `--compile-mode default` |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 15,
+      "method": "**gradient checkpointing off (`--no-ckpt`)**",
+      "status_as_written": "✅**측정·채택**",
+      "row": "| **gradient checkpointing off (`--no-ckpt`)** | ✅**측정·채택** | v4~ | 활성 재계산 제거 → forward 1회 | VRAM **13.5GB**(스필벽 바로 아래). **tied+KD+dense교사에는 금지**(15.7GB↑, OOM 위험) | ★결과 007: 정상상태 **2982→2467 ms/step = -17.3%**. **단일 최대 엔지니어링 레버.** dense 런 표준 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 16,
+      "method": "**micro-batch 크기 `M = mb×seq`**",
+      "status_as_written": "🧪**조건부**(폐기 철회)",
+      "row": "| **micro-batch 크기 `M = mb×seq`** | 🧪**조건부**(폐기 철회) | — | micro-batch 당 토큰 M 이 클수록 GEMM·런치 효율↑ | **M 무릎 ≈ 8,192.** 아래면 손해, 위면 포화. VRAM 도 M 으로 결정 | ★결과 007+P021B: M=4096 **2550** / M=8192 **2327~2468** / M=10240 2443(포화) / M=12288 **OOM**. 표준(mb8×seq1024)은 **이미 M=8192** 라 더 올릴 이유 없음 — 007의 \"이득 0\"은 맞았으나 이유(\"연산바운드\")는 **틀렸다**. ★**seq 를 줄이면 mb 를 2배로 올려 M 유지 필수**(P013 설계조건) |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 17,
+      "method": "**데이터 비동기 프리페치**",
+      "status_as_written": "💡",
+      "row": "| **데이터 비동기 프리페치** | 💡 | — | 데이터 로딩과 연산 겹침 | 복잡도↑ | 연산 바운드라 이득 미미 → 보류 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 18,
+      "method": "**Sequence packing (패딩 제거)**",
+      "status_as_written": "✅",
+      "row": "| **Sequence packing (패딩 제거)** | ✅ | v4~ | 문서를 이어붙인 스트림에서 연속 크롭 → 패딩 0, 밀도 100% | — | 이미 적용(Loader). 제안의 \"15~30% 이득\"은 이미 반영됨 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 19,
+      "method": "★**Muon 옵티마이저**",
+      "status_as_written": "✅**RMS4 사용자 기본 채택**(결과 078 §11~§15; 2026-09-18 결정)",
+      "row": "| ★**Muon 옵티마이저** | ✅**RMS4 사용자 기본 채택**(결과 078 §11~§15; 2026-09-18 결정) | v6 `--optimizer muon --muon-scale {jordan,rms} --muon-lr-mult N` | 행렬 73개(72.7M = 전체의 89.5%)에 Newton-Schulz 5스텝, 나머지 62개는 AdamW | RMS4는 상단·matrix WD·재귀/무재귀 네 형상·seed2024·600M·1.2B 방향 게이트를 통과. 기본 recipe는 `rms ×4, matrix WD 0`, KD off. 코드 기본 구현은 새 사용자 smoke 전 `STATIC_ONLY` | seed2024 +0.0052~+0.0061, 600M +0.0043~+0.0089, 1.2B +0.0045. 단 Stage11/12의 **1.2B-pool val은 한국어 0%**라 한국어 품질 근거가 아니며 신규 1.2B SH는 금지. WD parameter-group 정본은 [20260918 보고서](../20260918_TinyLM-Muon-RMS4-Weight-Decay-방법론-조사와-권고.md) |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 20,
+      "method": "**MTP(학습 aux head)**",
+      "status_as_written": "🧪CPU 계약",
+      "row": "| **MTP(학습 aux head)** | 🧪CPU 계약 | P101A | assistant-turn 미래2/3/4 지도·shared vocabulary | 추가 head/CE 계산·소형 효과 미확정 | 무부모/부모 네 팔 준비, 실제 학습NOT_RUN. DeepSeek 순차 모듈 전체 재현 아님 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 21,
+      "method": "**커스텀 삼진 커널(분리 모듈)**",
+      "status_as_written": "🧪→⚠️GPU",
+      "row": "| **커스텀 삼진 커널(분리 모듈)** | 🧪→⚠️GPU | v6 (`--ternary-kernel[-triton]`) | int8 codes+그룹alpha 패킹, STE backward 보존. 레퍼런스=기존 경로와 등가, Triton=속도 시도 | GPU 학습 가속은 **원리상 불가**(dequant 후 dense와 동일 FLOPs). `--compile` 병용 시 dynamo 크래시 → 현재 코드가 SystemExit 차단 | **\"10×+ 느림\"은 정정됨**(결과 003): torch.compile 재컴파일 아티팩트였고, `--compile` 없이 재측정하니 k_triton 160~250ms/step 로 정상. **커널 자체는 문제 없음.** 다만 GPU 학습 목적은 여전히 무의미 → **실사용처 = CPU LUT/AVX2 배포**(P016 3:4 정합). 벤치는 `--compile` 없이 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 22,
+      "method": "**Skip-Forward / Dynamic KD**",
+      "status_as_written": "✅**역사적 측정·현재 기본 비활성**",
+      "row": "| **Skip-Forward / Dynamic KD** | ✅**역사적 측정·현재 기본 비활성** | v6 (`--kd-every K [--kd-dynamic]`) | 교사 forward를 K스텝마다 1회 → 교사 연산 1/K. dynamic은 초반 촘촘·후반 성김 | KD off에서는 작동하지 않음. 명시적 KD 연구 팔에만 적용 | 결과 005에서는 정적 k4가 full KD보다 빨랐으나, 결과 038과 사용자 결정으로 기준 recipe는 KD off. `kd_every=4`를 전역 기본이라고 부르지 않음 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 23,
+      "method": "**압축 교사 distill**",
+      "status_as_written": "✅**측정**",
+      "row": "| **압축 교사 distill** | ✅**측정** | v6 (`--kd-teacher-tag`) | 교사를 dense(132.5M) 대신 압축 tied(≈63.5M)로 → 교사 forward 대폭↓ | 교사 상한=압축 교사 품질, 순환성(교사 1회 학습 비용은 지불) | ★결과 007: k4+압축교사+no-ckpt 조합으로 **교사 오버헤드 = dense-nockpt 대비 +19%**(2940 vs 2467 ms/step), full-KD 대비 스텝시간 **-32%**. `load_dense`가 cfg로 범용 복원. P018 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 24,
+      "method": "**hidden(E=256) 정확 오프라인 KD**",
+      "status_as_written": "💡",
+      "row": "| **hidden(E=256) 정확 오프라인 KD** | 💡 | — | 교사 pre-head hidden h_E(256차)만 캐시 → logits=h_E@emb^T 로 **정확 복원**(top-k 손실 없음). 교사 body forward 제거 | 300M×256 fp16=154GB(int8 77GB, int4 38GB) 디스크. 복원 시 V×E matmul | P015 top-k 실패의 대안. E=256은 head 랭크(정확성 하한). 축소=양자화/PQ/랭크절단 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 25,
+      "method": "**Fused Cross-Entropy 커널**",
+      "status_as_written": "💡",
+      "row": "| **Fused Cross-Entropy 커널** | 💡 | — | 큰 vocab 로짓 materialize 없이 linear+CE 융합 → 메모리·오버헤드↓ | Windows 호환 불확실 | torch.compile이 일부 융합. vocab 32k라 이득 소폭 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 28,
+      "method": "**Sophia 옵티마이저**",
+      "status_as_written": "⏸**보류**",
+      "row": "| **Sophia 옵티마이저** | ⏸**보류** | — (P023) | 대각 Hessian 곡률로 스텝수↓. 논문 125M–1.5B에서 ~2× | 재현성 데이터·튜닝 의존, 삼진 STE 상호작용 미검증, HP 재탐색 | **P026 통과 후 착수**(2026-07-30 결정). P026 과 같은 자원(steps)을 노려 교락되고, 판정에 노이즈 실측이 선결. arXiv:2305.14342 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 29,
+      "method": "**점진적 스태킹(model growth)**",
+      "status_as_written": "💡",
+      "row": "| **점진적 스태킹(model growth)** | 💡 | — (P024) | 얕게→깊이 성장, 연산 재사용 → 같은 품질 총 벽시계↓(RAPTR 33%) | 성장 스케줄 민감, CLA/KV-bank 재배선, 어닐 상호작용 | dense 교사 학습비 절감에 적용. arXiv:2402.05913 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 30,
+      "method": "**어닐 형태(선형 램프 vs 계단)**",
+      "status_as_written": "🚫**실측완료·효과 미검출**(P035, 결과 022)",
+      "row": "| **어닐 형태(선형 램프 vs 계단)** | 🚫**실측완료·효과 미검출**(P035, 결과 022) | v6 (`--anneal-shape`·`--anneal-start`) | 계단 어닐로 'FP→별도 QAT' 중복을 인위 생성해 기전 유무를 검정 | 2×2 모두 최대 0.0128 안이고 step의 `grad_max`가 더 커 기본 `linear` 유지 | 같은 0.60/0.80·linear/step 격자는 반복하지 않는다. 새 후보는 동역학 계측이 원인을 보일 때만 연다 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 31,
+      "method": "**cooldown-QAT 융합 스케줄(정렬)**",
+      "status_as_written": "⏸**실측완료·귀속 미확정**(결과 015)",
+      "row": "| **cooldown-QAT 융합 스케줄(정렬)** | ⏸**실측완료·귀속 미확정**(결과 015) | v6 (`--anneal-end`·`--decay-frac`) | LR 감쇠와 QAT(어닐)를 겹쳐 중복 full-precision 업데이트 제거 | **정렬 고유 효과가 검출되지 않았다**(−0.0128 = 1.1σ < 2σ) | ★결과 015: `qb_wsd80 − qb_wsd60 = −0.0128`. 15% 스텝 절감(`qb_wsd80_s85` vs `qb_cos` **+0.0050**)은 성립하나 **wsd 성분과 분리 안 됨** → 빠진 칸 `qb_wsd60_s85`(P026 단계5) 전까지 채택 보류. arXiv:2509.22935 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 32,
+      "method": "**WSD 스케줄(스텝 절감 레버)**",
+      "status_as_written": "✅**측정·연구 recipe 채택**",
+      "row": "| **WSD 스케줄(스텝 절감 레버)** | ✅**측정·연구 recipe 채택** | v6 (`--sched wsd`) | 긴 plateau + 마지막 `decay_frac` 감쇠 | CLI 기본은 아직 cosine이라 명시 플래그 필요 | ★결과 015: 동일 스텝·동일 종료 LR(peak×0.1)에서 cosine 대비 **−0.0755(6.3σ)**. 시간 비용 0(정상상태 ms/step 2502~2520, 스케줄 무관). **dense 에서만 확인** — tied+KD 미검증 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 33,
+      "method": "**anneal 동역학 계측**",
+      "status_as_written": "✅**A0~A3 실제 완료**(2026-09-15 결과084); 기본 품질 선택과 별개",
+      "row": "| **anneal 동역학 계측** | ✅**A0~A3 실제 완료**(2026-09-15 결과084); 기본 품질 선택과 별개 | `anneal_schedule.py`, `--anneal-audit*` | LR/quant/aux·quant거리/code flip/경계·grad/update를 분리한250step 세팔. 후반 궤적의 지속 차이는 미검출 | 해당 표본의 audit on/off 오염은 사전문턱 통과. 모든 모델의0오버헤드·최적 anneal/STE 보장 아님 | [결과084](../../test_result/084_20260915_P035B-감사오염은-없고-후반궤적차도-지속되지-않았다.md)가 실행 정본. 초판 A3미실행 표기를2026-10-21 정정. backward 선택은 [리뷰08 §30](08_paper_review2.md)의 별도 미실행 후보 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 34,
+      "method": "**seq-length warmup(P013)**",
+      "status_as_written": "🧪**동일token 분할 비용 음성**",
+      "row": "| **seq-length warmup(P013)** | 🧪**동일token 분할 비용 음성** | 결과106 | 같은1024 x/y 전위치/RNG·131072분모 보존 | micro8에서accum64/32/16으로보전,contextreset 명시 | 1024/512/256 F+B중앙값3.563/3.993/7.974초로현분할 비채택. allocatedpeak4815/3108/2255MiB 감소와 본학습가속은별개. micro-token유지의기존P021B는seq·mb 교락이있는 별도이력 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 35,
+      "method": "**데이터 풀 다양성(`--pool-tokens`)**",
+      "status_as_written": "✅**측정·조건부 채택**",
+      "row": "| **데이터 풀 다양성(`--pool-tokens`)** | ✅**측정·조건부 채택** | v6 | 학습토큰은 그대로 두고 샘플 풀만 확대 → 반복 노출 감소 | 토큰화 1회 비용·디스크; pool별 언어비·val이 바뀌면 비교 교락 | 결과 006 log-val −0.12에는 시험지 변화가 섞였다. 같은 common text 방향은 양수지만 큰 pool의 영어 편향이 있다. 언어비를 보존한 exact cache에서만 “무료 품질 레버”로 사용 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 38,
+      "method": "**URL/메타데이터 prepend(데이터)**",
+      "status_as_written": "💡",
+      "row": "| **URL/메타데이터 prepend(데이터)** | 💡 | — (P012 추가) | 문서 앞 출처/메타 prepend로 목표loss 토큰 30~40%↓ | 한국어 셋은 URL 원본 부재 가능(score 대체) | 연산바운드에서 절대 벽시계 줄이는 데이터측 레버. arXiv:2511.21613 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 114,
+      "method": "**FP8(P022 단계1)**",
+      "status_as_written": "⏸ \"σ 실측·REVIEW1 후\"",
+      "row": "| **FP8(P022 단계1)** | ⏸ \"σ 실측·REVIEW1 후\" | **★차단 해제** | σ=0.012 실측(결과 012) **완료**, REVIEW1 은 결과 024 로 **mC 확정 권고**까지 갔다. 두 선결 조건이 모두 충족됐다. 0단계 게이트는 이미 통과(결과 010, 순수 GEMM 1.63~2.08×) |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 115,
+      "method": "**Sophia(P023)**",
+      "status_as_written": "⏸ \"P026 통과 후\"",
+      "row": "| **Sophia(P023)** | ⏸ \"P026 통과 후\" | **★차단 해제** | P026 은 결과 015 로 **종결**(정렬 무효), P035 로 **계열 종결**(형태도 무효). 자원 교락 대상이 사라졌다 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 138,
+      "method": "**★KD 교사에 `freeze_quant`+`drop_latent`**",
+      "status_as_written": "💡**최우선(값싸다)**",
+      "row": "| **★KD 교사에 `freeze_quant`+`drop_latent`** | 💡**최우선(값싸다)** | — (P042) | 교사는 가중치가 **고정**인데 매 스텝 `refresh_quant()` 를 돌고 fp32 latent 도 들고 있다. 추론용으로 **이미 구현된 함수 두 개**를 학습 루프의 교사에 붙이면 된다 | 없음(교사는 backward 가 없다) | ★결과 014: 재양자화가 CPU 추론 시간의 **약 79%** 였다(디바이스는 다르나 같은 연산). 그리고 교사 latent 해제로 **VRAM 이 남으면 tied+KD 에도 `--no-ckpt` 가 열린다 = 추가 −17.3%**. 구현 소, 기대 큼 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 139,
+      "method": "**FP8(Ada)**",
+      "status_as_written": "⏸**조건부 보류**",
+      "row": "| **FP8(Ada)** | ⏸**조건부 보류** | — (P022) | 텐서코어 FP8 GEMM | 스케일링 팩터 관리 실패 시 **조용한 발산**. 삼진 STE backward 와의 상호작용 미분석 | ★결과 010: GEMM 1.63~2.08× 이나 GEMM 이 스텝의 50% → end-to-end **−15%**(표준 런 18분). **2026-08-06 판단: 지금은 구현 안 한다** — 메모리 목표와 무관하고 위 두 행이 같은 자릿수를 구현 거의 없이 준다. **트리거 = 20 GPU시간 이상 캠페인(P041 단계2·P033) 확정 시** |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 146,
+      "method": "**★압축 교사**(`--kd-teacher-tag`)",
+      "status_as_written": "🧪**구현됨·미사용**",
+      "row": "| **★압축 교사**(`--kd-teacher-tag`) | 🧪**구현됨·미사용** | v6 (P018, B-2) | dense 교사 대신 tied 교사로 KD | ⚠️**교사가 약해져 품질 영향** | ~교사 forward 비용 **절반** + VRAM 확보. 결과 005 가 압축 교사를 이미 측정한 이력 있음 |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 147,
+      "method": "**★오프라인 KD 캐시**",
+      "status_as_written": "🧪**구현됨·미사용**",
+      "row": "| **★오프라인 KD 캐시** | 🧪**구현됨·미사용** | v6 (`--kd-cache`, P015, B-3) | 교사 top-k 를 미리 캐시 → 교사 forward **0** | ⚠️top-k 16 이라 **정보 손실**, 디스크 큼 | ~학생만 돌아 **−35% 추정** |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 148,
+      "method": "**★교사 forward int8**(신규)",
+      "status_as_written": "💡",
+      "row": "| **★교사 forward int8**(신규) | 💡 | — (P042 §7, B-1) | 교사도 `to_int8()`. ★결과 016 §12.3: **GPU int8 언팩은 −12~15% 뿐** | 속도 −1%(교사가 1/4 스텝) | ~VRAM **−350MB** → **`--no-ckpt`(−17.3%) 개방 확률↑**. **VRAM 을 −1% 로 사는 셈** |"
+    },
+    {
+      "source": "docs/methods/05_training_speed.md",
+      "line": 149,
+      "method": "~~accum 조정으로 스텝 반감~~",
+      "status_as_written": "🚫**이득 0 확정**",
+      "row": "| ~~accum 조정으로 스텝 반감~~ | 🚫**이득 0 확정** | — (B-5) | — | — | 🚫★결과 007: ms/step 이 accum 에 **~선형** → **총 벽시계 이득 없다.** 다시 시도하지 않는다 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 38,
+      "method": "**QK-norm**",
+      "status_as_written": "✅",
+      "row": "| **QK-norm** | ✅ | v5 | 어텐션 로짓 폭주 억제 → NaN 발산 해결 | 없음 | v4 300M 발산 주원인 해결. 1e-3까지 안정 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 39,
+      "method": "**NaN 가드**",
+      "status_as_written": "✅",
+      "row": "| **NaN 가드** | ✅ | v5 | clip_grad_norm_이 non-finite면 그 스텝 스킵 | — | 가중치 영구 오염 방지(186분 낭비 방지) |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 40,
+      "method": "**삼진 어닐링**",
+      "status_as_written": "✅",
+      "row": "| **삼진 어닐링** | ✅ | v4~ | 학습 중 FP→삼진으로 매끄럽게 전환(배포=종료 시점) | — | train/test 불일치 없음. compile 안전 버퍼(v5) |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 41,
+      "method": "**STE (AMP 안전)**",
+      "status_as_written": "✅",
+      "row": "| **STE (AMP 안전)** | ✅ | v4~ | 삼진 backward를 weight 함수 윈도로 → grad 선형 | — | GradScaler·배치크기 불변 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 42,
+      "method": "**공유 MLP LR 1/√g**",
+      "status_as_written": "✅",
+      "row": "| **공유 MLP LR 1/√g** | ✅ | v4~ | 그룹이 g회 누적 → LR 보정 | — | weight decay는 미보정이 더 나았음 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 43,
+      "method": "**warmup 비율 수정**",
+      "status_as_written": "✅",
+      "row": "| **warmup 비율 수정** | ✅ | v5 | `max(5, min(steps//10,100))` | — | 짧은 런에서 warmup이 학습 절반 먹던 버그 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 44,
+      "method": "**LR 재조정 (기본 6e-4)**",
+      "status_as_written": "✅",
+      "row": "| **LR 재조정 (기본 6e-4)** | ✅ | v5 | d=768·유효배치 131K에 2e-3은 과다 | — | 발산 원인이던 LR 하향 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 45,
+      "method": "**자동 LR 탐색**",
+      "status_as_written": "🧪",
+      "row": "| **자동 LR 탐색** | 🧪 | v6 (`lrfind`) | range test(발산의 1/3) + grid 스윕 | — | grid는 warmup 램프 포함(cold-start 오판 방지) |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 46,
+      "method": "**베스트 체크포인트**",
+      "status_as_written": "✅",
+      "row": "| **베스트 체크포인트** | ✅ | v6 | val 최저 시 `{name}_best.pt` 저장(raw 기준) | 디스크 | 스케일별 이름으로 클로버 방지 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 47,
+      "method": "**EMA / 체크포인트 병합**",
+      "status_as_written": "🧪",
+      "row": "| **EMA / 체크포인트 병합** | 🧪 | v6 (`--ema`) | 가중치 지수평균 → 무료 품질 향상 | **decay 스케일 주의** | 주 val은 raw 보고, EMA는 부가 `[ema]`. **실측(P002 t_base): 0.999@2289스텝은 무효**(final ema 4.30≫raw 3.96). 짧은 런은 0.99 권장 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 48,
+      "method": "**WSD 스케줄**",
+      "status_as_written": "✅**측정**(결과 015)",
+      "row": "| **WSD 스케줄** | ✅**측정**(결과 015) | v6 (`--sched wsd`) | 긴 plateau + 마지막 20% 감쇠 | dense 에서만 확인 | ★동일 스텝·동일 종료 LR 에서 cosine 대비 **−0.0755(6.3σ)**. plateau 체크포인트 재사용(도메인 분기). 근거 MiniCPM |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 49,
+      "method": "**조기 종료**",
+      "status_as_written": "🧪",
+      "row": "| **조기 종료** | 🧪 | v6 (`--early-stop`) | val 개선 없이 N회 → 종료 | 본 실행은 undertrained라 효과 제한 | LR/아키텍처 스윕용 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 50,
+      "method": "**train-val 모니터**",
+      "status_as_written": "✅",
+      "row": "| **train-val 모니터** | ✅ | v6 | 매 eval에 `val-train` 출력 | — | 과적합 신호 감시(현재는 undertraining) |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 51,
+      "method": "**스케일별 체크포인트 이름**",
+      "status_as_written": "✅",
+      "row": "| **스케일별 체크포인트 이름** | ✅ | v6 | `{preset}_{data}_{tokens}_{arch}` | — | tiny 스모크가 300M을 덮어쓰던 버그 해결 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 52,
+      "method": "**★재현 노이즈 σ**",
+      "status_as_written": "✅**측정 완료**",
+      "row": "| **★재현 노이즈 σ** | ✅**측정 완료** | — | bf16 커널 리덕션 순서 차이가 스텝마다 미세 편차 → 혼돈적 증폭 | **판정기준 `±0.07` 의 근거가 없다** | ★결과 007: 동일 설정 두 런(grad-ckpt on/off)이 250스텝에서 **0.11 nats** 벌어짐. **단 이 값은 σ 추정치가 아니다** — 두 런의 `grad_max` 가 10.79/35.38(우리 \"10 이상=학습문제\" 선 초과)로 **불안정 구간**이었다(2289스텝 런은 0.5~1.2). ★**결과 012: σ = 0.012**(`p6d` vs `p6d_s2`, 시드만 다름, \\|Δ\\|=0.0119). **2σ=0.024 < 0.07 이라 판정기준 유지.** 실무 분해능 0.024 미만은 구분 불가. 표본 2개 추정이므로 자릿수 판정으로만 사용 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 55,
+      "method": "**cooldown-QAT 스케줄 정렬**",
+      "status_as_written": "⏸**검출 실패**(결과 015)",
+      "row": "| **cooldown-QAT 스케줄 정렬** | ⏸**검출 실패**(결과 015) | v6 (`--anneal-end`) | 완전삼진 도달 지점을 LR 감쇠 시작과 정렬 | 기본값(0.60)은 종전 동작 | **정렬 고유 기여 −0.0128(1.1σ) = 구분 불가.** 이득의 실체는 wsd 자체였다. 5번 표·P026 §단계5 참조 |"
+    },
+    {
+      "source": "docs/methods/06_training_quality.md",
+      "line": 56,
+      "method": "**베스트 체크포인트로 런 비교**",
+      "status_as_written": "🚫**금지**(결과 015)",
+      "row": "| **베스트 체크포인트로 런 비교** | 🚫**금지**(결과 015) | — | — | 주기 eval 50it vs 최종 eval 100it = **다른 추정량**, `best` 는 추첨 최소값이라 **하향 편향** | 결과 015 에서 `best` 로 읽으면 부호가 뒤집혔다. **판정은 `final` 끼리만.** `best.pt` 는 체크포인트 선택용으로만 |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 37,
+      "method": "`SciPhi/textbooks-are-all-you-need-lite`",
+      "status_as_written": "**3.18 GB** / 681,845행",
+      "row": "| `SciPhi/textbooks-are-all-you-need-lite` | **3.18 GB** / 681,845행 | ~720M | ✅ | `completion`(산문) | **채택 후보(영문)** |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 44,
+      "method": "`wikimedia/wikipedia` ko + `HuggingFaceFW/fineweb-edu` (**현행 `ko-en`**)",
+      "status_as_written": "사실상 무제한",
+      "row": "| `wikimedia/wikipedia` ko + `HuggingFaceFW/fineweb-edu` (**현행 `ko-en`**) | 사실상 무제한 | — | ✅ | 산문 | **유지** |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 45,
+      "method": "`eliceai/korean-webtext-edu` (**현행 `ko-edu-en`**)",
+      "status_as_written": "—",
+      "row": "| `eliceai/korean-webtext-edu` (**현행 `ko-edu-en`**) | — | — | ✅ | 산문 | **조건부 유지** — §4 |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 98,
+      "method": "공통 원문(어느 학습 코퍼스에도 안 들어감)",
+      "status_as_written": "✅ 우리 `ko-en`·`ko-edu-en` 어디에도 없다",
+      "row": "| 공통 원문(어느 학습 코퍼스에도 안 들어감) | ✅ 우리 `ko-en`·`ko-edu-en` 어디에도 없다 |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 99,
+      "method": "연속 산문",
+      "status_as_written": "✅ 영문 위키 문단, 평균 **736자**",
+      "row": "| 연속 산문 | ✅ 영문 위키 문단, 평균 **736자** |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 100,
+      "method": "크기가 eval 에 충분",
+      "status_as_written": "✅ 고유 context **19,029개 / 14.0MB ≈ 3.2M 토큰** (val 1.5M 의 2배)",
+      "row": "| 크기가 eval 에 충분 | ✅ 고유 context **19,029개 / 14.0MB ≈ 3.2M 토큰** (val 1.5M 의 2배) |"
+    },
+    {
+      "source": "docs/methods/07_corpus_selection.md",
+      "line": 101,
+      "method": "로컬 보유",
+      "status_as_written": "✅ `datasets/squad/train-v2.0.json` (42MB)",
+      "row": "| 로컬 보유 | ✅ `datasets/squad/train-v2.0.json` (42MB) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 15,
+      "method": "★7",
+      "status_as_written": "**DFlash**(arXiv:2602.06036) + 블로그 2종(Modal · Inco AI)",
+      "row": "| ★7 | **DFlash**(arXiv:2602.06036) + 블로그 2종(Modal · Inco AI) | 🚫**초안모델 도입 기각** · ⏸**2-tap conv·위치가중 손실 보존** | ★§11 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 16,
+      "method": "★8",
+      "status_as_written": "**KLUE**(arXiv:2105.09680)",
+      "row": "| ★8 | **KLUE**(arXiv:2105.09680) | ✅**채택 — 우도 채점 한정**(YNAT·NLI 500문항) | ★§12 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 17,
+      "method": "★9",
+      "status_as_written": "**KorQuAD 2.0**(한글및한국어정보처리 2019)",
+      "row": "| ★9 | **KorQuAD 2.0**(한글및한국어정보처리 2019) | ✅★**즉시 채택 — 정답 CE paired 100문항** | ★§12 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 34,
+      "method": "**2**",
+      "status_as_written": "선형 어텐션 4종(**GDN-2** arXiv:2605.22791 · **KDA** · **Kimi-Linear** · **DeepSeek-V4**)",
+      "row": "| **2** | 선형 어텐션 4종(**GDN-2** arXiv:2605.22791 · **KDA** · **Kimi-Linear** · **DeepSeek-V4**) | 긴 컨텍스트를 선형 비용으로 | 게이트 델타룰·선형 상태 | `context_length`(04) · `architecture`(01) | 🚫**기각(현시점)** · 개념만 보존 | 없음 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 37,
+      "method": "**6**",
+      "status_as_written": "**MobileLLM**(arXiv:2402.14905, Meta ICLR24)",
+      "row": "| **6** | **MobileLLM**(arXiv:2402.14905, Meta ICLR24) | sub-1B 온디바이스 최적 형상 | **deep-and-thin** + **즉시 블록 공유** | `architecture`(01) | ✅**우리 설계를 지지**(신규 작업 없음) | ★**P089 근거** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 38,
+      "method": "**7**",
+      "status_as_written": "★**Relaxed Recursive Transformers**(arXiv:2410.20672, ICLR25)",
+      "row": "| **7** | ★**Relaxed Recursive Transformers**(arXiv:2410.20672, ICLR25) | 층 타잉의 손실을 되살린다 | **층별 LoRA 로 타잉 완화** | `architecture`(01) · `memory`(02) | 🧪**재개 근거 성립** — 🚫**표준조건 0런** | **P008**(⏸) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 39,
+      "method": "**9**",
+      "status_as_written": "**DeepSeek-V3**(FP8 선택적 혼합정밀도)",
+      "row": "| **9** | **DeepSeek-V3**(FP8 선택적 혼합정밀도) | 학습 메모리·속도 | 블록 단위 FP8 + FP32 누적 | `training_memory`(09) · `training_speed`(05) | ⏸**부분** | **P022B** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 40,
+      "method": "**10**",
+      "status_as_written": "**Hyper Experts**(`63_Hyper_Experts_…`)",
+      "row": "| **10** | **Hyper Experts**(`63_Hyper_Experts_…`) | 전문가 하이퍼네트워크 | — | `architecture`(01) | ⏸**하나만** — 우리 구조가 이미 퇴화형 | 없음 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 41,
+      "method": "**11**",
+      "status_as_written": "**DFlash**(arXiv:2602.06036) + 블로그 2종",
+      "row": "| **11** | **DFlash**(arXiv:2602.06036) + 블로그 2종 | 확산 초안 모델 가속 | 초안·검증 | `inference_speed`(12) | 🚫**초안모델 기각** · ⏸2-tap conv·위치가중 손실 보존 | 없음 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 42,
+      "method": "**12**",
+      "status_as_written": "★**KLUE**(arXiv:2105.09680) · ★**KorQuAD 2.0**(2019)",
+      "row": "| **12** | ★**KLUE**(arXiv:2105.09680) · ★**KorQuAD 2.0**(2019) | 한국어 평가 | 우도 채점·정답 CE | `benchmarks`(10) | ✅**채택 — 우도 채점 한정** | **P085** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 43,
+      "method": "**13**",
+      "status_as_written": "**FreeToken**(엣지 MoE 서빙)",
+      "row": "| **13** | **FreeToken**(엣지 MoE 서빙) | 대역폭 적응 실행 | KV 체크포인트 정책 | `context_length`(04) · `memory`(02) | ⏸**의미 경계 KV 체크포인트** 하나 | **P077 단계5**(⏸) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 44,
+      "method": "**14**",
+      "status_as_written": "★**Learnable Multipliers**(Falcon LLM Team)",
+      "row": "| **14** | ★**Learnable Multipliers**(Falcon LLM Team) | 배포 비용 0 인 품질 레버 | 행렬층 스칼라 승수 | `training_quality`(06) | 🚫**dense 종결**(산술적으로 무효) · ⏳**타잉 몸통 미측정** | **P086** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 45,
+      "method": "**15**",
+      "status_as_written": "★**KoBEST**(SK Telecom + Oxford, 2022)",
+      "row": "| **15** | ★**KoBEST**(SK Telecom + Oxford, 2022) | 한국어 벤치마크 | COPA·HellaSwag 등 | `benchmarks`(10) | ✅**채택** | **P085 단계3** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 46,
+      "method": "★",
+      "status_as_written": "**Sherry**(1.25비트 3:4 준정형)",
+      "row": "| ★ | **Sherry**(1.25비트 3:4 준정형) | 하드웨어 친화 삼진 | 세분화 희소 + Arenas | `memory`(02) | 🚫**종결**(대가 +0.04203 > 문턱) · ⚠️속도 축은 열려 있다 | **P016** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 136,
+      "method": "라즈베리파이급 (1GB)",
+      "status_as_written": "≤ 500 MB",
+      "row": "| 라즈베리파이급 (1GB) | ≤ 500 MB | 86.9 MB | ✅ 이미 만족 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 137,
+      "method": "데스크톱 CPU",
+      "status_as_written": "—",
+      "row": "| 데스크톱 CPU | — | 86.9 MB | ✅ |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 173,
+      "method": "9",
+      "status_as_written": "**MobileLLM** (arXiv:2402.14905, Meta)",
+      "row": "| 9 | **MobileLLM** (arXiv:2402.14905, Meta) | ✅ **우리 설계를 지지** — 신규 작업 없음 | §6 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 174,
+      "method": "10",
+      "status_as_written": "**Relaxed Recursive Transformers** (arXiv:2410.20672)",
+      "row": "| 10 | **Relaxed Recursive Transformers** (arXiv:2410.20672) | 🧪 **P008 재개 근거** | §7 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 275,
+      "method": "P008",
+      "status_as_written": "🧪 **재개 근거 성립.** 단 **분해능 이하 신호**라 `paired_eval.py` 필수",
+      "row": "| P008 | 🧪 **재개 근거 성립.** 단 **분해능 이하 신호**라 `paired_eval.py` 필수 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 290,
+      "method": "**스케일 단위**",
+      "status_as_written": "⚠️ 미확인",
+      "row": "| **스케일 단위** | ⚠️ 미확인 | 🚫 **텐서당 1개**(I2_S·TL 공통). 우리 g128 은 약 428K개 | `quantize_i2_s` 가 텐서 전체 `max` → `scale_ptr[0]` / `transform_tensor` 가 `aligned_malloc(sizeof(bitnet_float_type))` |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 291,
+      "method": "**활성값 정밀도**",
+      "status_as_written": "⚠️ 미확인",
+      "row": "| **활성값 정밀도** | ⚠️ 미확인 | ✅ **TL = F32** / ⚠️ **I2_S = int8(W2A8)** | `ggml_bitnet_can_mul_mat` 의 `src1->type == GGML_TYPE_F32` / `ggml_vec_dot_i2_i8_s` |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 292,
+      "method": "**배치 조건**",
+      "status_as_written": "미인지",
+      "row": "| **배치 조건** | 미인지 | ✅ **TL 은 `src1->ne[1] <= 1` = 배치 1 전용** — 우리 시나리오와 일치. ⚠️ **prefill 은 안 걸린다** | 같은 함수 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 293,
+      "method": "**shape 의존**",
+      "status_as_written": "⚠️ 미확인",
+      "row": "| **shape 의존** | ⚠️ 미확인 | ⚠️ **TL 은 3200/8640 하드코딩**(codegen 필요) / ✅ **I2_S 는 shape 무관** | `kernel_config.ini` · `gemm-config.h` |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 294,
+      "method": "**라이선스**",
+      "status_as_written": "⚠️ 미확인",
+      "row": "| **라이선스** | ⚠️ 미확인 | ✅ **MIT**(Microsoft, 양쪽) | `LICENSE` |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 355,
+      "method": "오늘 이식 가능한가",
+      "status_as_written": "🚫 **아니다** — K축 그룹 스케일 GEMM 이 표준에 없다",
+      "row": "| 오늘 이식 가능한가 | 🚫 **아니다** — K축 그룹 스케일 GEMM 이 표준에 없다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 357,
+      "method": "2026-08-06 P022 판단",
+      "status_as_written": "✅ **유지**(지금 구현하지 않는다). 이유가 하나 늘었다",
+      "row": "| 2026-08-06 P022 판단 | ✅ **유지**(지금 구현하지 않는다). 이유가 하나 늘었다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 405,
+      "method": "MLP 공유",
+      "status_as_written": "전 층 pool",
+      "row": "| MLP 공유 | 전 층 pool | ✅ **중간층 g 개씩 공유** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 406,
+      "method": "배정",
+      "status_as_written": "**학습된 라우터**(토큰별 top-k)",
+      "row": "| 배정 | **학습된 라우터**(토큰별 top-k) | 🚫 **고정**(층 인덱스 `j // g`) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 407,
+      "method": "라우터 파라미터",
+      "status_as_written": "★**층별**(공유하면 수렴이 나빠진다)",
+      "row": "| 라우터 파라미터 | ★**층별**(공유하면 수렴이 나빠진다) | ✅ **우리도 층별**(`router_bias[n_layers, n_modes]` 이 이미 있다) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 434,
+      "method": "**HX 아키텍처 도입**",
+      "status_as_written": "🚫 **비권장**(pool 2개 · CPU 라우팅 · γ↑ 역효과)",
+      "row": "| **HX 아키텍처 도입** | 🚫 **비권장**(pool 2개 · CPU 라우팅 · γ↑ 역효과) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 435,
+      "method": "**\"higher-activation\" 가설**",
+      "status_as_written": "✅ ★**채택 — P049B 의 문헌 근거**",
+      "row": "| **\"higher-activation\" 가설** | ✅ ★**채택 — P049B 의 문헌 근거** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 436,
+      "method": "층별 라우터 설계",
+      "status_as_written": "⏸ 참고. 우리 `router_bias` 가 이미 그 형태다",
+      "row": "| 층별 라우터 설계 | ⏸ 참고. 우리 `router_bias` 가 이미 그 형태다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 437,
+      "method": "LR 1e-3 @ 82M",
+      "status_as_written": "✅ **결과 017 과 독립 일치** — 인용 가치 있다",
+      "row": "| LR 1e-3 @ 82M | ✅ **결과 017 과 독립 일치** — 인용 가치 있다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 438,
+      "method": "**관측: 초기 층 expert 는 중복, 후기 층은 거의 직교**",
+      "status_as_written": "⏸★**흥미롭다.** 우리 `mlp_group` 이 **초기·후기를 똑같이 묶는다**는 뜻 → **불균등 타잉**(초기 g16 / 후기 g4) 아이디어. **신규 축 후보**",
+      "row": "| **관측: 초기 층 expert 는 중복, 후기 층은 거의 직교** | ⏸★**흥미롭다.** 우리 `mlp_group` 이 **초기·후기를 똑같이 묶는다**는 뜻 → **불균등 타잉**(초기 g16 / 후기 g4) 아이디어. **신규 축 후보** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 528,
+      "method": "DFlash 초안 모델 도입",
+      "status_as_written": "🚫**기각.** §11.2-2(상주 +25%)가 결정적",
+      "row": "| DFlash 초안 모델 도입 | 🚫**기각.** §11.2-2(상주 +25%)가 결정적 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 529,
+      "method": "우리 모델을 **다른 모델의 초안**으로 쓰기",
+      "status_as_written": "⏸★**흥미롭지만 다른 프로젝트다.** 우리 목표는 *\"작은 모델이 혼자 돈다\"* 이지 *\"큰 모델을 돕는다\"* 가 아니다",
+      "row": "| 우리 모델을 **다른 모델의 초안**으로 쓰기 | ⏸★**흥미롭지만 다른 프로젝트다.** 우리 목표는 *\"작은 모델이 혼자 돈다\"* 이지 *\"큰 모델을 돕는다\"* 가 아니다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 530,
+      "method": "DFlash 2 경로 선택기",
+      "status_as_written": "🚫**해당 없음** — 초안 모델이 없으면 후보 경로가 없다",
+      "row": "| DFlash 2 경로 선택기 | 🚫**해당 없음** — 초안 모델이 없으면 후보 경로가 없다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 531,
+      "method": "★**2-tap conv**",
+      "status_as_written": "⏸**보존 — P065 후보**",
+      "row": "| ★**2-tap conv** | ⏸**보존 — P065 후보** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 532,
+      "method": "★**위치 가중 손실**",
+      "status_as_written": "⏸**보존 — P062 참고**",
+      "row": "| ★**위치 가중 손실** | ⏸**보존 — P062 참고** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 538,
+      "method": "1",
+      "status_as_written": "⏸**2-tap 동적 conv 로 어텐션 타잉 대가 상쇄**(번호 미배정)",
+      "row": "| 1 | ⏸**2-tap 동적 conv 로 어텐션 타잉 대가 상쇄**(번호 미배정) | REVIEW2 확정 후. `attn_group 4` 의 +0.0078 을 되살리는지 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 539,
+      "method": "2",
+      "status_as_written": "⏸ P062 계획서에 **위치 가중 손실** 절 추가",
+      "row": "| 2 | ⏸ P062 계획서에 **위치 가중 손실** 절 추가 | P062 단계1 설계 시 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 540,
+      "method": "3",
+      "status_as_written": "⏸ **재검토 조건**: 우리 모델이 L2+L3 에 들어간 뒤 *\"그 위에서 무엇을 더 빠르게 하나\"* 를 물을 때",
+      "row": "| 3 | ⏸ **재검토 조건**: 우리 모델이 L2+L3 에 들어간 뒤 *\"그 위에서 무엇을 더 빠르게 하나\"* 를 물을 때 | REVIEW3 이후 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 585,
+      "method": "⏸ 상관계수",
+      "status_as_written": "STS",
+      "row": "| ⏸ 상관계수 | STS | Pearson | **회귀는 base LM 으로 못 한다.** 미채택 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 619,
+      "method": "1",
+      "status_as_written": "⚠️🚫**~~UNK 조각으로 쪼개진다~~ — 2026-08-21 정정.** 우리 토크나이저는 **ByteLevel BPE 이고 `unk_token` 이 `None`** 이다(`data_cache/tok-ko-en-32768.json` 실사) — **UNK 가 아예 없다.** 실제 위험은 *\"희귀 문자열이 **과도하게 긴 subword 열**로 분해된다\"* 이다",
+      "row": "| 1 | ⚠️🚫**~~UNK 조각으로 쪼개진다~~ — 2026-08-21 정정.** 우리 토크나이저는 **ByteLevel BPE 이고 `unk_token` 이 `None`** 이다(`data_cache/tok-ko-en-32768.json` 실사) — **UNK 가 아예 없다.** 실제 위험은 *\"희귀 문자열이 **과도하게 긴 subword 열**로 분해된다\"* 이다 | **정답 토큰 길이를 기록**하고 **길이 계층 분석**을 한다. 🚫**20토큰 임의 컷은 폐기**(선택 편향) — §12.9-4 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 639,
+      "method": "★**KorQuAD 1.0 정답 CE (paired, 100문항)**",
+      "status_as_written": "✅★**즉시 채택** — REVIEW2 표준안 3건 + dense 에 적용",
+      "row": "| ★**KorQuAD 1.0 정답 CE (paired, 100문항)** | ✅★**즉시 채택** — REVIEW2 표준안 3건 + dense 에 적용 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 640,
+      "method": "★**YNAT / NLI 라벨 우도 정확도**",
+      "status_as_written": "✅**채택, 단 500문항** — 100문항은 SE 4.6%p 로 못 쓴다",
+      "row": "| ★**YNAT / NLI 라벨 우도 정확도** | ✅**채택, 단 500문항** — 100문항은 SE 4.6%p 로 못 쓴다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 641,
+      "method": "KorQuAD 2.1 (HTML 문서)",
+      "status_as_written": "🚫**보류** — 지문이 **HTML 문서 전체**라 seq 1024 로 못 담는다",
+      "row": "| KorQuAD 2.1 (HTML 문서) | 🚫**보류** — 지문이 **HTML 문서 전체**라 seq 1024 로 못 담는다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 642,
+      "method": "KLUE-STS / NER / RE / DP / WoS",
+      "status_as_written": "🚫**미채택** — 파인튜닝 없이는 무의미",
+      "row": "| KLUE-STS / NER / RE / DP / WoS | 🚫**미채택** — 파인튜닝 없이는 무의미 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 643,
+      "method": "**생성형 EM/F1**",
+      "status_as_written": "🚫★**명시적 기각** — §12.2",
+      "row": "| **생성형 EM/F1** | 🚫★**명시적 기각** — §12.2 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 644,
+      "method": "KLUE 논문의 형태소 pre-tokenization",
+      "status_as_written": "⏸ REVIEW3 (§12.6)",
+      "row": "| KLUE 논문의 형태소 pre-tokenization | ⏸ REVIEW3 (§12.6) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 666,
+      "method": "§2",
+      "status_as_written": "공식 YNAT metric 은 **macro F1**",
+      "row": "| §2 | 공식 YNAT metric 은 **macro F1** | ✅★**사실 확인.** KLUE 논문 **§3.1.2** 원문: *\"The evaluation metric for YNAT is macro F1 score.\"* **전면 수용** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 667,
+      "method": "§3",
+      "status_as_written": "공식 NLI metric 은 **accuracy**",
+      "row": "| §3 | 공식 NLI metric 은 **accuracy** | ✅★**사실 확인.** 동 **§3.3.2**. **전면 수용** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 668,
+      "method": "§7",
+      "status_as_written": "*\"100문항으로 충분\"* 은 근거 부족",
+      "row": "| §7 | *\"100문항으로 충분\"* 은 근거 부족 | ✅★★**전면 수용. 우리가 틀렸다** — §12.9-3 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 669,
+      "method": "§8",
+      "status_as_written": "**20토큰 컷은 선택 편향**",
+      "row": "| §8 | **20토큰 컷은 선택 편향** | ✅★**전면 수용** — §12.9-4 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 670,
+      "method": "§10",
+      "status_as_written": "*\"UNK 조각\"* 표현이 부정확",
+      "row": "| §10 | *\"UNK 조각\"* 표현이 부정확 | ✅★**전면 수용. 사실 오류였다** — §12.9-5 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 673,
+      "method": "§4·§12",
+      "status_as_written": "**명명 분리**(공식 ≠ auxiliary)",
+      "row": "| §4·§12 | **명명 분리**(공식 ≠ auxiliary) | ✅**수용, 그리고 도구에 인쇄로 강제** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 675,
+      "method": "§6",
+      "status_as_written": "paired 를 primary 로",
+      "row": "| §6 | paired 를 primary 로 | ✅**이미 그렇다**(결과 049 가 그 근거를 만들었다) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 676,
+      "method": "§9",
+      "status_as_written": "문항 집합을 사전 고정",
+      "row": "| §9 | 문항 집합을 사전 고정 | ✅**이미 구현돼 있다** — §12.9-7 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 677,
+      "method": "§16",
+      "status_as_written": "*\"prompt 에 loss 를 적용하지 않는다\"*",
+      "row": "| §16 | *\"prompt 에 loss 를 적용하지 않는다\"* | ✅**이미 구현돼 있다**(`tail = ce[-len(cids):]`) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 678,
+      "method": "§16",
+      "status_as_written": "*\"random labels 절대 사용 금지\"*",
+      "row": "| §16 | *\"random labels 절대 사용 금지\"* | ✅**이미 규약이다**(`check_diag_data.py`) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 680,
+      "method": "전체",
+      "status_as_written": "—",
+      "row": "| 전체 | — | 🚫★**빠진 것 하나** — §12.9-10 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 756,
+      "method": "수용",
+      "status_as_written": "✅ *\"현재 연구 목적에 적합하지 않다\"* 라는 **완화된 문구**를 채택한다",
+      "row": "| 수용 | ✅ *\"현재 연구 목적에 적합하지 않다\"* 라는 **완화된 문구**를 채택한다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 758,
+      "method": "🚫**반박**",
+      "status_as_written": "*\"EM/F1 이 잘못된 metric 이라고 했다\"* 는 **우리 문서에 없는 주장**이다. 약한 허수아비다",
+      "row": "| 🚫**반박** | *\"EM/F1 이 잘못된 metric 이라고 했다\"* 는 **우리 문서에 없는 주장**이다. 약한 허수아비다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 765,
+      "method": "§9 *\"문항 집합을 사전 고정, 모델별로 달라지면 안 된다\"*",
+      "status_as_written": "✅ `keep = [i for i in ... if all(per_item[t][i] is not None ...)]` — **공통 문항만** 비교하고 제외 수를 인쇄한다",
+      "row": "| §9 *\"문항 집합을 사전 고정, 모델별로 달라지면 안 된다\"* | ✅ `keep = [i for i in ... if all(per_item[t][i] is not None ...)]` — **공통 문항만** 비교하고 제외 수를 인쇄한다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 766,
+      "method": "§16 *\"prompt tokens 에 loss 를 적용하지 않는다\"*",
+      "status_as_written": "✅ `tail = ce[-len(cids):]` — **이어쓰기 부분만**",
+      "row": "| §16 *\"prompt tokens 에 loss 를 적용하지 않는다\"* | ✅ `tail = ce[-len(cids):]` — **이어쓰기 부분만** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 767,
+      "method": "§16 *\"random labels 절대 사용 금지\"*",
+      "status_as_written": "✅ 이미 저장소 규약(`check_diag_data.py` 가 기계로 거부)",
+      "row": "| §16 *\"random labels 절대 사용 금지\"* | ✅ 이미 저장소 규약(`check_diag_data.py` 가 기계로 거부) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 768,
+      "method": "§6 paired 를 primary 로",
+      "status_as_written": "✅ **결과 049 가 그 근거를 만든 곳**이다",
+      "row": "| §6 paired 를 primary 로 | ✅ **결과 049 가 그 근거를 만든 곳**이다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 809,
+      "method": "★**KorQuAD CE 의 시드쌍 σ**",
+      "status_as_written": "🚫**미측정.** `mC_initonly` vs `mC_initonly_s2` 로 재면 된다 — **문항 100개, 학습 0**",
+      "row": "| ★**KorQuAD CE 의 시드쌍 σ** | 🚫**미측정.** `mC_initonly` vs `mC_initonly_s2` 로 재면 된다 — **문항 100개, 학습 0** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 810,
+      "method": "★**auxiliary 지표의 실무 분해능**",
+      "status_as_written": "🚫**미정.** σ 를 잰 뒤에 정한다",
+      "row": "| ★**auxiliary 지표의 실무 분해능** | 🚫**미정.** σ 를 잰 뒤에 정한다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 831,
+      "method": "**읽은 정도**",
+      "status_as_written": "✅**본문 §1~§4.1 전문**(8쪽) + 리포 README·구조",
+      "row": "| **읽은 정도** | ✅**본문 §1~§4.1 전문**(8쪽) + 리포 README·구조 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 838,
+      "method": "아키텍처",
+      "status_as_written": "**MoE**(전문가 수백 개, 토큰당 k개 라우팅)",
+      "row": "| 아키텍처 | **MoE**(전문가 수백 개, 토큰당 k개 라우팅) | 🚫**dense + 타잉.** 전문가가 없다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 866,
+      "method": "★**3**",
+      "status_as_written": "🚫**MoE 도 GPU 도 필요 없다.** 순수하게 **\"어디에 체크포인트를 둘 것인가\"** 라는 정책이다",
+      "row": "| ★**3** | 🚫**MoE 도 GPU 도 필요 없다.** 순수하게 **\"어디에 체크포인트를 둘 것인가\"** 라는 정책이다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 895,
+      "method": "⏸**A. LUT vs dequant**",
+      "status_as_written": "LUT 테이블 조회(랜덤 접근) vs 언팩 후 GEMM(순차)",
+      "row": "| ⏸**A. LUT vs dequant** | LUT 테이블 조회(랜덤 접근) vs 언팩 후 GEMM(순차) | 🚫[P014D](../../test_plan/P014D_LUT-배포커널-속도와-패킹.md) 단계1 미구현. **커널이 있어야 잰다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 896,
+      "method": "⏸**B. 멀티스레드 분할**",
+      "status_as_written": "결과 014 §12.3 이 **언팩은 병렬화된다**를 쟀다",
+      "row": "| ⏸**B. 멀티스레드 분할** | 결과 014 §12.3 이 **언팩은 병렬화된다**를 쟀다 | ⚠️우리는 스레드 수만 바꿨지 **작업을 두 경로로 쪼갠 적이 없다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 951,
+      "method": "**MoE 로의 전환**",
+      "status_as_written": "🚫**우리 목표와 반대**다. MoE 는 **파라미터를 늘리고 연산을 줄인다.** 우리는 **파라미터(상주)를 줄이고 연산을 늘린다**(재귀가 그 예다). ★**정확히 반대 방향의 교환**이다",
+      "row": "| **MoE 로의 전환** | 🚫**우리 목표와 반대**다. MoE 는 **파라미터를 늘리고 연산을 줄인다.** 우리는 **파라미터(상주)를 줄이고 연산을 늘린다**(재귀가 그 예다). ★**정확히 반대 방향의 교환**이다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 954,
+      "method": "**성능 수치**(39.3 tok/s 등)",
+      "status_as_written": "🚫**규모·하드웨어가 완전히 다르다.** 우리 13 tok/s 와 비교하지 않는다",
+      "row": "| **성능 수치**(39.3 tok/s 등) | 🚫**규모·하드웨어가 완전히 다르다.** 우리 13 tok/s 와 비교하지 않는다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 967,
+      "method": "★★**1**",
+      "status_as_written": "**의미 경계 KV 체크포인트**를 P077 단계5 로",
+      "row": "| ★★**1** | **의미 경계 KV 체크포인트**를 P077 단계5 로 | [P077](../../test_plan/P077_KV캐시-정밀도와-컨텍스트-길이.md) | ⚙설계 0.3h | ✅**추가함** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 968,
+      "method": "★**2**",
+      "status_as_written": "**런타임 seq 산정** — `max_seq_len` 을 예산에서 역산",
+      "row": "| ★**2** | **런타임 seq 산정** — `max_seq_len` 을 예산에서 역산 | `04_context_length.md` §4.4 | ⚙0.3h | ⏸ |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 969,
+      "method": "**3**",
+      "status_as_written": "12번 방법론 문서에 **q★ 원리** 기록",
+      "row": "| **3** | 12번 방법론 문서에 **q★ 원리** 기록 | [`12_inference_speed.md`](12_inference_speed.md) | — | ✅**했다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 970,
+      "method": "⏸**4**",
+      "status_as_written": "두 경로 대역폭 실측(`B_H`·`B_P`)",
+      "row": "| ⏸**4** | 두 경로 대역폭 실측(`B_H`·`B_P`) | — | ⚙2h | 🚫**쪼갤 두 경로가 아직 없다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 994,
+      "method": "1",
+      "status_as_written": "핵심 기여 = **벡터 승수** 식 (3)",
+      "row": "| 1 | 핵심 기여 = **벡터 승수** 식 (3) | 🚫**스칼라 셋**(식 2) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 995,
+      "method": "★**2**",
+      "status_as_written": "*\"중복 승수는 대칭변환이며 NaN 을 부를 수 있다\"*",
+      "row": "| ★**2** | *\"중복 승수는 대칭변환이며 NaN 을 부를 수 있다\"* | 🚫**셋 중 둘이 중복** — `m_scale`(열 승수 자리) · `gates[1]`(down 스칼라) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 997,
+      "method": "4",
+      "status_as_written": "**Adam·Muon 양쪽** 검증",
+      "row": "| 4 | **Adam·Muon 양쪽** 검증 | 🚫**AdamW 만** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1024,
+      "method": "**열 `cⱼ`**",
+      "status_as_written": "🚫흡수 불가(입력축) — 벡터 하나를 따로 든다",
+      "row": "| **열 `cⱼ`** | 🚫흡수 불가(입력축) — 벡터 하나를 따로 든다 | ⚙`d_in × 4B` × 행렬 수 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1059,
+      "method": "1",
+      "status_as_written": "★**대칭성 표류** — `(a,b) → (sa, s⁻¹b)` 가 출력을 안 바꾸므로 노름이 **무한 성장**",
+      "row": "| 1 | ★**대칭성 표류** — `(a,b) → (sa, s⁻¹b)` 가 출력을 안 바꾸므로 노름이 **무한 성장** | §4.1·그림 4 | ★**승수에 약한 WD** 를 준다. 🚫안 주면 bf16 에서 양자화 오차가 커진다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1078,
+      "method": "외부 근거",
+      "status_as_written": "✅**실재하는 논문**(arXiv:2601.04890). ⚠️**우리 스케일(100M·300M 토큰)에서의 검증은 없다**",
+      "row": "| 외부 근거 | ✅**실재하는 논문**(arXiv:2601.04890). ⚠️**우리 스케일(100M·300M 토큰)에서의 검증은 없다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1085,
+      "method": "★**1**",
+      "status_as_written": "**타잉 스케일 해제** 실험 제안서",
+      "row": "| ★**1** | **타잉 스케일 해제** 실험 제안서 | [`proposal/`](../../proposal/README.md) | ✅**썼다**(`20260903_타잉-스케일-해제.md`) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1086,
+      "method": "**2**",
+      "status_as_written": "Muon 축과 **섞지 않는다** 는 조건을 P005 에 명시",
+      "row": "| **2** | Muon 축과 **섞지 않는다** 는 조건을 P005 에 명시 | [`P005`](../../test_plan/P005_muP전이-Muon옵티마이저.md) | ✅**적었다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1120,
+      "method": "KB-COPA",
+      "status_as_written": "50",
+      "row": "| KB-COPA | 50 | ★**76.8** | 98.1 | ✅**편성** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1121,
+      "method": "KB-HellaSwag",
+      "status_as_written": "25",
+      "row": "| KB-HellaSwag | 25 | ★**59.8** | 92.4 | ✅**편성** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1123,
+      "method": "KB-WiC",
+      "status_as_written": "50",
+      "row": "| KB-WiC | 50 | 🚫**34.7** | 96.6 | 🚫**제외 — 우연 아래** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1124,
+      "method": "KB-BoolQ",
+      "status_as_written": "50",
+      "row": "| KB-BoolQ | 50 | 🚫**33.1** | 95.1 | 🚫**제외 — 우연 아래** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review.md",
+      "line": 1152,
+      "method": "🚫지표 이름",
+      "status_as_written": "논문은 **F1**, 우리는 `우도acc`·`정답CE`. **한 칸에 나란히 쓰지 않는다**(규약 2)",
+      "row": "| 🚫지표 이름 | 논문은 **F1**, 우리는 `우도acc`·`정답CE`. **한 칸에 나란히 쓰지 않는다**(규약 2) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 22,
+      "method": "**1**",
+      "status_as_written": "**GSQ**(arXiv:2604.18556v2, ISTA·Red Hat)",
+      "row": "| **1** | **GSQ**(arXiv:2604.18556v2, ISTA·Red Hat) | 저비트 **스칼라** 양자화의 정확도를 벡터/트렐리스 수준으로 | **Gumbel-Softmax** 로 격자 배정과 그룹 스케일을 **함께 미분가능하게 학습**(PTQ) | `memory`(02) · `architecture`(01) | ⏸**부분 채택 후보** — ★삼진 파라미터화가 **우리와 동일**하고 STE 를 대체할 수 있다. 🚫**PTQ 라 그대로는 못 쓴다** | ⏳제안 §1.6 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 23,
+      "method": "**2**",
+      "status_as_written": "**RCO**(arXiv:2605.00649v2, ETH·ISTA)",
+      "row": "| **2** | **RCO**(arXiv:2605.00649v2, ETH·ISTA) | **정확한 예산** 아래 N개 그룹에 K개 옵션을 배정 | 소프트맥스 로짓 공간의 **리만 다양체** 위에서 Adam — 접선 사영·이분탐색 되돌림·모멘텀 수송 | `memory`(02) · `other` | 🚫★**기각(현시점)** — 우리 목적함수가 **평평하다**는 실측이 셋 | 🚫없음(재개 조건 §2.5) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 24,
+      "method": "**3**",
+      "status_as_written": "**Kimi K2**(기술보고서, Moonshot AI)",
+      "row": "| **3** | **Kimi K2**(기술보고서, Moonshot AI) | 1.04T MoE 를 15.5T 토큰에 **스파이크 없이** 학습 | **MuonClip**(Muon + QK-Clip) · 리라이팅 데이터 증강 · 희소도 스케일링 법칙 | `training_quality`(06) · `training_speed`(05) · `corpus_selection`(07) | ⚠️★**셋으로 갈린다** — QK-Clip 🚫**불필요**(우리는 QK-norm) · ★**RMS-match 스케일 = 채택 후보** · ★**리라이팅 = 우리 실측을 외부에서 확증** | ⏳P005 단계5(제안) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 26,
+      "method": "**5**",
+      "status_as_written": "**QK-Normed MLA**(arXiv:2606.16310, 2026-06-15) ⚠️**초록만**",
+      "row": "| **5** | **QK-Normed MLA**(arXiv:2606.16310, 2026-06-15) ⚠️**초록만** | MLA 에서 전체 K 캐싱 없이 QK 정규화를 쓴다 | RMSNorm 을 **static affine weight + dynamic scalar RMS** 로 분해 | `architecture`(01) · `memory`(02) | ✅**대조 근거로만 채택** — 400M·100B 에서 **QK-Norm 이 QK-Clip 을 이긴다**. 🚫MLA 는 우리 구조가 아니다 | 🚫없음 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 27,
+      "method": "**6**",
+      "status_as_written": "**TTPO**(arXiv:2608.27448v1, 2026-08-27)",
+      "row": "| **6** | **TTPO**(arXiv:2608.27448v1, 2026-08-27) | 무정답 시험 시점 수학 문제의 정책 갱신 | 다수결 positive/negative 분기, positive OPSD·negative GRPO와 토큰 선택 | `training_quality`(06) · `benchmarks`(10) | ⏸**개념만 차용** — 현 TinyLM에는 thinking teacher·안정적인 정답 추출·64회 rollout 자원이 없고 held-out 오염 위험이 큼 | 🚫즉시 계획 없음(§6) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 28,
+      "method": "**7**",
+      "status_as_written": "**Ternary Bonsai 2 27B**(PrismML 백서, 2026-09, 로컬14쪽)",
+      "row": "| **7** | **Ternary Bonsai 2 27B**(PrismML 백서, 2026-09, 로컬14쪽) | 27B hybrid reasoning 모델의 저비트 저장·직접 커널·능력 보존 | 고정 Hadamard 회전·group128 삼진·소수 FP16 예외·PTQ1_0/PQ2_0 | `memory`(02) · `training_quality`(06) · `inference_speed`(12) | ⚠️**배포 계측 개념 차용** — TinyLM from-scratch 학습/한국어 전이는 미증명, 외부 교사 pilot은 별도 검증 | 🚫즉시 기본경로 제안 없음(§7) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 62,
+      "method": "시점",
+      "status_as_written": "★**from-scratch QAT**",
+      "row": "| 시점 | ★**from-scratch QAT** | 🚫**PTQ**(이미 학습된 fp16 모델을 압축) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 71,
+      "method": "★★**2**",
+      "status_as_written": "★**3:4 마스크를 학습으로 정한다**",
+      "row": "| ★★**2** | ★**3:4 마스크를 학습으로 정한다** | §2 가 **MaskLLM** 을 인용한다 — *\"Gumbel-Softmax 로 N:M 마스크를 end-to-end 학습\"*. 🚫**우리 3:4 는 `\\|w\\| 최소 하나를 0` 이라는 고정 규칙**이고 대가가 **+0.04203** 이다. **배운 마스크가 그 대가를 줄일 수 있다** | 구현 ⚙1.0h |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 79,
+      "method": "**1**",
+      "status_as_written": "★**방법 전체(PTQ 파이프라인)**",
+      "row": "| **1** | ★**방법 전체(PTQ 파이프라인)** | 🚫**우리는 fp16 사전학습 모델이 없다.** from-scratch 삼진이라 *\"압축할 원본\"* 이 존재하지 않는다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 81,
+      "method": "**3**",
+      "status_as_written": "⚠️**전 모델 동시 최적화**",
+      "row": "| **3** | ⚠️**전 모델 동시 최적화** | 보조 로짓이 **가중치의 2~5배** 메모리다(§3.3). 우리 72.5M 삼진이면 ⚙**580 MB~1.45 GB** — 학습 VRAM 이 이미 7~8 GiB 다. 🚫**레이어/블록 단위로만** 가능 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 96,
+      "method": "GSQ **전체**",
+      "status_as_written": "🚫**미채택** — PTQ 전제가 우리와 안 맞는다",
+      "row": "| GSQ **전체** | 🚫**미채택** — PTQ 전제가 우리와 안 맞는다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 97,
+      "method": "★**Gumbel 3:4 마스크 학습**",
+      "status_as_written": "⏸★**제안 후보 1순위.** 3:4 는 **절감 3.027 MiB 실측**인데 대가 +0.04203 하나로 종결됐다 — **그 하나를 공격하는 유일한 길**",
+      "row": "| ★**Gumbel 3:4 마스크 학습** | ⏸★**제안 후보 1순위.** 3:4 는 **절감 3.027 MiB 실측**인데 대가 +0.04203 하나로 종결됐다 — **그 하나를 공격하는 유일한 길** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 98,
+      "method": "★**Gumbel 삼진 STE 대체**",
+      "status_as_written": "⏸**제안 후보 2순위.** 이득이 있다면 **전 모델에 적용**되므로 크지만, ①번보다 구현이 크고 위험 1 이 정면으로 걸린다",
+      "row": "| ★**Gumbel 삼진 STE 대체** | ⏸**제안 후보 2순위.** 이득이 있다면 **전 모델에 적용**되므로 크지만, ①번보다 구현이 크고 위험 1 이 정면으로 걸린다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 143,
+      "method": "bpw",
+      "status_as_written": "🚫**아니다** — LUT 커널이 **1.600 고정**. 혼합 정밀도 커널이 없다",
+      "row": "| bpw | 🚫**아니다** — LUT 커널이 **1.600 고정**. 혼합 정밀도 커널이 없다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 144,
+      "method": "타잉",
+      "status_as_written": "✅가능(`mlp_split`) — **그런데 평평하다**(§2.3)",
+      "row": "| 타잉 | ✅가능(`mlp_split`) — **그런데 평평하다**(§2.3) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 145,
+      "method": "KV 소유",
+      "status_as_written": "✅가능(`cla_edges`) — **그런데 평평하다**(§2.3)",
+      "row": "| KV 소유 | ✅가능(`cla_edges`) — **그런데 평평하다**(§2.3) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 256,
+      "method": "**MoE·희소도 스케일링 법칙**",
+      "status_as_written": "🚫우리는 dense 다. 전문가가 없다",
+      "row": "| **MoE·희소도 스케일링 법칙** | 🚫우리는 dense 다. 전문가가 없다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 258,
+      "method": "**FP8 저장·파이프라인 병렬**",
+      "status_as_written": "🚫단일 GPU 다",
+      "row": "| **FP8 저장·파이프라인 병렬** | 🚫단일 GPU 다 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 259,
+      "method": "포스트트레이닝·에이전트",
+      "status_as_written": "🚫읽지 않았고 우리 규모와 무관",
+      "row": "| 포스트트레이닝·에이전트 | 🚫읽지 않았고 우리 규모와 무관 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 265,
+      "method": "**QK-Clip**",
+      "status_as_written": "🚫**미채택 — 불필요.** QK-norm 이 더 강하게 막는다",
+      "row": "| **QK-Clip** | 🚫**미채택 — 불필요.** QK-norm 이 더 강하게 막는다 | 없음. ★**단 \"우리 Muon 천장의 원인\" 을 다시 열어야 한다** |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 266,
+      "method": "★★**RMS-match 스케일**",
+      "status_as_written": "⏸★**채택 후보.** `--muon-scale {jordan, rms}` 플래그 하나",
+      "row": "| ★★**RMS-match 스케일** | ⏸★**채택 후보.** `--muon-scale {jordan, rms}` 플래그 하나 | ⏳**P005 단계5 제안**(§9 제안서) |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 267,
+      "method": "★**리라이팅 데이터 증강**",
+      "status_as_written": "✅★**방향 채택** — 우리 실측과 같은 방향이고 **재료가 이미 있다**",
+      "row": "| ★**리라이팅 데이터 증강** | ✅★**방향 채택** — 우리 실측과 같은 방향이고 **재료가 이미 있다** | ⏳SFT 데이터 요청에 반영 · P088 토큰 축 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 268,
+      "method": "헤드 수",
+      "status_as_written": "✅**P089 설계를 지지**",
+      "row": "| 헤드 수 | ✅**P089 설계를 지지** | 신규 작업 없음 |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 269,
+      "method": "MoE·MLA·FP8",
+      "status_as_written": "🚫미채택",
+      "row": "| MoE·MLA·FP8 | 🚫미채택 | — |"
+    },
+    {
+      "source": "docs/methods/08_paper_review2.md",
+      "line": 305,
+      "method": "스케일",
+      "status_as_written": "★**학습 가능한 `g`**, `g₀ = 20.0`(L=1024)",
+      "row": "| 스케일 | ★**학습 가능한 `g`**, `g₀ = 20.0`(L=1024) | 🚫**없다.** 고정 `1/√head_dim` → **유효 `g = 8`** |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 38,
+      "method": "학생 `logits`",
+      "status_as_written": "bf16",
+      "row": "| 학생 `logits` | bf16 | **512 MiB** | ✅ |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 39,
+      "method": "`F.cross_entropy` 내부 log_softmax",
+      "status_as_written": "fp32",
+      "row": "| `F.cross_entropy` 내부 log_softmax | fp32 | **1024 MiB** | ✅ |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 41,
+      "method": "`F.log_softmax(logits/T)`",
+      "status_as_written": "fp32",
+      "row": "| `F.log_softmax(logits/T)` | fp32 | **1024 MiB** | ✅ |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 70,
+      "method": "**L0**",
+      "status_as_written": "★★**KD 제거**(`--init-from` 만)",
+      "row": "| **L0** | ★★**KD 제거**(`--init-from` 만) | ★**−7.41 GiB (−59%)** | **품질 −0.0208(더 좋다)** · 벽시계 −18.5% | ✅ **실측**(시드 1개) | **결과 038** |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 71,
+      "method": "**L1**",
+      "status_as_written": "**압축 교사** `--kd-teacher-tag mC_wsd`",
+      "row": "| **L1** | **압축 교사** `--kd-teacher-tag mC_wsd` | **−1.88 GiB** | **품질 −0.0220**(오히려 좋다) · 속도 무변 | ✅ **실측·채택 권고** | 결과 037 |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 72,
+      "method": "**L2**",
+      "status_as_written": "**`--kd-teacher-infer`**",
+      "row": "| **L2** | **`--kd-teacher-infer`** | **−1.03 GiB** | 없음(속도 측정 불가 수준) | ✅ **실측·채택 권고** | 결과 034 §9 |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 73,
+      "method": "L3",
+      "status_as_written": "`M` 8192 → 4096(`--micro-bs 4 --accum 32`)",
+      "row": "| L3 | `M` 8192 → 4096(`--micro-bs 4 --accum 32`) | 활성 전부 절반 | **속도 −8.7%** | ✅ 실측(결과 007) | 007 |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 74,
+      "method": "**L4**",
+      "status_as_written": "**AdamW 상태 bf16** `--opt-dtype bf16`",
+      "row": "| **L4** | **AdamW 상태 bf16** `--opt-dtype bf16` | ★**−1.02 GiB**(alloc −0.18) | **paired −0.0002 = 구분 불가** · ms/step **+0.16%** | ✅ **실측·채택 권고** | **결과 035 §12** |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 75,
+      "method": "**L5**",
+      "status_as_written": "**KD 손실 청크 분할**",
+      "row": "| **L5** | **KD 손실 청크 분할** | ★**−2 ~ −3 GiB 추정** | 구현 중. 속도 영향 미지 | 🚫 **미구현** | §3 |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 76,
+      "method": "L6",
+      "status_as_written": "교사 softmax 를 bf16 으로",
+      "row": "| L6 | 교사 softmax 를 bf16 으로 | **약 −512 MiB** | 비트 동일 아님. KL 타깃 정밀도 | 🚫 미구현 | §3.2 |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 77,
+      "method": "L7",
+      "status_as_written": "`--kd-every 8`",
+      "row": "| L7 | `--kd-every 8` | 교사 forward 1/8 — **피크는 안 변한다** | 품질 미측정 | 🚫 미측정 | P042 §7-C |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 78,
+      "method": "L8",
+      "status_as_written": "교사 `to_int8()`",
+      "row": "| L8 | 교사 `to_int8()` | 약 −350 MB | CUDA 언팩 −12~15% × 1/4 | 🚫 미구현 | P042 §7-A |"
+    },
+    {
+      "source": "docs/methods/09_training_memory.md",
+      "line": 79,
+      "method": "L9",
+      "status_as_written": "`PYTORCH_ALLOC_CONF=expandable_segments:True`",
+      "row": "| L9 | `PYTORCH_ALLOC_CONF=expandable_segments:True` | 단편화분(**관측 1.71 GiB**) | 없음 | ⏸ **미적용·권고** | 결과 034 §10.1 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 25,
+      "method": "**② 수행 불가(우리 결함)**",
+      "status_as_written": "적재 실패 · 우회 미구현 · **규정과 다른 채점**",
+      "row": "| **② 수행 불가(우리 결함)** | 적재 실패 · 우회 미구현 · **규정과 다른 채점** | ✅**고치면 ①로 간다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 26,
+      "method": "**③ 수행 대상 아님**",
+      "status_as_written": "정책·설계상 안 한다",
+      "row": "| **③ 수행 대상 아님** | 정책·설계상 안 한다 | 🚫결함이 아니다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 32,
+      "method": "**hellaswag**",
+      "status_as_written": "4지선다 문장완성",
+      "row": "| **hellaswag** | 4지선다 문장완성 | ✅ | 우도 | 25.8~33.7% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 33,
+      "method": "**piqa**",
+      "status_as_written": "2지선다 물리상식",
+      "row": "| **piqa** | 2지선다 물리상식 | ✅(우회 구현됨) | 우도 | 50.7~56.7% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 34,
+      "method": "**arc_easy**",
+      "status_as_written": "4지선다 과학",
+      "row": "| **arc_easy** | 4지선다 과학 | ✅ | 우도 | 34.8~39.8% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 35,
+      "method": "**arc_challenge**",
+      "status_as_written": "4지선다 과학(난)",
+      "row": "| **arc_challenge** | 4지선다 과학(난) | ✅ | 우도 | 20.7~21.3% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 36,
+      "method": "**winogrande**",
+      "status_as_written": "2지선다 대명사",
+      "row": "| **winogrande** | 2지선다 대명사 | ✅ | 우도 | 51.0~51.7% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 37,
+      "method": "**mmlu**",
+      "status_as_written": "4지선다 57과목",
+      "row": "| **mmlu** | 4지선다 57과목 | ✅ | 우도 | 21.0~26.3% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 38,
+      "method": "**mmlu_redux**",
+      "status_as_written": "〃(정제판)",
+      "row": "| **mmlu_redux** | 〃(정제판) | ✅ | 우도 | 21.0~26.3% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 39,
+      "method": "**boolq**",
+      "status_as_written": "2지선다 예/아니오",
+      "row": "| **boolq** | 2지선다 예/아니오 | ✅ | 우도 | 60.0% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 40,
+      "method": "**lambada**",
+      "status_as_written": "마지막 낱말 예측",
+      "row": "| **lambada** | 마지막 낱말 예측 | ✅(5,153) | 우도 | ⏳미판정 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 41,
+      "method": "**gsm8k · ifeval**",
+      "status_as_written": "생성(수학·지시)",
+      "row": "| **gsm8k · ifeval** | 생성(수학·지시) | ✅ | 생성 채점 | **0 에 가깝다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 66,
+      "method": "`humaneval` · `humaneval_plus`",
+      "status_as_written": "🚫**우리는 모델이 생성한 코드를 실행하지 않는다.** 결함이 아니라 **선택**이다",
+      "row": "| `humaneval` · `humaneval_plus` | 🚫**우리는 모델이 생성한 코드를 실행하지 않는다.** 결함이 아니라 **선택**이다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 79,
+      "method": "🚫**지금은 0**",
+      "status_as_written": "gsm8k · ifeval",
+      "row": "| 🚫**지금은 0** | gsm8k · ifeval | ★**SFT 를 한 적이 없다.** 0 이 정상이고 **모델 결함이 아니다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 92,
+      "method": "올라가나",
+      "status_as_written": "🚫**한 번도 안 올라갔다** — `--wandb` 기본 off, 어느 배치도 안 줬다",
+      "row": "| 올라가나 | 🚫**한 번도 안 올라갔다** — `--wandb` 기본 off, 어느 배치도 안 줬다 | ⚠️**여전히 명시해야 한다**(`--wandb`) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 95,
+      "method": "형태",
+      "status_as_written": "🚫과제마다 **독립 런** — 흩어진다",
+      "row": "| 형태 | 🚫과제마다 **독립 런** — 흩어진다 | ★**학습 런에 `bench/<과제>/<지표>` summary 키로 얹는다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 96,
+      "method": "250스텝 프로브",
+      "status_as_written": "(게이트 없음)",
+      "row": "| 250스텝 프로브 | (게이트 없음) | ✅**학습 json 의 토큰 < 50M 이면 건너뛴다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 126,
+      "method": "★**A. 우도 채점**(likelihood scoring)",
+      "status_as_written": "후보 문자열의 조건부 로그우도를 비교",
+      "row": "| ★**A. 우도 채점**(likelihood scoring) | 후보 문자열의 조건부 로그우도를 비교 | ✅**쓸 수 있다.** base LM 이 정당하게 할 수 있는 일 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 127,
+      "method": "★**B. 조건부 CE**",
+      "status_as_written": "정답 문자열의 CE 를 잰다(연속값)",
+      "row": "| ★**B. 조건부 CE** | 정답 문자열의 CE 를 잰다(연속값) | ✅**쓸 수 있다.** 단 분산이 크다(결과 050 §1.2) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 128,
+      "method": "**C. 생성 채점**(EM/F1/pass@k)",
+      "status_as_written": "모델이 답을 **생성**하고 채점",
+      "row": "| **C. 생성 채점**(EM/F1/pass@k) | 모델이 답을 **생성**하고 채점 | 🚫**전부 0.** SFT 없이는 무의미 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 134,
+      "method": "**합 로그우도**",
+      "status_as_written": "🚫**짧은 라벨이 이긴다**",
+      "row": "| **합 로그우도** | 🚫**짧은 라벨이 이긴다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 135,
+      "method": "**평균 로그우도**(길이 정규화)",
+      "status_as_written": "🚫★**긴 라벨이 이긴다** — 뒤 토큰이 예측 가능해 평균을 끌어내린다",
+      "row": "| **평균 로그우도**(길이 정규화) | 🚫★**긴 라벨이 이긴다** — 뒤 토큰이 예측 가능해 평균을 끌어내린다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 136,
+      "method": "★**PMI 정규화** `log P(y\\",
+      "status_as_written": "x) − log P(y)`",
+      "row": "| ★**PMI 정규화** `log P(y\\|x) − log P(y)` | ✅**라벨 사전확률을 뺀다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 179,
+      "method": "★★**HellaSwag**",
+      "status_as_written": "4지선다 문장 완성",
+      "row": "| ★★**HellaSwag** | 4지선다 문장 완성 | 10,042 | ✅★**우도 채점의 표준.** SFT 불필요. **영어** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 180,
+      "method": "★★**PIQA**",
+      "status_as_written": "2지선다 물리 상식",
+      "row": "| ★★**PIQA** | 2지선다 물리 상식 | 1,838 | ✅★**가장 단순.** 우연 50% |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 181,
+      "method": "★★**WinoGrande**",
+      "status_as_written": "2지선다 대명사 해소",
+      "row": "| ★★**WinoGrande** | 2지선다 대명사 해소 | 1,267 | ✅ 우연 50%. ★**작은 모델에서 우연 근처**로 알려져 있다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 182,
+      "method": "★**ARC-Easy / Challenge**",
+      "status_as_written": "4지선다 과학",
+      "row": "| ★**ARC-Easy / Challenge** | 4지선다 과학 | 2,376 / 1,172 | ✅ 우도 채점 가능 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 183,
+      "method": "★**BoolQ**",
+      "status_as_written": "2지선다 예/아니오",
+      "row": "| ★**BoolQ** | 2지선다 예/아니오 | 3,270 | ✅ 우연 50%. ⚠️**라벨 불균형**(yes 62%) → **퇴화 위험 최고** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 184,
+      "method": "★**LAMBADA**",
+      "status_as_written": "**마지막 단어 예측**",
+      "row": "| ★**LAMBADA** | **마지막 단어 예측** | 5,153 | ✅★★**우리에게 가장 자연스럽다** — **순수 LM 과제**이고 정확도·PPL 둘 다 나온다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 207,
+      "method": "★**KorQuAD 1.0 정답 CE**",
+      "status_as_written": "✅**구현·측정 완료**(결과 050). 🚫**분해능 부족**(필요 N 24만)",
+      "row": "| ★**KorQuAD 1.0 정답 CE** | ✅**구현·측정 완료**(결과 050). 🚫**분해능 부족**(필요 N 24만) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 208,
+      "method": "**KLUE YNAT / NLI**",
+      "status_as_written": "✅**구현 완료.** ⚠️**NLI 는 도구 결함으로 재측정 필요**(PMI)",
+      "row": "| **KLUE YNAT / NLI** | ✅**구현 완료.** ⚠️**NLI 는 도구 결함으로 재측정 필요**(PMI) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 209,
+      "method": "KLUE STS/NER/RE/DP/WoS",
+      "status_as_written": "🚫 파인튜닝 전제",
+      "row": "| KLUE STS/NER/RE/DP/WoS | 🚫 파인튜닝 전제 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 210,
+      "method": "KorQuAD 2.1",
+      "status_as_written": "🚫 지문이 HTML 문서 전체 — `seq 1024` 로 못 담는다",
+      "row": "| KorQuAD 2.1 | 🚫 지문이 HTML 문서 전체 — `seq 1024` 로 못 담는다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 258,
+      "method": "자료",
+      "status_as_written": "식별자",
+      "row": "| 자료 | 식별자 | ✅조회 확인 | 논문이 보고한 수준 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 260,
+      "method": "HellaSwag",
+      "status_as_written": "**arXiv:1905.07830**",
+      "row": "| HellaSwag | **arXiv:1905.07830** | ✅ Zellers+ ACL 2019 | 사람 **>95%** / 당시 SOTA **<48%** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 261,
+      "method": "PIQA",
+      "status_as_written": "**arXiv:1911.11641**",
+      "row": "| PIQA | **arXiv:1911.11641** | ✅ Bisk+ | 사람 **95%** / 대형 사전학습 **77%** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 262,
+      "method": "WinoGrande",
+      "status_as_written": "**arXiv:1907.10641**",
+      "row": "| WinoGrande | **arXiv:1907.10641** | ✅ Sakaguchi+ | SOTA **59.4~79.1%** / 사람 **94.0%** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 263,
+      "method": "ARC",
+      "status_as_written": "**arXiv:1803.05457**",
+      "row": "| ARC | **arXiv:1803.05457** | ✅ Clark+ | ★Challenge 에서 baseline 이 **무작위를 유의하게 못 넘었다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 264,
+      "method": "BoolQ",
+      "status_as_written": "**arXiv:1905.10044**",
+      "row": "| BoolQ | **arXiv:1905.10044** | ✅ Clark+ NAACL 2019 | BERT **80.4%** / 사람 **90%** / ★★**다수결 62%** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 265,
+      "method": "LAMBADA",
+      "status_as_written": "**arXiv:1606.06031**",
+      "row": "| LAMBADA | **arXiv:1606.06031** | ✅ Paperno+ | ★**당시 SOTA LM 이 정확도 1% 를 못 넘었다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 266,
+      "method": "MMLU",
+      "status_as_written": "**arXiv:2009.03300**",
+      "row": "| MMLU | **arXiv:2009.03300** | ✅ Hendrycks+ ICLR 2021 | ★**대부분 모델이 무작위 근처**, 최대 GPT-3 만 +20%p |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 267,
+      "method": "**MuSR**",
+      "status_as_written": "**arXiv:2310.16049**",
+      "row": "| **MuSR** | **arXiv:2310.16049** | ✅ Sprague+ | ★★**살인미스터리 지문이 약 1000단어** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 268,
+      "method": "GSM8K",
+      "status_as_written": "**arXiv:2110.14168**",
+      "row": "| GSM8K | **arXiv:2110.14168** | ✅ Cobbe+ | 8.5K 문항. verifier 로 성능 향상 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 269,
+      "method": "IFEval",
+      "status_as_written": "**arXiv:2311.07911**",
+      "row": "| IFEval | **arXiv:2311.07911** | ✅ Zhou+ | ★**검증가능 지시 25종**, 약 500 프롬프트 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 270,
+      "method": "**HumanEval+**",
+      "status_as_written": "**arXiv:2305.01210**",
+      "row": "| **HumanEval+** | **arXiv:2305.01210** | ✅ Liu+ (EvalPlus) | 테스트를 **80배** 확장, pass@k **−19.3~28.9%** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 271,
+      "method": "★**KLUE**",
+      "status_as_written": "**arXiv:2105.09680**",
+      "row": "| ★**KLUE** | **arXiv:2105.09680** | ✅(2026-08-21) | YNAT=macro F1 / NLI=accuracy |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 272,
+      "method": "★**KorQuAD 2.0**",
+      "status_as_written": "한글및한국어정보처리 2019",
+      "row": "| ★**KorQuAD 2.0** | 한글및한국어정보처리 2019 | ✅(2026-08-21) | BERT-multi F1 **46.0** / 사람 **85.7** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 279,
+      "method": "★**C1**",
+      "status_as_written": "**BoolQ 의 성공 기준값은 50% 가 아니라 다수결 62%**",
+      "row": "| ★**C1** | **BoolQ 의 성공 기준값은 50% 가 아니라 다수결 62%** | 🚫**50% 로 두면 \"항상 yes\" 퇴화가 62% 를 찍고 우리는 그것을 \"우연 초과 = 능력\" 으로 오독**한다. **함정 34(기준값을 적는 것 ≠ 옳은 값)의 정확한 재발 지점**이었다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 306,
+      "method": "★**KLUE**",
+      "status_as_written": "**arXiv:2105.09680**",
+      "row": "| ★**KLUE** | **arXiv:2105.09680** | ✅**조회함**(§3.1.2·§3.3.2 인용) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 307,
+      "method": "★**KorQuAD 2.0**",
+      "status_as_written": "한글및한국어정보처리 2019",
+      "row": "| ★**KorQuAD 2.0** | 한글및한국어정보처리 2019 | ✅**조회함**(F1 46.0 / 사람 85.7) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 328,
+      "method": "MuSR = \"장문 다단계 추론 **생성**\"",
+      "status_as_written": "🚫**틀렸다.** MuSR 은 **객관식**이다 → **우도 채점이 그대로 된다**",
+      "row": "| MuSR = \"장문 다단계 추론 **생성**\" | 🚫**틀렸다.** MuSR 은 **객관식**이다 → **우도 채점이 그대로 된다** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 330,
+      "method": "GSM8K = \"100M 에서는 0\"",
+      "status_as_written": "✅**EM 은 0 이겠지만 정답 CE 는 연속값**이다(결과 050 의 수법)",
+      "row": "| GSM8K = \"100M 에서는 0\" | ✅**EM 은 0 이겠지만 정답 CE 는 연속값**이다(결과 050 의 수법) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 331,
+      "method": "IFEval = \"SFT 전제\"",
+      "status_as_written": "✅**제약 8종은 규칙으로 검증 가능**하다. 나머지는 **\"미평가\"** 로 센다",
+      "row": "| IFEval = \"SFT 전제\" | ✅**제약 8종은 규칙으로 검증 가능**하다. 나머지는 **\"미평가\"** 로 센다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 332,
+      "method": "HE+ / BFCLv3 = \"코드/도구 SFT 전제\"",
+      "status_as_written": "⚠️**생성은 된다.** 🚫**채점(pass@1)은 실행이 필요**해 우리가 안 한다 — 생성물을 저장해 **공식 하네스로** 넘긴다",
+      "row": "| HE+ / BFCLv3 = \"코드/도구 SFT 전제\" | ⚠️**생성은 된다.** 🚫**채점(pass@1)은 실행이 필요**해 우리가 안 한다 — 생성물을 저장해 **공식 하네스로** 넘긴다 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 360,
+      "method": "★**LAMBADA**(마지막 단어)",
+      "status_as_written": "✅★★**1순위** — 순수 LM 과제, SFT 무관, 정확도+PPL",
+      "row": "| ★**LAMBADA**(마지막 단어) | ✅★★**1순위** — 순수 LM 과제, SFT 무관, 정확도+PPL |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 361,
+      "method": "★**HellaSwag · PIQA · ARC-e**",
+      "status_as_written": "✅**2순위** — 우도 채점 표준 3종",
+      "row": "| ★**HellaSwag · PIQA · ARC-e** | ✅**2순위** — 우도 채점 표준 3종 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 363,
+      "method": "**MMLU**",
+      "status_as_written": "⏸**참고용만** — 우연 근처가 예상된다. **그것을 확인하는 것 자체가 결과**",
+      "row": "| **MMLU** | ⏸**참고용만** — 우연 근처가 예상된다. **그것을 확인하는 것 자체가 결과** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 364,
+      "method": "**GSM8K**",
+      "status_as_written": "⏸**CE 방식으로만**",
+      "row": "| **GSM8K** | ⏸**CE 방식으로만** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 365,
+      "method": "★**MuSR**",
+      "status_as_written": "✅★**MC 다 — 우도 채점.** 종전 '생성' 판정은 **오독이었다**(§6.5)",
+      "row": "| ★**MuSR** | ✅★**MC 다 — 우도 채점.** 종전 '생성' 판정은 **오독이었다**(§6.5) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 366,
+      "method": "**IFEval · GSM8K**",
+      "status_as_written": "✅**구현 완료.** IFEval 은 제약 8종(공식 25종의 부분집합), GSM8K 는 EM + 정답CE",
+      "row": "| **IFEval · GSM8K** | ✅**구현 완료.** IFEval 은 제약 8종(공식 25종의 부분집합), GSM8K 는 EM + 정답CE |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 367,
+      "method": "**HE+ · BFCLv3**",
+      "status_as_written": "⚠️**생성만 우리가 한다.** 🚫채점은 공식 하네스(우리는 생성 코드를 실행하지 않는다)",
+      "row": "| **HE+ · BFCLv3** | ⚠️**생성만 우리가 한다.** 🚫채점은 공식 하네스(우리는 생성 코드를 실행하지 않는다) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 369,
+      "method": "★**KLUE YNAT/NLI**",
+      "status_as_written": "✅**PMI 수정 후 재측정**",
+      "row": "| ★**KLUE YNAT/NLI** | ✅**PMI 수정 후 재측정** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 381,
+      "method": "hellaswag",
+      "status_as_written": "✅",
+      "row": "| hellaswag | ✅ | **10,042** | 10,042 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 382,
+      "method": "**piqa**",
+      "status_as_written": "🚫**실패**",
+      "row": "| **piqa** | 🚫**실패** | — | 1,838 | `RuntimeError: Dataset scripts are no longer supported` |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 383,
+      "method": "winogrande",
+      "status_as_written": "✅",
+      "row": "| winogrande | ✅ | **1,267** | 1,267 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 384,
+      "method": "arc_easy",
+      "status_as_written": "✅",
+      "row": "| arc_easy | ✅ | **2,376** | 2,376 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 385,
+      "method": "arc_challenge",
+      "status_as_written": "✅",
+      "row": "| arc_challenge | ✅ | **1,172** | 1,172 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 386,
+      "method": "boolq",
+      "status_as_written": "✅",
+      "row": "| boolq | ✅ | **3,270** | 3,270 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 387,
+      "method": "lambada",
+      "status_as_written": "✅",
+      "row": "| lambada | ✅ | **5,153** | 5,153 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 388,
+      "method": "mmlu",
+      "status_as_written": "✅",
+      "row": "| mmlu | ✅ | **14,042** | 14,042 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 389,
+      "method": "**mmlu_redux**",
+      "status_as_written": "🚫**실패**",
+      "row": "| **mmlu_redux** | 🚫**실패** | — | ⚙5,700 | `BuilderConfig 'all' not found` |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 390,
+      "method": "musr",
+      "status_as_written": "✅",
+      "row": "| musr | ✅ | **250** | 250 | ⚠️murder_mysteries split 만 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 391,
+      "method": "gsm8k",
+      "status_as_written": "✅",
+      "row": "| gsm8k | ✅ | **1,319** | 1,319 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 392,
+      "method": "ifeval",
+      "status_as_written": "✅",
+      "row": "| ifeval | ✅ | **541** | 541 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 393,
+      "method": "humaneval",
+      "status_as_written": "✅",
+      "row": "| humaneval | ✅ | **164** | 164 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 394,
+      "method": "humaneval_plus",
+      "status_as_written": "✅",
+      "row": "| humaneval_plus | ✅ | **164** | 164 | 일치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 395,
+      "method": "**bfcl_v3**",
+      "status_as_written": "🚫**실패**",
+      "row": "| **bfcl_v3** | 🚫**실패** | — | ? | `DataFilesNotFoundError` |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 402,
+      "method": "과제",
+      "status_as_written": "원인",
+      "row": "| 과제 | 원인 | ✅조치 |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 466,
+      "method": "🚫**다른 양을 잰다 / 정답을 잘못 쓴다**",
+      "status_as_written": "대체 채점 경로가 **필요하다**",
+      "row": "| 🚫**다른 양을 잰다 / 정답을 잘못 쓴다** | 대체 채점 경로가 **필요하다** | KLUE-YNAT(acc vs **macro F1**) · KorQuAD(정답CE vs **EM/F1**) · IFEval(**8종/25종**) · HumanEval(문법 vs **실행**) · BFCL(JSON 문법 vs **호출 정답**) · ★**MMLU-Redux(정정 정답 미적용)** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 468,
+      "method": "✅**기본 방식이 맞거나 내부 전용**",
+      "status_as_written": "고칠 것이 없다",
+      "row": "| ✅**기본 방식이 맞거나 내부 전용** | 고칠 것이 없다 | WinoGrande 빈칸 구조 · KLUE-NLI accuracy · LAMBADA 단어 NLL · **Stage1 held-out**(자체 계기) · `arc_easy_full`(내부 진단) |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 474,
+      "method": "**1**",
+      "status_as_written": "★**MMLU-Redux 가 정정 정답을 쓴다.** 🚫종전 `r.get(\"answer\", r.get(\"correct_answer\"))` 는 `answer` 가 언제나 있어 **`correct_answer` 를 한 번도 안 읽었다** = **MMLU-Redux 를 받아 놓고 MMLU 를 채점**했다",
+      "row": "| **1** | ★**MMLU-Redux 가 정정 정답을 쓴다.** 🚫종전 `r.get(\"answer\", r.get(\"correct_answer\"))` 는 `answer` 가 언제나 있어 **`correct_answer` 를 한 번도 안 읽었다** = **MMLU-Redux 를 받아 놓고 MMLU 를 채점**했다 | 실측 5,700행 중 **정답이 바뀌는 행 103**(1.8%) · **채점에서 빠지는 행 75**(`no_correct_answer` 36 + `multiple_correct_answers` 39) → 채점 **5,625행**. 🚫**이 뒤의 `mmlu_redux` 수치는 이전 값과 비교 불가** |"
+    },
+    {
+      "source": "docs/methods/10_benchmarks.md",
+      "line": 487,
+      "method": "우리 스모크가 돌릴 수 있나",
+      "status_as_written": "🚫**아니다** — `lm_eval` 없이는 import 조차 안 된다",
+      "row": "| 우리 스모크가 돌릴 수 있나 | 🚫**아니다** — `lm_eval` 없이는 import 조차 안 된다 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 36,
+      "method": "**입력 어휘만 키우기(비대칭)**",
+      "status_as_written": "💡",
+      "row": "| **입력 어휘만 키우기(비대칭)** | 💡 | 입력 n-gram 어휘를 키우면 전 체급에서 이득, **출력 어휘를 키우면 소형에서 오히려 해** | 12.8M 엔트리는 32–40 MiB 예산과 정면충돌 | Huang 2025. ★\"출력은 작게, 입력은 크게\" 라는 **비대칭 원리만** 가져올 수 있다 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 66,
+      "method": "★**우리 실측이 이것과 일치한다**",
+      "status_as_written": "✅**실측**",
+      "row": "| ★**우리 실측이 이것과 일치한다** | ✅**실측** | 영문 SQuAD 공통 원문에서 우리 32k 는 **bytes/token 4.366**(Qwen 4.622 보다 **나쁜 압축**)인데 **bpb 1.3075 < 1.3363**(더 좋은 품질) | ⚠️모델도 함께 다르다 — 토크나이저 단독 기여 아님 | **결과 053 §S1.7.4** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 128,
+      "method": "**저랭크 분해(ALBERT)**",
+      "status_as_written": "✅**채택중**",
+      "row": "| **저랭크 분해(ALBERT)** | ✅**채택중** | `V×H` → `V×E + E×H` | 로짓 랭크가 E 로 제한 | ★**Lan 2020 Table 3: E=128 이 16M/79.6 인 E=256 보다 12M/80.1 — 파라미터 25% 적고 점수 0.5 높다.** ⚠️영어 인코더+층공유 조건 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 129,
+      "method": "**입출력 타잉**",
+      "status_as_written": "✅**채택중**",
+      "row": "| **입출력 타잉** | ✅**채택중** | 같은 표를 입력·출력에 | 없음 | Press & Wolf 2017: PTB PPL **78.4 → 74.3**, NNLM 66M→51M. Inan 2017: 66M/73.4 → 51M/**68.5**. ★**줄이면서 좋아진다** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 130,
+      "method": "**임베딩 양자화**",
+      "status_as_written": "✅**실측**",
+      "row": "| **임베딩 양자화** | ✅**실측** | per-row int8 / bf16 | int8 +0.0001, bf16 +0.0000 (⚠️둘 다 **autocast 조건**) | 결과 016 §20·§22. ★**CPU fp32 재측정 미완** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 132,
+      "method": "**DPQ / 코드 학습**",
+      "status_as_written": "💡",
+      "row": "| **DPQ / 코드 학습** | 💡 | 미분가능 product quantization | ★**end-to-end 학습 필수 — 사전학습 임베딩에 사후 적용 불가** | Chen 2020: PTB LM **58.7–163.2×**, PPL 83.3 vs 83.4. ★**from-scratch 인 우리에게는 오히려 유리한 조건** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 133,
+      "method": "**Deep compositional codes**",
+      "status_as_written": "💡",
+      "row": "| **Deep compositional codes** | 💡 | Gumbel-softmax 이산 코드 | MB 단위 실측 없음 | Shu & Nakayama 2018. 논문 동기가 **\"모바일 배포\"** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 134,
+      "method": "**MorphTE**",
+      "status_as_written": "💡",
+      "row": "| **MorphTE** | 💡 | 단어를 형태소 벡터의 텐서곱으로. **20× 무손실** | ★**언어별 형태소 분절기 필요**, 실험이 전부 인도유럽어 | Gan 2022 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 135,
+      "method": "**해시 임베딩**",
+      "status_as_written": "🚫**부적합**",
+      "row": "| **해시 임베딩** | 🚫**부적합** | 해시 버킷 + 학습 가중치 | ★**근거가 전부 bag-of-words 분류**. 자기회귀 LM 출력층 증거 없음 | Svenstrup 2017 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 154,
+      "method": "✅**우리 실측**",
+      "status_as_written": "✅",
+      "row": "| ✅**우리 실측** | ✅ | Qwen3-0.6B 교사로 KD. **Q256T 1.3363 vs QT0 1.3440 = −0.0077 bpb** | 🚫**실무 분해능 0.008 바로 아래 — UNRESOLVED** | **결과 053 §S1.7.2**. ★랭크 64 로 줄이면 **+0.0636 = 8σ** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 172,
+      "method": "**byte-fallback**",
+      "status_as_written": "🚫**미확인**",
+      "row": "| **byte-fallback** | 🚫**미확인** | — | — | ★**통제 측정한 논문을 찾지 못했다. 요약하지 않는다.** 자체 실측이 빠르다 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 185,
+      "method": "★**SpaceByte**",
+      "status_as_written": "★**표 기준 151M+38M**, 그리드는 **D=384**(비임베딩 ⚙14–28M)",
+      "row": "| ★**SpaceByte** | ★**표 기준 151M+38M**, 그리드는 **D=384**(비임베딩 ⚙14–28M) | ★**○ 공식 제공**(Table 5) | ✗ | ✗(**중국어 예비실험에서 subword 보다 나쁨**) | ★**세 편 중 유일하게 우리 체급을 실제로 학습**했다. 🚫**그러나 그 구간 수치를 공개하지 않았고**, 저자가 *\"컴퓨트 예산이 **클수록** subword 대비 유리해진다\"* 고 명시했다 — **우리는 그 반대 끝**이다 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 247,
+      "method": "*\"SentencePiece 가 vocab 32k 를 권장·검증했다\"*",
+      "status_as_written": "🚫**32k 는 논문에 한 번도 나오지 않는다.** 등장하는 어휘값은 **8k(BLEU 실험) · 16k(속도 실험) · 80k(단어 베이스라인)** 뿐이고 **어휘 크기 스윕 자체가 없다**",
+      "row": "| *\"SentencePiece 가 vocab 32k 를 권장·검증했다\"* | 🚫**32k 는 논문에 한 번도 나오지 않는다.** 등장하는 어휘값은 **8k(BLEU 실험) · 16k(속도 실험) · 80k(단어 베이스라인)** 뿐이고 **어휘 크기 스윕 자체가 없다** |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 272,
+      "method": "**T2** **자모 pre-tokenization**",
+      "status_as_written": "한글을 68 자모로 분해한 뒤 BPE. 어휘 8,192",
+      "row": "| **T2** **자모 pre-tokenization** | 한글을 68 자모로 분해한 뒤 BPE. 어휘 8,192 | §3 이 **소어휘에서만** 이득을 보고했고 우리가 그 조건 | ⚙**2.2 MiB** | 학습 1회 + **구현**(정규화·역변환·round-trip 검증) | 🚫**구현 선결.** `prepare` 에 자모 정규화 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 349,
+      "method": "~~SentencePiece (Kudo & Richardson 2018, arXiv:1808.06226)~~",
+      "status_as_written": "✅**2026-08-28 원문 확인**(사용자 제공 PDF). **EMNLP 2018 System Demonstrations, D18-2012, DOI 10.18653/v1/D18-2012.** → §9.5",
+      "row": "| ~~SentencePiece (Kudo & Richardson 2018, arXiv:1808.06226)~~ | ✅**2026-08-28 원문 확인**(사용자 제공 PDF). **EMNLP 2018 System Demonstrations, D18-2012, DOI 10.18653/v1/D18-2012.** → §9.5 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 350,
+      "method": "~~MEGABYTE 본문 BPB 표·모델 크기 (arXiv:2305.07185)~~",
+      "status_as_written": "✅**2026-08-28 원문 확인**(arXiv:2305.07185v2, NeurIPS 2023). Table 2·3·12 전수 확인 → §9",
+      "row": "| ~~MEGABYTE 본문 BPB 표·모델 크기 (arXiv:2305.07185)~~ | ✅**2026-08-28 원문 확인**(arXiv:2305.07185v2, NeurIPS 2023). Table 2·3·12 전수 확인 → §9 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 351,
+      "method": "~~SpaceByte 모델 크기·BPB (arXiv:2404.14408)~~",
+      "status_as_written": "✅**2026-08-28 원문 확인**(arXiv:2404.14408v3, **NeurIPS 2024**, 단독저자 Kevin Slagle). Table 1·3·5 전수 확인 → §9.1~9.4",
+      "row": "| ~~SpaceByte 모델 크기·BPB (arXiv:2404.14408)~~ | ✅**2026-08-28 원문 확인**(arXiv:2404.14408v3, **NeurIPS 2024**, 단독저자 Kevin Slagle). Table 1·3·5 전수 확인 → §9.1~9.4 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 373,
+      "method": "`Qwen3-0.6B-Base`",
+      "status_as_written": "`Qwen3ForCausalLM`",
+      "row": "| `Qwen3-0.6B-Base` | `Qwen3ForCausalLM` | ✅ | — | — | **151,936** | bf16 | ✅ |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 374,
+      "method": "★**`gemma-3-270m`**",
+      "status_as_written": "`Gemma3ForCausalLM`",
+      "row": "| ★**`gemma-3-270m`** | `Gemma3ForCausalLM` | ✅**YES** | **18** | **640** | ★**262,144** | bf16 | ✅ |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 375,
+      "method": "★**`gemma-3-1b-pt`**",
+      "status_as_written": "`Gemma3ForCausalLM`",
+      "row": "| ★**`gemma-3-1b-pt`** | `Gemma3ForCausalLM` | ✅**YES** | 26 | 1152 | ★**262,144** | bf16 | ✅ |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 376,
+      "method": "`gemma-4-E2B`",
+      "status_as_written": "`Gemma4ForConditionalGeneration`",
+      "row": "| `gemma-4-E2B` | `Gemma4ForConditionalGeneration` | 🚫**NO** | 35 | 1536 | 262,144 | bf16 | ✅ |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 429,
+      "method": "★**P067**(외부 토크나이저·교사)",
+      "status_as_written": "★**학생 토크나이저 후보 + 교사 후보 둘 다.** 제약 없음",
+      "row": "| ★**P067**(외부 토크나이저·교사) | ★**학생 토크나이저 후보 + 교사 후보 둘 다.** 제약 없음 | 🚫**안 본다**(계획 §6 X5) |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 430,
+      "method": "**P075**(어휘 예산)",
+      "status_as_written": "**비교군**(어휘 축의 세 번째 점)",
+      "row": "| **P075**(어휘 예산) | **비교군**(어휘 축의 세 번째 점) | ✅**본다** — 여기서 §12.4 의 바로 판정한다 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 465,
+      "method": "**KorQuAD 1.0 context**",
+      "status_as_written": "**한국어 위키백과** 1,647문서",
+      "row": "| **KorQuAD 1.0 context** | **한국어 위키백과** 1,647문서 | ★**`wikimedia/wikipedia`(ko) — 182,795문서, 문자의 24.3%**(결과 031 §1.1) | 🚫★★**매우 높다.** 같은 코퍼스다 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 487,
+      "method": "**KorQuAD 1.0 context**",
+      "status_as_written": "자연 산문·문단 단위·고정 스냅샷·이미 로컬",
+      "row": "| **KorQuAD 1.0 context** | 자연 산문·문단 단위·고정 스냅샷·이미 로컬 | 🚫**C1 위반 가능성 매우 높다**(위키 = 학습 풀) | ⚠️**O1 통과분만** 쓴다. 전부 탈락하면 아래로 |"
+    },
+    {
+      "source": "docs/methods/11_tokenizer.md",
+      "line": 489,
+      "method": "**국립국어원 모두의말뭉치**",
+      "status_as_written": "규모·도메인 균형",
+      "row": "| **국립국어원 모두의말뭉치** | 규모·도메인 균형 | 라이선스·신청 필요, 스냅샷 고정이 번거롭다 | ⏸사용자 판단 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 36,
+      "method": "~~구판~~",
+      "status_as_written": "~~전 구간~~",
+      "row": "| ~~구판~~ | ~~전 구간~~ | ~~`18.4 + 3.080 × 방문`~~ | 🚫**20·36 방문 앵커였다.** 8방문에서 **17.5% 빗나갔다** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 51,
+      "method": "`mC_d36_ag4_nokd`",
+      "status_as_written": "36",
+      "row": "| `mC_d36_ag4_nokd` | 36 | 🚫**7.92** | 13.37 | 77.8 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 62,
+      "method": "**KV 캐시**",
+      "status_as_written": "✅",
+      "row": "| **KV 캐시** | ✅ | 필수. 없으면 O(n²) | 결과 014 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 63,
+      "method": "**eos 정지**",
+      "status_as_written": "✅",
+      "row": "| **eos 정지** | ✅ | — | 결과 014 §10.6 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 64,
+      "method": "★**삼진 1회 계산**(`--drop-latent`)",
+      "status_as_written": "✅",
+      "row": "| ★**삼진 1회 계산**(`--drop-latent`) | ✅ | 상주 **−2.00배**. ⚠️**속도는 안 는다** | 016 §9 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 65,
+      "method": "★**int8 저장**",
+      "status_as_written": "✅",
+      "row": "| ★**int8 저장** | ✅ | 상주 ↓ · 🚫**속도 −62~67%**(CPU) | 014 §11.4 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 66,
+      "method": "★**언팩 캐시**(`--unpack-cache`)",
+      "status_as_written": "✅",
+      "row": "| ★**언팩 캐시**(`--unpack-cache`) | ✅ | mC **+42.7%** — int8 감속을 −67% → **−53%** 로 완화 | 016 §15 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 67,
+      "method": "★**멀티스레드**",
+      "status_as_written": "✅",
+      "row": "| ★**멀티스레드** | ✅ | 배포 경로에서 **+69%**(1→4). ⚠️**fp32 경로에서는 −4%** | 014 §12.3 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 68,
+      "method": "★**LUT 1.600bpw**",
+      "status_as_written": "✅**상주만**",
+      "row": "| ★**LUT 1.600bpw** | ✅**상주만** | 삼진 항 44.7 → **8.88 MiB** · 🚫**속도는 안 쟀다** | 016 §23·§24 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 82,
+      "method": "★★**T-MAC**",
+      "status_as_written": "mpGEMM 을 **dequant 없이** 룩업으로",
+      "row": "| ★★**T-MAC** | mpGEMM 을 **dequant 없이** 룩업으로 | ✅MIT · ✅활성 F32 · 🚫**스케일이 텐서당 1개**(우리 g128 = 428K개) | 📄[arXiv:2407.00088](https://arxiv.org/abs/2407.00088) ⚠️**초록·리포만** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 84,
+      "method": "bitnet.cpp TL",
+      "status_as_written": "삼진 룩업",
+      "row": "| bitnet.cpp TL | 삼진 룩업 | 🚫**shape 하드코딩**(3200/8640) | 동상 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 85,
+      "method": "🚫per-row 융합 int8",
+      "status_as_written": "우리 자체 구현",
+      "row": "| 🚫per-row 융합 int8 | 우리 자체 구현 | 🚫**기각 — 6.5배 느리다** | ✅우리 실측 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 95,
+      "method": "★**추측 디코딩**(speculative)",
+      "status_as_written": "작은 초안 모델이 여러 토큰 제안, 큰 모델이 한 번에 검증",
+      "row": "| ★**추측 디코딩**(speculative) | 작은 초안 모델이 여러 토큰 제안, 큰 모델이 한 번에 검증 | ⚠️★**우리는 이미 작다.** 초안 모델을 또 두면 **상주가 는다** — 🚫**메모리 우선 목표와 충돌** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 116,
+      "method": "**q★ 대역폭 분할**",
+      "status_as_written": "두 경로가 같은 메모리를 다툴 때 **대역폭 비로 쪼갠다**. `q★ ≈ m·B_P/B_H`",
+      "row": "| **q★ 대역폭 분할** | 두 경로가 같은 메모리를 다툴 때 **대역폭 비로 쪼갠다**. `q★ ≈ m·B_P/B_H` | ⏸**원리는 일반적**이지만 **우리에게 쪼갤 두 경로가 아직 없다**. [08 §13.3](08_paper_review.md) |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 117,
+      "method": "**연속 배칭**(continuous batching)",
+      "status_as_written": "서버 처리량",
+      "row": "| **연속 배칭**(continuous batching) | 서버 처리량 | 🚫**우리는 배치 1 단일 요청**이다. 다른 주제 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 118,
+      "method": "**CUDA Graph / 고정 형상**",
+      "status_as_written": "동적 제어를 데이터로",
+      "row": "| **CUDA Graph / 고정 형상** | 동적 제어를 데이터로 | ⏸GPU 추론용. **우리 배포는 CPU** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 146,
+      "method": "★★**1**",
+      "status_as_written": "**I2_S 호환성 정적 실사**",
+      "row": "| ★★**1** | **I2_S 호환성 정적 실사** | 미정 | ✅**0**(이미 LUT 상주) | ⚙2h | ⚠️**우선.** profiler가 즉시 custom 6h를 열지 못했으므로 재사용 가능성부터 확인 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 147,
+      "method": "**2**",
+      "status_as_written": "**직접 LUT 커널**",
+      "row": "| **2** | **직접 LUT 커널** | 미정 | ✅0 | ⚙6h | ⏸**HOLD.** reference LUT +1~+23%, 언팩 대역 25.1~36.3%; I2_S 불가와 제거 가능한 병목 증거가 선결 |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 148,
+      "method": "**3**",
+      "status_as_written": "**조기 종료**",
+      "row": "| **3** | **조기 종료** | ⚙**+26%** | ✅0 | ⚙4h | ⏸**P078 단계0 이 선결** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 149,
+      "method": "**4**",
+      "status_as_written": "4→8 스레드",
+      "row": "| **4** | 4→8 스레드 | ⚙+10~20% | 0 | 0 | ⏸**포화점을 모른다**(1·4만 쟀다) |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 150,
+      "method": "🚫**5**",
+      "status_as_written": "추측 디코딩",
+      "row": "| 🚫**5** | 추측 디코딩 | 문헌 2~3배 | 🚫**초안 모델만큼 증가** | ⚙8h | 🚫**메모리 우선 목표와 충돌** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 151,
+      "method": "🚫**6**",
+      "status_as_written": "방문 수 축소",
+      "row": "| 🚫**6** | 방문 수 축소 | 선형 | 🚫**품질 손실** | 0 | ⚠️**교환비 문제이지 \"개선\" 이 아니다** |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 165,
+      "method": "★**4**",
+      "status_as_written": "🚫**다른 날 런의 ms/step 을 비교하지 않는다**",
+      "row": "| ★**4** | 🚫**다른 날 런의 ms/step 을 비교하지 않는다** | 세션 간 드리프트 **7.5%**(결과 037 §11.4) |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 167,
+      "method": "★**6**",
+      "status_as_written": "🚫**\"메모리를 줄였으니 빨라진다\" 고 쓰지 않는다**",
+      "row": "| ★**6** | 🚫**\"메모리를 줄였으니 빨라진다\" 고 쓰지 않는다** | 우리 실측은 **반대**다(§12.1 말미) |"
+    },
+    {
+      "source": "docs/methods/12_inference_speed.md",
+      "line": 177,
+      "method": "📄[arXiv:2608.16157](https://arxiv.org/abs/2608.16157)",
+      "status_as_written": "FreeToken: Edge-Native MoE Serving with Bandwidth-Adaptive Execution",
+      "row": "| 📄[arXiv:2608.16157](https://arxiv.org/abs/2608.16157) | FreeToken: Edge-Native MoE Serving with Bandwidth-Adaptive Execution | ✅**본문 8쪽** → [08 §13](08_paper_review.md) |"
+    }
+  ],
+  "note": "기록된 상태의 재고다. 실제 기본값/채택은 보고서의 의미 검토로 구분한다."
+}

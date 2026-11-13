@@ -1,0 +1,38 @@
+"""Check official task initialization with local test assets and no model."""
+from pathlib import Path
+import json
+import os
+import sys
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+import tinylm
+
+OUT = Path(__file__).resolve().parent
+result = dict(schema="NOV13_KOBEST_TASK_INIT_CPU_V2", model_loads=0, gpu=0, tasks=[])
+try:
+    from lm_eval.api.task import ConfigurableTask
+    from lm_eval.tasks._yaml_loader import load_yaml
+    source = ROOT / "data_cache/p106b_official_eval_tools/lm_eval_d6de81643928d653435c431bae19945d41d32520/source/lm_eval/tasks/kobest"
+    manifest = json.loads((ROOT / "data_cache/p106b_kobest_official_assets_v2_20261101/manifest.json").read_text())
+    for item in manifest["tests"]:
+        row = dict(family=item["family"], expected=item["rows"])
+        try:
+            config = load_yaml(str(source / ("kobest_" + item["family"] + ".yaml")))
+            config.update(item["storage_overrides"])
+            task = ConfigurableTask(config=config)
+            row["rows"] = len(task.test_docs())
+            assert row["rows"] == row["expected"]
+            row["status"] = "TASK_INIT_PASS_NO_MODEL"
+        except Exception as error:
+            row.update(status="TASK_INIT_NOT_READY", error=type(error).__name__ + ": " + str(error))
+        result["tasks"].append(row)
+except Exception as error:
+    result["import_error"] = type(error).__name__ + ": " + str(error)
+result["status"] = "PASS" if len(result["tasks"]) == 5 and all(
+    row["status"] == "TASK_INIT_PASS_NO_MODEL" for row in result["tasks"]) else "NOT_READY"
+with (OUT / "KOBEST_TASK_INIT_CPU_v2.json").open("x", encoding="utf-8") as stream:
+    json.dump(result, stream, ensure_ascii=False, indent=2)
+    stream.write("\n")
+print(json.dumps(result, ensure_ascii=False))
+raise SystemExit(0 if result["status"] == "PASS" else 8)

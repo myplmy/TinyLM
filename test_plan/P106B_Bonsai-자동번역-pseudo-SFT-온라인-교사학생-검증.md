@@ -10654,3 +10654,860 @@ source SHA는8EEFA0ECD75A70FB056E84591505B179B7F1E5E42F70CCDE6C49B8CDDBFDE794다
 ### Stage14hW/iW/jW 실행 회수 — 2026-11-01 오후
 
 별도5shot CPU7·공식14,042문항 계약과456우도/114선택 정합을 통과했다. 비용29901/0 후 전량40825/0·독립 root44545/0·여섯 조건 비교7752/0을 완료했다. 결과101§578~579가 정본이며 Falcon5는4774/14042다. 기존 Tiny 네 전량/Falcon0을 다시 실행하지 않았다. source 동결 원형과 완료 SH 명령은 새 감사 폴더에 보존했다. 전량/정합 성공을 Tiny 지능 개선으로 승격하지 않는다.
+
+## 사용자109 후속: Stage4ft — 증분 생산 재개 전 원답·완결성 검토
+
+2026-11-05 현재 P108 원scale 편집의 독립 확인이 진행 중이다. 미완 원장35행을 대조한
+PRIORITY_FRONTIER_v1은 그 연구가 음성이면 원장69의 자료 공급 선결을 우선하도록 정했다.
+기존 V3 누적30,093,604 입력/6,844,374 지도 목표와7개 닫힌 batch/cursor[1,14297]은
+아직 실제 재개 전이며, 기존 원문·출력·STOP은 변경하지 않는다. 추가300M은 금지한다.
+
+총괄은 마지막 batch의12개 대표 원문·질문·답을 읽었다. 이 batch1303건은 모두 한국어
+qa/Adversarial QA (T)였으며 이는 전량 품질율이나 전체 코퍼스 분포가 아니다. 참고자료는
+실제로 학생 질문에 포함됐다. 그러나 선택 질문에 선택을 밝히지 않은 답과 엄격한 문맥
+충분성 판단의 경계 사례가 있었다. 원래 source의 역방향 지시도 참고자료 안에 남아 있다.
+이들을 자동 불량 판정하거나 원본을 고치지 않고 별도 판독/질문 목록으로 남긴다.
+
+| 안 | 내용 | 장점 | 단점·영향 | 비용 |
+|---|---|---|---|---|
+| A | 같은 V3를 그대로 최대8h 명시 재개 | 원래 조건/계보 유지·준비가 작음 | 발견한 미완결 답변과 원천 편중이 남음 | CPU 전량 재개 검산+GPU 최대8h |
+| B 권장 | CPU 재개 검산 후 같은 교사/원천/seed에서 답변 완결성 지시의 제한 대응 pilot | 실제 발견한 답변 누락을 직접 검증 | 모델 의견을 정답으로 승격할 수 없고 변경 계약은 새 fork가 필요함 | CPU 검산5~20분·pilot GPU10~20분 예상 |
+| C | 이 생산은 선결 대기로 두고64/증류/학습 연결의 구현을 우선 | 검수 안 된 자료를 늘리는 비용을 줄임 |75M 자료 확보는 더 늦어짐 | CPU 구현과 별도 기술 GPU; 본학습 품질 미측정 |
+
+판단은 B의 준비를 먼저 하고 결과에 따라 A의 동일 계약 재개 또는 명시 새 fork,
+혹은 C로 진행하는 것이다. 현재 사용자109가 직접 판단·코드·실험을 위임했으므로
+추가 설치/새 환경은 수행하지 않으며 애매한 의미 정책은 보고 시 사용자에게 묻는다.
+
+### Stage4ft0W — CPU 입력·동결 배치·실제 replay 완료(101§580)
+
+기존 supported scope/require_pilot/replay/teacher asset 검산을 재사용한다. 실제 원본
+source SHA·동결 입력·7batch 전후 SHA·cursor/quota·현재 MTP 자산을 대조하되 모델/서버를
+열지 않는다. 새 감사 JSON에만 기록하고 실패하면 GPU 생산을 시작하지 않는다.
+
+### Stage4ft1W — 완결성 대응 완료·추가지시 비채택(101§581)
+
+2026-11-05 Stage4ft0W는 실제105.375초/0으로 기존7배치32파일·현재 source/교사/실제
+quota와cursor[1,14297]를 검산했다. 원형은 불변이며 입력30,093,604와 답변 지도
+6,844,374를 구분한다. 총괄이 대표12원답을 직접 읽고 선택을 밝히지 않은 미완결 답1,
+정보충분성 정책의 경계1을 확인했다. 전량 품질률은 계산하지 않는다.
+
+새 diag_p106b_nov05_completeness 도구는 기존 produce_group·payload/render·GemmaSession·
+source 래핑·지속 메모리 계측·ShardWriter를 재사용한다. 기존12개와 추가12개의 실제
+질문을 양팔에서 같은 literal로 고정해 총48요청을 비교한다. 추가12는 이번 판독에서
+처음 보는 기존 배치 행이며 새로운 고유 원천/독립 benchmark라고 부르지 않는다.
+원천 가족은 Adversarial QA의 한국어로 한정된다. free-question 생산 효과는 별도 확인이 필요하다.
+
+양팔은 MTP ON·thinking1024/output3072/context8192·같은 샘플러/seed이며 사례별 순서를
+교대로 한다. 추가 suffix는 선택형 질문에 선택/구체적 부족정보를 명시하라는 지시뿐이다.
+질문·출처·기존 QUESTION/ANSWER/NOTE·최초 포함3회 구조 회복은 유지하고 의미 재생성은0이다.
+교사 원답과 사고는 보존하고 학생 입력은 전체 출처를 포함해1024/양수 지도목표를 계측한다.
+
+| 파일·경로 | 동작·권한 | 제외 |
+|---|---|---|
+| 새 diag/test/Stage4ft 런처 | 사용자109의 구현·판단·CPU/GPU 연구 위임,명시 opt-in만 신설 | 기존 제품·공유 환경 기본값 변경0 |
+| p106b_completeness_v1/v2_20261105 | V1 CPU준비 보존,V2 소스/24질문/조건과 새 원답 샤드 | 기존 V3 배치/STOP/원본 덮어쓰기0 |
+| P106B·결과101·기준표/목록·자기 WIP | 계획·기록 동기화 | 다른 정제/TinyDataset/Git·설치·추가300M 제외 |
+
+코드 영향은 새 호출 제어뿐이고 공용 생산 API는 바꾸지 않는다. 데이터는 새 비교 샤드이며
+기존 코퍼스 편입이 아니다. 테스트는 빈 시작과 실제 shard.close/검산·요청 차이의 CPU3개,
+실제24payload 대응 동등성이다. V1 CPU준비 뒤 종료 API/빈 결과 보존을 보강해 V2를 따로
+봉인했으며 V1 모델 실행은0이다. 문서 영향은 결과101/계획/목록/기준표/COMPASS/WIP다.
+부채는 고정된 이번 비교 namespace와 추후 free-question 검증이며 신규 공용 엔진을 만들지 않는다.
+품질·메모리·속도·결정성은 실제 원답/표본 메모리/시간/공통seed를 따로 기록한다.
+단일 GPU 교사만 사용하고 학생 동시 상주0이다. CPU3·prepare0 뒤 소유 정적을 다시 검증한다.
+GPU 상한1800초+정리,절대17시 이전10분 여유이며 VRAM은 실제 여유15005MiB를 확인했다.
+V2 profile969601DA는 Stage4ft1dW가 확인하며 의미 판독은 총괄이 원답으로 수행한다.
+
+같은 실제 source와 샘플링/사고/길이/MTP를 유지하고 관리 지시의 직접 답변·허용 추론·
+불충분성 표현만 별도 조건으로 비교한다. 구조 재시도는 기존 한도이며 의미 문자열 검사나
+자동 의미 재생성은 추가하지 않는다. 총괄이 실제 질문·근거·두 답을 판독한다. 원형과 새
+후보는 분리하고 현재 V3에 변경 조건의 batch를 섞지 않는다. 구체 수/봉인·런처는 구현 뒤 확정한다.
+
+### Stage4ft2W — 영어V4 첫4완료·장기재개 미채택(101§582)
+
+#### 2026-11-05 실제 판독 후 선택 — 영어 원문·영어 출력의 새 V4
+
+Stage4ft1dW는54실제 요청/48후보·479.604초/0,서버 종료를 회수했다. 양팔 라벨24/24지만
+고정 질문 동일은16/24 대15/24였다. 총괄이24전체 근거와48답을 읽었고 추가 완결성 지시는
+채택하지 않았다. 일부 선택 질문은 계속 명시 선택을 못 했다. 원천에는77만 총병력 가운데
+700만 보병,일본2위와 일본/캐나다 다음의 모순,불안정한 과학 용어도 있었다. 이24개는
+목적 표본이므로 전체 불량률로 외삽하지 않는다. ROOT_REVIEW_v1이 판독 정본이다.
+
+| 안 | 이점 | 비용·한계 |
+|---|---|---|
+| 기존 V3 그대로 재개 | 가장 작은 변경 | 확인한 한국어 원천 손상을 더 전파할 수 있음 |
+| 권장: 보유 영어 원문→영어 QA의 명시 새 V4 | 한국어 원천 손상은 보존·분리하고 남은 영어 부족분을 생산 | 영어만 진척하며75M/한영 목표 완료는 아님,새 작은 입출력/재개 검산 필요 |
+| 자료 생산 보류·64의 GSQ+ALM 구현 | 불확실한 자료 확대 비용 없음 |75M 공급 지연이 계속됨 |
+
+총괄 판단은 둘째 안이다. 현재 허가의 기존 자료 재사용/새 구현 범위에서 영어 lane을
+우선하되 한국어75M 요구를 바꾸지 않는다. 영어를 한국어 lane으로 계산하지 않는다.
+현재 관리 프롬프트의 예시 표지 복사가 실제 나타났으므로 새 버전에서 관리용 Example
+예시만 제거한다. 출력 의미 문자열 검사/자동 의미 회복은 추가하지 않고 기존3구조시도,
+QUESTION/ANSWER/NOTE,JSON/ChatML·전체 근거·현재 MTP/샘플링을 유지한다.
+
+| 경로 | 허가·예정 동작 | 보호·NOT_RUN |
+|---|---|---|
+| 새 diag_p106b_nov05_english_production·test와 런처 | 사용자109의 직접 구현·실험 위임,기존 producer/supported scope 재사용 | 공용 엔진/기본값/설치0 |
+| HF/sft_ready/p106b_english_visible_v4_20261105 | 첫4개 통제 pause를 batch0으로 보존하고 root 판독 뒤 명시 재개 | 기존 V3의32파일·STOP·공개 원문 변경0 |
+| 현재 계획/결과101·실험목록/기준표/COMPASS·자기 WIP/감사 | 단계·실측·한계 동기화 | 다른 정제 원장/원문·TinyDataset·Git·추가300M 제외 |
+
+코드는 새 scope 제어만 추가하고 생산/샤드/계측/원복은 재사용한다. 데이터는 같은 공개
+영어7파일의 정상화 원형만 허용하며 원래 source index/ordinal을 유지한다. 새 fork의
+cursor는 별도 시작하고 기존 V3의 실제 quota/중복 상태를 읽어 이어받는다. 새4pilot을
+폐기한 뒤 다시 만들지 않고 batch0 자체를 후속 재개가 소비한다. 테스트는 prefix replay,
+새 batch input/원천계약/카운터·영어 제한·예시 suffix의 엄격한 경계다. 문서 연쇄와
+기술부채는 새 fork/모든 세대 계보를 유지하는 비용이며 전량 품질 판정과 구분한다.
+
+목표·평가·자원·동시작업 도메인: 영어 입력/답변과 한영 부족량을 각각 기록하고 동일 교사
+MTP ON/1024사고/3072출력/8192문맥을 유지한다. root가4실물 원문/답을 읽은 뒤 후보
+생산만 허용하며 학생 학습은0이다. 첫 최대2h와 후속 재개를17시 이전15:30 deadline
+안에 닫는다. CPU가 가능한 동안64의 독립 구현을 진행한다. 생산량을 지능 향상으로
+세지 않고 기존 source 권리/문서 누설 미확인은 보존한다.
+
+입력/자산/파일·후보 계약과 pilot이 닫힌 경우에만 실제 남은 허가창에서 최대8h를 실행한다.
+현재17시 이전 소유 정리/보고 여유를 남겨 절대 deadline을 고정한다. 사용자 확인이 필요한
+계약이나 원천/권리 문제는 보류하고 다른 미완 작업을 한다.75M 완료/의미 품질/학생 지능과
+입력 토큰/assistant 지도 목표를 섞지 않는다. 원시 답은20MB 이하 샤드로 보존한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage4ft3W — 기사 V5 pilot·재개 복구·첫창 완료(101§583·585)
+
+V4의4개 통제 후보 중 질문 관계가 어색한 사례와,원문의 질문목록 작성 지시를 따라
+질문을 나열한 구조 실패를 실제 확인했다. 기술 pause/서버 종료와 내용 채택을 구분하고
+V4의 장시간 재개는 열지 않는다. 원형4개/원로그/부모는 보존한다.
+
+대안은 V4 그대로 수집 후 전량 재판독,알려진 source 형식에서 article만 노출,
+혹은 생산 보류·64 집중이다. 둘째를 선택한다. 처음 두 방식은 각각 후행 비용과 source
+파서 비용이 있고,셋째는 공급 지연이다. Flan-Coqa의 정확한 두 관리문 경계만 허용하는
+구조 view로 기사 본문 전체를 유지한다. 미지 가족/불명 경계는 미지원이며 불량이라고
+판정하지 않는다. 자유 의미 문자열 검사/자동 정답 심사/의미 재시도는 추가하지 않는다.
+
+| 경로 | 동작·허가 | 제외 |
+|---|---|---|
+| 새 english_passage V5/test/런처 | 사용자109의 구현·연구 위임,기존 V4 scope/생산/검산 재사용 | V4/V3 소스·출력 덮어쓰기0 |
+| 새 english_passage_v5_20261105·감사 | 새 typed view·byte 범위/SHA·후보/원답 | 원문 전체는 raw에 보존,source ID/원concept split·원래 순번 유지 |
+| 현재 계획/결과/목록/기준표/방법론/COMPASS·자기 WIP | 새 계약/실측·품질 한계 기록 | 타 정제/보호 데이터/Git/새 설치·추가300M 제외 |
+
+코드 영향은 V4의 process-local variant만 신설한다. 원문/관리문을 동시에 학생에게 넣던
+입력과 달리 교사와 학생 모두 같은 기사 view를 본다. 데이터 schema에는 view trace와
+명시 새 visible contract를 추가한다. 원concept/split은 전체 원source에서 구하며 변경0이다.
+테스트는 UTF8 byte 범위·원형 불변·불명/중복 경계 거부·부모V3/새view 이중 replay와
+예외 원복이다. 문서/생산 계보는 별도 버전으로 추적하며 모르는 형식까지 일반화하지 않는다.
+권한/동시작업은 앞 표와 같고,비교는 입력/예시/선별 조건이 함께 달라진 기술·서술 비교다.
+작은 QA 판독을 학생 지능·정식 benchmark로 쓰지 않는다.
+
+CPU 실제 부모 replay와 source 준비 뒤 같은 교사/MTP/샘플러의 첫4개를 생성·닫는다.
+첫 batch를 root가 읽고 통과한 경우에만 그대로 후속 재개가 소비해 pilot을 중복 생성하지
+않는다. 최초 최대2h,후속도15:30 KST 안에 닫으며 한 창 최대8h를 넘지 않는다.
+영어 lane만 늘고 한국어 부족량은 그대로 남는다. 현재75M/4epoch 목표는 축소하지 않는다.
+
+### Stage4fuW — GSQ hard 삼진 CPU·실물비용 완료,본학습 NOT_RUN(101§584·586)
+
+미완64의 [연결 설계](../docs/research/20261105_GSQ_ALM_동일목표_연결설계.md)가
+변경 허용·기존 코어 재사용·세 안·5축·도메인·판정 경계 정본이다. 전체 TLinear와
+공유 embedding/head bank를 연결하는 안을 선택했다. 이전 P093B 출력 재구성·완료
+ALM 학습은 반복하지 않는다. 원래 PTQ와 새로운 hard-forward QAT/KD 응용을 구분한다.
+
+- Stage4fu0W: CPU의 hard 격자/같은 초기 수치·공유 bank·optimizer 소유·ALM mask/
+  정규화·Gumbel/RNG·층/head checkpoint·예외 원복을 검사했다. 첫 fixture1실패를 보존한0bW12/0이다.
+- Stage4fu1W: 실제 완료 모델의 bank/메모리 하한과 제한 비용을 검산한다. 교사 GPU와
+  동시에 실행하지 않았다. v2봉인 후1aW/1bW 각3update 실제0·원CP불변/CUDA0이다. 품질은 NOT_RUN이다.
+
+학습 토큰/optimizer·목표·평가를 대조 전에 명시하고,짧은 비용 런의 손실/gradient를
+일반 지능 개선으로 보고하지 않는다. embedding/head도 hard 삼진 제약을 유지하지만
+int8 연구 export를 실제40MB 배포 완료로 바꾸지 않는다. 고정 삼진에 RCO 혼합 bit를
+기본 적용하지 않고 원CP/제품 기본 코드/다른 정제 원문은 유지한다.
+
+#### 2026-11-05 08시 직접 판독과 실행 봉인
+
+Stage4ft3bW는 원문4개에서 후보4개/입력1986토큰을 만들고 통제pause8로 닫혔다.
+독립 replay0·기존 파일 불변·서버 종료를 확인했고 root가 네 지문/질문/답을 전부 읽었다.
+각 질문의 근거는 지문에 있으나 원천의 오탈자·다른 수치 누락까지 품질 통과한 것은 아니다.
+V4의3380토큰은 V5에 합치지 않는다. ROOT_PILOT_REVIEW_v1은 이 정확한 report SHA만
+묶어 후보 생성7200초를 허용하며 정식 편입/학생 학습은 허용하지 않는다.
+
+Stage4ft3cW/id439의 첫2시간 창은 같은 V5·교사 MTP/샘플링을 유지하며15:30 KST
+절대 기한 안에 닫는다. 동일 pilot을 다시 생성하지 않고 닫힌 batch0 이후 cursor를 소비한다.
+한글 부족량은 변하지 않으며 원문·원CP·다른 정제 작업은 제외한다. 후속 창은 실제 생성량과
+원답 표본 판독 후 판단한다. Stage4fu0W/id440은 별도 CPU기술12계약이며 병행 가능한
+구현 점검이다. 기존GSQ/ALM 코어를 재사용하고 본학습 지능 성과로 평가하지 않는다.
+
+#### Stage4ft3dW·4ft3eW — 실제 재개 분기의 버전 조회 복구
+
+첫439는08:07:50에 시작했지만 teacher assets 전에 latest-batch 조회의V3 guard로1종료했다.
+모델/교사 호출/새batch0이며 원문이나 자료 부족·VRAM 문제가 아니다. 동결V5를 수정하면
+기존 input/source SHA 계약을 바꾸므로,별도 english_resume reader seam으로 같은 V5
+destination의 iterator next 때만 이미 선언된 article VIEW를 적용하고 즉시 복원한다.
+부모V3 읽기는 원형대로 둔다. prompt/샘플러/기사 선택/원문/input/pilot은 바꾸지 않는다.
+
+442는18회귀와 실제 producer.resume의 source·input·pilot·cursor·latest-report 경로를
+teacher assets 직전까지 실행해0을 회수했다. 새로운3시도나 pilot 재생성은 없다.
+443의7200초 창은 이 CPU 영수증/새 seam SHA를 봉인해 실행하며 원실패439를 보존한다.
+이 source/runtime 수정은 기술 경로의 수정이지 새 생성 조건의 성과 비교가 아니다.
+
+#### Stage4fu0cW·4fu1W — 전체 geometry의 기술 비용 준비
+
+완료 new595-broad-q를 원CP의 strict weight-only loader로 CPU에서 읽고 실제 본체 SHA를
+검증한다. 기존 닫힌 ALM TRAIN1024 중 원형 순서의 한영64개씩128개를 동결해 기존 교사
+확률/원정답/shift/마스크/chunk 계보를 유지한다. 평가·벤치마크 문항을 학습용으로 쓰지 않는다.
+기존ALM은 embedding/head FP32였지만 이 두 새 팔은 모두 같은 hard 삼진 embedding/head를
+사용한다. 따라서 과거ALM 품질 점수와의 직접 비교가 아니다.
+
+세 안은 작은 가짜 shape 비용,전체 모델의 동일한 표준 배치 비용,즉시 본학습이다.
+가짜 shape는 실제 메모리를 대표하지 못하고 본학습은 정제 미완 선결 때문에 금지된다.
+둘째를 선택한다. 새 진단/시험/런처/기술 영수증만 수정하며 현재 사용자109가 허용한다.
+기존 모델/ALM/GSQ 기본 코드와 원본 데이터·CP·다른 정제는 변경하지 않는다.
+코드/데이터 영향은 기존 bank/ALM/loader/원shifted record 재사용과 새 cost profile뿐이다.
+검증은 원형 row hash·한영 quota·EOT KD 제외·표준 geometry와 앞12계약이다.
+문서 연쇄는 현재P106B/101·기준표·방법론/COMPASS·자기WIP가 대상이고 부채는 실제
+장기 trainer/저장·재개·배포 packed kernel 연결이다. 권한/소유/비교/증거 수준을 분리한다.
+
+같은 micro8×accum16×1024·checkpoint-on·BF16 eager·TF32 off·main head64·T100·
+고정ALM weight1·R1·MTP off에서 STE 대 GSQ를 공통AdamW lr1e-5/clip1로 비교한다.
+GSQ 초기 logit은 기존 코어의4.6을 명시하며 warmup1+측정2 업데이트만 실행한다.
+각 팔393216 padded slots이며 실제 입력/assistant 지도/chunk 수는 봉인 profile에서
+별도 계산한다. 같은 입력/초기화/목표에서 이산 표현/gradient만 달라지는 기술 비용이다.
+공통AdamW이므로 과거Muon 수치와 가속 비교하지 않는다. 전량 품질/소규모 성과 평가0이다.
+
+판정은 두 팔의 finite backward/optimizer·원CP 불변·CUDA 실제 정리와 GPU peak/시간을
+기록하는 것이다. OOM/오류면 그대로 실패로 보존하며 몰래 batch나 shape를 줄이지 않는다.
+CPU의 원모델 load와 bank 하한은 GPU peak 예측이 아니다. 교사 생성이 실제 닫힌 뒤만
+실행한다. 두 팔 최대15분씩·17시 전10분 정리 여유를 둔다. 새설치·추가300M은0이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+비용 준비444의 CPU5/strict load/원TRAIN128은 실제 닫혔다. 입력32216·지도772·
+KD561/업데이트이며 물리bank86·93224960가중치다. 정적의 V7/V8은 옛ALM 드라이버의
+불필요한 메타목록 전체를 범위에 섞은 뒤 기존 import helper가 빠져91로 멈췄다.
+교사 재개 범위는 별도V9/325입력6/0/71이며 이 통과로 비용 controller까지 통과했다고
+주장하지 않는다. 비용v1/17소스를 보존한 뒤 product Record/pad API로 직접 연결하는
+v2를 만들고 새445 CPU5/실제 입력을 봉인한다. 입력/목표/배치/CP는 같고 GPU재시험0이다.
+
+### Stage4ft4W — 교사 없는 잔여 원천 재고·희소 index
+
+443은 새59건/입력32719·assistant1297을 만든 뒤6141097정규화 iterator행을 훑으며 공급량이
+변하지 않는 긴 구간이 보여 root가 명시 STOP으로 닫았다. worker8/독립reader0·
+서버 종료/원V3불변을 회수했다. 최대2시간은 의무 최소가 아니며 GPU를 올린 채
+미지원 원천 탐색을 계속하지 않는다. 현재 cursor는[8,44459]이다.
+
+세 안은 같은 경로2h 무조건 재개,CPU 원천 재고 후 생산,즉시 새로운 원천 취득이다.
+첫째는 미지원 스캔을 반복하고 셋째는 이번 무다운로드 경계 밖이다. 둘째를 선택한다.
+새 census/test/런처/감사 index와현재 계획/101·기준표/방법론/COMPASS·자기WIP만
+사용자109 구현 권한으로 작성한다. 원문·원CP·다른 정제/보호 TinyDataset·Git은0이다.
+
+기존 english_rows와 원형 Quotas.profile을 재사용한다. 같은7파일/원source index/
+정규화된 원iterator ordinal을 유지하고,이미 소비한 cursor와본래 seen/probe/가족량 제한,
+정확 기사 경계·기사768예산을 기술 조건으로 센다. 의미 판정이나 자동 내용 필터0이다.
+quota를 실제로 admit하거나 생성량을 예측하지 않는다. 정확 sourceconcept 중복과
+정확 article 본문 중복을 따로 세며 서로 다른 질문의 같은 근거를 자동 폐기하지 않는다.
+
+영향은 원천 내용을 고치지 않는 새 CPU 재고/index와원래 reader 호출뿐이다. 신규시험은
+cursor/seen·기존profile 무변경,기록 schema/부분 종료다. source경계·복구위치·문서 연쇄를
+기록하고 부채는 희소index consumer다. 일반 enumerate로 index를 공급해 원ordinal이라고
+주장하지 않는다. consumer 구현은 재고의 유효 가용량을 본 뒤 결정한다.
+
+4ft4aW/id448의CPU3 뒤4ft4bW/id449가 모델/서버/GPU 없이 최대3600초·15:30기한에
+탐색한다. 완료/시간부분을 구분해 새20MB미만 shard/manifest에 index를 닫는다.
+이 수는 기술적 생산 후보 상한이며75M 학습자료/정식 편입/의미 품질 증거가 아니다.
+
+#### 2026-11-05 실행 단계와 예측 대조
+
+| 정확 단계 | 실제 상태·결론 |
+|---|---|
+| Stage4ft1aW | CPU 첫준비0,이후 실행은 새v2를 사용 |
+| Stage4ft1cW | 종료/빈출력 계약을 보강한 v2 CPU준비0 |
+| Stage4ft1dW | 24쌍54요청0·추가완결성지시 비채택. 예상한 회복 이득 미확인 |
+| Stage4ft2aW | 단위7 뒤 실제payload prepare1·교사0 |
+| Stage4ft2bW | 후행지시 보존8회귀/실물준비0 |
+| Stage4ft2cW | V4 첫4/worker8·reader0,원문관리 간섭으로 장기 미채택 |
+| Stage4ft3aW | V5 CPU14/실물준비0 |
+| Stage4ft3bW | 첫4/worker8·reader0·근거 Q/A를 root 판독,전체품질 미확인 |
+| Stage4ft3cW | resume latest-batch guard1·teacher/새batch0 |
+| Stage4ft3dW | 새reader18회귀/실제teacher전prefix0 |
+| Stage4ft3eW | 추가59·명시STOP/worker8·reader0,source scan정체로2h전 종료 |
+| Stage4fu0W | 첫12중공유컨테이너fixture1실패 |
+| Stage4fu0bW | 실제MLP공유를 검사한12/0 |
+| Stage4fu0cW | 비용v1 CPU5/실제128입력·CP load0,GPU0·17소스 보존 |
+| Stage4fu0dW | 제품Record API의새v2 CPU5/같은실물준비0 |
+| Stage4fu1aW | STE기술3update0·계측평균3.248초·예약peak3.340GiB |
+| Stage4fu1bW | GSQ기술3update0·계측평균4.382초·예약peak7.197GiB. 예상OOM은 없었으나 가속은 아님 |
+| Stage4ft4aW | cursor/원quota CPU3/0 |
+| Stage4ft4bW | CPU잔여원천 census 준비,새모델/학생품질0 |
+| Stage4ft4cW | 실제 재고 전 중복 원행도 원ordinal로 유지하는 CPU4/0. 고유concept 수와 발생수 분리 |
+| Stage4ft4dW | 첫7파일 census의빈writer종료1보존·빈코퍼스없는보고닫기5/0 |
+| Stage4ft4eW | 같은소스/커서/정책의새v2 CPU0. 전체14488516·잔여8347175행 모두현재typed가족밖·가용0. 첫집계유실을회수한실행 |
+| Stage4fu2W | 완료STE/GSQ실제3update·분모/평균·CP불변/CUDA0의독립CPU검산0 |
+
+첫449는7파일의전체iterator를돌았으나빈index를공용ShardWriter.close에주어1로끝났다.
+원상태에서최종report가저장되지않아가용0이나성공을소급확정하지않는다. 공용writer의
+빈코퍼스금지는유지하고새v2에서eligible_manifest=null인재고보고를따로닫는다.
+CPU원형/소스는census_failure_v1에보존하며다른원문정제나새교사호출을하지않는다.
+
+새v2의184.800229초/0은현재V5typed기사의추가가용0을확인했다. 같은V5장기재개는
+열지않고보유한다른원천가족의형식·권리·교육목적과후행발화자오류를먼저검토한다.
+현재V5와영어원천전체를동일시하지않으며새다운로드/정제세션침범/추가300M은0이다.
+
+### Stage4fu3W — GSQ 선택 좌표·실제 코드 갱신의 기술 검증
+
+사용자109의 기존64번 잔여 작업이다. 앞 비용 팔은 원형128·공통AdamW·초기
+mask/sign4.6에서 실제 backward/메모리 비용만 검증했다. finite gradient가 있다는
+사실은 결정적 삼진 코드가 학습으로 바뀐다는 증거가 아니다. lr1e-5의 좌표 이동과
+초기 경계4.6을 먼저 계산하며, 이 문제 때문에 같은 설정의 긴 본학습을 열지 않는다.
+
+세 대안은 공통AdamW를 그대로 장기 실행, 원래 soft/블록 PTQ 전체 이식, 유효 logit을
+보존한 명시 좌표 재매개화다. 첫째는 선택 경계 문제를 남기고 둘째는 목표·구조·커널
+변경이 커서 이번에는 셋째의 기술 진단을 선택한다. GSQ 논문의 작은 logit와 큰
+confidence 배율 개념을 참고하되 hard ST·전체 CE/ALM은 TinyLM의 새 응용이다.
+이 실험을 논문 재현 또는 학습 가속으로 부르지 않는다.
+
+새 연구 전용 bank는 raw logit=effective/200으로 초기화하고 forward에는200배를
+적용한다. 초기 결정 코드·스케일·샘플링 신뢰도를 보존하며 원래 core/controller는
+수정하지 않는다. 같은 새 좌표에서 logit AdamW와 Lion을 별도 팔로 비교하고
+scale/norm은 두 팔 모두 AdamW lr1e-5를 쓴다. logit lr1e-4·betas0.9/0.95·wd0·
+global clip1을 명시한다. Lion은 공식 google/automl 알고리즘의 연구 전용 구현이다.
+원래 mask/sign4.6 AdamW 비용과 새 팔은 좌표·학습률도 달라 품질 직접 비교를 하지 않는다.
+
+자료는 앞 봉인 TRAIN128·원 CP/core/tokenizer를 그대로 사용한다. micro8×accum16×1024,
+checkpoint-on·BF16 eager·TF32 off·R1·MTP off·head64·T100·ALM1도 보존한다.
+각 최대256업데이트는 같은128행을 반복하는 optimizer 기계 진단이며 정상4epoch나
+새 코퍼스·일반 지능 성과가 아니다. 실제 입력·지도·KD·padded 노출을 별도로 기록한다.
+기존 평가/정답/benchmark는 읽지 않고 모델 답변 품질 평가·체크포인트 저장을 하지 않는다.
+
+검증은 유효 logit 일치·hard 코드·공유/재계산 gradient·optimizer 소유권·Lion 수식·
+동일 seed 및 원CP 불변의 CPU 계약 후 실행한다. 매32업데이트의 결정 코드 변화,
+mask/sign/scale 별 gradient와 실제 이동, 경계 여유, 목표의 finite 여부·시간/peak를
+저장한다. 변화0도 결과이며 한계값을 사후 낮추거나 팔을 골라 성공으로 만들지 않는다.
+예상 비용은 팔당 약20~30분·VRAM 앞7.20GiB에 계측 텐서 여유를 더하고, 각2400초 및
+17시 전10분 정리 경계에서 중단한다. 입력/원형/캐시/다른 정제·기본 trainer에는 영향0이다.
+설계검사는 예측이 아니며 실제로 그런지는 실행해야 확인된다. 제품 저장·재개·packed
+배포·본학습의 품질은 계속 NOT_RUN이다.
+
+근거: https://arxiv.org/html/2604.18556v1 및
+https://github.com/google/automl/blob/master/lion/lion_pytorch.py .
+
+GSQ의 같은 CE/ALM 실제 연결과 메모리 사용 가능성은 확인했지만 이 결과가 학습 품질
+이득을 예측하지 않는다. clip전 norm은 양팔100이상이고 실제 clip1을 적용했다.
+이를 안정 판정이나 자동 본학습 채택으로 바꾸지 않는다. 새 본학습 지능은 평가하지 않았다.
+
+### 2026-11-05 사용자111 재개 — GSQ 좌표계의 빈 CPU시험 회수
+
+원장64의 좌표계/Lion 초안은 존재했으나 시험 파일0바이트로 실제시험0건이었다.
+이를 통과 근거로 사용하지 않는다. gain1/20/200 초기 hard행렬·seeded sampling/gradient연쇄·
+공유bank/기본factory원복·좌표bound·freshAdam상한·optimizer그룹·Lion수식/closure/상태를 실제CPU계약으로 보충했다.
+첫11시험의1실패는 뒤쪽 NaN gradient를 거부하지 않아 앞 parameter를 변경할 수 있는
+연구용Lion의 방어 누락이었다. 모든group의 finite/sparse 선검증을 device별 묶음으로 추가했다.
+보완12와 기존objective12를 함께24통과했다. 기본Muon/제품학습기는 수정하지 않았다.
+추가 검증 비용이 실제GPU에서 얼마인지는 미측정이며 성능 불변을 주장하지 않는다.
+
+두 GPU팔은 각각 TRAIN128을256번 사용하는 좌표 변화의 기계적 진단이다.
+반복4epoch/본학습/지능 평가가 아니며 실제 source/profile prepare와 GPU는 NOT_RUN이다.
+남은17시 시간에 한 팔만 강행하지 않고 양팔 완주가 가능한 새 창에서 현재권한·source·새namespace를
+다시고정한다. 추가300M/CP저장/원문 접근은0이다. 원실패와 보완 원로그는 결과101§588에 보존한다.
+
+### 2026-11-13 원장64 재개 — 좌표계256update 양팔의 실제 기계검증
+
+사용자115의 새 실행창에서 미완GPU를 회수한다. Nov5 CPU24·3update cost와 원판의
+좌표별 fresh Adam 이동 상한은 재사용한다. 새계산의질문은 gain200/초기margin4.6/같은
+CE+ALM에서 **AdamW와Lion이 실제 mask/sign 경계를 건너고 scale/norm을 갱신하는가**다.
+정상 QA능력은 선결이 아니며 반복TRAIN128의기계적변화를 지능/품질로판정하지 않는다.
+
+| 안 | 장점 | 단점 | 결정 |
+|---|---|---|---|
+| A: 같은조건 AdamW/Lion 각256update | CPU준비/원가설의실제미완을직접닫음 | 전체93M GSQ의시간/메모리비용 | 우선실행 |
+| B: 기존3update만재실행 | 저비용 | 경계이동질문에답하지않는중복 | 제외 |
+| C: 즉시본학습/품질대조 | 최종효과에가까움 | 정제/자료입장·전체비용선결미완 | NOT_RUN |
+
+새 scripts/diag_p106b_gsq_coordinate_window.py/test와CPU/prepare/양팔SH만추가한다.
+기존diag_p106b_gsq_coordinates.measure는 **명시 guard_fn/output directory**를선택인자로
+받게좁게보완하며 기본호출의옛Nov5기한/경로는유지한다. 오래된main/prepare/execute의
+authority를monkeypatch하지않고 새driver가115/Nov13기한·sources·데이터SHA를소유한다.
+기존driver원문은변경전audit snapshot으로보존한다. 제품·bank/Lion수식·원모델·데이터변경0이다.
+
+자료는기존닫힌ALM TRAIN1024에서동결한KO/EN각64의정확128개를재사용한다.
+원래shift/teacher chunk/logprob/CE와KL 분모검증을유지한다. 실제완료new595-broad-q의
+CPUstrict load를확인한복사본만GPU로옮긴다. 원CP는저장/수정하지않으며실험복사본은종료시해제한다.
+두알고리즘은같은초기hard code·gain200·logit lr1e-4·scale/norm AdamW1e-5·clip1,
+micro8/accum16/seq1024/ckptON/BF16eager/TF32OFF/R1/MTPOFF와같은Gumbelseed열을쓴다.
+각첫1update는warmup,다음255시간/실제x·CE/KL노출·preclipnorm·mask/sign/scale gradient를
+기록하고 매32 deterministic code변화/실제이동을확인한다. 두팔모두256을완주해야쌍으로판단한다.
+
+CPU는기존24와명시guard/경로·현재기한/입력선정회귀를닫는다. 새tag
+p106b_gsq_coordinates_v2_20261113에새profile과원본소스/입력/모델SHA를봉인한뒤실행한다.
+서로다른두PID/모델을동시에올리지않고각팔약20~30분,각3600초/전체약1시간예산이다.
+이전GSQ reserved7.20GiB를근거로free10240MiB이상에서만입장하고실제peak/CUDA해제를남긴다.
+Lion의추가finite선검사비용은전체측정에포함한다. 새큰tensor/CP·설치·다운로드·타정제·추가300M0이다.
+결과101/계획/기준표/METHODS/COMPASS/자기원장과신규인계에실제완주·오류·변화0을동기화한다.
+업데이트/기울기로그파일도20MB미만을확인한다. 고유자료75M/새일반지능·배포채택은범위밖이다.
+
+예측은좌표가좁아져원래의단기이동불가상태를완화할수있다는것이다. clip/Adam eps·잡음때문에
+이동이작거나특정은행에만치우칠수도있다. sign이움직인것만으로학습이좋아졌다고하지않는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage4fvW — 유한 로짓의 ALM tail 수치와 GSQ 좌표 재검증 (2026-11-13)
+
+선행 두 팔의 원형은 보존한다. Adam256은1579.294초/코드이동0으로 끝났고,
+Lion은66update 뒤67번째에서 StudentProbabilityBoundary로 종료9였다. 원CP/소스불변과
+CUDA0을 확인했으나 Lion의 peak는 오류 경로에 기록되지 않아 미측정으로 남긴다.
+이는 OOM이나256완주 품질 음성이 아니다. 두 팔을 동일256 결과로 비교하지 않는다.
+
+질문은 유한 logits에서 CE가 수치상0으로 반올림돼 log_q_student=0이 되었는가다.
+유한 어휘2개 이상/유한 로짓이면 실제 softmax의 target 확률은1 미만이다. 먼저 CPU의
+큰 유한 margin에서 기존 CE/경계 실패와 같은 Bernoulli KL의 유한값·기울기를 대조한다.
+실제 로짓의 비유한값이나 잘못된 교사/마스크/중복chunk는 계속 거부한다.
+
+| 안 | 동작 | 장점 | 한계·결정 |
+|---|---|---|---|
+| A, 선택 | 같은 logits의 비정답 logsumexp로 log(NLL)와 log(1-qS)를 유지 | 확률 clamp 없이 같은 실수 목적함수의 포화 tail 보존 | head의 작은FP64 reduction/추가메모리·비용검증 필요 |
+| B | CE 전체를FP64로 계산 | 보통 margin의 반올림을 늦춤 | 충분히 큰 margin에서는 여전히0, 전체성능비용; 단독해법 제외 |
+| C | qS를1-eps로 자르거나 KL을건너뜀 | 구현이 작음 | 목적함수/gradient 변경·실패은폐이므로 제외 |
+
+새 연구 helper/test/driver/SH와 p106b_gsq_logtail_v1_20261113 namespace만 소유한다.
+제품 alm.py·기존GSQ/Lion·완결소스/원CP/자료·타정제/TinyDataset·설치/Git/추가300M0이다.
+사용자115의 구현·실행 위임으로 총괄이 수행하며 원자료 교사호출/다운로드도0이다.
+기존 measure의 bytecode를 바꾸지 않고 사설 globals의 연구 bridge factory만 연결한다.
+제품 함수나 전역 namespace를 수정하지 않고 기존 optimizer/seed/clip/target분모를 재사용한다.
+
+고정 수식은 u=logsumexp(non_target_logits)-target_logit,
+log_nll=log(logaddexp(0,u)), log_A=logsumexp(chunk의 log_nll)-log(temperature),
+log_qS=-exp(log_A), log_tailS=log(1-exp(-exp(log_A)))다.
+u 또는 log_A가-40 미만이면 각각의 안정된 해석적 극한 u/log_A를 사용한다.
+이때 생략 오차는2.2e-18 미만이며 확률을 eps로 자르는 조작이 아니다. 교사 qT=1은
+기존과 같이 음의 항을 먼저 마스킹한다. CE 본문은 기존 F.cross_entropy를 유지한다.
+모델/행렬곱은 기존 BF16·FP32이며 FP64는 chunk64의 logit reduction/작은 확률 벡터에만 쓴다.
+
+CPU는 보통영역의 기존 KL·gradient 대응, 큰유한margin100/1000의유한값·해석적gradient,
+teacher qT=1, 무지도/마스크·중복chunk·불량교사 거부, checkpoint head와실제GSQ 미분을 검사한다.
+그 뒤 새 profile/source/128 TRAIN/부모를 봉인하고 새 Adam/Lion 각256을 수행한다.
+앞선 Adam256을 새 kernel 결과로 재명명하거나 코드변경 전후를 순수 optimizer 속도로 비교하지 않는다.
+같은 실제93M/초기hardcode/gain200/lr/scale·norm/CE·KL/temperature100/noise열과
+micro8/accum16/1024/ckptON/R1/MTPOFF/BF16eager/TF32OFF를 유지한다.
+
+첫1warmup+255timed·코드/gradient/원CP SHA·모든 종료경로 peak/완료update수/원복을 보고한다.
+ordinary CE가0인 위치·기존 KL이 거부할 chunk 수를 별도 계측하여 실제 수리 대상의 존재를 확인한다.
+새 자유답/벤치/본학습 지능판정/체크포인트 저장0이며 원장64의 기계 선결만 판단한다.
+각3600초·free10240MiB·15분정리유보이며 새정적/CPU를 통과한 뒤 실행한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+실제 회수: CPU33·새 Adam/Lion256 모두 종료0이며 결과101§590이 정본이다.
+새 Lion의 원 경계 거부57chunk/유한 완주·code331845변경과 Adam code0을 분리한다.
+원본CP/입력/소스 불변·CUDA0·제품ALM 수정0이고 품질/본학습/배포는 미평가다.
+### Stage8aa~8ae — Qwen3.5 공식 Core6의 고정 실행 폭 선결 (2026-11-13)
+
+**원지시·상태**: 원장41의 Qwen3.5-0.8B-Base 전체 공식평가는 미완이다. 사용자115의
+Nov13 17:00까지 CPU·GPU 연구/코드/실험 위임으로 선결을 검증한다. 모델·자료·패키지
+다운로드/설치·새 환경은 승인 전에 수행하지 않는다. 기존 eval 전용 Python은 실제 존재하며
+lm_eval0.4.14.dev0/Torch2.10.0+cu130/Transformers5.14.1을 재사용한다.
+
+기존 text_core6_v3와 numeric_observer는 **이미 FP32/eager/TF32 OFF**였다.
+같은 길이에서 미래 내용만 바꾸는 검사는 맞았지만 입력 폭6 대8/9의 prefix 로짓이
+허용오차를 넘었다. 이를 FP32로 전환하는 새 실험으로 잘못 반복하지 않는다.
+옛 veto/수치 음성은 그대로 보존한다. 독립변수는 요청마다 다른 길이였던 내부 실행을
+항상 batch1×1024로 만들고 실제 prefix만 돌려주는 **연구용 scorer 경로**다.
+
+| 파일·경로 | 동작 | 권한 | 제외 |
+|---|---|---|---|
+| 새 p106b_qwen35_fixedshape helper/driver/test·Stage8aa~8ae SH | 모델 호출의 instance 전용 adapter/기술회귀/단계 실행 | 사용자115 구현·CPU/GPU 위임 | 제품·설치 library·기존 scorer/전역 patch0 |
+| evidence/p106b_qwen35_fixedshape_v1_20261113 및 자기audit | 새 profile·조건·수치·공식 원답·closure | 같은 기록 위임 | 기존 Qwen 음성/asset/로그 덮어쓰기0 |
+| P106B/101/기준표/방법론/목록/COMPASS/원장41·115 | 선결과 실제 평가 연결 | 같은 기록 위임 | 타정제/TinyDataset/추가300M/Git/삭제0 |
+
+| 축 | 영향·근거 |
+|---|---|
+| 코드·중복 | 기존 qwen35 asset/tokenizer/320개 언어key·head 검증/strict FP32 loader와 공식 TaskManager/audit/shards를 재사용한다. 새 부분은 고정폭 model_call·독립 label oracle·단계 controller다. 옛 deadline은 호출하지 않는다. |
+| 자료·호환 | 같은 HF revision dc7cdfe2ee4154fa7e30f5b51ca41bfa40174e68/어휘248320/native EOS·PAD·prefix248044. 문항·tokenizer·선택지·우도 합·정규화·0shot·context1024는 바꾸지 않는다. |
+| 회귀 | 실제 EOS가 prefix에 있어도 유효 mask1·원prefix 불변·미래 mask0·허용 길이/어휘 검사·instance 복원·batch2는 batch1 순차 처리임을 검사한다. 같은 shape의 미래내용/길이 변경·A-B-A/순서·독립 CE를 새 경로에서 확인한다. |
+| 문서 | 공식 score는 full19965문항/67106choice와 원답 전량 검산·모든 수치 선결/소스불변·실제 exit0/closure 후에만 기록한다. canary/cost 표본은 비용·계산검증이며 작은 성능 점수는 발표하지 않는다. |
+| 비용·부채 | 매 요청 full1024 head가 생겨 짧은 요청은 느릴 수 있다. canary·cost 뒤 ETA로 full 입장을 정한다. 새 라이브러리나 별도 배포 경로로 채택하지 않는다. |
+| 권한·소유 | 기존 local assets만 읽고 model/state/캐시는 변경하지 않는다. 새 output/profile만 소유한다. 현재 sqlitedict가 없어 공식 response-cache는 OFF를 유지하며 설치하지 않는다. |
+| 증거·공정성 | 형태 고정이 수치 인과성을 보장한다고 가정하지 않는다. 기존 ATOL1e-5/RTOL1e-4를 유지한다. 원 shape 음성을 통과로 바꾸거나 외부 모델에 유리한 질문을 추가하지 않는다. |
+
+| 안 | 방법 | 장점 | 한계·비용 |
+|---|---|---|---|
+| A, 선택 | 실제 body/head를 늘 batch1×1024, 오른쪽 EOS PAD와 길이 mask로 실행 | GEMM/선형 attention/head shape가 요청 길이로 달라지지 않음; 기존 계산검사로 기각 가능 | fullhead 비용·메모리 증가, 통과·속도 미확인 |
+| B | 매 scored token마다 동일 prefix만 계산하는 토큰별 uncached 우도 | 해당 위치 이후 토큰이 입력에 없음 | 호출 수가 늘고 새 scoring 경로 검증/전체 비용이 큼 |
+| C | Qwen3.5는 HOLD로 보존하고 이미 완료한 외부 모델만 사용 | 새 GPU비용0·기존 결과 재사용 | 원장41 전체평가 미완이 남음 |
+
+A로 먼저 수치 선결을 확인한다. 예를 들어 원래6토큰과 미래2토큰을 덧붙인8토큰의 입력은
+모두1024로 실행되며 앞6 위치의 로짓을 비교한다. 단순 PAD ID 검색으로 실제 문맥을 자르지
+않는다. native EOS가 문맥에 있어도 길이 안에서는 mask1이다.
+
+1. **Stage8aa CPU**: 고정입력/길이 mask/실제 EOS/앞prefix/유한 dtype·출력 shape·instance
+   복원·독립 우도 label shift를 검사한다. deliberate 미래 의존 toy는 인과성 검사에서 거부한다.
+2. **Stage8ab prepare**: 기존 model/HF/공식 task/library/source identity를 봉인하고 실제
+   eval 환경과 미설치 sqlitedict를 기록한다. 다운로드/설치0이며 새 namespace만 만든다.
+3. **Stage8ac canary**: free12288MiB·자기 단독GPU에서 기존 원래 shape 관찰을 별도 대조로
+   보존하고 새 adapter의 A-B-A/순서·literal prefix·전량 label CE를 대조한다. 길이6/8/9,
+   63/64/65·255/256/257·1008과1024 경계의 prefix 로짓을 full vocabulary로 검사한다.
+   batch2 canary는 독립 batch1 두 번을 연결하는 것임을 명시하며 native batch2 성능을 주장하지 않는다.
+4. **Stage8ad cost**: 같은 공식 여섯 task의 첫32문항을 끝까지 처리하고 task별 시간·실제
+   choice수·target 길이·peak를 남긴다. **점수는 모델 성능 증거로 발표하지 않는다.**
+   늦은 긴 요청을 반영해 보수 ETA를 구하고 마감15분 정리를 남기지 못하면 full은 NOT_RUN이다.
+5. **Stage8ae full**: canary/cost의 동일 source·정밀도·model·tokenizer·경로 closure와
+   실제 process exit0 뒤에만 입장한다. 공식 전량19965/67106·acc/acc_norm을 원답으로
+   독립 재집계한다. response-cache OFF·KV OFF이며 prompt/label/fewshot/source는 불변이다.
+   각 task 완료 즉시 원답/부분 report를 보존한다. 중단 task의 중간 응답 영속 재개는 현재
+   제공하지 않으며 새 시도에서 완료 task만 해시 검증해 재사용하는 별도 설계 없이는 생략하지 않는다.
+
+신규 학습/optimizer/checkpoint0이다. 예산은 canary최대1200초·cost최대1800초, full은
+실측 ETA와 남은 허가 안에서 정하며 각 PID의 runtime·원본 소스/asset 불변과 CUDA 해제,
+외부 hard timeout/실제 exit를 함께 검증한다. 옛 cleanup flag는 덮지 않고 새 마지막
+workspace 정리 증거를 별도로 둔다. 파일당20MB 미만 샤드를 유지한다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+### Stage7g~7h — ACTD literal anchor·경계·미분의 CPU 선결 (2026-11-13)
+
+원장60과사용자115의현재위임으로총괄이구현한다. [원문·영향·세안·선택](../docs/research/20261113_ACTD_앵커와_정렬_구현계약.md)이
+착수근거다. 기존ALM/GSQ진단을ACTD로재명명하지않는다. 저자코드는현재공개예고상태이며
+논문Eq7/8수식과TinyLM의엄격raw-byte/특수ID/owner정책을구분한다.
+
+- Stage7gW: 학생전체어휘분모·literal중복항·고유보집합·full-anchor/큰margin/빈지도·FP64미분,
+  공통byte/첫subtoken·특수ID·불량UTF-8·문자경계단조/동률/미래량·턴소유권을CPU검사한다.
+- Stage7hW: 이번GSQ가이미사용한동결TRAIN128의자료/로그SHA를검산하고실제cache가
+  teacher top-k분포를갖는지재고한다. 스칼라target확률을K64/128분포로간주하지않는다.
+  예제수학반례와미분결과는CPU기술근거이며작은학습/일반지능성과로보고하지않는다.
+  추가로 qualified Qwen3.5/Tiny32k tokenizer metadata의 정적 전체 어휘매핑/불명ID를
+  CPU로 계측한다. explicit EOS2와 ChatML EOT4를 구분하고 미매핑 top-k row는 HOLD다.
+- 이후실교사K128캐시/현재93M의head·owner별ACTD미분·시간/메모리연결은다른새단계다.
+  아직명령이나새학습을실행한것이아니다. 현재외부full평가와모델을동시에올리지않는다.
+
+새namespace는p106b_actd_anchor_v1_20261113이고원본/제품/옛ALM/정제원천은바꾸지않는다.
+단계별source/data SHA·실제CPU시험수·잘못된입력거부·대상신호부족을결과101에기록한다.
+학습/교사호출/GPU/CP/설치/다운로드/새환경/추가300M은이두CPU단계에서0이다.
+
+### Stage8af — 기존 실패 입력의 fixed body/head 보완 확인 (2026-11-13)
+
+Stage8ac의8개prefix길이검사는새문자열이며원hybrid_canary의정확한입력을시험한것은아니다.
+[착수 전 영향·세 안·계약](../docs/research/20261113_ACTD_top128_실소비_검증계약.md)의
+첫 GPU gate를 추가한다. 진행중Stage8ae는중단하지않고소스/입력/채점도바꾸지않는다.
+원 q.hybrid_canary bytecode를 LM/Forward 위임 proxy로호출해원래prefix/tail·ABA·순서와
+허용오차를재사용하고model호출만기존fixed.logits로연결한다. 원객체/전역변경0이다.
+CPU회귀/소스봉인후full종료/정리뒤직렬GPU약1~3분이다. 실패하면fullraw는보존하되
+최종검증된점수발표와같은teacher의ACTD수집은보류한다. 새namespace는
+p106b_qwen35_legacy_fixed_v1_20261113,신규checkpoint/optimizer/품질학습0이다.
+
+### Stage7i~7k — 실제 ACTD top128과 원 지도 위치의 소비 (2026-11-13)
+
+Stage7g/h의CPU60·metadata2.528초·top-k0을반복하지않는다. 같은
+[사전 계약](../docs/research/20261113_ACTD_top128_실소비_검증계약.md)에따라새
+p106b_actd_top128_v1_20261113을사용한다. 기존스칼라ALM과미완75M을재명명하지않는다.
+
+1. **7i CPU 준비**: 동결TRAIN128을원pack_student/ByteStream/owners로재생성하고
+   record/source SHA·x/y/segments·한번shift·assistant/EOT를대조한다. teacher와같은
+   전체UTF-8 text에서prefix문자끝/다음target owner를구한다. 최근접단조와별도left-only,
+   문자내경계/교사1024초과HOLD·원CE보존을검사한다. addedFalse12literal의새매핑은
+   v1보수정책과구분해소스/metadata와봉인한다. 모델/GPU0이다.
+2. **7j 실제 교사 신호**: 8af의실제exit0/동일자산/core/정리뒤QwenFP32고정1024로
+   같은TRAIN128의필요prefix합집합에서native top128 ID/logit·전체normalizer를수집한다.
+   K/unique/범위/유한/정렬·raw보존·미매핑위치전체HOLD·언어별수락/잔여질량을검산한다.
+   이전공식벤치자료는학습에넣지않는다. 시간·VRAM·해제/원본SHA를실측한다.
+3. **7k 실제 학생 미분/비용**: 완결strict캐시의같은record·원CE분모와수락ACTD위치
+   전체분모를사용해93M CE-only/CE+ACTD의미분·finite·시간/메모리를검사한다.
+   모델전체본학습전의작은지능/벤치성과판정은금지한다. optimizer/CP저장0이다.
+
+필수원형/정렬/미분위반은오류,top128수락0은신호부족음성이다. 전량일반품질·정식자료편입·
+75M완성은다른선결이며추가300M금지는유지한다. CPU후GPU는진행중full과겹치지않게하고
+17시위임종료전15분정리여유를남긴다. 신규파일20MB미만,원자료/로그덮어쓰기·삭제0이다.
+
+**07:57 실제 갱신**: 원7i 준비는raw22/config33 합성선언 누락으로namespace/GPU전exit1을
+보존했다. metadata-only token 회귀를 더한7i1 CPU15와7ib 재준비는실제0,19.344737초다.
+128행/CE772 그대로,ACTD 각770/문자내2HOLD·최근접미래28(max6)/left미래0·교사prefix합집합695다.
+원8af CPU3/봉인도0이고GPU는full뒤다. 실행파일은Stage8afW_legacy_fixed_actual,
+Stage7jW_actd_top128_teacher,Stage7kW_actd_head_gradient_cost.sh가남았다.
+§예측중위치HOLD가능성은CPU두건에서관측됐으나실top128 수락률/미분·품질은아직미확인이다.
+
+### Stage8ag~8aj — 같은 qualified Qwen의 남은 공식 독해·단어복원 (2026-11-13)
+
+원장45/47의기존7모델은이미전량완료했고Qwen3.5는그7모델에없다. 새수치경로의
+Core6 full/정확legacy 확인·ACTD실소비를먼저닫은뒤
+[영향·세안·평가계약](../docs/research/20261113_Qwen_추가공식평가_계약.md)에따라추가한다.
+8ag CPU는기존원자료/공식정의·완전token-only plans를봉인하고모델0이다.
+8ah는KO/EN Belebele와LAMBADA 각32의cost/기존boundary canary이며작은성능판정0이다.
+8ai는Belebele 각900/총7200보기,8aj는LAMBADA5153 전량이다. 원evaluator bytecode와
+원metric/원문·target을재사용하며새global이나옛cache를바꾸지않는다.
+
+새namespace p106b_qwen35_extra_official_v1_20261113,같은FP32 fixed B1×1024/native
+tokenization/0shot/cache OFF/전체target/공식우도계산을고정한다. 단계별source/keyproof/
+실제exit0/전량raw독립검산/정리0이필수다. 예상1~3h는실cost로재판정하고17시까지
+15분정리유보를충족하는task만실행한다. 비용으로선택하며점수로고르지않는다.
+원7모델/추가300M/기존캐시·정제원천·TinyDataset·설치/다운로드/Git/삭제0이다.
+
+**08:43 실제 갱신**: v1준비는원7모델frozen helper guard의과거SHA로실제1을보존했다.
+공식evaluator는불변이고원interactive의MANIFEST/REQUIRED_SOURCES 두상수만달라졌음을
+옛map투영/AST로검산했다. 원guard를바꾸지않고별도현재소스를고정한새v2/8ag1 CPU6과
+8agb준비24.995348초/실제0을닫았다. 완결token1800/5153은재사용했고Qwen무절단900/
+옛7공통898이다. v1원형/실패와미실행3취소명령은보존한다. 새8ahb/8aib/8ajb GPU는미실행이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7lW·Stage7mW — DSKDv2 양공간과 실제 원형의 정확 정렬 CPU 선결
+
+2026-11-13 사용자115 위임으로 원장61을 진행한다. [원문/영향/세안 계약](../docs/research/20261113_DSKDv2_표현투영과_정확정렬_계약.md)을
+먼저 작성했다. 기존 ALM/ACTD 구현과 달리 DSKD helper는 없었다. 새 namespace는
+`p106b_dskdv2_contract_v1_20261113`이며 기존 실제128 TRAIN/x32216/CE772를 바꾸지 않는다.
+
+Stage7l은 원 토큰 byte prefix·완전 token·owner·한번shift의 ETA와 양공간 full-vocab KL,
+교사 top1의 투영 CE·stop-gradient·의사역행렬 초기화/저rank 잔차·독립 oracle/미분을 CPU로
+시험한다. Stage7m은 기존 봉인된 두 tokenizer의128 원형 byte span을 전량 검증해 정확
+gold-token 후보와 보류를 저장한다. 최근접 미래 경계/첫 subtoken은 DSKD 정확 정렬로 세지 않는다.
+
+교사 top1의 실제 완전 student token 대응까지 닫히기 전 후보 수는 최종 DSKD 질량이 아니다.
+Tiny의 factored head rank 상한256·폭768과 교사 full248320/학생full32768을 구분한다.
+CPU 추상 head 수식을 실제 native head/VJP 연결 완료나 모델 개선으로 승격하지 않는다.
+실제 hidden/head 수집·optimizer·전체 본학습/지능은 후속 미실행이다. 작은 품질 점수 발표0이다.
+
+두 새 ASCII SH는 CPU만 사용하며 예상각0.01h/0.05h다. 원형/소스 SHA·128개 full accounting,
+명령/실제 종료·파일20MB 미만을 보존한다. Qwen full→정확legacy→공동쓰기→ACTD의 GPU 순서는
+유지한다. 다른 정제·추가300M·설치/다운로드·새환경·Git·삭제는0이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7n0W·Stage7nW — 실제 native head/VJP와 overlap 의사역행렬의 CPU 비용
+
+같은 계약§6에 따라7n0의 row-order/shape/finite CPU3 뒤7n을 수행한다. namespace는
+`p106b_dskdv2_heads_v1_20261113`이다. 기존 guarded load_cpu를 재사용해 완료93M의 CPU
+head만 호출한다. 같은4×768 feature/동일cotangent의 native FP32 출력·hidden VJP를
+명시 factor 연산과 EXACT 비교하고 body forward·master grad·원core/CP변경이0인지 확인한다.
+
+검증된 교사 safetensor의 tied embedding에서 exact ordinary byte23302개만4096행 chunk로
+가져와 학생768×23302/교사1024×23302 head를 만든다. special 의미3개·첫subtoken224506은
+초기화 overlap에서 제외한다. 원 helper의 두 방향 pinv/rank 계산을 그대로 사용해 실제
+rank·logit 잔차·wall/RSS를 회수한다. 큰 matrix·CP는 저장하지 않고 원weight/원data는 불변이다.
+
+모든 계산은 CPU며 예상0.25h/상한900초다. 이미 진행 중인 공식평가 GPU와 동시상주하지 않는다.
+이 CPU FP32 결과는 native BF16 본체/GPU VJP, 실제 teacher hidden/top1, 전체 DSKD 학습 및
+지능 개선을 대신하지 않는다. 원 교사 모델은 올리지 않으며 설치/다운로드/새환경/추가300M0이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7o·7p — 실제 ACTD 반복 기울기 차이의 결정론 진단
+
+원Stage7k ABBA의 CE143/ACTD9862 원소가 기존허용오차 밖임을 결과101§597에 보존한다.
+같은 봉인된 run 함수/teacher cache/CE772·ACTD607·native93M/원128/x32216과 BF16/ckpt를
+유지하고 프로세스 결정론 dispatch만 독립변수로 바꾼다. strict 모드의 오류도 원인 정보이며
+경고로 완화하거나 허용오차를 상향하지 않는다. [영향·세안·판정](../docs/research/20261113_ACTD_결정론_원인분리.md)을 따른다.
+
+등록555 Stage7o CPU3/재사용봉인은 실제 종료0이고 등록556 Stage7p는 GPU 약1분 예상/
+상한30분·8GiB 입장점·마감15분 유보이다. 같은ABBA4회 역전파·optimizer/CP0이며 원문턱과
+EXACT 반복 여부·텐서별 실패·source/core/CP/CUDA0을 보고한다. 작은 품질·본학습효과는
+평가하지 않는다. source/cache/옛보고서·체크포인트와 타정제는 불변이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7q·7r — 결정론 진단의 교사 보고서 경로 복구
+
+Stage7p 실제6974 종료1은 모델/CUDA 진입 전의 teacher/report.json 경로 오류다. 원소스·
+profile·빈 student 출력과 원로그를 보존하고 ROOT_PREMODEL_FAILURE_v1에 연결했다.
+새 v2 namespace에서 원교사 report를 byte 동일하게 복사하고, 캐시/손실/미분은 원함수와
+원캐시를 그대로 재사용한다. 복사본 SHA와 봉인 run이 실제 읽을 새 경로를 CPU에서 먼저
+검사한다. 원실패의 report가 없다는 사실을 성공 report로 채우지 않는다.
+
+선택 A는 보고서 사본만 명시하는 최소복구다. B의 digest 경로 몰래 치환은 계보를 혼동시킬 수
+있고 C의 전체 교사 재생성은 불필요하므로 하지 않는다. 영향은 새 driver/test2·SH·증거와
+자기 문서/원장에 한정하고, 제품/옛소스/기존허용오차/모델/평가자료는 불변이다.
+Stage7q(557)는 CPU2/사본 provenance 봉인, Stage7r(558)는 같은 strict 결정론 ABBA4회
+역전파다. micro8×accum16/1024/원CE772·ACTD607·BF16/ckpt ON, optimizer/CP0을 유지한다.
+GPU 약1분 예상/상한30분·8GiB 입장점·마감15분 유보, 단독 직렬 실행이다.
+반복EXACT/원문턱·실패텐서·원복/CUDA0을 확인하며 학습품질·추가300M은 미실행이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7s·7t·7u — DSKDv2 실제 정규화 teacher hidden과 exact native top1
+
+CPU13/exact557/원CE772·native CPU head/VJP 증거는101§595에 닫혔지만 실제 hidden과
+native top1 완전 토큰 대응은 미완이다. 새 [실제교사 계약](../docs/research/20261113_DSKDv2_실제교사표현_검사계약.md)의 영향·세안·예측·한계를 따른다.
+기존ACTD128행은 normalized hidden을 저장하지 않았고 union 밖 정확 UTF8 조각2위치도
+있으므로 새 관측이 필요하다. 원문·CE·토크나이저·teacher call 함수·head shape는 바꾸지 않는다.
+
+등록559 Stage7s는 CPU4,560 Stage7t는 모델0 원형/4canary source봉인,561 Stage7u는
+같은Qwen3.5의 B1×1024 FP32 MATH·cacheFalse로 normalized hidden/native full-vocab top1을
+수집한다. 파일별 feature4.2MB 이하·원답3MB 분할·GPU 약2분/상한30분·입장12GiB·마감15분
+유보이며 다른GPU와 직렬이다. 새corpus 편입false·optimizer/CP·추가300M은0이다.
+
+수락은 native top1이 mode1 완전 공통byte 또는 mode3 명시특수 토큰일 때만 가능하며
+first-subtoken/최근접/future fallback은0이다. 원CE772에서 보류를 삭제하지 않는다.
+한국어/영어 각1prefix와 UTF8 조각2prefix의 원형/잘린prefix hidden·full-vocab logits를
+원허용오차로 검사하고 head 관측/qualified 반환은 EXACT여야 한다. 원형/해시·모델weakref·
+source/CP 불변·CUDA0/0·실제tool종료를 회수한다. 투영일치/양공간 실제 미분/품질은 다음선결이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7v·7w·7x — 원128 캐시는 보존하고 종료기 오류만 새 단계에서 복구
+
+Stage7u/actual82911은 원형128행/538수락·닫힌위치샤드와 feature 캐시를 만들었지만,
+비어있는 direct-call trace의 close가 예외를 던져 최종 report가 없는 종료1이다.
+소스/로그/닫힌샤드/feature128과 ROOT_FINALIZER_FAILURE_v1을 보존하고 원실행을 성공으로
+재표기하지 않는다. 원 peak/CUDA 정리 report의 미확인 값을 기억에서 채우지 않는다.
+
+선택 A는 CPU 전량 캐시 검산 후4source행/8고정호출로 실제 feature/top1/LSE·4prefix를
+재확인하는 최소복구다. B의128행 전체 재실행은 이미 존재하는 원형을 중복 수집하고,
+C의 유효 캐시 전부 보류는 실측을 활용하지 못하므로 A를 먼저 한다. 캐시는 폐기하지 않는다.
+
+새 helper/CPU3/driver·SH와 새 recovery namespace만 쓴다. 원 native 함수·원V1 소스·
+원허용오차·정답/원문·CE772/557 exact 후보·원corpus 편입false는 유지한다.
+CPU3은 feature dtype/shape/finite, 완전-token/mode/확률 불변과 finalizer 오류를 독립적으로
+보존해 보고서 작성까지 도달하는 계약이다. CPU prepare는128캐시의 SHA/헤더와 원형 위치를
+전량 검사한다. 실제 GPU는 첫한영/UTF8 두위치의4행만 native고정경로로 재생한다.
+
+등록562/563/564는 Stage7v CPU3/Stage7w CPU 봉인/Stage7x GPU 실제이다. 후자는 예상1분/
+상한30분·입장12GiB·17시15분 유보·다른GPU와직렬, optimizer/CP0이다.
+새호출 trace를 실제8건 기록하고 각 writer.close 오류를 따로 잡아 최종 report를 반드시
+남긴다. 원128전체의 종료0으로 바꾸지 않으며 새recovery의 source/CUDA/실제종료를 별도로 닫는다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage7y/z/aa/ab — DSKDv2 native 투영·양공간 실제 미분, update0
+
+사용자115 위임과 `docs/research/20261113_DSKDv2_native연결_손실과비용_계약.md`를 따른다.
+기존CPU13/실제교사128/복구4행과 별개로 실제투영538의 신호·고정native head 대chunk·
+학생본체의 양공간 미분과 추가시간/메모리를 측정한다. 이미 수집한 hidden을 재사용하고
+교사본체를 다시 올리지 않는다. 초기 overlap 오차가 실제표현에도 불리할 가능성과 full teacher
+vocab248320 비용이 큰 가능성을 사전 예측한다. 신호/미분 성공은 품질 성공이 아니다.
+
+| 단계 | 선결·판정 | 자원·상태 |
+|---|---|---|
+| 7y CPU6 | native/dense 손실·VJP/stopgrad/원위치/chunk분모 | CPU 모델0, 준비 |
+| 7z CPU native | 같은23302 초기화와실제538투영·원head/VJP/불변 | CPU head만, 준비 |
+| 7aa GPU head | 원native top1/LSE와고정frame원위치 통과, chunk별도판정 | head텐서만, 준비 |
+| 7ab GPU student | 원CE772/KD538·전체어휘·finite非zero/반복정합·원복/CUDA0 | 93M본체+동결teacherhead, 준비 |
+
+실행은 experiments568~571의 SH를 순서대로 사용하며 총GPU 예상5~15분/상한30분,
+입장여유12288MiB·17시전15분정리를 둔다. NTP/m8a16/1024/BF16/ckpt-on/compile-off다.
+학습토큰은0이며4backward의진단노출은 x32216×4, slots131072×4, CE772×4다.
+원corpus 편입false, optimizer/CP0, 추가300M0이고 최종벤치마크와지능평가는NOT_RUN이다.
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage7y/z/aa/ab 실제 종료 — native 미분 가능, 생산 계수 미확정
+
+CPU6/초기투영/head/학생gradient 각 실제 종료0이다. 초기 top1은70/538로 낮았고
+같은 CE772에서 KD계수1의 전체gradient norm은35.94배였다. 반복157/158개는EXACT,
+전체vocab32768/248320과원CE·CUDA0·CP불변을닫았다. 기술연결예측은맞았고 실제투영의
+초기신호가불리할가능성도확인됐다. 품질/본학습준비는NOT_RUN이며 결과101 §602가소유한다.
+
+### 완료 공식평가의 CPU 종합·대응 통계 확장
+
+새Qwen3.5 fixed 전량을 기존11실행본 표에 추가한다. 공식점수는 원보고서/샤드를 재집계하고
+Core6는 Native-Q/Falcon/Qwen06과 동일19965문항의 기존100000회 대응함수로 구간을 구한다.
+Belebele는 원7개+새Q8개의 동일900·공통무절단 교집합을 확인한 뒤 기존 link군집 함수를
+8개명시채널로만 확장해100000회 공동 재표집한다. LAMBADA8개는동일5153/full-word를대조한다.
+모델/데이터 취득/GPU0이고 원 scorer/문턱·raw를수정하지 않는다. 사후선택·동시구간·seed분산·
+일반지능주장이아니며 원보고서의과거보류도보존한다. 새Q모델점수를 TinyLM 향상으로세지않는다.
+
+### Stage7ac/ad — 같은 원128에서 손실별 gradient 기하 분리
+
+전체norm35.94배의출처를분리하기위해원CE772/KD538·같은native factor/full vocab과
+완료chunk게이트를재사용한다. CPU5뒤한body pass에서CE/학생KL/교사KL/투영CE를각각미분한다.
+새optimizer/update/CP0·교육/정답성판정0이다. 원157학생공간의각손실norm/cosine과공유embedding,
+비embedding본체,별도투영을구분한다. 합계손실은원Stage7ab와대조하고finite/원복/CUDA0을닫는다.
+예상GPU1~3분·상한30분·여유12288MiB,실험572/573의SH와native연결계약이정본이다.
+실제오류가발생하면원문턱/원보고서를보존하고새단계에서수리한다.
+
+### Stage7ae/af/ag — 원본체를 바꾸지 않는 투영 cold-start 진단
+
+연결계약의초기투영수리절을따른다. 원128/538의선언root분리/CPU5후새Pt만100update를한다.
+원CE/최종평가로기존모델을추가교육하지않고원head/body는동결·body순전파0이다. 사전고정LR/
+clip/100step이며보류근점수로종료를선택하지않는다. 새투영RAM만수정하며CP저장0,
+학생update0/투영update100을분리한다. 작은검사로일반지능이나본학습효과를채택하지않는다.
+예상GPU1~2분·상한30분이며574~576의SH를순차실행한다. pool2배/NTP토큰환산은본체교육이
+아닌cached 표현의투영보정에는적용하지않고고유538과반복노출을그대로공개한다.
+
+### Stage7ah/ai/aj — 동결TRAIN1024의 native 표현 확장, 기존128재사용
+
+Stage7ag의402학습정확/보류CE악화를성공으로채택하지않는다. native연결계약의1024확장절과
+577~579 SH를따라기존frozen1024/source/record를검산하고exact/HOLD를보존한다. source1024는
+기존ALM준비물만읽으며새원천다운로드·다른세션정제·TinyDataset접근0이다. 같은root의원128은
+정확teacherids·학생owner/byte/text를대조해그대로feature참조하며teacher를다시실행하지않는다.
+새896이하·한영2prefix만수집하고전체CE・원형·모델해제·CUDA0/0·실제종료를닫는다.
+CPU예상1분/상한10분·GPU예상8~15분/상한30분·입장12288MiB·17시전15분정리여유다.
+전체300M/학생학습·CP저장0이며투영표본확장의기술선결이지일반지능판정이아니다.
+
+### Stage7akW — DVLM hybrid 가시성의 실제CPU primitive 선결
+
+원장63의PTS/HPA전체구현과별개로현재Qwen3.5의설치source·gated-delta recurrence/chunk와
+padding mask를검사한다. 새가시성선결문서가세대안/원문한계/범위를소유한다. prefix state를
+fork하면private분기에독립적인지·원prefix+자기분기와원오차안에서같은지검사하며원코드를
+수정하지않는다. 모델/체크포인트로드·GPU/학습/CP0이며580의CPU SH를사용한다.
+합성source primitive결과를전체DVLM/실제교사행동/일반지능성과로채택하지않는다.
+
+### Stage7al/am/an — 같은투영100step, 동결128→1024 표본만확장
+
+native연결계약의표본확장절과581~583 SH를따른다. 기존최적화code객체를그대로재사용하고
+selector/출력의private전역만분리한다. 새1024/4113과old136보류를전량검산후같은LR/clip/
+100step을쓴다. 원본체/학생update0·새Pt100update·새CP0이며일반지능/방법채택을판정하지않는다.
+표본다양성과한full-batch step노출이동시에늘어남을기록한다. CPU3→전량prepare→GPU예상1~3분/
+상한30분이며17시전15분정리여유다. 옛128/작은투영과적합과모든실패는덮어쓰지않는다.
+
+### Stage7aoW — DWA 수학요소 CPU8와작은참조비용
+
+새DWA수치계약의세안중요소우선A를따른다. detach가중/질량0거부·원Soft-DTW경로전수/
+유한차분·자기0/대칭·동결adaptive band·4096셀상한을CPU8로검사한다. 그후작은3shape의
+F/B·finite학생미분을잰다. 모델/GPU/체크포인트/optimizer0이고생산GPU시간·전체DWA·지능효과로
+읽지않는다. CMA와두표현/native분모/fastDP·전체본학습은별도미완이다. 실제SH는584다.
+
+### Stage7ap/aq — FP64 anti-diagonal GPU Soft-DTW 부품의 수치·비용
+
+새GPU부품계약의A안을따른다. 설치된Triton3.6.0을새격리cache에서만컴파일하고모델/학습/CP0이다.
+CPU3→봉인→작은6shape의독립loss/gradient(1e-9/1e-8)→큰256/512/1024의전치/경로성질과
+cold/warm비용을잰다. FP64gamma도텐서로전달해상수의FP32축약을피한다. 긴CPU autograd는
+실행하지않으며큰shape의독립일치로승격하지않는다. 전체DWA/native학습/본학습가속/지능은
+NOT_RUN이다. source불변/실제종료/CUDA0을닫고실패시원문턱을늘리지않는다. 585/586 SH,
+GPU예상1~5분/상한20분·17시전15분정리여유다.
+
+### Stage7ar/as — GPU DP v1 작성오류의 동일문턱 v2 재검증
+
+v1 actual44558/1·작은3shape만통과후8×12의독립loss/gradient실패와생성IR를보존했다.
+초기두상태의tensoralias작성때두번째대각상태가loop-carried되지않았다. 새v2는두tl.full을
+독립생성하는최소수리이며같은FP64/6small/3large/1e-9·1e-8과경로성질을검증한다.
+원소스/실패/문턱은바꾸지않는다. CPU3→동일설계봉인→GPU예상1~5분/상한20분·새cache,
+모델/교육/CP0이다. 587/588 SH를쓰고성공후에도전체DWA/native본학습은미완이다.
+
+실제 회수: 587의 CPU3/봉인 종료0 뒤 588 actual33061 종료0/5.306073초다. 여섯 작은
+형상은 원CPU 손실·미분/문턱을 통과하고 큰 세 형상은 전치·경로 성질만 통과했다.
+원586 actual44558/1과 생성IR 작성오류는 보존했다. 587/588은 명령/SHA를 archive_v20에
+남기고 -done으로 개명했으며 삭제0이다. 결과101§610 참조. 전체 DWA는 아직 미완이다.
+
+### Stage7atW — DWA 방향별 band와 self 정책의 CPU 수학 선결
+
+새 대칭성 계약의 A를 선택한다. 기존 CPU DP를 재사용하고 고정4 seed/8×12·표현6에서
+unbanded 대칭/자기거리/유한미분을 검산하며 방향별 attention-band 차이는 관측 그대로
+남긴다. 자기항은 명시 unbanded 변형이며 원저자 전체 재현이 아니다. source/태그는 새로
+봉인하고 모델/학습/GPU/CP0, CPU 1분 이내다. 원수가 같아도 대칭이 자동이라는 가정을
+검사한다. 판정은 계약 문서의1e-10이며 사후 확대하지 않는다. 589 SH로 수행한다.
+
+Stage7atW actual63215는 출력 parent 생성 누락으로 수학 실행 전 종료1이었다. 기존
+write_new가 parent를 만들 것이라고 잘못 가정했다. 원 driver/로그는 보존한다.
+
+### Stage7auW — 같은 수학의 출력 parent 수리
+
+590의 새 v2 wrapper는 원 main code를 private globals로 재사용하고 write_new의 parent만
+명시적으로 만든다. 공용 data 모듈/원 helper 변경0이다. 새 출력·source SHA에 v2 wrapper도
+포함하며 기존 수학/seed/문턱/CPU 조건은 모두 동일하다. 이 범위 외 쓰기를 거부한다.
+
+실제 actual61143/0·0.086174초다. unbanded 대칭 차이0과 방향별 band 변형의 비대칭
+반례를 고정4개 모두에서 관측했다. 수학 reference는 통과했으며 전체 DWA 음성이나 모델
+효과가 아니다. 자기항/양방향 정책은 여전히 명시할 선결이다. 결과101§611 참조.
+
+### Stage7avW — 큰 DP의 손실만 독립 CPU 행 단위로 대조
+
+GPU v2의 source/report/원seed/형상을 그대로 재사용해 같은 CPU RNG draw를 복원한다.
+A인 행단위 scalar Python DP를 선택한다. B인 큰 Torch autograd는 메모리/그래프 비용,
+C인 전치 성질만 유지하는 안은 독립 손실을 확인하지 못하는 한계가 있다. 새 driver/SH/
+namespace와 계획·결과·레지스트리·원장만 쓰고 제품/원artifact/GPU/모델/CP/설치/Git0이다.
+원CPU작은6개로 독립 구현을 대조한 뒤256×384/512×768/1024² 손실을 원GPU 보고서와
+atol1e-9/rtol1e-8로 검사한다. 큰 미분은 비교하지 않으며 문턱/입력 변경0이다. CPU2분 이내,
+591 SH를 쓴다. source불변·CUDA미초기화·실제종료를 닫는다. 이 점검은 알려진 설계 실수만
+걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+실제 actual27359/0·0.528821초에 원입력 복원/작은6 참조/큰3 손실을 닫았다. 큰 loss는
+각각 원GPU와 절대차0이며 큰 gradient 비교는 NOT_RUN이다. 모델/GPU재실행/CP0,
+source불변·CUDA미초기화를 확인했다. 결과101§612 참조. CPU forward와 GPU F/B의 시간
+비교를 전체 속도비로 하지 않는다. 명령은 archive_v23으로 보존하고 -done 개명·삭제0이다.
+
+### 2026-11-13 마감 뒤 운영 후속 — 사용자119~123
+
+이 후속은 새 실험 단계가 아니다. [채택 재검토·정리 보고](../docs/research/20261113_주도실험_채택재검토와_정리결과.md)에
+교사 MTP ON의 실제 사용과 학생 범용 품질 미채택, native DSKD/PAD/CE의 남은 계약을 구분했다.
+KoBEST 평가 전용 환경은 고정5종 설치·기존버전 불변·공식5과제4561행 초기화/합성 MC집계까지
+CPU로 검산했고 실제 모델 평가는 NOT_RUN이다. 추가300M/새GPU 허가는 아니다.
+
+명령 전문/SHA를 보존한 완료·취소 런처247개와 적격 체크포인트89개를 사용자 지시로 정리했다.
+위 절들의 삭제0은 당시 상태이고 현재 disposition은 `postresearch_cleanup_20261113`의 두
+삭제 영수증이 소유한다. raw/실패/보호39/P107/최종모델은 보존했다. 실행 큐에 남았던 과거
+완료30개를 제외했고 다른 fresh512 P078 경로는 미실행 HOLD다. 같은 V5의 원천가용0과
+교사8h의 의미/원천 선결은 유지한다. 새 런처·학습조건·공식 점수를 추가하지 않았다.

@@ -1,0 +1,19 @@
+{
+  "schema": "OWNED_LAUNCHER_ARCHIVE_V23",
+  "authority_directive": 115,
+  "deletions": 0,
+  "launchers": [
+    {
+      "id": 591,
+      "source": "run_P106B_Stage7avW_softdtw_large_cpu_readback.sh",
+      "target": "run_P106B_Stage7avW_softdtw_large_cpu_readback-done.sh",
+      "command_text": "#!/usr/bin/env bash\n# Recreate existing CPU RNG draws; independent row-major DP loss, GPU rerun0.\nset -euo pipefail\ncd -- \"$(dirname -- \"${BASH_SOURCE[0]}\")\"\nPY=/home/uranus/miniforge3/envs/tlm_torch/bin/python\nexport CUDA_VISIBLE_DEVICES=\"\"\nexport OMP_NUM_THREADS=2\nexport MKL_NUM_THREADS=2\nexec \"${PY}\" -B -X utf8 scripts/runlog.py --num 101 --name P106B_Stage7avW_softdtw_large_cpu_readback -- timeout 180s \"${PY}\" -B -X utf8 -m scripts.diag_p106b_softdtw_large_cpu\n",
+      "sha256": "D9D83A700D9B93C9F307DD45409BFA0C35CA3CFCDD1EE68AB08A61922CB9022D",
+      "actual_tool_session": 27359,
+      "exit_code": 0,
+      "log": "test_result/101_log_20261113_P106B_Stage7avW_softdtw_large_cpu_readback.txt",
+      "log_sha256": "81F8DD2E3AD91EE8CAB35108E26EBEA38A6471FDBE60844743DBE3E160CDED06",
+      "status": "INDEPENDENT_CPU_LARGE_LOSS_ONLY"
+    }
+  ]
+}
