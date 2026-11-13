@@ -1,0 +1,16 @@
+{
+  "status": "OPAQUE_PREPARE_AND_INDEPENDENT_VERIFY_ACTUALLY_COMPLETED",
+  "active_guard_sha256": "5AAFF02F7B2709C06843221FBE39C700909685809FA845253B6A749553721C0E",
+  "input_pins": {
+    "handoff/audit/hold_resolution_20261027_goalc/OPAQUE_ROOT44_ROSTER31_CONFIG_V1.json": "7E09CE923B8881A50D7700F415B81ED784790C41A9D53808B3BAB3E3A4D678E1",
+    "handoff/audit/hold_resolution_20261027_goalc/OPAQUE_UNADOPTED_HOLD_ROOT44_ROSTER31_CONTRACT_V1.json": "A282EC24709EBC827984D887E82CB3832C4C2167884E981A511133D17EE33650",
+    "handoff/audit/hold_resolution_20261027_goalc/prepare_opaque_hold_contract_v2.py": "B3BE63B7CCC444FEC4F280327A5FF5674D604100F55011FED17A8738EB7D61F5",
+    "handoff/audit/hold_resolution_20261027_goalc/verify_opaque_hold_contract_v3.py": "7BB680465DCCACC7ACC9118850E63343F56A4C9EE9C6DFD31656CBC4B56E65D6"
+  },
+  "bootstrap_source": "from pathlib import Path\nimport sys,runpy,hashlib\nr=Path('/home/uranus/tinyLM');a=r/'handoff/audit/hold_resolution_20261027_goalc';sys.path[:0]=[str(a),str(r)]\nimport active_guard_v6_preflight_v1 as g\ng.install_for_legacy()\np=Path(sys.argv[1]);expected=sys.argv[2];assert p.parent==a and g.inv.file_sha(p)==expected\nsys.argv=[str(p)]+sys.argv[3:]\nrunpy.run_path(str(p),run_name='__main__')\ng.assert_no_protected_opens()",
+  "bootstrap_sha256": "9720DA655BFE5E3C87E878A951E878E3DD7059A669D5BB7EFD4FDE59099B7B8B",
+  "protected_payload_open_attempts": 0,
+  "body_fields_decoded": 0,
+  "goal_complete": false,
+  "training_authorized": false
+}
