@@ -76,7 +76,7 @@ python3 -m scripts.raw_evidence_archive restore 'test_result/evidence/실험폴�
 
 `locate`는 압축 경로와 파일의 존재 여부를 보여 준다. `verify`와 `restore`는 압축 묶음 및 요청 파일의 해시를 각각 확인한다. `--destination`을 생략하면 저장소의 원래 위치에 복원한다. 기존 위치에 내용이 다른 파일이 있으면 빈 복원 위치를 사용한다.
 
-이 작업 PC의 복원 사본은 WSL VHDX가 있는 Z 디스크와 별개의 E 디스크 `E:\TinyLM_Archive`에 있다. WSL에서 E 디스크 사본을 직접 확인할 때는 `--archive-root /mnt/e/TinyLM_Archive/evidence`를 사용한다. 같은 구조의 다른 보관소로 옮기면 `--archive-root` 또는 Git 로컬 설정 `tinylm.evidenceArchiveRoot`에 새 위치를 넣는다. `catalogs/`에는 두 목록의 사본이 있다.
+압축본은 WSL 저장소의 `test_result/evidence/_archive`에 보관하며, 복원 도구는 이 경로를 기본으로 사용한다. 다른 디스크에 보조 사본을 만들거나 옮길 때는 저장 위치와 범위를 먼저 사용자에게 확인한다. 승인된 별도 보관본을 읽을 때는 `--archive-root`에 해당 위치를 지정한다.
 
 Git에서 받은 검증 목록은 원본이 들어 있는 묶음을 가리킨다. 링크 검사는 이 경로를 복원 참조로 표시한다. 재채점이나 후속 실행에서 원본을 읽을 때에는 해당 파일을 실제 경로에 복원한다.
 
