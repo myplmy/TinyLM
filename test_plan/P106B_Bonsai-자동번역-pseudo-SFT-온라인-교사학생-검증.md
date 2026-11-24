@@ -10076,6 +10076,8 @@ Q678.917MiB/F356.042MiB의고유storage차이는별도복원cache예측과맞았
 
 ### Stage11eW — GPT2 Q4의 생성 자원 누락 회수
 
+**완료·세 기존 HF 모델의 새 장치 표본.** 공식 점수 입력을 재실행하지 않고 기존 en128/en512의 전용 생성 구간을 계측했다. [결과 101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-hf-generators-physical-device-vram)
+
 **목적.** 원장68의 공식8실행본 중 남은 GPT2 Q4_K_M 생성자원을 확인한다. 기존 공식 Core6 점수와 TinyLM/HF18자원행은 다시 실행하지 않는다. 사용자96/97의27일17시 CPU/GPU 권한이며 새학습·정제·설치/다운로드0이다. 기존 GPT2 native full의 원보고 pending9와 별도 terminal 완료0을 함께 연결한다.
 
 **대안과 방법.** 기존 Core6는 요청마다KV를비워 prefix를다시계산하므로그대로토큰별호출하면cache-on 생성속도가아니다. CLI/bench의처리율만으로는같은질문의실제선택/관찰대응이부족하다. 따라서 원Core6 소스·옛기한/Runtime을변경하지않고 wire/Reader/helper만재사용하는별도생성worker를선택했다. 세대안·영향도/소유권은 [설계](../handoff/audit/oct27_independent/gguf_resource_design.md)에있다. 정/반역할은읽기만하고총괄만구현한다.
@@ -11365,7 +11367,7 @@ vocab248320 비용이 큰 가능성을 사전 예측한다. 신호/미분 성공
 | 7y CPU6 | native/dense 손실·VJP/stopgrad/원위치/chunk분모 | CPU 모델0, 준비 |
 | 7z CPU native | 같은23302 초기화와실제538투영·원head/VJP/불변 | CPU head만, 준비 |
 | 7aa GPU head | 원native top1/LSE와고정frame원위치 통과, chunk별도판정 | head텐서만, 준비 |
-| 7ab GPU student | 원CE772/KD538·전체어휘·finite非zero/반복정합·원복/CUDA0 | 93M본체+동결teacherhead, 준비 |
+| 7ab GPU student | 원CE772/KD538·전체어휘·유한값·0이 아닌 값/반복정합·원복/CUDA0 | 93M본체+동결teacherhead, 준비 |
 
 실행은 experiments568~571의 SH를 순서대로 사용하며 총GPU 예상5~15분/상한30분,
 입장여유12288MiB·17시전15분정리를 둔다. NTP/m8a16/1024/BF16/ckpt-on/compile-off다.
@@ -11413,7 +11415,7 @@ Stage7ag의402학습정확/보류CE악화를성공으로채택하지않는다. n
 577~579 SH를따라기존frozen1024/source/record를검산하고exact/HOLD를보존한다. source1024는
 기존ALM준비물만읽으며새원천다운로드·다른세션정제·TinyDataset접근0이다. 같은root의원128은
 정확teacherids·학생owner/byte/text를대조해그대로feature참조하며teacher를다시실행하지않는다.
-새896이하·한영2prefix만수집하고전체CE・원형·모델해제·CUDA0/0·실제종료를닫는다.
+새896이하·한영2prefix만수집하고전체CE·원형·모델해제·CUDA0/0·실제종료를닫는다.
 CPU예상1분/상한10분·GPU예상8~15분/상한30분·입장12288MiB·17시전15분정리여유다.
 전체300M/학생학습·CP저장0이며투영표본확장의기술선결이지일반지능판정이아니다.
 
@@ -11511,3 +11513,1931 @@ CPU로 검산했고 실제 모델 평가는 NOT_RUN이다. 추가300M/새GPU 허
 삭제 영수증이 소유한다. raw/실패/보호39/P107/최종모델은 보존했다. 실행 큐에 남았던 과거
 완료30개를 제외했고 다른 fresh512 P078 경로는 미실행 HOLD다. 같은 V5의 원천가용0과
 교사8h의 의미/원천 선결은 유지한다. 새 런처·학습조건·공식 점수를 추가하지 않았다.
+
+### Stage7awW — 완료 ORPO176·64와 직접 부모의 공식 Core6/KoBEST ✅ 결과101§613~614
+
+#### 1. 왜
+
+사용자124~132는 ORPO의 한국어 표현·반복과 실제 학습량을 확인하고, 이번만 완료된
+소규모 후학습도 벤치마크에 포함하도록 명시했다. 새300M ORPO를 실행하거나 소규모
+점수를 본학습 지능의 채택 근거로 쓰는 단계가 아니다. 과거768 MC/63 한국어 지문/64 산수
+평가는 원형 보존하며 공식 Core6 전량으로 재표기하지 않는다.
+
+#### 2. 질문
+
+| 질문 | 필요한 구분 |
+|---|---|
+| ORPO176·64는 각각 직접 부모 대비 어떤가 | 두 모델은 서로 다른 학습 계보이므로 우열을 ORPO 반복 횟수의 효과로 해석하지 않는다. |
+| 한국어 과제에서 분별력이 있는가 | KoBEST5의 원문 선택지·macro F1/acc를 쓰며 자유 대화 자연스러움과 구분한다. |
+| 답이 짧아진 것과 내용 개선이 같은가 | 원답 TXT와 별도 정성 판독을 제공하며 종료 성공을 정답으로 올리지 않는다. |
+
+#### 3. 예측 — 정직하게
+
+좁은 합성 정보 보충에서 개선이 있었으나 자연 지문과 조건 갱신 실패가 남아 있다.
+일반 Core6나 한국어 전 과제의 일관된 개선보다 혼합 또는 무변화가 더 유력하다.
+상반되는 결과·최빈답 이하·모델별 카나리 실패도 그대로 보존한다. 결과 후 예측을 대조한다.
+
+#### 4. 단계 설계
+
+1. CPU 선결: 고정 CP4/토크나이저 SHA, 코드 pin, 기존 원과제·평가 환경과
+   TinyDataset 접근0을 확인한다. 실제CP 로딩/GPU 없는 check-only다.
+2. 각 CP를 원래 legacy TLinear·anneal1·freeze_quant·FP32 MATH/TF32 OFF로
+   strict load한다. 기존8요청/배치8 대 단일8 full-label CE 카나리를 그대로 재사용한다.
+   원문턱 atol1e-5/rtol1e-4를 바꾸지 않는다. 실패하면 해당 팔의 전량은 열지 않는다.
+3. 공식11과제 각각 첫32로 비용만 확인하고, 1.3배 외삽+60초가 잔여1800초에 들어오면
+   같은 모델의 전량을 수행한다. 모델은 한 번에 하나, batch8·문맥1024·0shot·chat OFF다.
+4. Core6 19,965문항/67,106보기와 KoBEST5 4,561문항 전량을 각각 집계한다.
+   Core6는 기존100,000 bootstrap 설정, KoBEST는 점수 집계 동일·bootstrap0(새 CI 주장0)다.
+   JSONL은20MB 미만으로 나누고 실제 원답은 학습에 넣지 않는다.
+5. 원본 CP/소스·모델 본체 전후 SHA, 원과제별 분모/라벨/argmax/길이 정규화와
+   macro F1 독립 재집계를 닫고 결과101·기준표·목록·COMPASS를 갱신한다.
+
+#### 5. 판정 기준
+
+수치 카나리·전량 분모/순서·원문 집계·체크포인트/본체 불변이 기술 완료 선결이다.
+주지표는 Core6 원과제별 acc/acc_norm, KoBEST 원과제별 acc·해당 acc_norm·macro F1다.
+무작위 기대·항상 최빈답·정상/오답 전환을 함께 적는다. seed1개·공개 평가이며 전체
+역사 오염0을 인증하지 않는다. 부모 대 ORPO는 SFT/native 추가가 함께 있어
+`PARTIAL_CONFOUNDED`이고 두 ORPO 및 외부모델 사이 비교는 `DESCRIPTIVE_ONLY`다.
+새 SFT 대조 모델까지 실행하지 않으므로 ORPO 손실 단독의 기여를 확정하지 않는다.
+
+#### 6. 비용
+
+기존 TinyLM Core6 전량 약4~5분/CP의 관측을 출발점으로4 CP 약20~40분을 예상한다.
+KoBEST 초기 비용이 없으므로 각 CP1800초 상한·전량 전 비용 gate를 둔다.
+예상 VRAM3~5GiB는 추정이며 입장 때6GiB 이상 여유를 확인한다. 사용자132 허가는
+이 평가에 한정하고 추가 학습·원본 수정·설치/다운로드는0이다.
+
+#### 7. 실행
+
+`scripts/diag_p106b_orpo_official.py --check-only`로 현재 source SHA를 고정한 뒤
+동일 평가 전용 Python에서 `--execute --model parent176|orpo176|parent64|orpo64
+--source-sha256 <고정SHA> --max-wall-sec 1800`을 각각 수행한다. 한 명령의 모델명은
+하나다. 총괄은 stdout 전체를 보존 파일로 보내고 완료·오류 이벤트만 회수한다.
+기존 고정6모델 loader·기존 평가의 마감/전역·공식 프롬프트는 변경하지 않는다.
+
+#### 8. 한계와 영향도
+
+새 전용 평가 접점만 추가하며 제품·학습 코드는 수정하지 않는다. 원CP/자료/기존
+JSON과 다른 정제 세션은 읽기·쓰기 범위에서 분리한다. CP metadata 검산은 현재 요청의
+평가용으로만 허용한다. 실제 과제 점수와 한국어 문장의 자연스러움/장문 대화는 다른 축이다.
+ROME/MEMIT은 메모리 편집 후 원복했고 저장된 편집 CP가 없어 이번 대상이 아니다.
+공식 경로를 재사용하는 안을 채택하며 기존 부분 평가만 재보고하는 안은 전량 요청을
+충족하지 못하고, 새 본학습을 하는 안은 현재 요청 범위 밖이다.
+
+#### 9. 실행 이력 / 갱신
+
+현재 준비 단계다. 새 태그 `p106b_orpo_official_v1_20261113`는 레지스트리 충돌0,
+유사 과거 학습 로그는 이번 공식 전량 평가와 별개다. 실제 결과는 실행 후 추가한다.
+
+첫 v1은 카나리 완료 뒤 KoBEST COPA의 정답 문장을 정수만 받는 Core6 독립 감사기로
+넘겨42.429초에 도구9로 닫혔다. 공식 COPA는 `choices.index(gold_string)`을 사용한다.
+v2는 그 정확한 대응을 감사용 proxy에만 추가하고 과제·gold·원문·집계는 바꾸지 않았다.
+숫자 문자열을 임의 int로 바꾸거나 fuzzy match하지 않는다. 기존 CPU88와 새 경계5시험을
+닫은 뒤 v2의 새 source SHA/namespace에서 카나리·비용·전량을 다시 수행한다.
+오류 로그/원형은 보존하며 v1을 점수나 모델 실패로 재표기하지 않는다.
+
+**실행 회수·예측 대조**: 위 준비 시점 기록 뒤 v2의 네 모델/각11과제 전량을 완료했다.
+각 프로세스0·합계98,104문항 처리이며 report wall 합계1230.231초다. CPU 독립 재검산도
+56shard/같은 문서·질문·선택지·정답·절단·집계를 대조하고 종료0/CUDA미초기화로 닫았다.
+최초 CPU 재집계의numpy 직렬화 오류는 기존plain helper로 고쳐 새 로그에서0으로 회수했다.
+GPU평가는 그 오류 때문에 반복하지 않았다.
+
+Core6 부모→ORPO176 41.7381→40.3610%, E970→ORPO64 40.4704→40.0572%다.
+KoBEST 가중F1은37.4541→38.0696%,37.0993→37.2475%지만 한국어 BoolQ/WiC는 전부예
+선택이므로 범용 우위라고 하지 않는다. §3의 혼합/무변화가 유력하다는 예측과 부합한다.
+English BoolQ 손상과 다른5과제의 작은 증가를 사후 분리했고 원Core6 지표는 바꾸지 않았다.
+평가구간reserved1914MiB와 실제 본체/원CP/source 불변, 기존88+추가5 CPU시험을 닫았다.
+남은 것은 별도 본학습의 효과/원천 품질·순수ORPO 대SFT 인과 분리·인간 대화 검수다.
+이번 단계는 완료이며 같은 네 팔을 반복하지 않는다. 상세는 결과101§613~614와
+`review_request/20261113_ORPO_ROMEMEMIT_원답보기_v1/51_ORPO_공식벤치마크_결과.md`다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### Stage7dv0W — DVLM의 실제 PTS/HPA 입력 계약부터 닫는다
+
+#### 1. 왜
+
+사용자158의2026-11-17 17시 CPU/GPU 재개에서 기존 미완63을 진행한다. 과거 hybrid recurrence 검사는 완료 재사용한다. 새로 열람한 DVLM 전문의 입력/가시성/논리 위치와 기존 순수 attention Qwen0.6 자산을 연결하는 단계다.
+
+#### 2. 질문
+
+같은 native teacher의 PTS/HPA hidden이 정렬 그룹별 원 prefix+private 직렬 경로와 같은가. 그룹 간 미래 유입을 막으면서 같은 그룹의 앞선 private 정보는 전달되는가. 원래 다음 학생 token/owner 지도와 byte 원문은 보존되는가.
+
+#### 3. 예측
+
+명시 가시성과 논리 위치가 맞으면 같은 FP32 teacher hidden은 원 native 허용차에서 같을 가능성이 있다. 물리 concatenate 위치·일괄 causal mask·단독 byte 복원 실패는 주요 실패 경로다. head 초기값이나 hidden 정합만으로 정답률·교사 분포 품질·본학습 효과가 늘 것이라는 예측은 하지 않는다.
+
+#### 4. 단계
+
+1. 새 순수 PTS/HPA helper·원천/UTF-8/shift/가시성/위치의 거부 계약을 구현한다.
+2. 기존 소유 TRAIN128의 exact frozen export·학생/교사 토크나이저와 준비 분모를 입장한다. 각 원문/CE를 보존하고 표본 전체의 수락/HOLD 사유를 기록한다. corpus 편입은 하지 않는다.
+3. CPU1 속도 측정이 끝난 뒤 순수 계약을 실제 검사한다. 통과 후 원형 SHA·새 시계/입출력·GPU 한도·사전 선택 표본·원 native atol1e-5/rtol1e-4를 동결해 새 Qwen0.6 PTS/그룹별 직렬 hidden을 대조한다.
+4. 기술 게이트가 통과한 범위에서 학생 어휘 head 초기화와 정확한 다음 target 미분 연결을 설계한다. 충분한 정식 교과/전체 head 학습·OPD/독립 품질은 별도 선결이다.
+
+#### 5. 판정
+
+원문 byte/전체 학생 token/다음 target·owner의 불변, 그룹별 가시성·논리 위치, 실제 원 teacher prefix·private hidden 정합과 원복/해제/CUDA0이 기술 게이트다. 수치/타그룹 유입/원복 미달은 음성으로 보존하고 허용차를 바꾸지 않는다. 표본 수락률은 학습 효과가 아니다.
+
+#### 6. 비용
+
+순수 검사·입장과 native 대조를 나눠 약30~60분 준비 후 실측 비용으로 편성한다. CPU1 타이밍 중 새 CPU/GPU 실험을 겹치지 않는다. 모델 직렬·16:40 새 계산 중지/17시 종결, 설치/다운로드/새 환경/기존 CP 쓰기·타정제·추가300M/Git/삭제0이다.
+
+#### 7. 실행
+
+현재 새 helper·시험 소스 작성 단계다. 실제 실행과 런처는 선결 검사 뒤 편성한다. 준비된 파일 존재를 실행 완료로 표시하지 않는다.
+
+#### 8. 한계
+
+순수 attention 교사 대조가 hybrid 전체 HPA·학습된 학생 head·전체 DVLM 재현을 증명하지 않는다. 공식 평가/정제/본학습의 기존 미완도 별개다. 합성/짧은 기술 대조를 지능 성과로 판정하지 않는다.
+
+#### 9. 근거·실행 이력
+
+[원문 확인·세안·영향/권한·입장 계약](../docs/research/20261117_DVLM_PTS와_HPA_입장계약.md). 이전 전문 열람 실패와 완료 primitive 결과는 보존한다. 현재 PTS/HPA 새 실행은 NOT_RUN이며 후속 원로그/JSON부터 연결한다.
+
+**실행 전 상세 동결 대상**: 최신 순수 PTS17+입장 실패/byte4+native6의 총27 계약 소스를 작성했다. 기존 TRAIN128의 원 CE772/x32216과 각 HOLD를 보존하고, 수락 표본 중 원래 순서의 언어별 첫4개를 모델 출력 전에 선택한다. native는 FP32/eager/no-KV와 같은 atol1e-5/rtol1e-4로 전체 native prefix/private hidden을 대조한다. 전체 phase1200초/계산1080초와 정리120초, 한 packet20MB 미만/전체180MB 상한이다. 첫 완전 case 비용에 잔여 개수×1.5와60초를 더한 예측이 예산을 넘으면 남은 case를 조용히 줄이지 않고 HOLD한다. 수치 음성도 즉시 보존하고 잔여는 NOT_RUN으로 남긴다. deterministic CUBLAS 설정과 free VRAM8GiB의 실행 전 점검을 봉인한다. 실제 출력 head의 tied 여부·정확 source key·FP32 weight SHA도 기록해 후속에서 다른 head를 읽지 않도록 한다. 전체 어휘 head 학습·품질 비교는 이 hidden 검사에 포함하지 않는다. 최신27 및 모델 실행은 아직 NOT_RUN이다.
+
+**후속 head 입장**: [전체 학생 head 초기화 계약](../docs/research/20261117_DVLM_전체학생헤드_초기화계약.md)의 새 helper/6시험도 작성했다.32K 모든 row를 shared/teacher 평균/HOLD로 분리하며 미지원 행은 채우지 않는다. 실제 head의 전 행 FP64 독립 평균과 원 next-target backward만 별도 profile에서 검증한다. HPA 또는 전체 mapping 미달이면 후속 GPU 단계는 HOLD다. 최신6·실제 mapping/미분은 NOT_RUN이며 optimizer update/새CP/품질 판정은 포함하지 않는다.
+
+### Stage8pr0W — 정확 Bonsai2B와 기존 Prism raw 우도 카나리
+
+#### 1. 왜
+
+원장39의 Bonsai2B 확인과45~47/68의 native 실행 선결이 남았다. 확보된2B 파일을 기존27B 점검 코드로 확인하지 않으며 새 패키지 없이 기존 Prism 서버의 호환을 먼저 확인한다.
+
+#### 2. 질문
+
+기존2B manifest/GGUF가 정확 revision과 같고 기존 Prism binary가 그 형식을 실제로 여는가. localhost의 원 전체어휘 분포와 강제 선택한 token의 pre-sampling 우도가 같은가.
+
+#### 3. 예측
+
+읽은 원 소스 구조대로라면 sampler bias는 별도 후보에 작용하고 응답 주 token logprob는 원 logits 분포를 유지할 수 있다. 실제 binary·hybrid 상태·zero sentinel과 응답 cap에서 실패할 수 있으므로 코드 판독만으로 PASS를 예측 확정하지 않는다.
+
+#### 4. 단계
+
+1. CPU1 타이밍 종료 후 정확2B manifest/size/SHA·Prism version/help와 순수 HTTP10계약을 점검한다.
+2. 실제 지원 flag·소유 localhost port·모델/런타임 SHA·원문/token ID·20분 cap을 새 profile에 봉인한다.
+3. 한 문맥의 V개 원 확률과 사전 rank0/7/중간 token의 강제 응답을 대조하고 교차 문맥/원복을 확인한다.
+4. 모델과 서버를 회수하고 원형/실제 종료·자원·불완전 부분을 기록한다. 정식 전체 평가 adapter와 비용은 별도다.
+
+#### 5. 판정
+
+전체 V개 ID의 유일성/범위와 확률 합5e-4 이내, 강제 token ID의 실제 일치와 원 logprob atol1e-5/rtol1e-4, 상태 독립성/원복/서버 회수가 기술 게이트다. 선택 token zero sentinel·잘린 응답·경계 불일치는 HOLD다. top-k 재정규화나 clipped sentinel을 정식 우도로 쓰지 않는다.
+
+#### 6. 비용
+
+phase20분 이내, startup5분/요청60초/응답64MB cap과20MB 미만 저장 shard를 사용한다. CPU1 완료 후 단일GPU 직렬이며16:40 새 계산 중지/17시 회수다. 설치·다운로드·새 환경/전역설정/Git/삭제·타정제0이다.
+
+#### 7. 실행
+
+현재 연구 계약·새 HTTP helper/10시험 소스 작성 상태다. 실제 CLI를 읽기 전에 flag를 추측한 launcher를 만들거나 실행하지 않는다. 모델/서버/최신10계약은 NOT_RUN이다.
+
+#### 8. 한계
+
+기술 카나리는 정식 모든 benchmark·속도 우위·품질 향상을 뜻하지 않는다. full-vocab denominator가 맞아도 정식 prompt/경계/절단/전체 분모와 별도 비용을 닫아야 한다.
+
+#### 9. 근거·실행 이력
+
+[세 대안·원 소스의 관측과 추론·영향·판정](../docs/research/20261117_Bonsai2B_Prism_기존서버_입장계약.md). 읽은 Prism commit은adfffbe41b2cabcd51fff326ab045662265062bb이며 실제 binary 일치는 후속 검사다. 현재 새 실행은 NOT_RUN이다.
+
+### Stage7dwa0W — 저자 구현을 대조한 CMA와 두 표현의 연결
+
+#### 1. 왜
+
+원장62의 CMA/native mask/두 표현/전체 update 분모는 기존 entropy helper와 DP 통과로 완료되지 않았다. 이번에 저자 직접 CODE 링크와 고정 commit을 확인해 미정 세부를 다시 판독했다.
+
+#### 2. 질문
+
+실제 input+target embedding query/scalar std/양방향 attention과 동결 head의 미분이 맞는가. 정확 다음 target 위치를 선택하면서 같은 hidden projector와 별도 embedding projector를 두 DTW에 연결하고 전체 update 분모를 보존할 수 있는가.
+
+#### 3. 예측
+
+감독 row gather는 비연속 mask에서 prefix slicing 오류를 드러낼 것으로 예상한다. 독립 scalar dot/std와 autograd 대조는 작은 계약에서 일치할 수 있다. 원 native head/본체·교사와 연결한 비용이나 품질 향상은 아직 예측 확정하지 않는다. 기존 방향별 band의 비대칭은 저자 self-unbanded 정책에서도 보존한다.
+
+#### 4. 단계
+
+1. 저자 commit839650223c5ea87b83492fb44c5789520f3ec322의 weighting/CMA/band/self/분모를 읽고 이전 helper와 구분한다.
+2. 새 core와12계약으로 nonprefix next-target·padding·독립 scalar oracle·std/영질량 HOLD·detach/head 미분·CE 유한차분·0기반 band·두 표현·불균등 update 분모를 검사한다.
+3. CPU1 종료와 계약 통과 후 기존 native 모델/정확 소유 입력·초기값/손실계수/자원을 새 profile로 봉인한다. 기존 GPU FP64 DP v2를 재사용하고 새 cast의 gradient를 검사한다.
+4. 실제 native forward/backward·추가 비용부터 회수한다. 충분한 정식 교과·본학습/독립 품질은 별도 선결로 유지한다.
+
+#### 5. 판정
+
+원 target/owner 한 번 shift와 selected position 보존, scalar/std/attention 원식, 학생/투영에 finite gradient·교사/head 동결, 두 표현/공유 투영과 실제 전체 target 분모가 기술 게이트다. helper의 통과를 저자 환경/전체 DWA 품질 재현으로 쓰지 않는다.
+
+#### 6. 비용
+
+microbatch1 감독 row gather로 원 batch-scalar std와 padding 경계를 고정한다. CPU 독립 DP는 작은 비용만, GPU는 기존 FP64 v2를 사용한다. 새 native phase/총시간은 계약 뒤 실측 비용으로 정한다. CPU1 계측 중 수치 실행0·GPU직렬·16:40/17시 경계를 적용한다.
+
+#### 7. 실행
+
+현재 `p106b_dwa_cma.py`와12시험 소스를 작성했고 최신 시험/모델 실행은 NOT_RUN이다. 새 외부 저장소 clone/import·의존 설치·자료 취득은 하지 않는다. source/paper와 다른 gather/strict-HOLD 정책을 profile에 명시한다.
+
+#### 8. 한계
+
+원 source의 prefix slicing을 그대로 TinyLM에 적용하는 것은 올바른 supervised 위치를 보장하지 못한다. 이번 gather adapter는 그 차이를 공개한 별도 경로다. source와 다른 기존 product-normalized 가중 결과는 보존하고 교체해 재현됐다고 하지 않는다. 본학습/독립 품질과 다른 미완은 별도다.
+
+#### 9. 근거·실행 이력
+
+[저자 연결·세 대안·소스 차이·권한/영향·사전 계약](../docs/research/20261117_DWA_저자구현_대조와_CMA_입장계약.md), [읽기 감사](../handoff/audit/research_20261117_01a1e647/DWA_PRIMARY_SOURCE_READ_v1.json). 현재 CPU1 실행을 우선 회수하며 새12/native/전체 방법 효과는 NOT_RUN이다.
+
+### Stage7dv0We — 첫 실제 음성을 보존한 종료/계산형상 진단
+
+#### 1. 왜
+
+Wd는첫KO의원hidden문턱미달로7잔여를중지했고loading_info set의마지막직렬화오류로실제exit1/main report없음이다. 벡터/표본JSON의음성은독립검산됐지만최종state/head SHA와해제기록이누락됐다. 이를양성/완료로바꾸지않고별도첫표본진단으로원인을분리한다.
+
+#### 2. 질문
+
+원래첫표본과같은수학/원tol로종료보고서를닫을수있는가. 표준causal경로의419대masked845형상차이가PTS/직렬의수치차이와어떤관계가있는가.
+
+#### 3. 예측
+
+set정규화는보고서실패를없앨수있다. 이미저장된원음성이수치변경없이재현될가능성이높다. 같은PTS안의첫token은정확일치하지만표준길이419/1조차원tol을넘어형상효과가있을수있다. 이가설만으로모든오차원인/실제mask정합이나품질을판정하지않는다.
+
+#### 4. 단계
+
+1. 원v1 source/profile/첫음성JSON/벡터/실제종료1과독립검산SHA를봉인한다.
+2. 새namespace/writer의lossless set·범위·1개scope·primary실패보존/원첫음성선택6계약뒤원native6을새binding에서검사한다. PTS21은반복하지않는다.
+3. 같은원첫표본1개만새GPU진단한다. 원native_case와문턱을그대로쓰고표준419/845 masked padding대조를추가한다. 원7개는재개하지않는다.
+4. freshstate/head/source/실제exit/원복과GPU해제를새보고서로회수한다. 원v1의누락값은미복구로유지한다.
+
+#### 5. 판정
+
+진단scope는1개이며원7NOT_RUN을명시한다. 원negative는그대로기록하고보조형상대조가이를대신통과시키지못한다. set/부적절자료형보고실패도primary원인을보존한다. source/time/tol guard변경0·원v1write0·원모델불변/해제가필수다.
+
+#### 6. 비용
+
+원1표본실측9.75초와startup/hash/원복을기준으로수분을예상하되원phase20분상한을유지한다. 단일GPU/free VRAM8GiB·16:40새계산중지·17시회수다. 설치/다운로드/새환경/전역설정·타정제/추가300M/Git/삭제0이다.
+
+#### 7. 실행
+
+`diag_p106b_dvlm_native_closure_v2.py`와6계약을작성했다. source는원v1을바꾸지않고새Python과정의명시binding으로새BASE/PROFILE/SCHEMA/writer/첫표본선택을고정한다. 새CPU gate/profile을닫은뒤launcher를만든다. 현재새GPU는NOT_RUN이다.
+
+#### 8. 한계
+
+원v1최종메모리state는소급복구할수없다. 새state는새진단의증거다. 같은표본1개/계산형상대조와원7NOT_RUN을전체HPA/DVLM완료·새head학습·품질증거로승격하지않는다.
+
+#### 9. 근거·실행 이력
+
+[음성·세대안·정확binding/권한·형상/복구계약](../docs/research/20261117_DVLM_native_음성과_종료복구_계약.md), [원부분실패](../handoff/audit/research_20261117_01a1e647/DVLM_NATIVE_GPU_PARTIAL_FAILURE_v1.json), [독립판독](../handoff/audit/research_20261117_01a1e647/DVLM_NATIVE_PARTIAL_READBACK_v1.json). 원Wd와42HOLD/입장분모/첫준비실패는보존한다. 별도CPU28(학생head6/Prism10/DWA12)은실제0/CUDA미초기화이며각실물native·품질성공은아니다.
+
+**준비v2 실패/명시v3**: 새closure6+native6뒤실제runtime의TorchVersion 문자열하위형직렬화에서prepare1이났다. v2 source/원로그/initial_plan만있는namespace를보존하고새v3 source/namespace에서문자열하위형만무손실str로정규화한다. 실제runtime_identity 전체를저장하는7번째회귀를추가했으며다른객체/nonfinite를숨기지않는다. 같은원표본/수학/문턱·원7NOT_RUN과20분cap·시간권한은그대로다. 새7/native6의입장전실물GPU를실행하지않는다.
+
+**v3 실제/보조 자원 진단**: 새7/native6 뒤실제첫표본v3의원수치음성은재현됐고source/state/head증거와보고서저장은회수했다. PTS native419행은같은845길이표준padded causal과정확동률이다. allocator32MiB/reserved60MiB잔여로v3엄격해제는exit9이며원7은NOT_RUN이다. source가계산한`:4096:8` 작업공간32MiB가설을별도64×64 FP32곱1회/모델0·60초소유과정에서관측한다. tensor/empty_cache후와기존process-local cuBLAS clear후를대조하고다른과정/전역장치를reset하지않는다. 원v3결과/문턱과데이터·시간·권한을바꾸지않는다.
+
+**작업공간 실제 회수**: `Stage7dv0We2_workspace_probe`는종료0/1.321초다. 64×64곱1개후일반empty_cache의정확33554432B잔여를재현했고기존process-local clear뒤allocated/reserved 모두0이다. 모델/CP실행0이며v3종료9나원수치음성을소급변경하지않는다. [별도점진단영수증](../handoff/audit/research_20261117_01a1e647/DVLM_CLOSURE_WORKSPACE_POINT_v1.json).
+
+### Stage8pr0Wb — 정확 기존 Bonsai2B의 원 전체어휘 우도 경로
+
+#### 1. 왜
+
+원장39/45~47은정확Bonsai2B와PTQ1호환native우도경로가미완이다.2B현재SHA·기존Prism adfffbe version/help가새Wa에서종료0이고HTTP10 CPU계약이통과해기존자산만으로다음입장검사가가능하다.
+
+#### 2. 질문
+
+기존서버의목표token강제선택은원전체V분모의logprob를보존하는가. 다른문맥을처리한뒤같은A문맥을원native IDs로전량재처리했을때우도와greedy가복구되는가.
+
+#### 3. 예측
+
+고정원소스의pre-sampling경로가실제binary와일치하면전체분포와forced의원우도는같다. tokenizer/model/binary·server response나상태가정과다르면HOLD한다. 새2B점수나기존11모델과품질우열은예측확정하지않는다.
+
+#### 4. 단계
+
+1. 기존Wa정확2B/8runtime SHA와GGUF native 어휘·HTTP10동일source를검사하고새소유종료/native5 CPU계약을닫는다.
+2. 새namespace/profile/명시localhost port·정확도·메모리·출력·stop/cutoff와source를봉인한다.
+3. 서버1개로고정A전체V분포와rank0/7/V정수중간의강제우도, B뒤A rank7복구를검사한다. 원어휘·분모·문맥token을보존하고실패순위를교체하지않는다.
+4. 원확률shard/요청·응답·실제시간·소유server종료/원자산불변·NVML종료점조회를회수한다. 통과뒤에만정식harness adapter·전체보기비용을따로검토한다.
+
+#### 5. 판정
+
+전체V ID유일/완전·FP32확률질량오차5e-4·원greedy와목표token일치, forced/전체분포동률atol1e-5/rtol1e-4, 문맥길이와prompt_n전량처리·pre-sampling 관측, 상태복구와소유종료가게이트다. sentinel/미완응답/재사용/원자산변경은HOLD/오류이며정식점수로쓰지않는다.
+
+#### 6. 비용
+
+한phase18분/회수포함20분·startup5분·요청60초·single GPU/free8GiB·문맥1024·threads4·batch512다. 응답64MB/각shard20MB미만/총180MB/server10MB다.16:40새모델계산중지·17시최종회수다.
+
+#### 7. 실행
+
+새 `diag_p106b_bonsai2b_prism_canary.py prepare/check/actual`을순서대로사용한다. 기존CLI help에없는flag추측·설치·다운로드·새환경·전역설정/Git/삭제는0이다. 아직실제2B model/server는NOT_RUN이다.
+
+#### 8. 한계
+
+원분포기술canary와짧은두문맥은공식전체benchmark·긴continuation·EOS/특수token/byte경계·학습기여를증명하지않는다.2B와27B/IT·base/토크나이저차이는계속구분한다.
+
+#### 9. 근거·실행 이력
+
+[Prism세대안·원소스·정확CLI·권한영향과입장계약](../docs/research/20261117_Bonsai2B_Prism_기존서버_입장계약.md), `test_result/evidence/p106b_bonsai2b_prism_assets_v1_20261117/report.json`, `CPU_NEW_METHOD_CONTRACTS_v1.json`. Wa만실제0이며새profile/CPU5/서버는다음입장검사다.
+
+**Wb 실제 음성**: CPU5/prepare0뒤첫A의전체248320개원확률을받았고ID유일/전체범위·정렬·원greedy는맞았다. 독립CPU합은1.0010879403472284로사전5e-4를넘어실제HOLD8/4.831초다. 원source의float cum_sum과정렬순서영향을별도저장분포로검토하며tol을완화하지않는다. forced3/B/A는NOT_RUN이다. 소유server SIGTERM/종료0·원모델/runtime/source불변·종료GPU idle점조회는완료했다. 본248320행은2shard/24.819980MB로보존한다.
+
+### Stage7dv0Wf — 전체 학생 head mapping의 CPU 입장
+
+#### 1. 왜
+
+head6 CPU계약은통과했지만실제32768어휘전체의copy/mean 정의는없다. 실패한입력HPA와독립적으로원어휘의초기화가능범위를명확히기록할필요가있다.
+
+#### 2. 질문
+
+원학생32768행모두가teacher native공유행또는무손실UTF8재토큰평균으로정의되는가. 미지원행을누락/임의채움하지않고전수HOLD로보존하는가.
+
+#### 3. 예측
+
+동일native byte조각은공유복사가가능하다. 미공유partial byte/특수의미가있으면HOLD가날수있다. 모든행이통과해도HPA/본학습효과를예측확정하지않는다.
+
+#### 4. 단계
+
+1. 기존6동일source 계약/정확원teacher·student tokenizer/v3관측head key와SHA를검사한다.
+2. 새mapping-only profile/source·기존초기계획을봉인하고전체32768행을CPU에서처리한다.
+3. 공유/평균/HOLD와사유·ID전수를1MB shard로보존하고원행/teacher head범위를검사한다.
+4. 전후SHA/실제시간/실제0또는HOLD8을닫는다. 이번단계는head할당이나CPtensor읽기를하지않는다.
+
+#### 5. 판정
+
+원32768denseID전부보존·동일native byte/kind/added properties·미공유무손실decode/teacher encode-decode·모든teacher ID가관측native head범위안이다. HOLD행0이면mapping구성요소만완료다. 한행이라도미정이면head초기화입장은보류한다.
+
+#### 6. 비용
+
+CPU10분/회수포함11분·최대50MB·모델/CPtensor/head할당/CUDA/optimizer0이다. 실행과정별현재158 cutoff16:40/17시를유지한다.
+
+#### 7. 실행
+
+`diag_p106b_dvlm_head_map.py prepare` 뒤 `actual`을새원로그로기록한다. 기존6계약을반복하지않고같은SHA를재사용한다. 원v1/v3/HPA source와입력·원어휘를수정하지않는다.
+
+#### 8. 한계
+
+단독전체mapping은원DVLM head학습/학생이득이나native HPA음성을대신하지않는다. 원42표본HOLD정책도완화하지않는다. 별도head할당·미분·OPD/본학습은기존선결을유지한다.
+
+#### 9. 근거·실행 이력
+
+[전체학생head의세대안·권한영향·현재mapping-only범위](../docs/research/20261117_DVLM_전체학생헤드_초기화계약.md). `CPU_NEW_METHOD_CONTRACTS_v1.json`의head6와v3관측metadata를사용한다. 새로운mapping은NOT_RUN이며정확실제결과를뒤에추가한다.
+
+**Wf 실제**:CPU전수32768의공유19284/무손실평균13279/미공유단독UTF8미지원205행을보존했다.205행HOLD8/0.728591초이며head할당/weight tensor읽기/CUDA/학습0이다. 독립저장검산도전수일치한다. 원mapping source/정책/원HPA gate는유지한다.
+
+### Stage7dwa1W — 기존 teacher 표현을 재사용한 native 손실·미분 비용
+
+#### 1. 왜
+
+CMA12계약만으로실제native교사/학생의두DTW·원CE/전체분모·본체미분비용을닫을수없다. 기존교사128feature는causal재생/종료0으로보존돼중복본체수집없이새연결을검사할수있다.
+
+#### 2. 질문
+
+원128의student772/teacher811감독위치를한번shift한native표현으로CMA·KD/CE와두표현DTW를계산할수있는가. 전체update분모와원값을유지하고반복미분·시간/allocator비용을회수하는가.
+
+#### 3. 예측
+
+기존native/cache·FP64 DP와새CMA가맞게연결되면finite미분/같은팔반복SHA가같다. teacher/head전체어휘/학생body backward와새JIT비용은추가된다. 짧은zero-update기술검사로지능·본학습안정성/품질이득을예측확정하지않는다.
+
+#### 4. 단계
+
+1. 기존CMA12동일source·원128/shard·기존종료0/128feature/causal재생·teacher tied head/정확Tiny checkpoint를검사하고새boundary5를닫는다.
+2. 새current158 driver/profile/source·micro1×128/원772·811/CE-DWA-DWA-CE·초기화/가중/두DTW·예산과종료를봉인한다. expired controller/guard는호출하지않는다.
+3. 정확학생1개/동결teacherhead·기존feature만으로4개전체블록의forward/backward를수행한다. 매블록grad를비우며optimizer/CP쓰기0이다.
+4. 전체행/raw분모·loss·모든gradient SHA/finite·같은팔반복/원학생·새투영불변·실제시간/allocator/owned GPU해제를회수한다. 첫음성/예산초과는원형보존/잔여NOT_RUN이다.
+
+#### 5. 판정
+
+원128/772/811전수·원어휘32768/248320·새경계5/원CMA12·같은팔gradient정확반복과모델/투영불변·teacher동결·실제해제를필수로한다. 원alignment538필터를적용하지않고가중·분모/shift를숨기지않는다. 질적학습/공식점수·전체DWA채택은판정하지않는다.
+
+#### 6. 비용
+
+CPU준비5분·GPUcompute30분/회수포함32분·free8GiB점조회/allocator8GiB cap·총180MB다. 관측최대블록×잔여×1.5+60초와1800초예산을매완료뒤대조한다. 첫DWA JIT는기술총비용에포함하고정상상태속도로바꾸지않는다.16:40/17시경계와single GPU직렬을유지한다.
+
+#### 7. 실행
+
+새 `diag_p106b_dwa_native.py prepare/check/actual`과helper/경계5를사용한다. 기존독립loader와source/math/cleanup만명시재사용하며과거expired실행계를재결합하지않는다. 원모델/CP/source/cache/원로그와다른세션·설치/다운로드/환경/전역설정/Git/삭제0이다.
+
+#### 8. 한계
+
+source에서공개한CMA/가중정책을독립구현하되TinyLM의비연속mask gather·bias없는명시linear초기화·strictHOLD를공개한별도기술진단이다. 실제warmup/optimizer0·정식교과편입/본학습품질미실행이며원DVLM HPA/205행HOLD와다른조건이다.
+
+#### 9. 근거·실행 이력
+
+[세대안·권한/영향·native 입력/미분/예산계약](../docs/research/20261117_DWA_native128_미분과_비용계약.md), 기존CMA12 CPU/저자commit8396502와 `p106b_dskdv2_hidden_recovery_v2_20261113`의종료/feature·native head CHUNK gate. 현재새boundary5/profile/native GPU는NOT_RUN이다.
+
+**현재 실제/저장복구**:첫준비canonical/raw SHA혼동과두번째SOURCE변수명오류는CPU5뒤실제1/모델0으로보존했다. 별도v2는prepare0뒤whole128 CE-DWA-DWA-CE를전수종료0·same-arm157/161 gradient EXACT·모델/투영불변/CUDA0으로끝냈다. 행별`rows`목록을aggregate행수로덮는field충돌때문에독립CPU검산1이며원블록집계/gradient/시간은남았다. 새v3는새CPU2/원5와원v2 profile/report SHA뒤 **whole128 DWA1개만** 각행write-through/별도rows_count로실행한다. 원ABBA/수학/772·811/초기값/문턱/시간/권한은유지하며새161 SHA가원DWA와같아야한다. 원v2세부행을소급복구하지않는다. [정확저장오류](../handoff/audit/research_20261117_01a1e647/DWA_ROW_STORAGE_GAP_v1.json).
+
+
+**Stage7dwa1W 종료 갱신**:결과101§620과[DWA 계약의실제종료](../docs/research/20261117_DWA_native128_미분과_비용계약.md)에따라v3 whole128 한블록은exec44049/28.231399초/실제0이다. 원v2의161 gradient SHA·여섯합과같고새128행별JSON/rows_count·772/811·state/source불변/CUDA0을닫았다. 별도CPU exec80912도실제0이다. 원v2 행별누락은소급복구하지않는다. §3의미분연결/반복입장은기술범위에서관측했고본학습품질은아직판정하지않았다.
+
+### Stage8sem0/1W — 현재 공식 COMPS·Entity 전량과 기존 네 모델
+
+#### 1. 왜
+
+원장53에서기존자료중아직미평가인COMPS4/Entity3의전량기준선을닫는다. 완료BLiMP는반복하지않는다.
+
+#### 2. 질문
+
+변경없는공식decode/phrase scorer/UID·정확동점RNG가native2/5후보에서유지되는지와기존4모델의두과제전량정확도를묻는다.
+
+#### 3. 예측
+
+기존strict경로때문에수치입장을기대하나작은모델의점수는uniform50/20이하일수있다. 전량시간초과/원형불일치도결과로보존한다. 훈련이력차이를단일개선효과로해석하지않는다.
+
+#### 4. 단계
+
+현재source/7자료SHA·6helper/2driver/현재adapter21CPU계약→두실제토크나이저로97,808전행문맥·원mask검사→한모델씩synthetic/실제phrase-full-label oracle→입력만으로선정한파일별32균등위치+UID첫행+최장문항비용→실측padding위치외삽×1.5+120초게이트→Entity6,780/COMPS91,028전량→source/state불변·CUDA0·독립저장재집계다. seed1337/task/원파일행순서와후보개수를유지한다.
+
+#### 5. 판정
+
+원tol1e-5/1e-4·공식temperature1/raw suffix sum/UID macro·전량97808/UID22·원형추적과종료/검산이필수다. 예산초과면HOLD8/잔여NOT_RUN이며부분을전체로승격하지않는다. always-first100%는공식label0순서누출로모델기준선이아니다. 새훈련의품질판정자는적용하지않는다.
+
+#### 6. 비용
+
+CPU최대10분·모델별최대1800초/네개직렬·allocator8GiB·event512MB/모델/개별shard10MB다.16:40모델계산창에전체hardcap이들어와야시작하며17시회수한다.
+
+#### 7. 실행
+
+[run_P106B_Stage8sem0Wc_existing_semantics.sh](../run_P106B_Stage8sem0Wc_existing_semantics.sh)와새현재worker를쓴다. 기존평가전용core6_env_20261023만사용한다. 오래된execute/controller기한은호출/재바인딩하지않는다.
+
+#### 8. 한계
+
+고정모델점수이며새학습효과/일반한국어대화·BabyLM전suite/대회규정준수를증명하지않는다. COMPS property/Entity file+sample_id 입력cluster를출력전고정하고토크나이저별raw우도를직접비교하지않는다. 새데이터/패키지취득은유보한다.
+
+#### 9. 이력
+
+[세대안·권한·영향·9절 상세계약](../docs/research/20261117_BabyLM_COMPS_Entity_전량평가_계약.md), [기존입력전수](../handoff/audit/research_20261117_01a1e647/BABYLM_CURRENT_LOCAL_INTAKE_v1.json). helper6/driver2/현재adapter21계약통과다. 첫CPU준비는과거adapter receipt의interactive_research_infer 소스변경을거절해실제1/모델0으로보존했다. 현재source봉인+현재계약+새실제모델oracle를독립선결로사용하며과거receipt를현재입장으로삼지않는다. 새GPU점수는아직NOT_RUN이다.
+
+이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+
+### Stage7dvbyte0W — 원strict205 HOLD를 보존하는 별도 byte 초기화 명세
+
+#### 1. 왜
+
+전체private head의strict UTF8 매핑은32768중205가HOLD다. 원시byte 동일분해명세만별도CPU로확인한다.
+
+#### 2. 질문
+
+teacher direct BPE가205ordinary invalidUTF8조각을정확분해하고원32563행은그대로인가?
+
+#### 3. 예측
+
+teacher의기본byte 어휘면분해가가능할수있지만unk/empty/added·byte불일치면중단한다. 성공은초기화의미나품질보존을뜻하지않는다.
+
+#### 4. 단계
+
+CPU5계약→원strict report/profile·shard/두tokenizer/source봉인→205만raw ByteLevel spelling으로teacher model.tokenize→각ordinary ID의byte전수동일→새32768·원HOLD사유저장/원32563불변→별도stdlib 원spelling결합검산이다. 모델/가중tensor/GPU0이다.
+
+#### 5. 판정
+
+205전수/32768밀집ID/원32563전체record불변·모든nativebyte동일/원본불변·독립검산으로새정책명세만완료다. 원HPA445/444음성/원7NOT_RUN·PTS86/42·strict205HOLD는변경하지않는다.
+
+#### 6. 비용
+
+CPU5분/메타20MB이하·shard1MB/기존tokenizers만,설치·다운로드·새환경·모델·head tensor할당/학습0이다.
+
+#### 7. 실행
+
+기존Python의`diag_p106b_dvlm_head_bytes.py prepare/actual`을runlog101로기록한다. 새학습BAT/SH는없다.
+
+#### 8. 한계
+
+standalone UTF8 text mean과다른명시적TinyLM byte mean변형이다. 실제head tensor초기화/FP64mean/VJP·새학생품질/본학습·HPA통과는NOT_RUN이다.
+
+#### 9. 이력
+
+[세대안·영향·정확정책](../docs/research/20261117_DVLM_head205_원시바이트_별도정책.md). CPU5/prepare0을닫았고새205전수는아직NOT_RUN이다. 결과101에별도후속을기록하며원strict 결과를대체하지않는다.
+
+
+**Stage7dvbyte0W 실제:**13:09 whole205/새32768명세종료0·원32563기록불변/원205HOLD사유보존,13:11 별도stdlib 원spelling결합검산0이다. 분해가능예측은관측했으나의미/품질은판정하지않는다. 실제head값/미분·원HPA통과는NOT_RUN이며결과101§622가소유한다.
+
+**Stage8sem0/1W 현재:**현재prepare0/전량97808×2tokenizer/추가제외·절단0/CPU6+2+21/source봉인은완료했다. 실제명령은자동승인검토2회거절/프로세스미생성이다. 전4모델점수·수치oracle/실측비용은NOT_RUN이며§3의품질예측은미판정이다. 원장53은현재명시승인/남은suite취득선결로막힘이다. 사용자지시에따라질문은최종17시보고로유보하고실행우회하지않는다. 결과101§621,종료한연구5런처의실제1/9/8/0/0·원명령/-done 보존은§623이다.
+
+
+### Stage7dvbyte1W — 모델 없는 CPU full-head 초기값과 미분
+
+#### 1. 왜
+
+별도byte정책의32768행명세가완성돼실제head행렬값/미분배선을확인한다. BabyLM GPU거절평가와다른CPU과제다.
+
+#### 2. 질문
+
+정확원teacherhead FP32 SHA·전체32768행평균/독립FP64 oracle·full32768 CE미분과동결/원값불변이성립하는가?
+
+#### 3. 예측
+
+기존head6작은CPU계약을기대하지만BF16선택tensor/큰행수·평균·softmax/VJP에서다를수있다. 원1e-5/1e-4tol을유지하고언어품질예측으로쓰지않는다.
+
+#### 4. 단계
+
+원exact safetensors header/key/BF16[151936,1024]/fileSHA·기존head6 source·새32768명세/독립byte검산→선택head tensor1개만CPU읽기/FP32 SHA81B47D…4E7→기존chunk128 init/전체행CPU FP64oracle→출력전고정8basis hidden·byte4/shared2/native0·32767 target의fullhead CE/backward1→별도FP64 analyticVJP/원tol→원teacher/hidden/head값불변·grad동결·CPU참조해제/CUDA미초기화다. 모델클래스/본체forward·GPU0이다.
+
+#### 5. 판정
+
+전32768행·독립VJP/불변/동결·해제가필수다. 원strict205/HPA445·444음성/PTS86/42/원7NOT_RUN은그대로다. 새head값검사성공을실제언어학습이나HPA동치로쓰지않는다.
+
+#### 6. 비용
+
+CPU최대5분·가용RAM4GiB선결,FP32teacher622329856B/newhead134217728B+같은grad/JSON20MB이하다. RSS는실제기록하고대체합산하지않는다. head가중파일/CP/설치/다운로드0이다.
+
+#### 7. 실행
+
+`diag_p106b_dvlm_head_byte_values.py prepare/actual`을기존CPU환경/runlog101로만실행한다. 학습SH/BAT나GPU명령은없다.
+
+#### 8. 한계
+
+합성hidden8개/한backward는native학생HPA·학생본문/본학습안정성·전체논문/품질·packed/KV/모바일상주검증이아니다.
+
+#### 9. 이력
+
+[세대안·권한/영향·정확입력/수식/예산](../docs/research/20261117_DVLM_byte_head_CPU값과_미분계약.md). 현재새weight값/미분은NOT_RUN이며정확source/profile/선결을봉인한뒤실행한다.
+
+
+**Stage7dvbyte1W 실제:**13:21 CPU6.913215초/종료0·exactteacherFP32 SHA동률/전체32768평균oracle위반행0·합성8 fullhead FP64 VJP위반원소0/원tol통과다. teacher/hidden grad없음·원값불변/모든소유tensor참조해제·CUDA미초기화·모델/본문forward/학습/새가중파일0이다. §3의기술예측은관측했고원HPA/strict205·PTS의판정이나native언어품질은바꾸지않는다. [결과101§624](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-head-byte-values-cpu).
+
+### 2026-11-17 현재 후속의 실제 회수
+
+- Stage8sem2의합성문자tokenizer/CPUzero logits 통합2는 원공식decode/getitem/collate/scorer/rank·UID/RNG를검산했다. 실제97808모델평가·새수치oracle/비용은여전히NOT_RUN이며GPU자동승인검토2회거절을우회하지않는다. 결과101§621/628.
+- Stage9sft2~5는현재의미수리2/원천설명9/화단구성3의14검토본·기존6root다. 화단v1은보존하고v2의사전구멍→조립순서만교정했으며기존11개계보/로컬분할대조도닫았다. 원보류·TRAIN158명세·전역문서/권리·모든실제노출과편입은미완이다. 결과101§625~626/629~630.
+- Stage11summary0은기존생성자원20실행본/80문맥·44원입력의현재CSV/JSON과독립대조다. 최초filebytes누락1/출력0을보존하고미계측null로닫았다. 새모델/타이밍0이며원Tiny부모exitgap·GPT2bulk음성/CPUHOLD와정확native storage·연속물리peak/추가모델미완을유지한다. 결과101§631.
+
+이 기록 회수로 기존 loss/미분·합성 기술 성공을 새 학생 언어 품질이나 본학습 효율로 승격하지 않는다. 현재 사용자158의 마감/실행 경계를 따르며 유보 질문은17시 최종 결과/핸드오프에서 묻는다.
+
+**Stage9sft6 실제:** 원11개 대조는 재사용하고 현재 화단v2 세개의 root/부모/canonical/local split만 추가로 닫았다. 영어 재표현을 새 질문 hash로 분할하면 원TRAIN에서VAL로 이동하는1개가 확인됐다. 현재14개/6root는 모두NOT_ADMITTED이며 실제split변경·편입0이다. 후속증강은원root split상속이필수다. [결과101§632](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-sft14-root-split-drift).
+
+**BabyLM 시간표 정정:** registry696의0.54h는한모델상한과네모델loop를혼동한과소표기였다. 원행/해시를보존하고4×1860초=2.0667h의보수편성2.1h로정정했다. 실제평가시간은NOT_RUN이다. 실행source/profile은불변이며현재재승인/새시간창과모델별전량forecast/HOLD선결을유지한다. 현재만료시계의런처를새시간창에그대로재사용하지않는다.
+
+## Stage8sem3W — 사용자161 장시간 승인으로 기존 네 모델 전량 평가를 재개한다
+
+### 1. 왜
+원장53의 미완 COMPS·Entity 평가가 먼저다. 사용자161은11월18일17시까지 장시간GPU를 직접 허가했다. 종전 거절2회/프로세스0은 보존한다.
+### 2. 질문
+네 frozen 모델의 원공식7파일/97,808행·22UID 점수와 문항별 차이를 확인한다.
+### 3. 예측
+짧은 입력이 많아 전량 완료를 기대하지만 실제 oracle 음성·비용/저장 상한·낮은 구분력이 가능하다. 품질 방향은 미지다.
+### 4. 단계
+기존 두 tokenizer 전량 sweep SHA 재검증 → CPU 계약 → 실제 모델 oracle → 실측 전량 forecast → 전량 scoring → 종료/독립 readback 순서다.
+### 5. 판정
+기존 phrase/full-label 허용오차와 UID/RNG를 유지한다. 원행/입력/불변/해제 선결을 모두 닫아야 frozen 평가 완료다. 시간·저장 부족은HOLD8, 종료 실패는9다.
+### 6. 비용
+모델당 내부4시간·외부14,460초·kill 여유60초. 네 모델 보수 편성16.2시간이며 실측값이 아니다. 자체 allocated8GiB/원행512MB.11월18일16:30 계산 종료/17시 기록 회수다.
+### 7. 실행
+[새 Linux 런처](../run_P106B_Stage8sem3Wc_long_semantics.sh). 기존 평가환경만 사용하며 설치·취득·새 환경은0이다. 종료9/124/137만 전체loop를 중단한다.
+### 8. 한계
+다른 학습이력/tokenizer를 같은 학습법으로 비교하지 않는다. reading/AoA 취득과 전체BabyLM 종결은 별도 선결이다. 새학습·CP저장0이다.
+### 9. 이력
+[다안·권한·영향·상세9절 계약](../docs/research/20261117_BabyLM_장시간_재개_계약.md). CPU32개는 통과했다. 과거 합성 통합 테스트는 write-once 출력폴더 존재로 setUpClass가 거부돼 검증문항0이다. 기존2건 성공증거를 새 실행으로 바꾸지 않는다. 새GPU 평가는 준비 뒤 수행한다.
+
+**Stage8sem3 실제:** 새profile 준비0. 일반 sandbox의 NVML 조회가 OS에 의해 차단돼 네 worker는 모델 입장 전 각각1로 종료했다. 실제모델0·CUDA미초기화·원형불변이며 전량 품질NOT_RUN이다. 권한 경로의 read-only nvidia-smi 조회는 성공했다. 원v2 소스/출력/4로그를 보존하고 같은 설계의 버전/tag/소스·런처 이름만 바꾼 [Stage8sem4 새 런처](../run_P106B_Stage8sem4Wc_long_semantics.sh)에서 현재161의 직접 장시간GPU 승인으로 실행한다. 이는 새 과학 조건이 아니라 실행 권한 경로를 바로잡는 재시도다.
+
+**Stage8sem4 실제와 Stage8sem5 저장 접점 수정:** 권한 경로의 네 실제모델은 합성/실제phrase oracle와 처음 두 cost 파일까지 통과했다. 세 번째 원공식 파일명의 하이픈이 shard stem 규칙과 충돌해 네 종료1/전량NOT_RUN이다. 원형/부분cost와 CUDA종료0을 보존한다. v4는 원공식/scorer/원행/시간·메모리 문턱을 유지하고 artifact 이름만 밑줄로 대응한다. 전7파일×두mode의 충돌/실제writer와 기존시간/소스불변을 CPU5개로 통과했다. [Stage8sem5 새 런처](../run_P106B_Stage8sem5Wc_long_semantics.sh)·새출력으로 재개한다. 영향은 상세계약§9의수정전 분석에 명시했다.
+
+## Stage8pr1/2W — 저장 합산순서와 기존 Prism 원로짓을 분리한다
+
+### 1. 왜
+기존 HTTP 전체248320분포의 mass1.001087940/원HOLD8을 보존하고 외부평가의 선결 원인을 검증한다.
+### 2. 질문
+FP32 순차 분모의 오차인가? 같은 엔진 원로짓을 직접 읽은 FP64 우도와 A-B-A 상태가 일치하는가?
+### 3. 예측
+긴 작은 tail의 FP32 누적 손실을 예상하지만 source/저장분석만으로 원인 확정하지 않는다. ABI·상태·실제 로짓의 불일치도 가능하다.
+### 4. 단계
+저장2shard SHA/원순서 CPU 분석 → 같은commit C 선언/ABI/CPU 검사 → BabyLM 종료 뒤 단일GPU 원로짓 A/B/A → 독립분모/상태·종료 검산 → 조건부 공식 adapter/전량예산 순서다.
+### 5. 판정
+기존 HTTP mass허용차0.0005/원logprob1e-5·1e-4를 바꾸지 않는다. 새분모는 새 원로짓으로만 계산하며 저장 invalid 확률을 보정해 정식값으로 쓰지 않는다.
+### 6. 비용
+저장 약25MB/CPU1·새모델0. ABI는 기존compiler/ctypes, 실제GPU 최대20분·free8GiB점조회·원출력64MB cap·11월18일16:30 계산종료다.
+### 7. 실행
+새 감사 analyze_prism_probability_sums_v1.py를 runlog101 Stage8pr1Wa로 수행한다. native binding/런처는 CPU/ABI 후 작성·봉인하며 설치/새header배포본·library취득0이다.
+### 8. 한계
+저장 합산 감도·엔진 source 추론·실제 CAPI·정식benchmark는 다른 증거다. 한 A/B/A를 일반 품질로 쓰지 않는다. 원강제순위3/B-A 미실행과HOLD는 그대로다.
+### 9. 이력
+[권한·3안·영향·정확source·9절 계약](../docs/research/20261117_Bonsai_원로짓과_정규화_분리계약.md). 저자고정 Prism header/server source를 연결 도구로 읽었으며 원package/code를 저장·import/실행하지 않았다. CPU분석부터 수행한다.
+
+## Stage8read1W — 기존 Reading 원예측 전량과 미실행 OLS를 분리한다
+
+### 1. 왜
+기존 원장53의 Reading1726행은 이미 공식 cache에 있다. 원 통계 package는 없지만 원예측을 먼저 보존하면 후속 CPU 통계에 재사용할 수 있다.
+### 2. 질문
+기존 네 frozen 모델이 원 get_p2의 전체 target/prev-word 확률·native trace를 제외 없이 계산하는가?
+### 3. 예측
+짧은 영어 문맥으로 전량 완료를 기대하지만 단일piece decode·underflow·문맥 길이·수치oracle 음성이 가능하다. 인간 reading 상관이나 모델 우열은 미지다.
+### 4. 단계
+고정 원source AST·CPU8 → 전체1726/두 실제tokenizer sweep → 단일GPU 원확률/독립CE·반복동률 → 실제 native positions 전량forecast → 새 원예측 shard → 독립 전량 readback 순서다.
+### 5. 판정
+1726행과 모든 원prev 조건·finite 확률·원tol1e-5/1e-4·원형/입력불변·CUDA0이 필수다. cache는 같은 frozen 모델의 정확 context/word scalar+trace만 재사용한다. 공식 OLS/R²/AIC/p값은 NOT_RUN이다.
+### 6. 비용
+내부1800초/외부1860초+kill60초·네 모델 보수편성2.2시간·allocated8GiB/예측64MB/모델,10MB shard다. 11월18일16:30 계산종료/17시 회수이며 실측 전량forecast가 선결이다.
+### 7. 실행
+[Linux 런처](../run_P106B_Stage8read1Wc_predictions.sh)·기존 공식runtime·현재161 GPU 직렬을 사용한다. 패키지/자료 다운로드·설치·새환경·학습0이다.
+### 8. 한계
+원word spacing/default special tokens/단일piece decode를 보존한다. 통계 package 승인 전 정식 reading 점수와 AoA 시계열·EWoK 약관/전체자료는 미완이며 새 학습 효과를 주장하지 않는다.
+### 9. 이력
+[착수 전 3안·권한·영향·9절 계약](../docs/research/20261117_BabyLM_Reading_원예측_분리계약.md). CPU8/원자료·원함수 계약은 실제 통과했고 전체sweep/새GPU/공식OLS는 아직 NOT_RUN이다. source/프로필 봉인 뒤 기존 의미 평가와 Bonsai 진단이 닫힌 다음 수행한다.
+
+### 2026-11-17 20시 Stage8 실제 회수
+
+- Stage8sem5의 네모델은 각각97808행/0이며 전량391232행·원문/ID/mask·rank/RNG·105shard SHA/UID와 사전선언100000 paired cluster 검산도0이다. 전량완료 예측은 지지됐고 v2 NVML 모델0/네종료1·v3 stem오류 네종료1은 보존한다. 점수/범위는 [101§633](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-babylm-semantics-full-four)이 소유한다. 새학습/프리셋채택은0이다.
+- Stage8pr1의 저장합산순서 CPU진단·Stage8pr2의 정확ABI/CPU8/기존binary default조회·소스봉인은 통과했다. 새native GPU는 자동승인검토2회거절/프로세스0·NOT_RUN이다. 실제 get_goal 허가와 trusted user 원문 입장판정의 충돌을 최종질문으로 남겼으며 우회0이다. [101§634](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-prism-sum-order-and-native-prepared).
+- 11월18일사용자가현재목표에장시간GPU/GPU추론을명시허가했다.6소스/34입력과시간창재확인뒤동일정확명령을새검토에제출했으나AGENTS5.1을이유로다시거절/누적3회/프로세스0이었다. 새허가와원거절을구분해101§634/새거절영수증에남겼고재시도우회·새모델실행은0이다.
+- 이후이번작업에대한AGENTS GPU/모델금지를사용자가명시취소했으나같은명령의네번째검토도취소를신뢰된사용자발화로확인못했다며거절/프로세스0이다. 현재허가와별도자동검토의증거판정을보존하고추가재시도/간접/규약파일편집우회0을유지한다. 상세는101§634의명시취소후거절영수증이다.
+- 사용자162가 요청한 규약 수정 후 검토가 통과했다. Stage8pr2Wd는 11월 18일 07:56:15 KST 종료 코드 0으로 회수했다. 세 원로짓과 A 반복 비트 동일성, FP64 정규화, 프로세스 종료를 검산했다. 기존 HTTP의 개별 로그확률 차이는 상수 정규화만으로 설명되지 않아 기존 HOLD를 유지한다. 공식 다중 토큰 우도와 전량 평가는 후속이다. [결과101 §634.1](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-prism-sum-order-and-native-prepared)
+- Stage8read1의 기존1726/prev1520·두실제tokenizer 전량/CPU8은0이며 문맥crop/제외0이다. 기존공식문항 취득허가를 package설치 유보와 혼동했던 경계를 정정했고 현재 문항은 재다운로드0이다. [101§635](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-original-predictions-prepared). 새GPU/공식OLS는NOT_RUN이고 statsmodels/patsy·AoA시계열·EWoK동의 선결은 남는다.
+- 사용자163의 직접 GPU 허가로 기존 네 모델의 Reading 전량을 순차 실행했다. 각 1,726행과 이전 단어 1,520행, 종료 코드 0과 자원 해제를 모두 검산했다. 공식 OLS 패키지와 AoA·EWoK 선결은 별도로 남는다. [결과101 §635.1](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-original-predictions-prepared)
+- Stage8read2는 저장 예측을 사용했다. 원 통계 코드의 176개 회귀를 NumPy SVD와 SciPy 피벗 QR로 대조했고 CPU 종료 코드 0이었다. 기존 예측을 그대로 재사용했다. `statsmodels` 대조와 AoA·EWoK는 남았다. [결과101 §635.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-regression-replay)
+
+Stage8 전체BabyLM을 완료로 바꾸지 않는다. 현재GPU 실행차단과 판단 불가 선결은 보고시 확인하고 CPU 독립 원작업을 계속한다.
+
+### Stage8read 후속. 저장 예측만 공식 OLS에 전달한다
+
+원장 53의 네 모델 저장 예측, 고정 공식 CSV, 이전 단어 결측 위치, 원 `run.py`의 통계 부분을 재사용한다. 기존 NumPy·SciPy 재현은 수치 증거로 보존한다. 새 CPU 실행기의 공식 모드는 `statsmodels.formula.api.ols`에 원 회귀식을 전달하고, 각 모델의 기저·확장 44개 호출과 원 결과 파일을 함께 보존한다. 예상은 호출 입력의 1,696개·1,496개 표본이 그대로 닫힌다는 것이다. 원 backend의 실제 수치는 의존성 보강 뒤 판정한다.
+
+`p106b_babylm_reading_official_ols_v1_20261120`의 CPU 검산은 네 모델에서 6,904개 대상·6,080개 이전 단어와 실제 원식을 대체 호출로 확인한다. 공식 모드의 `statsmodels`·`patsy` 확인을 먼저 적용한다. 모델 로딩·GPU·학습을 사용하는 구간은 없다. AoA 시계열과 EWoK는 각자 별도 입장 조건을 따른다. [저장 예측 채점 진입점](../scripts/p106b_score_saved_babylm_reading.py)
+
+**2026-11-20 CPU 회수.** 네 모델에서 176개 원 회귀식의 입력 순서와 행 지문, 1,696개·1,496개 표본을 검증했다. 예상한 공식 호출의 입력 계약은 확인됐다. 공식 OLS 모드는 빠진 두 의존성에서 종료 2였고 실제 점수는 보강 승인을 기다린다. [결과101 §707](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-official-saved-ols)
+
+**2026-11-20 공식 CPU 완료.** 사용자 179번 승인으로 전용 환경의 `statsmodels`·`patsy`를 보강한 뒤 기존 네 모델의 176개 OLS와 두 공식 지표를 회수했다. [결과101 §709](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-official-ols-scores)
+
+## Stage8fw — 원61의 교사 표현 제한 입력 창 CPU 선결
+
+### 1. 왜
+
+기존DSKD1024/4113 진단의eager feature목록·row view·full GPU stack은75M 확장 경로가아니다. 현재161/원61의bounded 저장/상주선결로 [영향/세안/입력계약](../docs/research/20261117_DSKD_교사표현_제한입력창_계약.md)을먼저고정했다. 기존진단·원feature는보존한다.
+
+### 2. 질문
+
+제한window에서원FP32 bytes/metadata순서를보존하며한feature/상한batch만읽고source경계를재개하는가? quota/header/잘못된파일을payload할당전에거부하는가?
+
+### 3. 예측
+
+동일position의bytes와metadata동률,context-free double합성CE의global분모/미분동률을기대한다. Native head 형상/속도/품질·전체RSS/VRAM은미확인이다.
+
+### 4. 단계
+
+선언identity/정확경로·window quota→제한NPY header/SHA/FP32검사→복사batch/source prepare-finish→합성CPU 원값/경계/분모→결과101의다음절회수다. 기존모델/실제feature를읽지않는다.
+
+### 5. 판정
+
+원position/metadata/FP32 bytes 전수동률과오류거부·중간경계재개금지가필수다. source-only재개를전체model/optimizer/RNG로승격하지않는다. 실제정식교과/Native/75M producer·disk절감/동시상주·품질은NOT_RUN이다.
+
+### 6. 비용
+
+기존CPU thread1·120초·작은/tmp scratch다. feature4MiB/window입력payload256MiB·batch128/metadata8MiB 등은소유payload정책이며전체RSS 보장이아니다. 자연어학습토큰0·300M/풀/품질통계자해당없음이다. 태그p106b_feature_window_v1_20261117는조회충돌0이다.
+
+### 7. 실행
+
+scripts/test_p106b_feature_window.py를101 Stage8fw의새CPU 원로그로회수한다. 모델실행명령/학습SH는없다.
+
+### 8. 한계
+
+단일split/teacher·tokenizer·mapping·data identity의선언은권리/입장인증이아니다. Native sample/frame/grouping·양방향투영·full-vocab/global분모·모델/optimizer재개·정식학습/독립test/최종품질은후속이다.
+
+### 9. 현재 이력
+
+P107 제품/재개기록과선언source51불변·DSKD 현재입력구조를정적확인했다. source/tokenizer/원feature/CP/모델/GPU·설치/새환경/Git/삭제0이다. 새reader/시험은착수전NOT_RUN이다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+**Stage8fw 실행 회수:** [101§636](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-window-cpu)의CPU16뒤기본1024/4MiB 시험을추가한최종17/0·412selected행원값/metadata·batch512KiB·source재개/오류·합성전역CE분모를닫았다. CPU보존예측은지지됐고Native consumer/모델재개·전체75M writer/online상주/품질은미완이다. 기존DSKD4source/직전optimizer17source불변·실제feature/CP/모델/GPU0이다.
+
+## Stage8if — 원48의 공식 IFEval 541문항 평가전용 입장
+
+### 1. 왜
+
+원53/작업지시서6.7이이미허가한공식평가문항을입장시킨다. 패키지3개/1280길이·모델실행은유보한다. [영향/세안/권한·원revision계약](../docs/research/20261117_IFEval_공식541_자료입장_계약.md)을따른다.
+
+### 2. 질문
+
+공식google/IFEval의현재HF revision966cd89545d6b6acfd7638bc708b98261ca58e84·541행/고유key와local AST의ID/kwargs가일치하는가?
+
+### 3. 예측
+
+공식541행과registry정합을예상한다. 문항의의미일관성/체커실동작·모델점수는보장하지않는다.
+
+### 4. 단계
+
+공개API/access·같은revision tree→원카드/JSONL bytes·Git blob/SHA→stdlib541행/분모/keys→현재source5 AST ID/유효kwargs→평가전용영수증/결과회수다. 원raw/문자/kwargs를수정하지않는다.
+
+### 5. 판정
+
+원541행/고유key·모든ID/유효kwargs가고정source에대응해야한다. falsey non-None/prompt중복·미확인은보존한다. scorer import/실행·generation·공식4지표는NOT_RUN이다.
+
+### 6. 비용
+
+각HTTP body1MiB/20초·전체180초의공개자료만취득한다. 자연어학습토큰0·모델/패키지다운로드/설치0·새환경0이다. 태그p106b_ifeval_data_v1_20261117는조회충돌0이다.
+
+### 7. 실행
+
+소유감사helper를101 Stage8if 원로그로회수한다. 실제모델명령/학습SH는없고stdlib JSON/AST만사용한다.
+
+### 8. 한계
+
+원train split명은학습허가가아니다. strict/loose실제score·NLTK/언어감지·과거모델노출·native1024/1280생성정합은미확인이다. 기존패키지/약관·실제GPU질문은최종보고에서확인한다.
+
+### 9. 현재 이력
+
+자료 입장 완료: [101§637](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-official541-data)에서 공식 HF 고정 revision의 원541행/고유 key·prompt와834지시/25유형, tree Git blob/bytes/SHA·source5/AST kwargs·독립541 index 재검산을 닫았다. 541행/정적 구조 정합 예측은 지지됐다. 문항 제외/수정0이며 평가 전용으로 보존했다. 패키지3개·생성1280 정합/공식 검사기·모델점수는 NOT_RUN이다. sandbox DNS 실패와 host의 제한 공식자료 GET 성공을 구분한다.
+
+### Stage8if 후속. 기존 G4의 IFEval 출력 1,280토큰 실행 문맥과 원답 회수
+
+원장 48의 공식 영어 541문항과 P079의 기존 16층 G4 R2를 사용한다. 0-shot 원문, 탐욕 생성, 출력 상한 1,280과 EOS를 고정한다. 실제 32K 어휘로 541개 입력을 세어 필요한 실행 문맥을 정한다. BF16 autocast의 기존 캐시 디코딩을 쓰되 입력을 자르거나 중간에 캐시를 재구축하지 않는다. 입력 길이가 정확히 같은 문항만 같은 배치에 넣는다.
+
+원래 1,024 위치의 RoPE 값과 짧은 기존 생성기를 비교한 다음, 원 체크포인트를 보존하고 메모리의 위치표만 늘린다. 짧은 원답과 배치에 넣기 전후의 ID가 일치하고 가장 긴 문항의 경계 실행을 확인하면, 같은 조건의 나머지 문항을 GPU에서 이어간다. 완결된 묶음마다 입력 키와 생성 ID·원문을 저장하며 같은 봉인 지문의 재개에서 완료 묶음을 재사용한다. 1,024 이후 위치는 추론에서의 확장이며, 본학습 문맥이나 장문 지시 수행을 보장하지 않는다.
+
+태그 `p106b_ifeval_p079_runtime1280_v1_20261120`. 사용자177의 WSL GPU 단일 장치, 카드 13 GB·GPU 1회 상한 60분·승인 종료 전 2분 반환으로 제한한다. 첫 두 묶음 이후 실제 처리 시간을 확인한다. 평가 전용 답안·실행 증거만 쓴다. 공식 검사기를 위한 세 패키지와 언어 자원이 아직 없어 strict/loose 네 지표는 별도다. 이전에 확보한 자료를 다시 취득하지 않는다.
+
+**CPU 봉인.** 입력은 15–386토큰, 실행 문맥은 1,666, 동일 입력 길이 묶음은 96개다. GPU 실행 시점의 계획은 별도 봉인본으로 보존한다. [결과101 §703](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-p079-context-cpu)
+
+**원답 회수.** 발행된 묶음을 원 데이터의 키·순서 및 봉인된 ID에 CPU로 독립 대응한다. 정지 표시, 생성 ID의 재디코드와 실제 캐시 길이를 검산한다. 완료 증거와 541개 키가 일치한 뒤 원 입력 순서의 응답을 채점 입력으로 발행한다. 첫 창이 정상 시간 종료로 일부만 끝나면 같은 봉인과 완료 묶음을 읽는 WSL 재개 런처를 사용한다. 실패·중지 표시·전체 완료에서는 추가 GPU 실행을 시작하지 않는다. [CPU 원답 검산](../scripts/p106b_ifeval_response_readback.py) · [WSL 재개](../scripts/queue_p106b_ifeval_p079_resume.sh)
+
+**저장 원답의 공식 CPU 채점.** 입장 때 고정한 YAML·검사기 5파일과 기존 환경을 확인한다. `langdetect`·`immutabledict`·`nltk>=3.9.1` 및 `punkt_tab` 확인 뒤, 전체 완료 영수증에 묶인 원순서 답변을 원 검사기의 `process_results`에 전달한다. 원문·공식 지시 인자·응답 문자열을 보존한다. 프롬프트 541개와 전체 지시 834개 분모에서 각각 엄격·완화 점수를 구한다. 채점 의존성이 비어 있을 때에는 원 검사기를 호출하지 않고 정적 상태를 기록한다. CPU에서 원순서와 지시별 분모, 불완전 답변 거부를 대체 호출로 검사한 뒤 실제 채점을 별도 판정한다. [CPU 채점 경로](../scripts/p106b_score_ifeval_responses.py)
+
+**2026-11-20 CPU 회수.** 대체 호출의 541행·834지시와 네 오류 경계를 검증했다. 기존 환경의 세 의존성이 빠진 경우 실제 채점 명령은 원 검사기를 불러오기 전에 종료 2였다. 응답 생성과 공식 점수 증거는 별도로 회수한다. [결과101 §704](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-stored-score-boundary)
+
+**2026-11-20 공식 CPU 완료.** 검증된 세 패키지와 `punkt_tab`이 있는 전용 환경에서 기존 541답의 네 공식 점수를 회수했다. [결과101 §708](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-official-cpu-scores)
+
+**2026-11-20 첫 GPU 창 회수.** 단독·묶음의 짧은 생성 일치와 캐시 1,666 검증 뒤 정상 시간 종료에서 73묶음·361개를 보존했다. 종료 0과 CUDA 할당·예약 0을 확인했고 다음 자식은 1초 뒤 기록됐다. 미처리 23묶음·180개를 같은 봉인에서 이어간다. 첫 창에서는 생성 상한 종료 361개를 관측했다. [결과101 §705](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-361-resume)
+
+**2026-11-20 전체 원답 회수.** 재개 GPU는 361개를 재사용하며 나머지 180개를 생성했다. 전체 541개 고유 키와 실제 ID를 원순서로 검산해 채점 입력을 발행했다. 541개가 1,280토큰 상한에 도달했다. 두 GPU 창은 종료 0과 반환을 확인했다. 실제 채점은 오프라인 검사기 의존성을 기다린다. [결과101 §706](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-p079-full-responses)
+
+## Stage8fc — 제한 feature 창의 원문항별 DSKDv2 소비
+
+### 1. 왜
+
+원장61/62의 입력창 뒤 소비 접점을 연결한다. [착수 영향/세 안/권한·계약](../docs/research/20261117_DSKD_제한입력창_소비와_전역분모_계약.md)을 따른다. 기존 native_sums/봉인된 실제 진단은 수정하지 않는다.
+
+### 2. 질문
+
+원문항별 학생 frame·정답/owner와 teacher 원위치를 보존하며 제한 chunk/전체 분모의 양방향 손실·미분을 독립 참조와 맞추는가?
+
+### 3. 예측
+
+동일 합성 FP64 값·전체 어휘/원위치에서 모든 손실·미분의 atol/rtol1e-10 동률을 기대한다. 실제 Native/GPU 동률과 품질은 미확인이다.
+
+### 4. 단계
+
+metadata/분모/매핑 선검사→window prepare→문항 frame/정답/owner→최대8위치의 원고정 교사 frame/native_sums→caller backward→batch finish→전체 accounting 회수다.
+
+### 5. 판정
+
+원순서/인과 위치·정답/owner·같은 문항 frame과 global 분모가 필수다. teacher/head/역투영 stop-gradient를 보존하고 오류 뒤 부분 gradient update를 폐기한다. source cursor만으로 full training 재개를 주장하지 않는다.
+
+### 6. 비용
+
+CPU thread1/120초·작은 새 합성 파일만 사용한다. 자연어 학습토큰0, 전체RSS/VRAM·본학습 효과크기/σ는 해당없음이다. 태그p106b_dskd_feature_consumer_v1_20261118는 조회 충돌0이다.
+
+### 7. 실행
+
+새 소비자와 기존 reader/bridge CPU 회귀를101 Stage8fc 원로그에 회수한다. GPU/모델 실행 명령은 없다.
+
+### 8. 한계
+
+실제 Native·full training/optimizer/RNG 재개·CE/GradScaler 접점·75M writer·online 공존/품질·기본 채택은 미완이다. 실제 corpus/feature/CP를 읽지 않는다.
+
+### 9. 현재 이력
+
+[101§638](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-window-native-math-cpu)에서 CPU39 뒤 leaf master 선결을 추가한 최종40/0과 고정7위치/두문항의 원값·전역 미분을 닫았다. normalized loss 절댓차0, 최대 미분 절댓차1.6653345369377348e-16으로 보존 예측은 지지됐다. 실제 Native/GPU·full training 재개·75M writer/online 공존·품질은 미완이며 원4113/projector 음성과 DWA 원비용은 그대로다.
+
+## Stage8fp — Single-window feature production and interrupted-source recovery
+
+### 1. Why
+
+Continue original61 storage production after reader17/consumer40. Preserve the closed1024 diagnostic. Follow [scope/options/authority](../docs/research/20261118_feature_window_producer_contract.md).
+
+### 2. Question
+
+Can a fresh segment restore committed original FP32/metadata/prefix and preserve orphan/partial bytes under physical quotas?
+
+### 3. Prediction
+
+Expect exact small-fixture bytes/order and fixed recipe. Actual75M generation/quality/teacher recovery remain unverified.
+
+### 4. Stages
+
+Recipe/root/lock -> admission/physical quota -> exclusive NPY/payload SHA -> newline event/fsync -> interruption/new-segment recovery -> sealed reader/consumer -> result recovery.
+
+### 5. Judgment
+
+Require unchanged original bytes/order/prefix and explicit error rejection. Source checkpoint is not teacher/model/RNG/optimizer resume.
+
+### 6. Cost
+
+CPU thread1/120 seconds and small new /tmp arrays. Language training tokens0. Tag p106b_feature_producer_v1_20261118 collision0. Owned feature/window/physical limits do not certify whole RSS/VRAM.
+
+### 7. Execution
+
+New producer CPU tests and necessary reader/consumer contact become101 Stage8fp raw evidence; no GPU generation/training launcher.
+
+### 8. Limits
+
+Single-window producer only. Actual teacher/GPU/8-hour resume,75M multi-window scheduler/source cursor/RNG, corpus/rights and quality remain unadmitted. Linux flock only; old cache/CP/raw logs/other cleanup excluded.
+
+### 9. History
+
+[101 section639](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-producer-recovery-cpu) closes first18/final21 CPU tests, default1024-width two4MiB files/412 selected rows, prefix/new-segment recovery and reader/consumer gradients. Byte/prefix preservation prediction supported. Actual teacher/source RNG/8-hour/75M scheduler, Native quality and full training remain NOT_RUN.
+
+## Stage4ft5W: existing family role/context review, no teacher generation
+
+### 1. Why
+
+Original69 V5 has no eligible remaining article source. [Three families, authority and impact](../docs/research/20261118_existing_english_family_contract_review.md) select bounded existing HotpotQA samples for whole-message utility review. Reuse the closed14M-row census and old lossless utility; no new producer is assumed necessary.
+
+### 2. Question
+
+Does the unchanged pure whole-message function preserve the selected original question/context/answer roles, and what ancestry/rights/boundary gates remain?
+
+### 3. Prediction
+
+Expect exact per-view byte/range equality. Expect the generic Aya row schema to lack original supporting-fact IDs/root joins; V5 CoQA passage markers may not apply. A negative ancestry finding leaves the family unadmitted.
+
+### 4. Stages
+
+Closed footer metadata -> exact file00 full SHA -> up to4 homogeneous template row groups through metadata/8MiB requested-column cap -> up to2 rows/template -> pure original-message AST reuse -> manual full saved sample review -> result recovery. No teacher or existing cursor change.
+
+### 5. Judgment
+
+Require source SHA/stable identity and exact TRAIN/eng/family/template fields, raw-row SHA and per-view role/text/range preservation. Distinguish raw from existing strip-normalized columns. No unique-data/pool/quality inference from this fixed sample.
+
+### 6. Cost
+
+CPU thread1/120 seconds, one627MB streaming hash, at most4000 decoded/8 saved review rows. No other source bodies, download/package/tokenizer/model/GPU/production/admission. Tag p106b_existing_family_contract_v1_20261118 unused; similar-plan matches are old learning runs with different purpose.
+
+### 7. Execution
+
+Owned new bounded source review helper only; no training/teacher launcher or batch.
+
+### 8. Limits
+
+Full lineage/root dedup, rights/leakage admission,75M generation/8-hour resume and student quality remain NOT_RUN. Preserve raw sources, old V5/cursor and previous failures.
+
+### 9. History
+
+[101 section640](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-hotpot-family-context-review) closes metadata v3 and full file00 SHA/six whole-message samples/manual review. Per-view role/range prediction supported, but all six selected inputs lack supporting context and original-root joins. They remain HOLD/not-admitted; no all-family quality or75M inference. No teacher/model/GPU/adoption. Review a distinct existing family next.
+
+## Stage4ft5Wb: existing SODA narrative/role contract, no generation
+
+### 1. Why
+
+HotpotQA6 samples lacked grounding context. Review the distinct existing SODA family using [the bounded continuation contract](../docs/research/20261118_existing_english_family_contract_review.md#8-next-bounded-family-soda-rolenarrative-review), reusing file00 SHA and unchanged whole-message utility.
+
+### 2. Question
+
+Do local SODA inputs/targets retain narrative and explicit speaker structure, and which fields/ancestry are missing?
+
+### 3. Prediction
+
+Expect exact role/text/range preservation. Original SODA fields may be flattened or omitted in Aya; narrative/explicit speaker completeness is unproven. Negative role/ancestry evidence stays HOLD.
+
+### 4. Stages
+
+Require identical dev/inode/size/mtime/ctime to the closed exact SHA -> select up to4 SODA-inst (T) homogeneous template groups/8MiB column cap -> save up to2 rows/template -> pure utility/raw and strip views -> manual complete saved-row review -> result recovery.
+
+### 5. Judgment
+
+Require source identity/row hashes, exact TRAIN/eng/family/template and role/range equality. Report actual source-relative narrative/speaker fields without inferring world truth or independent roots. No production admission.
+
+### 6. Cost
+
+CPU thread1/120 seconds, same known file00 metadata and at most4000 Arrow/8 Python saved rows. Do not repeat the closed627MB hash if identity is exact. No other data bodies/model/tokenizer/GPU/package/download/admission.
+
+### 7. Execution
+
+New owned SODA review helper only; no teacher/training launcher or batch.
+
+### 8. Limits
+
+Fixed samples are not population quality, template-root dedup, rights/leakage clearance,75M supply, real teacher generation or student improvement.
+
+### 9. History
+
+[101 section641](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-soda-narrative-role-review) closes two SODA-inst (T) samples/8 per-view units/source-proof reuse. Exact outer roles/ranges pass, but dialogue metadata refers to narrative-generation samples without original speakers/index fields. Both remain HOLD; no whole-family or75M claim. Next distinct exact SODA-inst label requires its own bounded source contract.
+
+## Stage4ft5Wc: existing Hotpot sentence_split facet, no generation
+
+### 1. Why
+
+New footer facets show the previous standard samples did not cover the distinct sentence_split subdataset with the same template1. [Bounded follow-up](../docs/research/20261118_existing_english_family_contract_review.md#9-facet-follow-up-before-the-next-source-file) checks the actual content before generalizing a family label.
+
+### 2. Question
+
+What source task does sentence_split contain, and can the unchanged whole-message utility preserve it?
+
+### 3. Prediction
+
+Expect outer text/roles/ranges to match. The name alone does not establish supporting passage, question decomposition or original-root ancestry; inspect the saved full rows.
+
+### 4. Stages
+
+Require cached exact file00 SHA identity -> metadata gate group1517/family/subdataset/template and8MiB requested-column cap -> first2 rows -> old pure utility/raw and strip views -> full manual review -> result recovery.
+
+### 5. Judgment
+
+Require exact source identity and row/message hashes, record actual observed task and keep raw ordinal distinct from canonical cursor. No population or production-admission conclusion from two rows.
+
+### 6. Cost
+
+CPU thread1/120 seconds, one1000-row Arrow group/2 saved Python rows. No repeated hash, other data body, teacher/model/tokenizer/GPU, package/download or admission.
+
+### 7. Execution
+
+New owned bounded sentence_split review helper only; no training/teacher launcher.
+
+### 8. Limits
+
+Whole-family content, root/template dedup, rights/leakage,75M generation and student quality remain NOT_RUN.
+
+### 9. History
+
+[101 section642](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-hotpot-sentence-split-facet-review) closes2 sentence_split samples/8 outer units. Exact preservation passes, while complete inputs/targets still contain only a question/short answer, not supporting context or decomposition. Both remain context/root/rights HOLD; no whole-family claim. Return to distinct SODA-inst/file04.
+
+## Stage4ft5Wd: distinct SODA-inst/file04 source contract, no generation
+
+### 1. Why
+
+The exact SODA-inst label without suffix has not been reviewed. [Prior file04 authority/impact/resource contract](../docs/research/20261118_existing_english_family_contract_review.md#10-distinct-soda-inst-label-in-existing-file04) compares it with the closed narrative samples without assuming equal formats.
+
+### 2. Question
+
+Do these existing rows actually provide narrative and explicit speaker/turn information usable for a source-relative contract?
+
+### 3. Prediction
+
+Expect exact outer role/text/range preservation. Context and inner speaker completeness remain open; the metadata label alone is insufficient. Useful context does not close original-root or rights admission.
+
+### 4. Stages
+
+Exact file04 manifest/size/stable identity -> one full SHA -> metadata-gated groups365/713/1904/template3/4/1 and8MiB requested columns each -> first2 rows per group -> old pure utility/raw and strip views -> full manual review -> result recovery.
+
+### 5. Judgment
+
+Require exact source SHA and unchanged identity, TRAIN/eng/family/template, raw-row/message hashes and actual observed role/context descriptions. No source/production admission or all-family/quality claim from the fixed sample.
+
+### 6. Cost
+
+CPU thread1/120 seconds,90-second hash budget/1MiB chunks over existing2008783413B file, at most3000 Arrow/6 saved Python rows. Source00 hash/closed samples are reused. No other source body, download/install, tokenizer/model/GPU/admission.
+
+### 7. Execution
+
+New owned source review helper only; no producer/training launcher or batch.
+
+### 8. Limits
+
+Root/template/split joins, subsource rights, whole-family format/quality,75M generation and student improvement remain NOT_RUN. Source-relative fiction is not independently verified world knowledge.
+
+### 9. History
+
+[101 section643](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-plain-task-and-input-grounding-review) closes full file04 SHA/three tasks/six full rows/24 units. Outer preservation supported, named input dialogue present in2 samples, while4 narrative reconstructions add details not explicit in their dialogue. Root/rights/evidence-view admission remains HOLD. Next three-option review before a CPU-only input-dialogue view; no producer/model/adoption.
+
+## Stage4ft5We: exact named input-dialogue view, no producer binding
+
+### 1. Why
+
+Original69 needs an explicit evidence scope before using the two named SODA input dialogues. [Three options/authority/F4](../docs/research/20261118_soda_named_input_view_contract.md) chooses the narrow input-prefix view, preserving old targets/raws and all existing producer code.
+
+### 2. Question
+
+Can exact input-dialogue text/byte ranges and trace be returned while old narrative targets cannot enter this evidence payload?
+
+### 3. Prediction
+
+Expect positive span equality/target invariance and conservative refusal of unknown row/suffix/label/cap formats. No predicted model-quality gain or original speaker-array recovery.
+
+### 4. Stages
+
+Freeze unchanged helper pins -> new pure stdlib module/schema -> authored synthetic controls ->2 saved real prefix controls -> scoped result recovery. No old producer/CLI/default or corpus mutation.
+
+### 5. Judgment
+
+Require exact text/Unicode and UTF8 spans, hashes, target noninterference, detached trace/no mutation and malformed-profile rejection. Visible labels are lexical, not certified character roles. Input-prefix evidence is not a complete original-message view.
+
+### 6. Cost
+
+CPU thread1/120 seconds, tiny strings/two saved rows; no Parquet/hash reread/model/tokenizer/GPU/training/install/environment. Tag p106b_soda_dialogue_input_v1_20261118 unused; similar runs are old learning, not this software contract.
+
+### 7. Execution
+
+Owned CPU helper only; teacher/training/batch/CLI activation NOT_RUN.
+
+### 8. Limits
+
+Root/rights/split/source-file validation, actual tokenizer/model grounding,75M/8-hour production and student quality remain NOT_RUN. Keep corpus_admitted/root_joined false and original targets/raws immutable.
+
+### 9. History
+
+[101 section644](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-named-input-prefix-cpu) closes authored CPU12 and2 saved real prefix controls/old6 unchanged. Exact spans, evidence target-noninterference and rejection predictions supported. No producer binding/tokenizer/teacher/admission/75M/quality; next inspect existing raw-field/parent-split/payload/wire interface before a separate connection.
+
+## Stage4ft5Wf: original derivative key, evidence-only payload and actual student wire
+
+### 1. Why
+
+Original69/current161 preparation follows section644. Existing four-column english_rows loses qualification fields, and replacing original user text changes the key used by production and quotas. [Three options/F4/authority](../docs/research/20261118_soda_candidate_wire_contract.md) chooses an explicit preparation API while keeping old loaders/producer/defaults unchanged.
+
+### 2. Question
+
+Can the original canonical derivative key be preserved while existing teacher/task/student wrappers receive only input-dialogue evidence and the full actual tokenizer/mask budget is checked?
+
+### 3. Prediction
+
+Expect exact key preservation, old-target content omission, correct assistant masks/EOT and complete bounded small one/three-turn candidates. Oversized answers must be refused. Actual teacher grounding/production quality and root/rights admission remain unpredicted. Prediction check: CPU11/12 actual-tokenizer wires support these software predictions; source2 proposed splits did not change despite different keys.
+
+### 4. Stages
+
+Freeze old pins -> explicit detached preparation API -> authored CPU negative/lineage/mask tests ->2 saved source cases with exact existing chat32 tokenizer -> scoped recovery. No model/teacher/producer run or actual corpus split assignment.
+
+### 5. Judgment
+
+Require original key from existing conversation_split_key before evidence selection; distinguish proposed legacy split from original train and official SODA root. Teacher/student content excludes original targets; actual encode_record and independent full serialization/span counts agree, with no truncation and at most1024 x tokens. Refuse unqualified/missing fields, bad provenance, structural markers, invalid formats or overflow. Old helpers and originals stay byte identical; admission flags remain false.
+
+### 6. Cost
+
+One CPU thread/120 seconds, existing environment/Torch list-only Record helper and tokenizers, saved2 rows and pinned local tokenizer. Training0/GPU0/new source/install/environment0. Tag p106b_soda_candidate_wire_v1_20261118 unused; no equivalent run returned by plan query. Pool/sigma/training-token checks do not apply to this software contract.
+
+### 7. Execution
+
+Owned CPU audit helper only. Production/training/teacher launcher NOT_RUN; no CLI/default activation.
+
+### 8. Limits
+
+No raw-field iterator/persistent producer/cursor, root/rights/corpus admission, teacher tokenizer/context or actual response,75M/8-hour generation, model training/quality/default adoption. Real2 use authored supported turns, not newly generated teacher data.
+
+### 9. History
+
+[101 section645](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-parent-evidence-student-wire-cpu) closes CPU11 and2 saved source cases/12 authored wires/20 prepared payloads. Original derivative keys remain exact, all wire masks/EOT agree, max485 x tokens and actual overflow refusal pass; old17 unchanged. Keys differ from view keys but both source cases remain proposed TRAIN/TRAIN. Iterator/producer/root/rights/75M/teacher/quality remain unfinished.
+
+## Stage8fs: bounded feature-window rollover and explicit upstream source state
+
+### 1. Why
+
+Original61/current161 storage/resume preparation follows reader17/consumer40/producer21. Actual lower code explicitly excludes upstream iterator/RNG and multi-window linkage. [Options/F4/authority](../docs/research/20261118_feature_schedule_source_boundary_contract.md) chooses a new bounded coordinator over unchanged lower components.
+
+### 2. Question
+
+Can committed original feature bytes/order and an explicit source cursor/NumPy RNG survive window rotation and interruption, with physical/logical quotas and stale-prefix proof?
+
+### 3. Prediction
+
+Expect exact synthetic committed-source replay, retained orphan/partial bytes and refusal of complete-event/source/transition/quota errors. External teacher side effects and full model/optimizer resume are outside the protocol; no model-quality gain is predicted. Prediction check: CPU19 supports these software claims with independent unchanged-source/fixture readback; actual teacher/full-training effects remain untested.
+
+### 4. Stages
+
+Freeze lower source pins -> explicit source-boundary/global journal schema -> coordinator -> authored new-root CPU failure/rotation/RNG controls -> bounded1024-width shape contact -> scoped result recovery. No edits to old producer/reader/consumer or unnecessary suite reruns.
+
+### 5. Judgment
+
+Require exact uninterrupted/reopened source order, PCG64 boundary and FP32 selected bytes, no duplicate committed IDs, valid source before/after ordinal chains, verified lagging prefixes, retained immutable historical fixture files, strict complete-event/identity/path/lock rejection and quota accounting. Budgets count feature rows/KD positions, not language tokens. Corpus admission remains false.
+
+### 6. Cost
+
+CPU thread1/120 seconds, existing environment and new small /tmp fixtures including a few4MiB arrays. Tag p106b_feature_schedule_v1_20261118 unused; no equivalent plan match. Training/model/GPU/install/environment0; training-token/pool/sigma checks do not apply. Per-open28800-second cap is a prefetch deadline contract, not a real8-hour run or hard cancellation.
+
+### 7. Execution
+
+Owned CPU helper only; teacher/model/training launcher and CLI/default activation NOT_RUN. Preserve fixture artifacts.
+
+### 8. Limits
+
+Explicit adapter cursor/RNG only, Linux flock only. Real teacher/source/model/optimizer/GradScaler/full training resume,8-hour/75M generation, rights/independent evaluation, whole RSS/VRAM and student quality remain NOT_RUN.
+
+### 9. History
+
+[101 section646](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-multiwindow-source-boundary-cpu) closes CPU19 and independent9-source/382-file readback. Stateful PCG64 source recovery, rollover, committed-prefix/error/quota predictions pass. Forced3x4MiB/1024-width windows preserve3072 feature rows/618 selected positions and512KiB batches; old7 unchanged. Actual teacher/model/full-training/8-hour/75M/rights/quality remain unfinished.
+
+## Stage8fgA/B: complete original CE population with bounded KD and a gated training boundary
+
+### 1. Why
+
+Original61/current161 follows the completed storage/consumer contacts. Existing Native128/CE772 cost code already preserves all CE rows; its result stays valid. The new feature-window route must separately retain original CE-only rows. [Options/F4/authority and two stages](../docs/research/20261118_DSKD_CE_KD_training_contract.md) chooses explicit full CE order plus a KD subsequence.
+
+### 2. Question
+
+Can bounded KD backprop preserve the full original CE+KD objective/gradient, then support an explicit complete CPU model/optimizer/source/scaler/RNG boundary?
+
+### 3. Prediction
+
+Expect independent tiny FP64 loss/gradient agreement within1e-10 with every original CE-only row/target once. After A passes, expect exact tiny FP32 complete state/future losses after fresh resume, explicit overflow consumption and zero-KD projector preservation. Actual Native/precision/quality effects are unpredicted. Prediction check: A14+B10 CPU controls support the planned complete-objective and tiny full-state/optimizer/overflow/zero-KD predictions. Actual Native/quality remains untested.
+
+### 4. Stages
+
+A: pin old helpers -> explicit CE/KD metadata/order preflight -> reuse actual CE/KD functions -> per-row graph lifecycle -> independent numerical/failure controls -> result recovery. B only after A: explicit multi-optimizer trainer/public-scaler carry -> full checkpoint/source/RNG validation -> tiny deterministic dropout/overflow/partial-failure/save/restore controls.
+
+### 5. Judgment
+
+Require full CE/KD denominators, all CE rows including zero-KD rows in original order, exact source/targets/owners, complete callback accounting and independent gradients. B additionally requires exact full-boundary state/future losses, explicit source consumption versus applied steps, unchanged zero-KD projector/optimizer state and dirty-state rejection until full restore. Existing defaults/helpers stay byte identical; no corpus admission or Native success claim.
+
+### 6. Cost
+
+Each CPU stage thread1/120 seconds, existing environment, tiny newly initialized numerical fixtures and new owned scratch only. Two unused tags are p106b_dskd_cekd_group_v1_20261118 and p106b_dskd_training_boundary_v1_20261118. No language-training pool/tokens/sigma/quality comparison, actual Native/teacher/model load/GPU, package/download/environment change.
+
+### 7. Execution
+
+Owned CPU audit helpers only. B is gated on A. Actual training/production launcher and CLI/default activation NOT_RUN.
+
+### 8. Limits
+
+A owns loss/backward accounting, B an explicit tiny CPU complete-boundary contract. Actual Native/corpus/teacher assets and source adapters, LR schedule, BF16/CUDA/full-size costs,8-hour/75M/online/rights/quality and integrated TinyLM presets remain NOT_RUN.
+
+### 9. History
+
+[101 section648](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-tiny-cpu-complete-dskd-training-boundary) closes A14+B10=24 CPU tests, exact tiny full-state/future-loss/Python-NumPy-Torch RNG restore, zero-KD projector preservation and explicit public scaler carry. Old16 sources/four A class ASTs remain unchanged; only new implementation/test extensions differ. Prior host3.12 versus CPU3.10 AST preflight exit1 is preserved/recovered in v2. Actual Native/production LR/75M/rights/quality remain NOT_RUN.
+
+## Stage8fgC: explicit consumed-group LR ownership for the bounded CE/KD trainer
+
+### 1. Why
+
+Original61/current161 still lacks a production LR schedule on the new feature-training boundary. The closed base owner intentionally rejects LR mutation. [Three alternatives, authority and impact](../docs/research/20261118_DSKD_consumed_schedule_contract.md) select a separate explicit scheduled subclass; all old20 source bytes must remain exact.
+
+### 2. Question
+
+Can the canonical production LR formula share a consumed-group clock with overflow, preserve inactive projector state and resume all future complete numerical state/rates/losses?
+
+### 3. Prediction
+
+Expect exact tiny FP32 scaled-versus-manual-unscaled updates under identical source/RNG, fresh complete checkpoint recovery and declared overflow progression. Expect zero-KD projector LR/moments/weights/steps to remain unchanged. No Native/quality/speed prediction.
+
+### 4. Stages
+
+Pin old18 plus canonical LR/wrapper -> explicit schedule/envelope -> manual numerical reference -> save/restore, overflow, zero-KD, invalid-state and failure controls -> independent source/fixture readback -> result recovery.
+
+### 5. Judgment
+
+Require exact final model/buffers/projectors/all optimizer/source/three-RNG values, exact future rates/losses, all other optimizer settings pinned, schedule/optimizer consistency checked before copying and dirty/full-restore behavior after partial failure. Stop at the planned ordinal before another source call. Preserve all prior artifacts and old20 sources.
+
+### 6. Cost
+
+CPU1/120s, installed environment, new tiny numerical fixtures below8MiB target. Tag p106b_dskd_schedule_cpu_v1_20261118 unused; no equivalent registry run. Actual language-training/generated tokens0, Native/model/old asset/CUDA/network/package/environment actions0.
+
+### 7. Execution
+
+Owned CPU runner/runlog only after the before-source receipt. New scheduled class is opt-in; no production CLI/default activation.
+
+### 8. Limits
+
+Actual Native/corpus/provider/teacher assets/state, BF16/CUDA/full costs,8h/75M/rights/splits/quality and integrated TinyLM presets remain NOT_RUN. This stage is a software/numerical boundary, not evidence of language improvement.
+
+### 9. History
+
+[101 section649](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-consumed-group-lr-schedule-cpu) closes10 new numerical CPU schedule controls. Manual unscaled updates and fresh complete future rates/losses/state match exactly; old20/current22 source and21 fixture-file readback pass. Existing24 were not rerun. Actual Native/provider/teacher/75M/rights/quality remain NOT_RUN.
+
+## Stage8fgD: explicit original causal microbatch frames and shared graph lifetime
+
+### 1. Purpose
+
+Original61/current161 leaves the real provider unconnected. [Three alternatives, impact and authority](../docs/research/20261118_DSKD_microbatch_frame_contract.md) choose a separate opt-in adapter around the unchanged row CEKDGroup and existing pad_records. A full eight-row forward must remain alive through its final real row, including KD chunks; a naive per-row final backward can free the shared graph too early.
+
+### 2. Question
+
+Can one-shift raw packed records, original fixed batch8/padding and full-row frames reach the unchanged CE/KD consumer while keeping exactly one microbatch graph alive and preserving the complete tiny dense objective/gradients?
+
+### 3. Prediction
+
+The technical adapter should match manual same-batch values/gradients within predeclared FP64 atol2e-10/rtol2e-9 or FP32 atol3e-5/rtol3e-4, with exact counts/order/RNG. The caught naive graph-freeing negative control should fail. No Native speed/memory/quality direction is predicted.
+
+### 4. Stages
+
+Pin old sources/new contract -> new single-use adapter and fresh under1000-parameter token fixture -> explicit packed-token validation/one-shift/pad -> batched forward/row-aware retained backward -> manual full-vocabulary reference/negative controls -> independent artifact readback/result.
+
+### 5. Judgment
+
+Require17 real examples in three fixed batch8/width8 calls, CE-only/KD and chunk/microbatch boundaries, dropout/nonreentrant-checkpoint RNG, frozen teacher/reverse and unchanged parameters. Reject mutation/order/shape/owner/shift/cache faults and reuse after failure. No optimizer/full-trainer/resume integration or corpus admission is claimed.
+
+### 6. Cost
+
+Existing Torch2.10/Python3.10 CPU1/120s; new synthetic output8MiB/128files. No old corpus/cache/model/CP/features, GPU/Native loading, packages or environment. Unused tag p106b_dskdv2_microbatch_frames_cpu_v1_20261118; no equivalent adapter. Training pool/tokens/steps do not apply to this numerical fixture.
+
+### 7. Execution
+
+New opt-in source/test and write-once owned CPU audit only. Existing loss/trainer/LR/model sources and defaults remain unchanged. No new Native/model/GPU launch or workaround.
+
+### 8. Limits
+
+Actual Native micro8/1024/BF16/TLinear/checkpoint tolerances/cost, admitted source/provider/teacher/RNG and full training/75M/quality remain unfinished. A numerical pass does not close original61 or establish a successful quality method.
+
+### 9. History
+
+[101 section650](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-causal-microbatch-frame-adapter-cpu) closes8 new CPU tests/three complete dense gradient oracles, old25 unchanged/current27 pins and18 tiny files. Fixed batch8/one-shift/dummy/shared graph/RNG pass; the naive row-graph negative control fails as expected. No optimizer or Native/full-trainer/resume/quality completion.
+
+## Stage8fgE: batched frames in the complete scheduled CPU owner
+
+### 1. Purpose
+
+Original61/current161 still needs the separate batch-frame component connected to complete source/optimizer/scaler/LR/save-resume ownership. [Three options, exact impact and authorization](../docs/research/20261118_DSKD_microbatch_training_contract.md) select one protected default-preserving group-consumption hook plus an explicit new subclass.
+
+### 2. Question
+
+Can fixed causal microbatches share the existing complete CPU owner while preserving the same manual full update, inactive projector, consumed overflow clock and exact fresh-object future state?
+
+### 3. Prediction
+
+The default hook should preserve the previous callbacks exactly; affected old owner/schedule20 regressions should pass. New manual-update atol3e-6/rtol5e-5 and loss/gradient atol3e-5/rtol3e-4 are fixed; full resume must be bit-exact. No actual Native speed/quality direction is predicted.
+
+### 4. Stages
+
+Snapshot old27 sources -> extract only consumption hook -> new typed packed update/scheduled batch subclass/envelope -> relevant20 regressions and new tiny integration oracles -> independent complete numeric/checkpoint readback -> result recovery.
+
+### 5. Judgment
+
+Keep CEKDGroup/all other owner methods and defaults unchanged. Validate explicit packed source policy, raw shift/pad/graph lifetime; preserve active optimizer membership/zero-KD LR and complete source/global/private RNG. Reject old/wrong envelopes and dirty reuse. No old checkpoint migration or formal corpus/quality claims.
+
+### 6. Cost
+
+Existing Torch2.10/Python3.10 CPU1/180s, fresh55-variable fixtures, new output4MiB/256files. Tag p106b_dskdv2_microbatch_training_cpu_v1_20261118 queried before execution. Old CEKD14/adapter8 are not rerun because their sources are unchanged; owner10/schedule10 are relevant to the actual hook edit.
+
+### 7. Execution
+
+Owned write-once tiny audit only. One controlled old-file delta/new opt-in module/test; no public CLI/default/Native model/GPU/data loader or installation. Fresh tiny checkpoints only, safe load/complete state envelope.
+
+### 8. Limits
+
+The CPU integration covers numerical fixtures. Actual Native/BF16/source/teacher/private state/cost, admitted TRAIN/rights, 75M and student quality remain open.
+
+### 9. History
+
+The first run passed 25 of 26 CPU checks and exited 1 at the optimizer metadata comparison. The corrected comparison passed alone at 08:23:14 KST without production-code changes. The new complete CPU owner matches the same dense manual update and a fresh-object restore; actual Native training is pending. [Result 101 §652](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-batched-scheduled-training-cpu)
+
+<a id="p106b-bonsai-native-lambada-plan"></a>
+## Stage8pr3W. Bonsai2B의 공식 LAMBADA 전체 단어 우도
+
+### 1. 목적
+
+원장 47의 `lambada_openai/default` 5,153행을 기존 Bonsai2B PTQ1 배포본으로 평가한다. 같은 Prism CAPI로 수집한 원로짓과 A 반복 검증은 결과101 §634.1에 있다. 원 HTTP 분포에는 질량 오차와 별도의 토큰별 차이가 남아 있어 평가 입력에는 CAPI 원로짓을 사용한다.
+
+### 2. 질문
+
+공식 문맥과 마지막 단어의 모든 토큰 위치에서 전체 어휘 우도를 얻을 수 있는가? 원 공식 정확도·단어 PPL과 저장 기록의 독립 집계가 일치하는가?
+
+### 3. 예측
+
+기존 CAPI가 동일 원로짓을 반환하고 단일·다중 토큰 점수를 계산할 것으로 예상한다. 문맥과 답 사이 토큰 경계가 달라지거나 긴 입력에서 비용이 커지면 전량 입장이 막힐 수 있다. 점수의 방향이나 다른 체크포인트 대비 성과는 사전에 정하지 않는다.
+
+### 4. 단계와 선택 근거
+
+| 방법 | 효과 | 비용과 영향 |
+|---|---|---|
+| 저장 HTTP 재정규화 | 간단한 질량 보정 | 원로짓 차이를 재현하지 못한 기존 HOLD 때문에 점수에 사용 불가 |
+| 기존 CAPI에서 답 각 위치의 전체 prefix 재계산 | 확보한 ABI와 원로짓을 그대로 사용하고 위치마다 상태를 초기화 | 여러 토큰이면 추가 forward가 필요하다. 공식 5,153행의 실제 비용으로 판단한다. 채택한 방법이다. |
+| 새 위치별 출력 배열·KV 경로 | 다중 토큰 실행량을 줄일 가능성 | ABI·상태와 각 예측 위치의 동치 검증부터 필요하다. 현재 비용이 넘을 때 검토한다. |
+
+1. 기존 고정 `lambada_openai/default` 로더와 `TemplateLM`으로 문항을 구성한다. 평가 캐시는 새 소유 실행 경로에 둔다. 고정된 기존 모델·실행기·공식 정의·데이터를 읽는다.
+2. 모델 없는 CPU 검증에서 예측 위치·모든 서브워드 합·동점 처리·오래된 문맥만 절단되는 경계를 확인한다.
+3. GPU에서 원 A의 FP32 벡터 재현을 확인한다. 고정된 실제 단일·다중 토큰과 빈 문맥 예제의 우도를 독립 FP64 합산 및 greedy와 대조한다. 전체 문항 토큰 계획과 입력 위치를 계산한다.
+4. 고정 인덱스 32개와 최대 작업량 예제의 시간을 측정한다. 1.5배 보정한 문항·입력위치별 예측의 큰 값에 정리 여유 120초를 더해 남은 예산에 들어올 때 전량을 진행한다. 채점 점수로 예제를 선택하지 않는다.
+5. 순서·분모·정답·문항별 우도·원 소스·종료를 검산한다. 승인된 새 실행 결과 경로에만 기록한다.
+
+### 5. 판정
+
+기존 A 로짓과 비트 동일, 정확한 원 `TemplateLM` 경계·joint prefix 일치, 전체 답 토큰, 248,320 로짓의 유한값, 독립 FP64 점수 오차 1e-10 이하, 공식·독립 acc/PPL 동일, 5,153행 및 종료 검증이 필요하다. 기존 부모 모델들과는 문항·문맥 정책의 서술 비교만 가능하다. 모델 규모, 학습 이력, native tokenizer, 엔진과 실행 정밀도가 다르다.
+
+### 6. 비용과 보호 대상
+
+태그 `p106b_bonsai_native_lambada_v1_20261118`의 충돌은 없다. 학습 토큰·학습 풀·학습 σ는 적용하지 않는다. 기존 4070 Ti SUPER 단일 GPU와 최소 free 8GiB 점조회, 문맥 1,024·마이크로배치 512, 기존 Prism adfffbe, 실행 내부 2,400초와 외부 2,520초 한도다. 16:30 KST 이전 계산 종료 조건, 샤드 최대 10MB와 총 64MB를 사용한다. CPU에서 공식 템플릿과 입력을 준비한 뒤 GPU에서 같은 배포본만 연다.
+
+### 7. 실행과 영향을 받는 경로
+
+현재 사용자161/162/163의 연구 범위에서 새 우도 연결 코드·집중 CPU 검증·실행기와 소유 결과를 작성한다. 기존 CAPI의 ABI, 원 공식 로더·채점, 기존 결과와 모델 파일을 보존한다. 공식 테스트는 평가 전용으로 쓴다. 계획·결과101·기준표·WIP47·종합표가 기록을 받는다. 설치나 별도 환경이 필요하면 그 후속은 유보한다.
+
+### 8. 한계
+
+공식 영어 문맥 완성 한 과제의 외부 배포본 실측이다. 실제 배포의 연속 VRAM 최고치, 한국어 독해, 점수 차의 학습 인과, TinyLM 개선은 별개다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+### 9. 상태
+
+11월 18일 08:15:24 KST에 5,153행 GPU 평가가 종료 코드 0으로 끝났다. 공식 정확도 2,276/5,153 = 44.1684%, 단어 PPL 15.529799를 독립 검산했다. 기존 Native595 Q와의 같은 문항 차이는 +28.3136%p였다. 원 보고서의 최장 입력은 검산에서 224토큰으로 정정했다. [결과101 §651](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-lambada-full)
+
+The [closed actual-gradient/provider review](../docs/research/20261118_DSKD_actual_gradient_limits_review.md) reuses original604/605/608. Whole-student and body gradient spaces differ; scalar Euclidean beta bounds are not Muon/AdamW or finite-step/quality guarantees and no production coefficient is selected. The checked old diagnostic directly uses micro8, while the new one-row CPU provider has no actual Native production adapter yet. No new dynamic experiment/raw log is added by that analysis.
+
+
+<a id="p106b-bonsai-native-mc-plan"></a>
+## Stage8pr4W. Bonsai2B 공식 Belebele과 KoBEST
+
+### 1. 목적
+
+원장 45·46의 한국어/영어 Belebele과 KoBEST를 기존 Bonsai2B PTQ1_0 실물에서 평가한다. LAMBADA에서 검증한 Prism adfffbe CAPI 및 전체 후보 우도를 재사용한다. [결과101 §651](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-lambada-full)
+
+### 2. 질문
+
+공식 템플릿과 보기 순서, KoBEST COPA의 문자열 정답, 문맥·보기의 토큰 경계를 유지한 상태에서 6,361문항 전체를 채점할 수 있는가?
+
+### 3. 예측
+
+같은 예측 prefix를 가진 단일 토큰 선택지에서는 한 번의 CAPI 호출로 여러 보기를 채점할 수 있다. 다중 토큰 보기는 분기 후 추가 호출이 생긴다. 원문 뒤의 공백이나 문장 부호 때문에 joint prefix가 달라지는지는 실제 토큰화로 판정한다. 신뢰할 수 있는 점수 방향은 사전에 정하지 않는다.
+
+### 4. 단계와 방법
+
+| 방식 | 장점 | 영향과 비용 |
+|---|---|---|
+| 원후보별 전체 prefix 재계산 | 기존 LAMBADA 경로 그대로 사용 | 같은 문항에서 동일 prefix를 반복한다. 검산 참조로 쓴다. |
+| 한 문항에서 정확히 같은 prefix 공유 | 모든 보기와 토큰을 유지하고 동일 forward를 한 번만 수행 | 기존 PrismLikelihood를 그대로 쓴다. 다른 문항·과제 사이에 상태를 공유하지 않는다. |
+| 새 all-position/KV API 경로 | 긴 다중 토큰 보기의 비용을 줄일 가능성 | ABI·캐시 상태와 수치 동치의 새 검증이 필요하다. |
+
+1. 기존 공식 YAML, 원 Belebele 두 JSONL, 원 KoBEST 다섯 JSONL 및 공식 원 소스를 봉인한다. CPU에서 각 전체 문항의 프롬프트·보기·정답 순서를 확인하고 원 `ConfigurableTask`의 채점을 독립 참조와 대조한다. 공식 문서는 평가 전용으로 유지한다.
+2. 기존 A 점수의 비트 일치와 전체 어휘 수를 확인한다. 모든 보기를 토큰화한다. 원 Trainer/TemplateLM의 문자 입력과 joint native prefix가 모두 맞는 과제만 전량 scoring에 들어간다.
+3. 각 과제에서 첫·최대 작업량 보기의 독립 FP64 우도와 greedy, 16개 고정 인덱스와 최대 작업량 문항에서 무점수 선택 비용을 확인한다. 모든 후보를 건너뛰지 않고 과제별 저장·독립 검산 뒤 종결한다. 문항 수·위치별 보수 예상 중 큰 값에 1.5배와 정리 120초를 적용한다.
+4. Belebele 표에 언어별 acc와 동일 지문 그룹 불확실성을 계산한다. KoBEST는 과제별 acc·macro-F1·혼동표를 보고하고 원 과제의 acc_norm이 있으면 보존한다.
+
+### 5. 판정
+
+Belebele revision 7899cdf의 두 언어×900문항 및 동일 488지문·정답 인덱스, KoBEST revision a5ea15e의 1,404/1,000/500/397/1,260문항을 요구한다. CPU 원템플릿·보기 지문과 실제 실행 입력이 일치해야 한다. 토큰 경계·채점·비용 입장이 맞지 않는 과제는 문항을 고치거나 제외하지 않고 해당 상태를 남긴다.
+
+### 6. 비용과 보호 대상
+
+`p106b_bonsai_native_mc_v1_20261118` 태그와 후보 조건을 런 레지스트리에서 조회했다. 사용자161/162/163의 기존 GPU 권한에서 4070 Ti SUPER 단일 GPU, 최소 free 8GiB 점조회, 컨텍스트 1,024·CAPI 마이크로배치 512, 실제 평가 3,000초와 외부 3,120초 한도다. 16:30 KST 전에 계산을 닫고 새 소유 경로만 최대 128MB까지 기록한다. 학습 풀·학습 토큰·학습 σ는 이 배포본 평가에 적용하지 않는다.
+
+### 7. 실행 범위
+
+기존 모델·원 CAPI·평가 런타임의 소스와 데이터만 읽고 새 연결 코드·결과 경로에 기록한다. 과제 초기화는 새 인메모리 split을 사용한다. 기존 공식 prompt·target·채점 소스, 모델과 체크포인트, 이전 결과는 그대로 둔다. 접근 동의·새 패키지·새 환경·재학습은 별도 결정이다.
+
+### 8. 한계
+
+같은 요청에 대한 배포본 성적과 실행 시간이다. 외부 모델의 가중치·구조·학습 효과를 고립시키거나 자유 대화 품질을 추정할 수 없다. 연속 VRAM 최고치와 동일 조건의 생성 자원 비교는 별도 실험이다.
+
+### 9. 상태
+
+11월 18일 Belebele 한국어 391/900, 영어 552/900과 KoBEST 4,561행의 과제평균 macro-F1 44.9539%를 검산했다. 첫 실행 exit1의 NumPy 정수 저장 오류를 보존했고, 완료 독해의 재실행 없이 KoBEST만 08:49:23 KST exit0으로 돌렸다. [결과101 §653](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-belebele-kobest-full)
+
+<a id="p106b-gguf-followup-plan"></a>
+## Stage8pr5W. GPT-2 Q4와 Qwen3.5 IQ2의 미완 공식 과제
+
+### 1. 목적
+
+원장 45~47의 정확 GPT-2 small Q4_K_M 및 Qwen3.5-0.8B UD-IQ2_XXS에 Belebele 한·영, KoBEST5와 LAMBADA를 실행한다. 두 GGUF의 기존 Core6 종결(41.7905%, 46.8394%)은 그대로 사용한다.
+
+### 2. 질문과 예측
+
+두 실물의 고정 b11396 원 TemplateLM과 singleton worker가 남은 과제의 모든 보기·전체 답 서브워드와 원 채점을 유지하는지 확인한다. 기존 실행의 472만/474만 decode와 실행 시간으로 보아 여러 시간이 필요할 수 있다. 정확도 방향은 사전에 정하지 않는다.
+
+### 3. 방식과 영향
+
+| 방식 | 장점 | 영향 |
+|---|---|---|
+| 동일 b11396 worker와 singleton 실행 규칙 | 기존 GGUF의 런타임을 유지한다 | 사용자161의 현재 시간까지만 유효한 worker를 기존 컴파일러·헤더로 별도 빌드한다. 기존 소스와 binary는 그대로 둔다. 이 방식을 사용한다. |
+| 검증된 Bonsai Prism으로 모델 변경 | 비교적 빠른 재사용 가능 | 같은 포맷이 두 엔진에서 같은 로짓을 주는지 별도 검증이 필요하다. |
+| 기존 Core6 점수에서 다른 과제로 외삽 | 평가 시간이 들지 않는다 | 실제 한국어·독해·문맥 완성의 근거가 생기지 않는다. |
+
+### 4. 단계와 판정
+
+두 GGUF와 b11396의 기존 바이트 지문을 대조한다. worker의 허용 시각 두 리터럴만 다음 기한으로 바꾼 새 빌드의 원소스 역복원과 GPU 없는 guard 검사를 확인한다. 기존 원 C++ worker의 full-vocabulary likelihood·각 토큰 greedy와 캐시 초기화를 사용한다. 실제 GPU에 올린 뒤 기존 수치 canary, 정확 문항/보기 순서, 과제별 16개 고정 및 최대 비용 문항, 전량 raw와 독립 집계를 확인한다. 하나의 과제가 보류되면 상태와 분모를 보존한다.
+
+### 5. 비용
+
+태그 `p106b_native_gguf_followups_v1_20261118`는 기존 런과 충돌하지 않는다. GPU 한 장에서 GPT-2와 Qwen을 직렬 실행한다. 과제별 시간은 파일에 남기고 계산 종료는 16:30 KST 전이다. 모델별 상한은 GPT-2 6,000초, Qwen 12,000초이며 부모 전체 상한은 정리 여유를 포함한 18,180초다. 과제별 예측은 1.5배 보정한 위치·문항별 큰 값과 정리 120초로 판단한다. 모델당 raw 입력/출력 기록은 384MB로 제한한다.
+
+### 6. 실험 범위와 상태
+
+기존 공식 자산과 로컬 GPU 하나로 평가한다. CPU v1은 저장된 연구 추론 manifest 목록 변경으로 과거 전체 SHA를 통과하지 못했다. 옛 바이트를 복원 대조해 배포본·worker·라이브러리와 GPU 진입점이 같은 것을 확인했다. v2의 CPU 빌드·두 리터럴 변경·guard 다섯 검사·공식 입력은 08:44:03 KST 종료 0이었다. 08:49:40 KST에 GPT-2와 Qwen의 직렬 실행을 시작했다. Core6는 기존 종결 결과를 사용한다.
+
+### 7. GPT-2 LAMBADA만 이어서 실행
+
+GPT-2 Q4는 Belebele 2과제와 KoBEST 5과제의 전량을 기록했다. LAMBADA는 비용 추정 841초가 당시 남은 693초보다 길어 `COST_HOLD`였고, 전량 결과 행은 0이었다. 현재 Qwen 작업의 프로세스 종료를 확인한 뒤 같은 b11396 worker와 동일 입력으로 LAMBADA 5,153문항만 수행한다. GPU를 사용한 과제 파일은 완료 7과제의 지문으로 재사용한다. 새 모델 상한은 1,260초, 제어기 전체 상한은 1,380초, 파일 상한은 128MB다. 최초 실행과 같은 비용식으로 다시 입장을 검토한다. 평가 점수 방향은 사전에 정하지 않는다. [이어하기 실행기](../scripts/diag_p106b_gpt2_lambada_remaining.py)
+
+원 부모는 11:46:44 KST 종료 9로 완료 15개 과제와 비용 보류 1개를 남겼다. Qwen 8과제는 모두 닫혔다. 11:53:58 KST에 GPT-2 LAMBADA만 종료 코드 0으로 마쳤고 동일 원행 5,153개를 검산했다. 이전 두 모델 Core6와 GPT-2의 완료 7과제를 이어 사용했다. [결과101 §655~655.1](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gguf-missing-task-results)
+
+
+
+
+
+
+<a id="p106b-benchmark-exact-missing-plan"></a>
+## Stage8pr6W. 정확 비교본의 남은 KoBEST와 Bonsai Core6
+
+### 1. 목적
+
+원장 45~47의 실제 실행본과 완료 raw의 범위를 대조했다. Native595 Q, Gemma3-1B PT, Qwen3.5-0.8B HF FP32의 정확 배포본에 공식 KoBEST 5과제 전량 결과를 찾지 못했다. Bonsai2B PTQ1_0의 공식 Core6도 아직 없다. 현재 GPT-2와 IQ2의 누락 평가가 끝난 뒤 각각 확인한다. 다른 모델의 완료한 Core6·독해·LAMBADA·KoBEST를 재실행하지 않는다.
+
+### 2. 방식과 비교 영향
+
+| 방법 | 장점 | 비용과 주의점 |
+|---|---|---|
+| HF/Native 원입장과 기존 공식 loader | 세 실행본의 기존 엔진·토크나이저와 실행 조건을 유지한다 | KoBEST 원문·COPA 문자열 정답, macro-F1, 1,024 문맥을 대조한다. Qwen은 기존 고정 1,024폭 경로를 유지한다. |
+| Bonsai CAPI의 후보당 한 번의 필요한 위치 출력 | 기존 원로짓을 사용하면서 긴 답의 prefix 재연산을 줄인다 | 현재 ABI의 배치 출력 플래그를 사용한다. 원 prefix 우도·greedy·미래 토큰 불변·512 경계에서 동치가 확인된 뒤에만 공식 채점한다. |
+| 기존 prefix를 토큰마다 계속 재계산 | 해당 Bonsai CAPI는 이미 검증했다 | 그러한 후보의 개수와 비용이 크다. 공식 입력 그대로의 실행 비용이 기한에 맞을 때만 대조법으로 쓴다. |
+
+### 3. 모델·자료·판정
+
+KoBEST5의 같은 4,561개 원요청을 모델별로 쓰고 정확도·과제별 macro-F1·혼동표를 검산한다. Native595 Q는 실제 원 삼진 배포본, Gemma1B와 Qwen HF는 기존 FP32/eager 비교본이다. Core6는 기존 test/validation 19,965문항과 67,106개 보기, PIQA·Winogrande·BoolQ acc와 ARC 두 종·HellaSwag acc_norm의 동일 가중 평균을 요구한다. 과제별 최대 문맥과 전체 후보 조건을 기록하며 긴 원문은 기존 공식 최대 길이 정책으로만 처리한다. 후보가 잘리는 경우 평가 상태를 남긴다. 비교에 사용한 크기·학습·엔진이 다르며 모델 간 점수는 배포본 비교다.
+
+### 4. 입장·측정
+
+CPU에서 정확 공식 자료와 기존 자산 출처·소스를 봉인한다. GPU 단일 프로세스에서 확정한 별도 과제만 수행한다. FP64 참고값과 같은 토큰·greedy를 우도 가속 조건마다 대조하고 기준 실패는 남긴다. 과제별 실행 비용이 현재 사용자 허가와 16:30 KST 이전의 계산 회수에 맞는지 확인한다. 사용자165의 순서에 맞춰 승인 범위에서 입장 가능한 평가를 마친 뒤 P013 제품 학습기로 전환한다. 기존 환경과 자료만 쓰며 새 모델, 패키지, 외부 평가서버, 공식 문항의 학습 편입은 없다.
+
+Bonsai Core6 전체가 끝나면 저장된 Native595 Q와 과제별 순서·원문·요청·정답을 검산하고 6과제 평균의 대응 구간을 구한다. CPU 선확인에서 19,965행이 모두 일치했다. WinoGrande는 두 보기의 앞 문맥이 다르고 뒤 문구가 같으므로 원문 `answer`에서 정답 위치를 읽는다. 기존 Core6 구간과 같은 과제 내 문항쌍 100,000회 재표집과 seed 20261024를 사용한다. [비교 입력 검산](../handoff/audit/research_20261118_01a1e647/BONSAI_CORE6_PAIRED_INPUTS_PREFLIGHT_v1.json)
+
+### 5. 상태
+
+설계 완료. 다음 GPU 대기열로 준비한다.
+
+### 6. KoBEST 남은 두 모델의 GPU 프로세스 분리
+
+Native595 Q의 4,561행과 다섯 과제를 전량 저장한 뒤, 같은 부모 프로세스의 정리 검사에서 CUDA 할당 8,519,680B와 예약 20,971,520B를 관측했다. 제어기는 종료 코드 8로 다음 모델에 진입하지 않았다. 저장한 Native 점수는 원행 검산과 실제 프로세스 종료를 근거로 회수한다. Bonsai Core6를 그동안 먼저 수행한다.
+
+남은 Gemma 1B와 Qwen HF만 모델별 별도 프로세스에 올린다. 동일 검증과 평가 함수, 공식 입력, 실행 경로를 사용한다. 자식 종료 뒤 소유 PID 부재와 실제 GPU를 확인한 후 다음 모델을 시작한다. 자식 안에서 메모리가 남으면 그 상태와 종료 코드를 보존한다. 다섯 과제가 전량 닫혔으며 부모에서 GPU 반납을 확인했을 때만 해당 과제 점수를 회수한다. 원래 모델별 상한 1,200초와 2,000초를 적용한다. [남은 두 모델 실행기](../scripts/diag_p106b_kobest_two_remaining.py)
+
+### 7. Bonsai HellaSwag의 단일 배치 우도 경로 검증
+
+다섯 과제와 9,923행을 저장했다. HellaSwag는 전량 0행이고, 이전 prefix 경로의 33개 원문 표본으로 예상한 시간이 21,638.53초였다. 일반 위치별 출력은 predictor가 네이티브 배치 경계를 걸치는 두 canary에서 허용차를 넘었다. 짧은 두 canary와 두 번째 네이티브 배치 안의 canary는 일치했다.
+
+| 방식 | 판단 |
+|---|---|
+| 전량 이전 prefix 계산 | 현재 시간창에 비용 추정이 들어오지 않는다. |
+| 단일 native 배치에서만 필요한 위치 출력 | 새 HellaSwag 원문항의 고정 입력 표본과 최장 입력·답에서 기존 우도 및 greedy를 수치 대조한다. 통과한 shape만 사용하고 다른 후보는 원 prefix로 계산한다. |
+| 수치 또는 잔여 시간 입장 실패 | 전량 점수를 보류하고 이미 검증된 5과제만 보존한다. 이후 실제 GPU 학습으로 전환한다. |
+
+실행기는 원 10,042문항과 40,168개 보기, 같은 모델, 원 likelihood checker를 사용한다. 배치 512 이내와 출력 64 이내가 필요한 조건이다. 위치별 원토큰 우도, greedy, 실제 비용 표본을 각각 검증한다. 후보 제거와 별도 정답 선택은 없으며 완료한 다섯 과제를 재실행하지 않는다. 단일 평가 상한 6,000초, 전용 원행 256MB 및 계속 적용되는 계산 종료 시각을 사용한다. 수치와 비용 입장이 실패하면 결과를 남기고 학습을 이어간다.
+
+
+<a id="p106b-dskd-native-batched-gpu"></a>
+## Stage8fgF. Native BF16 배치의 CE·feature DSKD 실제 GPU 갱신
+
+### 1. 목적과 조건
+
+원장 61에서 CPU로 연결한 배치 프레임의 실제 Native CUDA 비용과 optimizer 경계를 확인한다. 저장소 Native 사전학습 전 구조의 표준 초기화, BF16 body와 FP32 master, eager TLinear, grad checkpoint on을 쓴다. 공식 평가 뒤에 실행한다. 새 합성 토큰과 합성 교사 표현은 운영 데이터나 언어 품질의 근거로 연결하지 않는다.
+
+### 2. 비교안
+
+| 방법 | 얻는 것 | 제한 |
+|---|---|---|
+| 기존 짧은 native GRAD 결과 재사용 | 기존 수치·비용 근거를 보존한다 | 현재 batch8 frame과 실제 optimizer 적용 경계는 해당 결과에 없다. |
+| 고정 batch8 학생의 기존 CE와 feature KD를 비교 | 같은 17행×1,023 target과 실제 CUDA 갱신, 시간·메모리·graph 오류를 함께 관측 | 합성 표현 교사만 쓴다. 이 방법을 사용한다. |
+| 운영 교사 상주와 실제 SFT/본학습 | 품질·장시간 공존을 검증할 수 있다 | 정식 TRAIN 입장·권리·독립 실제 교사 데이터가 필요하다. |
+
+### 3. 실행 계획
+
+동일 네 합성 그룹, 새 Native dense14 학생과 초기화 seed를 고정한다. 각 그룹의 원 토큰 1,024개를 한 번 shift하고 CE 1,023개/행을 유지한다. batch8·width1024, 실제17행과 마지막7 dummy이며 세 forward를 사용한다. CE-only와 CE+KD 두 팔을 모델 프로세스를 새로 열어 직렬 실행한다. KD는 명시한 4행×5위치, 151,936×1,024 합성 교사 head, frozen reverse, 독립 forward projector를 쓴다. warmup1·cosine4·같은 마스터 FP32 optimizer와 global clip, 유한 grad·종료를 확인한다. CE+KD 계수 0.3은 기술 비교용 고정값이다. 첫 group의 표본 비용이 나머지와 정리 예산에 들어올 때 계속한다.
+
+### 4. 영향과 판정
+
+기존 CPU 실행기와 본 학습 CLI를 그대로 사용 가능한 상태로 보존한다. 새 GPU 진단은 배치 프레임, 원 전체 CE와 부분 KD, 기존 CUDA scaler·옵티마이저 유틸만 연결한다. CUDA peak allocated/reserved, 그룹별 준비·forward/backward·optimizer wall, 각 CE/KD 분모와 실제 업데이터 호출, 원 코드·새 레코드 SHA·반납이 기준이다. 원 출처 없는 대량 데이터와 기존 checkpoint를 열지 않는다. 전체 GPU trainer의 재개·정식 75M·품질·방법 채택은 별도다.
+
+### 5. 범위·비용
+
+실행 태그 `p106b_dskd_native_batch_cuda_synthetic_v2_20261118`. CPU 선검사 모델0, 기존 CUDA/PyTorch와 4070 Ti SUPER 1장·최소 12GiB free·팔당 900초/전체 1,920초, 16:30 KST 전 회수다. 새 수치 입력/receipt만 보존하고 새 체크포인트 저장은 하지 않는다. 완료한 기존 DWA/DSKD gradient 및 CPU 재개는 반복하지 않는다.
+
+### 6. 상태
+
+CPU v1과 v2 준비가 끝났다. 공유 학습 도우미의 토큰 인수 교정 후 v2가 4개 합성 그룹·16개 표현 자료가 v1과 같음을 검산했다. 새 GPU 갱신은 채점 대기열 뒤 실행한다. [결과101 §654](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-exact-eval-and-dskd-ready)
+
+원봉인 입력의 CE 69,564개와 위치80개는 12:37:51 KST CPU에서 별도 검산했다. [입력 결과](../test_result/evidence/p106b_dskd_native_fixture_readback_cpu_v1_20261118/report.json)
+
+13:21:41 KST v2 실제 부모 종료 8, 두 팔은 비어 있는 optimizer 템플릿 그룹에서 각 종료 1로 갱신 0이었다. `p106b_dskd_native_batch_cuda_synthetic_v3_20261118`은 새 optimizer를 scaler에 연결하기 전에 비어 있는 그룹을 제거한다. 실제 파라미터·순서·옵션, 입력·손실·학습 수·기한은 동일하다. CPU에 같은 Native 모형을 새로 만들어 파라미터 소유와 비어 있는 그룹 수를 확인한 뒤 양팔의 첫 갱신을 이어 실행한다.
+
+## Stage8fgG. 실제 Qwen 특징의 DSKDv2로 학생과 투영을 갱신한다 ✅ 완료(결과 101 §692)
+
+원장 63의 실물 두 공간 목적을 확인한다. [결과101 §§602·604](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 실제 미분과 [§664](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-native-optimizer-actual)의 합성 optimizer 갱신을 재사용한다. 정식 장기 운영과 언어 품질은 교과 입장을 따른다.
+
+기존 기술 128행을 같은 순서로 사용하고 같은 완료 93M 삼진 학생, 32K 어휘, BF16 본체, FP32 증류와 Math SDPA에서 CE와 CE+DSKD 두 팔을 대조한다. 양팔 각각 8×4×1,024에서 네 번 갱신한다. 입력 32,216토큰, CE 772위치, 패딩 슬롯 131,072개가 같다. DSKD는 기존 zero-lookahead 538위치, Qwen 원어휘 248,320행과 학생 어휘 32,768행, 원 8위치 청크를 사용한다. 보류 234개는 CE에 유지한다. §604에서 관측한 본체 미분 크기 비율을 반영해 두 KL과 투영 CE의 합에 0.03을 적용한다. 이 계수의 선택은 첫 미분을 기준으로 했으며 유한 갱신의 품질이나 모든 묶음의 방향을 예측하지 않는다.
+
+양팔에 AdamW 1e-5·clip 1을 적용한다. KD의 교사→학생 투영만 학습하며 역방향 투영과 기존 교사 헤드는 동결한다. 두 팔의 동일 초기 모델과 첫 CE, 각 네 번의 실제 갱신 및 최종 모델 차이, 투영 갱신과 동결 유지를 확인한다. 상태·비용은 JSON 최대 미분, CUDA 최대 할당·예약과 100ms 장치 표본에서 읽는다. CE 팔은 교사 헤드를 상주시키지 않으므로 장치 차이는 두 실제 운용 경로를 포함한다.
+
+CPU에서 기존 128행 복구의 실제 종료, 원 정렬과 표현 파일 SHA·모양, 두 어휘의 헤드 증거, 학생 원형을 확인한다. CPU에서 원 23,302 중첩 열의 초기 투영을 재생하고 결과 지문을 봉인한다. 프로그램의 GPU 상한은 180초, 예상 25~50초이며 사용자177의 현재 창을 따른다. 실제 교사 본체 재실행·체크포인트 저장은 0으로 제한한다. 태그는 `p106b_dskdv2_real_cache_updates_v1_20261119`이다.
+
+**결과.** 양쪽이 각각 4회 실제 갱신했다. 첫 CE는 같고 최종 가중치는 달랐다. 538타깃에 DSKDv2를 적용해 교사→학생 투영 786,431좌표를 갱신했고 역투영을 그대로 유지했다. 장치 최고는 6,765→7,798 MiB였다. CPU·GPU 종료 0과 반환을 확인했으며 독립 품질은 정식 자료가 들어온 뒤 진행한다. [결과101 §692](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskdv2-real-cache-updates)
+
+## Stage7axW. ACTD 동일 소유자 정렬의 CPU 비용
+
+### 1. 목적과 방식
+
+원장 60의 미완 기술 비용을 다룬다. 현재 `align_positions`는 학생마다 교사 전체를 훑고 후보를 다시 정렬 계약으로 검증한다. 교사 위치를 소유자별로 한 번 검증·인덱싱하면 같은 답을 더 적은 연산으로 찾을 수 있는지 확인한다. GPU의 KoBEST와 독립된 CPU 작업이다.
+
+| 방식 | 영향과 판단 |
+|---|---|
+| 기존 전체 탐색 | 그대로 대조한다. 같은 문맥당 반복 검증이 필요하다. |
+| 소유자별 이진 탐색 | 검증된 원 문자·prefix 인덱스와 최초 동률 순서를 사용한다. 연구용 파일로 추가한다. |
+| 후보 축소 또는 정렬 정책 교체 | 서로 다른 문항 보류와 미래 문자 참조를 섞는다. 이 비교의 범위 밖이다. |
+
+### 2. 질문·예측·판정
+
+두 기존 정책에서 동일 학생·교사 위치, 보류, 문자 앞·뒤 차이를 정확히 재현해야 한다. 같은 위치의 중복 문자, 누락 소유자와 가변 길이를 포함한 고정 100개 합성 쌍으로 검사한다. `causal_left_variant`의 양수 lookahead는 0이어야 한다. 256·1,024 조건을 한 CPU에서 ABBA 순서로 비교하며 긴 단일 소유자 조건에서 비용이 줄 것으로 예상한다. 실제 교사 추론 성능이나 학습 품질은 여기서 측정하지 않는다.
+
+### 3. 비용·실행·영향
+
+CPU1, 120초, 합성 경계만 사용한다. 원 앵커·정렬 코드와 상품 기본 경로는 그대로 보존한다. 신규 시험 코드와 전용 결과를 추가하고 결과101과 원장 60을 갱신한다. 태그 `p106b_actd_indexed_prefix_alignment_cpu_v1_20261118`는 미사용이다. 교사/학생 로딩, 데이터 재생성, 학습 및 기존 확정 평가 재실행은 없다.
+
+### 4. 보존된 토크나이저 메타데이터로 대조
+
+별도 태그 `p106b_actd_saved_alignment_cpu_v1_20261118`로 기존 준비 샤드 128행의 SHA를 확인한다. 저장된 두 토크나이저 byte span을 사용하여 경계와 소유자를 복원하고 원 정렬, 인덱스 정렬, 저장 정렬 전량을 대조한다. 기존 길이·UTF-8 보류와 CE 분모를 포함한다. 원문을 다시 취득하거나 모델을 호출하지 않으며, 저장 결과의 정렬 시간만 ABBA로 별도 측정한다.
+
+두 CPU 실행이 종료 0이었다. 합성 위치 비교 8,054개와 기존 128행의 정책별 정렬 770개·보류 2개가 정확히 일치했다. 보존 자료에서 정렬 비용의 기존/인덱스는 2.993배였다. 이 경로는 선택 연구 구현이며 학습이나 cache 전체 가속은 미측정이다. [결과101 §658](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-actd-indexed-alignment-cpu)
+
+## Stage7axX. ACTD 제한 목적의 실제 optimizer 경계
+
+### 1. 목적과 비교안
+
+원장 60에서 기존 Native ACTD의 동일 미분은 회수했다. 이번에는 신규 합성 CE와 ACTD 목적이 모델의 실제 갱신으로 이어지는지 확인한다. 원 ACTD loss와 단 한 번의 shift, 같은 Native 계산 경로를 쓴다.
+
+| 방식 | 판단 |
+|---|---|
+| 기존 93M ABBA 미분 반복 | 실제 갱신을 확인할 수 없다. 저장 자료를 재사용한다. |
+| 새 합성 입력 CE와 CE+ACTD | 이 방식을 사용한다. 문항·분모와 전체 optimizer 갱신을 직접 대조한다. |
+| 운영 자료로 교사와 학생을 연결해 품질 평가 | 정식 학습 입장과 권리, 교사용 독립 자료가 필요하다. |
+
+### 2. 질문과 판정
+
+원 CE는 감독 833위치/그룹을 유지하고 ACTD는 그 중 고정 16위치, 각 128개 교사 후보를 쓴다. 후보의 중복 학생 ID와 residual support를 원 함수에 그대로 전달한다. 두 팔은 같은 7행을 고정 batch4·width128의 두 호출로 열어 마지막 한 행을 pad한다. 세 다른 입력 그룹에서 CE-only와 CE+0.3×ACTD를 각각 세 번 실제 갱신한다. 양팔 같은 초기 지문과 첫 CE, 학습 토큰·스케줄·분모, 유한 미분 및 양쪽 updater 완료를 요구한다. 마지막 모델 지문 차이를 목적 차이가 반영된 기술 결과로 기록한다.
+
+### 3. 비용과 실행
+
+새 태그 `p106b_actd_native_updates_synthetic_v1_20261118`. 기존 작은 eager CPU TinyLM 257어휘·AdamW 양팔에서 모델 갱신을 선검증한다. GPU 시간이 허용되면 P013 및 DSKD 뒤에 Native 93M·32K FP32 마스터/BF16 Eager, matched Muon과 AdamW를 같은 입력에서 두 개의 독립 자식으로 실행한다. GPU는 하나씩, 활성 팔당 최대 420초다. 새 checkpoint나 기존 평가 반복은 필요 없다. 이번 CPU와 가능한 GPU는 기술 Probe이며 외부 실제 교사 추론이나 운영 언어 일반화는 미측정이다.
+
+13:00:30 KST CPU 종료 0. CE 및 CE+ACTD 각 세 실제 갱신을 회수했고 양쪽의 첫 CE와 초기 모델 지문이 일치했다. 고정 조건의 Native GPU 갱신은 남은 CPU/GPU 순서에 둔다. [결과101 §661](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-actd-synthetic-optimizer-cpu)
+
+같은 Native optimizer 구조에서 DSKD 선검사로 확인한 빈 그룹 2개를 CUDA 쪽에서만 제외한다. `p106b_actd_native_updates_synthetic_v2_20261118`은 기존 CPU 결과와 자료를 바이트로 고정해 재사용하고 기존 v1 GPU는 열린 적이 없다. 실제 같은 세 그룹 양팔을 갱신해 종료·반납을 확인한다.
+
+## Stage7axY. 저장된 실제 Qwen 분포로 학생의 두 학습 조건을 대조한다 ✅ 완료(결과 101 §690)
+
+원장 63의 ACTD 실물 갱신을 확인한다. [결과101 §§597·599](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)는 실제 교사 신호로 반복 미분까지 닫았다. §665는 합성 교사로 실제 optimizer까지 닫았다. 실제 교사를 다시 실행하는 대신 봉인된 Qwen top128을 사용한다. 정식 교과의 운영·품질 검증은 입장 뒤의 별도 단계다.
+
+같은 기존 93M 학습 완료본의 독립 메모리 복사, 32K 어휘, 128행과 순서, 8×4×1,024 형상, BF16과 동일 AdamW를 사용한다. 팔마다 기존 128행을 한 번 읽고 32행씩 네 번 갱신한다. 패딩 슬롯은 각각 131,072, 실제 입력은 32,216, 감독 CE 위치는 772다. 한 팔에만 원 ACTD의 anchor·잔여 질량 손실을 0.3으로 더한다. 기존 `causal_left_variant`의 611위치와 보류 161개를 사용하고, 보류 위치의 CE는 유지한다. 학생보다 뒤의 교사 문맥을 참조하는 위치가 수락되면 실행 전에 중단한다. 원 코퍼스의 입장, 독립 검증 점수, 새 배포본 저장은 이번 판정의 범위 밖이다.
+
+예상은 두 팔 모두 노름·최대 미분이 유한하고 4회 실제 갱신을 끝내되, 첫 CE가 일치하고 최종 가중치 지문은 갈라지는 것이다. 같은 배치의 추가 점수 처리로 시간은 늘 수 있다. 메모리는 CUDA 할당·예약과 장치 조회를 분리한다. 기존 실물 미분 피크 2.38 GB를 참고하고 AdamW 상태를 포함한 장치 최대 약 6 GB를 예상한다. 이 비용은 현재 단일 카드의 기술 대조이며 공식 품질 분해능은 정하지 않는다.
+
+CPU에서 교사 실제 종료 영수증과 prepare/cache SHA, 모든 분포, 기존 경계와 두 언어의 입력량을 교차 검증한다. 네 배치의 772/611 분모와 기존 표본만의 사용을 봉인한 뒤 GPU 1회로 두 팔을 순서대로 실행한다. 태그는 `p106b_actd_real_cache_updates_v1_20261119`다. CPU 봉인과 단일 GPU 프로세스의 180초 상한을 사용한다. 현재 사용자177 실행 창을 적용한다.
+
+v1은 이전 추론 manifest의 `config.py`가 P109 프리셋 추가 전 상태를 가리켜 CPU 사전검증에서 종료 1이었다. GPU는 시작하지 않았다. v2의 별도 학습 실행기는 해당 구성 파일의 이전·현재 SHA와 다른 검증 소스의 일치를 확인한다. 선택한 한 모델의 완료 기록, 실제 체크포인트 SHA·설정·삼진 경로·가중치 지문을 모두 대조하고 CPU에서 현재 타입으로 복원한다. 나머지 조건은 유지한다. 새 태그는 `p106b_actd_real_cache_updates_v2_20261119`다.
+
+**결과.** v2 CPU와 GPU가 모두 종료 0이었다. 같은 첫 CE에서 4회씩 갱신했고 최종 지문은 달랐다. 611개 ACTD 타깃을 실제 적용했고 최고 CUDA 할당은 7 MiB 늘었다. 순서가 고정된 1회 대조의 시간에는 초기 비용이 섞였다. 정식 학습 품질과 채택은 원장 63에서 이어간다. [결과101 §690](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-actd-real-cache-updates)
+
+## Stage8pr6Wj. Qwen HF의 남은 WiC 한 과제만 재개
+
+### 1. 선행 실제 결과
+
+12:59:10 두 모델 평가 부모가 종료 8이었다. Gemma 5과제와 Qwen 4과제는 완료됐다. Qwen WiC 비용 표본 17개는 6.775초였고 1,260행 예상 843.234초가 남은 335.114초를 넘어 원 점수행이 0개였다. 격리 프로세스 종료 후 사용 PID가 없음을 확인했다.
+
+### 2. 방식과 판정
+
+`p106b_qwen_hf_kobest_wic_remaining_v1_20261118`에서 Qwen 0.8B HF FP32·eager·fixed1024를 같은 원 어댑터와 수치 canary로 사용한다. 표본과 전체 요청을 기존 원 순서로 평가한다. 이전 Qwen 네 과제와 Gemma·Native 완료 원행은 보존하고 다시 평가하지 않는다. WiC의 정확 SHA, 우도·원정답·혼동·1,260행 및 원자료 불변을 검산한다. 평가 자식 1,130초와 PID/메모리 반납 확인을 예약한다. HellaSwag GPU 뒤, P013 실제 학습의 남은 시간을 고려해 실행한다. 원 미완료 WiC의 추가 평가이며 모델·데이터를 새로 취득하지 않는다.
+
+준비는 13:03:53 KST 종료 0으로 완료했다. Bonsai HellaSwag는 원 수치 기준 미달로 13:02:28 종료 8이었다. HellaSwag의 완료 선결과 원 비용을 보존하고 독립 Qwen WiC를 이어 시작했다. [Qwen 준비·원 종료](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-exact-kobest-two-partial) · [Bonsai 수치 보류](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-single-batch-hold)
+
+13:14:22 KST 부모·자식 종료 0으로 WiC 1,260행을 검산했다. 이전 Qwen 네 과제를 합친 다섯 과제 평균 macro-F1은 51.3139%다. 완료 과제 재평가 없이 P013 실제 GPU 학습으로 넘겼다. [결과101 §663](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-qwen-hf-wic-only-complete)
+
+## Stage4ft5Wg. SODA 준비 입력의 샤드 경계 재개
+
+### 1. 목적과 방식
+
+원장 69의 기존 dialogue wire를 고정 JSONL 샤드의 다음 행과 연결한다. 정식 생산에 입장하는 원문 대신 신규 합성 원행을 사용한다. 원 입력과 서사 target을 먼저 보존하고 기존 `prepare_source`의 입력 전용 view가 이를 분리하도록 한다.
+
+| 방식 | 판단 |
+|---|---|
+| API와 이전 실물 예시를 다시 검사 | 원행의 중단·재개 순서를 보여 주지 못한다. |
+| 전체 파일 이름과 줄 수만 사용 | 다른 버전이나 원행 변경을 검출하기 어렵다. |
+| manifest SHA와 다음 전체 행 번호 | 이 방식을 사용한다. 기존 샤드 무결성 검사를 재사용하고 해당 샤드만 보관한다. |
+
+### 2. 실제 검증과 비용
+
+태그 `p106b_soda_manifest_resume_cpu_v1_20261118`. CPU1, 120초. 여러 샤드의 합성 원행 9개 중 지원 입력과 보류를 모두 기록한다. 첫 자식은 일부 행의 cursor를 남긴 뒤 한 행을 준비하고 커밋하지 않은 상태에서 끝낸다. 다음 자식은 저장 cursor에서 재개해 해당 행을 정확히 다시 읽는다. 연속 경로의 전체 행 지문과 비교하며 다른 manifest·범위 오류·동일 길이 원행 손상을 거부한다. 교사 요청, 외부 데이터 접근, 도매 수집과 실제 TRAIN 입장은 없다. 정식 운영의 성공/실패와 원저자 root 검증은 별도로 남는다.
+
+13:10:49 KST 원 자식 둘의 자료와 재개가 저장됐다. 합성 ID 0의 정상 HOLD를 첫 진단의 기대값에 빠뜨려 부모는 종료 1이었다. 저장된 일곱 샤드의 9행을 전량 확인하고 놓친 검증만 13:12:21 종료0으로 닫았다. 같은 입력의 자식을 다시 실행하지 않았다. [결과101 §662](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-manifest-resume-cpu)
+
+## Stage4ft5Wh. SODA 재개의 원천 식별과 요청 연결
+
+원장 69의 완료된 샤드 경계 대조를 재사용한다. 같은 manifest와 행 번호로 다른 Aya Parquet 명세를 주면 다시 읽는 원행은 같지만, 준비 후보에 기록되는 파일 SHA가 바뀌었다. manifest에 선언한 원천 명세 SHA를 확인하고 새 재개 위치에도 원천 명세 지문을 포함시킨다. 과거의 두 필드 위치는 원래 명세를 확인한 경우 이어받는다.
+
+기존 작성 9행과 별도 자식으로 같은 원천의 요청을 다시 만든다. 다른 명세·파일과 원천 명세 없는 요청 생성을 거부하고, 준비 행과 HOLD 모두 원행 지문과 다음 위치를 봉인한다. 실제 교사의 기존 요청 형식을 사용하며 이 CPU 실행에는 모델 로딩과 실제 교사 요청이 없다. 태그 `p106b_soda_source_binding_v1_20261119`, 사용자177 창이다. 원저자 자료·권리·공식 분할과 운영 교사 생산 판정은 원장 69의 선결을 따른다.
+
+**결과 회수.** 9행, 준비 6·보류 3, 별도 재개 요청 지문 일치, 잘못된 조건 6건 거부를 확인했다. 생성자에 넘긴 명세가 디스크 확인 동안 바뀌어도 원래 파일 지문을 유지하게 했다. 보조 검증 오류 두 건과 수정 완료를 함께 남겼다. [결과101 §687](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-source-bound-request)
+
+## Stage4ft5Wi. 원천이 고정된 SODA 요청의 생산기 연결
+
+원장 69에서 Stage4ft5Wh의 원천·원행·재개 위치를 같은 입력으로 재사용한다. 기존 교사 생산기의 그룹 실행, 형식 검사와 3회 재시도를 사용해 SODA 입력 전용 요청과 학생 후보를 연결한다. 시도별 원응답은 기존 불변 샤드에 보관하고 후보에는 요청·원행 지문, 과거 원본 대화 키와 정답 구간을 남긴다. 실제 커서는 원응답·후보 샤드가 기록된 뒤 저장한다.
+
+태그 `p106b_soda_bound_group_v1_20261119`, 사용자177 창이다. 이미 봉인한 작성 원행, 기존 chat32 토크나이저와 주입한 CPU 응답으로 검증한다. HOLD 무호출, 형식 오류 재시도, 세 턴 응답과 3회 실패, 중단 뒤 미커밋 위치 재개를 실제 코드에서 확인한다. 오래된 V3 배치·모델 파일은 읽기 경계에 둔다. 실제 운영 자료의 원저자·권리·분할과 교사 할당은 별도 선결이다.
+
+**결과 회수.** 작성 응답 8건을 사용해 후보 2건을 저장했고, HOLD·3회 제한·별도 재개를 확인했다. 외부에서 원래 위치 사전을 바꿔도 같은 행을 계속 처리하는 것도 검증했다. 실제 운영 데이터·교사 호출의 선결은 원장 69에 남긴다. [결과101 §688](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-bound-group-parser-resume)
+
+## Stage4ft5Wj. 원천 고정 SODA 요청과 로컬 교사의 응답 호환성을 확인한다
+
+원장 69에서 CPU 주입 응답으로 회수한 4ft5Wi의 다음 경계를 검증한다. 같은 작성 예시의 영어 QA 한 그룹과 한국어 3턴 한 그룹을 기존 Gemma 4 12B Q4_0 교사에 보낸다. 기존 `llama-server`의 루프백, MTP off, 8,192 문맥, 원 파서와 응답 재시도 계약을 사용한다. 두 HOLD는 실제 요청 전 거부를 확인한다. 원 원행·요청 지문과 모델·토크나이저 지문, 응답 종료 이유·시도 수·가시 정답 토큰과 후보 저장을 남긴다. 후보 상태는 작성 예시 기술 검증의 편입 대기다.
+
+기존 교사 형식을 그대로 써서 정상 응답이 파서를 통과할 가능성이 있다. 실제 모델이 헤더나 한국어·JSON 제약을 어길 수 있어 거부와 지연도 기록한다. 단일 GPU 최대 420초, 고유 태그 `p106b_soda_local_teacher_v1_20261119`, 사용자177 창이다. 작성 입력으로 확인한 결과와 75M 운영 생산의 원저자·권리·분할·교사 할당은 각각 판정한다. [CPU 대조](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-bound-group-parser-resume)
+
+**결과 회수.** 첫 영어 응답은 통과했지만 저장 어댑터의 행 카운터 누락으로 종료 9였다. 기존 영어 응답을 원 지문·토큰 수로 재사용하고 한국어만 3회 호출한 복구 태그 `p106b_soda_local_teacher_v2_20261119`는 종료 0이었다. 두 HOLD 무호출과 편입 대기 후보 2건, GPU 반환을 확인했다. [결과101 §689](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-local-teacher)
+
+## Stage7atX. Native DWA 표현 정렬의 실제 갱신
+
+### 1. 목적과 방식
+
+원장 62의 이전 §620 Native CE/DWA 미분과 상세 원행은 재사용한다. 새 단계는 옵티마이저가 학생과 투영을 실제로 갱신하는지 확인한다. 같은 새 합성 문항에서 기존 CE만 쓰는 팔과 전체 CMA·DWA를 더하는 팔을 비교한다.
+
+| 방식 | 판단 |
+|---|---|
+| 기존 미분 ABBA 반복 | optimizer 적용을 관측할 수 없다. |
+| 새 합성 CE/DWA 학습 | 이 방식을 사용한다. 학생·교사 전체 어휘와 기존 DWA 수학, 원 분모를 유지한다. |
+| 운영 교사에서 실제 언어 단기 학습 | 운영 자료 선결과 정식 분할·권리가 필요하다. |
+
+### 2. 실행과 판정
+
+태그 `p106b_dwa_native_updates_synthetic_v1_20261118`. 동일 새 dense14 학생, 학습 폭64·원문당 forward 1·합성 네 문항/갱신, 양팔 각 3그룹이다. 원 CE 44개와 합성 교사 52 predictor/그룹, 교사 151,936×1,024 고정 head, 네 투영, 두 방향 KL, hidden/embedding soft-DTW와 원 band를 사용한다. CE를 고정하고 합성 KD와 DTW 계수는 0.3으로 비교한다. 기존 BF16 eager, matched Muon·공통 AdamW, 투영용 별도 AdamW, 같은 초기학생 지문·첫 CE와 시간·메모리 기록을 요구한다. 기존 실제 교사와 이전 완료 문항은 다시 열지 않는다. 현재 사용 가능한 기존 CUDA·Triton, 단일 GPU, 자식당 최대 420초다. 언어 품질은 평가하지 않는다.
+
+13:38:49 KST 실제 종료 0으로 두 팔의 총 6갱신과 같은 초기 CE를 확인했다. DWA의 투영 가중치와 학생 가중치가 바뀌었다. [결과101 §666](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dwa-native-optimizer-actual)
+
+## Stage7atY. 실제 Qwen 특징의 DWA를 같은 학생 학습에 연결한다 ✅ 완료(결과 101 §693)
+
+원장 63의 실제 DWA 갱신을 확인한다. [결과101 §620](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 문항별 DWA 수학과 실제 미분, [§666](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dwa-native-optimizer-actual)의 합성 갱신을 재사용한다. 저장한 실제 Qwen 특징, 두 원어휘, 기존 네 투영과 양방향 KL·대역·soft-DTW를 사용한다.
+
+앞의 DSKD와 같은 128행·완료 93M 학생·8×4×1,024·BF16 본체·Math SDPA·AdamW 1e-5·clip 1에서 네 번 갱신한다. 실제 입력은 32,216토큰, CE 감독 위치 772개, DWA 교사 위치 811개다. 본체와 CE는 앞 단계와 같은 배치 계산을 사용하고 DWA의 지도 위치와 거리는 실제 문항별 길이로 계산한다. 기존 단일 문항 DWA의 FP32 CE를 중복 더하지 않는다. 원 8행 단순 패딩에서의 28,744셀 대신 기존 문항별 6,823셀을 사용한다.
+
+합산 CE의 동일 초기 지문·첫 CE와 CE-only의 4회 결과는 DSKDv2의 완료 결과를 고정해 재사용한다. 비교되는 처리는 CE에 가중치 0.15의 DWA 보조 항을 추가하는 것이다. 가중치는 기존 실물에서 CE와 CE+DWA 미분 노름의 합이 주는 보조 미분 크기 상한을 참고했다. 태그는 `p106b_dwa_real_cache_updates_v1_20261119`다. 초기 네 투영은 기존 seed·모양·지문을 재현한다. 최종 학생과 네 투영의 갱신, 각 묶음 분모·유한 미분, 실제 4회 적용과 동결 교사를 대조한다. 이전 CE 비용은 동일 형상의 별도 실행 참고로 읽는다.
+
+CPU에서 실제 종료·DWA 원행·특징·두 원어휘 헤드 및 CE 기준을 봉인한다. 단일 GPU 180초 상한과 100ms 장치 표본으로 35~55초를 예상한다. 실제 교사 본체 재실행과 체크포인트 저장은 0회다. 독립 언어 품질과 정식 운영은 입장 뒤 비교한다.
+
+**결과.** 기존 CE의 첫 손실과 초기 학생을 재현했다. 네 실제 갱신으로 학생과 투영 묶음이 바뀌었고, 772·811위치와 교차 배열 6,823개를 유지했다. 장치 표본 최고 7,869 MiB, 종료 0이었다. 품질과 장기 운용은 정식 교과 입장 뒤 확인한다. [결과101 §693](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dwa-real-cache-updates)
+
+### Stage8pr8W — 같은 Bonsai의 문맥 상한별 실제 장치 사용량
+
+**완료·두 문맥 장치 표본.** 동일 합성 입력의 raw logits는 비트 일치했고 장치 표본·내부 예약을 회수했다. [결과 101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-prism-physical-device-vram)
+
+원장68의 배포 자원 재계측이다. 같은 PTQ1_0 및 Prism adfffbe, GPU offload, 4 CPU threads와 n_batch/n_ubatch 512를 유지한다. 기존 비공식 진단 입력의 토큰을 반복해 만든 128·384 입력을 각 네 번 사용하고, Prism의 512와 1024 컨텍스트 할당을 새 프로세스에서 비교한다. 30ms 목표 NVML 표본, 전후 유휴점, 각 프로세스 최대 RSS, 엔진이 출력한 GPU 모델·상태·compute buffer와 raw logits 해시를 기록한다. 확장 문맥이 cache 할당을 늘릴 것으로 예상하되 device-wide 차이의 크기와 물리 순간 최고점은 미정이다. 기존 공식 문항은 사용하지 않는다. 단일 GPU·컨텍스트당 150초 상한이다. [직렬 큐](../scripts/run_p102a_prism_followups_20261118.py)
+
+### Stage7gsW — 무학습 Native에서 hard STE·GSQ와 합성 CE/KD를 교차한다
+
+**완료·갱신 전 오류.** 처음 네 자식은 역전파 재계산의 SDPA backend 차이로 모두 종료1이었다. [결과 101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-cold-start-checkpoint-error)
+
+기존 GSQ 좌표 실험은 이미 학습된 동일 Native와 반복 자료를 사용했다. 원장64의 무학습 시작에서도 hard forward·tied embedding/head·KD가 실제로 작동하는지 확인한다. 같은 새 dense14·rank256·어휘32K에서 STE/GSQ × CE/CE+KD 네 팔을 비교한다. 합성 수열의 다음 토큰은 현재 토큰마다 고정 8개의 확률 지지점을 가진다. labels는 이 분포에서 추출하고 teacher KL은 지지점 밖 0 질량을 반영한 전체 student 정규화로 계산한다.
+
+학습 4×64×24=6,144 목표/팔, 별도 보간 없는 검증 seed 4개/1,024목표, 동일 teacher와 같은 초기화 seed다. CE+KD에는 0.3 가중치를 준다. 기존 hard quantization bridge로 같은 물리 embedding을 입력/출력에 연결하며, 각 옵티마이저는 AdamW 2e-4·clip1을 쓴다. 24개 실갱신과 train/held-out CE·KL·최고점 정답·메모리·tied 상태 회수를 확인한다. GSQ에서 실제 갱신 가능하나 코드·계산 비용이 증가할 것으로 예상한다. 합성 성능은 말뭉치 및 언어 품질과 분리한다. 네 조건을 자동 직렬 실행하고 고유 태그 `p106b_gsq_ste_cold_start_v1_20261118` 및 자식 최대 390초를 적용한다.
+
+### Stage7gsWb — 재계산에 SDPA backend 설정을 일치시킨 cold-start 재검증
+
+**완료·96갱신.** 같은 synthetic CE/KD에서 GSQ가 STE보다 느리고 할당과 최종 손실이 컸다. [결과 101](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-cold-start-actual-training)
+
+Stage7gsW의 자식 4개는 모두 첫 역전파에서 `CheckpointError`로 종료1, 부모 종료8이었다.
+forward의 Math SDPA가 끝난 뒤 기본 backend로 재계산되어 첫 저장 텐서가
+FP32 `[48,64,64]`에서 BF16 `[4,12,64,64]`로 바뀌었다. 원 스크립트와 원 로그를 보존한다.
+새 태그 `p106b_gsq_ste_cold_start_v2_20261118`에서 forward·backward 전체에 Math SDPA 설정을 적용한다.
+Autocast의 forward 범위, 독립 4조건, 초기화·배치·목표·학습률·판정 기준은 Stage7gsW와 같다.
+
+### Stage7gsX. 무학습 dense14에서 실제 교사 분포로 삼진 학습을 시작한다 ✅ 완료(결과 101 §691)
+
+원장 64의 [합성 무학습 초기화](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-cold-start-actual-training)와 [완료 모델의 실제 CE·ALM](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)을 재사용한다. 이번에는 결정론 초기 삼진값이 같은 새 dense14 학생에 동일한 실제 CE·ACTD를 적용하고 삼진 배정 방식의 학습 경로를 비교한다. 정식 P109 통합 학습은 원장 전수 완료·정제 인계의 순서를 따른다.
+
+| 조건 | 판정 범위 |
+| --- | --- |
+| 합성 무학습 초기화의 기존 네 조건 | 경로 동작과 합성 목표의 음성을 재사용한다. |
+| 이미 학습한 학생의 실제 교사 신호 | 기존 ALM·ACTD의 실제 완료본 갱신을 재사용한다. |
+| 무학습 dense14의 실제 교사 신호 | 오직 이 두 비교 팔을 새로 수행한다. |
+
+양쪽은 기존 기술용 128행을 같은 순서로 두 번 읽는다. 8×4×1,024의 8회 갱신에는 팔당 패딩 슬롯 262,144개, 실제 입력 64,432토큰, CE 1,544개, 인과 방향 ACTD 1,222개가 들어간다. 교사 top128은 다시 생성하지 않는다. 같은 m100s10 초기 시드 1337, hard 삼진 BF16, Math SDPA, AdamW 2e-4·clip 1, CE+0.3 ACTD를 고정한다. GSQ의 초기 logit strength는 4.6이고 온도는 1.00, 0.85, 0.70, 0.55를 각각 두 갱신에 적용한다. STE에는 Gumbel 온도가 없다. 이 대조는 해당 GSQ 일정 전체와 STE의 비교다.
+
+학습 전 결정론적 삼진 코드의 지문과 같은 입력 한 묶음의 CE·ACTD가 일치할 것으로 예측한다. 두 팔의 8회 갱신, 유한 미분, 기본 공유 어휘표의 직접 미분 및 실제 코드·스케일 변화를 확인한다. 마지막 음수·0·양수 수를 본체와 입출력 공유표에서 따로 집계한다. 세 값 중 하나라도 사라지거나 단일 값이 99% 이상이면 해당 묶음에서 붕괴 신호로 기록한다. 이 짧은 기술 분모에는 독립 품질 판정자를 두지 않는다.
+
+CPU에서 기존 실제 교사 영수증, 자료·코드 SHA, 배치별 분모와 현재 dense14 설정을 봉인한다. 기존 같은 형상의 비용으로 60~110초, 장치 최고 11 GB 이내를 예상하고 부모 240초 상한과 장치 사용량 표본을 적용한다. 같은 단일 GPU에서 두 팔을 분리 프로세스로 순차 실행하며 사용자177의 승인 창을 적용한다. 태그는 `p106b_gsq_actual_actd_start_v1_20261119`이다.
+
+v1 부모는 봉인한 설정의 세 튜플이 JSON에서 리스트로 읽혀 실행 전 종료 1이었다. 모델 생성과 학습은 0회다. v2는 설정을 JSON 표현으로 맞추고 CPU에서 봉인본을 다시 읽어 동등성을 강제한다. 나머지 학습 조건은 유지한다. 새 태그는 `p106b_gsq_actual_actd_start_v2_20261119`다.
+
+**결과.** 초기 코드·고정 손실이 같은 두 팔이 각 8회 갱신했으며 공유 어휘표에 실제 미분이 들어갔다. 결정론적 코드 변경은 STE 3,410,808개, GSQ 0개이며 GSQ의 그룹 스케일은 744,447개 변했다. GSQ 장치 최고 12.37 GB로 예상 11 GB를 초과했다. 해당 AdamW의 8회 좌표 이동 상한 0.0016175와 초기 거리 4.6을 대조했다. 기존 조건을 재사용하고 정식 품질과 최종 학습된 내부 배열의 배포는 원장 64에 남긴다. [결과101 §691](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-actual-actd-start)
+
+### Stage7gsY — 실제 교사 조건의 GSQ 좌표 스케일링과 5트릿 배포 ✅ 회수(결과101 §694)
+
+원장 64의 기존 실제 Qwen 신호 실험은 초기 로짓 경계 4.6을 8회 갱신으로 넘지 못했다. 이전 별도 Adam/Lion 실험의 `ScaledGSQBank`를 적용한다. 내부 좌표를 4,096으로 나누고 hard Gumbel forward의 로짓에는 같은 배율을 곱한다. 출발할 때 실제 샘플링 로짓과 결정론적 코드·입력/출력 공유 스케일을 유지한다. 좌표의 시작 경계 거리는 0.001123으로 이전 AdamW 상한 0.0016175 안에 든다. 실제 갱신 방향이 일관되지 않으면 결정론적 코드가 그대로일 수 있다. 배율은 클리핑 이후 스케일 등 다른 값의 변화에도 영향을 줄 수 있어 좌표계 전체를 비교한다.
+
+기존 GSQ 팔의 저장 결과를 사용한다. 새 한 팔은 같은 m100s10 dense14, 32K, 초기 시드 1337, AdamW 2e-4와 clip 1, BF16·Math SDPA·온도 일정, 기존 기술 128행·실제 입력 64,432토큰·CE 1,544개·Qwen ACTD 1,222개로 8갱신이다. 8×4×1,024의 262,144슬롯 중 기술 128행을 2회 사용한다. 이 분모로는 일반화·정식 풀 크기 조건을 판정할 수 없다. 초기 코드와 기존 CPU 초기 모델 지문·첫 고정 CE/ACTD 수치가 같은지 먼저 대조한다. 포함된 실제 교사 분포는 재계산하지 않는다.
+
+마지막 갱신의 100개 물리 은행에서 나온 정확한 결정론적 trit과 FP32 그룹 스케일을 직접 5트릿 내보내기에 사용한다. 입력·출력 어휘표와 랭크 투영은 각각 한 벌을 공유한다. 코드 왕복·최종 학습 지문·스케일 바이트·요청 경계 검사를 거친다. 단일 CPU에서 짧은 고정 입력 두 건의 실제 로짓과 greedy 선택을 학습 종료 직전 FP32/FP16 KV의 수치와 대조한다. 이전에 봉인된 한영 1,017토큰을 새 배포본에 넣어 8토큰 생성과 복원까지 한 PID에서 실행한다. GPU 모델의 같은 입력·선택과 실제 최고 RSS를 비교한다. 40,000,000 B를 기술 메모리 목표로 둔다. 0.001은 동일 경로에서의 로짓 최대차 기술 문턱이다. 공식 한영 품질을 판정할 별도 길이·정답 집합은 정식 입장 이후에 확인한다.
+
+신규 태그 `p106b_gsq_scaled_actd_deploy_v1_20261119`, 사용자177 창이다. CPU 코덱/빌드가 먼저이며 GPU는 이전 11,801 MiB를 기준으로 12~13 GB 내외, 갱신·저장·수치 기준 약 45~90초, 부모 150초 상한이다. 단독 장치 가용량·작업 소유자 확인 후 실행한다. 학습용 optimizer·잠재 로짓·원 체크포인트는 배포 파일에 저장하지 않는다.
+
+**배포 회수.** GPU는 8갱신과 5트릿 파일·짧은 기준 로짓 기록 뒤 마지막 CUDA 메모리 검사에서 종료 1이었다. 상위 실행기가 GPU 반환을 확인했다. CPU에서 당시 실행기와 봉인된 로그를 대조하고 100개 물리 은행을 복원했다. 유효 삼진값 4,687,128개가 초기값과 달랐고, 같은 시드의 CPU 초기 코드 지문이 원 GPU와 일치했다. 짧은 GPU 로짓의 최대차는 0.000001431이다. 저장되지 않은 한영 장문 기준은 같은 파일의 복원 모델로 계산했다. 두 전체 요청은 각각 38,215,680 B였고 같은 토큰을 여덟 번 반복했다. 공용 CUDA 정리의 할당·예약 0은 두 행렬곱에서 검증했다. 정식 품질은 후속 조건이다. [결과101 §694](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-scaled-actd-native-deploy)
+
+### Stage11eW — 기존 HF 세 배포본의 생성 구간 물리 VRAM 표본
+
+Falcon-H1-Tiny-90M, Gemma270M, Qwen0.6B의 검증된 로컬 FP32/eager 본체와 기존 en128/en512 입력 토큰을 재사용한다. 길이별 강제 greedy 8토큰을 4회 생성한다. 이전 32토큰 결과의 첫 8개와 일치 여부만 확인한다. 같은 GPU에서 모델 하나씩 띄우고 device-wide NVML 25ms 목표 표본, 시작·peak allocator, 반환 KV/SSM 저장량, 프로세스 RSS를 구분한다. 새 공식 문항 평가·학습은 0이다. 관측 최대는 표본에 잡힌 물리량이며 기기·테스트 경로 비교에는 단위를 표시한다. 태그는 `p106b_hf_sampled_generation_v1_20261118`이다.
+
+### Stage8pr6Wj — 기존 Bonsai HellaSwag의 원 정확 경로 구간 저장
+
+원 10,042문항 전량비용은 21,638.53초 추정이다. 단일 배치 최적화가 132/135 후보에서 수치 오차를 보여 적격 판정을 받지 못했다. 이전 다섯 Core6 과제와 저장 모델을 재사용하고, 이번에는 원 `QUALIFIED_LAST_LOGIT_PREFIXES` 경로의 공식 순서 0~255, 256~511, 512~767만 차례로 처리한다. 구간별 상한 880초와 기존 16:30 회수 경계, 19,999,999B 이하 shard, canonical 원행·구간 끝·SHA·raw likelihood를 보존한다. 작업 도중 중단해도 이미 닫힌 구간을 재사용한다. 조건과 점수 함수는 §657의 완료 다섯 과제와 함께 쓴 원 조건이다. 전체에서 누락이 0일 때만 공식 HellaSwag와 Core6 평균을 산출한다. 이 대기열의 목표는 동일 실험의 저장 가능한 구간으로 진척하는 것이다. 새 태그 `p106b_bonsai_hellaswag_exact_prefix_intervals_v1_20261118`를 쓴다.
+
+### Stage8pr6Wk — 같은 공식 평가의 다음 256문항 단위 자동 인계
+
+Stage8pr6Wj의 0~767문항이 세 범위 전부 SHA·정확 원행·부모 종료0·모델 반환으로 확인될 때 768부터 시작한다. 현재 계획은 최대 여덟 개의 256문항 범위, 상한 610초/범위다. 기존 16:30에 충분히 들어오는 범위만 개시하고 구간을 다시 계산하지 않는다. 전량 10,042행에 닿기 전에는 공식 점수와 Core6 평균을 적지 않는다. 앞 작업을 감시하는 별도 읽기 역할은 작업 실행과 무관하며 자동 런처가 원 종료 및 GPU 반환을 확인한다. 태그는 `p106b_bonsai_hellaswag_exact_prefix_continue_v1_20261118`이다.
+
+**실행 회수.** 1차 768행과 자동 후속 2,048행이 각 종료0이었다. 독립 CPU에서 순서·원 SHA·보기·길이 정규화를 검산해 누락·중복·절단0인 누적 2,816행을 회수했다. 다음 승인 창에는 공식 0-based 번호 2,816부터 7,226행을 이어서 처리한다. 현재 명령의 역사적 16:30 준비 경계를 새 승인에 복제하지 않는다. 짧은 Stage8pr6Wk는 별도 Qwen WiC와 겹치므로 전체 Bonsai 고유 태그로 찾아간다. [결과101 §§673~674](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-exact-continue)
+
+### Stage8pr6Wm — 남은 승인 범위의 같은 공식 96문항
+
+검산된 공식 0-based 번호 2,816부터 2,911까지의 첫 96문항을 기존 정확 prefix scorer로 처리한다. 앞 2,816행의 두 종료 SHA, 저장 shard와 원 source revision을 고정한다. 채점 구간 최대 245초, 사용자 17:00 KST 안의 회수 목표 16:59:40이다. 공식 전체 점수와 Core6 평균은 전량 회수 때 산출한다. 고유 태그는 `p106b_bonsai_hellaswag_exact_prefix_last_interval_20261118`이다.
+
+**실행 회수.** Stage8pr6Wm은 저장 96행과 GPU 종료0이다. 합산 독립 CPU 종료0에 따라 공식 2,912번부터 7,130행을 이어간다. [결과101 §675](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-exact-2912)
+
+### Stage8pr6Ws — 공식 HellaSwag 2,912번 이후 재개
+
+[후속 런처](../scripts/run_p106b_hellaswag_exact_suffix.py)는 768·2,048·96행의 합산 CPU 검산을 출발점으로 묶는다. 기존 세 종료 기록, 구간별 shard, 원 모델·자료·채점 소스 지문을 대조하고 공식 순서 `[2912, 10042)`만 개시한다. 계획은 256행 27구간과 끝 218행 한 구간이다. 같은 Prism Bonsai PTQ1_0과 정확 prefix 경로를 단일 GPU에서 직렬로 사용한다. 이전 다섯 과제의 결과와 이미 처리한 문항을 재사용한다.
+
+11월 19일 17시 KST까지의 갱신 승인에서 이 런의 회수 경계는 16시 58분 KST다. 구간별 상한은 610초다. 기존 256행 실측을 기준으로 남은 채점과 파일 회수는 약 70분을 예상하며 구간별 길이나 GPU 상태에 따라 달라질 수 있다. 태그 `p106b_bonsai_hellaswag_exact_suffix_20261118_r1`로 새 프로필·원로그·구간 증거를 보존한다. 다음 창은 종료 증거와 이어지는 구간이 검증된 기록으로 재개 위치를 계산한다. 종료 또는 구간 증거가 손상되면 확인을 마칠 때까지 후속 평가를 보류한다.
+
+누락·중복이 없는 10,042행, 원 문항과 `acc_norm` 길이 정규화의 독립 검산이 단일 과제 공식 점수의 선결이다. 이후 같은 공식 Core6 다섯 과제를 합쳐 과제별 동일가중 평균과 동일 문항 쌍대 95% 구간을 산출한다. 구간별 증거는 비용과 진척을 확인하는 데 사용한다.
+
+### Stage8pr6Wt — `COST_HOLD` 이후 3,168번부터 재개
+
+첫 구간 256행을 저장했다. 둘째 구간은 pilot 45.60초를 바탕으로 669.79초를 예상해 잔여 560.08초에서 보류했다. 2,912~3,167번을 보존하고 3,168번부터 6,874행을 이어간다. 같은 공식 입력·모델·정확 채점기에서 첫 큐가 사용했던 880초 구간 상한을 적용한다. 기존 610초와 달라지는 조건은 구간 상한이다. 새 태그 `p106b_bonsai_hellaswag_exact_suffix_20261118_r2`와 이전 종료 SHA를 고정한다.
+
+**부분 완료.** 두 실행이 512행을 추가로 보존했다. GPU 동시 CPU에서 기존 Bonsai 다섯 과제 및 NativeQ 전량의 문항 대응을 확인했다. [결과101 §676](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-exact-3424) · [쌍대 기준 §677](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-nativeq-pair-reference)
+
+### Stage8pr6Wu — 직전 두 범위를 저장한 뒤 남은 6,618행
+
+재개 첫 구간 3,168~3,423번은 256행을 저장했다. 그 다음 pilot은 846.49초를 예상했고 남은 813.62초 때문에 0행으로 보류됐다. 두 구간에서 새로 저장한 512행을 재사용하고 3,424번부터 이어간다. 구간 256행과 정확 채점 조건을 유지하고 각 상한을 1,800초로 한다. 새 태그 `p106b_bonsai_hellaswag_exact_suffix_20261118_r3`에서 앞의 두 종료 SHA를 모두 확인한다. 남은 26구간의 실제 처리 시간은 이전 범위에 따라 약 1~3시간이며 외부 프로세스 상한은 47,500초다. 새 승인 종료 전에 모든 모델과 작업을 반환한다.
+
+**완료.** 192.9분에 6,618행을 저장하고 GPU 종료 0을 확인했다. CPU가 10,042행의 공식 HellaSwag 51.4838% `acc_norm`과 Core6 동등 문항 비교를 검산했다. 속도는 256행당 과거 표본 기준의 예상 범위를 조금 넘었다. [결과101 §678](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-exact-full-core6)
+
+<a id="p106b-qwen-bonsai-tokenizer-map-plan"></a>
+## 원장 65 — 교사 대어휘의 토큰 ID, 특수 토큰과 출력 행 대조
+
+로컬 Qwen3.5-0.8B HF 및 GGUF, Qwen3.8-27B GGUF, Bonsai2B와 기존 Bonsai27B MTP의 실제 토크나이저를 읽는다. 현재 P109 32K 표도 같은 기준으로 대조한다. GGUF는 토크나이저 메타데이터와 출력 텐서의 형상만, HF는 토크나이저 JSON과 가중치 헤더만 읽는다. 각 로컬 원천의 revision·메타데이터 지문·ID별 문자·병합 순서·토크나이저 설정·BOS/EOS·물리 출력 행과 HF에서 할당되지 않은 행을 구분한다.
+
+기존 Prism의 ABI에서 지원되는 원천은 가중치 없이 어휘만 열어 한영·공백·특수 토큰의 실제 ID를 대조한다. 동일한 ID와 병합이라도 특수 토큰 추가 정책의 차이를 별도로 기록한다. 기존 Bonsai 원로짓만 사용해 HF 실제 ID에 할당되지 않은 출력 행의 확률합을 구하며 GPU 결과를 재실행하지 않는다. 직접 KL은 같은 이력·토크나이저·응답 위치·출력 행 마스크가 확인된 조건에 두고, 이 작업의 표 대조를 학습 입장으로 보지 않는다.
+
+태그 `p106b_qwen_bonsai_tokenizer_map_v1_20261119`. CPU 전용, 새 환경·데이터·모델 가중치 적재·학습 0회, 180초 상한이다. [실행 코드](../scripts/diag_p106b_teacher_tokenizer_map.py)
+
+HF와 다르게 분절된 두 문자열에 NFC만 적용하는 후속 대조를 한다. 실제 HF normalizer와 같은 조건인지 확인하고 네 GGUF의 기존 어휘 전용 로더에서 두 문자열만 다시 입력한다. ID·병합이 같은 사실과 입력 정규화·EOS·대화 템플릿이 다른 사실을 각각 기록한다. 태그 `p106b_teacher_nfc_vocab_v1_20261119`. [후속 코드](../scripts/diag_p106b_teacher_tokenizer_nfc.py)
+
+**결과 회수**  GGUF 네 파일은 전체 ID와 247,587개 병합이 일치했다. HF에서 할당한 ID도 같았다. 두 입력의 HF 차이는 NFC를 맞추면 사라졌고, 특수 토큰과 템플릿은 별도 설정이 필요했다. HF 미할당 254행에는 저장된 Bonsai 원로짓에서 작은 확률 질량이 남았다. 같은 이력과 행 마스크를 고정한 뒤 248K 직접 KL을 평가한다. [결과101 §679](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-qwen-bonsai-tokenizer-map)
+
+### 원장 65 후속 — 공통 대화 입력에서 응답 위치를 실제로 맞춘다
+
+앞선 ID 대조가 끝난 로컬 HF와 네 GGUF에서 공통 `<|im_start|>`·`<|im_end|>` 대화 세 문자열을 실제 인코딩한다. 작성한 NFC 다중턴과 한영 경계를 대조한다. HF 토큰의 문자 위치가 응답 본문 또는 명시 종료 마커를 온전히 덮을 때만 그 ID를 정답에 포함한다. 정답의 예측 위치는 토큰 위치보다 하나 앞이다. GGUF는 본문 전체 ID가 HF와 일치할 때 같은 위치를 인증한다.
+
+내부 예약 마커는 입력에서 차단한다. 역할과 응답 사이를 가로지르는 BPE의 경우와 다른 EOS를 쓰는 대조를 남긴다. 태그 `p106b_direct_kl_response_mask_v1_20261119`, CPU vocab-only다. 전 분포의 출력 지원 행, 실제 교사 모델 실행 및 정식 KD는 별도다.
+
+**결과 회수.** 로컬 HF와 GGUF 네 자산의 다섯 토큰열이 일치했다. 작성한 세 대화의 응답 네 곳에서 이미 시프트한 본문·종료 타깃을 확인했다. BPE 1358이 역할 줄바꿈과 응답을 함께 덮은 한 대조는 보류했다. 종료 마커 대조는 타깃 ID 한 개가 달랐다. [결과101 §680](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-direct-kl-response-mask)
+
+### 원장 65 후속 — HF 미할당 출력 행 254개를 뺄 때의 KL 차이를 계측한다
+
+이미 저장한 Bonsai A0와 B의 전체 FP32 원로짓을 서로 교사·비교 분포로 사용한다. 새 모델 실행은 없다. HF의 실제 248,066개 할당 ID와 미할당 254개를 고정한다. T=1과 2 양방향에서 전체 열 KL, 공통 행 재정규화 KL, 제외 행·공통/제외 질량의 KL 분해, T² 가중치 적용 후 비교 로짓 미분의 차이를 FP64로 검사한다.
+
+두 문맥의 저장 분포는 학생 분포·정식 모델 품질의 대체가 아니다. 전체 분포와 공통 지지집합의 의미가 다른 것을 수치로 재현하고 우연히 고른 토큰의 점수에는 일반화하지 않는다. 태그 `p106b_248k_kl_support_readback_v1_20261119`, 외부 자료 추가 없이 CPU 전용이다.
+
+**결과 회수.** 두 방향·두 온도의 전체 KL을 공통 조건부·제외 조건부·그룹 질량으로 분해했다. 재정규화 KL과 T² 목적의 미분 모두 전체 행과 달랐다. 저장 두 문맥의 T=2 미분 L1 차이는 1.68e-3이었다. [결과101 §681](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-248k-kl-output-support)
+
+<a id="p106b-dvlm-real-prefix-head-plan"></a>
+### 원장 63 Stage7dvbyte2W — 실제 교사 문맥으로 P109 32K 출력부를 학습한다
+
+원 DVLM의 chat32 32,768행 초기화는 P109 32K와 같은 ID 순서가 아니다. 기존 Qwen3-0.6B BF16 원 head를 FP32로 읽는 확인을 재사용한다. P109 토크나이저의 실제 native 조각을 기준으로 전체 행을 다시 매핑한다. 동일한 조각의 기존 teacher ID는 원문자·바이트·특수 토큰 계약까지 확인하고 재사용한다. 미완료인 UTF-8 조각은 명시 별도 바이트 분해로 재현한다. 원 strict205·HPA445/444와 미실행 7개는 해당 원 조건의 결과다.
+
+직접 작성한 한영 자료의 문서별 학생 ID를 실제 바이트로 연결한다. 다음 학생 토큰의 바로 앞까지 완전한 UTF-8을 갖고 Qwen 재토큰화가 같은 문자열을 복원할 때만 학습 타깃을 포함한다. UTF-8 중간 경계·입력 없는 첫 예측은 집계에서 뺀 이유를 기록한다. 전체 텍스트의 Qwen 토큰열 앞부분과 같은 경계는 1회 순전파 재사용 가능성을 별도 표시한다. 현재 특징은 모든 경계에서 실제 prefix만 Qwen FP32에 독립 입력하며, 같은 길이별 CUDA 배치를 쓴다. 원 full HPA 경로와 별도다.
+
+출력 head의 바이트 평균 초기화와 행 순열 대조는 같은 값을 행에 다르게 붙인다. 동결 Qwen 특징·학습 64갱신×16타깃·같은 draw·AdamW·32K full CE를 고정한다. 2×1,024 이상 입장 타깃과 정해 둔 다른 주제의 한영 홀드아웃을 요구한다. 0·8·32·64회에서 원 NLL과 top-1, 언어별 분모를 회수한다. 표본의 토큰 손실과 실제 본학습 답변·교과 성과는 구분한다.
+
+태그 `p106b_dvlm_byte_head_real_prefix_v1_20261119`. CPU에서 두 tokenizer, 선택 tensor 원 지문, 전 행과 문서 출처·진짜 prefix를 봉인한다. 사용자가 승인한 한 장으로 Qwen 적재 1회, 특징 추출과 동일 특징의 두 head 학습을 직렬 실행한다. 예상 1분 이상, 최대 420초. 장치 VRAM 사용과 반환을 기록하고 감시자는 상태만 본다. 원본·정식 자료·체크포인트 쓰기 0. [런처](../scripts/diag_p106b_dvlm_real_prefix_head.py)
+
+**결과 회수.** 동결 Qwen에서 정확 prefix 3,907개를 실제 추출하고 두 head 128갱신을 종료 0으로 회수했다. 바이트 평균 초기화는 순열보다 한영 손실이 낮았으며, 64회 적합은 초기 head의 홀드아웃 NLL을 높였다. 실제 P109 학생의 학습과 원 HPA는 별도다. [결과101 §682](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dvlm-real-prefix-head)
+
+### 원장 65 후속 — P109 32K와 chat32를 실제 텍스트와 특수 마커에서 비교한다
+
+원장 63에서 사용한 두 32K의 실제 native 조각을 ID·종류·바이트·특수 속성별로 대조한다. 기존 작성 120문서를 두 tokenizer로 인코딩해 raw ID와 조각 순서를 비교하고, 한쪽 어휘에만 있는 정상 조각과 chat 예약 마커의 실제 대조를 추가한다. 병합 순서도 확인한다. 태그 `p106b_p109_chat32_ordinary_remap_v1_20261119`. CPU 토크나이저만 사용한다.
+
+**결과 회수.** 32,736개 공통 조각 중 같은 ID는 3개였다. 작성 120문서 중 104개의 조각열이 같았다. P109에만 있는 일반 조각 32개는 각 단독 문자열에서 chat32가 둘 이상으로 나눴다. [결과101 §683](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-chat32-ordinary-remap)
+
+<a id="p106b-p109-actual-prefix-kd-plan"></a>
+### 원장 63 Stage7dvbyte3W — 실제 32K 교사 분포를 기존 G4 학생에 전달한다
+
+§682에서 독립 손실이 더 낮았던 바이트 대응 초기 head를 동결해 쓴다. Qwen3-0.6B의 실제 prefix 특징과 P109 base 32K 전체 행을 함께 봉인한다. 기존 P079 2,289회 16층 G4 R2 가중치로 원본 CE와 CE+KD를 각각 시작한다. CE의 계수와 타깃을 유지하고 KD 팔에만 `0.3 × T² KL`, T=2를 더한다.
+
+이번에는 별도로 작성한 한영 훈련 문서와 다른 주제의 홀드아웃을 사용한다. 한 문서의 학생 ID는 오른쪽 padding하며 CE는 모든 실제 다음 토큰에 적용한다. KD는 실제 학생 prefix 바이트가 완전한 UTF-8이고 교사가 그 문자열을 정확히 복원한 위치에만 적용한다. KD 미입장 위치는 CE에 그대로 둔다. CPU에서 행과 예측 위치·타깃, 총 draw, 사용한 자료와 원본을 봉인한다.
+
+64회 갱신까지 동일한 배치 4문서(영어2·한국어2)와 같은 소비 순서, BF16 학생·완전 삼진·AdamW/Muon을 사용한다. 양팔의 초기 모델 및 CE가 일치해야 한다. 고정한 언어별 홀드아웃의 CE·top-1을 0·16·32·64회에 기록하고 문서별 원수를 남긴다. 교사 특징을 공유해 반복 추출 비용을 줄인다. 예상 장치 가용과 피크, 양팔 비용의 처리량을 함께 기록한다.
+
+새 태그 `p106b_p109_actual_prefix_kd_v1_20261119`, 해당 정렬을 통해 실제 P109 학생의 CE+KD를 검증한다. 예상 수 분, GPU 상한 600초, 사용자 승인 창과 고유 STOP을 적용한다. 결과 범위는 동일 실제 부모·독립 작성 자료·고정 seed의 기술 및 소규모 대조다. 정식 TRAIN 편입과 원 HPA·자유 답변 검증은 별도다. [런처](../scripts/diag_p106b_p109_actual_prefix_kd.py)
+
+**Stage7dvbyte3Wc 후속.** 저장한 문서별 CE·top-1 원수를 실제 평가 틀별로 대조한다. 같은 타깃 분모를 검산한다. 교사 특징 수급에서는 직접 처리한 고유 정확 prefix의 토큰과, 정상 원 교사 선두인 위치를 문서당 한 번에 처리하고 나머지는 별도 prefix로 계산할 때의 토큰을 각각 센다. 한 번 처리 경로의 숨은 표현 동등성 및 실제 속도는 별도다. 모델 평가 재실행 없이 CPU만 쓴다.
+
+**Stage7dvbyte3Wd/e 후속.** 같은 훈련 문서의 모든 입장 prefix에서 원 정확 독립 특징과, 교사 전체 ID 선두가 정확한 위치만 한 문서 순전파로 수집하는 방식을 같은 동결 Qwen으로 대조한다. 선두가 다른 고유 prefix는 원래 방식으로 계산한다. 원 HPA 표현의 `atol=1e-5·rtol=1e-4`, P109 head 출력 및 실제 타깃 NLL·top-1 차이와 전량 측정 시간을 기록한다. 이 표본의 수치 비교를 원 HPA 하이브리드 승인이나 학습 상태 판정으로 확대하지 않는다. 태그 `p106b_p109_prefix_onepass_v1_20261119`, GPU 예상 1분 이내·상한 180초, 이전 학생 업데이트와 평가는 재실행하지 않는다. [런처](../scripts/diag_p106b_p109_prefix_onepass.py)
+
+**Stage7dvbyte3Wf/g 후속.** 교사 1회 경계 공유 방식은 실제 feature·head 수치 일부가 원 문턱을 벗어났다. 학생의 실제 운용 대조에서 같은 P079·입력·draw·64갱신·CE와 KD 가중치를 고정하고 교사 표현 생성만 바꾼다. 기존 CE·개별 prefix KD의 원행을 재사용한다. 학생의 초기·후속 손실, 최종 모델·옵티마이저 지문, 고정 홀드아웃 원수와 GPU 시간을 확인한다. 태그 `p106b_p109_prefix_onepass_student_v1_20261119`, 예상 1분 이내, 정식 교과와 기존 수치 동등성은 별도다. [런처](../scripts/diag_p106b_p109_prefix_onepass_student.py)
+
+**결과 회수.** 실제 학생 CE·정확 prefix KD 각 64갱신과 문장 틀별 CPU 검산을 닫았다. 양언어 손실이 낮고 합산 top-1이 같았다. 교사 선두 공유의 실제 특징 속도는 31.944→2.573초였고 원 수치 허용차 위반을 보존했다. 새 특징으로 학생 64갱신까지 완료했다. 독립 KD 대비 영어·한국어 CE 차이 −0.00593·−0.00363, 최종 상태 불일치였다. [실제 학생](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-actual-prefix-kd) · [교사 특징](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-teacher-prefix-onepass) · [빠른 특징의 학생](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-onepass-student-kd)
+
+
+### Stage4ft5Wm — Aya 영어 SODA의 서사와 대화 중복 확인 ✅ 완료(결과101 §695)
+
+원장 69의 기존 Aya 영어 7샤드에서 `SODA-inst`와 `SODA-inst (T)`를 세고 템플릿별 중복을 확인한다. 이전 매니페스트와 파일 식별값을 대조하고 푸터가 해당 이름을 포함할 수 있는 그룹의 필요한 열만 읽는다. 이미 닫은 여덟 예시의 래퍼를 검산한다. 원본 Ai2 자료와 공식 split은 별도 증거다.
+
+입출력에서 확인된 고정 래퍼와 문자열 양끝 공백을 제거하고 NFC로 맞춘 서사를 해시한다. 보이는 화자·발화 순서를 유지한 대화와 주제까지 정확히 같은 짝을 추가로 센다. 다른 Aya 템플릿 또는 다른 행 ID에 같은 본문이 있을 것으로 예상한다. 알려진 템플릿 형식 밖의 행은 별도로 센다. 같은 서사와 실제 원본 ID의 연결은 구별하며, Aya 행 번호나 수량 일치는 원분할 증거로 사용하지 않는다.
+
+CPU 최대 200초에서 태그 `p106b_soda_aya_content_groups_v1`을 기록한다. 본문 및 원본 파일을 복제하지 않으며 결과는 해시·일치 수·행 식별값이다. 학습 및 교사 호출과 공식 입장은 이 단계의 범위 밖이다.
+
+**분할 후속.** 명시한 `plain_1`·`plain_2`의 628,713행 구간을 같은 위치끼리 대조한다. 이름과 발화 순서까지 일치한 짝에 기존 첫 사용자 질문 해시 `% 20` 규칙을 각각 적용해 갈라지는 수를 센다. 별도로 `plain_4` 한 구간과 `(T)`의 같은 길이 네 구간에서 주제와 서사의 순서 해시를 비교한다. 이 결과로 Aya의 고정 릴리스 내부 중복을 재현하며 Ai2 원본 분할은 따로 확인한다. 태그는 `p106b_soda_aya_split_ordinals_v1`이며 CPU 상한은 동일하다.
+
+**결과.** CPU 두 실행 종료 0이다. 같은 서사·화자·발화의 622,192쌍 중 기존 질문 해시 배정은 59,307쌍을 갈랐다. Aya `(T)`의 네 구간에서 `plain_4`와 1,191,582개 주제·서사의 순서가 모두 일치했다. 같은 릴리스의 중복은 확인했고 Ai2 `original_index`·원분할과 교사·편입은 이어받는다. [결과101 §695](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-aya-duplicates-split)
+
+### Stage7gsZ — 실제 교사 증류의 삼진 코드·운동량·활성값 메모리 ✅ 완료(결과101 §696)
+
+원장 64의 학습 메모리를 결과101 §691·694의 배포·최고치와 대조한다. `p106b_gsq_actd_memory_phases_v1_20261119`은 같은 무학습 dense14·Qwen top128 캐시·8×4×1,024·CE+0.3 ACTD에서 STE와 배율 4,096 GSQ를 별도 프로세스로 각각 2회 갱신한다. 첫 갱신에서 AdamW 상태를 생성하고 두 번째 첫 마이크로배치에서 계측한다. 두 갱신의 CE·ACTD 수치·감독 위치와 미분 노름을 당시 기록과 대조한다.
+
+고유 CUDA 스토리지로 동결 원 가중치·은행·코드 로짓·스케일·AdamW를 센다. 순전파에서는 출력 hidden과 바깥 autograd에 보관된 텐서, ACTD에 넘긴 교사 벡터·앵커를 센다. 모델·학습 파라미터·실현된 삼진 표·교사 신호와 겹치는 스토리지는 다시 세지 않는다. 체크포인팅 내부 재계산과 일시 Gumbel 배열까지 포함하는 전체 활성값 최고치는 이 보관량과 다르다. 실현 전후와 역전파 전후의 할당량 및 전체 단계 최고치를 함께 보존한다. 교사 본체는 올라오지 않고 실제 캐시의 신호만 복사한다.
+
+GSQ의 코드 로짓과 AdamW 상태 때문에 상주량이 더 클 것으로 예상한다. 두 팔의 수치 회귀·실제 고유 저장량·기존 5트릿 배포 파일과 WSL RSS·장치 반환을 판정 기준으로 한다. 65,536입력 슬롯/팔, GPU 예상 20~55초·자식 상한 각 95초·장치 점유 13 GB, 체크포인트 저장 0. 계측 훅이 걸린 시간은 속도 개선 판정에 사용하지 않는다.
+
+**실행 이력.** 11월 19일 CPU 준비와 WSL CUDA 21초·4갱신 종료 0이었다. GSQ의 코드 로짓 727 MiB, AdamW CUDA 상태 STE 727.33 / GSQ 1,460.01 MiB를 계측했다. 학생 측 보관 표본은 양쪽 356.44 MiB, 교사 캐시의 신호는 73.5 KiB였다. 장치 최고 10,714 MiB와 반환을 확인하고, 기존 38.22 MB 배포 증거를 재검산했다. [결과101 §696](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-actd-memory-phases)
+
+### Stage8kdQ — ACTD·DSKDv2·DWA의 같은 독립 개발 평가 ✅ 완료(결과101 §697)
+
+원장 63의 기존 [결과101 §690·692·693](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의 완료 93M·chat32 학생과 기술 입력 128행을 재사용한다. 같은 데이터·4갱신에서 CE와 ACTD, DSKDv2, DWA의 각 보조 손실을 비교한다. 이전 ACTD·DSKDv2의 CE 기준 끝 지문이 같으므로 CE 한 팔을 사용한다. 학습 표본은 팔당 32,216입력 토큰과 772 CE 타깃, 패딩 슬롯 131,072개다. 이미 계측한 학습 상태가 파일로 남아 있지 않아 각 팔의 동일 순·역전파를 한 번 재생하고, 네 최종 모델 지문이 모두 이전 증거와 같을 때만 새 평가에 입장한다.
+
+새 태그 `p106b_native_kd_methods_dev20_v1_20261119`. 독립 작성 48문서의 원문을 학생 chat32로 다시 인코딩해 고정 NLL과 top-1을 계산한다. 별도 동결 DEV20은 기존 greedy ChatML·FP32 Math·최대 96새 토큰으로 첫 답을 회수하고, 안정성·대응성·내용 정확성을 읽는다. 사전 CPU로 dev의 원 지문과 학습 128행에 평가 본문·질문 전체가 포함되지 않았음을 확인한다. 주 관측은 동일한 4갱신에서 각 보조 손실의 개발용 성능이다. 동결 FINAL200·기존 출발 가중치의 이전 평가를 재사용한 재채점과 나눠 관리한다. FINAL200은 이 작업의 평가·모델 선발·학습에 사용하지 않는다.
+
+양쪽 언어의 손실·정답 수와 DEV의 문제별 세 판정을 비교한다. 4갱신과 개발 20문항에서는 차이가 작거나 항목별 효과가 엇갈릴 것으로 예상한다. 정식 품질·채택은 사전 고정한 별도 독립 시험에서 판정한다. CUDA 단일 장치 13 GB 이하, 4팔 큐·각 자식 240초 상한, 전체 예상 2~5분이다. 교사 본체 호출 및 체크포인트 쓰기는 0회다.
+
+**실행 이력.** 11월 19일 네 팔 16갱신과 이전 최종 가중치 지문을 재현했다. 각 팔 DEV20과 작성 검증 48문서를 평가했다. CUDA 151초에 종료 0, 카드 최고 8,175 MiB와 반환을 확인했다. 같은 조건에서 NLL은 소폭 달랐고, 개발 첫 답의 사용 가능 수는 전 팔 0/20이었다. [결과101 §697](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-native-kd-methods-dev20)
+
+### 직접 KL의 머리말 공유 줄바꿈 처리
+
+역할 구분용 LF와 응답 첫 LF만 같은 토큰일 때만, 기존 입력을 유지한 채 그 토큰의 감독을 제외한다. 온전한 본문과 단일 종료 토큰의 shift를 적용한다. 내용 문자 교차와 응답이 줄바꿈뿐인 예는 거절한다. 기존 세 정렬 대조와 새 영어·한국어 대화의 실제 HF·GGUF ID와 마스크를 CPU에서 검증했다. [결과101 §698](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-direct-kl-shared-leading-lf)
+
+CE와 직접 KL에는 교사 분포·학생 은닉을 같은 유효 위치에서 골라 전달한다. `-100`으로 가린 위치를 KL 입력에 남기면 기울기가 생긴다. 실제 경계 ID의 세 입력에서 기존 P109 CE·KL의 CPU 타일과 전체 헤드의 기울기가 일치했다. [결과101 §701](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-direct-kl-boundary-gather)
+
+같은 마스크의 교정 문맥을 실제 248K 학생 및 Qwen 교사에 연결했다. 패딩만 바꾼 교사 분포는 같았고 동일 180타깃으로 두 팔을 각각 32회 학습했다. 이 범위에서 직접 KL의 독립 작성 대화 NLL 우세는 없었다. [결과109 §47](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-corrected-turn-direct-kl)
+
+<a id="p106b-soda-incremental-window-plan"></a>
+### SODA 원천 고정 생산의 중단과 증분 저장
+
+원장 69의 다음 준비다. 기존 원천 고정 읽기와 그룹 파서·세 번의 시도를 연결한다. 한 창은 최대 28,800초다. 명세·교사·학생 토크나이저와 행별 요청 계획이 같을 때만 재개한다. 완성된 그룹을 묶어 응답 원문, 후보, 다음 위치와 두 종류의 토큰 수를 함께 게시한다. 게시 이전의 시도는 원 자료와 함께 보존하되 정식 후보 수와 재개 위치에 반영하지 않는다.
+
+기존 §689의 로컬 교사 응답과 별도 작성 부적합 응답을 사용한다. 실제 SIGTERM을 별도 CPU 작업 프로세스에 적용하고 다음 프로세스가 정확히 남은 요청 지문부터 이어받는지 검사한다. 파일은 보존한 채 게시 직전 강제 종료도 검사한다. 비정상 자료와 중복 작업자를 거부하고, 원 응답과 후보의 재구성 지문 및 입력·정답 토큰 합계를 대조한다. 이 검증은 75M 운영, 실제 TRAIN 편입과 구별한다.
+
+기존 작성 원천의 5·6행으로 실제 교사 재개도 측정한다. 5행 영문 QA를 끝낸 뒤 6행 한국어 다중턴의 첫 교사 응답 직후에 소유 작업에 SIGTERM을 보낸다. 최초 시작 위치는 5행이다. 장치 반환 뒤 다른 프로세스로 6행을 이어받고, 저장한 첫 응답은 같은 요청과 교사 입력 길이를 확인한 뒤 한 번만 사용한다. 이어지는 실제 교사 요청의 저장, 두 그룹의 원천과 토큰 집계 및 두 서버의 반환까지 확인한다. 기존 Gemma 4 12B Q4_0, MTP off와 원 chat32를 쓰는 사용자177 한정 작성 자료다. 각 교사 창 예상 40~120초, 전체 상한 500초다.
+
+**실행 이력.** CPU의 실제 SIGTERM·게시 전 강제 종료·새 프로세스 재개를 확인했다. 작성 실물에 대한 두 GPU 프로세스는 5→6→7로 이어졌다. 신규 교사 호출 4회, 저장 응답 재사용 1회, 게시 후보 2건과 두 서버의 반환을 확인했다. [결과101 §699](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-incremental-window-cpu) · [§700](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-incremental-window-live)
+
+<a id="p106b-soda-original-lineage-plan"></a>
+### Aya의 대화 행을 Ai2 원본과 공식 분할에 연결하는 검사 ✅ 계약 검증 완료
+
+원장 69에서 같은 Aya 서사·대화가 서로 다른 템플릿 키를 가졌던 문제를 해결하기 위해 원본 행의 연결 증거를 만든다. Ai2의 고정 배포본 세 Parquet 파일을 공개 SHA-256·분할별 행 수에 대조한다. 기존 생산기에서 채택한 영문 `SODA-inst` template 1의 원문만 사용한다. Aya의 서사, 보이는 화자와 발화 전체를 순서대로 비교한다. 양끝 공백과 NFC 외의 내용은 그대로 둔다. 원본의 `original_index`는 Atomic10x 인덱스이므로 그 값의 다른 행들이 어느 공식 분할에 들어갔는지도 확인한다. [Ai2 원본 카드](https://huggingface.co/datasets/allenai/soda/blob/fdc848ab0183208ea7808206c91c724414d0a071/README.md)
+
+정확히 한 행과 일치하고 해당 인덱스가 한 분할에 속할 때만 파일 내 행 번호·정확한 원분할·공통 그룹 ID를 기록한다. 근거 부족, 동일 내용의 복수 후보, 인덱스의 분할 충돌은 보류하며 검증·시험 행은 학습 후보로 넘기지 않는다. 원본 SHA와 행 provenance는 감사 프로그램에서 확인한다. 연결된 결과에서도 실제 편입·교사 요청·기존 데이터 분할의 수정은 별도다.
+
+현재에는 이미 보관한 Aya 원본 두 행의 키와 실제 PyArrow 작성 파일로 일치·불일치·복수 후보·분할 충돌·파일 위변조 검사를 수행한다. 내용 일치가 나올 수 있으나 원본의 정규화 또는 대화 변환이 다르면 보류가 합당하다. CPU 태그 `p106b_soda_original_lineage_v1_20261120`, 현재 수치 검증 예상 1분 이내다. 세 공식 파일이 소유 범위에 들어온 뒤 전량 연결 성능·일치율을 확인한다.
+
+**2026-11-20 공식 원본 회수.** 고정 원본 세 파일은 발표 지문과 일치했다. 저장된 두 행과 별도 256행 표본을 공식 분할에 연결했다. 표본 248행이 서로 다른 TRAIN 원천이며 8행은 보류한다. 실제 대조 영수증을 운영 표본의 입력 자격에 사용한다. [결과101 §710](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-real-fdc848a-mapping)
+
+**결과 회수.** 실제 PyArrow 작성 파일과 기존 경로를 합쳐 34개 CPU 검사를 통과했다. 저장 Aya 6행 가운데 동일 지원 형식 두 행의 지문과 비교 키를 확인했다. 고정 배포본의 세 원본 파일을 명시해서 검사하는 실행기를 작성했다. 실제 Ai2 행 연결은 원본 파일이 준비되면 수행한다. [결과101 §702](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-original-lineage)
+
+<a id="p106b-soda-exact-local-teacher"></a>
+### 공식 TRAIN에 연결된 SODA 표본의 실제 교사 생산
+
+원장 69의 공식 원문 연결 248행 중 12개를 등간격으로 골라 한영 QA·JSON·다회차에 두 건씩 배정한다. 소스 분할·그룹·요청 지문을 유지하고, 이전 작성 응답 시험과 동일한 로컬 Gemma 및 생산기의 MTP OFF 설정을 사용한다. 교사 실제 요청, 재시도, 구조 수락과 지도 토큰, 내용 판독, 전체 시간과 장치 메모리를 회수한다. 표본은 실제 입력의 생산성을 보는 용도이며 학생 편입과 정식 75M 생산은 별도다. 한 GPU에서 최대 12분이다. [248행 준비 결과](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-exact-248-resume) · [실행기](../scripts/diag_p106b_soda_exact_teacher.py)
+
+교사 초안 추론의 추가 비교는 완료한 MTP OFF 12행을 대조군으로 고정한다. 같은 대상 가중치·런타임·원천·요청 시드·출력 한도를 유지해 기존 검증된 초안 모델의 ON만 실행한다. 요청당 토큰·시간, 구조 수락, 작성된 지도 토큰, 원문 근거, GPU·RSS를 함께 비교한다. 생성 경로의 무작위성으로 답변이 달라질 수 있으므로 초안 가속과 후보 수율은 각각 기록한다. 대상 모델과 학생은 갱신하지 않는다.
+
+교사 MTP 1슬롯의 완료 결과를 재사용해 2슬롯에서 같은 12개 그룹을 처리한다. 슬롯당 문맥 8,192와 답안 한도를 유지하고, 그룹 내부의 다회차 요청은 순서대로 처리한다. 샤드는 기존 원천 순서로 결합하며 각 후보의 원응답 참조를 다시 대조한다. 카드 12,390MiB 범위에서 시간 단축과 수율이 함께 유지되는지 확인한다. 생산 기본값과 학생 편입은 독립 검증 뒤 결정한다.
+
+형식 전환 소재는 첫 답을 원문과 대조한 기존 4개 다회차에서 회수한다. 변경 회차의 JSON 승낙과 최초 질문에 대한 JSON 재표현은 문자열로 구성하고, 다시 읽은 JSON이 승낙과 검수 첫 답을 각각 보존하는지 확인한다. 같은 한영 대화 서식, 원천, 첫 답을 유지하고 토크나이저로 길이와 감독 타깃을 센다. 이 진단은 형식 변환을 학습시키는 후보의 준비 검사다. 질문의 대상이 실제로 바뀌는 교과와 학생의 상태 유지 품질은 별도 대조를 적용한다. [회수 실행기](../scripts/diag_p106b_soda_state_render.py)
+
+실제 12행에서는 MTP 1슬롯을 현재 비교 경로로 유지한다. 2슬롯은 더 빨랐고 구조 수락은 10/12로 내려갔다. 기존 검수 첫 답으로 교사 호출 0회의 형식 전환 4행을 회수했다. 75M 규모를 판단하기 전에 기존 적격 풀의 학생 입력·감독 토큰과 미충족 기능을 계수한다. [결과101 §§712~715](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-exact-local-teacher-result)
+
+공식 원천 12개를 기준으로 파생본 37개를 묶었다. 검수 단일 답과 재구성 후보를 원천당 한 건으로 배정한 재고는 입력 4,604와 감독 540이다. 기존 V5 누계와는 동일 키·권리·내용 검수·분할이 확인된 행에서만 합친다. [결과101 §716](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-source-inventory)
+
+<a id="p106b-soda-visible-speaker-switch"></a>
+### 2026-11-21 보이는 발화에 근거해 질문이 바뀌는 교과를 준비한다
+
+기존 형식 변환 교과는 답 내용을 유지했다. 이번에는 Ai2 SODA의 공식 TRAIN에 연결된 248개 대화에서 앞선 재고 12개를 제외하고, 표시된 화자가 서로 다른 유일 인용 발화를 찾는다. 첫 질문과 다음 질문이 각각 다른 발화를 지목하도록 하고 답은 원문의 화자 표지로 검산한다. 첫 답과 새 답의 감독 위치·종료를 기존 chat32 인코더로 확인한다. 원천당 한 묶음과 원천 그룹별 개발 보류를 사용한다. 예측은 교사 호출 없이 인용 근거 후보를 만들 수 있다는 것이다. 두 화자라는 표지 구조와 그대로 보이는 발화는 검증 범위를 이 과제로 제한한다. [준비 실행기](../scripts/diag_p106b_soda_speaker_switch.py)
+
+작성 후보와 분리한 원천에서 기존 300M 균등 R2의 첫 답과 질문 변경 뒤의 실제 답을 생성한다. 두 번째 질문의 문구와 대화를 고정하고, 앞서 생성한 응답이 포함된 문맥과 두 번째 질문만 제시한 문맥을 비교한다. 정상 종료를 포함한 두 답의 동시 정답과 기존 답 복사를 판정한다. 후보 라이선스·출처·분할은 V5와 구분한다. 예상 RAM은 기존 G4 추론 범위이고 GPU는 한 장, 최대 8분과 12,390MiB에서 중단한다. 후보를 학생이 학습하지 않아 이 실행으로 교과의 학습 효과나 75M 공급은 판정하지 않는다. [독립 생성 실행기](../scripts/eval_p109b_soda_speaker_switch.py)
+
+같은 52개 원천에서 두 후보 이름의 로그확률을 CPU FP32로 잰다. 첫 답 이력 없이 각 인용을 묻고, 기존 실제 답 이력과 올바른 이름을 준 이력에서는 동일 인용과 바뀐 인용을 각각 묻는다. 각 이력 안에서 두 이름 사이 점수 차가 새 화자 쪽으로 이동하는지와 두 질문의 정답이 모두 앞서는지를 함께 센다. 이름 자체와 답변 종료를 포함한 점수를 모두 기록한다. 기존 자유 생성 결과를 재사용하며, 이 진단에서 가중치를 갱신하지 않는다. [후보 점수 실행기](../scripts/diag_p109b_soda_speaker_choice_cpu.py)
+
+올바른 첫 답을 제공했을 때 바뀐 질문에서 새 이름의 우위는 이름 점수만 2/52, 종료 포함 0/52였다. 후속 학생 검증의 대조는 같은 질문에 값을 유지하는 조건과 지목이 바뀌면 답을 바꾸는 조건을 동일한 원천 그룹에서 평가한다. [결과101 §719](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-speaker-choice-cpu)
+
+<a id="p106b-soda-repeat-switch-native-adapter"></a>
+### 2026-11-23 SODA의 같은 질문과 바뀐 질문을 짝지어 학습한다
+
+사용자 215 실행 범위에서 기존 171개 공식 TRAIN 원천의 패러프레이즈 이전 입력을 사용한다. 같은 문맥·화자 두 명에서 첫 질문과 답을 서로 바꿔 넣는다. 반복 팔은 같은 답을 유지하는 예시, 혼합 팔은 반복과 다른 인용의 화자로 바꾸는 예시를 절반씩 받는다. 동일 원천·정답 ID열·지도 위치 수·초깃값과 무작위 표본 순서를 두 팔에 준다. 기존 P109B 균등 R2를 동결하고, 출력 직전 은닉에 랭크 8 보정만 각각 80갱신한다.
+
+학습에 넣지 않은 52개 원천에서 같은 질문과 바뀐 질문의 자유 생성을 직접 읽는다. 양방향 모두를 적용해 팔당 각 104개의 실제 답을 얻는다. 종료까지 맞힌 답, 바뀐 질문에서 앞의 이름을 다시 답한 건수, 학습에서 보지 못한 이름의 정답을 함께 본다. 혼합 팔이 질문 변경을 더 잘 처리하고 반복 문항의 보호 답이 유지되는지가 주 판정이다. 보정 후보는 이 과제에 대한 조건부 실험이며 정식 교과 편입과 대량 교사 생산의 성과는 별도다.
+
+태그 `p106b_soda_speaker_adapter_repeat_switch_cpu_v1_20261123`. CPU 스레드 세 개, 학습 갱신 160회와 독립 응답 416개다. 원본 가중치, 출처 분할, 교사 생성 파일을 보존한다. 실행은 11월 23일 01:45 KST까지이며 같은 데이터에서 완료한 생성·조건부 점수는 다시 만들지 않는다. [실행기](../scripts/diag_p106b_soda_paired_speaker_adapter.py) · [기존 기반 평가](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-speaker-choice-cpu)
+
+기존 V3·V5 증분에서는 실제 생성 TRAIN 후보 3,442개와 1,106,133입력 토큰을 검산했다. 해당 증분 중 SODA로 식별된 후보는 0개다. V5의 Flan-CoQA 재개와 SODA 원천의 별도 편성을 구별하고, 3,013만 토큰 누계의 공개 기반을 SODA 교과 예산에 더하지 않는다. [결과101 §720](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-teacher-production-lineage)
+
+**완료 · 결과101 §721.** 동결 본체의 소형 보정에서 전환 정답은 1→3/104, 반복 정답은 102→98/104였다. 원천 연결과 올바른 답을 확인한 기존 자료는 재사용한다. 다음 학생 대조는 발화와 화자를 연결하는 학습을 본체까지 전달하고 같은 질문의 보호 답과 바뀐 질문을 함께 확인한다. 현재 후보는 공식 교과 편입에 사용하지 않는다. [실제 자유 답](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-speaker-adapter-result)
+
+### 2026-11-23 원본 화자 표기로 검수할 수 있는 교과 규모를 추정한다
+
+기존 Ai2 SODA 고정 릴리스의 공식 TRAIN에서 시드 538로 8,192행을 복원 없이 뽑는다. 같은 원천을 사용한 기존 준비 자료를 제외하고 두 화자의 고유 발화와 원문 표지가 맞는 응답을 구성한다. 공식 검증·시험과 원천 인덱스나 정규화한 대화가 겹치는 표본은 제외한다. 실제 chat32 입력과 두 응답의 감독 수를 검산한다. 합격률과 전체에 외삽한 범위를 기록하고, 이 수량을 교사 생성 실적이나 학생 학습 성과와 구분한다. 표본 통계와 제한 사례만 보존한다. [공식 분할의 기존 지문 검증](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-original-lineage)
+
+**표본 검산 완료 · 결과101 §722.** 표본 7,315개에서 입력 2,357,927과 감독 55,916위치를 검산했다. 대량 생성을 재개하기 전에 전수 원천 중복과 질문 형식의 다양성을 확인하고, 별도 분할의 학습·보호 개선을 검증한다. [표본 결과와 한계](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-quote-capacity-result)
+
+**전수 검산 완료 · 결과101 §723.** 기존 원천과 공식 보류 분할을 제외한 1,066,127행에서 입력 343,855,835개, 답·종료 8,139,624개를 세었다. 86.1%에서 인용 발화가 이웃했다. 후속 후보는 간격·질문 대상·이전 답 유지 여부를 층화해 새로운 표현에서 보호 답과 전환을 함께 맞히는지 본다. 이 결과는 한 형식의 직접 검산 규모다. 기존 교사 증분과 학생 성과는 각 원로그에 기록한다. [전수 검산과 분할 지문](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-quote-capacity-full-result)
+
+**발화와 화자의 연결 진단 완료 · 결과101 §724.** 완주 P109C v2의 공식 VALID 선택에서 실제 이름을 짧은 기호로 바꾸고 기호 배정을 뒤집었어도 양쪽을 모두 맞힌 원천은 0/48개였다. 표기 변경만 사용하는 경로의 우선순위를 내린다. 다음 학생 대조는 간격 1·2·3 이상의 독립 TRAIN 원천에서 같은 말의 화자를 유지하는 질문, 다른 발화로 바뀌면 답도 바꾸는 질문, 같은 대화의 화자 표지 순서가 바뀐 질문을 함께 쓴다. 이전처럼 정상 종료의 정답과 앞 답 복사, 한 언어의 새로운 이름을 각각 기록하고 원천 그룹을 검증에서 분리한다. [실제 선택 결과](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-heldout-speaker-codes)
+
+<a id="p106b-soda-attention-evidence-contrast"></a>
+### 2026-11-23 SODA에서 질문 토큰과 근거 화자 위치를 연결한다
+
+원장 69에서 정제 v1.1 P109C v2의 같은 균등 R2 완주본을 사용한다. 공식 TRAIN의 96원천을 인용 간격 1·2·3 이상에 균등 배정한다. 이전에 사용한 원천과 공식 보류 분할에 겹치는 원천·정규화 발화열을 제외한다. 각 원천에서 두 인용과 두 기호 배정을 교차한다. 같은 인용을 되묻는 문맥, 다른 인용으로 전환하는 문맥, 앞 답 없는 질문을 양팔에 같은 배열·정답·종료 감독으로 제공한다.
+
+양팔 모두 같은 14번 물리층의 질의 투영에 랭크 8 잔차를 학습하고 기존 가중치와 출력 계층을 동결한다. 한 팔은 정답·종료의 다음 토큰 CE만, 다른 팔은 마지막 질문 위치의 질의가 올바른 인용의 화자 위치에 더 높은 어텐션 점수를 주도록 두 위치의 대조 손실을 0.20배 추가한다. 동일 초기화·입력 배열 384행을 배치 네 개로 각각 96회 갱신한다. 기존 동결본도 같은 새 질문의 생성 기준에 포함한다.
+
+새 공식 VALID는 간격별 8원천이다. 두 인용과 두 기호 배정을 모두 맞히고 종료하는 원천을 주 지표로 삼고, 이력 없는 질문·같은 답 유지·화자 전환을 각각 96답에서 본다. 교사 생산 시작 판정은 학생의 발화 연결 개선과 반복 응답 보존, 원문으로 충족할 수 없는 교과의 정확한 부족분에 근거한다. 실행은 사용자 216의 CPU 범위에서 11월 23일 20:00 KST를 넘기지 않는다. [CPU 대조 진입점](../scripts/diag_p106b_soda_attention_evidence_cpu.py)
+
+**실행 완료 · 결과101 §725.** 다음 토큰 학습은 새 보류 질문에서 반복 68/96·전환 28/96을 얻었다. 근거 위치 손실을 추가한 팔은 각각 67·27/96이었다. 두 팔 모두 전환의 네 교차를 전부 맞힌 원천은 0/24였다. 다음 비교는 같은 출처의 앞 답을 고정하고 마지막 인용만 바꾸는 짝에서 답 후보 간 여유 차이를 직접 학습한다. [실제로 생성한 답](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-attention-evidence-result)
+
+### 2026-11-23 같은 앞 답에서 마지막 인용만 바뀌는 두 질문을 짝지어 학습한다
+
+앞 답과 대화의 앞부분을 토큰화 전에 그대로 두고, 마지막에 같은 인용을 묻는 질문과 다른 인용을 묻는 질문을 짝짓는다. 정답·종료와 두 팔의 96갱신 배열을 고정한다. 한 팔에는 정답 CE에 두 질문의 정답과 오답 후보 점수 차를 더한 대조 손실을 0.50배 추가한다. 두 질문에 똑같이 작용하는 앞 답 선호는 점수 차의 합에서 상쇄된다. 출력 계층은 동결하고 같은 주의 질의 경로를 학습한다.
+
+이전 두 평가와 겹치지 않는 새 공식 VALID 24원천의 화자 전환 정답·종료와 네 교차 완전 일치를 주 판정으로 삼는다. 같은 질문의 기존 답 유지와 새 질문의 답 전환을 함께 기록한다. 실제 교사 생산, 모델 저장, 정식 교과 편입은 이 학생 대조의 범위와 별개다. [이력 짝 대조 코드](../scripts/diag_p106b_soda_paired_margin_cpu.py)
+
+**실행 완료 · 결과101 §726.** 짝 후보 손실을 넣자 같은 화자 유지가 66→68/96, 전환은 31→29/96이었다. 전환의 네 교차를 모두 맞힌 원천은 두 팔 모두 0/24였다. 현재 설정은 학생 교과에 편입하지 않는다. [같은 검증 입력의 실제 생성 대조](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-paired-margin-result)
+
+<a id="p106b-soda-official-increment"></a>
+### 2026-11-23 공식 TRAIN에서 재개형 교사 생산 경로를 확인한다
+
+기존 공식 TRAIN 원천 연결 248행에서 이전 로컬 교사 대조의 12행과 겹치지 않는 2~9번을 선택한다. 같은 Gemma 대상·초안·런타임의 지문, 원천 연결, 원시 자료와 최초 요청 지문을 CPU에서 봉인한다. 한영 단일 QA를 교대로 요청하고 두 그룹마다 원응답·후보·입력 및 감독 수와 다음 행을 함께 게시한다. 미완 응답이 있으면 같은 요청 지문에서만 재사용한다. 구조가 맞은 후보는 원문과 정답을 독립 검수한 뒤에만 편입한다.
+
+원장 10의 공통 평가가 사용한 정확한 프로필과 정상 GPU 반환을 확인한 후 20:00 KST까지 최소 285초가 남을 때만 시도한다. 이 창의 목표는 공식 원천에 연결한 증분 실행의 확인이다. 75M의 실측 유효 수율은 편입 판정 후 별도로 집계한다. [봉인과 실행기](../scripts/run_p106b_soda_official_increment.py)
+
+**CPU 검산 완료 · 결과101 §727.** 공식 원천의 합성 응답에서 4번 중단·재개, 미완 응답 한 건 재사용, 전체 여덟 요청과 네 묶음 게시를 검산했다. 실물 교사에서의 새 후보 발생량은 해당 실행 영수증을 사용한다. [증분 복구 검산 결과](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-official-writer-rehearsal-result)
+
+### 공식 TRAIN의 원본 주소를 봉인한 전체 생산 후보 순서
+
+기존 전수 검산의 원천 순서를 재현하면서 적격 행의 원본 주소를 별도로 저장한다. 공식 분할 지문 세 개, 전수 채택·제외 수량과 정렬된 원천 지문은 이전 영수증과 일치해야 한다. 교사 진입점은 지문을 대조한 로컬 TRAIN의 적격 주소를 읽고, 같은 그룹의 재시도에서 같은 주소와 요청 근거를 복원한다. 교사가 보는 자료에는 원본 순서의 화자와 실제 발화가 들어간다. 생산 후보의 등록 여부는 의미·권리와 답 종료를 검수한 뒤 판단한다. [주소 편성기](../scripts/prepare_p106b_soda_teacher_roster.py) · [공식 원천 읽기](../scripts/p106b_soda_release_reader.py)
+
+**증분 준비 완료 · 결과101 §728.** 공식 TRAIN 1,066,127주소, 한영의 겹침 없는 범위와 두 교사 실행 명세를 봉인했다. 별도 CPU 프로세스에서 중단·재개와 무중단 게시의 공식 원천 및 입력 지문이 일치했다. 실물 교사에서 후보 입장 수율을 측정하고 발화 근거·학생 전환 능력의 채택을 재판정한 뒤 규모를 결정한다. [범위·재개 영수증](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-full-train-roster-resume-result)
+
+**재개 경계 보강 · 결과101 §729.** 수정 명세를 사용한다. 같은 커서의 연속 중단과 1,024토큰 문맥 초과 응답에 대한 회귀를 CPU에서 검증했다. 실물 교사에서 최종 종료와 유효 수율을 확인한다. [수정 경로와 CPU 영수증](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-full-train-durable-replay-result)

@@ -133,6 +133,13 @@ prefix2 뒤 새디스크snapshot을16MB 이하 조각으로 저장하고 계속2
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
 
+<a id="p107-v11-frozen-mask-selection"></a>
+### 2026-11-21 정제 원문의 마스크 선택률을 동결 모형에서 검산한다
+
+원장 58·59의 작성 원문 네 건을 실제 정제본의 분할 내 위치로 넓힌다. v1.1 기준판 TRAIN의 서로 다른 위치에서 512개 참조와 64개 오답 관측, 64개 확인 문서를 고정한다. 같은 chat32의 원문 오프셋에서 십진 숫자를 찾고, 참조 표본에서 1~2회 나온 ID를 희귀로 정의한다. 한글 음절과 ASCII 문자 비중은 문자 집계용 대용 지표다. 언어 분류기 판정으로 사용하지 않는다. 원문·검증·보호 파일, 모델 가중치, 정식 학습 캐시를 갱신하지 않는다.
+
+무부모 300M 균등 R2 완주본을 고정하고, 실제 양방향 마스크 입력의 예측으로 오답 관측을 쌓는다. 같은 관측 상태·난수에서 확인 위치의 균등 선택과 적응 선택을 비교한다. 집단별 분모·기대·실제 선택률과 총 마스크 예산을 회수한다. 예측은 오류가 집중된 희귀·숫자 집단이 달라지면 적응 선택의 기대률도 움직인다는 것이다. 작은 참조 집합에서 처음 나온 ID가 많으면 이를 별도 집계한다. 최대 GPU 한 장·4분·카드 12,390MiB로 제한한다. 가중치 갱신은 0회이며 학습 후 causal 품질과 장기 편향은 별도 실험이다. [실행기](../scripts/diag_p107_v11_frozen_mask_selection.py)
+
 
 
 ### Stage6W — 같은 어휘 교사 causal KL의 실제 연결 비용
@@ -186,3 +193,217 @@ Stage8bW는 기존 Native595-Q·micro8×accum16×seq1024·checkpoint-on·BF16 AM
 실행 회수: CPU30/0과 현재 전체 canonical smoke106동작/44자식0 뒤 Stage8b와8c를 실제 수행했다. 새 파일 입력의 논리2회/262144입력과 replay 포함 물리3회/393216입력을 분리한다. run25.721747초·resume14.598884초이고 두번째 갱신 loss/target/LR 및 전체 model/optimizer/policy/source/RNG/세션이 EXACT였다. 새 경계781352215B를49조각으로 보존했고 원 CP/입력/source 불변·최종 CUDA0/0을 독립 root로 검산했다. 파일 거부와 전체 재개의 예측은 확인했으며 자연어 품질·75M streaming·실제 corpus 입장은 확인하지 않았다. [결과107§18](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)이 실제 수치·명령·한계를 소유한다. 두 전체 worker 시간은 수행량이 달라 가속비로 계산하지 않는다.
 
 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+## Stage9W — Explicit complete optimizer-group loss scaling
+
+### 1. Why
+
+Continue original58/59 GradScaler contact under current161. Preserve old P107 sources/defaults. Follow [scope/options/authority](../docs/research/20261118_scaled_optimizer_group_contract.md).
+
+### 2. Question
+
+Can complete accumulation/unscale/clip and all-group overflow skip preserve clean checkpoint/fresh-scaler restore?
+
+### 3. Prediction
+
+Expect synthetic finite update agreement within explicit FP32 tolerance and no optimizer step when either group's gradients overflow. No Native quality prediction.
+
+### 4. Stages
+
+Ownership/config -> fixed-scale backward -> unscale all -> global finite gate -> clip/step or skip all -> update once -> clean state/fresh restore.
+
+### 5. Judgment
+
+Require reference agreement/overflow no-step, clean-boundary validation and fail-closed handling of partial optimizer exceptions. Caller source/policy/schedule skip semantics remain separate.
+
+### 6. Cost
+
+CPU thread1/120 seconds; small new parameters, language tokens/model/GPU0. Tag p107_scaled_optimizer_group_v1_20261118 collision0; no install/new environment.
+
+### 7. Execution
+
+New synthetic controller contracts become result107 Stage9W raw evidence. No model/training launcher.
+
+### 8. Limits
+
+No Native/Muon/causal-KD integration, CUDA/FSDP/compile, full source/model/optimizer/RNG resume, quality or adoption claim.
+
+### 9. History
+
+[107 section19](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-optimizer-group-cpu) closes CPU14/0, synthetic finite reference/whole-group overflow no-step, growth/backoff and fresh scaler-state restore. Predictions supported at numerical scope. P107 skip/source/policy/schedule and Native/Muon/CUDA/full-training integration remain NOT_RUN.
+
+## Stage10W — Explicit consumed-group scaler integration, CPU only
+
+### 1. Why
+
+Continue original58/59 after section19 numerical component. Follow [scope/options/policy](../docs/research/20261118_P107_scaled_group_integration_contract.md). Preserve old None defaults and exact before-source evidence.
+
+### 2. Question
+
+Can explicit consume-group overflow semantics bind scaler/data/policy/schedule and fresh complete-state restore without changing None behavior?
+
+### 3. Prediction
+
+Expect identical None loss/targets/full-state hashes. Finite opt-in should match synthetic FP32 control, overflow should advance one consumed group with zero optimizer steps, and a resumed following step should match.
+
+### 4. Stages
+
+Before-source/None oracle -> pure controller validation -> optional bound factory/exact policy -> enabled schema -> CPU default/overflow/KD/schedule/fresh-restore regressions -> result recovery.
+
+### 5. Judgment
+
+Require explicit policy, exact owner/run/micro binding, pre-copy invalid-state rejection, separate consumed/optimizer counters and fresh controller restoration. Arbitrary optimizer exceptions remain dirty failures.
+
+### 6. Cost
+
+CPU thread1/120 seconds; tiny new fixtures, no Native/GPU/old CP/corpus. Tag p107_scaled_trainer_v1_20261118 requires collision preflight. No package/env changes.
+
+### 7. Execution
+
+Owned before-source/None oracle and new CPU suites only. No model/training launcher.
+
+### 8. Limits
+
+Actual Native/Muon/teacher/CUDA/FSDP/compile, full75M source/corpus rights, quality and default adoption remain NOT_RUN. Disclose logical groups and applied optimizer steps separately.
+
+### 9. History
+
+[107 section20](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-trainer-consumed-group-cpu) closes the before-source three-mode/four-update None oracle and CPU51 opt-in consumed-group/fresh scaler integration. None state hashes and synthetic resume predictions supported. Actual Native/Muon/BF16-CUDA/CLI/75M/corpus/quality remain NOT_RUN; consumed groups and optimizer steps stay separate.
+
+## Stage11W: bounded indexed document source, CPU contract
+
+### 1. Why
+
+Existing input/source retain all token tuples/tensors. [Impact/three options and contract](../docs/research/20261118_P107_indexed_document_source_contract.md) selects a separate offset index preserving uniform document/crop sampling, under original58/59 and current161.
+
+### 2. Question
+
+Can bounded record reads preserve resident token/document-ID/RNG draws and exact fresh CPU trainer resume?
+
+### 3. Prediction
+
+Expect exact sampler and tiny trainer equality. Metadata remains O(documents), startup requires a full byte scan and random I/O may be slower; no language-quality prediction.
+
+### 4. Stages
+
+Freeze existing pins -> strict existing manifest/admission/row validation and bounded offsets -> distinct source state -> resident/negative/read-budget tests -> tiny trainer/scaler/fresh restore -> result recovery.
+
+### 5. Judgment
+
+Require exact draws/RNG/resume, whole-file and selected-row identity, quota/path/admission gates and failed-update cursor/RNG rollback. Report payload/index counters separately from RSS. Existing source/input/trainer defaults must remain unchanged.
+
+### 6. Cost
+
+CPU thread1/120 seconds, at most roughly1M new synthetic tokens. No Native/pretrained model/corpus/GPU. Tag p107_indexed_document_v1_20261118 collision and similar-plan queries found none; actual language tokens0.
+
+### 7. Execution
+
+New owned synthetic CPU helper only. No training launcher, CLI flag or batch. No package/environment change.
+
+### 8. Limits
+
+Actual75M/8-hour production, source rights/semantic admission, Native/Muon/BF16-CUDA/compile/FSDP, full RSS/quality and default adoption remain NOT_RUN.
+
+### 9. History
+
+[107 section21](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-indexed-document-source-cpu) closes CPU15/source-current13: exact resident draws/RNG, three tiny trainer modes and fresh scaled CPU resume supported the predictions. The1M technical pool reports bounded row/index counters, not process RSS or actual75M. Native/quality/corpus/CLI/default adoption remain NOT_RUN.
+
+## Stage12W. 새 Native에서 GPU 스케일러와 세 masking 경로
+
+### 1. 비교 방법
+
+원장 58·59의 새 학습 경계를 검증한다. 기존 checkpoint를 복사한 두 갱신과 CPU51 결과를 재사용한다. 이번에는 새 Native dense14 모델에서 `CONSUME_SCALED_GROUP`으로 실제 갱신한다. 사용자161의 현재 GPU 승인에 따라 기존 파일이나 설정을 변경하지 않는 연구 실행으로 한정한다.
+
+| 방법 | 판단 |
+|---|---|
+| `uniform` | 토큰 관측이 없는 원 균등 방법. 학습 대조의 기준으로 사용한다. |
+| `observe` | 같은 균등 분포와 원 토큰 관측을 수행한다. 통계 비용과 동일성 대조에 사용한다. |
+| `adaptive` | 두 그룹마다 실제 관측에서 가중치를 갱신한다. 입력 원천, 기대 mask-rate와 updater는 맞춘다. |
+
+### 2. 자원·판정
+
+태그 `p107_native_scaled_uniform_observe_adaptive_v1_20261118`. 새 합성 원천 64문서에서 독립 검증 4문서를 따로 만든다. batch4·128×4회, 앞2 causal과 뒤2 MNTP, 목표 masking 확률 .15, 세 조건마다 여섯 그룹, 같은 95.33M 초기값과 matched Muon/AdamW 경로를 사용한다. 비어 있는 옵티마이저 그룹 두 개는 소유를 정하기 전에 제외한다. 원 데이터·하이퍼파라미터·분모와 causal likelihood의 초기 공통값, RNG·입력·완료/skip 수, 실제 GPU wall·할당·토큰 통계 비용을 측정한다. 정확 일치가 깨지면 어느 축인지 먼저 보존한다. 합성 검증 손실로 한국어, 실제 자료 편향, 채택을 판정하지 않는다. CPU1로 input source를 확인하고 GPU 1장에서 300초 이내 자식을 직렬 실행한다. 새로운 checkpoint는 작성하지 않는다.
+
+13:32:16 KST 종료 0. 관측과 균등의 실제 여섯 갱신 결과가 비트 일치했고 적응형은 3차부터 마스킹 수가 달라졌다. 세 팔의 검증 분모와 장치 비용, 실제 갱신 18회를 회수했다. [결과107 §22](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-native-scaled-three-actual)
+
+2026-11-19 후속 P102A는 같은 적응 학습기의 FP32 CE와 관측 ID를 G4 R1에서 재계산했다. 동일한 마스크 및 학습 상태와 최대 할당 절감을 확인했다. 실제 언어 평가와 R2 명시 가시성은 기존 선결을 따른다. [결과093 §45](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-adaptive-fp32-target-head)
+
+<a id="p107-g4-fixed-r2-visibility-plan"></a>
+### StageR2W — G4 고정 R2의 문서 경계와 적응 재계산 기술 검증 완료
+
+P109의 고정 R2 학습에 P107 가시성을 적용할 수 있는지 검증한다. 기존 2+12+2, G4·CLA2의 기본 순회와 같은 28개 방문만 실험에 입장시킨다. 각 순회에 독립된 KV가 적용되므로, 토큰과 미분의 문서 경계를 유지하리라고 예상한다. 인과·MNTP에서 어떤 문서의 로짓이 다른 문서 토큰을 바꿔도 일치하고, 다른 문서·PAD의 입력 임베딩 미분은 0이어야 한다. 같은 경계를 의도적으로 열면 변화와 교차 미분이 관측되어야 한다. 순전파 뒤 호출자 마스크를 바꾼 경우의 체크포인트 역전파도 원 경계와 대조한다.
+
+CPU 작은 모델과 실제 P079 G4 CUDA에서 가시성·미분·틀린 순서 거부부터 확인한다. 현 모델 가시성은 기본 R1 계약을 사용하며, R2 검증용 런처가 그 형상·순서만 검사한다. 이어서 결과093 §45의 자료와 8×512·4micro·6갱신·BF16 AMP·FP32 CE·스케일러를 고정한다. G4 R2의 전체 CE와 행 재계산을 비교하며 이미 완료한 R1 두 팔은 재사용한다. 각 팔 98,304 위치에서 손실·마스크·argmax·최종 모델과 두 optimizer·RNG·정책을 대조하고 학습 할당·시간을 기록한다. 정식 TRAIN 및 방문 순서가 변하는 조건은 별도다. GPU 전용 진단 창은 200초 이내, 각 학습 팔 상한은 90초, 예상 1분 내외다. 1분이 넘는 실제 큐는 기존 감시 역할을 적용한다. [시험 런처](../scripts/diag_p107_g4_r2_visibility.py)
+
+**결과 회수.** CPU와 실제 P079 G4 CUDA의 인과·MNTP에서 차단된 문서의 영향과 입력 미분은 0이었고, 경계를 열면 두 값이 달라졌다. 마스크 변경 뒤 체크포인트 역전파도 재현됐다. 고정 R2 두 팔의 마스크·예측·FP32 손실·최종 상태가 일치하고 학습 할당은 35.84% 낮아졌다. 42초 GPU에서 12회 실제 갱신과 장치 반환을 회수했다. 고정 R2의 해당 기술 범위가 검증됐다. 변형 순회와 언어 품질은 별도다. [결과107 §23](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-fixed-r2-visibility)
+
+<a id="p107-g4-policy-visibility-plan"></a>
+### StagePolicyW — P109 변형 순회의 CPU 문서 격리 검증
+
+고정 R2 대조를 재사용하고, 같은 합성 두 문서에서 P109 `balanced_count`의 16·40 방문과 `second_shuffle_r2`의 28 방문을 검증한다. 실제 P109 학습 래퍼의 절대 갱신별 순서를 사용하고 그 순서만 실험에서 마스크 검사를 통과시킨다. 작은 CPU 장치에서 인과·MNTP와 관측 문서를 교차한 12조건의 문서 밖 로짓·입력 미분 불변, 호출자 마스크 변경 뒤 체크포인트 미분 일치, 열린 경계에서의 양성 대조를 판정한다. `p107_g4_policy_visibility_cpu_v1_20261119`는 GPU 호출과 체크포인트 로딩 없이 실행한다. GPU 적응 학습과 자연어 성능은 별도다. [진단 코드](../scripts/diag_p107_g4_policy_visibility_cpu.py)
+
+**결과 회수.** 순서 검증기의 튜플 입력을 목록으로 고친 뒤 같은 세 순서의 12조건에서 문서 격리와 스냅샷 미분을 확인했다. 경계를 연 9조건에서 로짓과 미분이 모두 변했다. 실제 G4의 변형 순회 GPU와 적응 학습 검증은 이어받는다. [결과107 §24](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-policy-visibility-cpu)
+
+### StagePolicyCudaW — 실물 G4 CUDA의 변형 순회 문서 격리
+
+새 태그 `p107_g4_policy_visibility_cuda_v1_20261119`는 CPU에서 회수한 16·40·28 방문과 가시성 조건을 P079 실물 16층 G4 R2·CLA2 모델에 적용한다. 같은 합성 두 문서에서 BF16 AMP와 math SDPA를 사용한다. 닫힌 12조건에서 가려진 문서의 로짓 영향과 금지 위치 미분이 0이어야 하며 스냅샷 역전파를 재현해야 한다. 열린 9조건은 양성 대조다. 사용자 176의 승인 범위에서 단일 GPU로 1분 이내 예상, 실행 상한 55초다. 체크포인트 로딩은 기존 P079 하나에 한정하며 optimizer 갱신과 모델 저장은 0회다. [GPU 진단](../scripts/diag_p107_g4_policy_visibility_cuda.py)
+
+**결과 회수.** 첫 장치 문맥은 임베딩 기록을 중복 호출했다. 관측 입력만 명시적으로 CUDA에 둔 v2에서 닫힌 12조건과 열린 9조건을 회수했고, GPU는 14초에 종료 0이었다. 변형 순회 적응 학습은 별도다. [결과107 §25](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-policy-visibility-cuda)
+
+<a id="p107-g4-policy-adaptive-plan"></a>
+### StagePolicyAdaptiveW — P109 변형 순회에 맞춰 적응 마스킹을 학습한다
+
+P109의 균등 방문 배분과 둘째 순회 셔플을 각각 실제 G4 학습에 적용한다. 학습기의 절대 갱신마다 P109 순서를 계산해 causal·MNTP의 네 순전파와 네 역전파, 해당 갱신의 옵티마이저 적용까지 고정한다. 기존 고정 R2와 같은 P079 초기 상태, 합성 문서 소스·시드 1337·순서, 기존 적응 마스크 시드와 스케일러, BF16 AMP·FP32 CE·math SDPA를 사용한다. 기존 고정 R2의 양팔과 둘째 순회 가시성은 재사용한다.
+
+각 변형 정책에서 기존 전체 출력부와 512행 재계산 출력부를 나란히 둔다. 양팔의 마스크·관측 ID·손실·미분 노름·최종 모델·두 optimizer·정책·RNG·소스·스케일러가 일치해야 한다. 모든 팔의 8×512·4micro·6갱신은 98,304위치와 2,752,512 위치·층 방문을 소비한다. 균등 배분은 16·28·40방문을 사용하되 전체 평균 28을 맞춘다. 셔플은 둘째 순회의 공유 소유자 쌍만 바꾼다. 고정 R2와의 마스크·예측·상태 차이는 변형 순회가 실제 갱신에 반영됐는지 확인하는 근거로 사용한다.
+
+새 태그 `p107_g4_policy_adaptive_v1_20261119`로 네 팔을 같은 GPU에 직렬 실행한다. 예상 약 1~2분, 가용 12GiB 이상, 팔당 상한 85초다. CPU에서 원본과 일정, 실제 총 방문 예산 및 이전 실험의 종료·수치를 봉인한다. 저장하는 새 모델 파일은 없다. 합성 적응 갱신과 메모리 대조 이후 정식 자연어 학습·평가는 P109의 자료 입장 조건을 따른다. [실행 코드](../scripts/diag_p107_g4_policy_adaptive.py)
+
+**결과 회수.** 네 팔의 24갱신이 종료 0이었다. 두 정책 모두 대응 기준의 선택 마스크·예측·손실·미분 노름과 최종 상태를 재현했다. 학습 할당은 균등 방문 34.59%, 둘째 순회 셔플 35.84% 줄었다. 기존 고정 R2와 두 정책의 최종 상태는 달랐고, 셋째 갱신부터 각각 마스크 선택도 달랐다. [결과107 §26](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-policy-adaptive)
+
+<a id="p107-lexical-mask-audit-plan"></a>
+### 원장 58·59 후속. 문서 언어와 숫자 토큰을 MNTP 마스크 위치에 대응한다
+
+기존 합성 실험의 자리·토큰 ID 라벨은 실제 언어와 숫자 위치를 확인할 수 없다. 원문을 다시 인코딩하는 진단기를 사용한다. 문서 언어는 명시된 메타데이터로 분류하고, 숫자는 토크나이저의 원문 문자 범위에 유니코드 십진 문자가 포함된 토큰으로 정의한다. 빈도는 해당 분할의 마스킹 전 참조 토큰 수에서 얻는다. 실제 마스크를 누적한 횟수와 분리한다. 학습기 내장 계측은 경로 비용을 바꾸고, 토큰 표기만으로 라벨을 추정하면 원문 위치를 잃는다. CPU 진단은 기존 정책과 eligibility를 직접 호출하면서 그 두 경로를 건드릴 필요가 없다.
+
+`p107_lexical_mask_selection_audit_v1_20261120`는 기존 32K 토크나이저와 직접 작성한 한·영·혼합·미분류 문장 4개만 사용한다. 같은 위치와 같은 RNG 상태에서 균등과 적응을 대조한다. 동일한 문서 수, 토크나이저, 기대 마스크 비율 .15를 유지한다. 숫자 예측을 틀리도록 만든 기술 관측을 먼저 주면 적응이 숫자 위치에 더 높은 기대 할당을 줄 것으로 예상한다. 버킷별 적격 수, 기대 선택 수, 실제 선택 수를 내고 문서 첫 토큰, PAD, 마지막 전체 토큰 및 없는 버킷을 검사한다. 실제 선택 수는 난수에 의존한다. 문서 언어가 같아도 개별 단어 언어는 다를 수 있다.
+
+CPU 1스레드, 상한 60초, 모델 로딩·optimizer·GPU 실행 0회다. 등록 태그와 유사 런을 조회했고 기존 §7 가상 라벨과 관측 변수가 다르다. 정식 TRAIN 빈도 임계값, 원문 권리·출처·분할, optimizer와 causal 생성·likelihood 대조는 별도 게이트다. [CPU 진단](../scripts/diag_p107_lexical_mask_audit.py)
+
+**2026-11-20 결과.** CPU 집계 검증을 완료했다. 992개 적격 위치와 모든 버킷의 분모·선택 수가 독립 위치별 회계와 일치했다. 숫자 오답을 넣은 양성 대조에서 숫자 기대 선택은 늘었고 전체 기대율은 .15로 유지됐다. 정식 TRAIN 편향·causal 품질은 대기다. [결과107 §27](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-lexical-mask-audit)
+
+<a id="p107-adopted-v11-mask-pair"></a>
+### 원장 58·59. 정제 v1.1의 같은 무부모 학습에서 균등과 적응을 비교한다
+
+최종 채택 TRAIN·VAL의 uint16 캐시에서 조립기가 문서마다 붙인 EOS 위치를 색인한다. 양 분할의 전체 문서 수와 바이트·지문을 대조하고 같은 seed의 문서 표지가 일치하는지 확인한다. 오래된 합성 CLI와 최대 75M의 JSON 문서 도구는 기존 범위를 유지한다. 새 바이너리 소스는 승인된 분할 전체에서 창을 추출하고, 경계를 넘는 정답과 어텐션을 각각 차단한다. [최종판 분할](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-adopted-v11-split-result) · [바이너리 문서 색인](../scripts/p107_v11_binary_documents.py)
+
+활성 16층 G4 R2, 무부모 초기값과 원문 창, 1,024 문맥, micro 4×누적 32, 인과·MNTP 각 16마이크로배치, BF16과 512행 재계산 CE, Muon RMS4·AdamW 및 WSD를 맞춘다. 명시 문서 가시성을 쓰는 MATH 어텐션의 1,024 길이 중간값을 버리고 역전파에 재계산하도록 양팔 모두 활성값 체크포인트를 쓴다. 균등 팔도 같은 예측 통계를 모은다. 적응 팔에서만 그 통계를 다음 위치 확률에 반영한다. 전체 기대 마스크율은 .15다. 선택 확률과 실제 마스크 수를 구분한다. 독립 VAL의 문서 격리 causal NLL 및 실제 지도 토큰, 시간·VRAM을 기록한다. 독립 생성과 선택지 성적은 추가 품질 증거다.
+
+양팔 각 16갱신을 실제 실행하여 시작 상태와 샘플러의 일치, 시점 복원, 자원과 시간에 필요한 비용을 확인한다. 그 상태에서 이어서 최대 각 2,289갱신·300,023,808슬롯을 목표로 한다. 잔여 시간으로 전량을 완료하기 어렵다면 같은 진행 경계와 원래 학습률 일정에서 가능한 두 팔의 동일 구간을 회수한다. 이 구간의 결과는 300M 완주 성적으로 분류하지 않는다. GPU 감독 최고 12,390MiB, 승인 종료 전 중단, 평가는 P109C 종료 후 직렬 인계다. [실행기](../scripts/run_p107_v11_mask_pair.py) · [동결 위치 진단](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-frozen-mask-selection-result)
+
+공통 부분 경계에 도달하고 두 팔의 최신 실측으로 추가 진행이 가능하면 같은 가중치·옵티마이저·적응 통계·원문 추출 상태에서 자동으로 이어서 학습한다. 다음 공통 경계는 양팔 각 300M에 제한한다. 먼저 전량을 마친 경우 후속 프로세스는 결과 확인에서 종료한다. [부분 경계 재개 실행기](../scripts/continue_p107_v11_mask_pair.py)
+
+같은 갱신에서 닫힌 두 팔에 별도 CPU 인과 평가를 적용한다. 기존 GPU의 64개 검증 창과 다른 고정 시드로 VAL 128창을 선정했다. 최종 TRAIN 전체에서 센 토큰 빈도와 한글·라틴 문자·십진 숫자 포함 여부로 목표를 묶고, 문서 경계를 차단한 28방문 FP32 우도와 다음 토큰 적중을 잰다. 채팅 CPU 첫 실사용 16문항에서는 실제 답과 정상 종료를 같은 방식으로 잰다. 자연 추출한 검증 창의 저빈도 목표는 결과에 실제 분모를 표시한다. [동결 프로필](../data_cache/p107_v11_causal_group_profile_v1_20261121.json) · [평가 실행기](../scripts/eval_p107_v11_causal_groups_cpu.py)
+
+자연 추출의 희귀 표본을 보완하려고 학습 중 빈도로 분류한 VAL 목표를 전량 센다. 기존 두 평가의 창에 들어간 목표 위치는 제외하고, 문서 첫 토큰을 제외한 1~32회 등장 토큰과 미등장 토큰을 전량 후보로 보존한다. 33~1,024회, 1,024회 초과와 숫자 포함 그룹은 같은 시드에서 문서당 하나씩 최대 96개씩 뽑는다. 같은 문서에서 실제 직전 최대 128토큰만 모델에 주고 정답 NLL·순위·최고 선택을 기록한다. 이는 정해진 저빈도 위치에 대한 조건부 대조다. 전체 VAL과 다른 문맥 길이의 일반 성과는 기존 자연 추출에서 확인한다.
+
+### 문서 격리 어텐션의 연산과 임시 메모리 후속 대조
+
+현재 MATH 경로는 1,024 전체 마스크와 활성값 체크포인트를 사용한다. 단일 문서 마이크로배치만 기본 경로를 쓰는 대안은 실제 예정 훈련에서 약 2%에 적용된다. 각 행의 실제 문서 구간을 묶는 대안은 모든 창에 적용할 수 있다. 현재 설치한 PyTorch 2.10의 `varlen_attn`을 이용해 RoPE 적용 뒤의 Q·K·V 순서, 각 문서의 누적 오프셋과 인과·양방향 조건을 보존한다. 먼저 실제 GPU의 해당 GQA 형상에서 순전파와 미분, 자원을 확인한다. 이후 같은 원문·가시성·목표와 갱신을 통제해 속도·메모리·causal VAL을 따로 잰다. [실제 창과 CPU 산술](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-document-local-attention-geometry) · [PyTorch 2.10 문서](https://docs.pytorch.org/docs/2.10/nn.attention.varlen.html)
+
+같은 실물 G4 896갱신 가중치와 v1.1 인과·MNTP 각 한 마이크로배치로 순전파와 역전파를 교차 실행한다. 기존 MATH·K/V 반복·활성값 체크포인트, 문서 구간 Flash·12:3 GQA·활성값 체크포인트, 같은 Flash에서 활성값 체크포인트 해제를 비교한다. `4×1,024`, 28방문, 512행 재계산 CE, 같은 인과·MNTP 입력과 지도 위치를 유지한다. 각 경로의 처음 두 묶음을 준비로 두고 순서를 반대로 반복해 시간·할당·손실·미분·마스크 위치의 예측 ID를 확인한다. 체크포인트를 변경하거나 옵티마이저를 적용하지 않는다. 실측 경로가 GPU 메모리 한도를 넘으면 해당 설정의 한계로 기록한다.
+
+실제 F+B에서 체크포인트를 유지한 Flash가 두 배치 모두 짧았다. 1,152 균등 팔의 동일한 본체·옵티마이저·관측·원문 저장점을 원래 MATH와 Flash로 각각 16회 재개한다. 두 팔의 균등 마스킹, 절대 학습 일정과 감독 위치를 맞춘다. 새 실행에서는 중간 저장을 만들지 않고 본체 지문, 구간 시간, 기존 MATH 검증과 장치 사용량을 회수한다. 완료 여부와 시간은 실제 로그로 판단하며 이식의 전체 학습 품질은 장기 대조에서 시험한다.
+
+**결과 회수.** v1.1의 균등·적응은 각각 150,994,944슬롯을 마쳤다. CPU 인과 전체 NLL은 4.29713·4.29759, 독립 첫 답은 두 팔 0/16이다. 문서별 Flash의 후속 16갱신에서 중앙시간 16.740→6.881초, 같은 MATH 인과 NLL 4.349812→4.351236을 관측했다. 원장 58·59의 다음 진행점은 두 1,152 네이티브 원본이다. 원래 전체 지평과 노출을 유지하고, 새 연산 경로를 양쪽에 함께 적용할 때의 장기 품질을 기록한다. [151M CPU 대조](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-matched-1152-cpu-result) · [실제 갱신 비용](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-packed-optimizer-actual)
+
+<a id="p107-v11-flash-continuation-300m"></a>
+### v1.1 두 1,152갱신 저장점의 문서별 Flash 연장
+
+사용자 215 승인에서 기존 두 저장점을 그대로 이어 학습한다. 두 팔에 같은 문서별 Flash GQA를 적용하고 독립변수는 균등·적응 마스킹이다. 동일 문서 위치·인과 타깃과 원래 WSD 절대 2,289갱신을 고정한다. 팔당 잔여 1,137갱신은 149,028,864슬롯이며 완주 누계는 300,023,808슬롯이다. 검증은 기존 MATH 인과 경로와 최종 공통 CPU 문항을 사용한다. 출발점의 원문·스케줄과 저장된 적응 통계를 재사용하고, 같은 노출에서 관측한 정책 차이를 판정한다. Flash의 장기 인과효과는 별도 대조에 해당한다.
+
+태그 `p107_v11_mask_pair300_flash_resume1152_v1_20261122`와 기존 프로필 및 16갱신 Flash 영수증의 지문을 봉인한다. 이전 실제 16갱신의 6.881초를 기준으로 두 팔의 갱신 구간을 약 4시간 20분으로 추정한다. 적응 팔과 긴 구간의 시간 변화를 고려해 측정된 상위 갱신 시간에 여유를 포함한 동등 경계를 먼저 정한다. 이 실행의 마감은 11월 23일 07:00 KST, 카드 상한은 기존 12,390MiB다. 절대 갱신·누적 인과 노출·원문 RNG·두 완전 저장점·종료와 GPU 반환을 확인한다. [재개 실행기](../scripts/continue_p107_v11_mask_pair.py) · [사용자 215와 작업원장](../handoff/WIP_20261022_작업원장-done.md)
+
+완료 모델의 점수 JSON에서 같은 문서·위치·타깃을 짝짓는다. 희귀 목표 패널에서 문서를 10,000회 복원 추출한 NLL 차이의 95% 범위와 최고 선택의 득실을 보고한다. 1,152갱신 저장 점수에서 0~32회 훈련 빈도 목표는 합계 1개였다. 나머지 각 96개 위치의 문서 재표집 범위에는 모두 0이 들어갔다. 기존 점수로 비교기를 검증했으며 평가 모델을 다시 실행할 필요는 없다. [쌍 비교기](../scripts/compare_p107_v11_scored_arms.py) · [1,152 저장 점수의 추정 범위](../handoff/audit/P107_V11_1152_SAVED_PAIRED_INTERVALS_20261123.json)
+
+**완료 · 결과107 §§41~42.** 두 팔의 300,023,808슬롯과 각 저장점, 장치 반환, 독립 자연 창·희귀 및 첫 실사용 평가를 회수했다. 전체 인과 NLL은 적응에서 −0.00167이었고 최고 선택 적중은 89개 줄었다. 숫자 자연 창과 별도 표본의 방향이 달랐다. 균등을 기본으로 유지하며 독립 시드와 충분한 희귀 표본이 있는 대조로 조건부 효과를 확인한다. [결과107 §§41~42](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-flash-full-300m-gpu-result)

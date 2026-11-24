@@ -1,5 +1,9 @@
 # 5. 학습 속도
 
+2026-11-24 P109의 6GiB 대조에서 RMSNorm·RoPE·SwiGLU 연산을 결합했다. 같은 G4 R1과 실제 1024문맥 원문에서 초당 53,292→65,840토큰, 장치 전체 최고 5,237→4,560MiB였다. 출력 손실 버퍼 재사용과 삼진 가중치의 갱신 단위 재사용을 함께 써서, 원문 R1과 교과 R2를 다른 비율로 조합하는 시간 예산을 시험했다. 전량 실행의 시간 추산과 품질 미검증을 별도로 기록한다. [결과109 §§188~190](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-full-train-6gib-screen-20261124)
+
+2026-11-23 P109C v2의 혼합 갱신 중앙시간은 4.321초였다. v1 재개 정상 구간의 4.773초보다 9.47% 짧았고 두 팔의 교과·연산 경로가 달랐다. 같은 갱신에서 관계 질문을 묶고 예시별 회전 위치를 유지한 후보는 CUDA BF16의 같은 실제 전체 혼합 갱신에서 시간을 9.35~11.65% 줄였다. 두 경로의 PyTorch 최고 할당은 같았다. 전체 편성에서의 슬롯 절감 추정은 9.70%이며, 반복 학습의 속도와 품질은 후속 비교 대상이다. [완주 시간](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-full-scratch-mixed-result) · [실제 옵티마이저 갱신](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-relation-pack-full-optimizer-step) · [갱신 내 패킹 계산](../../handoff/audit/P109C_V2_SAME_UPDATE_RELATION_PACK_BUDGET_20261123.json)
+
 > 2026-11-13 [092§25~28](../../test_result/092_20260925_P100-정성한계-P101A-M0-이식문턱실패.md): PAD NS 원인·정확제곱항과compiled32/64/128의NTP/MTP 여섯ABBA/24child를완료했다. 선택7group steady는35.39~42.60%절약했으나fresh-cache 전체child는1.922~2.026배비용이었다. croppeak는32에서24.30MiB,64/128에서45MiB증가했고graph1→3·원NS85수치음성을보존한다. 전체704/품질/기본채택은미실행이다.
 
 벽시계 시간 단축. 현재 m100 300M ≈ dense 97.5분 / tied ~90분.
@@ -275,3 +279,82 @@ observe-only10.404444초(+2.3674%), adaptive10.275837초(+1.1021%)를 관측했�
 이후 새 프로세스가 기존 snapshot에서 두 갱신을 재개한 전체 상태 일치도 [107§17](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)에서 확인했다. 새 checkpoint 저장이나 실제 정전 시험과 구별한다.
 
 2026-11-04 [107§18](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md)은 명시 JSONL/manifest를 기존 source에 연결하는 선택 CLI의 실제 재개까지 확인했다. CPU30 뒤 합성4문서의 논리2/물리3갱신이 같은 두번째 경계의 loss/target/LR/전체 상태 EXACT였다. run25.72초 대 resume14.60초는 prefix와 저장량이 달라 가속비가 아니다. 실제 문서 편향·75M streaming·본학습 효율은 미완이다.
+
+### 2026-11-17 저자 BF16 상태·전송·재개
+
+[078§21](../../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-author-bf16-gloo-resume)은 새 opt-in의 단일CPU9와 실제Gloo2/각rank16 parameter-step·독립 raw bit·serialized BF16 V/next-step·한rank None 동시거부를 통과했다. 상태6B/원소는 FP32 V8B 대비25% 작고 기본Muon4B 대비50% 크다. 전송 scratch는 rank별별도이며 전체 모델 메모리/학습속도·품질 교환비가 아니다. 첫sandbox 주소실패1을 보존하고 host 성공0과 구분한다. trainer·실제 전체학습·GPU/NCCL/동일품질까지 시간은 미완이고 기본recipe는 유지한다.
+
+### 2026-11-17 명시 trainer 연결과 CPU 재개
+
+[078§22](../../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-experimental-trainer-resume)은 기본Muon을 유지하고 네선택의 matched 역할·명시LR/WD·checkpoint manifest를 연결했다. 최종CPU10의 실제 합성update/serialized next-step과 기본값정적검사0이다. 성공한 native전체trainer 경로는STATIC_ONLY이며 정식교과/본학습품질·전체wall·NCCL은미완이다. 상태량은 해당 결과의 행렬optimizer 범위를 따르고 전체모델 절감으로 합산하지 않는다.
+
+### 2026-11-17 문맥교과의 호출당 토큰 수 유지
+
+[106§6](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-mconstant-layout-cpu)은 원micro8 음성을보존하고 새M유지layout의 CPU위치/RNG/분모·source재개만닫았다. P021B의M유지선결을적용한새조건이며 실제가속/메모리·본학습품질은미측정이다. 제품trainer/전체학습재개는미완이다.
+
+### 2026-11-17 문맥교과 제품 접점과 합성 재개
+
+[106§7](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-mconstant-trainer-cpu-resume)의 명시 M유지 trainer/CLI와 cache/RNG/제어상태 checkpoint가구현됐다. 최종합성CPU39/기본값·scopedflag127/127은통과했다. Native긍정실행/속도/VRAM/최종1024품질·문서경계/정식교과는미완이며원micro8속도음성과가속채택보류를유지한다.
+
+### 2026-11-17 저자 NorMuon 네 인터페이스
+
+[078§23](../../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-author-four-cpu)에서 저자EMA/None/4D·보조Adam의별도FP32 네인터페이스와CPU14/Gloo2재개를닫았다. owner broadcast의수치대응이며원all_gather/FSDP2성능과Native품질은미검증이다. 기존TinyLM변형300M음성·기본Muon RMS4는유지한다.
+
+### 2026-11-19 실제 G4 행렬 갱신과 한영 목표 시간
+
+같은 기울기의 행렬 갱신에서는 Muon이 가장 짧았고, 같은 명목 LR에서 AdaMuon은 실제 적응의 두 언어 목표를 먼저 관측했다. AdaMuon 좌표별 BF16 2차 모멘트는 103.5 MiB를 더 사용했다. [결과078 §25](../../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-g4-author-optimizer-step-cost)
+
+### 2026-11-17 저자 NorMuon의 matched matrix 선택
+
+[078§24](../../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-matched-trainer-cpu)의명시normuon_author_fp32는같은행렬역할/공통TinyLM AdamW를사용한다. CPU57/기본값·기존네manifest동률/순수matrix checkpoint검사를닫았다. 원저자AuxAdam전체·Native긍정실행/품질·전체wall은미완이다.
+
+### 2026-11-18 두 optimizer의 명시 loss-scaling 수치 부품
+
+[107§19](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-optimizer-group-cpu)은 설치torch2.10에서 별도CPU14로 누적/unscale/clip·전역overflow skip과 fresh scaler state를 검증했다. 일반optimizer 예외를 원복하는 거래는 아니다. 작은 합성MSE/parameter 검증이며 BF16의 필수조건·Native 품질/속도나전체훈련재개로 승격하지 않는다. P107 source/policy/schedule의 skip 규약은 아직 별도다.
+
+### 2026-11-18 P107 선택 scaler와 소비그룹 규약
+
+[107§20](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-trainer-consumed-group-cpu)은 명시factory/V3·V4·consume-group 규약을 CPU51으로 검증했다. 유한loss 관측그룹의 source/policy/schedule cursor와 실제optimizer 적용/skip을 구분하며 None 세모드의 옛 state해시는 유지했다. 실제Native/BF16-CUDA/Muon/대형교사·75M·품질/가속은 미실행이다. 이전의 scaler 접점 전체미구현은 이제 당시상태이며 실제GPU 입장은 여전히 별도다.
+
+### 2026-11-18 P107 제한 인덱스 source
+
+[107§21](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-indexed-document-source-cpu)은 새offset source의 상주형 동일추출/RNG·작은학습기 재개 CPU15를 닫았다. 기존13source/defaults불변이다.1048576합성 token/4233618B 파일에서 record metadata69890B·최대 raw16538B/문서4096token·4읽기66150B이며 전체토큰payload를 인덱스에 보관하지 않는다. 이는 RSS/가속 실측이나 실제75M/언어품질이 아니다. startup 전체검증·O(문서수)메타데이터·random I/O 비용과 별도 source schema를 기록한다.
+
+### 2026-11-18 실제 Native 합성 학습 비교
+
+같은 2,359,296개 목표 위치의 문맥 일정은 고정 길이와 최종 CE가 같았다. 18갱신의 학습 구간과 실행 peak에서 이득이 관측되지 않았다. 같은 명목 LR의 저자 NorMuon과 AdaMuon은 짧은 합성 CE와 학습 시간에서 고정 matched Muon에 미달했다. 저장된 Ada의 추가 2차 상태와 live peak는 다른 양이다. 세 masking 경로의 선택 scaler도 실제 CUDA를 통과했다. [문맥·옵티마이저](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-native-matched-gpu-training-result) · [마스킹](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-native-scaled-three-actual)
+
+### 2026-11-18 실제 CUDA 체크포인트 재개
+
+연속 18과 별도 6+12의 최종 합성 CE 및 샘플러 상태가 같아도 기본 CUDA 가중치에는 차이가 났다. PyTorch strict 결정론과 고정 cuBLAS/cuDNN 조건에서는 모델·AdamW·Muon이 모두 비트 일치했고 strict 스위치만 끈 조건에서는 차이가 돌아왔다. 재개 성공, 정확 상태 재현, 속도는 각 판정에 직접 대응하는 자료로 기록한다. [결과106 §10](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-native-cuda-resume-stage5)
+
+## 2026-11-18 가중 tied-head, NS와 KD 잔여분
+
+32K·248K의 고정 합성 head에서 loss, 원 gradient, 적용된 갱신, forward+backward 시간과 peak 할당을 비교했다. 기본 NS와 BF16에서 첫 갱신 음성이 있었다. FP32 NS는 첫 갱신 허용차를 통과했다. 균등 잔여분 KD의 vocab tile은 할당을 줄였으나 시간이 늘고 첫 AdamW 갱신에 허용차 위반이 남았다. 실제 교사와 배포 기본값은 별도의 판단이다. [결과093 §§24~26](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-weighted-gpu-tied-head-vocab)
+
+## 2026-11-19 실제 분포의 타일 학습과 G4 방문 비용
+
+실제 비균등 교사 두 분포의 CE+KL에서 타일은 후속 갱신 중앙값을 24.16ms에서 55.00ms로 늘렸다. 16층 G4의 동일 방문 예산에서는 고정 R2 166.84ms, 균형 방문 179.99ms, 둘째 순회 셔플 164.22ms를 관측했다. GPU 한 장과 단일 합성 순서의 기술 비용이다. [KD 결과](../../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-tiled-bonsai-full-vocab-gpu) · [G4 결과](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md)
+
+<a id="p106b-p109-onepass-feature-speed"></a>
+## 2026-11-19 같은 교사 문서에서 정확한 선두 특징을 수집한다
+
+학생 prefix를 교사 토큰으로 다시 만들었을 때 원 교사 문서의 정확한 선두인 위치만 각 문서 한 번의 순전파에서 모은다. 일치하지 않는 528개 고유 prefix는 개별 실행한다. 실제 Qwen에서 특징 추출용 토큰 493,654→41,090과 시간 31.944→2.573초를 관측했다. 출력 선택은 같았고 원 표현 수치 문턱에는 위반이 있었다. 빠른 방식으로 실제 학생을 학습한 별도 대조도 회수했다. [교사 계측](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-teacher-prefix-onepass) · [학생 대조](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-onepass-student-kd)
+
+## 2026-11-19 유효 타깃을 보존한 G4 문서 문맥교과
+
+문서 ID와 원래 다음 토큰을 보존하면 짧은 창의 마지막 타깃을 살리면서 문서 사이 예측을 마스킹할 수 있다. 같은 G4·31,770타깃·8갱신의 1,024 고정과 단계형을 한 순서로 실행해 갱신 5.861→4.498초, 장치 표본 4,311→4,089 MiB, CUDA 최고 할당 2,413.31→2,416.81 MiB를 관측했다. 작성 학습 문서는 최대 38토큰이다. 정식 독립 장문과 교차 순서는 적용 판정에 필요하다. [결과106 §14](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-document-context-schedule)
+
+인덱스 패킹·고정 G4 마스크·갱신 전체 분모를 제품 모듈로 연결했다. 같은 작성 문서의 새 8×2 윈도에서 4갱신·63,530타깃을 검증했다. 합산 갱신 8.152초 중 입력 준비는 0.347초였다. [결과106 §14.3](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-indexed-native-g4)
+
+일반 학습 CLI의 문서 프로필은 학습·검증 분할, 고정 평가와 재개를 묶는다. 소형 G4에서 CPU·CUDA 각각 연속 4회와 1+3회의 상태가 일치했다. 16층 G4도 저장 경계를 공유한 4회 대 2+2회에서 재현했다. 연속 프로세스의 30.234초 중 저장은 16.914초였다. 정식 장문에서의 비용 대조는 이어받는다. [결과106 §14.5](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-packed-document-cli-cuda) · [§14.6](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-packed-cli-resume)
+
+한 번 직렬화한 체크포인트를 두 독립 파일로 저장하는 후보는 원바이트를 보존했다. CPU·CUDA 두 대조에서 반복 시간 기준을 넘지 못해 채택을 보류했다. [결과106 §14.7](../../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-checkpoint-pair)
+
+### 2026-11-20 G4에서 CE 위치 블록과 감독 위치만 계산하는 경로
+
+16층 G4의 동일 합성 `4×32×1,024`에서 위치 재계산 2,048행은 혼합 교과 갱신의 중앙시간을 두 번 모두 줄였다. 원문에서는 순서별 방향이 달랐다. 교과의 어휘 CE 대상 위치를 32,768에서 152로 제한하자 전체 학습 배치의 어휘 연산 수는 줄고 혼합 스텝은 5.63~6.68% 길어졌다. CPU 수식·미분과 파일 재개도 함께 검증했다. 원문·교과의 별도 안정 구간과 장치 최고치로 전체 학습 비용을 판단한다. [결과109 §§60~61](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-ce-position-blocks-result)
+
+### 2026-11-24 관계 패킹 뒤 감독 없는 배치의 본체 계산
+
+기존 한영 혼합과 같은 153번째 실제 갱신에서 감독 없는 두 배치의 본체 계산을 생략했다. 동일 가중치·두 옵티마이저·유효 감독에서 중앙시간이 감소했다. 기술 대조의 최고 할당은 같다. 프리셋에 연결하려면 예정 슬롯과 실제 방문을 함께 기록하고 재개·갱신 검증을 수행한다. [결과109 §155](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-padding-zero-backward-result-20261124)

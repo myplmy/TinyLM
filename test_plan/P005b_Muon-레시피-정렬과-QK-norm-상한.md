@@ -551,3 +551,186 @@ GPU 비용·공식 코드 팔·AdaMuon·같은300M 본학습 비교는 대기한
 첫 CPU15개에서 resume 입력 tensor alias 결함을 발견했고 복제 후 수정했다. 잘못 만든 TLinear 시험 인자 두 오류는 실제 생성자 `(cfg,in_f,out_f)`와128-group으로 고쳤으며 제품 구현 오류로 둔갑시키지 않는다. 현재 독립 AdaMuon20·자원19·기존 NorMuon25=64회귀와 신규 cost3회귀는 종료0이다. 보조 정/반은 읽기 전용 검토만 했고 구현·시험·실행은 총괄이 담당했다.
 
 2026-10-27 03:26:54~03:27:13 KST에 tool22547/부모0·17.752초로 GPU 기술진단을 완료했다. 5개 실제 행렬shape의3회 수치비교는 모두 고정허용오차 내였고 최대절대차1.49e-8이다. 원본core/CP/corpus·공통기울기 불변과 소유정리0을 확인했다. Ada행렬state678,690,816B는Muon339,345,408B의2배로 예측과 맞았고 정상행렬 step200.750/211.990ms는Muon48.124/56.004ms보다 짧지 않았다. 두순서/AdamW/실제peak·원로그·경고는 [결과078 §19](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md)에 기록했다. 실제8192목표의1회 backward는완전accum16학습이아니며 전체학습wall/같은품질까지시간·지능효과는NOT_RUN이다. 기본Muon을유지하며 추가300M금지가풀리기전본학습대조를열지않는다.
+
+## 13. Stage17W — 저자 NS 괄호와 V·정규화 정밀도의 CPU 요인 분리
+
+### 13.1 왜
+
+원장55/56의 공식 BF16 후속이다. 기존 FP32 V 실제 gradient 비용은 완료 재사용하며 공개 저자 source revision 미확인과 두 수치 축의 혼동을 먼저 닫는다.
+
+### 13.2 질문
+
+같은 FP32 master/합성 gradient에서 NS 괄호 두 가지×FP32/BF16 V·정규화 tail의 네 조합이 첫/누적5단계에 미치는 수치 영향과 state 크기는 무엇인가?
+
+### 13.3 예측
+
+기존 NS+FP32 tail은 현재 AdaMuon 클래스와 비트 동일해야 한다. NS 재결합/BF16 tail은 달라질 수 있다. 품질 우월·가속 예측은 하지 않는다.
+
+### 13.4 단계
+
+[세대안·영향·고정 저자 revision·9절 계약](../docs/research/20261117_AdaMuon_NS괄호와_V정밀도_분리계약.md)의 B를 선택한다. 새 helper의6계약은14:41:59KST 실제0이다. seed1337·다섯 형상·Nesterov 두 분기·각5gradient를 네 고정 정책에 대응한다. 원클래스 대조는같은 합성 자료50step이며 완료된 실제 모델 gradient 비용을 다시 실행하지 않는다.
+
+### 13.5 판정
+
+현재 클래스와 기존 NS/FP32 tail의50step 비트 동률·네 조합200step의 유한/원값 불변·state6/8B 원소 회계와 실제 종료가 기술 입장이다. 같은 tail끼리 NS를, 같은 NS끼리 tail을 비교하고 누적 trajectory 효과를 첫단계 순수 차이와 구분한다. BF16 tail은 V와 정규화의 결합 축이다.
+
+### 13.6 비용
+
+기존 CPU 환경·단일 process·상한300초/가용RAM1GiB, 작은 합성 NPZ·JSON20MB 제한이다. 모델/데이터/원CP/교사/body forward/학습/GPU·새 패키지/환경/기본 trainer 변경0이다.
+
+### 13.7 실행
+
+runlog078의 Stage17Wa6시험→Wb prepare→정확 source5복사 보존→Wc CPU actual→Wd 저장 검산 순서다. 새 학습 BAT/SH는 만들지 않고 현재16:40/17시 경계를 유지한다.
+
+### 13.8 한계
+
+저자 분산 코드의 buffer/통신·4D·None assertion·전체 state_dict/기본 trainer/학습효과는 범위 밖이다. 새 helper는2D CPU local 계산이며 원공식 optimizer exact 이식으로 부르지 않는다. 합성5형상/5step을 실제 모델 수렴/전체wall로 확대하지 않는다.
+
+### 13.9 이력·preflight
+
+저자 commit9c1ba5be86ebd7dd7464a0bc43b28daccf40279e의 코드/그룹/라이선스 blob이 현재 main과 동일함을 GitHub 읽기 도구로 확인했다. 기존20+3시험/17.752초 GPU 비용은 반복하지 않는다. 새 태그조회0이며 학습pool/steps·epoch 환산은 해당없다. 새 actual은NOT_RUN이다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 안다.
+
+
+### Stage17We — 미계측 비트 게이트만 좁혀 회수한다
+
+원 Wc의 `torch.equal` 원소값 동률과 raw 필드명의 과장을 정정했다. 원200요인 계산/50대조·report/source/profile은 그대로 보존한다. 대안 A는비트입장 NOT_RUN 유지, B는새 namespace에서원 N0T0와현재클래스의50단계만같은RNG로재구성하고원저장150 SHA까지대응, C는네정책전체반복이다. **B를선택**하며계측누락의필수복구로원과학대조전체는반복하지않는다.
+
+새 허용목록은자기감사의 `replay_adamuon_bit_controls_v1.py`와 `p005b_adamuon_control_bits_v1_20261117`·현재문서연쇄다. 원저장50행의 weight/momentum/V SHA와동일초기값/gradient를대응하고,양쪽uint8 view를직접비교한다. **양쪽150SHA=원150SHA**와bytes동률·원source/input불변·실제종료/CUDA미초기화가모두필수다. 부호0도bytes비교에포함한다. 출력은작은report이며다른세정책/전체4요인·기존실제모델gradient비용·모델/원CP/자료/GPU/학습0이다.
+
+기존CPU환경/상한300초·가용RAM1GiB·16:40/17시경계를유지한다. prepare→새source/profile보존→runlog078actual순서다. 이 추가 증거가통과할때만원비트게이트를후속복구로승격하며원Wc가처음부터계측했다고쓰지않는다. We0/We1은실제0이며14:51:26KST/0.683902초에양쪽uint8 view50단계/150SHA=원Wc150SHA를확인했다. 원엄격비트게이트를후속복구로닫았으며기존Wc필드과장/미계측정정은보존한다. [결과078§20~20.2](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-adamuon-precision-factors)가수치·명령·제한을소유하고공식전체/기본trainer·본학습품질은미완이다.
+
+## 14. Stage18W — 저자 BF16 상태와 실제 CPU 전송·재개를 별도 검증한다
+
+### 14.1 왜
+원장55/56의 BF16 flat V·분산 buffer·None assertion/state_dict·trainer 접점이 남았다. 기존 FP32 V와 CPU요인 실험은 완료 재사용한다.
+### 14.2 질문
+저자순서/BF16 tail·단일장치 copy·Gloo2 전송·동일 next-step resume가 독립 oracle와 맞는가?
+### 14.3 예측
+같은 CPU 수치 경로의2D raw bit 동률을 기대하지만 state_dict dtype cast와 통신/부분rank gradient 오류가 가능하다. 품질/가속은 미예측이다.
+### 14.4 단계
+현재 고정 저자 blob 확인 → 독립 새 opt-in 클래스 → 단일CPU9회귀 → CPU Gloo2 두 process → GPU 평가 종료 뒤 trainer 접점 순서다. 실제 데이터/모델/새 본학습0이다.
+### 14.5 판정
+2D 독립 author-factor raw bit·flat BF16 V/FP32 momentum·원gradient·저장 뒤 next-step을 확인한다. 한쪽 rank None은 모든rank 업데이트 전에 거부한다. 실제 모델 품질/전체wall·CUDA/NCCL 다중GPU는NOT_RUN이다.
+### 14.6 비용
+기존 tlm_torch CPU 단일thread, Gloo두 process 각각1thread·45초 소유 timeout·합성 작은 행렬뿐이다. 상태6B/원소와 size별 BF16 scratch는 실제 storage byte로 검산한다.
+### 14.7 실행
+`scripts/test_adamuon_author.py` 단일 회귀와 `--gloo <새출력>`을 runlog078로 각각 기록한다. 학습 런처는 만들지 않는다.
+### 14.8 한계
+저자 연산순서와BF16을 보존하되 안정 group순서·사전 collective검증·CPU/device buffer·scratch제외 schema는 adaptation이다. 외부전체 exact port·기본채택·새품질로 표현하지 않는다.
+### 14.9 이력
+[3안·권한·영향·9절 계약](../docs/research/20261117_AdaMuon_BF16_전송과_재개_계약.md)을 먼저 작성했다. 구현 뒤 단일/Gloo 실제 종료와 source봉인을 별도로 회수한다. 사용자161의11월18일17시 창이며 설치/다운로드/새환경/보호·타정제 접근0이다.
+
+**Stage18W 실제:** 2026-11-17 단일CPU9/0·독립2D raw bit·None/serialized BF16 next-step을 통과했다. 첫Gloo는 sandbox 주소초기화1/optimizer미실행이고 동일source의host Gloo2는2.628270초/0·각rank16 parameter-step/원값·재개·한rank None 동시거부를 통과했다. state96/36B·scratch40/40B, 모델/GPU/학습토큰0이다. §3 예측은 해당CPU 수치/전송 범위에서 지지됐고 trainer·실제 전체학습/품질·GPU/NCCL은 미완이다. [결과078§21](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-author-bf16-gloo-resume).
+
+## 15. Stage19W — 공통역할의 명시 trainer 경로와 재개를 연결했다
+
+### 15.1 왜
+Stage18W의 남은 trainer 접점을 원장55/56 범위에서 수행한다. 기본Muon과 새matched 역할을 구분한다.
+### 15.2 질문
+embedding/head·특수/GSQ logits를 보존하고 네선택의 LR/WD·serialized next-step·잘못된method 재개를 명시할 수 있는가?
+### 15.3 예측/대조
+공통역할/저장재개 기술동률을 기대했고 CPU10에서 지지됐다. 기존FP32와 BF16의 상태량 차이도 관측됐다. 본학습품질·가속 방향은 미예측/NOT_RUN이다.
+### 15.4 단계/상태
+Stage14.4 후속으로 착수 전 3안/권한/영향 계약→소스변경전 보존→factory/CLI/trainer→CPU10→AdamW state raw bytes 보강/최종CPU10→기본값정적검사0→source11봉인을 완료했다. 성공한 native 전체trainer 실행은 미완이다.
+### 15.5 판정
+같은역할 집합·원AdamW metadata·명시 matrix LR·네방법 실제update/serialized 추가2step raw bytes·BF16 V·잘못된manifest/None 사전거부를 CPU로 닫았다. 모델품질/전체wall·default채택은 판정하지 않았다.
+### 15.6 비용
+기존CPU1thread·합성20행렬원소·상한120초였다. 최종unit0.534초이며 모델/본문forward/학습토큰/GPU0이다.
+### 15.7 실행
+`scripts/test_experimental_optimizers.py`와 기존 `scripts/test_training_defaults.py`를 runlog078 Stage19Wa/Wa1/Wb로 기록했다. 모델학습런처/원CP쓰기0이다.
+### 15.8 한계
+factory 동적CPU와 성공한 전체trainer 경로의STATIC_ONLY를 구분한다. 저자Ada는world1 연결이고 Gloo2가NCCL trainer 검증은 아니다. 원Nor300M 음성·공식Nor전체변형·본학습/전체wall 선결을 유지한다.
+### 15.9 이력
+[착수 전 계약](../docs/research/20261117_행렬옵티마이저_trainer와_재개_계약.md)·[결과078§22](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-experimental-trainer-resume). 이 상세9절은 Stage18W의 이미 예고한 trainer 구현과 CPU검사 회수 시 구체화했다. 기본Muon RMS4·KDoff는 유지한다.
+
+## 16. 2026-11-17 Stage20W — NorMuon 저자 FP32 규약의 네 인터페이스
+
+### 16.1 왜
+
+원장55·56의 공식 방법 대조 미완을 이어간다. 기존 TinyLM 변형판의 완료300M 음성은 유지한다. 별도 [영향/설계 계약](../docs/research/20261117_NorMuon_저자규약과_독립이식.md)이 세 안, 파일 허용범위와 원코드/논문 차이를 소유한다.
+
+### 16.2 질문
+
+저자 수치의 단일/분산 행렬과 보조Adam 네 인터페이스가 같은 독립 수식 및 직렬화 후 다음 update와 일치하는가? None의 잔여 모멘텀과4D의 원축/상태 크기가 기존 변형과 구분되는가?
+
+### 16.3 예측
+
+같은 연산 순서의 CPU tensor/state 일치를 기대한다. 기존 변형·논문 Algorithm1·RMS4 또는 Native 품질의 동률은 예측하지 않는다. 분산 통신을 owner broadcast로 바꾸므로 공식 속도 재현을 주장하지 않는다.
+
+### 16.4 단계
+
+고정 원코드의 읽기 AST/hash→별도 FP32/고정 topology 구현→독립 CPU 수식/None/4D/보조Adam·재개/오류→선택 CPU Gloo2 순서다. 실제 데이터/모델/GPU 없이 작은 parameter만 사용한다. 라이브러리 설치/전체 원본 저장·기본 trainer/CLI 변경은 없다.
+
+### 16.5 판정
+
+weight/momentum/V·gradient side effect와 재개 후속 bytes가 독립 reference와 일치해야 한다. 잘못된 입력·state·method/rank는 쓰기 전에 거부한다. 실제 Native/전체wall/동일품질까지시간·CUDA/NCCL·기본채택은 NOT_RUN이다. 현재 자는 이 새 optimizer 품질의 통계판정자가 아니므로 복사하지 않는다.
+
+### 16.6 비용
+
+기존 CPU thread1·단일120초/각Gloo45초 상한이다. 자연어 학습토큰0이며 표준300M의 steps×micro×accum×seq나 풀2배를 적용하는 학습 팔이 아니다. 2D 상태4m(n+1) bytes·4D 원축과 보조Adam 두 moment를 직접 센다. 태그 p005b_normuon_author_cpu_v1_20261117_s1337은 registry 조회에서 충돌0이다.
+
+### 16.7 실행
+
+별도 scripts/test_normuon_author.py를078 Stage20W CPU 원로그로 회수한다. 새 모델 학습SH·실제 GPU 명령은 작성하지 않는다. 결과는 같은078의 다음 절에 잇는다.
+
+### 16.8 한계
+
+FP32 master·명시 그룹·작은 합성 CPU만 대상이다. 전체 Native trainer·정식교과·본학습/품질·BF16 master·FSDP2/NCCL은 미검증이다. None skip을 유지한 기존 변형과, None에서 zero를 만들고 모멘텀을 계속 적용하는 저자 규약을 혼동하지 않는다.
+
+### 16.9 현재 이력
+
+2026-11-17 고정 source AST/hash와 문헌/기준표/현재자를 확인했다. 새 수치 클래스는 별도로 작성 중이며 실제 CPU 시험/분산 실행은 아직 NOT_RUN이다. 원라이브러리 원본은 실행/설치하지 않았다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+**Stage20W 실행 회수:** [078§23](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-author-four-cpu)의 별도저자FP32 네인터페이스가 CPU14/0·hostGloo2/2.089640922초/0을통과했다. sandbox 초기화1도보존했다. 원수식/None/4D·보조Adam·상태·직렬화후속이일치해CPU예측은지지됐다. Native trainer/CLI접점·본학습/품질·BF16master/FSDP2/CUDA/NCCL은미완이며기본Muon RMS4와완료Nor300M음성은유지한다.
+
+## 17. 2026-11-17 Stage21W — 저자 NorMuon의 matched 행렬 선택
+
+### 17.1 왜
+
+원55의 별도저자클래스 이후 trainer 선택/재개 접점을 닫는다. 078§23 CPU14/Gloo2는 재사용하고 Native 모델 실행은 하지 않는다. [Stage21W 영향/세안/파일권한](../docs/research/20261117_행렬옵티마이저_trainer와_재개_계약.md)이 설계 정본이다.
+
+### 17.2 질문
+
+새 normuon_author_fp32가 기존 네 방법과 같은 역할/보조AdamW를 사용하고 명시LR·source scale/None·재개 선검사를 보존하는가? 기존 네 method manifest는 그대로인가?
+
+### 17.3 예측
+
+작은 CPU의 다섯팔 역할/저장재개와 기존네팔 manifest 보존을 기대한다. 실제 Native 성공·품질/가속은 예측하지 않는다.
+
+### 17.4 단계
+
+7source before봉인·기존4manifest capture→enum/factory·순수 저장state 선검사/호출부·설명→새Nor 사례/기존문맥·저자수식 CPU→flag/source/scope 검사→결과078의 새절 순이다. 각 단계가 다음의 게이트다.
+
+### 17.5 판정
+
+기존 네 manifest/기본값 유지, 역할/LR/WD·원source gradient/None 규약·두optimizer byte 재개, 오류의 AdamW step 또는 model/AdamW load 전 거부가 필요하다. 공통 AdamW 저장tensor 전체를 검증한다고 주장하지 않는다. Native 긍정경로·GPU/품질은 NOT_RUN이다.
+
+### 17.6 비용
+
+CPU thread1·120초 상한이며 실제모델/자연어토큰0이다. 풀/300M 산식과 품질통계자는 해당없음이다. 새태그 p005b_normuon_author_matched_v1_20261117_s1337은 조회충돌0이다.
+
+### 17.7 실행
+
+078 Stage21W CPU 원로그·별도 before/after snapshot으로 회수한다. 새학습SH/실제GPU 명령은 이단계에서 작성하지 않는다.
+
+### 17.8 한계
+
+새Nor는 저자 matrix rule과 공통 TinyLM AdamW 결합이다. 저자 WithAuxAdam 전체·분산 Native trainer·FSDP2/NCCL·정식교과/전체wall/동일품질까지시간은 미검증이다. 원정제/보호자료·원CP/로그·설치/새환경·Git/삭제0이다.
+
+### 17.9 현재 이력
+
+착수 영향/권한과태그를확인하고7source before를봉인했다. 기존네method manifest capture는0으로닫았고실제optimizer step/모델/GPU0이다. 새선택코드/회귀는현재NOT_RUN이며최종결과뒤예측을대조한다. 이 점검은 알려진 설계 실수만 걸러낸 것이고, 실제로 그런지는 돌려봐야 압니다.
+
+**Stage21W 실행 회수:** [078§24](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-matched-trainer-cpu)에 변경전4manifest·초기56의비교도구2오류·수정후57/기본값/기존네manifest동률을회수했다. CPU보존예측은지지됐고Native긍정실행/품질은미확인이다. 새Nor matrix와matched TinyLM AdamW를구분하고기본Muon RMS4를유지한다. 실제본학습/전체wall·정식교과입장은다음선결이다.
+
+**Stage22W 실행 준비:** [P013 Stage4W](P013_seq-length-warmup-소규모.md#p013-native-matched-synthetic-gpu)의 공통 fixed1024 대조를 재사용한다. 같은 합성 입력·선택 행렬·보조 AdamW와 명시 LR에서 NorMuon FP32·AdaMuon author BF16의 실제 Native Trainer 갱신·자원·저장 상태를 확인한다. 네 팔의 CPU preflight는 종료0이다. 사용자165 순서에 따라 미완 공식 평가 뒤 실행한다.
+
+## 18. 2026-11-19 Stage23W — 실제 G4 기울기로 세 행렬 옵티마이저의 단계 비용을 비교한다 ✅ 완료(결과078 §25)
+
+원장 55·56에서 [결과106 §11~12](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md)의 학습 전체 시간과 검증 목표 도달 시간을 재사용한다. 결과078 §19의 단계 비용은 앞선 구현과 모델의 기록이다. `p005b_g4_author_optimizer_step_cost_v1_20261119`은 16층 G4 P079 초기 상태와 추출 2027의 첫 4×96 배치, 124감독 타깃에서 기울기 한 벌을 만든다. 이전 첫 CE와 클리핑 전 노름을 대조한다.
+
+같은 FP32 파라미터와 보조 AdamW에 순서 `Muon→NorMuon→AdaMuon`, 그리고 역순을 적용한다. 각 구현에서 복제 모델과 고정 기울기를 사용해 6회 step을 호출한다. 첫 호출과 뒤 5회의 중앙값을 나눠 전처리 검증·AdamW·행렬 optimizer 벽시간을 CUDA 동기화 경계로 계측한다. 행렬 운동량과 2차 모멘트의 dtype 및 실제 저장 바이트, 공통 보조 상태, CUDA와 카드 메모리를 확인한다. 좌표별 BF16 상태를 가진 AdaMuon은 상태 메모리가 늘 것으로 예상하며, 실제 시간 순위는 측정한다.
+
+후보 통과 조건은 초기 값·역할·기울기 지문 일치, 각 팔의 유한 갱신과 기존 실제 학습의 상태 바이트 재현이다. GPU 경로 예상 20~55초, 프로세스 상한 100초, 단일 장치 13 GB 이하다. 확인용 기울기 1회와 그 복사의 단계 비용이다. 학습 및 검증을 재실행하지 않고 순수 시간은 전체 학습 시간과 분리한다.
+
+**실행 이력.** CPU 준비와 GPU 18초가 종료 0이었다. 순수 행렬 단계 중앙값은 Muon 60.14~70.08 ms, NorMuon 149.97~164.42 ms, AdaMuon 166.84~168.64 ms였다. 세 방법의 상태 저장량을 기존 실제 학습과 같게 복원했다. CPU에서 이전 14팔의 총 시간과 목표 최초 관측을 재검산해 §2.2의 두 원장 항목에 반영했다. [결과078 §25](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-g4-author-optimizer-step-cost)

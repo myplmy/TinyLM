@@ -1,5 +1,9 @@
 # 6. 학습 품질·안정
 
+2026-11-23 통합 P109C의 원문·교과 혼합에서 첫 실사용 정답은 0→4/16, FINAL200 실사용은 0→33/200이었다. 같은 원문의 인과 NLL은 0.370 높았고 Core6은 3.38%p 낮았다. 일상 답과 근거 교차가 약했던 원인 후보로 일반 교과의 학습 답 길이 제한과 노출 편중을 확인했다. 일반 교과 입장, 초기 응답 배율과 원문 표집을 각각 통제 대조한다. [결과109 §§120~126](../../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-common-answers-result)
+
+2026-11-19 실제 Qwen ACTD를 같은 초기 dense14에 적용하자 STE·GSQ가 각각 8회 갱신했다. 사전 지정한 GSQ 일정에서 스케일은 744,447개 변했고 결정론적 삼진 코드 변경은 0이었다. AdamW의 8회 로짓 이동 상한 0.0016175에 비해 마스크와 활성 부호의 거리 4.6이 컸다. 장치 최고는 STE 7.74 GB, GSQ 12.37 GB였다. 현재 조건에서 GSQ 우선 채택 근거는 확보하지 못했다. [결과101 §691](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-actual-actd-start)
+
 2026-11-13 [101§591~593](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md):
 Qwen3.5 고정1024 scorer가원가변폭FP32음성을보존한채새prefix16/직접CE·순서검사를통과했고
 공식cost192/576닫힘뒤full을수행중이다. 학생개선으로귀속하지않는다. ACTD는literal중복항·
@@ -123,3 +127,73 @@ SFTval 감소와 rawpreclip 큰값·원native32crop 악화·일반지문 미회�
 common256 원답의 종료key 집계결함은 원형/codeGit을보존한새CPU readback으로 정정했고 실제모델출력을 다시쓰지않았다.
 
 2026-10-14 추가: [101 §112](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md)의64표본·32개발답·전체512를구분했다. 값계약/4view/root일관성·첫값휴리스틱을함께집계해상수출력의50%를내용이해로승격하지않는다. 자료/학습량교락·clip전큰값·native악화와미측정통계자를보존한다.
+
+### 2026-11-18 두 optimizer의 명시 loss-scaling 수치 부품
+
+[107§19](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-optimizer-group-cpu)은 설치torch2.10에서 별도CPU14로 누적/unscale/clip·전역overflow skip과 fresh scaler state를 검증했다. 일반optimizer 예외를 원복하는 거래는 아니다. 작은 합성MSE/parameter 검증이며 BF16의 필수조건·Native 품질/속도나전체훈련재개로 승격하지 않는다. P107 source/policy/schedule의 skip 규약은 아직 별도다.
+
+### 2026-11-18 P107 선택 scaler와 소비그룹 규약
+
+[107§20](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-trainer-consumed-group-cpu)은 명시factory/V3·V4·consume-group 규약을 CPU51으로 검증했다. 유한loss 관측그룹의 source/policy/schedule cursor와 실제optimizer 적용/skip을 구분하며 None 세모드의 옛 state해시는 유지했다. 실제Native/BF16-CUDA/Muon/대형교사·75M·품질/가속은 미실행이다. 이전의 scaler 접점 전체미구현은 이제 당시상태이며 실제GPU 입장은 여전히 별도다.
+
+### 2026-11-18 P107 제한 인덱스 source
+
+[107§21](../../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-indexed-document-source-cpu)은 새offset source의 상주형 동일추출/RNG·작은학습기 재개 CPU15를 닫았다. 기존13source/defaults불변이다.1048576합성 token/4233618B 파일에서 record metadata69890B·최대 raw16538B/문서4096token·4읽기66150B이며 전체토큰payload를 인덱스에 보관하지 않는다. 이는 RSS/가속 실측이나 실제75M/언어품질이 아니다. startup 전체검증·O(문서수)메타데이터·random I/O 비용과 별도 source schema를 기록한다.
+
+### 2026-11-18 source 이름과 실제 근거 문맥
+
+[101§640](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-hotpot-family-context-review)에서원HotpotQA의문맥구조와달리로컬Aya6표본은질문/정답뿐이었다. 기존무손실함수24unit보존은참이지만근거문맥·원root/권리를만들지않는다. 원형그대로6개는HOLD이며전체가족의오류율이나독립질문수·75M가용량으로일반화하지않는다.
+
+### 2026-11-18 dataset task label과 본문 역할
+
+[101§641](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-soda-narrative-role-review)의SODA2개는dialogue메타데이터와달리서사생성요청/가상답이었다. 바깥user/assistant의lossless8unit검증은등장인물의발화자배열/현실사실검증이아니다. 이고정표본은서사조건/원root입장HOLD이며전체가족/75M가용량으로일반화하지않는다.
+
+### 2026-11-18 서사재구성과엄격입력근거QA의계약
+
+[101§643](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-plain-task-and-input-grounding-review)의SODA6원문에서세형식을구분했고명시대화2개를확인했다.4서사답의일부세부는입력대화에명시되지않아엄격근거QA정답으로자동승격하지않는다. 원래서사재구성의오류판정이아니며원답은보존한다. input-only 대화view는세안/권한/원root·rights 입장과별도CPU검증뒤에만준비하며품질효과는미실행이다.
+
+### 2026-11-18 입력대화근거와옛서사답의분리
+
+[101§644](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-named-input-prefix-cpu)의새순수view는known suffix앞입력prefix만근거text로반환하며raw/old target은보존한다. CPU12+저장실물2에서정확span·target비간섭/거부를확인했다. trace의원row해시는old target변경시달라지며근거hash와구분한다. 내부speaker/원root/rights·token예산·실제교사/75M/학생품질·기본채택은미검증이다.
+
+### 2026-11-18 원질문파생계보와입력근거/학생wire의분리
+
+[101§645](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-parent-evidence-student-wire-cpu)는기존first-user 정규화해시를원질문에서먼저보존하고교사payload/학생참고자료에는명시대화입력만사용했다. CPU11·원문2의작성wire12에서실제chat32 전체최대485토큰·답변/EOT/턴mask와초과거부를확인했다. 두key는달라도이두사례의제안TRAIN분할은같았다. 원SODA root/권리·실제corpus split/편입·생산/교사응답/75M/품질을검증한것은아니다.
+
+### 2026-11-18 여러표현창과명시원천경계
+
+[101§646](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-multiwindow-source-boundary-cpu)의새coordinator는committed feature record의before/after 원천경계를여러창에연결한다. CPU19의실제PCG64 합성adapter/중단·prefix·quota·bytes가통과했고382파일을독립검산했다. 강제3x4MiB/3072표현행/618선택위치는언어학습토큰이아니다. 외부교사호출 exactly-once·Native RNG/전체model-optimizer 재개·실제8h/75M·권리/품질/기본채택은미검증이다.
+
+### 2026-11-18 CE전체와KD하위집합의별도분모
+
+[101§647](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-complete-ce-bounded-kd-group-cpu)의A CPU14는원CE전체순서를유지하고KD 하위집합만추가한다. CE-only 앞/중간/끝행을포함한CE5/15와KD2/7·45변수독립미분최대오차5.55e-17을확인했다. 기존Native128/772비용은이미전체CE를보존했으며이신규경로와구분한다. B전체optimizer/scaler/RNG 재개·실제Native/75M/권리/품질은미완이다.
+
+### 2026-11-18 작은CPU의전체경계와공개scaler상태이관
+
+[101§648](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-tiny-cpu-complete-dskd-training-boundary)의새CPU owner는고정scaler원본을바꾸지않고검증된공개scalar/counter를새callback수/활성optimizer binding으로명시이관한다. A14+B10은전체model/buffer/optimizer/source/세RNG·새객체재개와zero-KD투영보존/overflow/dirty복구를확인했다. 입력소비와applied/skip을구분하며67호출은전체수치시험의실제optimizer호출이지언어학습업데이트가아니다. 실제Native/teacher/생산LR/75M/권리/품질은미완이다.
+
+### 2026-11-18 소비그룹LR의별도소유
+
+[101§649](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-consumed-group-lr-schedule-cpu)는기존고정LR/scaler를바꾸지않는명시subclass다. canonical LR 원식과소비시계를공유하며overflow도진행하고zero-KD투영은이전LR까지보존한다. 새10수치검사는수동비스케일업데이트/완전재개exact·old20불변을닫았다. 새schema는과거CP를이관하지않는다. 실제Native/provider/교사75M/권리/품질은미완이다.
+
+[원실험미분/실제provider검토](../research/20261118_DSKD_actual_gradient_limits_review.md)는본체33.315배/−0.161과전체32.856배/−0.171을구분한다. 원scalar의국소Euclidean내적계산은실제Muon/AdamW·유한업데이트·품질보장이아니며생산계수미선택이다. 원진단micro8과새CPU한행callback의실제연결이남아있다. 새동적실험/원로그추가0이다.
+
+### 2026-11-18 불균형평가의정확도와분별력분리
+
+[108§72](../../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-boolq-gain-decomposition)는원PRIMARY/Holm11을유지하고동일3270점수를사후분해했다. +74정확도는주로yes방향전환이었고균형정확도와순위AUC의증거를따로남겼다. 사후macro-F1/AUC를새PRIMARY/사전선택기준으로바꾸지않고다시학습/threshold fitting에쓰지않는다. 새유의성/인과/범용품질주장0이다.
+
+### 2026-11-18 과제별PRIMARY를보존한선택지진단
+
+[108§73](../../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-other-gains-stored-primary-decomposition)는Winogrande의common continuation과gold index, HellaSwag원선택지문자분모를구분했다. 균형지표/순위의작은관측증가와기존비유의추가효과를따로보존하며BoolQ진단을일반화하지않는다. 프로세스주소의직렬화표시4곳만detached view로대조했고원config/PRIMARY/점수는불변이다. v1실패/v2완료를모두기록하며새학습/모델선택/유의성0이다.
+
+### 2026-11-18 관측field묶음에대한대응민감도
+
+[108§74](../../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-observed-group-bootstrap-sensitivity)는결과비사용group census후7지표/100000대응군집bootstrap을고정했다. 묶음전체/양팔같은draw·변하는문항분모·weighted tie AUC와독립저장분포검산을확인했다. BoolQ정확도차이와macro-F1차이는반대부호구간이며균형/AUC·Hella구간은0을포함한다. 관측묶음의원root독립성/사후확증coverage를인증하지않으며원Holm11/야간0of33·새모델0을유지한다.
+
+### 2026-11-18 같은microbatch의여러행과graph수명
+
+[101§650](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-causal-microbatch-frame-adapter-cpu)는행별loss수명이배치공통body/quant graph수명과다름을분리한다. 별도어댑터는한forward의마지막real행/KD조각까지retain하고그뒤다음forward를허용한다. 새작은CPU의FP64/FP32-dropout-checkpoint값/전체미분·원RNG와caught음성대조만검증했다. 원배치당1회대비조각backward횟수/전체비용·실제Native/source/private RNG/전체trainer-resume는별도이며성능채택을주장하지않는다.
+
+### 2026-11-19 GSQ의 샘플링 로짓과 최적화 좌표
+
+출발 Gumbel 로짓을 유지하면서 내부 좌표를 4,096으로 나누자 기존 실제 교사 조건의 8갱신에서 결정론적 코드 4,687,128개가 바뀌었다. 원 배율 1에서는 0개였다. 같은 기술 자료의 조기 코드 변경과 실제 배포 경로를 검증한 범위다. 응답은 동일 토큰을 반복했으며 정식 독립 품질과 장기 선택 붕괴를 확인해야 한다. [결과101 §694](../../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-scaled-actd-native-deploy)

@@ -1,5 +1,94 @@
 # 실험 조건 기준표 (EXPERIMENT_BASELINES)
 
+> **2026-11-24 P109 v1.1 전량 6GiB 연구**  원문 TRAIN 1,183,367,026개와 v3 채택 교과 46,292,274개가 대상이다. 기존 346.316M 실행의 두 배 시간 26,629.79초에 필요한 전체 평균은 46,176토큰/초다. 1024 원문과 실제 v3 교과의 단기 비교는 카드·CUDA 할당, 원문·교과·기타 비용을 따로 기록한다. 단기 속도에서 얻은 전량 투영은 완주 시간과 장기 품질의 기준값으로 사용하지 않는다. [조건·실측·시간 회계](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-full-train-6gib-screen-20261124)
+
+> **2026-11-24 P109C v3의 공통 비교**  v2와 같은 정제 v1.1 원문 창, 갱신 수, seed와 G4 방문을 사용한 통합 완주다. v3에서 한영 교과와 손실, 빈 배치 처리, CPU 스레드가 달랐다. 공통 원문과 실사용은 개선됐고 Core6·KoBEST는 하락했다. 각 기법과 배포 성능의 채택 판정은 별도 대조를 따른다. [공통 입력과 사용 가능한 비교 범위](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-integrated-v3-common-eval-result-20261124)
+
+- `p106b_soda_local_teacher_v1_20261119`와 `p106b_soda_local_teacher_v2_20261119`는 기존 Gemma 4 12B Q4_0의 작성 예시 검증이다. 최초 영어 응답을 봉인·재사용하고 한국어 세 응답을 새 호출했다. 편입 대기 2건, HOLD 호출 0건, GPU 반환 15,315 MiB다. [결과101 §689](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-local-teacher)
+
+> **2026-11-18 P108 공유 삼진 기술 경계**  태그 `p108_recurrent_ternary_owner_v1_20261118` 및 `p108_shared_ternary_update_retention_v1_20261118`은 동일 44,612 파라미터 작은 모델의 공유 물리 down, R=1/2 방문과 R=2 AdamW 경계를 검산했다. 정식 언어학습의 조정량이나 장기 유지 판정은 이 두 실험에 포함되지 않는다. [결과108 §75~76](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-shared-ternary-down-owner-cpu)
+
+> **2026-11-18 Reading 회귀 재현**  네 배포본의 고정 예측을 사용했다. 원 통계식과 표본에서 176개 적합을 NumPy SVD 및 SciPy 피벗 QR로 대조했다. `statsmodels` 원 환경 대조는 선결로 남았다. [결과101 §635.2](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-regression-replay)
+
+> **2026-11-18 Bonsai 평가 보충**  한국어·영어 Belebele 1,800문항과 KoBEST 4,561문항을 검산했다. KoBEST 평균 macro-F1 44.9539%, WiC 1,260문항에서는 모두 같은 label이었다. 두 GGUF의 남은 평가를 별도로 실행하며 완료 Core6를 재사용한다. [결과101 §653](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-belebele-kobest-full)
+
+> **2026-11-18 후속 실측**  Bonsai2B PTQ1_0의 공식 LAMBADA 5,153문항은 44.1684%, 단어 PPL 15.529799였다. 같은 문항의 기존 Native595 Q와 차이는 +28.3136%p이며 배포본 간 서술 비교다. DSKD는 고정 마이크로배치의 전체 CPU 학습·복원 경계를 검증했다. 실제 Native 본학습과 75M 생산·품질은 미확인이다. [LAMBADA](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-lambada-full) · [DSKD](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-batched-scheduled-training-cpu)
+
+> **2026-11-18 원batch 연결부품:** [101§650](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-causal-microbatch-frame-adapter-cpu)의새CPU8은원token단한번shift·고정batch8/마지막dummy·공유graph끝행수명·전체tiny미분/RNG를검증했다. old25불변·수치모형55변수이며실제Native/전체학습기·재개/75M/품질·가속은미확인이다.
+
+> **2026-11-18 관측묶음 민감도:** [108§74](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-observed-group-bootstrap-sensitivity)는BoolQ/Hella의같은passage/source_id를각10만회대응재표집했다. BoolQ정확도차이는양수구간이나macro-F1은음수구간이며균형/AUC·Hella구간은0을포함한다. 사후7지표민감도/원root독립성미인증·새모델/확증판정0이다.
+
+> **2026-11-18 다른 점수 양성 분해:** [108§73](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-other-gains-stored-primary-decomposition)는Winogrande/HellaSwag원점수의정확PRIMARY/선택지분포와작은균형지표증가를확인했다. BoolQ의yes이동을일괄적용하지않으며기존Holm p1.0·비채택을유지한다. 주소repr비교실패/v2복구를보존했고새모델0이다.
+
+> **2026-11-18 BoolQ 점수 해석:** [108§72](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-boolq-gain-decomposition)는원3270점수의정확도상승을보존하면서label전환·균형recall·순위분별력을사후분리한다. 새모델/threshold fit/학습·새유의성/범용품질채택은없고원Holm11과야간0/33을구분한다.
+
+> **2026-11-18 명시LR 접점:** [101§649](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-consumed-group-lr-schedule-cpu)의새CPU10은canonical LR·수동비스케일업데이트/새객체재개·zero-KD의LR까지보존/overflow소비시계를검증했다. old20불변·21새파일검산이며94 optimizer호출은수치시험합계다. 실제Native/provider/교사75M/권리/품질은미완이다.
+
+> **2026-11-18 작은CPU 전체경계:** [101§648](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-tiny-cpu-complete-dskd-training-boundary)의A14+B10=24는model/buffer·optimizer/source/scaler·세RNG와이후손실의새객체재개를검증했다. KD없는묶음의투영상태와overflow/dirty복구·old16/기존A AST불변이다. 실제Native/teacher/75M/권리/품질은미완이다.
+
+> **2026-11-18 원CE+KD 전체목적:** [101§647](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-complete-ce-bounded-kd-group-cpu)의A CPU14는CE5행/15 target·KD2행/7위치의원순서와45변수독립미분을검증했다. 최대오차5.55e-17·old15불변이며CE-only 행을보존한다. B 전체optimizer/scaler/RNG 경계·실제Native/75M/권리/품질은미완이다.
+
+> **2026-11-18 표현창/source 상태:** [101§646](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-multiwindow-source-boundary-cpu)의새bounded coordinator CPU19는명시PCG64 원천커서/RNG·여러창·완료prefix/중단복구를닫았다. 강제3창/폭1024·3072표현행/618선택위치·512KiB batch이며old7불변이다. 실제teacher/full training/8h/75M/권리/품질은미완이다.
+
+> **2026-11-18 SODA 계보/wire:** [101§645](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-parent-evidence-student-wire-cpu)의새명시준비API는CPU11·저장원문2/작성wire12/요청payload20을검증했다. 실제chat32 전체최대485 x token·mask/EOT·초과거부와old17불변이다. 실제교사요청/생산기연결·원root/권리/편입·75M/품질은미완이다.
+
+> **2026-11-18 SODA 입력prefix:** [101§644](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-named-input-prefix-cpu)의새stdlib view는CPU12+저장실물2개/정확span·old-target비간섭을통과했다.925/478B·13/9visible turn이며원speaker/root/rights검증·토큰예산·생산연결·75M·품질은미완이다.
+
+> **2026-11-18 SODA 다른형식:** [101§643](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-plain-task-and-input-grounding-review)의기존file04 SHA/6원문·24outer unit검증은끝났다.세과제와명시대화2개를확인했으나4서사답은입력에명시없는세부를더해엄격입력근거QA에바로쓰지않는다.root/rights/입장HOLD·새생성0이다.
+
+> **2026-11-18 Hotpot 하위형식:** [101§642](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-hotpot-sentence-split-facet-review)의별도sentence_split2표본도질문/짧은답이며문맥/질문분해가없었다.8outer unit보존과context/root/rights HOLD를구분하고전체가족으로일반화하지않는다.
+
+> **2026-11-18 SODA 원문역할:** [101§641](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-soda-narrative-role-review)의기존2표본은dialogue표기지만실제이야기생성요청/가상서술이다. 바깥role/range8개보존은내부발화자복원이아니며서사/원root입장HOLD·새생성/편입0이다.
+
+> **2026-11-18 기존Hotpot 원천:** [101§640](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-hotpot-family-context-review)에서기존file00 SHA/6원문·24역할범위는보존됐으나표본6개모두근거문맥이없어편입HOLD다.7footer raw14693823행과옛정규화14488516행을구분하며새생산/모델/편입0이다.
+
+> **2026-11-18 P107 제한 문서 입력:** [107§21](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-indexed-document-source-cpu)에서 새 인덱스 source CPU15·기존13source 불변·상주형 동일 추출/RNG와 작은 학습기 재개를 닫았다.105만 합성 token의 읽기/인덱스 계수이며 실제RSS·75M·Native품질·기본 채택은 아니다.
+
+> **2026-11-18 P107 scaler 접점:** [107§20](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-trainer-consumed-group-cpu)에서 opt-in 소비그룹/optimizer skip 규약·fresh controller 복원 CPU51을 닫았다. 기본None 세모드의 수정전 loss/전체state해시는 동률이다. Native/Muon·BF16-CUDA/대형교사/CLI/75M·품질/전체메모리는 미완이다.
+
+> **2026-11-18 loss scaling 부품:** [107§19](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-optimizer-group-cpu)에서 CPU14/finite 비스케일 대조·두optimizer 전역 overflow skip·fresh scaler 복원을 검증했다. 합성 parameter 갱신이며 실제 P107 skip 규약/Native·전체학습 재개/품질·가속은 미완이다.
+
+> **2026-11-18 교사표현 기록 부품:** [101§639](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-producer-recovery-cpu)의 CPU21은 단일창 원FP32/metadata·확정 prefix/새segment 재개·orphan/꼬리 보존과 기본4MiB×2/선택412행을 검증했다. 실제 교사/8시간·전체75M scheduler/source RNG/품질·전체메모리는 미완이다.
+
+> **2026-11-18 DSKD 소비 부품:** [101§638](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-window-native-math-cpu)의 CPU40과 고정 합성 두문항7위치에서 원frame/full-vocab·전체 분모·값/미분을 보존했다. Native/GPU·전체학습 재개·75M writer/online 공존·품질은 미완이며 기본 채택은 없다.
+
+> **2026-11-17 IFEval 자료 회수:** [101§637](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-official541-data)의 공식 HF 고정541문항/834지시·25유형과 원bytes/Git blob·AST 인자/독립 index를 검증했다. 평가 전용이며 TRAIN/SFT/KD 편입0이다. 패키지3개·native1024/공식1280 정합·공식 scorer/모델점수는 미완이다.
+
+> **2026-11-17 교사 feature 입력 부품:** [101§636](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-window-cpu)의CPU17은원FP32/metadata·source재개와기본1024폭/4MiB파일·412선택행/512KiB batch를닫았다. 실제Native/frame·모델재개·전체75M writer/online상주·품질/전체RSS는미완이며기존DSKD/실제feature/모델/GPU0이다.
+
+> **2026-11-17 23시 NorMuon 접점 회수:** [078§24](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-matched-trainer-cpu)에서새저자Nor matrix를공통역할/TinyLM AdamW에명시연결하고CPU57·기본값/기존네manifest동률·scopedflag127을닫았다. Native긍정실행/품질·원저자AuxAdam전체결합은미완이며기본RMS4/기존Nor300M음성은유지한다.
+
+> **2026-11-17 저자 NorMuon CPU 회수:** [078§23](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-author-four-cpu)의 독립FP32 네인터페이스가 CPU14/hostGloo2·None/4D/보조Adam·재개를통과했다. owner broadcast이며원all_gather/FSDP2/Native품질은미검증이다. trainer/CLI미연결·기본RMS4/기존변형300M음성은유지한다.
+
+> **2026-11-17 22시 문맥 접점 회수:** [106§7](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-mconstant-trainer-cpu-resume)에서 명시 M유지 trainer/CLI·cache/RNG/제어상태와공통checkpoint 조합을구현하고합성CPU39/기본값·scopedflag127을통과했다. Native긍정실행·실제속도/품질/문서경계·정식교과입장은미완이며원micro8속도음성과기본가속채택보류를유지한다.
+
+> **2026-11-17 21시 문맥 후속:** [106§6](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-mconstant-layout-cpu)은 기존micro8 음성을보존하고 호출당토큰수를유지하는새layout의CPU11·원위치/source RNG/분모만닫았다. 실제모델/속도/품질과제품trainer·전체학습재개는미완이며기본가속으로채택하지않는다. 새GPU검토막힘/원정제·편입경계는유지한다.
+
+> **2026-11-17 20시 회수:** [101§633~635](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-babylm-semantics-full-four)은 네모델 의미평가/전량검산 완료와 Bonsai·Reading 준비/새GPU 미실행을 구분한다. 새GPU는 자동승인검토2거절/프로세스0이며 현재 활성목표의 허가를 입장증거로 수용하지 않은 충돌을 최종질문에 남긴다. [078§22](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-experimental-trainer-resume)는 명시trainer 경로/CPU10·재개/기본값정적검사0이며 성공한 native전체trainer·본학습품질/전체wall은NOT_RUN이다. 기본Muon RMS4·기존정제/편입 선결을 유지한다.
+
+> **2026-11-17 저자 BF16 후속:** [078§21](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-author-bf16-gloo-resume)의 새CPU9·실제Gloo2/두rank 전송·BF16 상태 재개/None 동시거부는 통과했다.6B/원소와 scratch는 optimizer 합성 범위이며 모델/GPU/학습토큰0이다. trainer·본학습품질/전체wall·CUDA/NCCL은 미완이고 기본Muon을 유지한다. 현재 실행창은 사용자161의11월18일17시이며 아래 사용자158의만료/승인거절은 당시 이력이다.
+
+
+> **2026-11-17 16시 분할 대조:** [101§632](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-sft14-root-split-drift)은현재14검토본/6기존root의로컬계보를닫았다. 영어화단재표현1개는새질문hash로재분할하면원TRAIN에서VAL로바뀐다. 실제편입/분할변경0이며증강은원root split을상속한다. 전역문서누설·모든과거노출/개별권리선결은남는다.
+
+> **2026-11-17 15시 기록 회수:** [101 §629~631](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-sft11-lineage-local-split)은 새11검토본의 정확 source/로컬분할과 현재14검토본/6기존root·미편입, 기존 생성자원20실행본/80문맥·44원입력의 현재표를 구분한다. source카드/로컬겹침0은 전역문서권리·모든과거미노출 증명이 아니다. 생성자원은 같은 원값의 기록회수이며 새모델/성능측정0이다. 원장68의 정확native storage·동일배포조건/연속물리peak·추가모델 미완은 유지한다.
+
+> **2026-11-17 14시 후속:** [099 §19](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cpu-stored-dot-precision)는 저장 본체4조건/25,344출력의 C=독립 FP64 cast 비트 동률과 원 미달8원소의 정확 내적 오차를 확인했다. 사후 수치 원인 진단이며 원 FP32 게이트3음성은 보존한다. [101 §625~628](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-sft-two-meaning-repairs)은 새 SFT 의미수리2/원천설명교정9의 NOT_ADMITTED, 기존27근거의 벤치 현재표, 실제 BabyLM 모델을 쓰지 않은 합성 CPU 통합2를 구분한다. 모델 평가의 자동승인 거절 상태는 바뀌지 않았다.
+
+> **2026-11-17 13시 현재 추가:** [101§621~622](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-babylm-semantic-prepared)는BabyLM기존전량97808×2tokenizer/CPU6+2+21·현재준비0과GPU자동승인검토2회거절/모델0·전4모델점수NOT_RUN을구분한다. 별도CPU byte정책은strict205HOLD를보존한새205분해/원32563불변/전체32768명세와독립검산0이다. §624의정확head tensor1/전행값·합성8 VJP는CPU로통과했고원HPA음성/PTS입장·native학생품질판정은바뀌지않는다. 현재명시재승인은최종보고질문으로유보하며우회실행하지않는다.
+
+> **2026-11-17 사용자158 CPU1 회수:** [099 §18](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cpu1-abba-complete)의 Wf는 한 논리CPU0/Torch1/interop1/worker1(pool0)·완료 anchor1+새7개로 전수종결0이다. 독립 nonself96로짓/120생성이 통과했고32K1.0318~1.2671배·262K1.4217~1.5091배를 서술 관측했다. We 비용HOLD/별도4probe와 중단gap은 보존한다. CPU4와 섞거나15tok/s·전체40MiB·품질/물리 edge 달성으로 해석하지 않는다. 완료 CPU1/CPU4는 반복하지 않는다.
+
+> **2026-11-17 P014E 복구 조건:** [결과099 §14~16](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cpu-abba-recovery)의 CPU 주비교는 같은 Torch4/worker4·같은 packed 원형·입력·생성 계약의 새 기준 anchor와 직접 표 경로다. 과거 CPU1 oracle은 보조 진단이며 CPU4 속도를 단일 코어 목표나 GPU 배속으로 대체하지 않는다. 원 수치 문턱과 본체 실패를 보존하고 RSS·weights+KV·파일 storage·품질을 구분한다. 완료 ABBA는 재실행하지 않는다.
+
+> **2026-11-17 P108D/E/F:** [결과108§61~70](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md)의 같은NET13.882119는 원형 중심의14행렬 총norm이며 층별 동일량이나 같은PATH/검색비용이 아니다. E세팔 공식24526행은 동일 원본/토크나이저/공식task·0shot/FP32 MATH/1024무절단이고 Core6 주지표 평균42.3976→단일42.5781/적응42.4972/공동42.3152%,KoBEST F1평균37.2153→37.2290/37.3272/37.0382%다. 정확도33검정Holm유의0·F1유의성미측정이다. Gemma18층 전이는 다른 구조/자료/목적/예산의 출력 예측이며 Tiny품질 비교로 합치지 않는다. 새학습/전체CP·범용채택0이다.
+
+> **2026-11-16 야간 결과108§58~60:** 기존 Qwen3-0.6B-Base의 공식 KoBEST5/4561행을 같은 평가 경로로 완료했고 평균 macro-F1은40.3984%다. WiC는 한 답만 골랐으므로 전 과제 분별력이나 자유 대화 품질로 확대하지 않는다. 완료14층의 사후 예측336칸에서는 CE335건 개선 중310건이 실제 답 오답이었다. 같은 FIT의360 TF/24 VJP는 첫 canonical 정답76/336·전체25/336과 내용/EOT 목적 차이를 확인했다. margin 연관 AUC0.9654는 새로운 사실/모델의 정답 판별 성능이 아니다. P108D 승자 부등식 최소 norm은 별도 신규 가설이며 실제 품질 채택 전이다. 정제 전 추가300M과 보호/타정제·설치/다운로드·Git/삭제 경계는 불변이다.
+
+> **2026-11-16 오후 사용자141 회수:** [결과108§43~47](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md)는 정상7 보호에서 수정량을 늘린8팔과 동결 후 새288답·공식11/24,526행을 구분한다. 목표 새표현0→13/32이나 산수/관계는0/32이고 문장 붕괴가 있어 범용 비채택이다. 반복36→3/144만으로 품질 향상을 주장하지 않는다. Core6 주지표 평균42.3976→42.5373%, KoBEST 평균macro-F1 37.2153→36.6313%다. Tiny와 Gemma의 실제 말단 정규화를 합성한 로짓 예측은 각각114/114·36/36 argmax 일치의 기술 양성이며, 깊은 층/공유재귀/삼진·모든 모델 정답성의 보편 예측은 미확인이다. 기존 완료 비교를 반복하지 않고 정식 교과/생산 학습 후 유지 등 미완을 남긴다. 설치·다운로드/추가300M/타정제/Git/삭제는0이다.
+
+> 2026-11-16 P108B 실제 결과: `p108b_layer_transfer_v1_s1337`의초기정리실패는보존하고 `p108b_layer_transfer_v2_s1337`에서168값·전14층·동일NET13.882119의단일/반복/적응·희소대조를완료했다. [결과108§32~41](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md)의최종정답은원본10/128대단일9층8·고정7층9·적응D4 8이며범용채택0이다. 3편집의공식11전량과원표본검산을완료했고Core6프로젝트PRIMARY매핑을PIQA acc로정정했다. Gemma18층은기술입장만완료했고작은수정의곡률예측이큰수정/타모델에서항상성립하지않았다. 답전체4팔은보호손상으로비채택, 교사28요청/56후보와학습경계9합성갱신은별도기술근거다. 정제전추가300M·설치/다운로드·타소유권경계는유지한다. 정상복사7개의전체key보호는두팔모두7/7유지·로짓최대차5.73e-6이하의기술양성이지만새표현2/48로범용채택은아니다. Falcon공식KoBEST4561행의평균macro-F1은37.6323%로Tiny원본37.2153%와서술비교한다. 교정세교과CPU계약은동일정답지도288토큰/서로다른입력노출을확인했으며학생추가학습은0이다.
+
 **이 파일은 `exp-preflight` 스킬의 참조 정본이다.** 새 실험을 설계할 때 여기와 대조해
 ① 조건 중복 ② 계산 오류 ③ 태그 충돌 ④ 무효 비교 를 사전에 걸러낸다.
 
@@ -236,6 +325,124 @@ fp32 상주와 int8 상주가 갈린다.**
 
 ### 2.6 예약·사용중 태그 네임스페이스 (충돌 금지)
 
+- `p108b_paired_course_trainer_cpu_v1_20261120`은 일반 SFT의 단일·교정·교차 혼합 네 회차를 보관 28쌍과 작성 CPU 대역에서 검증했다. 같은 사례 순서·감독 ID열·고정 입력 자리를 확인했다. 공식 교과 입장과 실제 학습은 별도다. [결과108 §97](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-paired-course-trainer)
+- `p106b_soda_original_lineage_v1_20261120`은 Ai2의 세 분할을 지문으로 고정한 정확한 원본 연결 검사다. 작성 Parquet와 기존 생산 경로의 CPU 34검사가 통과했고 저장 Aya 두 행의 비교 키를 확인했다. 실제 Ai2 연결과 입장은 각각 0행이다. [결과101 §702](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-original-lineage)
+
+- `p106b_soda_original_lineage_stratified256_v1_20261120`는 승인 취득한 공식 Ai2 Parquet 세 분할과 Aya의 독립 256행을 실물로 대조했다. 248개 TRAIN 그룹과 8건 보류에서 기존 도구의 지원 범위를 확인했다. [결과101 §710](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-real-fdc848a-mapping)
+
+- `p109_firstpass_exposure_300m_v1_20261120`는 292,992개 예정 창과 300,023,808토큰의 CPU 노출 검사다. 같은 감지법에서 표제 창 22.51%, 반복 창 2.61%를 관측했다. chat32 bpb 수정과 문맥·평가 완전 중첩도 확인했다. [결과109 §49](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-firstpass-300m-exposure-frontier)
+- `p109b_scratch300_firstpass_chat32_r2_ce_s1337`과 `p109b_scratch300_firstpass_chat32_second_shuffle_s1337`은 동일 1차 파일럿·무부모 300,023,808타깃·2,289갱신·공통 R2의 완결 쌍이다. 보류 두 창을 뺀 동일 2,735,951 검증 타깃의 NLL 차이는 셔플−균등 +0.028072다. 두 독립 선택 과제의 정확도 구간은 0을 포함했다. 다른 시드·코퍼스에 적용할 판정자는 별도다. [결과109 §51](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109b-wip182-300m-paired)
+- 두 완결 실행본을 동일 1,024/896/128 생성 프로필로 검증했다. 생성 품질 판정의 범위는 작성 한영 16문항이다. `p109c_all_axes_gpu_v3`은 합성 자료·결정론으로 확인한 단일 원문·교과 일정의 파일 재개 기준이다. 새 330M 학습이나 새 품질 비교의 기준값으로 쓰지 않는다. [결과109 §§56·59](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109b-first-use128-result)
+- `p109c_ce_position_v1`은 합성 입력 131,072슬롯/갱신과 초기 가중치를 맞춘 여섯 자원 팔이다. `p109c_ce_compact_v1` 두 팔은 완료한 2,048행 두 팔을 재사용했다. 위치별 계산량, 원문·혼합의 안정 스텝, 샘플 장치 최고치를 따로 사용한다. [결과109 §§60~61](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-ce-position-blocks-result)
+- `p109c_bundle_cuda2_chat32_s1337`은 실제 G4 형상의 합성 원문·교과 각 1갱신이다. 위치 CE 1,024→2,048행, 자리 4건·관계 4문항, 카드 최고 9,427MiB를 확인했다. 330M 공식 캐시와 혼합 품질은 대기다. [결과109 §65](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-scratch-bundle)
+- `p109c_decimal_clip_gpu_chat32_*_s1337`은 전역과 그룹별 제한 각 4갱신이다. 두 혼합 갱신의 실제 본체 가중치 변화 차이는 −3.17%·+0.40%였다. 현 프리셋은 전역 1.0이다. [결과109 §66](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-decimal-clip-result)
+- `p109c_ste_*_chat32_s1337`은 결정론 CUDA의 합성 원문·혼합 각 2갱신 네 팔이다. 관측 상태 지문이 같았고 혼합 갱신 중앙시간은 5.464→4.800초였다. [결과109 §68](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-ste-native-result)
+- `p109c_sustained_20261121_*_chat32_s1337`은 합성 원문·실제 작성 교과를 사용한 CUDA 24갱신 ABBA다. `p109c_sustained_det_20261121_*_chat32_s1337` 두 팔에서 동일 가중치·두 옵티마이저·재개 지문을 추가로 확인했다. 벽시계는 기본 CUDA의 네 팔에서 평균 9.14%, 결정론 쌍에서 8.22% 줄었다. [결과109 §§91~92](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-ste-sustained-authored-result)
+- `p109c_scratch330_v1_chat32_s1337`은 v1.1 최종 채택 캐시와 마지막 458갱신의 작성 교과, 균등 R2로 330,039,296슬롯·2,518갱신을 완주했다. 1,030갱신 원본과 1,488갱신 재개분을 합한 계보다. 공식 객관식의 과제 평균과 CUDA BF16 자동 혼합 정밀도의 자유응답을 결과109 §107에 기록했다. [분할·용량](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-adopted-v11-split-result) · [공통 완주 평가](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-scratch330-common-quality-result)
+- `p109c_scratch_mixed_v2_v11_chat32_s1337`은 같은 v1.1의 원문 300,023,808과 검수 교과 42,748,474개를 균등 R2로 완주했다. 전체 2,942갱신과 카드 최고 8,680 MiB, 실제 첫 답 4/16과 FINAL200 실사용 33/200, x86 압축 22,486,392B의 기준이다. 공통 원문 NLL은 3.70979→4.07980, Core6은 41.19→37.81%였다. v1과 교과 노출·일정·손실이 함께 달라 전체 프리셋의 성과로 읽는다. [완주와 자원](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-full-scratch-mixed-result) · [공통 객관식](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-common-benchmark-result)
+- `p109c_scratch_mixed_v2_visit_count_v11_chat32_s1337`은 위와 같은 입력·손실·2,942갱신의 무부모 대조다. 16·28·40방문을 섞어 전체 물리 층 방문 예산을 맞췄다. 카드 최고는 11,817MiB, 공통 원문 NLL은 4.13206, FINAL200 실사용 답은 23/200이었다. KoBEST5는 37.43%였으며 균등 R2를 기본으로 유지한다. [실제 학습 조건](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-matched-visit-count-training-result) · [평가와 판정](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-matched-visit-count-common-results)
+- `p107_v11_mask_pair300_v2_20261122`는 같은 v1.1 캐시에서 실제 EOS 위치를 읽는 무부모 균등·적응 MNTP 대조다. CPU에서 전량 색인과 실제 창 재개, 작은 두 팔의 경계 저장 및 활성값 체크포인트를 확인했다. 실제 CUDA 단계와 언어 품질은 결과107의 해당 실행에 연결한다. [P107 계획](../test_plan/P107_문서가시성과-shift를-분리한-causal-MNTP-계약.md#p107-adopted-v11-mask-pair) · [결과107 §29](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-binary-document-source-result)
+- `p107_v11_mask_pair300_v4_20261122`와 그 연장은 각 1,152갱신·150,994,944슬롯의 무부모 대조다. 공통 CPU·GPU 인과 검증을 회수했고 두 1,152 네이티브 저장점이 남았다. `p107_v11_packed_optimizer_16x2_v2_20261122`는 이 경계에서 별도 16갱신을 비교한 가속 계측이다. [실제 151M](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-matched-1152-gpu-result) · [16갱신 비용](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-packed-optimizer-actual)
+- `p107_v11_mask_pair300_flash_resume1152_v1_20261122`는 두 팔을 각 2,289갱신·300,023,808슬롯까지 닫았다. 적응의 CPU 인과 NLL은 0.00167 낮았고 최고 선택은 89개 적었다. 정상 종료까지 맞힌 첫 실사용은 양팔 0/16이다. [결과107 §§41~42](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-v11-flash-full-300m-gpu-result)
+- P109C의 정본 위치표 캐시 검증은 작성 TXT와 실제 chat32로 학습 10,803·검증 146토큰을 구성하고 작성 교과와 함께 기존 런처에 입장시켰다. 실제 v1.1 처리와 본학습을 대신하는 결과로 쓰지 않는다. [결과109 §69](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-published-position-cache-result)
+- `p109c_authored_curriculum_schedule_cpu_v1_20261121`은 작성 교과의 혼합 458갱신을 실제 32K로 편성했다. 9,379,840 입력 슬롯, 패딩 제외 입력 1,018,416개, 응답·종료 지도 28,032개다. 교정 관점 대조는 5,960개의 같은 정답 ID로 준비했다. [결과109 §70](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-authored-course-result)
+- `p109c_authored_correction_scratch_gpu_v1_20261121`은 작성 업무표에서 같은 무부모 소형 G4 R2의 세 교정 관점을 각각 지도 23,840개와 464갱신으로 비교했다. 실제 생성이 모두 즉시 종료돼 관점별 품질 순위는 미확인이다. [결과109 §71](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-correction-scratch-result)
+- `p109c_table_grounding_scratch_gpu_v1_20261121`은 114,688개 신규 작성 표에서 같은 무부모 소형 G4의 응답을 3,584번 학습했다. 원래 범위의 새 값 교환은 0/64쌍, 같은 숫자 토큰 길이의 조건부 비교는 0/37쌍이었다. 가중치를 조회가 되는 공통 시작점으로 채택하지 않았다. [결과109 §72](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-scratch-table-grounding-result)
+- `p109c_table_context_ntp_scratch_gpu_v1_20261121`은 같은 초기값·자료·순서·갱신에서 응답과 별도로 문맥 5,580,539개를 지도했다. 독립 단일 숫자와 종료는 0→10/64였고 값 교환 양쪽은 0/64였다. [결과109 §73](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-table-context-ntp-result)
+- `p109c_table_first_divergence_gpu_v1_20261121`의 같은 입력과 학습 순서에서 대안의 첫 내용 토큰 344,036개를 대조했다. 값 교환 두 쪽 정답 0→1/64, 독립 단일 10→11/64로 사전 진입 기준에 미달했다. [결과109 §74](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-table-first-divergence-result)
+- `p109c_table_value_link_gpu_v1_20261121`의 값 위치 선택에서 독립 단일은 10→59/64였고 넓은 범위 값 교환 두 쪽은 22/64였다. 이 공통 무부모 가중치의 동량 세 팔에서 교정 전용 독립 정답은 단일 53/64·교정 43/64, 교차는 각각 50/64·34/64였다. [결과109 §§75~76](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-table-value-link-result)
+- `p109c_authored_curriculum_correction_only_cpu_v1_20261121`은 같은 교정 쌍의 229개 단일 입력을 교정 대화로 바꾼 CPU 편성이다. 슬롯과 모든 정답·종료 ID를 유지했다. [결과109 §77](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-correction-only-course-result)
+- `p077_kv_six_bits_cpu_v1_20261121`은 2,048 중 앞 1,920행의 K·V를 같은 합계 6비트로 패킹해 기존 배열보다 3,376,128~3,698,688 B를 줄였다. 수치는 작성 K·V의 배열과 어텐션 비교이며 네이티브 RSS·품질은 후속 대조 대상이다. [결과065 §10.13](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-kv-six-bits-result)
+- `p077_r5_lowbit_native_cpu_v1_20261121`은 같은 R5가 먼 근거 장문에서 6/8과 동일 선택을 보인 두 6비트 배분이다. K4·V2의 prefill 뒤 최대 네이티브 RSS는 30,158,848 B였다. [결과065 §10.15](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-six-bit-native-r5-result)
+- `p077_lowbit_full_text_cpu_v1_20261121`은 같은 한영 입력의 1,024 INT8·2,048 K4V2 자유 응답 여섯 개다. 128출력을 고정한 두 장문에서 네이티브 RSS는 0.83MB 낮고 전체 최고 RSS는 0.09~0.14MB 높았다. 답 시작과 EOS는 모두 0/6이다. [결과065 §10.16](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-lowbit-full-text-result)
+- `p077_online_grouped_attention_cpu_v1_20261121`은 64행 온라인 softmax와 같은 R5 한국어를 교차 측정했다. 네 요청 256 ID를 유지하고 작업공간 94,992 B를 줄였으며 한 요청의 교차 전체 경과 중앙 4.0%가 줄었다. [결과065 §10.17](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-online-grouped-attention-result)
+- `p077_grounded_wide_distance_gpu_v1_20261121`과 `p077_grounded_length_controls_gpu_v1_20261121`은 같은 소형 모형의 단문 양쪽 정답 22쌍을 기준으로 쓴다. RoPE 위치만 이동하면 22쌍을 유지했고, 1,024·2,048 입력의 무관 본문을 추가한 모든 조건에서 적중이 없었다. [결과065 §§10.18~10.19](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-wide-distance-result)
+- `p077_grounded_context_distance_train_gpu_v1_20261121`의 위치 고정·분산 양팔은 같은 192갱신 후 2,048 가까운 근거의 별도 평서문에서 31/64·15/64, 먼 근거에서 0/64·0/64였다. 소형 형상의 실제 CPU KV 2,048 K4·V2 배열은 1,024 INT8보다 351,232 B 작았다. [결과065 §§10.20~10.21](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-small-two-head-codec-result)
+- `p077_grounded_near_export_gpu_v1_20261121`은 동일 조건의 가중치 지문 재현에 실패했다. `p077_grounded_near_export_gpu_v2_20261121`의 별도 상태 `B1B0359C…`가 네이티브 세 정밀도의 공통 입력이다. [결과065 §10.22](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-near-export-result)
+- `p077_grounded_small_native_kv_cpu_v1_20261121`과 `p077_grounded_small_native_k4v3_cpu_v1_20261121`에서 같은 2,048의 INT8·K4V2·K4V3 양쪽 정답은 28·26·29/64다. K4·V3는 1,024 INT8 캐시 배열 예산에 들어가고, 전체 UTF-8 요청의 prefill 및 최고 RSS는 각각 256,000 B·32,768 B 높았다. [결과065 §§10.23·10.26](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-small-native-k4v3-result)
+- `p077_grounded_value_readout_gpu_v1_20261121`의 먼 질문 변경 선택은 0/64였다. `p077_grounded_value_readout_head_train_gpu_v1_20261121`의 동결 본체에서 헤드만 192회 갱신하면 반복·별도 본문은 5/64와 4/64였다. `p077_grounded_value_readout_last_attention_gpu_v1_20261121`의 마지막 두 사영 추가 갱신은 3/64씩이었고 단문 22쌍은 보존했다. [결과065 §§10.24~10.27](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-value-readout-result)
+- `p077_grounded_small_native_rope_tile_cpu_v1_20261121`은 같은 2,048 K4·V3의 위치표를 구간별 절대 위치 계산으로 바꿨다. 답 ID 128개를 보존하고 모델 자산을 524,160 B 줄였다. 같은 실제 요청의 prefill RSS는 낮아졌고 전체 요청 최고 RSS는 디코딩이 결정했다. [결과065 §10.28](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-rope-tile-result)
+- `p077_grounded_separate_view_head_gpu_v1_20261121`은 같은 동결 본체로 명시 경계의 단일 표와 질문을 최대 39토큰씩 읽었다. 헤드 192갱신 뒤 제한 값 선택 네 조건이 각각 64/64였다. [결과065 §10.29](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-separate-views-result)
+- `p077_grounded_two_tables_gpu_v1_20261121`은 두 표의 순서를 바꾸고 각각 물은 네 답이 전부 맞은 묶음을 센다. 명시 이름과 동결 헤드의 결합은 61/64였고 항상 첫 표는 0/64였다. `p077_g4_output_byte_table_cpu_v1_20261121`은 같은 ChatML 어휘의 출력 100,488개를 보존했고, 실제 답을 재생한 출력 단계의 최고 RSS는 39,976,960→18,305,024 B였다. [결과065 §§10.30~10.31](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-two-tables-result)
+- `p077_g4_context4096_cpu_v1_20261121`은 실제 4,086 입력의 두 정밀도가 모두 전체 최고 RSS 32 MB 이내였지만, 근접·원거리 정답이 각각 0/4였다. K2·V2는 KV를 1,983,744 B 더 줄였고 첫 토큰 중앙은 3.509초 늘었다. [결과065 §10.43](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-context4096-full-cache-result)
+- `p077_native_chat32_request_cpu_v1_20261121`은 보관한 한영 2,048·4,096 요청의 입출력 ID를 유지하며 전체 최고 RSS를 11.59·15.09 MB로 낮췄다. `p077_native_chat32_kv_quality_cpu_v1_20261121`은 4,096의 그룹 INT8에서 최고 23.02 MB였고 기존 K4·V3 오답을 포함해 여덟 ID열이 같았다. [결과065 §§10.46~10.47](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-native-chat32-request-result)
+- `p077_g4_output_byte_request_cpu_v1_20261121`은 같은 2,048 UTF-8 요청 여덟 개를 단일 PID로 완주해 답을 보존했다. 전체 최고 RSS 33,845,248 B는 보관 1,024 INT8보다 110,592 B 낮았다. `p077_grounded_query_variants_gpu_v1_20261121`은 학습 형식의 공백을 복원한 동결 위치 헤드에서 두 표의 기존·새 표현 모두 64/64를 확인했다. 추가 384갱신의 정답 수 이득은 없었다. [결과065 §§10.32~10.33](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-output-byte-full-request-result)
+- `p077_g4_wide_query_prefill_cpu_v1_20261121`의 같은 2,048 K4·V3 교차 측정은 폭8에서 요청별 첫 토큰 비율 중앙을 39.39% 줄였다. 별도 `p077_g4_wide_query_quality_cpu_v1_20261121`에서 기존 생성 ID 128개와 양쪽 정답 29/64를 보존했다. [결과065 §§10.34·10.36](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-wide-query-prefill-result)
+- `p077_grounded_semantic_router_gpu_v1_20261121` 및 `p077_grounded_content_pooling_gpu_v1_20261121`은 명시 이름 없이 부서를 가리키는 384개 질문이다. 새 표현에서 동결 꼬리 코사인 110/192, 학습 투영 72/192, 본문 마지막 90/192, 본문 평균 96/192였다. [결과065 §§10.35·10.37](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grounded-semantic-router-result)
+- `p077_g4_full_width_prefill_cpu_v1_20261121`의 768폭 R5·K4V2 교차 측정은 온라인 폭8에서 첫 토큰 중앙을 21.749→15.611초로 줄였다. 한영 보관 생성은 교차 8건 모두 동일했다. [결과065 §10.38](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-full-width-8-query-result)
+- `p077_g4_full_width_choice_cpu_v1_20261121`은 같은 768폭의 보관 여덟 문항에서 선택 변경 0건과 한영 각 3/4를 확인했다. [결과065 §10.39](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-full-width-8-query-choice-result)
+- `p077_compact_chat32_request_cpu_v1_20261121`은 같은 소형 G4의 전체 최고 RSS를 33,771,520→26,091,520 B로 줄였다. `p077_full_width_compact_text_cpu_v1_20261121`은 768폭 R5에 입출력 표를 연결해 두 장문 128토큰 생성과 문자열을 보존했고 최고 RSS 29,184,000 B였다. [결과065 §§10.40~10.42](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-mapped-chat32-input-result)
+- P077 `p077_kv_ranges_cpu`와 `p077_kv_append_cpu`는 모델 없는 CPU 대조다. 2,048토큰의 캐시 저장과 64행 복원·변환 배열 합계가 1,024 FP16의 해당 합보다 600,576 B 작았다. 구간 8,918회와 새 토큰을 넘긴 저장 182회에서 기존 표현을 재현했다. [결과065 §10](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-grouped-int8-block-restore-result)
+- P077 실제 G4의 2,048문맥 한영 두 요청의 최고 RSS는 36,368,384 B였다. 같은 엔진의 짧은 대조와 긴 두 문항 모두 첫 단어 정답 0/2다. 모델·요청·비교 범위를 유지해 해석한다. [결과065 §10.4](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-g4-extended-context-result)
+- `p077_g4_extended_int4_cpu_v1_20261121`은 동일 R5·2,048문맥에서 앞쪽 1,024의 K·V를 4비트로 저장했다. KV는 11,859,456→9,106,944 B, 두 요청의 최고 RSS는 36,368,384→33,959,936 B다. 생성은 각각 같았고 정답은 0/2다. 양 언어의 일회 요청 시간이 늘었다. [결과065 §10.6](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-g4-extended-int4-result)
+- `p077_native_prefill_abba_cpu_v1_20261121`은 동일 R5·INT4와 영어 2,041 입력의 시간 대조다. 쿼리 묶음은 작성 1,984행에서 작업공간을 유지하고 어텐션을 25.08% 단축했으나 실제 첫 토큰의 중앙값은 22.745→23.318초였다. 두 범위의 시간은 별개다. [결과065 §§10.7~10.9](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-prefill-query-batch-result)
+- `p077_g4_extended_workspace_cpu_v1_20261121`에서 어텐션과 FFN의 배열을 재사용해 실제 2,048 G4의 엔진 작업공간이 49,152 B 줄었고 영어 262,144개 로짓이 일치했다. 네이티브 RSS는 감소했고 전체 요청의 두 피크는 늘었다. [결과065 §10.10](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-phase-workspace-result)
+- `p077_r5_long_choice_cpu_v1_20261121`은 단문 적중과 가림 마진으로 고른 한영 8문항에서 실제 R5 두 정밀도와 근거의 앞뒤 배치를 교차 대조했다. 장문은 모두 6/8로 같았고 앞부분 INT4의 선택 변경은 0건, KV 절감은 2,752,512 B다. [결과065 §§10.11~10.12](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-r5-long-choice-result)
+- `p109_qwen35_248k_corrected_turn_direct_kl_v1_20261120`은 같은 작성 교정 대화·응답 마스크·248K 학생의 CE와 CE+직접 KL에서 각각 32갱신을 수행했다. 실제 교사 패딩 불변, 헤드 수치 문턱을 통과했다. 작성 검증의 KL NLL은 양 언어에서 더 높았다. [결과109 §47](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-corrected-turn-direct-kl)
+- `p108f_qwen35_edit_retention_v1_20261120`은 새 한영 과제에서 같은 4개 물리층·32갱신씩을 대조했다. 분산의 실제 표적 4개 중 2개가 남았고 세 팔의 대화 정답은 0이었다. 원복과 CUDA 반환을 확인했다. [결과108 §95](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108f-qwen35-edit-retention)
+- `p108_periodic_tied_head_gpu_v1_20261121`은 같은 작성 교정 학습의 116·348갱신에서 선택 16개가 포화돼 실제 편집을 한 번도 적용하지 못했다. 끝 가중치가 같은 기존 무편집 결과를 재사용했다. [결과108 §98](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-periodic-tied-head-result)
+- `p108_periodic_tied_head_gpu_v2_20261121`은 새 편집 선택 64개에서 두 학습 경계에 실제 편집 16회를 적용했다. 기존 정답 감소와 새 정답이 각 0건이라 전부 원복했다. `p108_tied_head_first_margin_gpu_v1_20261121`은 보관 464갱신 가중치에서 원래 오답 세 건의 첫 갈림을 측정했고, 보호 키와 수정량을 고정한 다섯 수정에서도 정답 로짓이 여전히 낮았다. [결과108 §§99~100](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-periodic-tied-head-wider-result)
+- `p108_protected_output_overlay_gpu_v1_20261121`과 `p108_overlay_composition_gpu_v1_20261121`은 보호 승자의 여유로 선정한 델타로 같은 G4 개발 오답 두 개를 복구했다. 같은 델타의 공유 행도 두 답을 고쳤고, 세 행의 출력 합성은 기존 독립 단일 53/64·교정 43/64를 보존했다. [결과108 §§101~102](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-protected-output-overlay-result)
+- `p108_periodic_margin_writes_gpu_v1_20261121`은 116·348갱신 직후 공유 행 보정이 각 표적을 회복했다. 두 편집 갈래의 464갱신에선 표적 0/2였다. 독립 단일은 53→55였고 기존 단일·교정 정답은 각각 하나씩 소실됐다. [결과108 §103](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-periodic-margin-writes-result)
+- `p108_margin_write_replay_gpu_v1_20261121` 및 `p108_counterfactual_write_replay_gpu_v1_20261121`은 16개 슬롯과 감독 40개를 교체하고 결합 갈래의 표적 2/2를 유지했다. 독립 기존 정답의 보호엔 미달했다. `p108_guarded_output_sidecar_gpu_v1_20261121`은 고정 본체의 세 행만 학습해 새 표현 4→7/16과 독립 단일 53/64·교정 43/64를 얻었다. [결과108 §§104~106](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-same-value-write-replay-result)
+- `p108_native_output_overlay_cpu_v2_20261121`은 같은 체크포인트의 압축 CPU 출력에 780 B를 추가해 개발 교정 2/2와 기존 정답 140개의 생성 ID를 보존했다. `p108_overlay_query_switch_gpu_v1_20261121`은 질문 전환 4→10/24로, 개선은 보정 대상 값이 정답일 때 관측됐다. [결과108 §§107~108](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-packed-cpu-output-overlay)
+- `p108_joint_guarded_output_cpu_v1_20261123`은 세 행 공동 제약의 FP16 반올림 위반을 확인했다. `p108_joint_guarded_output_cpu_fp16_slack_v2_20261123`은 같은 제약을 지켰고 독립 정답이 98→90/128로 내려갔다. 고정 본체·CPU FP32 생성에서의 비교이며 새 후보는 미채택이다. [결과108 §109](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-joint-protected-output-edit-result)
+- `p106b_soda_speaker_adapter_repeat_switch_cpu_v1_20261123`은 같은 171개 원천과 감독 위치 2,511개로 동결 본체의 랭크 8 보정에 전환 예시를 섞었다. 영어 독립 52원천에서 전환 1→3/104, 반복 102→98/104였다. [결과101 §721](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-speaker-adapter-result)
+- `p109c_full_answer_value_link_gpu_v1_20261121`은 동일 무부모 3,584갱신에서 숫자 내용 전체에 값 위치를 지도했다. 첫 토큰 지도 대비 값 교환 양쪽 22→0/64, 질문 변경 양쪽 18→0/64, 독립 단일 59→17/64로 현 프리셋에 채택하지 않았다. [결과109 §78](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-full-answer-value-link-result)
+- `p109c_first_answer_value_bridge_gpu_v1_20261121`은 넓은 범위의 첫 출력 후보 대조에서 값 교환 22→26/64와 질문 변경 18→23/64를 얻었다. 한국어 쌍의 정답을 잃어 기존 첫 위치 지도를 유지한다. 동일 숫자판의 한영 평가도 격차를 확인했다. [결과109 §§80~81](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-first-answer-value-bridge-result)
+- `p106b_direct_kl_boundary_gather_v1_20261120`은 고정 HF 입력의 응답 경계 세 개에서 동일 위치를 선택할 때 전체·타일 CE·KL 기울기 일치를 검증했다. 마스크 없이 전달한 대조에서는 `-100` 위치에 KL 기울기가 남았다. [결과101 §701](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-direct-kl-boundary-gather)
+- `p108f_qwen35_native_matched_edits_v1_20261120`은 로컬 FP32 Qwen3.5-0.8B 전 24층으로 같은 순변화량의 편집 정책 다섯 개와 원본을 비교했다. 고정 순위의 엄격 정답 13→22/40, 원답 내용 개선과 비표적 손실을 각각 확인했다. 원 가중치 원복과 CUDA 반환을 검산했다. [결과108 §93](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108f-qwen35-matched-edits)
+- P108B Stage37의 작성 교정 대화 28개로 일반 SFT의 명시 턴 선택을 검증했다. 입력은 동일하며 제거한 첫 오답 815개, 감독에 남은 정답·종료 72개, 세 방식의 4회 반복 지도 288개를 기록했다. 정식 교과 비교를 위한 배치 계약이다. [결과108 §94](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-correction-normal-sft-mask)
+- `p106b_soda_live_incremental_v1_20261120`은 원천 고정 작성 두 행에서 두 실제 교사 프로세스의 중단·재개를 검증했다. 신규 호출 4회, 저장 응답 재사용 1회, 게시 후보 2건·입력 303·지도 56, 두 서버 반환을 확인했다. [결과101 §700](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-incremental-window-live)
+- `p108_g4_rank_placement_v1_20261119`는 16층 G4의 32좌표 수와 변화량에서 물리 랭크 합 2·4, 한·두 소유자, 실수·삼진을 비교했다. 실수 팔은 같은 좌표의 새 표현 선택지 NLL 8/8에서 낮았고 생성 정답은 모든 팔 0/20이었다. [결과108 §92](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-rank-placement)
+- `p106b_direct_kl_leading_newline_v1_20261120`은 같은 HF·GGUF 입력에서 역할 구분용 LF와 응답 앞 LF만 공유한 토큰의 감독을 제외했다. 원문과 나머지 위치·종료 ID는 동일하다. [결과101 §698](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-direct-kl-shared-leading-lf)
+- `p108_g4_ternary_reapply_v1_20261119`는 같은 G4 R2 64부호 편집과 176갱신에서 복원 시점만 바꿨다. 실제 복원 0·1·2회에서 종료 부호 62·63·64/64, 새 첫 답은 각 0/24였다. 그룹의 스케일 변화도 기록했다. [결과108 §91](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-ternary-reapply)
+- `p013_g4_single_document_held_v1_20261119`는 기존 고정·단계형 16층 G4 두 지문을 복원해 별도 한영 단일 문서를 검증했다. 1,024 문맥의 64타깃 NLL에서 단계형 우세가 없었고 두 팔의 생성 ID가 일치했다. 앞부분의 이름 정답은 부모 포함 0/6이다. [결과106 §14.8](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-single-document-held)
+- `p109_g4_portable_fma_text_v1_20261119`는 WSL CPU의 FMA 사용·AVX2/F16C 미사용 32K 실행 경로다. 한영 각 1,017입력·8생성의 출력 일치, 최고 39,624,704 B와 전체 20.858초·20.722초를 기록했다. 코어 조건이 다른 저장 기준과의 속도 차이는 서술 관측이다. [결과109 §46.2](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-portable-fma-text)
+- `p109_g4_portable_cpu_v1_20261119`는 WSL x86-64의 일반 C++ G4 연산이다. 산술 932,376 B·실제 FP32 로짓 262,144개, 두 편집본과 1,017+8 한영 텍스트를 보존했다. 요청 최고 39,628,800 B, 전체 271.016·238.202초다. ARM 실기기와 가속은 별도다. [결과109 §46](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-portable-cpu)
+- `p013_packed_document_cli_v1_20261119`와 `p013_packed_document_cli_cuda_v1_20261119`는 소형 G4의 명시 문서 CLI와 분할 검증이다. 각 장치 내에서 연속 4회 대 새 프로세스 1+3회로 231학습·84고정 검증 타깃과 모델·AdamW·난수 및 검증 이력을 재현했다. 정식 장문 품질의 근거는 별도다. [결과106 §14.4](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-packed-document-cli-cpu) · [§14.5](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-packed-document-cli-cuda)
+- `p106b_native_kd_methods_dev20_v1_20261119`는 93M chat32의 CE·ACTD·DSKDv2·DWA 기존 네 지문을 재현해 작성 48문서와 별도 DEV20을 평가했다. 네 팔 사용 가능 0/20, 카드 최고 8,175 MiB. [결과101 §697](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-native-kd-methods-dev20)
+- `p106b_gsq_actd_memory_phases_v1_20261119`는 같은 dense14·ACTD의 실제 2갱신씩이다. GSQ 코드 로짓 727 MiB와 AdamW 상태 1,460.01 MiB, 실현 전후의 추가 할당 3,331 MiB를 분리했다. 같은 학생 측 보관 356.44 MiB·교사 신호 73.5 KiB와 기존 38.22 MB 배포를 검산했다. [결과101 §696](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-actd-memory-phases)
+- `p005b_g4_author_optimizer_step_cost_v1_20261119`는 16층 G4의 같은 실제 기울기에서 세 행렬 옵티마이저의 step 비용만 정·역순으로 계측했다. 행렬 중앙값은 Muon 60.14~70.08, NorMuon 149.97~164.42, AdaMuon 166.84~168.64 ms였다. 1,232개 기존 갱신의 총시간·공통 목표 도달은 CPU에서 재검산했다. [결과078 §25](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-g4-author-optimizer-step-cost)
+- `p013_g4_packed_checkpoint_pair_v1_20261119`는 §14.6의 실제 755 MB 상태를 사용한 저장 A–B–B–A다. CPU와 CUDA에서 파일 지문이 일치했고 디스크 할당량은 같았다. 저장 시간은 두 장치에서 우세가 재현되지 않아 채택을 보류했다. 학습·평가는 0이다. [결과106 §14.7](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-checkpoint-pair)
+- `p013_g4_packed_cli_resume_v1_20261119`는 P079 16층 G4와 작성 한영 768/48문서의 일반 학습 CLI 대조다. 8×2×1,024·4갱신·63,525타깃의 두 번째 저장본에서 후반만 다시 실행했다. CUDA 실제 6갱신·검증 3회, 모델·AdamW·문서 진행과 난수 일치, 최고 8,224 MiB와 반환을 확인했다. 정식 장문 품질은 별도다. [결과106 §14.6](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-packed-cli-resume)
+- `p013_g4_indexed_native_v1_20261119`는 P079 G4 28방문과 작성 768문서를 인덱스 패킹으로 학습했다. 원 윈도 8×2×1,024, 4회에 65,536슬롯·63,530 유효 타깃이다. 제품 모델의 옵트인 마스크와 갱신 전체 분모를 사용했다. CUDA 종료 0, 카드 최고 7,969 MiB다. 일반 CLI 검증은 §14.6에서 독립 실행했다. [결과106 §14.3](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-indexed-native-g4)
+- `p102a_g4_joint_ce_kl_authored128_v1_20261119`는 같은 248K G4와 Qwen BF16, 512위치 미분, 49,668타깃/팔이다. 64×2와 128×1을 두 문서 순서에서 11회씩 대조했다. 128문서는 10,761 MiB·작성 검증 문턱 이내였고 처리량은 1.00%·0.04% 낮았다. [결과093 §55](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-joint-ce-kl-authored128)
+- `p102a_g4_joint_ce_kl_authored64_v1_20261119`의 standard·bounded는 같은 P109 248K 고정 G4와 로컬 Qwen BF16, 64×96·누적 1·22갱신·49,668 유효 타깃이다. 512위치 역전파는 학습 최대 할당을 610.52 MiB 줄였고 후반 중앙값은 두 팔 모두 0.800초였다. 작성 홀드아웃은 사전 문턱을 통과했으며 학습 상태가 달라 별도 학습 후보로 유지한다. [결과093 §54](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-joint-ce-kl-authored64)
+- `p106b_babylm_semantics_long_v2_20261117_s1337`: 사용자161의11월18일17시 장시간GPU 승인에 따른 기존4모델 COMPS·Entity97,808행 전량 평가. 원v1 준비/거절 기록은 불변이며 새 실행 상태는 P106B Stage8sem3W와 결과101이 소유한다. 학습토큰0·다른 tokenizer raw우도 교차비교 금지.
+- `p106b_babylm_semantics_long_v3_20261117_s1337`: v2의 일반sandbox NVML 입장실패4/실제모델0을 보존한 동일설계 권한경로 재시도. version/tag·소스·런처 이름 이외 계산/판정/입력/예산은 같다. 현재161의 직접 장시간GPU 승인과 새 출력/봉인을 사용한다.
+- `p106b_babylm_semantics_long_v4_20261117_s1337`: 실제7파일의 하이픈과 shard 이름 접점만 수정한 새 전량 평가. 원v3 네 모델 oracle 양성/부분cost 뒤 종료1을 보존한다. 입력/정답/원행/공식 scorer·원문턱은 같고 artifact 이름만 안전하게 대응한다. CPU5/충돌거부·새profile/출력·현재161 승인이 선결이다.
+- `p106b_prism_native_raw_v1_20261117`: 기존 Bonsai2B CAPI 원로짓 A/B/A가 GPU에서 끝났고 3×248,320개 FP32 값, A 비트 동일성, FP64 확률합, 프로세스 해제를 검증했다. 원 HTTP의 질량 HOLD8을 보존한다. 두 경로의 로그확률 차이는 상수 보정만으로 설명되지 않았다. 공식 다중 토큰 우도 평가는 후속이다. [101§634.1](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-prism-sum-order-and-native-prepared)
+- `p106b_babylm_reading_v1_20261117_s1337`: 기존 네 모델에서 GPU로 각 1,726행/이전 단어 1,520행을 수집했다. 원 AST와 지정 세 입력의 CE, 반복 쌍, 추적·샤드·종료를 검증했다. 공식 OLS·ΔR²·AIC는 패키지 선결이 남았다. [101§635.1](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-original-predictions-prepared)
+- `p106b_bonsai_native_lambada_v1_20261118`: Bonsai2B PTQ1_0, Prism adfffbe, 0-shot 영어 5,153행 전체 단어, 문맥 1,024·절단0. 정답 2,276/5,153, PPL 15.529799, 종료 0. 모델 간 비교는 같은 문항의 서술 비교다. [101§651](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-lambada-full)
+- `p106b_bonsai_native_mc_v1_20261118` / `p106b_bonsai_native_kobest_v2_20261118`: 동일 Bonsai CAPI와 0-shot 공식 보기를 사용했다. Belebele 두 언어×900 종료 부분을 보존했고 첫 KoBEST 저장 오류는 종료1이다. KoBEST만 4,561행 종료0으로 별도 완료했다. 후보 문맥 절단0, 모든 원행과 혼동표를 검산했다. [101§653](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-native-belebele-kobest-full)
+- `p013_mconstant_layout_v1_20261117_s1337`: 원장57의 별도CPU layout 준비. 같은full-window·PCG64/131072target과M8192/실행16호출을 유지하는 새조건이며 기존micro8 비용음성은 불변이다. source/accounting 재개와 전체trainer 재개를 구분한다. 실제모델/새GPU/품질·가속은NOT_RUN이고 기본채택0이다. 현재별도CPU11/393216위치/48source-call·원RNG/분모·새schema는0이며제품/전체trainer재개와실제GPU·속도/품질은미완이다(106§6).
+
+| P005b 현재 기술 태그 | 고정 조건 | 상태 |
+|---|---|---|
+| `p005b_adamuon_precision_v1_20261117` | 저자9c1ba5be/정확blob·NS2×V와정규화tail2·합성5형상/Nesterov2×5단계 |078§20:CPU6/prepare/actual1.043265초/readback모두0·200요인행/최종160배열/40쌍. NS괄호와tail을별도축으로관측. 원Wc는torch.equal뿐이며bit필드과장정정보존 |
+| `p005b_adamuon_control_bits_v1_20261117` | 원N0T0/클래스50단계만계측복구·양쪽uint8 view/150SHA=원150SHA |078§20.2:prepare0/actual0.683902초0·strictbit입장후속복구. 나머지3요인/실제모델비용/GPU반복0·공식분산/기본trainer/본학습품질미완 |
+
+| P014E 새 기술 태그 | 고정 조건 | 상태 |
+|---|---|---|
+| `p014e_cpu1_native_v1_20261117_s1337` | 같은 packed2·CPU1/interop1/worker1·affinity0·원 수치/생성 계약 | 첫anchor 전체완료0·직접 cost-only HOLD8을 보존. Wf가 나머지7개를 수행했으며 이HOLD를 성공/수치실패/OOM으로 바꾸지 않음. [099 §17](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cpu1-cost-hold) |
+| `p014e_cpu1_resume_v2_20261117_s1337` | 완료CPU1 anchor0 재사용·나머지7개 새과정·같은문턱/입력/CPU1/worker1·child2700s/parent18000s | [099 §18](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cpu1-abba-complete):8전체/실제0·독립96로짓/120생성 통과.32K1.0318~1.2671배·262K1.4217~1.5091배. gap·별도probe/9load·낮은 절대 처리율/본체음성 보존 |
+| `p014e_cpu_body_reduction_v1_20261117` | 원합성입력/출력·native packed1·두행렬×M1/M8/사후4조건·독립NumPy FP64/512자리Decimal |099§19:actual1.217281초/0·25344출력 C=FP64 cast bit동률/8원미달원소 모두 C가 정확내적에 더 가까움·별도Fraction readback0. 원FP32게이트3음성 보존·모델/커널/GPU/ABBA재실행0 |
+
+| P106B 현재 기술 태그 | 고정 조건 | 상태 |
+|---|---|---|
+| `p106b_dvlm_head_byte_values_v1_20261117` | 원teacher head tensor1/FP32 SHA동률·새byte명세32768·CPU chunk128 mean/전체FP64행oracle·고정8 synthetic fullhead VJP |101§624:실제6.913215초/0·전32768행평균위반0·VJP위반0/원tol·원값/동결불변·참조해제/CUDA미초기화. 모델/본문forward·학습/새weight파일0·언어품질/HPA통과주장0 |
+| `p106b_babylm_semantics_v1_20261117_s1337` | 현재공식COMPS91028/Entity6780·기존4모델·원phrase/UID·CPU전량native/Falcon2tokenizer·현재6+2+21계약 |101§621:첫stale준비1보존/현재prepare0·source봉인. 자동GPU승인검토2회거절/프로세스미생성·모든4모델점수NOT_RUN. 원형/권한해결전우회0 |
+| `p106b_babylm_semantics_SYNTHETIC_cpu_integration_v1_20261117` | 합성문자tokenizer/CPUzero logits·COMPS3×2/Entity원3 중 skip1→2×5·원공식함수통합 |101§628:구문오타1/fixture0보존뒤 통합2 실제0. 원phrase SUM·padding/shift/rank·UID macro/동률RNG를 검산. 실제 tokenizer/model/97808점수/GPU0·실제oracle대체0 |
+| `p106b_dvlm_head_bytes_v1_20261117` | 원strict32768/205HOLD불변·invalidUTF8 ordinary205에만direct teacher raw-byte BPE·새명세별도 |101§622:CPU5/prepare0·whole205 실제0/새32768명세·원32563기록불변·독립원spelling검산0. 이명세단계 모델/weight/head할당/GPU0. 별도실제head값/VJP는§624,언어품질은NOT_RUN |
+| `p106b_dwa_native_v2_20261117_s1337` / `p106b_dwa_native_v3_20261117_s1337` | 아래CMA계약명의실제실행namespace·v2 원ABBA4/v3 별도상세1 |101§620/623:실제0/0·원v2행별누락보존/새v3 128행·원161SHA/여섯합동률·독립0. 완료런처-done/명령원문보존 |
+| `p106b_dvlm_head_map_v1_20261117` / `p106b_bonsai2b_prism_canary_v1_20261117` | 아래head/Prism 사전계약명이아닌실제evidence namespace |원strict head205HOLD8/Prism질량HOLD8을그대로보존한다. namespace의이름과사전helper 계약명을구분한다 |
+| `p106b_dvlm_pts_v1_20261117` | 원 TRAIN128/CE772/x32216·native32K/Qwen0.6 ByteLevel·완전PTS1024·whole-sample HOLD |21계약/prepare0·CPU actual0.86수락(KO25/EN61),42HOLD(UTF8 37/길이5),원CE772 보존·수락CE587/보류185. native 첫 언어별4 선택은 출력 전 고정. corpus 편입/모델/품질0 |
+| `p106b_dvlm_native_v1_20261117` | 원8·FP32/eager/noKV·atol1e-5/rtol1e-4 |101§617:case0 teacher445/private444 음성·원7NOT_RUN. 표본보존후main writer실패exit1·v1최종state미복구. 별도closurev3은같은음성/형상대조·fresh state불변을저장했으나allocator32MiB로exit9. 작은곱1개에서cuBLAS잔여재현/local clear후0·원v3판정불변 |
+| `p106b_dvlm_head_v1_20261117` | 원전체32768행·shared/무손실mean/HOLD |101§618:head6 CPU통과. 실제mapping19284공유/13279평균/205UTF8미지원HOLD8·원32768행보존. head할당/weight읽기/GPU/학습0 |
+| `p106b_prism2b_http_v1_20261117_s1337` | 기존정확2B/Prism·localhost·원전체V |101§619:정확2B현재SHA/version/help와실제로드확인·CPU10+5통과. 전체248320분포합1.00108794/HOLD8·forced3/B/A미실행. 소유종료0·원형불변·공식점수0 |
+| `p106b_dwa_cma_v1_20261117` | 저자8396502·감독gather·가중순서/zero-based band/unbanded self·전체분모 |CMA12 CPU와새boundary5·storage2통과. [101§620](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dwa-native-abba-detail):native v2의whole128 ABBA4실제0·157/161반복SHA정확/CUDA0. 원행별저장누락을보존하고v3의DWA1/128행·원161SHA/합동률·독립검산0을닫음. 평균비용1.9626배/첫JIT포함·본학습품질NOT_RUN |
+
 2026-11-05 사용자111·112의 WSP 후속은 `p108_wsp_attn_v1_20261105`,
 `p108_wsp_headscan_v3_20261105`, `p108_wsp_partial_v1_20261105`다.
 headscan 준비v1/v2는 NOT_RUN 원형을 보존한다. [결과108§16~18](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md)의 동일 완료F/FP32/R1/cache/greedy 안에서만 비교한다.
@@ -244,6 +451,11 @@ head 정답2→8/10/128·반복49→13/144와 echo2→21/144를 함께 보존하
 
 | P108 직접 편집 태그 | 범위 | 상태 |
 |---|---|---|
+| `p108b_gemma_kobest_v1_s1337` | v3 external_gemma_kobest_v2; 로컬Gemma270/기존strict HF·공식KoBEST5/4561 | Stage45 v1모델미로딩오류 보존·v2전량247.408초/0·F1평균41.1988%;원자산/CUDA0·외부기준선이며 학생학습효과 아님 |
+| `p108b_protected_norm_v1_s1337` | v3 norm_sweep_v1; 정상7 전체key 보호·두 값모드의0.5/1/2배와동일norm 무보호 | Stage39 완료8팔/1315생성·DEV 사전동결. 큰편집은 새목표 일부개선/일반품질 비채택 |
+| `p108b_pm_frozen_official11_v1_s1337` | v3 pm_*; DEV동결 원본/편집·새128입력/288발화·공식24526행 | Stage41 완료·PRIMARY 명시/대응검산·평가정답 학습0·일반문장 악화 |
+| `p108b_lastlayer_causal_v1_s1337` | v3 lastlayer_forecast_v1; 114동일이력/임시원출력 복원 | Stage42 완료·비선형suffix/독립NumPy argmax114/114; 다음로짓 수치 기술양성만 |
+| `p108b_hf_suffix_forecast_v1_s1337` | v3 hf_suffix_v1; 기존Gemma CAL12×3배율/두RMSNorm | Stage43 완료·사전봉인36예측/48native·원복/CUDA0; 전모델 품질보편성 미확인 |
 | `p106b_gsq_coordinates_v2_20261113` | 기존64+64 TRAIN128을동일gain200/CEALM으로반복한AdamW/Lion 각256 기술진단 | 새115/Nov13 authority·CPU27·명시guard/output로저수준measure만재사용. 옛main/기한수정0·작은학습품질/75M/추가300M/CP저장0 |
 | `p108_nullspace_v1_20261113` | 값이 이미fit oracle를회복한5사실만, 같은층/값의비표적fit키와generic키 보호 | Stage14: fit-only선정·유한SVD보호·실제쓰기와oracle로짓대조. 반복평가된표현은독립test아님,5%주범위/20%큰편집진단,본체/valueoptimizer0 |
 | `p108_key_transport_v1_20261113` | Stage14의같은5사례/층/value와기존19문항에서주어한위치반사실 | Stage15: 고정값/실제행렬응답/전체쓰기대응으로문맥성·key이동·비표적관여분리. 새최적화/층선정/독립test/CP0 |
@@ -303,6 +515,8 @@ head 정답2→8/10/128·반복49→13/144와 echo2→21/144를 함께 보존하
 | `p106b_babylm_causal_v3_s1337` | 같은 원 causal 함수·문항·idle·pre-HF 경로의 새 평가 | CPU42 및 네 실제 cost/oracle 완료. 세 Tiny 각65093쌍 전량, Falcon은5013초 보수외삽이3600초를 넘어 full 모델입장 전 HOLD9. 결과101§459. 전체 공식CLI/suite·대회 자격·일반대화 점수 아님. |
 | `p106b_alm_context_v7_s1337` | 원1024/원17 유지·native cold·UTF8 조각의 원 top-K 확률 검산 | CPU250·동일 ordered1024 준비 후 원17 실제176.800초/모든100 target 두 cold 관측 및 control 회복(101§458). 원64묶음 전체는 진행 중, 학생 효과 미확인. 허용오차·확률·원답 대체0. |
 | `p106b_official_core6_v2` | 같은 고정 공식 Core6 네 모델 각19965문항 | 전량완료(101§446). 새Broad-F macro42.3976% 대 기존F41.9099%, Falcon48.3588%; 작은 차/영어 선택지 우도를 자유대화 개선으로 올리지 않음. |
+| `p106b_orpo_official_v1_20261113` | 사용자132의 이번 예외, P090B 부모의 공식11과제 입장 | Stage7awWa: 실제42.429초·카나리 통과 뒤 비용 중 COPA string-target를 integer-only Core6 감사기에 넘겨 도구9. 정답/프롬프트·원CP 변경0·전량 NOT_RUN·실패 원형 보존. |
+| `p106b_orpo_official_v2_20261113` | 완료ORPO176 beta.1·ORPO64와 직접 부모2종, 공식Core6·KoBEST5 | 결과101§613~614 실제4×24526문항·원형56shard/독립재계산0. Core6 41.7381→40.3610/40.4704→40.0572%; KoBEST가중F1 37.4541→38.0696/37.0993→37.2475%지만KO BoolQ/WiC 모두예. 공식COPA 감사표현만 대응·원과제/모델/원CP/source 불변·새학습0. 이번 한정 후학습 평가이며 범용채택 미승격. |
 | `p106b_supported_production8h_v3_s1337` | 근거문맥 생산/8h·STOP·동일계보 재개 | 10/23 두 창674그룹/신규train199555입력·정상STOP8 두 번, 누적train29221731/75M잔여45778269. 옛4473행 자동편입0·새75M 미완. 목적16표본의 전제 누락·번역 손상을 기술수락과 분리. 새8h는 사용자 소유 조건부 준비. 결과101§434/467/470/473. |
 | `p101a_sft_mtp_cleanbilingual_v3_s1337` | 기존Broad22528을MTP마스크 엔진에 연결한704회×4팔 | 네 본학습704/각CP1·같은DEV512/원형 readback 완료(092§19). 실제x21.62M/팔이며 부모NTP/MTP 첫답4/3 of512, 무부모각0. 종료·CE 개선과 일반답변 음성을 구분. 알려진V3 첫턴/언어지도량 결함은 보존. |
 | `p101a_sft_mtp_verified_direct_v3_s1337` / `p101a_sft_mtp_verified_trace_v3_s1337` | 같은4096root/128회 직접답 대 검산풀이 | 양128/각CP1·TEST1024 실제 완료(092§20~22). 최종값424→1003/1024이나 풀이target6.44배·고정일상각0/8·자연어 전이 실패. 일반 thinking/지능 점수 아님. |
@@ -4298,3 +4512,261 @@ teacher 없이 명시 unbanded-self·방향별 cross band 변형만 검산하며
 `p106b_softdtw_large_cpu_v1_20261113`은 원GPU seed/형상/RNG를 복원해 별도 행 단위
 CPU DP의 큰3손실만 원값과 대조한다. 큰gradient는NOT_RUN·GPU재실행0이며 결과101§612
 actual27359/0에서 큰 loss 차이0을 확인했다. 원입력/문턱과 GPU 보고서는 변경하지 않았다.
+
+### 동결 편집의 누락 공식평가 정정 namespace
+
+`p108_frozen_edit_official_v1_20261113`은 캐시 정책 import순서 오류로 모델 전 exit1이다.
+`p108_frozen_edit_official_v2_20261113`은 같은 동결3패킷의 실제 재현과3팔 공식전량이다.
+
+
+2026-11-14 Stage22 정정 완료: 원본+동결 인자에서 실제 가중치SHA3/3·3팔68생성 EXACT를
+확인하고 공식11과제 전량/45샤드 독립검산·실제 복원CLI1회를 닫았다. Core6 원본42.3976→
+단일42.5605/분산42.6634%, 한국어KoBEST F1은37.0075→37.0073/36.9936%다. 작은 영어
+이득은 관측됐지만 기존dev/보호 손상과한국어/대화 한계는 보존한다. 새학습/편집fit/CP0. 결과108§31.
+
+### 2026-11-16 야간 P108C 입력 범위 분기 namespace
+
+p108c_night_v1_s1337은 사용자142의11월17일08시 연구 허가에서 새로 분리한 조건이다.
+완료P108B의 단일 전역 가중치 비교와 달리 원본 내부 feature로 원본/동결 joint 편집
+경로를 고르는 별도 구조다. 기존값/원답/원시key를 재사용하며 새 본체 학습0이다.
+첫 CPU는 적용 범위 판단과 cached 답 조합일 뿐 새 native 답변·범용 지능의 증거가 아니다.
+CODE/입력/자료역할·새 기한을 봉인하고 native feature/생성·원복을 확인한 뒤에만 실제 효과를 판단한다.
+예전 source/profile/만료 기한과 결과는 바꾸지 않는다. 계획 P108C·WIP142가 현재 단계를 소유한다.
+
+현재 Stage0/1/2는 완료했다. native129회귀답과새220입력×4=880답, 조사 문법의사후32답은 자료 역할을 분리한다. 원본/전역/분기의 모든 새 비교는 같은 parent/chat32·FP32 MATH·R1·MTP OFF·greedy96이며 Stage1 회귀만64다. 조건부 분기는 새 구조/추가 prefill의 축이며 B의 한 전역 가중치 동일량 비교와 합하지 않는다. 결과108§53~57에서 국소 새 정답5개와 일반 문장 미회복을 구분했고 범용 채택은0이다.
+
+Stage47 CPU 비용 장부는 완료22정책의 실제 공통 NET 약13.8821과 PATH/검색량을 재검산한 것이다. 과거 SINGLE1 재사용 비용0·선택된 층의 누적 counter·공통14층 atlas/value 비용을 별도로 센다. 동일 검색 상한 실험 자체나 새 본학습/가속이 아니며 기존 허용오차/음성을 바꾸지 않는다.
+
+- `p005b_normuon_author_cpu_v1_20261117_s1337`: [078§23](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-author-four-cpu)의 별도FP32/고정topology 네인터페이스 CPU14·hostGloo2. Native/전체wall/품질·FSDP2/CUDA/NCCL·기본채택NOT_RUN이며기존변형완료300M을재실행하지않았다.
+
+- `p005b_normuon_author_matched_v1_20261117_s1337`: [078§24](../test_result/078_20260911_P005b-RMS4는-jordan20을-이겼지만-한-형상이다.md#p005b-normuon-matched-trainer-cpu)의 새저자Nor matrix선택·공통TinyLM AdamW·순수matrix checkpoint선검사와CPU57/기본값·기존네manifest동률. Native/전체wall/품질·원AuxAdam전체결합·기본채택은NOT_RUN이다.
+
+- `p106b_feature_window_v1_20261117`: [101§636](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-window-cpu)의제한NPY FP32/source reader CPU17·4MiB/1024폭/412선택행·512KiB batch. source-only재개이며Native/frame·모델/optimizer재개·전체75M writer/온라인상주/품질은NOT_RUN이다.
+
+- `p106b_ifeval_data_v1_20261117`: [101§637](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-official541-data)의 공식 평가전용 자료 입장541행/834지시·25유형이다. 신규 학습/공식 scorer/모델 점수는 NOT_RUN이며 패키지/1280 정합은 남는다.
+
+- `p106b_dskd_feature_consumer_v1_20261118`: [101§638](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-window-native-math-cpu)의 제한 feature→원문항 frame/양방향 full-vocab/global분모 소비 CPU40과 고정7위치 미분 보존이다. 실제 Native/GPU·full training 재개/품질·75M writer/공존/기본 채택은 NOT_RUN이다.
+
+- `p106b_feature_producer_v1_20261118`: [101§639](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-producer-recovery-cpu)의 단일 feature창 증분 기록/복구 CPU21·기본4MiB×2/412선택행과 sealed reader/consumer 접점이다. 실제 교사/8시간·75M 다중창 scheduler/source RNG·품질/전체메모리·기본 채택은 NOT_RUN이다.
+
+- `p107_scaled_optimizer_group_v1_20261118`: [107§19](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-optimizer-group-cpu)의 별도 CPU14/전역 overflow no-step·fresh public scaler state다. 합성수치만 검증했고 실제 P107/data/policy/schedule·Native/Muon·CUDA/full training/품질은 NOT_RUN이다.
+
+- `p107_scaled_trainer_v1_20261118`: [107§20](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-scaled-trainer-consumed-group-cpu)의 명시consume-group factory/V3·V4 CPU51·None-default state hash 보존이다. 실제optimizer 적용/skip과 소비그룹을 구분한다. Native/Muon/BF16-CUDA/CLI/75M/품질·기본 채택은 NOT_RUN이다.
+
+- `p107_indexed_document_v1_20261118`: [107§21](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-indexed-document-source-cpu)의 선택 offset source CPU15/기존13불변·동일추출/RNG·fresh 작은학습기 재개다.1M합성 입력의 계수이며 실제75M/RSS/언어품질/CLI기본채택은 NOT_RUN이다.
+
+- `p106b_existing_family_contract_v1_20261118`: [101§640](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-existing-hotpot-family-context-review)의기존Hotpot6원문/role-range보존·근거문맥미포함/계보미조인HOLD다. 새75M/권리/품질/교사생산·학생학습은NOT_RUN이다.
+
+- `p106b_soda_dialogue_input_v1_20261118`: [101§644](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-named-input-prefix-cpu)의독립stdlib 입력prefix view/CPU12+저장실물2·old6불변이다. 원target은근거text에서제외되며원root/rights·token예산·producer/교사·75M/품질·기본채택은NOT_RUN이다.
+
+- `p106b_soda_candidate_wire_v1_20261118`: [101§645](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-parent-evidence-student-wire-cpu)의CPU11/실물2·작성wire12와payload20이다. 원질문파생key/근거view분리·실제전체최대485토큰/초과거부를닫았고원root/rights/producer/75M/품질은미완이다.
+
+- `p106b_feature_schedule_v1_20261118`: [101§646](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-feature-multiwindow-source-boundary-cpu)의CPU19/명시합성source cursor·PCG64/다중창복구다. 강제3x4MiB·폭1024/선택618/배치512KiB,old7불변이며언어75M/실제교사·전체학습재개·품질·기본채택은NOT_RUN이다.
+
+- `p106b_dskd_cekd_group_v1_20261118`: [101§647](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-complete-ce-bounded-kd-group-cpu)의A CPU14/CE5·15/KD2·7/45변수독립미분이다. old15불변이며B전체경계·실제Native/75M/품질은NOT_RUN이다.
+
+- `p106b_dskd_training_boundary_v1_20261118`: [101§648](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-tiny-cpu-complete-dskd-training-boundary)의A14+B10 작은CPU 전체경계/새객체재개·기존A AST/old16불변이다. 전체67 optimizer호출은기술시험합계이며실제Native학습이아니다. 실제75M/권리/품질은미완이다.
+
+- `p106b_dskd_schedule_cpu_v1_20261118`: [101§649](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-consumed-group-lr-schedule-cpu)의새CPU10/별도소비LR경계·old20불변이다. 실제Native/교사75M/권리/품질은미완이다.
+
+- `p108b_boolq_gain_decomposition_v1_20261118`: [108§72](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-boolq-gain-decomposition)의고정원점수3270쌍사후분해다. 기존정확도/205회복131손상과세AUC계산은검증했으나분별력/범용품질개선을입증하지않았다. 새모델/학습/유의성검정0.
+
+- `p108b_other_gains_decomposition_v1_20261118`: [108§73](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-other-gains-stored-primary-decomposition)의고정Winogrande/HellaSwag11309쌍분해다. v1주소metadata비교실패와새v2/18입력·PRIMARY보존을확인했다. 기존Holm p1.0·새모델/확증적검정/전체품질채택0.
+
+- `p108b_observed_cluster_bootstrap_v1_20261118`: [108§74](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-observed-group-bootstrap-sensitivity)의원점수/관측묶음대응민감도이며새모델/학습이아니다. 고정7지표·과제당100000/분포5600256B·독립요약검산/원PRIMARY보존을확인했다. 관측묶음의독립성/확증적family coverage/범용품질은미입증이다.
+
+- `p106b_dskdv2_microbatch_frames_cpu_v1_20261118`: [101§650](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-causal-microbatch-frame-adapter-cpu)의별도single-use batch frame/graph어댑터다. 새CPU8/3dense oracle/old25불변/18파일78362B·전체tiny미분검산을닫았다. 기존학습기에자동접속하지않고실제Native/BF16/전체비용/재개·품질은NOT_RUN이다.
+- `p106b_dskdv2_microbatch_training_cpu_v1_20261118` / `p106b_dskdv2_microbatch_training_cpu_v2_20261118`: 고정 배치 8과 새 토큰 수치모형에서 기존 학습경계 구현을 검증했다. v1 종료 1로 25검사 통과, 설정값 비교만 고친 v2 종료 0으로 나머지 한 검사 통과. 실제 Native 및 운영 학습은 미실행이다. [101§652](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-batched-scheduled-training-cpu)
+
+- `p106b_actd_indexed_prefix_alignment_cpu_v1_20261118` / `p106b_actd_saved_alignment_cpu_v1_20261118`: 별도 CPU 연구 정렬. 합성 100쌍과 과거 봉인 자료 128행의 저장 정렬·보류를 대조했다. 입력 재취득, 모델 재로딩, 실제 학생 학습과 생산 도입은 미실행이다. [결과101 §658](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-actd-indexed-alignment-cpu)
+
+- `p108_shared_ternary_margin_v1_20261118` / `p108_shared_ternary_margin_v2_20261118`: 같은 초기 계산값을 유지한 공유 down의 마스터 여유 비교. v1 반복설정 오류로 갱신 0, v2 합성 CPU 97갱신과 여섯 쌍의 trit 변화를 실측했다. 실제 언어 자료와 긴 학습·packed 적용은 미실행이다. [결과108 §77](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-shared-ternary-margin-cpu)
+
+- `p013_native_mconstant_matched_synthetic_v2_20261118`: 새 95.33M의 실제 CUDA 4×18갱신과 2,359,296 합성 목표/팔이다. 문맥 일정과 matched Muon 대조 CE는 동률, 저자 Nor/Ada는 같은 명목 LR의 이 짧은 조건에서 비용·합성 손실이 불리했다. [결과106 §9](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-native-matched-gpu-training-result)
+- `p106b_dskd_native_batch_cuda_synthetic_v3_20261118`, `p106b_actd_native_updates_synthetic_v2_20261118`, `p106b_dwa_native_updates_synthetic_v1_20261118`: 실제 합성 Native CUDA 총 8·6·6갱신. DSKD v2의 갱신 전 빈 그룹 오류도 보존한다. 공식 언어 채택 미결. [결과101 §664~666](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskd-native-optimizer-actual)
+- `p107_native_scaled_uniform_observe_adaptive_v1_20261118`: 새 고정 합성 64문서와 같은 독립 4문서의 세 masking. 실제 3×6 CUDA 적용, 균등과 관측의 최종 상태 비트 동일. [결과107 §22](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-native-scaled-three-actual)
+- `p014e_cpu_group_scale_factored_v1_20261118`: 5트릿 그룹별 scale, 기존 C 대비 합성 4형상과 저장 2행렬의 수치 확인. 운영 적용 및 전체 배포 예산은 미실행이다. [결과099 §20](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cpu-group-scale-factored)
+
+- `p013_native_curriculum_cuda_resume_v1_20261118`, `p013_native_curriculum_cuda_deterministic_resume_v1_20261118`, `p013_native_curriculum_cuda_repro_resume_v1_20261118`: 같은 합성 5M·18단계의 연속과 6+12 재개. 세 절차의 새 실제 CUDA 학습은 90회다. strict 결정론 등 고정 쌍만 모델·AdamW·Muon 비트 일치, strict off에서 비트 차이가 재현됐다. [결과106 §10](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-native-cuda-resume-stage5)
+- `p014e_cuda_group_scale_numeric_v1_20261118`, `p014e_cuda_g270_exact_table_v1_20261118`, `p014e_g270_table_head_native_v1_20261118`, `p014e_g270_paired_head_cost_v1_20261118`: CUDA 그룹 FP64의 저장 C 동률과 표 가속, Native logits/고정 생성 통과. 동일 세션의 원 FP32 head 기준에서는 표가 8조건 모두 느려 기본 교체를 보류했다. [결과099 §21](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-cuda-group-scale-table)
+
+### 2026-11-21 한영 대응 학습과 네이티브 근거 선택
+
+- `p109c_bilingual_value_transfer_gpu_v1_20261121`와 `p109c_bilingual_shuffled_pairs_gpu_v1_20261121`는 같은 1,536갱신 상태와 32,768개 한영 대응쌍에서 각 팔의 2,048갱신을 회수했다. 첫 숫자 전달의 값 교환 정답은 원순서 19→41/64, 대응쌍 셔플 30→18/64였다. 합성 작성 표에서 순서 의존이 확인돼 기본 채택을 보류한다. [결과109 §§83~86](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-bilingual-value-transfer-result)
+- `p109c_bilingual_range_confirmation_gpu_v1_20261121`의 새 문구·원천 각각 64쌍에서 원래 전달·다섯 자리 분산·끝 구간 교체의 기존 범위 답은 1·0·6/128, 다섯 자리는 0·3·5/128였다. 두 답 정답은 다섯 자리 끝 구간 교체의 1/64뿐이다. 기록은 작성 진단 범위이며 기본 채택 근거는 미달이다. [결과109 §90](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-bilingual-range-confirmation-result)
+- `p077_native_description_words_cpu_v1_20261121`는 4,063~4,096 원문 토큰의 작성 표 24개에서 제목 16/24, 설명 어구·단어 각각 20/24, 실제 요청 최고 RSS 11,472,896 B였다. 같은 뜻을 다른 단어로 표현한 문항은 세 방식 모두 4/8이었다. [결과065 §10.50](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-native-description-words-result)
+
+### 2026-11-18 현재 창의 가중 head·hard 삼진·배포 자원 증거
+
+- `p102a_tied_head_fused_weighted_vocab_v1_20261118`, `p102a_weighted_fp32_ns_v1_20261118`, `p102a_tiled_topk_uniform_tail_v1_20261118`은 합성 공유 head의 실제 가중 CE/KD를 담는다. 첫 FP32 NS 허용차 통과와 BF16 및 균등 잔여분 GPU 갱신 음성을 함께 보존한다. [결과093 §§24~26](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-weighted-gpu-tied-head-vocab)
+- `p106b_gsq_ste_cold_start_v1_20261118`은 첫 역전파 오류로 갱신0, v2는 네 조건의 총 96갱신을 완료했다. GSQ에서 같은 합성 목표의 시간·할당·CE가 악화됐으며 정식 언어 품질은 미측정이다. [결과101 §§670~671](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-cold-start-checkpoint-error)
+- `p014e_native_packed_sampled_vram_v1_20261118`, `p106b_prism_context_sampled_vram_v1_20261118`, `p106b_hf_sampled_generation_v1_20261118`은 Native 두 본체·Prism 두 context·기존 HF 세 모델의 NVML 표본이다. 파일·고유 모델 저장량·캐시·allocator·RSS 및 장치 전체 표본값의 분모를 다르게 본다. [결과099 §22](../test_result/099_20260925_P014E-회전-동치만-통과하고-배포손익은-미측정.md#p014e-native-packed-device-vram) · [결과101 §§669·672](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-prism-physical-device-vram)
+- EN55의 과거 두 포장본에서 12 source 구간 중 실제 target에 노출된 것은 각각 8개였다. 새 문자열과 원문서 split·정식 TRAIN 편입의 판단은 별도 데이터 증거를 사용한다. [결과101 §668](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-en55-revised12-actual-exposure)
+
+- `p106b_bonsai_hellaswag_exact_prefix_intervals_v1_20261118`와 `p106b_bonsai_hellaswag_exact_prefix_continue_v1_20261118`은 공식 10,042행 중 원 경로 2,816행을 보존한다. 현재 완료한 것은 첫 연속 범위이며 전체 평균 및 HellaSwag 공식 점수는 보류다. [결과101 §674](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-exact-continue)
+
+- 같은 조건의 마지막 96행을 추가해 Bonsai HellaSwag 공식 2,912/10,042행을 검산했다. 전체 공식 점수는 보류다. [결과101 §675](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-exact-2912)
+
+- 갱신 승인에서 `p106b_bonsai_hellaswag_exact_suffix_20261118_r1`과 `r2` 합계 512행을 추가로 저장했다. 종료 8은 두 번째 구간의 비용 보류이며 저장분으로 3,424번부터 이어간다. NativeQ와의 동일 문항 대조는 CPU로 준비했다. `p102a_tiled_bonsai_exact_kd_v1_20261118`은 실제 두 비균등 분포의 소형 CPU 동등성까지 입장했다. [결과101 §676~677](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-hellaswag-exact-3424) · [결과093 §27](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-tiled-bonsai-exact-kd-prepare)
+
+- `p106b_bonsai_hellaswag_exact_suffix_20261118_r3`에서 공식 HellaSwag 10,042행 및 Core6 파생 평균을 닫았다. `p102a_tiled_bonsai_exact_kd_v3_20261119`의 실제 12갱신은 메모리 절감과 시간·projection 갱신 비용을 확인했다. `p109_warm_visit_routes_v2_20261119`의 48갱신은 기존 체크포인트의 방문과 KV 기술 시험이다. [공식 평가](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-bonsai-exact-full-core6) · [KD](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-tiled-bonsai-full-vocab-gpu) · [G4](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md)
+
+- `p108_g4_shared_pack_transfer_v1_20261119`은 등록 경로 검사로 종료 1이었다. `p108_g4_shared_pack_transfer_v2_20261119`는 동일 16층 G4 R2에서 두 고정 trit 편집의 packed 재로딩과 동일 경로 로짓을 재현했다. 원본과 편집의 CPU 전체·캐시 수치 기준은 미달해 종료 8을 남겼다. 학습과 실제 답변 평가는 0이다. [결과108 §78](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-packed-transfer-cpu)
+
+- `p108_g4_packed_cuda_joint_v1_20261119`은 동일 트릿 수·ΔW 제곱합의 16층 G4 R2 편집에서 8회·16회 사용을 검산했다. 분산 팔의 CUDA 참조·직접 head 간 196,608 로짓 허용차 위반 0과 생성 ID 동률, 128·512의 ABBA 중앙 시간비 1.034·1.198을 기록했다. 고유 모델 저장과 peak, 각 head의 전체·캐시 수치, 실제 언어 미실행을 구분한다. [결과108 §79](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-packed-cuda-joint)
+
+- `p102a_g4_native_vocab_tile_v3_20261119`은 정상 학습 진입점의 G4 R2·BF16 AMP·32K·같은 합성 입력에서 타일 2,048과 기본 CE를 각 6회 갱신했다. 학습 구간 allocated 절감과 원미분·실제 갱신 문턱 미달의 종료 8을 함께 기록했다. v1 단위 오류와 v2 단기 어닐 오류는 갱신 전이다. [결과093 §30](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-native-vocab-tile)
+
+- `p102a_g4_head_precision_v1_20261119`은 위 실험의 첫 합성 배치에서 BF16 본체를 고정한 네 출력부 팔을 각 한 번 CUDA 갱신했다. FP32 출력은 CE 차이를 줄였고 실제 첫 갱신 문턱은 미달했다. 두 Muon 행렬을 같은 clip 후 미분으로 재생해 내부 정밀도의 기여를 확인했다. [결과093 §31](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-head-precision)
+
+- `p102a_g4_head_trace_v1_20261119`은 같은 첫 8,192개 합성 타깃의 실제 어휘 타일 forward·재계산 로짓과 미분을 직접 확인했다. 로짓은 일치했고 BF16 위치별 NLL과 기준 본체 반복에 수치 차이가 남았다. `p102a_g4_head_strict_v1_20261119`의 결정론 반복은 기준 전체 원미분을 재현했다. BF16 로짓의 일반 CE 위치별 반올림을 확인했고, 명시 FP32 CE 대비 타일과 위치별 재계산의 전체 원미분은 미달했다. 두 진단의 optimizer 갱신은 0이다. [결과093 §32](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-head-trace) · [§33](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-head-strict)
+
+- `p102a_g4_bf16_softmax_v1_20261119`의 CPU 준비는 CPU BF16 정규화에서 위치별 반올림 차이로 종료 1이었다. `v2`의 결정론 CUDA에서 기준 BF16 일반 CE의 타깃 NLL을 재현했고 기존 전체 원미분 문턱에는 미달했다. 같은 로그확률의 native 전체와 타일 로짓 미분은 일치했다. [결과093 §34](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-bf16-softmax)
+
+- `p102a_g4_bf16_vjp_blocks_v1_20261119`은 미분 재현 연구의 소형 BF16 CPU 검산이다. `p102a_g4_tile_training_capacity_v2_20261119`은 정상 타일과 일반 CE를 같은 초기 G4 R2·합성 입력·196,608타깃으로 비교해 합계 60회 CUDA 갱신을 완료했다. 별도 레시피의 자원 측정으로, 타일 `8×2`의 할당 절감과 활성값 저장 시 시간 단축을 확인했다. 일반 CE 활성값 저장 설정의 두 드라이버 오류, 합성 검증의 범위, 장치 반환을 함께 기록했다. [결과093 §§35~36](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-bf16-vjp-blocks-cpu)
+
+- `p102a_g4_bf16_vjp_blocks_v2_20261119`의 전체 BF16 곱은 고정 로짓 미분을 쓸 때 일치했고 분할 곱의 전체 모델 미분은 미달했다. `p102a_g4_full_delta_v1_20261119`에서 위치별 로짓 및 조립 미분의 전체 곱으로 첫 micro의 원미분을 재현했다. `p102a_g4_full_delta_train_v1_20261119`은 그 경로를 정상 학습기에 진단 연결해 합성 G4의 모델·AdamW·Muon 상태를 여섯 갱신마다 재현했다. 절대 학습 할당과 단일 실행 시간, 실제 마스크·형상 및 품질의 선결을 기록했다. [결과093 §§37~39](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-fixed-logit-vjp)
+
+- `p102a_g4_recompute_shapes_v1_20261119`에서 98,304 위치의 순서를 고정하고 마스크 `8×2`와 무마스크 `16×1` 각각을 일반 CE와 대조했다. 총 24회 갱신에서 각 형상의 세 학습 상태가 매회 일치했다. 마스크의 지도 타깃은 65,424개였다. 학습 최대 할당과 CPU의 BF16 위치별 NLL·기존 FP32 ALM 차이를 기록했다. [결과093 §40](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-recompute-shapes)
+
+- `p102a_g4_native_recomputed_ce_v1_20261119`은 공개 `--ce-recompute-rows 1024`로 마스크 G4의 실제 6갱신을 수행했다. 이전 일반 CE에서 재사용한 모델·AdamW·Muon 상태를 매 갱신 재현했다. 다른 실행 시점의 최대 할당, 작은 CPU 모델 파일 재개와 이전 소스 봉인을 기록했다. 새 선택값은 양수일 때만 훈련 JSON과 체크포인트에 기록된다. [결과093 §41](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-native-recomputed-ce)
+
+- `p102a_g4_recompute_operating_v1_20261119`은 `8×16`에서 일반·재계산 CE의 연속 6회와 재계산 CE의 실제 파일 3+3회를 대조했다. 두 연속 팔과 파일 재개의 모델·두 optimizer·RNG 및 검증 상태가 해당 경계에서 일치했다. 5M 합성 캐시와 한 번의 짧은 시간 비교에 한정한다. [결과093 §42](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-recompute-operating)
+
+- `p108_g4_cache_shapes_v1_20261119`은 기존 G4의 두 합성 입력에서 선형과 어텐션 크기를 맞춰 전체·캐시 로짓의 차이 0을 확인했다. 운영 전체·캐시의 기존 위반과 새 진단 경로, 생성 ID와 실제 언어 품질의 범위를 구분한다. [결과108 §80](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-cache-shapes)
+
+- `p109_frozen_g4_route_ko_en_v1_20261119`은 P079의 동결 R2 가중치와 원 `ko-en` 32K에서 공식 Winogrande 1,267행과 KoBEST COPA 1,000행을 점수화했다. 세 방문 정책의 토큰당 예산은 평균 28회이며 네 문항 쌍 차이 구간 모두 0을 포함했다. 추론에 경로를 적용한 결과로, 학습 시 경로 적응 판정에는 해당 정책으로 갱신한 모델이 필요하다. [결과109 §4](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-frozen-g4-ko-en-routes)
+
+- `p102a_g4_recompute_248k_v1_20261119` 및 `p102a_g4_recompute_248k_pair_v2_20261119`는 248,320개 합성 어휘의 전체 G4를 비교했다. `2×8`에서 일반 및 재계산 CE의 상태 지문이 모두 일치했고 최대 할당은 29.65% 감소했다. `4×4`와 `8×2` 재계산은 각각 6갱신을 완료했다. 일반 `4×4`의 기본 allocator 재현 실패와 비활성 대조의 결과는 별도 기록한다. [결과093 §§43~44](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-248k-recompute)
+
+- `p109_ntp_visit_resume_v2_20261119`와 `p109_native_g4_visit_cuda_v1_20261119`는 고정 일정의 학습 정책을 실제 문맥 체크포인트 경로에 연결했다. CPU에서 순정 R2 일치·두 변형 정책의 파일 재개 및 변경 계약 거부를 확인했다. 기존 G4 CUDA의 균등 방문·재계산 CE는 2+2회와 4회의 모델·두 optimizer·RNG 및 손실이 일치했다. 품질 대조는 정식 자료 선결을 이어받는다. [결과109 §6](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-native-visit-policy-resume)
+
+- `p102a_adaptive_fp32_recompute_v1_20261119`는 32K G4 R1에서 P107 적응 마스크의 FP32 CE와 argmax를 재계산했다. 두 팔 12갱신에서 실제 선택, 예측, 손실 곡선과 최종 상태가 일치했다. 최대 학습 allocated는 37.17% 줄었다. R2 명시 가시성 및 실제 언어 품질은 별도다. [결과093 §45](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-adaptive-fp32-target-head)
+
+- `p107_g4_r2_visibility_v1_20261119`는 동일 32K 자료의 고정 G4 R2에서 문서 경계로 차단한 입력의 정확한 영향 0과 의도적으로 연 경계의 양성 대조를 회수했다. 같은 R2의 적응 CE 두 팔 12갱신에서 상태를 유지하며 최대 할당을 35.84% 줄였다. 이 결과의 적용 경로는 고정 R2의 실험 전용 검증이다. [결과107 §23](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-fixed-r2-visibility)
+
+- `p102a_g4_distill_row_recompute_v1_20261119`는 기존 32K G4 R2의 ALM과 ACTD에 8행 정규화 재계산을 각각 비교했다. 12갱신을 완료했고 ALM의 상태는 일치했으며 ACTD의 상태는 달랐다. 두 목적 모두 학습 최대 할당 개선은 없었다. 248K 전체 교사 벡터의 별도 CPU 청크 대조는 다음 본체 시험에 사용한다. [결과093 §46](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-distill-normalizers)
+
+- `p102a_g4_full_kl_recompute_v1_20261119`는 같은 248K 학생 G4와 두 동결 교사 벡터의 전체·청크·재계산 KL 18갱신이다. 재계산은 전체 KL과 입력별 손실·첫 미분·최종 상태를 재현했고 할당이 38.37% 낮았다. 기존 청크 대비 추가 11.89% 절감이다. 두 분포, 2×4와 문맥 512에 적용한다. [결과093 §47](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-full-kl-recompute)
+
+- `p107_g4_policy_visibility_cpu_v1_20261119`는 P109의 16·40·28방문에 인과와 MNTP의 문서 격리를 CPU로 검증했다. 가린 12조건과 열린 9조건, 호출자 마스크 스냅샷을 회수했다. [결과107 §24](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-policy-visibility-cpu)
+
+- `p107_g4_policy_visibility_cuda_v1_20261119`의 기록기 중복 호출을 고친 `p107_g4_policy_visibility_cuda_v2_20261119`에서, 같은 세 순회의 닫힌 12조건·열린 9조건을 실물 G4 CUDA로 회수했다. [결과107 §25](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-policy-visibility-cuda)
+
+- `p102a_g4_joint_ce_kl_v1_20261119`는 CUDA 일반 CE의 BF16 로그확률을 보존하지 않아 상태가 달랐다. 보정을 넣은 `p102a_g4_joint_ce_kl_v2_20261119`는 전체·청크 각각의 기준을 여섯 갱신에서 재현했으며 전체 학생 로짓 호출 0회와 학습 할당 절감을 확인했다. [결과093 §48](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-joint-ce-kl)
+
+- `p102a_g4_joint_ce_kl_host_v1_20261119`의 2×4 호스트 두 팔은 이전 상태를 정확히 재현하며 최대 allocated를 853.01MiB 줄였다. `p102a_g4_joint_ce_kl_host_capacity_v1_20261119`의 4×2도 같은 새 GPU 상주 상태를 재현했다. 종전 2×4보다 allocated가 303.49MiB 낮고 reserved는 282MiB 높았다. [결과093 §§49~50](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-joint-ce-kl-host)
+
+- `p102a_g4_joint_ce_kl_batch8_v1_20261119`에서 교사를 GPU에 두고 같은 4,096타깃을 8×1로 여섯 번 갱신했다. 장치 전체 관측 최대 11,898MiB(12.48GB), 4,394타깃/초로 이전 4×2보다 10.50% 높았다. 두 형상의 최종 상태는 달랐다. [결과093 §51](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-joint-ce-kl-batch8)
+
+- `p102a_p109_warm32k_device_batch_v1_20261119`와 `p102a_p109_warm32k_micro16_v1_20261119`은 32K 실제 P079 부모·동일 131,072타깃에서 8×16·16×8·32×4를 각 여섯 번 갱신했다. 처리량 20,077·18,578·17,290타깃/초, 카드 최대 4.94·5.74·10.07GB. 64×2는 예측 16.92GB에서 보류했다. [결과093 §52](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-p109-warm32k-device-batch)
+
+- `p106b_248k_kl_support_readback_v1_20261119`의 두 실제 저장 벡터에서 전체 KL의 그룹 분해와 미분을 확인했다. 공통 248,066행을 재정규화하면 T=2 비교 로짓 미분 L1이 1.68e-3 바뀌었다. [결과101 §681](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-248k-kl-output-support)
+
+- `p106b_dvlm_byte_head_real_prefix_v1_20261119`은 실제 동결 Qwen3-0.6B의 prefix 특징에서 P109 32K 바이트 평균과 원행 순열 두 head를 64회씩 갱신했다. 바이트 평균 초기 홀드아웃 NLL 4.8974(영어)·7.3464(한국어), 64회에는 6.2852·8.8942였다. [결과101 §682](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dvlm-real-prefix-head)
+
+- `p106b_p109_actual_prefix_kd_v1_20261119`은 기존 P079 G4의 64+64갱신에서 CE에 정확 prefix KD를 추가했다. 같은 8,100개 타깃에서 영어·한국어 홀드아웃 CE가 0.05385·0.05002 낮고 합산 top-1은 같았다. [결과101 §684](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-actual-prefix-kd)
+
+- `p106b_p109_prefix_onepass_v1_20261119`은 교사 특징 31.944→2.573초와 원 허용차 밖 원소를 회수했다. `p106b_p109_prefix_onepass_student_v1_20261119`의 실제 64갱신에서 그 교사로 학습한 학생은 독립 KD와 가까운 손실을 보였고 모델·optimizer 지문은 달랐다. [결과101 §§685~686](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-teacher-prefix-onepass)
+
+- `p106b_p109_chat32_ordinary_remap_v1_20261119`의 두 32K는 공통 32,736개 중 같은 ID가 3개였다. 작성 120문서 중 같은 조각열은 104개, raw ID 일치는 0개다. [결과101 §683](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-p109-chat32-ordinary-remap)
+
+- `p107_g4_policy_adaptive_v1_20261119`는 실제 P079 변형 순회 적응 학습 24갱신이다. 두 정책에서 기존·재계산 출력의 상태가 일치했고, 고정 R2 대비 두 정책의 마스크와 최종 모델이 달랐다. 위치·층 방문은 팔당 2,752,512회로 같았다. [결과107 §26](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-g4-policy-adaptive)
+
+- `p107_lexical_mask_selection_audit_v1_20261120`는 작성 4문서의 32K 오프셋·언어 메타데이터·마스킹 전 참조 빈도를 같은 원문 위치에 연결했다. 두 정책의 완전 동일 입력·난수 회계에서 992개 적격과 기대 선택 148.8개를 확인했다. 정식 TRAIN 편향과 causal 품질은 대기다. [결과107 §27](../test_result/107_20261027131747_P107-가시성과-shift는-검산됐고-학습효과는-미확인.md#p107-lexical-mask-audit)
+
+- `p106b_ifeval_p079_runtime1280_v1_20261120`는 공식 영어 541행을 기존 P079 어휘로 토큰화해 입력 15–386과 공식 생성 상한 1,280에 맞는 실행 문맥 1,666을 봉인했다. 채점의 기준은 공식 네 지표다. [결과101 §703](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-p079-context-cpu)
+
+- 같은 태그의 저장 원답 채점은 입장한 검사기 5파일과 원순서 응답 541개를 사용한다. CPU 대체 호출로 프롬프트 541개·지시 834개의 별도 평균과 누락·순서 오류 거부를 확인했다. 공식 점수는 패키지·로컬 NLP 자료를 기다린다. [결과101 §704](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-stored-score-boundary)
+
+- 같은 태그 GPU의 첫 창은 361개 원답을 상한 1,280으로 생성했다. 캐시 1,665와 별도 경계 1,666, 종료 0과 장치 반환을 확인했다. 다음 창이 완료 부분을 재사용한다. [결과101 §705](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-361-resume)
+
+- 같은 태그의 두 창에서 361+180=541개 원답과 96묶음을 원문 순서로 검산했다. EOS 0개와 1,280토큰 상한 541개를 관측했다. 원답 인덱스가 완결됐고 당시 공식 점수는 의존성 보강을 기다렸다. [결과101 §706](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-p079-full-responses) 전용 환경 의존 보강 뒤 CPU에서 네 공식 점수까지 회수했다. [결과101 §708](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-ifeval-official-cpu-scores)
+
+- `p106b_babylm_reading_official_ols_v1_20261120`는 네 모델의 기존 저장 예측 6,904행에서 원 회귀식·분모·표본 순서 176개를 대체 호출로 검산했다. 당시 공식 OLS에는 두 의존성이 더 필요했다. [결과101 §707](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-official-saved-ols) 이후 전용 환경에서 공식 176개 OLS를 종료 0으로 회수했다. [결과101 §709](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-reading-official-ols-scores)
+
+- `p109_g4_fma_matched_cpu_v1_20261120`는 같은 32K G4·요청·코어에서 FMA 플래그만 바꾼 8개 CPU 요청이다. 영어·한국어 전체 중앙값이 16.05배·15.92배 빨라졌고 입력·출력 ID와 복원이 같았다. 40 MB 내 WSL x86-64 조건이다. [결과109 §48](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-fma-matched-cpu)
+
+- `p108_g4_cache_long_cpu_v1_20261119`의 편집·packed CPU는 접두 128·512의 같은 전체·캐시 로짓과 선택 ID를 보존했다. 기존 packed CPU 디코딩의 큰 시간 비용을 같은 장치에서 관측했다. [결과108 §81](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-long-cache-cpu)
+
+- `p108_g4_packed_cpu_inner_v1_20261119`는 기존 CPU packed 해제가 약 95%를 차지함을 확인했다. 동일 FP32 가중치 타일을 내는 로컬 C 조회는 로짓과 캐시 바이트가 같았고 디코딩은 13.55·11.48배 빨랐다. 이 비교는 WSL CPU0의 기존 packed 기준이다. [결과108 §82](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-packed-cpu-unpack)
+
+- `p108_g4_cpu_request_v2_20261119`는 같은 G4 eager·C packed의 WSL CPU0 표준 8토큰 생성이다. 로짓·생성·KV를 보존했고 C packed의 로드 뒤 RSS를 40.01% 줄였다. 전체 요청 시간은 eager의 2.39·1.58배였다. 이전 v1은 모델 로드 전 전송 기능 이름의 미지원으로 끝났다. [결과108 §83](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-packed-cpu-request)
+
+- `p109_g4_embedding_storage_v1_20261119`는 동결 P079 G4 R2의 32K 공유 어휘표만 행별 INT8 또는 원 스케일 5트릿 TWN으로 바꿨다. 동일 문항의 FP32 기준과 대조하자 선택은 2,267문항 중 각각 5개·386개 바뀌었다. 실제 CPU packed 텐서와 519토큰 KV 합은 32.09·25.71 MiB였다. CPU 수치는 모델과 캐시의 저장량이며 실제 대상 장치의 전체 메모리와 지연은 별도다. [결과109 §8](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-embedding-compression)
+
+- `p109_g4_int8_kv1024_v1_20261119`는 이 INT8과 C packed 본체에서 P077의 FP32·FP16·BF16 캐시를 WSL CPU로 대조했다. 실제 1,024토큰 KV와 모델 텐서는 42.44→31.94 MiB였고 두 16비트 형식 모두 24개 생성 ID를 보존했다. FP16의 최대 로짓 편차는 0.001825로 BF16의 0.016518보다 작았다. 생성의 절대 품질과 대상 기기의 전체 메모리는 별도다. [결과109 §9](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-int8-kv1024)
+
+- `p109_g4_compact_cpu_r4_v1_20261119`, `p109_g4_compact_cpu_r4_static_v1_20261119`, `p109_g4_compact_cpu_r4_tile8_v1_20261119`은 같은 INT8 G4와 1,024토큰 FP16 KV를 독립 WSL 실행기로 대조했다. 최고 RSS는 43,450,368→40,357,888→39,669,760 B였다. PyTorch와의 짧은 참조 로짓 최대 차이는 0.0002623, 긴 세 입력의 출력 ID 차이는 0/24다. 토큰 ID 입력의 메모리와 전체 텍스트 앱의 메모리는 각각 측정한다. [결과109 §10](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-compact-runtime)
+
+- `p108f_gemma18_matched_policy_v1_20261119`은 Gemma3-270M의 같은 실제 수정량에서 원본과 4개 편집 정책의 120원답을 회수했다. 2회 적응 분산의 FIT NLL은 가장 낮았고 새 표현 정답은 고정 순차와 동일한 1/16이었다. 반대 언어는 각 팔 0/8이다. TinyLM 채택 판단에는 TinyLM 검증 결과를 사용한다. [결과108 §84](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108f-gemma-matched-policy)
+
+- `p109_g4_bytelevel_budget_v2_20261119`는 같은 기존 tokenizers에서 32K 원 JSON과 공백 제거·어휘 병합 분리 로드를 비교했다. 분리 로드는 최고 31.83 MiB로 원 JSON의 43.34 MiB보다 작았다. 한영 1,017토큰 접두와 여덟 사례의 입출력이 같았다. [결과109 §11](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-tokenizer-load-budget)
+
+- `p109_g4_text_r4_exec_v2_20261119`는 분리 ByteLevel 인코더·정적 8토큰 G4·디코더를 한 PID에서 순서대로 실행했다. WSL 1,024토큰의 한영 네 요청은 입출력을 보존했고 최고 RSS는 39,624,704 B였다. 첫 생성 계산이 전체 시간의 95.4~96.6%였다. [결과109 §12](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-text-exec-rss)
+
+- `p109_g4_text_avx2_lookup_v1_20261119`는 같은 WSL G4의 g128 5트릿 한 행만 AVX2로 복원했다. 실제 69행렬의 값과 입출력이 같고 요청 중앙 시간이 영어 16.901→9.125초, 한국어 18.108→10.627초였다. 최고 RSS는 39,636,992 B였다. [결과109 §13](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-avx2-lookup-speed)
+
+- `p106b_qwen_bonsai_tokenizer_map_v1_20261119`와 `p106b_teacher_nfc_vocab_v1_20261119`은 네 로컬 GGUF 248,320행의 ID·토큰 유형과 247,587개 BPE 병합을 확인했다. HF의 할당 ID 248,066개는 일치했고 두 문자열의 실제 분절 차이는 NFC를 맞추면 사라졌다. EOS·패딩·템플릿은 별도로 맞추며, 현재 32K의 같은 번호 중 32,764개는 다른 문자열이다. [결과101 §679](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-qwen-bonsai-tokenizer-map)
+
+- `p108_g4_edit_retention_v1_20261119`은 같은 P079 16층 G4 R2에서 64·1,024개 편집과 원본을 각 128회 갱신했다. 종료 부호 62·1,009개가 유지됐다. 새 한영 정답의 종료 수는 각 6/12였다. [결과108 §85](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-edit-retention)
+
+- `p106b_direct_kl_response_mask_v1_20261119`은 HF와 네 GGUF에서 다섯 입력 전체 ID를 일치시켰다. 세 대화의 응답 위치가 정확했고 역할 머리말·본문을 한 토큰이 덮는 대조를 보류했다. [결과101 §680](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-direct-kl-response-mask)
+
+- `p013_p109_actual_optimizer_v1_20261119`은 P079 기존 G4와 작성 한영 24,342타깃에서 세 행렬 옵티마이저의 88갱신을 추출 시드별로 대조했다. AdaMuon은 두 시드에서 32갱신에 기존 CE 목표를 처음 충족했다. 전역 표준 학습의 순위는 별도 판정한다. [결과106 §11](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-p109-actual-optimizer-result)
+- `p109_g4_grouped_int8_cache_v1_20261119`은 기존 32K G4의 세 1,024토큰 요청에서 그룹 INT8 KV 저장과 21개 캐시 적용 위치의 선택을 대조했다. 저장 절감과 수치 문턱 미달을 함께 기록했다. [결과109 §15](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-grouped-int8-cache)
+- `p109_g4_native_int8_cache_v1_20261119`은 같은 32K G4에서 4개 수치 대조와 같은 PID의 한영 전체 요청 4회를 회수했다. 최고 RSS 34,754,560 B를 확인했다. [결과109 §16](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-native-int8-cache)
+- `p013_p109_matrix_lr_sensitivity_v1_20261119`은 같은 G4의 Muon·AdaMuon 행렬 LR 0.5·2.0과 두 추출 시드의 신규 704갱신이다. 명목 1.0배는 재사용하며 작성 검증에서 배율에 따른 공동 NLL 목표와 top-1을 기록했다. [결과106 §12](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-p109-matrix-lr-sensitivity-result)
+- `p109_g4_bounded_prefill_v1_20261119`은 같은 32K에서 greedy 로짓 배열 제거, 입력 구간 256·64와 한영 전체 요청 10회다. 대어휘의 초기 파일 로딩 단독 RSS는 별도 실측이다. [결과109 §17](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g4-bounded-prefill) · [§18](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-large-vocab-tokenizer-rss)
+- `p109_compact_qwen_tokenizer_v1_20261119`과 `p109_csr_gemma_tokenizer_v3_20261119`은 실제 248K·262K 토크나이저의 동일 입력·전수 어휘 및 40 MB 단독 프로세스 실측이다. 262K 고정 전처리와 첫 입력별 전처리의 40 MB 미달도 기록했다. [결과109 §19](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen-mmap-tokenizer) · [§20](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-gemma-range-tokenizer)
+- `p109_g270_same_pid_text_v1_20261119`와 `p109_g270_cache_tradeoff_v1_20261119`는 기존 G270 V262144 봉인 5트릿의 실제 12개 한영 전체 요청이다. 256/INT8 최고 36.87 MB, 전체/INT8 39.23 MB, 64/FP16 39.76 MB와 동일 생성 출력을 회수했다. [결과109 §21](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g270-same-pid-text) · [§22](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-g270-cache-tradeoff)
+- `p109_qwen_248k_warm_ce_v2_20261119`와 `p109_qwen_248k_same_pid_text_v1_20261119`는 G4 28방문·Qwen 할당 248,066행의 88 진단 갱신과 실제 5트릿 4개 한영 전체 요청이다. 카드 점유 최고 5.31 GB, WSL 요청 RSS 최고 37.65 MB 및 기준 생성 일치이며, 그룹 INT8의 전어휘 로짓은 엄밀 재현 문턱을 넘었다. [결과109 §23](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen-248k-warm-ce) · [§24](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen-248k-same-pid-text)
+- `p109_qwen35_248k_warm_kl_v1_20261119`은 같은 248K 학생 입력을 동결 Qwen3.5-0.8B-Base의 실제 분포로 증류했다. 진단 88갱신에서 한영 NLL −0.15141·−0.04806, 장치 피크 6.523 GB, 후반 297.39타깃/초다. 결합 경로의 관측 후보이며 교사 효과와 헤드의 미분 수치 차이는 분리한다. [결과109 §25](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-real-248k-kl)
+- `p109_qwen_248k_eos_readback_v1_20261119`은 동일 5트릿 학생의 새 한영 60개 중 FP32가 EOS 248044를 선택한 사례가 0개였던 CPU 대조다. [결과109 §26](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen-248k-eos-readback)
+- `p109_qwen35_248k_cached_kl_v1_20261119`은 가변 폭 16문서의 교사 특징 문턱 초과로 갱신 0회다. v2는 전체 폭 4문서 특징 저장으로 동일 88갱신의 손실·노름·평가를 유지했고 준비 포함 35.03초와 5.55 GB였다. 5트릿 증류의 top-1은 같은 5트릿 CE보다 합계 17개 줄었다. [결과109 §27](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-248k-cache-shapes)
+- `p109_qwen35_248k_cached_kl_text_v1_20261119`은 새 증류 5트릿의 네 한영 전체 요청이다. WSL 최고 RSS 37,650,432 B와 FP32 기준 동일 생성 ID·텍스트를 확인했다. [결과109 §28](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-cache-kl-text)
+- `p109_qwen35_248k_scale_calibration_v2_20261119`은 다른 작성 학습 192문서·6,746타깃에서 공유 행 스케일 261개만 48회 수정했다. 보정 5트릿의 합산 top-1은 184→218이며 GPU 최고 4.18 GB였다. `p109_qwen35_248k_scale_calibration_text_v1_20261119`의 CPU 전체 요청은 최고 37,654,528 B와 같은 모델 FP32 출력 일치다. [결과109 §29](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-248k-scale-calibration) · [§30](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-248k-scale-native-text)
+- `p109_qwen35_248k_eos_row_v1_20261119`과 v2는 248044행의 EOS 한 행 수정이다. 실제 끝 48·24개와 본문 조기 선택 35·5개를 관측했고 두 팔 모두 배포 조기 선택 문턱을 초과했다. [결과109 §31](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-qwen35-248k-eos-row)
+- `p108_g4_master_margin_authored_v1_20261119`은 같은 64개 삼진 편집 시작에서 마스터 절댓값을 같은 그룹 안에서 교환했다. 실제 176회 뒤 64/64 지정 부호와 59/63 교환 상대가 남았다. 일반 편집의 62/64·63/63, 한영 자유 생성 정답 0과 함께 해석한다. [결과108 §86](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-master-margin-authored)
+- `p108f_gemma18_matched_policy_four_v1_20261119`은 기존 Gemma 패널에서 같은 절대량의 4회 반복·순차·적응을 비교했다. 순차·적응의 같은 언어 정답 2/8·반대 언어 0/8, 적응의 보호 +1과 층 대조 비용을 회수했다. [결과108 §87](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108f-gemma-four-matched-edits)
+- `p109_authored_visit_policy_v2_20261119`은 실제 작성 320문서씩 두 시드·세 정책에서 같은 유효 방문 예산으로 960갱신을 완료했다. 공통 R2와 학습 경로 보조 평가에서 공식 문항 대조 구간이 모두 0을 포함했다. 장치 전체 최고는 3.40GB였다. [결과109 §32](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-authored-visit-policy)
+- `p109_qwen_248k_ce_scale_matched_v1_20261119`은 CE 5트릿에 기존 증류의 작성 6,746타깃·261행·48갱신을 적용했다. 작성 합산 top-1은 CE 201→215, 증류 184→218이었다. 두 상태의 보정 전후 및 동량 보정의 한영 독립 선택지 대조 구간은 모두 0을 포함했다. [결과109 §34](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-ce-kd-matched-scale)
+- `p109_248k_long256_text_v1_20261119`은 768 입력·256 생성으로 CE·증류 5트릿의 같은 PID WSL x86-64 요청을 네 번 대조했다. 37,466,112 B, FP32 대비 출력 전부 일치와 반복 주기 12~14토큰을 기록했다. [결과109 §35](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-long256-requests)
+- `p109_248k_long_decoder_final192_v1_20261119`은 기존 192개 첫 질문에서 두 248K 보정본의 그리디 반복 벌점을 비교했다. 1.20의 반복 판정은 CE 154/192, 증류 147/192다. 모든 엄격 정답 0/128, EOS 0이다. [결과109 §36](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-final192-repeat-penalty)
+- `p109_248k_win64_int8_v1_20261119`은 Windows x64의 256구간·그룹 INT8 경로다. CE·증류 고정 768토큰 접두 네 건에서 256개씩 WSL 생성과 일치했다. 토크나이저를 빼고 측정한 최고 작업 집합은 40,607,744 B다. [결과109 §37](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-win64-int8)
+- `p109_248k_win64_half_history_v1_20261119`은 같은 Windows 고정 입력 생성기에서 과거 KV의 FP16 작업 배열을 검증했다. 한영 1,024개 생성 ID와 두 경계의 로짓이 일치했다. 최고 작업 집합은 39,845,888 B다. [결과109 §38](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-win64-half-history)
+- `p109_248k_win64_half_abba_v1_20261119`은 검증한 두 바이너리의 Windows 교차 순서 네 쌍이다. 작업 집합은 각 765,952 B 낮았다. 첫 토큰은 4/4, 전체 시간은 2/4에서 짧았다. [결과109 §39](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-win64-half-abba)
+- `p109_248k_win64_icu_text_v1_20261119`, `p109_248k_win64_icu_buffers_v1_20261119`, `p109_248k_win64_icu_mlp_v1_20261119`는 같은 토크나이저와 768 입력·256 생성의 Windows 요청이다. 토크나이저 1,094건과 할당 ID 248,066개 복원이 맞았다. 전체 작업 집합 최대는 각각 40,087,552→40,042,496→39,948,288 B였다. [결과109 §40~42](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-win64-icu-text)
+- `p109_qwen35_248k_int8_features_v1_20261119`과 `p109_qwen35_248k_int8_outliers8_v1_20261119`은 같은 4×96 Qwen 교사 특징의 INT8 저장과 상위 8개 BF16 보존을 시험했다. 기준 BF16의 25,430,016 B는 각각 12,764,676·13,162,020 B로 줄었다. 같은 88갱신의 합산 top-1은 234→225·227이었다. 둘 다 기준 품질 미달이다. [결과109 §43](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-int8-teacher-features) · [§44](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109-248k-int8-teacher-outliers8)
+- `p106b_actd_real_cache_updates_v1_20261119`은 구성 파일 SHA 불일치로 사전검증 종료 1, GPU 0회다. `p106b_actd_real_cache_updates_v2_20261119`는 완료 93M 삼진 학생, 동일한 128행·CE 772위치에서 기존 Qwen 분포 611위치를 더하는 대조다. 각 4회 갱신, 첫 CE 동일, 최종 모델 차이, CUDA 할당 최고 +7 MiB로 원장 63의 실제 갱신을 확인했다. [결과101 §690](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-actd-real-cache-updates)
+- `p106b_gsq_actual_actd_start_v1_20261119`은 구성 JSON 표현 차이로 모델 전 종료 1이었다. `p106b_gsq_actual_actd_start_v2_20261119`는 동일한 무학습 dense14·실제 ACTD 1,222타깃에서 STE와 GSQ의 8회씩 갱신, 코드 변화 3,410,808·0개, 장치 최고 7,385·11,801 MiB를 기록했다. GSQ 로짓의 초기 경계 거리 4.6, 해당 8갱신 이동 상한 0.0016175다. [결과101 §691](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-actual-actd-start)
+- `p106b_dskdv2_real_cache_updates_v1_20261119`는 같은 93M 학생·기술 128행·CE 772위치에서 실제 Qwen 표현 538개와 두 원어휘로 CE와 CE+0.03 DSKD를 각각 4회 갱신했다. 장치 최고 6,765·7,798 MiB, 학습 투영 786,431개 좌표 변경, 역방향 동결이다. [결과101 §692](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dskdv2-real-cache-updates)
+- `p106b_dwa_real_cache_updates_v1_20261119`는 같은 93M 학생과 128행에서 기존 배치 CE와 문항별 DWA를 사용했다. 실제 4갱신, 감독 772·811개, 교차 거리 6,823개, 장치 최고 7,869 MiB다. 같은 초기값·첫 CE의 저장 기준을 재사용했다. [결과101 §693](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-dwa-real-cache-updates)
+- `p108_g4_compact_fixed_edit_text_v1_20261119`는 동일 P079 G4의 두 고정 스케일 편집을 1·2바이트의 실제 변경으로 전달했다. 짧은 native 로짓 최대 오차 0.000414 이내이며 한 PID의 한영 장문 네 요청은 각각 39,632,896 B다. 기존 미편집 장문의 생성 ID를 유지했다. [결과108 §89](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108-g4-fixed-edit-compact-text)
+- `p013_g4_document_context_actual_v1_20261119`는 같은 P079 G4 28방문·작성 한영·8갱신·유효 타깃 31,770개에서 문서 격리 고정 1,024와 단계형 너비를 한 순서로 대조했다. 갱신 합산 시간은 5.861→4.498초, 장치 최고 표본은 4,311→4,089 MiB였으며 CUDA 최고 할당은 3.5 MiB 늘었다. 최고 학습 문서 길이는 38토큰이다. 반복 순서와 정식 장문 품질은 후속 검증 대상이다. [결과106 §14](../test_result/106_20261027123926_P013-같은토큰의-짧은문맥은-메모리를-줄였지만-느렸다.md#p013-g4-document-context-schedule)
+- `p106b_gsq_scaled_actd_deploy_v1_20261119`는 같은 128행·8갱신의 GSQ 좌표 배율 4,096이다. 결정론적 코드 변화 4,687,128개, 장치 최고 11,781 MiB, 5트릿 파일 22,770,976 B를 기록했다. 원 GPU 종료 1은 배포 저장 뒤 CUDA 정리에서 났다. CPU 회수 종료 0, 한영 전체 요청 최고 38,215,680 B, 같은 토큰 8회 반복이다. 정식 품질은 별도다. [결과101 §694](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-gsq-scaled-actd-native-deploy)
+- `p106b_soda_aya_content_groups_v1`과 `p106b_soda_aya_split_ordinals_v1`은 같은 로컬 Aya 영어 릴리스의 SODA 7,844,049행을 조사했다. 같은 1,191,582개 주제·서사가 `(T)`에서 네 번 반복됐다. 같은 서사·화자·발화 622,192쌍의 기존 제안 분할은 59,307쌍에서 갈렸다. 원본 Ai2 분할 대조와 학습 편입은 별도다. [결과101 §695](../test_result/101_20260927_P106B-번역9건으로-문턱미달-학생학습0.md#p106b-soda-aya-duplicates-split)
+- `p102a_g4_joint_ce_kl_bounded_delta_v1_20261119`는 같은 248K `8×1×512`의 CE·KL 역전파에서 최대 512위치 로짓 미분·FP32 부분합을 사용했다. 여섯 갱신의 최대 할당은 1,513 MiB 감소했고 후반 갱신 중앙시간은 11.33% 늘었다. 첫 손실은 같았고 미분·최종 상태는 달랐다. 별도 학습 후보의 기술 결과다. [결과093 §53](../test_result/093_20260925_P102A-기능통과-T1-단일순서-속도관측.md#p102a-g4-joint-ce-kl-bounded-backward)
+- `p109c_scratch_general256_v11_chat32_s1337`은 같은 균등 R2, 원문 300,023,808입력, 2,942갱신에 일반 교과 422행을 더한 대조다. 실제 비패딩 342,890,940입력을 소비했다. 직접 대조군은 균등 v2이며 일반 교과 추가 전부터 실행 간 수치 변동이 관측됐다. 자유응답과 동일 원문 결과를 함께 보며, 공식 다섯 과제 평균은 완전 Core6와 구분한다. 기본 모델은 균등 v2를 유지한다. [결과109 §§142~146](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-general256-full-training-result)
+- `p109c_v2_ko_ifeval_kbs_plain_20261123`과 `p109c_v2_ko_ifeval_kbs_chatml_20261123`은 동일 균등 v2 완주본의 보관 답에 고정 KBS `d8be9ad5`를 적용한 841문항·1,435지시 CPU 채점이다. 비교 축은 입력 형식이며 동일 지문·탐욕 생성·1,280출력·한국어 검사기를 사용했다. [결과109 §147](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-ko-ifeval-official-score)
+- `p109c_general256_common_eval_resume_20261124`는 같은 완주본의 기존 평가 7단위를 검증해 가져오고 나머지 8단위를 추가 채점했다. Core6·KoBEST5·한영 Belebele가 모두 완료됐고 기본 후보는 균등 v2다. [결과109 §148](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-general256-full-common-score)
+- `p109c_probe_bilingual_general_v11_chat32_s1337`은 346,434,740 비패딩 토큰의 봉인 입력에서 1·101·153번의 실제 CUDA 옵티마이저 갱신을 회수했다. 원문·답변·관계·자리 감독의 입장과 최대 표본 8,757 MiB를 확인했다. [결과109 §149](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-bilingual-mixed-cuda-probe-result)
+- `p109c_scratch_bilingual_general_v11_chat32_s1337`은 원문 준비 27갱신과 3,538,944타깃에서 정리했다. 교과 노출 0, 완주 및 평가 `NOT_RUN`이며 이 태그의 이전 출력을 보존한다. 차기 개선 프리셋은 기존 v2와 한영 대응 32,768쌍을 출발점으로 삼고 채택 기법에 맞춰 새 태그와 조건을 사전검증한다. [결과109 §§150–151](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-bilingual-first-start-stopped-20261124)
+- `p109c_external_final200_v1_20261124`는 기존 Gemma 3 270M Base, Qwen3.5 0.8B Base 텍스트, Bonsai 2 2B PTQ1_0의 200문항·96토큰 생성 비교다. 기존 P109C v2의 ChatML 답을 재사용하며 외부는 모델 BOS를 적용한 평문 질의와 답 표제를 쓴다. 비교는 `DESCRIPTIVE_ONLY`이며 공식 선택지 결과와 자유 생성의 참조 일치·실사용을 각각 기록했다. [결과109 §154](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-external-final200-20261124)
+- `p109c_padding_zero_backward_cuda_v1_20261124`는 같은 혼합 153번째 갱신을 v2 완주 가중치·AdamW·Muon으로 각각 복원한 뒤 빈 배치의 본체 호출만 바꾼 ABBA다. 유효 감독과 기울기 참여 수는 같고 갱신 중앙시간은 6.80% 감소했다. 최고 할당은 7,532.28 MiB였으며 전체 학습이나 품질에는 적용하지 않았다. [결과109 §155](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-padding-zero-backward-result-20261124)
+- `p109c_bilingual_aux_packed_native_v1_20261124`는 같은 한영 12쌍의 원래 위치·패킹 절대 위치·패킹 내 예시별 위치의 CUDA 역전파다. 기존 v2 가중치와 값 위치 헤드 초기값을 고정했다. 실제 답 토큰 정답과 적격 건수를 유지한 범위는 해당 배치다. 옵티마이저 갱신 0이다. [결과109 §158](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-bilingual-packed-aux-result-20261124)
+- `p109c_evidence_flip_dev_v1_20261124`는 기존 v1·v2에 새 한영 16상황의 지문 반전·근거 제거·일반 및 채팅 형식을 적용한 개발용 평가다. 두 완주본의 조건 차이가 있어 개별 기법의 효과 크기로 쓰지 않는다. [결과109 §160](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-evidence-flip-dev-result-20261124)
+- `p109c_v2_bilingual_native_chat32_probe_v1_20261124`는 v2 원문과 교과, 한영 쌍만 담은 전량에서 네 지정 주소를 골라 네이티브 CUDA 옵티마이저에 적용한 검증이다. 일반 추가 교과와 완주 품질은 별도다. [결과109 §161](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-bilingual-native-probe-result-20261124)
+- `p077_file_grouped_cache_cpu_v1_20261124`는 동일 x86 G4의 네 실제 요청에서 상주 INT8과 같은 복원값의 파일 구간 읽기를 비교했다. 프로세스 RSS와 누적 읽기, 장문 답은 각각의 단위로 기록한다. [결과065 §10.52](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-file-grouped-model-result-20261124)
+- `p077_file_staged_prefill_cpu_v1_20261124`는 같은 4,086토큰 한영 요청에서 두 투영 타일의 실제 파일 조회를 공유했다. 프로그램의 누적 읽기량은 49.4% 줄었고 생성 ID와 쓰기 바이트가 같았다. 장문 정답은 양쪽 0/2다. [결과065 §10.54](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-file-staged-prefill-result-20261124)
+- `p077_file_int8_packed_cpu_v1_20261124`는 같은 16쿼리 파일 조회에서 FP16 복원값과 기존 INT8 코드·스케일의 저장을 비교했다. 두 장문의 누적 읽기 47.66% 감소, 18접두 로짓과 생성 ID 보존을 확인했다. [결과065 §10.56](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-file-int8-packed-result-20261124)
+- `p077_linked_tables_file_int8_cpu_v1_20261124`는 같은 소형 G4의 한영 두 표에서 지정 항목·번호를 독립 교환했다. 원문과 두 표 재제시는 각각 0/16, 파서로 지정 항목을 확인해 직접 조회하면 14/16이다. 문항은 명시된 작성 표의 범위다. [결과065 §10.57](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-linked-tables-result-20261124)
+- `p077_linked_tables_bridge_cpu_v1_20261124`는 같은 두 표·질문에서 한 줄만 달리한 48요청이다. 세 조건의 정답과 반대 지정 값의 적중은 각각 0/16이다. [결과065 §10.58](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-linked-tables-assignment-note-result-20261124)
+- `p077_linked_table_supervision_cpu_v1_20261124`와 `p077_linked_table_relation_cpu_v1_20261124`는 같은 동결 G4의 두 작은 ValueLink를 CPU에서 학습했다. 첫 표 정답 행을 주면 연결 감독은 64→158/256, 전체 선택은 62→48/256이다. [결과065 §10.59](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-cpu-linked-supervision-result-20261124)
+- `p077_linked_first_row_span_cpu_v1_20261124`에서 같은 둘째 연결을 적용했다. 독립 표의 이름 하나·두 이름 번호 정답은 기존 투영 53·56/256과 질문·이름 구간 감독 53·52/256이다. 대상 이름이 유일한 입력의 문자열 조회는 156/256이었다. [결과065 §10.60](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-first-row-span-result-20261124)
+- `p077_file_int8_staged24_cpu_v1_20261124`는 같은 한영 4,086토큰 요청의 INT8 파일 읽기 폭을 16→24행으로 넓혔다. 프로그램의 누적 파일 조회는 3,933,776,896→2,965,580,800 B, 작업공간은 280,928→285,024 B다. 장문 생성 ID와 36접두 로짓은 일치했다. [결과065 §10.61](../test_result/065_20260831_P077-bf16-KV-는-정확히-절반이고-cla2-재귀가-32MiB-예산에-들어왔다.md#p077-file-int8-staged24-result-20261124)
+- `p109c_early_course_share_chat32_v1_20261124`는 무부모 원문 100갱신의 같은 파일에서 101~160 혼합 갱신을 갈라 실행했다. 동일 입력과 WSD 2,942 지평에서 초반 교과 CE 비중만 0.25·0.10으로 대조했다. 두 조건의 전체 학습과 최종 품질 비교는 후속이다. [결과109 §162](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-early-course-share-result-20261124)
+- P109C WSD 교과 산술 대조는 기존 v2와 승인된 한영 대응의 실제 목표 수를 사용했다. 감쇠 전 보정과 희소 감독 상한을 함께 적용해 같은 단순합과 학습률 가중합을 확인했다. 학습 가중치와 품질은 실제 학습 대조에서 판정한다. [결과109 §166](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-wsd-course-caps-result-20261124)
+- `p109c_early_bilingual_gate_v2_20261124`는 동결한 160갱신 저장점 두 개와 v2 완주본의 같은 384쌍에서 첫 답 전달 적격의 상한을 측정했다. 실제 위치 감독과 학습 갱신은 후속이다. [결과109 §163](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-early-bilingual-gate-result-20261124)
+- `p109c_bilingual_aux_resume_chat32_v1_20261124`는 원본 153~156번의 값 위치·문맥 감독과 빈 배치 생략을 네이티브 경로에서 적용했다. 저장 복원에 성공했고 반복 변동과 품질은 후속 판정이다. [결과109 §164](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-bilingual-native-resume-result-20261124)
+- `p109c_v2_raw_nonoverlap_chat32_s1337_v1_20261124`는 2,942갱신 원문 창만 비겹침 표집으로 대체한 실행이다. 같은 환경과 학습기 지문, 실제 착수를 확인했다. 완주 품질 판정은 실행 이후다. [계획](../test_plan/P109_16층-공유-재귀-프리셋-통합.md#p109c-v2-raw-nonoverlap-full-20261124) · [결과109 §165](../test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-raw-nonoverlap-prefixes-20261124)

@@ -365,6 +365,8 @@ mask empty=0, v2 manifest output SHA 일치, 1024초과=0은 CPU에서
 - contamination gate가 PASS가 아니면 `--pilot-only` 진단 모드만
   허용한다. 이때 결과 상태는 `PILOT_ONLY`; 공식 능력 승격 금지다.
 
+P108B의 정식 교정 교과는 `--correction-arm`으로 `SINGLE_ONLY`, `CORRECTION_ONLY`, `MIXED_CROSSOVER`를 선택하고 4회 반복한다. 두 관점을 TRAIN에 보관하고 실행기가 같은 사례 순서로 한 관점씩 선택한다. manifest의 `output_sha256.final`에는 같은 접두의 `_final.canonical.jsonl` 지문을 둔다. 학습 중에는 dev 손실만 계산하고 최종 test는 분할과 지문을 확인한다. [결과108 §97](../test_result/108_20261104190525_P108-방향수리는-실행됐지만-정답은-늘지-않았다.md#p108b-paired-course-trainer)
+
 합성 다회전/shift/pad/그룹 fixture는 CPU에서 PASS했다. **실제
 checkpoint 로딩, forward/backward, CUDA, optimizer 안정성, 저장,
 SFT val·full-val 망각·생성 능력은 모두 `NOT_RUN`**이다.
