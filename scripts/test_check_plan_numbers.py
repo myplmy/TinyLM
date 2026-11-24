@@ -72,6 +72,31 @@ class DiagnosticReferenceTests(unittest.TestCase):
         rows,errors=self.pinned('기존 정확 파일/번호 진단 문맥')
         self.assertFalse(errors);self.assertTrue(rows)
 
+    def test_missing_evidence_requires_exact_archived_path_and_hash(self):
+        with tempfile.TemporaryDirectory(prefix="tinylm-plan-recovery-") as folder:
+            root = Path(folder)
+            registry = root / "refs.tsv"
+            archived_path = "review_request/local.md"
+            digest = "a" * 64
+            registry.write_text(
+                "plan_id\tpath\treason\n"
+                f"P162\t{archived_path}\tsha256={digest}; 진단에 사용한 원본\n",
+                encoding="utf-8",
+            )
+            with patch.object(MODULE, "ROOT", root):
+                with patch.object(MODULE, "load_evidence_index", return_value={}):
+                    _, errors = MODULE.load_diagnostic_refs(registry)
+                    self.assertTrue(any("target missing" in err for err in errors))
+                with patch.object(MODULE, "load_evidence_index") as catalog:
+                    from types import SimpleNamespace
+                    catalog.return_value = {archived_path: [SimpleNamespace(sha256="b" * 64)]}
+                    _, errors = MODULE.load_diagnostic_refs(registry)
+                    self.assertTrue(any("target missing" in err for err in errors))
+                    catalog.return_value = {archived_path: [SimpleNamespace(sha256=digest)]}
+                    rows, errors = MODULE.load_diagnostic_refs(registry)
+                    self.assertFalse(errors)
+                    self.assertEqual(rows, {})
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -61,3 +61,23 @@ FTS5는 제목과 본문을 절 단위로 순위화한다. [등록한 별칭](on
 | 권한 | 도구가 새 사실을 추론하거나 원문에 대신 기록하지 않는다. 위키는 기존 저장소 검토 절차로 작성한다. |
 
 반복되는 실제 질문에서 관계를 잇기 어렵거나 조건을 틀리게 섞는 사례가 남으면, 누락된 관계와 근거를 먼저 조사한다. 검증된 관계와 원문 검색을 결합한 차이로도 해결되지 않는 교차 문서 질문이 확인되면 온톨로지 고도화와 GraphRAG를 비교한다. 검토에는 독립 사례의 원문 인용 정확도, 한국어 조회, 갱신 비용을 함께 넣는다.
+
+<a id="raw-evidence-recovery"></a>
+
+## 원시 평가 근거 복원
+
+평가 로그나 감사 원본을 요청받으면 문서 링크가 가리키는 저장소 상대 경로로 보관 목록을 먼저 조회한다. 같은 파일명이 여럿이면 원래 경로를 지정한다. 보관 목록은 각 원본의 경로·바이트 수·SHA-256과 압축 묶음의 해시를 담는다.
+
+```bash
+python3 -m scripts.raw_evidence_archive locate 'test_result/evidence/실험폴더/원본.jsonl'
+python3 -m scripts.raw_evidence_archive verify 'test_result/evidence/실험폴더/원본.jsonl'
+python3 -m scripts.raw_evidence_archive restore 'test_result/evidence/실험폴더/원본.jsonl' --destination /tmp/tinylm-evidence
+```
+
+`locate`는 압축 경로와 파일의 존재 여부를 보여 준다. `verify`와 `restore`는 압축 묶음 및 요청 파일의 해시를 각각 확인한다. `--destination`을 생략하면 저장소의 원래 위치에 복원한다. 기존 위치에 내용이 다른 파일이 있으면 빈 복원 위치를 사용한다.
+
+이 작업 PC의 복원 사본은 WSL VHDX가 있는 Z 디스크와 별개의 E 디스크 `E:\TinyLM_Archive`에 있다. WSL에서 E 디스크 사본을 직접 확인할 때는 `--archive-root /mnt/e/TinyLM_Archive/evidence`를 사용한다. 같은 구조의 다른 보관소로 옮기면 `--archive-root` 또는 Git 로컬 설정 `tinylm.evidenceArchiveRoot`에 새 위치를 넣는다. `catalogs/`에는 두 목록의 사본이 있다.
+
+Git에서 받은 검증 목록은 원본이 들어 있는 묶음을 가리킨다. 링크 검사는 이 경로를 복원 참조로 표시한다. 재채점이나 후속 실행에서 원본을 읽을 때에는 해당 파일을 실제 경로에 복원한다.
+
+[원시 평가 보관 목록](../../test_result/20261124_원시평가_압축보관_목록.json) · [문서 참조 보관 목록](../../test_result/20261124_문서참조_압축보관_목록.json)

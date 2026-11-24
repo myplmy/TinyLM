@@ -42,6 +42,12 @@ import re
 import sys
 from pathlib import Path, PurePosixPath
 
+if __package__:
+    from .raw_evidence_archive import load_index as load_evidence_index
+else:
+    from raw_evidence_archive import load_index as load_evidence_index
+
+
 ROOT = Path(__file__).resolve().parent.parent
 TARGET_DIRS = ("docs", "test_plan", "test_result", "ai_dev_tool/Codex", "handoff")
 LINK = re.compile(r"\]\(([^)#][^)]*?)\)")
@@ -184,8 +190,13 @@ def main():
     except (KeyError, OSError, TypeError, ValueError) as error:
         print(f"[E] 계획 사본 원본표: {error}")
         return 1
+    try:
+        recovery_index = load_evidence_index(ROOT)
+    except (OSError, ValueError) as error:
+        print(f"[E] 원시 평가 보관 목록 — {error}")
+        return 1
     bad, legacy, snapshot_errors = [], [], []
-    fixed = protected_skipped = archived_links = archived_wip_links = 0
+    fixed = protected_skipped = archived_links = archived_wip_links = recovery_links = 0
     for md in _targets():
         origin = md
         if md in origins:
@@ -220,6 +231,14 @@ def main():
                 continue
             if origin != md and _closed_archive_wip(origin, tgt):
                 archived_wip_links += 1
+                continue
+            candidates = (Path(os.path.abspath(base.parent / tgt)) for base in (md, origin))
+            if any(
+                candidate.is_relative_to(ROOT)
+                and candidate.relative_to(ROOT).as_posix() in recovery_index
+                for candidate in candidates
+            ):
+                recovery_links += 1
                 continue
             name = Path(tgt).name
             cand = _status_candidate(idx, name)
@@ -269,6 +288,8 @@ def main():
         print(f"  [I] 봉인된 계획 사본에서 종결 원장으로 확인한 링크 {archived_wip_links}건")
     for error in snapshot_errors:
         print(f"  [E] {error}")
+    if recovery_links:
+        print(f"\n  [I] 원시 평가 보관 목록에서 원래 경로를 확인한 복원 참조 {recovery_links}건")
     if protected_skipped:
         print(f"\n  [I] 보호 데이터 대상 존재 확인 생략 {protected_skipped}건")
     print("\n  ⚠️ 존재 여부만 본다. **옳은 파일인지는 사람이 본다.**")

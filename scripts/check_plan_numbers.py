@@ -36,6 +36,12 @@ import re
 import sys
 from pathlib import Path
 
+if __package__:
+    from .raw_evidence_archive import load_index as load_evidence_index
+else:
+    from raw_evidence_archive import load_index as load_evidence_index
+
+
 ROOT = Path(__file__).resolve().parent.parent
 PLAN = ROOT / "test_plan"
 INDEX = PLAN / "실험계획목록.md"
@@ -69,6 +75,7 @@ def load_diagnostic_refs(path=DIAGNOSTIC_REFS):
     """Exact (plan id, file) exemptions for diagnostic prose, never whole-number waivers."""
     rows: dict[tuple[str, str], str] = {}
     errors: list[str] = []
+    recovery_index = None
     if not path.is_file():
         return rows, [f"diagnostic reference registry missing: {path}"]
     lines = path.read_text(encoding="utf-8").splitlines()
@@ -91,19 +98,30 @@ def load_diagnostic_refs(path=DIAGNOSTIC_REFS):
         if key in rows:
             errors.append(f"diagnostic registry line {line_no} duplicates {plan_id} {rel}")
             continue
-        target = ROOT / rel
-        if not target.is_file():
-            errors.append(f"diagnostic registry line {line_no} target missing: {rel}")
-            continue
-        raw = target.read_bytes()
+        pinned_sha = None
         if reason.startswith("sha256="):
             pin = re.fullmatch(r"sha256=([A-Fa-f0-9]{64});\s*(.+)", reason)
             if pin is None:
                 errors.append(f"diagnostic registry line {line_no} has malformed content pin")
                 continue
-            if hashlib.sha256(raw).hexdigest().upper() != pin.group(1).upper():
-                errors.append(f"diagnostic registry line {line_no} content pin differs: {rel}")
-                continue
+            pinned_sha = pin.group(1).lower()
+        target = ROOT / rel
+        if not target.is_file():
+            if pinned_sha is not None:
+                if recovery_index is None:
+                    try:
+                        recovery_index = load_evidence_index(ROOT)
+                    except (OSError, ValueError) as error:
+                        errors.append(f"diagnostic evidence catalog unavailable: {error}")
+                        recovery_index = {}
+                if any(entry.sha256 == pinned_sha for entry in recovery_index.get(rel, ())):
+                    continue
+            errors.append(f"diagnostic registry line {line_no} target missing: {rel}")
+            continue
+        raw = target.read_bytes()
+        if pinned_sha is not None and hashlib.sha256(raw).hexdigest() != pinned_sha:
+            errors.append(f"diagnostic registry line {line_no} content pin differs: {rel}")
+            continue
         if plan_id not in raw.decode("utf-8"):
             errors.append(f"diagnostic registry line {line_no} target does not mention {plan_id}: {rel}")
             continue

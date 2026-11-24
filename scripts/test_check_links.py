@@ -97,6 +97,26 @@ def test_archive_resolves_only_the_exact_closed_wip_name() -> None:
             assert not MODULE._closed_archive_wip(origin, "../docs/WIP_20261022_작업원장.md")
 
 
+
+def test_missing_original_can_be_resolved_by_exact_archive_catalog_path() -> None:
+    with TemporaryDirectory() as folder, redirect_stdout(io.StringIO()) as stdout:
+        root = Path(folder)
+        docs = root / "docs"
+        docs.mkdir()
+        source = docs / "result.md"
+        registry = root / "snapshot_origins.tsv"
+        registry.write_text("snapshot\tsha256\torigin\tevidence\n", encoding="utf-8")
+        archived_path = "test_result/evidence/run/predictions.json"
+        with (patch.object(MODULE, "ROOT", root), patch.object(MODULE, "SNAPSHOT_INDEX", registry),
+              patch.object(MODULE, "load_evidence_index", return_value={archived_path: [object()]}),
+              patch("sys.argv", ["check_links.py"])):
+            source.write_text(f"[원답](../{archived_path})\n", encoding="utf-8")
+            assert MODULE.main() == 0
+            assert "복원 참조 1건" in stdout.getvalue()
+            source.write_text("[원답](../test_result/evidence/other/predictions.json)\n", encoding="utf-8")
+            assert MODULE.main() == 1
+
+
 def main() -> int:
     tests = [
         test_protected_relative_target_is_classified_without_io,
@@ -105,6 +125,7 @@ def main() -> int:
         test_each_explicit_fix_mode_requests_persistence,
         test_archives_require_a_pinned_copy_and_existing_target,
         test_archive_resolves_only_the_exact_closed_wip_name,
+        test_missing_original_can_be_resolved_by_exact_archive_catalog_path,
     ]
     for test in tests:
         test()
