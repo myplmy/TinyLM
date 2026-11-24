@@ -1,0 +1,144 @@
+{
+  "status": "OBSERVED_FIXED_SHARE_AND_DESIGNED_BUDGET_MATCHED_RAMP",
+  "sources": {
+    "v1_native_log": {
+      "path": "test_result/evidence/p109c_scratch330_v1_resume1030_protected_v2_20261121/native_logs/m100s12_g4_ko-en_330M_p109c_scratch330_v1_chat32_s1337.json",
+      "sha256": "2244D5C98907C94FD4073102CD1EB295A23602371F3BAB8A7F34DA6AAEEDB8B7"
+    },
+    "v2_native_log": {
+      "path": "test_result/evidence/p109c_scratch_mixed_v2_v11_chat32_s1337_run1_20261123/native_logs/m100s12_g4_ko-en_386M_p109c_scratch_mixed_v2_v11_chat32_s1337.json",
+      "sha256": "8A82204441F86EC559C16D9C51C0EA0084C293799D8491E98D2DDD212F31F64D"
+    },
+    "v2_training": {
+      "path": "test_result/evidence/p109c_scratch_mixed_v2_v11_chat32_s1337_run1_20261123/training.json",
+      "sha256": "61E7B889FCE551344F8D7B712722BBFF155020E3C9517658651788D4073B7142"
+    },
+    "v2_manifest": {
+      "path": "data_cache/p109c_mixed_v2_v11_course_20261122_v1/manifest.json",
+      "sha256": "1C21062F31EA807B35E2F623AE6544094F216F49EED1BBE75F61E1A66EECC1D7"
+    },
+    "v2_raw_starts": {
+      "path": "data_cache/p109c_mixed_v2_v11_course_20261122_v1/raw_starts.npy",
+      "sha256": "003C3C205D8AF678C3815B19585CD42B655AB7E11E6876999BEE006ACE434AD8"
+    },
+    "native_loader": {
+      "path": "tinylm/data/loader.py",
+      "sha256": "BD81D82EAE43FD0338DCE0772005712BF161EA75526AA2C6300380C51FDA95ED"
+    },
+    "native_evaluate": {
+      "path": "tinylm/eval/evaluate.py",
+      "sha256": "47D2870DD79085BD311A49E649FF0AA1DF3E09C3EDD454DE53556E3FEBC02ACE"
+    }
+  },
+  "observed": {
+    "raw_only_warmup": 100,
+    "raw_only_warmup_targets": 13107200,
+    "v2_raw_starts_reproduced": 292992,
+    "v2_raw_draw_source": "same seed and start sequence as native loader; redistributed after 100 updates",
+    "mixed_updates": 2842,
+    "fixed_course_ce_share": 0.25,
+    "first_mixed": {
+      "step": 101,
+      "raw_targets": 98304,
+      "targets": {
+        "start": 50,
+        "body": 136,
+        "eot": 50
+      },
+      "unit_ce_weight_vs_raw": {
+        "start": 196.60800000000003,
+        "body": 144.56470588235297,
+        "eot": 65.53600000000002
+      }
+    },
+    "whole_run_unit_ce_weight_vs_raw": {
+      "start": {
+        "min": 26.00634920634921,
+        "median": 86.05042016806723,
+        "max": 853.3333333333334
+      },
+      "body": {
+        "min": 5.762250879249708,
+        "median": 89.36727272727273,
+        "max": 890.4347826086957
+      },
+      "eot": {
+        "min": 8.668783068783071,
+        "median": 28.68347338935575,
+        "max": 284.4444444444445
+      }
+    },
+    "early_native_val": {
+      "v1": [
+        [
+          515,
+          4.7390625
+        ],
+        [
+          1030,
+          4.0890625
+        ],
+        [
+          1545,
+          3.8178125
+        ],
+        [
+          2060,
+          3.746875
+        ]
+      ],
+      "v2": [
+        [
+          64,
+          7.555625
+        ],
+        [
+          128,
+          7.74375
+        ],
+        [
+          192,
+          6.82875
+        ],
+        [
+          256,
+          6.865
+        ]
+      ]
+    },
+    "native_val_window_note": "native evaluation consumes the next 50 randomized batches each call; cadence differs"
+  },
+  "proposed": {
+    "first_mixed_candidate_unit_ce_weight_vs_raw": {
+      "start": 65.536,
+      "body": 48.18823529411765,
+      "eot": 21.845333333333336
+    },
+    "ramp_starts_update": 101,
+    "ramp_ends_update": 1048,
+    "ramp_updates": 948,
+    "course_share_start": 0.1,
+    "course_share_plateau": 0.28002533783783784,
+    "course_share_plateau_fraction": "6631/23680",
+    "course_coefficient_sum": "1421/2",
+    "raw_coefficient_sum_all_updates": "4463/2",
+    "whole_run_unit_ce_weight_vs_raw": {
+      "start": {
+        "min": 10.697672505244423,
+        "median": 89.03021657789844,
+        "max": 927.5383280283266
+      },
+      "body": {
+        "min": 2.6998887751331164,
+        "median": 87.96511710868609,
+        "max": 967.8660814208627
+      },
+      "eot": {
+        "min": 3.565890835081475,
+        "median": 29.676738859299483,
+        "max": 309.1794426761089
+      }
+    },
+    "optimizer_updates": 0
+  }
+}

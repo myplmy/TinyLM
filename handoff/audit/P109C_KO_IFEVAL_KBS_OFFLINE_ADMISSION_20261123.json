@@ -1,0 +1,81 @@
+{
+  "status": "PINNED_SCORER_ADMITTED_OFFLINE_SCORING_COMPLETE",
+  "wip_item": "49",
+  "repository": "https://github.com/mcrl/korean_benchmarks",
+  "commit": "d8be9ad5fd1fc3495b67786177adaf3d61f69728",
+  "tree": "afc11413b3dfbd6d37cdaa6b0a3cd52288bb4fb3",
+  "upstream_directory": "evaluation_code/src/custom_tasks/benchmark-compact/ko-ifeval",
+  "local_directory": "data_cache/p106b_official_eval_runtime/ko_ifeval_kbs_d8be9ad5_20261123/ko-ifeval",
+  "repository_review": {
+    "tree_truncated": false,
+    "regular_files": 70,
+    "directories": 17,
+    "symlinks_or_submodules": 0,
+    "scope": "All tracked paths inventoried. Text assets screened for execution and network entry points. The scoring module imports and calls were reviewed directly. The XLSX samples were inspected as bounded ZIP/XML without opening them in an office application.",
+    "findings": [
+      "General evaluation launchers source shell configuration, route prompts to commercial model APIs or permit Hugging Face remote model code. The repository also contains a patch for lm-evaluation-harness.",
+      "YAML task configurations enable Python function resolution. The local scorer calls the reviewed process_results entry point directly.",
+      "Six sample XLSX files contained no VBA, external relationships or worksheet formulas. The Ko-GSM8K sample contains one internal binary printer configuration.",
+      "The CSV metadata contains 159 emotion rows and 374 author/title rows. A text-level screen found no formula prefixes, external URLs or email/phone-like cells.",
+      "No complete benchmark dataset is stored in this tree. The scoring input is the previously admitted local Hugging Face Parquet."
+    ]
+  },
+  "admission": {
+    "scope": "Exact Ko-IFEval scorer sources for local offline evaluation. The upstream MIT notice and Apache-2.0 text accompany the five files.",
+    "source_files": {
+      "instructions.py": {
+        "git_blob": "f3a39c32e9ec407793ee51c98c38e8b43ff8d896",
+        "sha256": "f7033a5d4cf36321981046bf7ce15082c2015f95e4237c5de20b20195b43678f"
+      },
+      "instructions_registry.py": {
+        "git_blob": "4e64ea1ae2d87f0ec1b33ebfe1eb878b32c5788f",
+        "sha256": "b14dfaa8eeb0981c9ca0c9a657fd88a5a9338ccba407ec35bd80d5298cad1336"
+      },
+      "instructions_util.py": {
+        "git_blob": "8c2bd1503c0ca1ba7096da1a5910fe3287336c4b",
+        "sha256": "8052c305a478d6be06f3818dabea7cc7db497578d71351c3e65d072f6318bb15"
+      },
+      "ko-ifeval.yaml": {
+        "git_blob": "6cd0c091cae31bab9df064c4babd9bb6a3180383",
+        "sha256": "6ba278a7500f55e5a564b18b4d64dd9ec9372122f12999f8d2971cfe2b0d94ac"
+      },
+      "utils.py": {
+        "git_blob": "a08aee7123dd23a8e13e7551b7e2010d931d964d",
+        "sha256": "b64e3d499b4e739e27893b455a3f64b5ae31a78cf021edcab2e73dad3ba5eee4"
+      }
+    },
+    "source_controls": [
+      "The exact five bytesets were matched to the pinned tree before writing, read back, and verified by the evaluator before and after scoring.",
+      "Separate fresh evaluator processes avoid collisions from bare instructions module imports.",
+      "Existing NLTK 3.10.4 and local English punkt_tab supply the PunktTokenizer route. The optional downloader and Python network operations were blocked in both processes.",
+      "The original score functions were used unchanged. The UTF-8 sources use a fixed instruction registry and text/JSON/regex checks.",
+      "Local Parquet columns and argument types were verified. Scorer-bound keyword and section patterns use literal text in these rows. Two prompts contain literal URLs, which were treated as text."
+    ],
+    "filesystem": "New evaluation-cache directory and scoring evidence",
+    "new_package_installations": 0,
+    "model_loads": 0,
+    "new_generations": 0
+  },
+  "dataset": {
+    "path": "HF/SNU_ko-IFEval/data/train-00000-of-00001.parquet",
+    "sha256": "43751AE9484B904881EDBDD2D5F330CC6E673041028A8E4F8D6F90B07B9DCDF0",
+    "rows": 841,
+    "instructions": 1435,
+    "instruction_ids_used": 30
+  },
+  "scores": {
+    "model": "p109c_scratch_mixed_v2_v11_chat32_s1337",
+    "checkpoint_sha256": "132B6A728BF09917A5A3D288A39D1A27321F18C8FF01D88273B97552EB6D35E9",
+    "plain": {
+      "exit_code": 0,
+      "path": "test_result/evidence/p109c_v2_ko_ifeval_kbs_plain_20261123/report.json",
+      "sha256": "242640F9295F2CBCE4EC5DD3B19657AA01830F7C5641FF091F1DD2AE26EAA484"
+    },
+    "chatml": {
+      "exit_code": 0,
+      "path": "test_result/evidence/p109c_v2_ko_ifeval_kbs_chatml_20261123/report.json",
+      "sha256": "EFEA4DE3EA060374BC4670A39A9475D0CDD662285BCA379033216573FD0C25CD"
+    },
+    "summary": "test_result/109_20261119004016_P109-기존G4-방문-세정책-실제갱신.md#p109c-v2-ko-ifeval-official-score"
+  }
+}
