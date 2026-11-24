@@ -28,7 +28,9 @@ HANDOFF = ROOT / "handoff"
 NL = "\n"
 
 WAIT, RUN, DONE, BLOCK = "⏳대기", "🔄진행", "✅**완료**", "🚫**막힘**"
+CANCELED = "❌**취소**"
 OPEN_MARKS = ("⏳", "🔄")
+TERMINAL_MARKS = (DONE, CANCELED)
 ITEM_ID_PATTERN = re.compile(r"\d+[A-Za-z]?")
 V2_HEADER = ("#", "사용자 지시", "상태", "작업 내용", "산출물", "이어받을 지점")
 LEGACY_HEADERS = {
@@ -265,7 +267,7 @@ def _capsule_values(path: Path, text: str, table: Table) -> dict[str, str]:
     activity_rows = [
         (item_id, cells[2], cells[3], cells[4])
         for item_id, cells in rows
-        if RUN in cells[2] or DONE in cells[2]
+        if RUN in cells[2] or CANCELED in cells[2] or DONE in cells[2]
     ]
     blocked = [(item_id, cells[3], cells[5]) for item_id, cells in rows if BLOCK in cells[2]]
     first = next((row for row in open_rows if RUN in row[1]), open_rows[0] if open_rows else None)
@@ -278,6 +280,8 @@ def _capsule_values(path: Path, text: str, table: Table) -> dict[str, str]:
     for item_id, status, work, artifact in activity_rows:
         if DONE in status:
             activity_parts.append(f"{item_id}:완료 산출물={compact(artifact)}")
+        elif CANCELED in status:
+            activity_parts.append(f"{item_id}:취소 {compact(work)}")
         else:
             detail = f"{item_id}:진행 {compact(work)}"
             if artifact != "—":
@@ -287,9 +291,18 @@ def _capsule_values(path: Path, text: str, table: Table) -> dict[str, str]:
     if len(activity_text) > 2200:
         activity_text = activity_text[:2199].rstrip() + "…"
     blocked_text = "; ".join(f"{item_id} {note} / {resume}" for item_id, note, resume in blocked)
-    if not blocked_text:
+    if len(blocked_text) > 2000:
+        prefix = "막힘 번호 " + ", ".join(row[0] for row in blocked) + " · "
+        blocked_text = prefix + compact(blocked_text, max(120, 1960 - len(prefix))) + " · 상세 근거는 상황판에 있다."
+    elif not blocked_text:
         blocked_text = "명시적 막힘 없음; 승인·미확인은 각 행의 작업 내용·이어받을 지점이 정본"
-    next_text = "모든 항목 닫힘" if first is None else f"{first[0]}번: {first[2]} (현재 {first[1]})"
+    if first is not None:
+        next_text = f"{first[0]}번: {first[2]} (현재 {first[1]})"
+    elif blocked:
+        item_id, _, resume = blocked[0]
+        next_text = f"{item_id}번: {resume} (현재 {BLOCK})"
+    else:
+        next_text = "모든 항목 닫힘"
     return {
         "현재 지시·허용목록": (
             f"사용자 지시 {len(rows)}건 원문={path.relative_to(ROOT).as_posix()} 상황판; "
@@ -423,23 +436,26 @@ def set_state(
         previous = cells[2]
         if DONE in previous:
             raise ValueError("completed item cannot be reopened")
+        if CANCELED in previous:
+            raise ValueError("canceled item cannot be reopened")
         allowed = {
             RUN: (WAIT, BLOCK),
             DONE: (RUN,),
             WAIT: (RUN, BLOCK),
             BLOCK: (WAIT, RUN),
+            CANCELED: (WAIT, RUN, BLOCK),
         }
         if not any(mark in previous for mark in allowed[status]):
             raise ValueError(f"invalid transition {previous} -> {status}")
-        if status != DONE and (resume is None or not resume.strip()):
+        if status not in TERMINAL_MARKS and (resume is None or not resume.strip()):
             raise ValueError("--resume is required for start/wait/block")
         cells[2] = status
         cells[3] = _escape_cell(note)
         if artifact is not None:
             cells[4] = _escape_cell(artifact)
-        cells[5] = "—" if status == DONE else _escape_cell(resume or "")
+        cells[5] = "—" if status in TERMINAL_MARKS else _escape_cell(resume or "")
         lines[index] = _render_row(cells)
-        stamp = {WAIT: "대기", RUN: "착수", DONE: "완료", BLOCK: "막힘"}[status]
+        stamp = {WAIT: "대기", RUN: "착수", DONE: "완료", BLOCK: "막힘", CANCELED: "취소"}[status]
         _append_to_section(
             lines,
             LOG_HEADING,
@@ -767,19 +783,24 @@ def show(path: Path) -> int:
     print("=" * 104)
     print(f"  {prefix} {path.name} — 항목 {len(table.rows)}개")
     print("=" * 104)
-    active_count = blocked_count = 0
+    active_count = blocked_count = canceled_count = 0
     for _, item_id, cells in table.rows:
         status = cells[2]
         if any(mark in status for mark in OPEN_MARKS):
             active_count += 1
         elif BLOCK in status:
             blocked_count += 1
+        elif CANCELED in status:
+            canceled_count += 1
         directive = re.sub(r"\s+", " ", cells[1])[:52]
         work = re.sub(r"\s+", " ", cells[3] if table.is_v2 else cells[-2])[:38]
         print(f"  {item_id:>3}  {status:<10}  {directive:<54}  {work}")
     incomplete = active_count + blocked_count
-    print(f"\n  미완료 {incomplete}개 (대기·진행 {active_count}, 막힘 {blocked_count}) "
-          f"· 완료 {len(table.rows) - incomplete}개")
+    completed_count = len(table.rows) - incomplete - canceled_count
+    summary = f"미완료 {incomplete}개 (대기·진행 {active_count}, 막힘 {blocked_count}) · 완료 {completed_count}개"
+    if canceled_count:
+        summary += f" · 취소 {canceled_count}개"
+    print(f"\n  {summary}")
     if not table.is_v2:
         print("  LEGACY_READ_ONLY: 상태 변경·닫기 금지")
     return incomplete
@@ -903,7 +924,8 @@ def close(path: Path, static_audit: Path | None = None,
     text = path.read_text(encoding="utf-8")
     table = parse_table(text)
     _require_v2(table)
-    incomplete = [item_id for _, item_id, cells in table.rows if DONE not in cells[2]]
+    incomplete = [item_id for _, item_id, cells in table.rows
+                  if not any(mark in cells[2] for mark in TERMINAL_MARKS)]
     if incomplete:
         raise ValueError(f"미완료 항목 {len(incomplete)}개: {', '.join(incomplete)}")
     elided = [item_id for _, item_id, cells in table.rows if any(x in cells[1] for x in ("(…)", "(...)"))]
@@ -1088,7 +1110,7 @@ def create_ledger(
     lines.extend(
         (
             "",
-            "범례: ⏳대기 · 🔄진행 · ✅**완료** · 🚫**막힘**(사유 기재)",
+            "범례: ⏳대기 · 🔄진행 · ✅**완료** · 🚫**막힘**(사유 기재) · ❌**취소**(사유 기재)",
             "",
             "## 2. 확보한 수치",
             "",
@@ -1130,6 +1152,7 @@ def main() -> int:
     action.add_argument("--add")
     action.add_argument("--start")
     action.add_argument("--done")
+    action.add_argument("--cancel")
     action.add_argument("--block")
     action.add_argument("--wait")
     action.add_argument("--override", action="store_true")
@@ -1192,7 +1215,7 @@ def main() -> int:
             return 0
         path = resolve_ledger(args.file, allow_multiple_for_list=args.list)
         active = (
-            args.add, args.start, args.done, args.block, args.wait, args.override,
+            args.add, args.start, args.done, args.cancel, args.block, args.wait, args.override,
             args.bind_session, args.migrate_v2, args.capsule_check, args.capsule_print,
             args.repair_name_collision, args.sync_count, args.close,
         )
@@ -1261,6 +1284,7 @@ def main() -> int:
         item_id, status = (
             (args.start, RUN) if args.start else
             (args.done, DONE) if args.done else
+            (args.cancel, CANCELED) if args.cancel else
             (args.block, BLOCK) if args.block else
             (args.wait, WAIT)
         )

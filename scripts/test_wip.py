@@ -65,6 +65,36 @@ class WipV2Tests(unittest.TestCase):
                 self.assertEqual(path.read_bytes(), before)
                 self.assertFalse(path.with_name(path.name + ".lock").exists())
 
+    def test_cancel_closes_waiting_items_with_distinct_status_and_audit(self) -> None:
+        path = self.create()
+        note = "사용자 결정에 따라 현재 지시에서 철회. 기존 결과는 보존."
+        with patch.object(sys, "argv", ["wip.py", "--file", str(path), "--cancel", "1", "--note", note]), \
+                redirect_stdout(io.StringIO()):
+            self.assertEqual(WIP.main(), 0)
+        text = path.read_text(encoding="utf-8")
+        self.assertIn("1번 취소", text)
+        self.assertIn(note, text)
+        self.assertIn("1:취소", WIP.capsule_text(path))
+        with self.assertRaisesRegex(ValueError, "canceled item"):
+            WIP.set_state(path, "1", WIP.RUN, "재개", None, "다음 단계")
+        WIP.set_state(path, "2A", WIP.RUN, "착수", None, "다음 단계")
+        WIP.set_state(path, "2A", WIP.DONE, "완료", "산출물", None)
+        with redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(WIP.show(path), 0)
+        self.assertIn("완료 1개 · 취소 1개", output.getvalue())
+        with self.assertRaisesRegex(ValueError, "requires --static-audit"):
+            WIP.close(path)
+        audit = self.handoff / "cancel_static_audit.json"
+        audit.write_text(json.dumps({
+            "schema": "TINYLM_STATIC_AUDIT_V1", "profile": "codex-safe",
+            "wip": {"path": path.relative_to(self.root).as_posix(),
+                    "sha256": WIP._sha_bytes(path.read_bytes()), "session_id": ""},
+            "counts": {"errors": 0, "actionable_warnings": 0},
+        }), encoding="utf-8")
+        closed = WIP.close(path, static_audit=audit)
+        rows = WIP.parse_table(closed.read_text(encoding="utf-8")).rows
+        self.assertEqual([cells[2] for _, _, cells in rows], [WIP.CANCELED, WIP.DONE])
+
     def test_boundary_override_preserves_rows_and_refreshes_capsule(self) -> None:
         path = self.create()
         rows = WIP.parse_table(path.read_text(encoding="utf-8")).rows
@@ -281,6 +311,19 @@ class WipV2Tests(unittest.TestCase):
         self.assertIn("1:진행 진행 근거", capsule)
         self.assertIn("산출물=중간 산출물", capsule)
         self.assertIn("…", capsule)
+
+    def test_capsule_bounds_many_blockers_and_retains_a_restart_point(self) -> None:
+        path = self.create()
+        items = ["1", "2A", *(str(value) for value in range(3, 21))]
+        for item in items[2:]:
+            WIP.add_item(path, item, "새 지시", "공식 자료를 기다린다.")
+        for item in items:
+            WIP.set_state(path, item, WIP.BLOCK, "검토 내용 " + "가" * 410, None, "공식 자료를 기다린다.")
+        capsule = WIP.capsule_text(path)
+        self.assertIn("막힘 번호 " + ", ".join(items), capsule)
+        self.assertIn(f"1번: 공식 자료를 기다린다. (현재 {WIP.BLOCK})", capsule)
+        self.assertNotIn("모든 항목 닫힘", capsule)
+        self.assertIn("검토 내용 " + "가" * 410, path.read_text(encoding="utf-8"))
 
     def test_concurrent_creation_is_explicit_audited_and_unambiguous(self) -> None:
         first = self.create()
