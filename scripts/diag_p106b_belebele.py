@@ -351,6 +351,7 @@ def token_only_hf_type(hflm, template):
 
 @contextmanager
 def token_only_runtime(model, pins):
+    configure_runtime()
     from scripts.p106b_official_lm_adapter import prepare_harness, _adapter_type, LikelihoodCore
     from scripts import diag_p106b_external_core6 as external
     from scripts import diag_p106b_official_core6 as official

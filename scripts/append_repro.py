@@ -11,7 +11,8 @@
 무엇을 하나
     1. `-done` launcher에서 실제 실행 명령만 뽑는다(`--note` 는 뺀다)
     2. launcher 이름의 `P0NN[B]_stageX` 로 `test_result/` 로그를 찾아 결과문서 번호를 얻는다
-    3. 해당 명령이 빠졌을 때만 launcher별 재현 부록을 붙인다. 같은 문서의 여러 launcher도 명령별로 판정한다
+    3. 명시적 runlog 이름이 있으면 같은 결과문서의 원로그 표기나 같은 번호의 실제 원로그를 확인한 뒤 호출을 보존한다.
+       명령이 빠진 launcher만 재현 부록에 덧붙인다.
 
     python scripts/append_repro.py            # 보고만
     python scripts/append_repro.py --apply    # 실제로 붙인다
@@ -32,7 +33,7 @@ import re
 import sys
 from pathlib import Path
 
-from sync_experiments_tsv import batch_commands, norm as _norm
+from sync_experiments_tsv import batch_commands, command_in_result, norm as _norm, runlog_record_pattern
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "test_result"
@@ -67,6 +68,20 @@ def result_doc_for(launcher: Path) -> tuple[str | None, Path | None]:
     return number, (docs[0] if len(docs) == 1 else None)
 
 
+def local_log_links(number: str, patterns: list[re.Pattern[str]], normalized_doc: str) -> list[str] | None:
+    missing = [pattern for pattern in patterns if not pattern.search(normalized_doc)]
+    if not missing:
+        return []
+    files = [path for path in RES.glob(f"{number}_log_*.txt") if not path.is_symlink() and path.is_file()]
+    links = []
+    for pattern in missing:
+        matches = [path.name for path in files if pattern.fullmatch(path.name.lower())]
+        if len(matches) != 1:
+            return None
+        links.append(matches[0])
+    return sorted(set(links))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true", help="실제로 부록을 붙인다")
@@ -81,8 +96,8 @@ def main() -> int:
         if path.suffix.lower() in {".bat", ".sh"}
     ):
         num, doc = result_doc_for(bat)
-        cmds = batch_commands(bat)
-        if doc is None or not cmds:
+        cmds = batch_commands(bat, keep_runlog=True)
+        if num is None or doc is None or not cmds:
             skip.append((bat.name, "결과문서 또는 명령을 못 찾았다"))
             continue
         txt = doc.read_text(encoding="utf-8")
@@ -94,12 +109,17 @@ def main() -> int:
         #
         #   ★**이제 둘 다 "명령이 문서에 있는가" 를 본다.** 판정 함수는
         #   `sync_experiments_tsv.norm` 과 같은 규약이다 — 그것이 정본이고 여기가 따라간다.
-        if all(_norm(c) in _norm(txt) for c in cmds):
+        normalized = _norm(txt)
+        if all(command_in_result(c, normalized) for c in cmds):
             skip.append((bat.name, f"이미 {doc.name} 에 명령이 다 있다"))
             continue
-        todo.append((bat, doc, cmds, num))
+        records = [pattern for c in cmds if (pattern := runlog_record_pattern(c))]
+        if local_log_links(num, records, normalized) is None:
+            skip.append((bat.name, f"{doc.name}의 결과 번호에서 실행 태그가 일치하는 원로그를 찾지 못했다"))
+            continue
+        todo.append((bat, doc, cmds, num, records))
 
-    for bat, doc, cmds, num in todo:
+    for bat, doc, cmds, num, records in todo:
         print(f"\n  ★{bat.name}  ->  {num} {doc.name}   (명령 {len(cmds)}개)")
         for c in cmds[:3]:
             print(f"      {c[:104]}")
@@ -111,14 +131,23 @@ def main() -> int:
             # 문서가 **1단에서 마지막으로 읽힌 문서의 본문**으로 덮였다(결과문서 7건 파괴,
             # 커밋 1c3f87e·a01f32f). 같은 문서에 부록이 둘 붙는 경우도 이 재읽기가 살린다.
             body = doc.read_text(encoding="utf-8")
-            if all(_norm(c) in _norm(body) for c in cmds):
+            normalized = _norm(body)
+            if all(command_in_result(c, normalized) for c in cmds):
                 print("      [skip] 이미 명령이 다 있다")
+                continue
+            log_links = local_log_links(num, records, normalized)
+            if log_links is None:
+                print("      [skip] 결과문서 갱신 뒤 실행 태그를 재확인할 수 없다")
                 continue
             block = ["\n\n---\n",
                      f"\n## ★부록 — 재현 명령 정본 (`{bat.name}` 추출, {TODAY})\n",
                      "\n> ★**이 절이 있어야 launcher를 지울 수 있다**(`sync_experiments_tsv.py`).\n",
-                     "> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.\n",
-                     "\n```\n"] + [c + "\n" for c in cmds] + ["```\n"]
+                     "> 명령은 **launcher에서 기계로 뽑았다** — 손으로 옮겨 적지 않았다.\n"]
+            for name in log_links:
+                block.append(f"\n[원로그]({name})\n")
+            block.append("\n```\n")
+            block.extend(c + "\n" for c in cmds)
+            block.append("```\n")
             out = (body.rstrip() + "".join(block)).encode("utf-8")
             assert len(out) > len(body), doc.name      # 함정 35 — 줄어들 수 없다
             doc.write_bytes(out)

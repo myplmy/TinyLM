@@ -37,6 +37,11 @@ exec "$python_bin" scripts/runlog.py --name P097_Stage1aB_control_v2_300M -- \
         (results / "090_log_20260919_P097_Stage1aB_control_v2_300M.txt").write_text(
             "log", encoding="utf-8"
         )
+        other = root / "run_P097_Stage1aB_control_v1_300M-done.sh"
+        other.write_text(
+            launcher.read_text(encoding="utf-8").replace("P097_Stage1aB_control_v2_300M", "P097_Stage1aB_control_v1_300M"),
+            encoding="utf-8",
+        )
         doc = results / "090_result.md"
         original = "# result 090\n\nbody sentinel\n"
         doc.write_text(original, encoding="utf-8")
@@ -53,6 +58,9 @@ exec "$python_bin" scripts/runlog.py --name P097_Stage1aB_control_v2_300M -- \
             assert once.startswith(original.rstrip())
             assert "body sentinel" in once
             assert "run100m.py train --tag p097_ctrl_v2" in once
+            assert "[원로그](090_log_20260919_P097_Stage1aB_control_v2_300M.txt)" in once
+            assert "--name P097_Stage1aB_control_v2_300M" in once
+            assert "--name P097_Stage1aB_control_v1_300M" not in once
             with contextlib.redirect_stdout(io.StringIO()):
                 assert APP.main() == 0
             assert doc.read_text(encoding="utf-8") == once

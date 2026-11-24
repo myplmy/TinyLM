@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P090 isolated legacy-tokenizer SFT pilot. User-run only; Codex never runs the model."""
+"""Train a pinned public SFT corpus after an explicit execution opt-in."""
 from __future__ import annotations
 
 import argparse
@@ -13,11 +13,13 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from scripts import p108b_correction_course as correction_course
 from tinylm.data.sft import IGNORE, conversation_split_key, encode_conversation, load_canonical, sft_targets
 
 READY = ROOT / "HF" / "sft_ready"
 CKPT = ROOT / "runs" / "ckpt"
 LOGS = ROOT / "runs" / "logs"
+PAIRED_CONTEXT = 1024
 
 
 def sha256(path):
@@ -63,9 +65,13 @@ def encode_records(rows, tokenizer, context, vocab):
     return result
 
 
-def pad_batch(batch, pad_id):
+def pad_batch(batch, pad_id, *, width=None):
     import torch
-    width = max(len(item[0]) for item in batch)
+    longest = max(len(item[0]) for item in batch)
+    if width is None:
+        width = longest
+    if width < longest:
+        raise ValueError("SFT padding width is shorter than an input")
     x = [item[0] + [pad_id] * (width - len(item[0])) for item in batch]
     y = [item[1] + [IGNORE] * (width - len(item[1])) for item in batch]
     return torch.tensor(x, dtype=torch.long), torch.tensor(y, dtype=torch.long)
@@ -114,6 +120,24 @@ def require_formal_readiness(manifest: dict, *, pilot_only: bool) -> None:
         raise ValueError("formal SFT source gates are not PASS: " + ", ".join(missing))
 
 
+def paired_final_file(args, train_file, manifest):
+    arm = getattr(args, "correction_arm", None)
+    if arm is None:
+        return None
+    if arm not in correction_course.ARMS or args.epochs != 4 or args.pilot_only:
+        raise ValueError("paired correction requires a declared arm and four formal SFT epochs")
+    require_formal_readiness(manifest, pilot_only=False)
+    hashes = manifest.get("output_sha256")
+    expected = hashes.get("final") if isinstance(hashes, dict) else None
+    if not expected:
+        raise ValueError("paired correction requires a pinned final split in the manifest")
+    prefix = train_file.name.removesuffix("_train.canonical.jsonl")
+    path = scoped_read(train_file.with_name(prefix + "_final.canonical.jsonl"), READY, ".jsonl")
+    if expected != sha256(path):
+        raise ValueError("paired correction final SHA256 differs from the manifest")
+    return path
+
+
 def check_inputs(args):
     parent = scoped_read(args.parent, CKPT, ".pt")
     tokenizer_file = scoped_read(args.tokenizer, ROOT / "data_cache", ".json")
@@ -138,6 +162,7 @@ def check_inputs(args):
             for split, path in (("train", train_file), ("val", val_file))):
         raise ValueError("public SFT corpus SHA256 differs from the manifest")
     require_formal_readiness(manifest, pilot_only=args.pilot_only)
+    paired_final_file(args, train_file, manifest)
     new_output(args.output, CKPT, ".pt")
     new_output(args.log, LOGS, ".json")
     return parent, tokenizer_file, train_file, val_file, manifest
@@ -152,6 +177,63 @@ def validate_splits(train_rows, val_rows):
     val_prompts = {conversation_split_key(row) for row in val_rows}
     if train_prompts & val_prompts:
         raise ValueError("train/val normalized first-prompt overlap")
+
+
+def validate_paired_splits(train_rows, val_rows, final_rows):
+    groups = []
+    for rows in (train_rows, val_rows, final_rows):
+        roots = set()
+        for row in rows:
+            meta = row.get("meta", {})
+            if (not isinstance(meta, dict)
+                    or any(not isinstance(meta.get(key), str) or not meta[key].strip()
+                           for key in ("source", "source_id", "source_group_id"))):
+                raise ValueError("paired correction splits need explicit source and source-group IDs")
+            roots.add(meta["source_group_id"])
+        groups.append(roots)
+    if groups[0] & groups[1] or groups[0] & groups[2] or groups[1] & groups[2]:
+        raise ValueError("paired correction TRAIN/dev/final source-group overlap")
+    validate_splits(train_rows, val_rows)
+    validate_splits(train_rows, final_rows)
+    validate_splits(val_rows, final_rows)
+
+
+def sequence_sha256(values):
+    raw = json.dumps(values, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest().upper()
+
+
+def paired_epochs(rows, records, arm, seed):
+    if len(rows) != len(records):
+        raise ValueError("paired correction rows and encoded records differ")
+    pairs = correction_course.pairs(rows)
+    if any(not isinstance(case_id, str) or not case_id.strip() for case_id in pairs):
+        raise ValueError("paired correction requires nonempty string case IDs")
+    indices = {(row["meta"]["case_id"], row["meta"]["view"]): i for i, row in enumerate(rows)}
+    for case_id in pairs:
+        targets = [
+            [token for token in records[indices[case_id, view]][1] if token != IGNORE]
+            for view in ("single", "correction")
+        ]
+        if not targets[0] or targets[0] != targets[1]:
+            raise ValueError(f"paired correction target IDs differ for {case_id}")
+    epochs = []
+    for epoch in range(4):
+        plan = correction_course.epoch_plan(pairs, arm, epoch, seed=seed)
+        order = [indices[row["case_id"], row["view"]] for row in plan]
+        receipt = dict(case_order_sha256=sequence_sha256([r["case_id"] for r in plan]),
+                       view_order_sha256=sequence_sha256(plan), updates=[])
+        epochs.append((order, receipt))
+    return epochs
+
+
+def paired_update_receipt(blocks, width, target_count):
+    targets = [token for block in blocks for _, labels, _ in block for token in labels if token != IGNORE]
+    if len(targets) != target_count:
+        raise ValueError("paired correction update target count differs")
+    return dict(input_tokens=sum(len(tokens) for block in blocks for tokens, _, _ in block),
+                padded_positions=width * sum(len(block) for block in blocks),
+                target_tokens=target_count, target_sha256=sequence_sha256(targets))
 
 
 def make_optimizers(model, args):
@@ -195,9 +277,9 @@ def chunked_ce_sum(logits, targets, chunk):
     return total
 
 
-def loss_sum(model, batch, pad_id, device, vocab, chunk):
+def loss_sum(model, batch, pad_id, device, vocab, chunk, *, width=None):
     import torch
-    x, y = pad_batch(batch, pad_id)
+    x, y = pad_batch(batch, pad_id, width=width)
     x, y = x.to(device), y.to(device)
     with torch.autocast("cuda", dtype=torch.bfloat16):
         logits = model(x)
@@ -206,14 +288,14 @@ def loss_sum(model, batch, pad_id, device, vocab, chunk):
         return chunked_ce_sum(logits, y, chunk)
 
 
-def evaluate(model, records, args, pad_id, device, vocab):
+def evaluate(model, records, args, pad_id, device, vocab, *, width=None):
     import torch
     model.eval()
     total_loss, total_targets = 0.0, 0
     with torch.no_grad():
         for start in range(0, len(records), args.micro_bs):
             batch = records[start:start + args.micro_bs]
-            total_loss += float(loss_sum(model, batch, pad_id, device, vocab, args.ce_chunk))
+            total_loss += float(loss_sum(model, batch, pad_id, device, vocab, args.ce_chunk, width=width))
             total_targets += sum(item[2] for item in batch)
     model.train()
     return total_loss / total_targets
@@ -235,23 +317,39 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
     if pad_id is None:
         raise ValueError("tokenizer PAD id absent")
     train_rows, val_rows = load_canonical(train_file), load_canonical(val_file)
-    validate_splits(train_rows, val_rows)
+    final_file = paired_final_file(args, train_file, manifest)
+    if final_file is None:
+        validate_splits(train_rows, val_rows)
+    else:
+        validate_paired_splits(train_rows, val_rows, load_canonical(final_file))
+        if any(sha256(path) != manifest["output_sha256"][split]
+               for split, path in (("train", train_file), ("val", val_file), ("final", final_file))):
+            raise ValueError("paired correction split changed during input preparation")
     parent_state = torch.load(parent, map_location="cpu", weights_only=True)
     cfg = TMTConfig(**parent_state["cfg"])
     if tokenizer.get_vocab_size() != cfg.vocab_size:
         raise ValueError("parent and tokenizer vocab widths differ")
     validate_parent_lineage(parent_state, args.tokenizer_sha256, args.lineage, tokenizer)
+    width = PAIRED_CONTEXT if final_file is not None else None
+    if width is not None and cfg.max_seq_len < width:
+        raise ValueError("paired correction requires the fixed 1024-token context")
+    context = cfg.max_seq_len if width is None else width
+    tr = encode_records(train_rows, tokenizer, context, cfg.vocab_size)
+    va = encode_records(val_rows, tokenizer, context, cfg.vocab_size)
+    paired = paired_epochs(train_rows, tr, args.correction_arm, args.seed) if final_file is not None else None
     model = TiedMLPTransformer(cfg).to(device)
     model.load_state_dict(_strip(parent_state["model"]), strict=True)
     model.set_anneal(1.0)
     model.train()
-    tr = encode_records(train_rows, tokenizer, cfg.max_seq_len, cfg.vocab_size)
-    va = encode_records(val_rows, tokenizer, cfg.max_seq_len, cfg.vocab_size)
     adam, muon = make_optimizers(model, args)
     history, updates = [], 0
     for epoch in range(1, args.epochs + 1):
-        order = list(range(len(tr)))
-        random.Random(args.seed + epoch).shuffle(order)
+        course_receipt = None
+        if paired is None:
+            order = list(range(len(tr)))
+            random.Random(args.seed + epoch).shuffle(order)
+        else:
+            order, course_receipt = paired[epoch - 1]
         epoch_loss, epoch_targets = 0.0, 0
         for blocks in micro_groups(tr, order, args.micro_bs, args.accum):
             target_count = sum(item[2] for block in blocks for item in block)
@@ -259,7 +357,7 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
             if muon:
                 muon.zero_grad(set_to_none=True)
             for block in blocks:
-                part = loss_sum(model, block, pad_id, device, cfg.vocab_size, args.ce_chunk)
+                part = loss_sum(model, block, pad_id, device, cfg.vocab_size, args.ce_chunk, width=width)
                 if not torch.isfinite(part):
                     raise RuntimeError(f"non-finite loss at update {updates}")
                 (part / target_count).backward()
@@ -272,9 +370,13 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
                 muon.step()
             epoch_targets += target_count
             updates += 1
-        val_ce = evaluate(model, va, args, pad_id, device, cfg.vocab_size)
+            if course_receipt is not None:
+                course_receipt["updates"].append(paired_update_receipt(blocks, width, target_count))
+        val_ce = evaluate(model, va, args, pad_id, device, cfg.vocab_size, width=width)
         record = {"epoch": epoch, "updates": updates, "train_ce": epoch_loss / epoch_targets,
                   "sft_val_ce": val_ce, "assistant_train_tokens": epoch_targets}
+        if course_receipt is not None:
+            record["paired_course"] = course_receipt
         history.append(record)
         print(f"[SFT] epoch={epoch} updates={updates} train_ce={record['train_ce']:.6f} val_ce={val_ce:.6f}")
     evidence = {
@@ -298,6 +400,14 @@ def train(args, parent, tokenizer_file, train_file, val_file, manifest):
         "contamination_gate": manifest.get("contamination_gate", "NOT_RUN"),
         "base_full_val_forgetting": "NOT_RUN", "generation_capability": "NOT_RUN",
     }
+    if paired is not None:
+        if any(evidence[f"{split}_sha256"] != manifest["output_sha256"][split] for split in ("train", "val")):
+            raise ValueError("paired correction split changed before result publication")
+        if sha256(final_file) != manifest["output_sha256"]["final"]:
+            raise ValueError("paired correction final split changed before result publication")
+        evidence["paired_course"] = {"arm": args.correction_arm, "context": width,
+                                     "reserved_final_sha256": manifest["output_sha256"]["final"],
+                                     "reserved_final_used_for_learning": False}
     return {"model": model.state_dict(), "cfg": cfg.__dict__,
             "step": parent_state.get("step", 0), "sft": evidence}
 
@@ -401,6 +511,8 @@ def main():
     parser.add_argument("--lineage", choices=("legacy", "chat32"), default="legacy",
                         help="legacy is unchanged; chat32 requires a new parent with exact tokenizer metadata")
     parser.add_argument("--epochs", type=int, default=3)
+    parser.add_argument("--correction-arm", choices=correction_course.ARMS,
+                        help="P108B four-epoch course using a formally admitted paired corpus and final split")
     parser.add_argument("--micro-bs", type=int, default=2)
     parser.add_argument("--accum", type=int, default=4)
     parser.add_argument("--ce-chunk", type=int, default=1024,

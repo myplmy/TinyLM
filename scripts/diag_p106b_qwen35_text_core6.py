@@ -335,6 +335,7 @@ def build_tokenizer(raw, metadata, *, api=None, expected_counts=(22, 33, 13, 7),
     V5 constructor arguments, avoiding their mutually exclusive old spelling.
     """
     if api is None:
+        import tinylm  # Apply project cache routing for standalone tokenizer callers.
         from tokenizers import Tokenizer, AddedToken
         from transformers import TokenizersBackend
     else:

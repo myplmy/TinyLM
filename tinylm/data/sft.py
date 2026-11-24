@@ -86,16 +86,31 @@ def _spans_to_token_mask(offsets, spans):
     return keep
 
 
+def _supervised_loss_spans(conv, kind):
+    from ..chat.serialize import loss_spans
+
+    spans = loss_spans(conv, kind)
+    turns = dict(conv.get("meta") or {}).get("supervised_assistant_turns")
+    if turns is None:
+        return spans
+    if (not isinstance(turns, (list, tuple)) or not turns
+            or any(type(turn) is not int or not 1 <= turn <= len(spans) for turn in turns)):
+        raise ValueError("supervised_assistant_turns must name existing one-based assistant turns")
+    selected = set(turns)
+    return [span for turn, span in enumerate(spans, 1) if turn in selected]
+
+
 def encode_conversation(conv, tok, kind="chatml", *, add_generation_prompt=False):
     """canonical 대화 하나 → `(ids, labels, text)`.
 
-    `labels[i]` 는 `ids[i]` 가 **assistant 가 쓴 토큰**이면 그 값, 아니면 `IGNORE`.
+    `labels[i]` 는 감독 대상 assistant 턴의 토큰이면 `ids[i]`, 그 밖에는 `IGNORE`다.
+    명시한 `meta.supervised_assistant_turns`의 턴 번호는 1부터 시작한다.
     🚫**한 칸 밀지 않는다**(위 §규약).
     """
-    from ..chat.serialize import serialize, loss_spans
+    from ..chat.serialize import serialize
 
     text = serialize(conv, kind, add_generation_prompt=add_generation_prompt)
-    spans = loss_spans(conv, kind)
+    spans = _supervised_loss_spans(conv, kind)
     enc = tok.encode(text)
     ids = list(enc.ids)
     offs = list(enc.offsets)
@@ -110,10 +125,10 @@ def mask_detail(conv, tok, kind="chatml"):
     ★**`decode()` 로 검사하지 않는다** — 합성 스텁의 `decode` 는 의미 없는 문자열을 낸다.
     ★**offsets 로 원문을 되짚는 것이 토크나이저 무관하고 더 정확**하다.
     """
-    from ..chat.serialize import serialize, loss_spans
+    from ..chat.serialize import serialize
 
     text = serialize(conv, kind)
-    spans = loss_spans(conv, kind)
+    spans = _supervised_loss_spans(conv, kind)
     enc = tok.encode(text)
     ids, offs = list(enc.ids), list(enc.offsets)
     keep = _spans_to_token_mask(offs, spans)

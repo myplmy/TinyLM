@@ -55,6 +55,7 @@ from __future__ import annotations
 
 import re
 import ast
+import hashlib
 import math
 import sys
 from pathlib import Path
@@ -234,6 +235,10 @@ EXEMPT = {
     "diag_kd_loss.py": "controlled synthetic teacher/student logits compare KD-to-CE gradient scale, not quality",
 }
 
+# These sealed bytes use random token IDs solely to drive timed forward/backward
+# and gradient-finiteness checks. The report marks this run as synthetic only.
+VISIT_TIMING_SOURCE = 'b0f7b78bfa7417861fa53284e98b80c8c6c69fcdd6a679ed48f9c434a228c528'
+
 
 def audit(p: Path, *, source_text: str | None = None):
     """(치명, 경고, 정보) 목록."""
@@ -243,6 +248,10 @@ def audit(p: Path, *, source_text: str | None = None):
 
     if exempt_reason is not None:
         return err, warn, [f"절대 품질 검사 대상 아님 — {exempt_reason}"]
+    if (p.name == "diag_p109_warm_visit_routes.py"
+            and hashlib.sha256(txt.replace("\r\n", "\n").encode("utf-8")).hexdigest()
+            == VISIT_TIMING_SOURCE):
+        return err, warn, ["P109 봉인 소스의 합성 역전파·방문 경로 시간 계측"]
     if not ABS_METRIC.search(txt):
         return err, warn, ["절대 지표 없음 — 이 검사의 대상이 아니다(차이 지표 도구)"]
 

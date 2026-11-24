@@ -13,6 +13,7 @@ def run():
     data.guard();start=time.perf_counter()
     if BASE.exists():raise FileExistsError('fresh hybrid visibility namespace required')
     p=data.qualified.verify();import torch
+    import tinylm  # Apply project cache routing before Transformers imports.
     from transformers.models.qwen3_5 import modeling_qwen3_5 as source
     torch.set_num_threads(2);torch.manual_seed(1337)
     if torch.cuda.is_initialized():raise ValueError('CPU feasibility must not initialize CUDA')

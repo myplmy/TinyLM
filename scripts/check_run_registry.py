@@ -40,7 +40,8 @@ NEEDED = ["pool_tokens", "mlp_group", "micro_bs", "accum", "deploy_mb", "kd_teac
 IDENTITY = ["preset", "data", "arch", "mlp_group", "sparse34", "steps", "micro_bs", "accum",
             "seq", "lr", "sched", "anneal_end", "decay_frac", "pool_tokens", "kd", "kd_every",
             "kd_dynamic", "kd_teacher", "init_from_src", "group_init", "attn_group", "attn_group_init", "ema", "lora_rank", "grad_ckpt",
-            "optimizer", "muon_scale", "muon_lr_mult", "matrix_weight_decay_effective"]
+            "optimizer", "muon_scale", "muon_lr_mult", "matrix_weight_decay_effective", "ce_vocab_tile",
+            "ce_recompute_rows"]
 
 
 def load():

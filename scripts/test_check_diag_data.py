@@ -131,6 +131,14 @@ def main():
     if errors or len(warnings) != 2:
         raise RuntimeError("P103A filename/constant text bypassed the AST contract")
     known_heuristic_warning_regressions()
+    timing_path = ROOT / "scripts/diag_p109_warm_visit_routes.py"
+    timing = timing_path.read_text(encoding="utf-8")
+    errors, warnings, info = audit(timing_path, source_text=timing)
+    if errors or warnings or not info:
+        raise RuntimeError("sealed P109 synthetic timing source was not recognized")
+    errors, _, _ = audit(timing_path, source_text=timing.replace("formal_quality=False", "formal_quality=True"))
+    if not errors:
+        raise RuntimeError("P109 timing exemption survived a quality-claim mutation")
     print("[PASS] difference-only and P103A real-target/exact-gate contracts; damaged paths warn")
 
 

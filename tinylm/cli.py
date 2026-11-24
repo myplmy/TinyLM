@@ -20,6 +20,7 @@ from .training_defaults import (
     DEFAULT_MUON_LR_MULT,
     DEFAULT_MUON_SCALE,
     DEFAULT_OPTIMIZER,
+    OPTIMIZER_CHOICES,
 )
 
 
@@ -114,6 +115,10 @@ def main():
                         "무KD + --no-ckpt 조합에서 이 항이 노출된다. 권장 2048")
     p.add_argument("--loss-first", action="store_true",
                    help="(P102A S1) FP32 factorized CE row-recompute path; train only, default off")
+    p.add_argument("--ce-vocab-tile", type=int, default=0,
+                   help="(P102A) experimental vocabulary-tiled NTP CE; positive tile width, train only, default 0")
+    p.add_argument("--ce-recompute-rows", type=int, default=0,
+                   help="(P102A) plain NTP CE with position-blocked logits and full-shape backward; train only, default 0")
 
     p.add_argument("--tokenizer-hf", default=None, metavar="HF폴더",
                    help="★(P067) 외부 HF 모델의 tokenizer.json 으로 토큰화한다. "
@@ -180,9 +185,25 @@ def main():
                     help="중간 MLP 타잉 경계(불균등). 미지정이면 --mlp-group 균등")
     # ★★2026-09-18 사용자 확정 — 학습 recipe 기본은 Muon RMS4, KD는 계속 opt-in/off.
     #   아키텍처 preset 필드가 아니므로 한 곳(training_defaults.py)에서만 소유한다.
-    p.add_argument("--optimizer", choices=["adamw", "muon"], default=DEFAULT_OPTIMIZER,
+    p.add_argument("--optimizer", choices=OPTIMIZER_CHOICES, default=DEFAULT_OPTIMIZER,
                    help="★기본 `muon`: **행렬만** Muon(Newton-Schulz 5), "
                         "임베딩·norm·bias 는 AdamW. `--optimizer adamw`로 명시적 대조 가능")
+    p.add_argument("--matrix-lr-mult", type=float, default=None,
+                   help="Explicit positive LR multiplier required by experimental matched matrix optimizers. "
+                        "Legacy muon uses --muon-lr-mult. New routes keep head projections, embeddings, "
+                        "special parameters and code-selection logits in original AdamW groups. "
+                        "normuon_tinylm is the TinyLM adaptation. normuon_author_fp32 uses the author matrix "
+                        "rule and shape scale with matched TinyLM AdamW, not the author's auxiliary Adam. "
+                        "Experimental choices are not adopted recipes.")
+    p.add_argument("--context-curriculum", default=None,
+                   help="Experimental NTP context stages as end_update:length pairs, e.g. 458:256,916:512,2289:1024. "
+                        "Preserves full-window draws and targets while regrouping batches at constant micro tokens. "
+                        "Final stage must equal --steps and --seq. KD/MTP/EMA/early-stop/dynamic connectivity unsupported. "
+                        "Resume requires matching cache bytes, recipe and source/RNG/control state.")
+    p.add_argument("--packed-document-profile", default=None,
+                   help="Use an indexed train/validation document profile with --context-curriculum. "
+                        "Requires an explicit train tag and uses fixed packed validation windows. "
+                        "Cooldown runs bind the exact --decay-from checkpoint.")
     p.add_argument("--muon-lr-mult", type=float, default=DEFAULT_MUON_LR_MULT,
                    help="★Muon 그룹 lr 배수. 기본 4.0은 RMS 스케일의 내부 전이 검증값. "
                         "`--optimizer muon` 일 때만 쓴다")
@@ -331,6 +352,8 @@ def main():
     p.add_argument("--check-cache", action="store_true",
                    help="캐시 유/무 그리디 출력 일치 검증만 하고 종료")
     a = p.parse_args()
+    if a.packed_document_profile is not None and (a.cmd != "train" or a.context_curriculum is None):
+        p.error("--packed-document-profile requires train and --context-curriculum")
     if a.p101a_m0 and a.cmd != "train":
         p.error("--p101a-m0 is only wired for train")
     if a.mtp_aux and not a.p101a_m0:
@@ -341,13 +364,17 @@ def main():
         p.error("--ste-update-cache is only wired for train")
     if a.loss_first and a.cmd != "train":
         p.error("--loss-first is only wired for the train command")
+    if a.ce_vocab_tile and a.cmd != "train":
+        p.error("--ce-vocab-tile is only wired for the train command")
+    if a.ce_recompute_rows and a.cmd != "train":
+        p.error("--ce-recompute-rows is only wired for the train command")
     if a.chat32_tokenizer:
         if a.cmd not in ("prepare", "train") or a.data == "synthetic":
             p.error("--chat32-tokenizer is for real-data prepare/train only")
         if (not a.exact_cache or a.tokenizer_hf or a.kd or a.kd_teacher_hf
-                or a.kd_cache or a.init_from or a.init_from_tag or a.resume
-                or a.decay_from):
-            p.error("chat32 requires exact new corpus and forbids old parent/KD/resume")
+                or a.kd_cache or a.init_from or a.init_from_tag or a.decay_from
+                or (a.resume and (a.cmd != "train" or a.context_curriculum is None))):
+            p.error("chat32 requires exact corpus, no parent/KD, and a bound context for resume")
         if a.cmd == "train":
             draw = a.steps * a.micro_bs * a.accum * a.seq
             if a.pool_tokens is None or _tok(a.pool_tokens) < 2 * draw:
@@ -375,9 +402,6 @@ def main():
     if src_tok != tokstr:
         print(f"  ★읽는 체크포인트의 토큰 칸 = {src_tok} (쓰는 것은 {tokstr}) — "
               "부모·교사 파일명과 학습 길이를 갈라 쓴다")
-    dense_ck = paths.resolve_ckpt(preset, a.data, src_tok, "dense")
-    dense_best_ck = paths.resolve_ckpt(preset, a.data, src_tok, "dense_best")
-
     pool_tok = _tok(a.pool_tokens) if a.pool_tokens else None
 
     if a.cmd == "prepare":
@@ -388,28 +412,27 @@ def main():
 
     elif a.cmd == "kdcache":
         from .train.kd_cache import build_kd_cache
-        teacher = str(dense_best_ck if a.kd_best else dense_ck)
+        teacher_tag = "dense_best" if a.kd_best else "dense"
+        teacher = str(paths.resolve_ckpt(preset, a.data, src_tok, teacher_tag))
         build_kd_cache(base, teacher, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum, a.kd_topk, a.kd_temp)
 
     elif a.cmd == "train":
         from .train import train
-        # KD 교사 경로: 압축 교사(--kd-teacher-tag) > dense_best > dense
-        if a.kd_teacher_tag:
-            kd_teacher = str(paths.resolve_ckpt(preset, a.data, src_tok, a.kd_teacher_tag))
-        else:
-            kd_teacher = str(dense_best_ck if a.kd_best else dense_ck)
-        # 부모초기화 소스: --init-from-tag 주면 base_{TAG}.pt, 아니면 base_dense.pt
-        # ★`src_tok`(= `--ckpt-tokens` 또는 `--tokens`) 을 쓴다 — **읽는 이름**이기 때문이다.
-        init_src = (str(paths.resolve_ckpt(preset, a.data, src_tok, a.init_from_tag)) if a.init_from_tag
-                    else (str(dense_ck) if a.init_from else None))
+        # 처음부터 학습할 때는 부모나 교사 체크포인트를 검색하지 않는다.
+        init_src = None
+        init_tag = a.init_from_tag or "dense"
+        if a.init_from_tag or a.init_from:
+            init_src = str(paths.resolve_ckpt(preset, a.data, src_tok, init_tag))
+        kd_teacher = False
+        kd_tag = a.kd_teacher_tag or ("dense_best" if a.kd_best else "dense")
+        if a.kd:
+            kd_teacher = str(paths.resolve_ckpt(preset, a.data, src_tok, kd_tag))
         # ★★2026-09-07 — **원인을 말하고 즉시 거절한다.** 종전에는 `torch.load` 가
         #   raw `FileNotFoundError` 를 던져 *"왜 600M 을 찾지?"* 를 사람이 풀어야 했다.
         #   4팔이 그렇게 죽었고 넷 다 원인이 같았다.
         import os as _os
-        _src_tag = a.init_from_tag or "dense"
-        _kd_tag = a.kd_teacher_tag or ("dense_best" if a.kd_best else "dense")
-        for _what, _p, _t in (("부모초기화", init_src, _src_tag),
-                              ("KD 교사", kd_teacher if a.kd else None, _kd_tag)):
+        for _what, _p, _t in (("부모초기화", init_src, init_tag),
+                              ("KD 교사", kd_teacher, kd_tag)):
             if _p and not _os.path.exists(_p):
                 _alt = sorted(q.name for q in (paths.RUNS / "ckpt").glob(
                     f"*_{a.data}_*_{_t}.pt"))
@@ -429,7 +452,7 @@ def main():
               sched=a.sched, ema=a.ema, early_stop=a.early_stop,
               init_from=init_src, group_init=a.group_init,
               attn_group_init=a.attn_group_init,
-              kd=(kd_teacher if a.kd else False),
+              kd=kd_teacher,
               kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
               lora_rank=a.lora_rank, lora_bits=a.lora_bits, mlp_film=a.mlp_film,
               tag=a.tag, tokstr=tokstr, compile_mode=a.compile_mode, mlp_group=a.mlp_group,
@@ -437,6 +460,9 @@ def main():
               micro_group=a.micro_group, opt_dtype=a.opt_dtype,
               optimizer=a.optimizer, muon_lr_mult=a.muon_lr_mult,
               muon_scale=a.muon_scale,
+              matrix_lr_mult=a.matrix_lr_mult,
+              context_curriculum=a.context_curriculum,
+              packed_document_profile=a.packed_document_profile,
               matrix_weight_decay=a.matrix_weight_decay,
               optimizer_audit=a.optimizer_audit,
               optimizer_audit_every=a.optimizer_audit_every,
@@ -469,7 +495,9 @@ def main():
               repeat_mode=a.repeat_mode, repeat_block=a.repeat_block,
               repeat_embed_reinject=a.repeat_embed_reinject,
               reuse_attn_on_dup=a.reuse_attn_on_dup,
-              ce_chunk=a.ce_chunk, loss_first=a.loss_first, cla_group=a.cla_group,
+              ce_chunk=a.ce_chunk, loss_first=a.loss_first, ce_vocab_tile=a.ce_vocab_tile,
+              ce_recompute_rows=a.ce_recompute_rows,
+              cla_group=a.cla_group,
               cla_edges=(not a.no_cla_edges), mlp_lrm=a.mlp_lrm,
               mlp_lrm_mode=a.mlp_lrm_mode, mlp_lrm_wd=a.mlp_lrm_wd,
               tokenizer_hf=a.tokenizer_hf, kd_teacher_hf=a.kd_teacher_hf,
@@ -481,6 +509,7 @@ def main():
         from .train import train
         from .eval import compare
         import json as _json
+        dense_ck = paths.RUNS / "ckpt" / f"{base}_dense.pt"
         dlog = paths.RUNS / "logs" / f"{base}_dense.json"
         # dense 재사용: 같은 (preset,data,steps) 의 dense 로그·체크포인트가 있으면 재학습 생략.
         # (seq·lr 은 로그에 있으면 함께 대조. --force-dense 로 강제 재학습.)
@@ -504,11 +533,17 @@ def main():
                 continue
             print("\n" + "#" * 68 + f"\n#  {arch}\n" + "#" * 68)
             is_tied = arch == "tied"
+            init_src = None
+            if is_tied and a.init_from:
+                init_src = str(paths.resolve_ckpt(preset, a.data, src_tok, "dense"))
+            kd_teacher = False
+            if is_tied and a.kd:
+                kd_tag = "dense_best" if a.kd_best else "dense"
+                kd_teacher = str(paths.resolve_ckpt(preset, a.data, src_tok, kd_tag))
             train(preset, arch, a.data, n_tok, a.steps, a.micro_bs, a.seq, a.accum,
                   a.lr, a.eval_every, a.resume, ckpt, a.compile,
                   sched=a.sched, ema=a.ema, early_stop=a.early_stop,
-                  init_from=(str(dense_ck) if (is_tied and a.init_from) else None),
-                  kd=((str(dense_best_ck) if a.kd_best else str(dense_ck)) if (is_tied and a.kd) else False),
+                  init_from=init_src, kd=kd_teacher,
                   kd_alpha=a.kd_alpha, kd_temp=a.kd_temp,
                   lora_rank=(a.lora_rank if is_tied else 0), lora_bits=a.lora_bits,
                   mlp_film=(a.mlp_film if is_tied else False), tokstr=tokstr,

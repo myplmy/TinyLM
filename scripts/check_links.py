@@ -20,6 +20,8 @@
   승인한 경우에만 쓴다. 기본값은 역사 기록을 보존한다.
 - 외부 URL·앵커(`#`)·플레이스홀더(`{...}`, `...`)는 건너뛴다
 - 보호 데이터 링크는 경로 문자열만 검사 대상에 남기고 대상 파일 존재 여부는 읽지 않는다
+- 봉인된 계획 사본은 `link_snapshot_origins.tsv`에 기록한 지문 및 원래 위치로 검사한다
+- 봉인된 사본에 있는 예전 작업원장 경로는 정식 `-done` 종결 파일을 확인한다
 
 ⚠️ **한계**: 링크가 **존재하는 파일**을 가리키는지만 본다.
 **옳은 파일**인지는 모른다.
@@ -28,21 +30,55 @@
     python scripts/check_links.py            # 검사만
     python scripts/check_links.py --fix      # 상태 접미사 변형 자동 교정
     python scripts/check_links.py --fix-handoff-renames  # 명시 승인된 역사 링크 목적지만 교정
-    종료코드 = 깨진 링크 수
+    종료코드 = 오류가 있으면 1, 없으면 0. 자세한 건수는 출력으로 확인한다.
 """
 from __future__ import annotations
 
 import argparse
+import csv
+import hashlib
 import os
 import re
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parent.parent
 TARGET_DIRS = ("docs", "test_plan", "test_result", "ai_dev_tool/Codex", "handoff")
 LINK = re.compile(r"\]\(([^)#][^)]*?)\)")
 SKIP = ("http://", "https://", "mailto:")
 PROTECTED_ROOT = ROOT / "datasets" / "TinyDataset"
+SNAPSHOT_INDEX = ROOT / "scripts" / "link_snapshot_origins.tsv"
+
+
+def _snapshot_origins() -> dict[Path, tuple[str, Path]]:
+    origins = {}
+    with SNAPSHOT_INDEX.open(encoding="utf-8", newline="") as source:
+        rows = csv.DictReader(source, delimiter="\t")
+        for row in rows:
+            copy, origin = (PurePosixPath(row[key]) for key in ("snapshot", "origin"))
+            digest = row["sha256"]
+            if (copy.parts[:2] != ("test_result", "evidence")
+                    or origin.parts[:1] != ("test_plan",)
+                    or ".." in copy.parts or ".." in origin.parts
+                    or copy.suffix != ".md" or origin.suffix != ".md"
+                    or ROOT / copy in origins or not re.fullmatch(r"[a-f0-9]{64}", digest)):
+                raise ValueError(f"invalid snapshot origin row: {row}")
+            origins[ROOT / copy] = (digest, ROOT / origin)
+    return origins
+
+
+def _matches_snapshot(data: bytes, digest: str) -> bool:
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest() == digest
+
+
+def _closed_archive_wip(origin: Path, target: str) -> bool:
+    """Recognize the in-place WIP rename for a link in a sealed plan copy."""
+    path = Path(os.path.abspath(origin.parent / target))
+    if (path.parent != ROOT / "handoff"
+            or not re.fullmatch(r"WIP_\d{8}[a-z]?_작업원장\.md", path.name)):
+        return False
+    closed = path.with_name(path.stem + "-done.md")
+    return not closed.is_symlink() and closed.is_file()
 
 
 def _targets():
@@ -143,9 +179,27 @@ def main():
     a = ap.parse_args()
 
     idx = _index()
-    bad, legacy, fixed, protected_skipped = [], [], 0, 0
+    try:
+        origins = _snapshot_origins()
+    except (KeyError, OSError, TypeError, ValueError) as error:
+        print(f"[E] 계획 사본 원본표: {error}")
+        return 1
+    bad, legacy, snapshot_errors = [], [], []
+    fixed = protected_skipped = archived_links = archived_wip_links = 0
     for md in _targets():
-        txt = md.read_text(encoding="utf-8", errors="replace")
+        origin = md
+        if md in origins:
+            digest, origin = origins[md]
+            if md.is_symlink() or origin.is_symlink() or not origin.is_file():
+                snapshot_errors.append(f"{md.relative_to(ROOT)}  ->  원래 계획 경로 또는 사본 유형 불일치")
+                continue
+            data = md.read_bytes()
+            if not _matches_snapshot(data, digest):
+                snapshot_errors.append(f"{md.relative_to(ROOT)}  ->  봉인 지문 불일치")
+                continue
+            txt = data.decode("utf-8", errors="replace")
+        else:
+            txt = md.read_text(encoding="utf-8", errors="replace")
         orig = txt
         for m in list(LINK.finditer(txt)):
             raw = m.group(1)
@@ -156,10 +210,16 @@ def main():
             #   마크다운 링크처럼 보이는 경우다. 초판이 이걸 2건 오탐했다.
             if not re.search(r"\.(md|txt|py|bat|json|png|pdf|tsv|csv)$", tgt):
                 continue
-            if _is_protected_target(md, tgt):
+            if _is_protected_target(origin, tgt) or _is_protected_target(md, tgt):
                 protected_skipped += 1
                 continue
             if (md.parent / tgt).exists():
+                continue
+            if origin != md and (origin.parent / tgt).exists():
+                archived_links += 1
+                continue
+            if origin != md and _closed_archive_wip(origin, tgt):
+                archived_wip_links += 1
                 continue
             name = Path(tgt).name
             cand = _status_candidate(idx, name)
@@ -170,7 +230,7 @@ def main():
             #   **과거 핸드오프 9개가 한 번에 고쳐졌다**(되돌렸다).
             #   ★인쇄가 *"고치지 않는다"* 라고 말하는데 동작이 고치는 것 = 함정 38.
             is_handoff = str(md).replace("\\", "/").find("/handoff/") >= 0
-            should_fix = cand is not None and (
+            should_fix = origin == md and cand is not None and (
                 (a.fix and not is_handoff) or (a.fix_handoff_renames and is_handoff)
             )
             if should_fix:
@@ -203,11 +263,17 @@ def main():
               f"**고치지 않는다**(Codex 02 핸드오프 규약, 당시 기록)")
         for b in legacy:
             print(f"    {b}")
+    if archived_links:
+        print(f"\n  [I] 봉인된 계획 사본의 원래 위치에서 확인한 링크 {archived_links}건")
+    if archived_wip_links:
+        print(f"  [I] 봉인된 계획 사본에서 종결 원장으로 확인한 링크 {archived_wip_links}건")
+    for error in snapshot_errors:
+        print(f"  [E] {error}")
     if protected_skipped:
         print(f"\n  [I] 보호 데이터 대상 존재 확인 생략 {protected_skipped}건")
     print("\n  ⚠️ 존재 여부만 본다. **옳은 파일인지는 사람이 본다.**")
     print("=" * W)
-    return len(bad)
+    return int(bool(bad or snapshot_errors))
 
 
 if __name__ == "__main__":

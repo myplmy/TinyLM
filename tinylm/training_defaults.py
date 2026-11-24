@@ -14,6 +14,14 @@ DEFAULT_MUON_SCALE = "rms"
 DEFAULT_MATRIX_WEIGHT_DECAY = None
 DEFAULT_KD = False
 
+# Explicit research choices share a separate matched routing contract.
+# Adding them does not change DEFAULT_OPTIMIZER or legacy Muon grouping.
+EXPERIMENTAL_MATRIX_OPTIMIZERS = (
+    "muon_matched", "normuon_tinylm", "adamuon_fp32v", "adamuon_author_bf16",
+    "normuon_author_fp32",
+)
+OPTIMIZER_CHOICES = ("adamw", "muon", *EXPERIMENTAL_MATRIX_OPTIMIZERS)
+
 
 def effective_matrix_weight_decay(optimizer: str, override=None) -> float:
     """일반 2-D 행렬에 실제 적용될 WD를 설명용으로 반환한다.
@@ -21,10 +29,13 @@ def effective_matrix_weight_decay(optimizer: str, override=None) -> float:
     명시값은 두 optimizer의 행렬에 공통 적용한다. 미지정이면 현재 라우팅 계약대로
     Muon 행렬은 0, AdamW 행렬은 모델 기본 0.1을 쓴다. 임베딩과 특수 그룹에는 이
     함수의 값이 적용되지 않는다.
+
+    Explicit experimental matrix routes use the separate matched parameter set
+    documented by train/experimental_optimizers.py and default to matrix WD0.
     """
     if override is not None:
         return float(override)
-    if optimizer == "muon":
+    if optimizer == "muon" or optimizer in EXPERIMENTAL_MATRIX_OPTIMIZERS:
         return 0.0
     if optimizer == "adamw":
         return 0.1

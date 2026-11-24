@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import importlib.util
+from contextlib import redirect_stdout
+from io import StringIO
 import tempfile
 import unittest
 from pathlib import Path
@@ -64,6 +66,22 @@ class PostDeleteGuidanceTests(unittest.TestCase):
                 SYNC.norm(commands[0]),
                 SYNC.norm("/home/user/miniforge3/envs/tlm_torch/bin/python scripts/diag_fixture.py --steps 3"),
             )
+
+    def test_named_runs_sharing_a_worker_need_their_own_record(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            completed = '"$python_bin" scripts/runlog.py --name P000_complete --num 000 -- "$python_bin" scripts/diag_fixture.py'
+            guard = completed.replace("P000_complete", "P000_guard")
+            (root / "run_case_complete-done.sh").write_text(completed + "\n", encoding="utf-8")
+            (root / "run_case_guard-done.sh").write_text(guard + "\n", encoding="utf-8")
+            with redirect_stdout(StringIO()):
+                self.assertEqual(SYNC.report_done(SYNC.norm(completed), root=root), ["run_case_complete-done.sh"])
+            worker = SYNC.norm(SYNC.batch_commands(root / "run_case_complete-done.sh")[0])
+            log = "000_log_20261124_p000_complete.txt"
+            self.assertTrue(SYNC.command_in_result(completed, f"{log} {worker}"))
+            self.assertFalse(SYNC.command_in_result(guard, f"{log} {worker}"))
+            self.assertFalse(SYNC.command_in_result(completed, f"{log}\n{worker}"))
+            self.assertFalse(SYNC.command_in_result(completed, f"999_log_20261124_p000_complete.txt {worker}"))
 
 
 if __name__ == "__main__":

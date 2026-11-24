@@ -23,6 +23,8 @@ from ..training_defaults import (
     DEFAULT_MUON_LR_MULT,
     DEFAULT_MUON_SCALE,
     DEFAULT_OPTIMIZER,
+    EXPERIMENTAL_MATRIX_OPTIMIZERS,
+    OPTIMIZER_CHOICES,
     effective_matrix_weight_decay,
 )
 from .init_utils import init_from_dense, load_dense
@@ -35,6 +37,7 @@ from .anneal_schedule import (
 
 CKPT = paths.RUNS / "ckpt"
 LOGS = paths.RUNS / "logs"
+CONTEXT_STATE_KEY = "context_training_state"
 
 
 def _kd_kl(slog, tlog, T, chunk=0, fp32=False):
@@ -129,6 +132,24 @@ def _ce_chunked(logits2d, y1d, chunk=0):
     return acc / (N if valid == N else valid)
 
 
+def _ce_vocab_tiled(model, x, y, tile):
+    from .streaming_head import target_nll
+
+    hidden = model(x, return_hidden=True)
+    nll, valid = target_nll(model, hidden, y, chunk=max(y.numel(), 1), tile=tile)
+    supervised = valid.sum()
+    if not bool(supervised):
+        raise ValueError("vocabulary-tiled CE requires at least one supervised target")
+    return nll.sum() / supervised
+
+
+def _ce_recomputed(model, x, y, rows):
+    from .recomputed_ce import target_nll
+
+    nll, valid = target_nll(model, model(x, return_hidden=True), y, rows=rows)
+    return nll.sum() / valid.sum()
+
+
 def _step_stats(step_ms, warm=100):
     """★T-1 — 순수 스텝 시간의 중앙값과 p90/p10 변동폭. `check_spill.py` 와 같은 지표.
 
@@ -169,6 +190,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           opt_dtype="fp32", ema_start=0.0, wq_dtype=None, emb_chunk=None,
           optimizer=DEFAULT_OPTIMIZER, muon_lr_mult=DEFAULT_MUON_LR_MULT,
           muon_scale=DEFAULT_MUON_SCALE,
+          matrix_lr_mult=None,
+          context_curriculum=None, packed_document_profile=None,
           # ★A08(2026-09-10 도입) — 행렬 weight decay · opt-in 업데이트 계측.
           #   🚫셋 다 기본값이면 **비트 동일**이다(`matrix_decay_groups` 가 원본 그룹을 그대로 돌려준다).
           matrix_weight_decay=DEFAULT_MATRIX_WEIGHT_DECAY,
@@ -188,11 +211,49 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
           repeat_embed_reinject=False, reuse_attn_on_dup=False,
           connectivity_mode="none", connectivity_density=1.0,
           connectivity_update_every=100, connectivity_swap_fraction=0.1,
-          ce_chunk=0, loss_first=False, cla_group=None, cla_edges=True,
+          ce_chunk=0, loss_first=False, ce_vocab_tile=0, ce_recompute_rows=0, cla_group=None, cla_edges=True,
           mlp_lrm=False, mlp_lrm_mode="scalar", mlp_lrm_wd=0.01,
           tokenizer_hf=None, kd_teacher_hf=None, teacher_dtype="bf16",
           chat32_tokenizer=False,
           save_every=0):
+    _context_plan = _context_recipe = _context_cache = _context_binding = _context_resume = _context_summary = None
+    _packed_inputs = _context_cursor = None
+    if packed_document_profile is not None:
+        if not packed_document_profile or context_curriculum is None:
+            raise ValueError("packed documents require an explicit profile and context curriculum")
+        if not isinstance(tag, str) or not re.fullmatch(r"[A-Za-z0-9_-]+", tag) or tag in ("tied", "dense"):
+            raise ValueError("packed documents require a distinct run tag")
+        if (compile_ or ce_chunk or loss_first or ce_vocab_tile or ce_recompute_rows or ste_update_cache
+                or tokenizer_hf or chat32_tokenizer or doc_filter or pool_tokens or exact_cache
+                or snapshots):
+            raise ValueError("packed documents require eager causal CE and the bound profile instead of flat-cache options")
+        if decay_from and (sched != "decay" or init_from):
+            raise ValueError("packed --decay-from requires --sched decay and a single initialization source")
+    if context_curriculum is not None:
+        _context_recipe = {key: value for key, value in locals().items() if not key.startswith("_")}
+        if packed_document_profile is None:
+            _context_recipe.pop("packed_document_profile")
+        if not ce_vocab_tile:
+            _context_recipe.pop("ce_vocab_tile")
+        if not ce_recompute_rows:
+            _context_recipe.pop("ce_recompute_rows")
+        from .context_micro_tokens import parse_context_plan, layout_summary
+        _context_plan = parse_context_plan(context_curriculum, micro_bs=micro_bs,
+                                          accum=accum, seq=seq, steps=steps)
+        _context_summary = layout_summary(_context_plan)
+        if kd or kd_cache or kd_teacher_hf or mtp_aux or mtp_sample_half or p101a_m0:
+            raise ValueError("context curriculum currently requires plain NTP without KD or MTP")
+        if ema or early_stop or connectivity_mode != "none":
+            raise ValueError("context resume currently requires EMA/early-stop/dynamic connectivity off")
+    if optimizer not in OPTIMIZER_CHOICES:
+        raise ValueError(f"unknown optimizer: {optimizer!r}")
+    if optimizer in EXPERIMENTAL_MATRIX_OPTIMIZERS:
+        from .experimental_optimizers import validate_options
+        validate_options(optimizer, matrix_lr_mult, opt_dtype=opt_dtype, muon_scale=muon_scale)
+        if muon_lr_mult != DEFAULT_MUON_LR_MULT:
+            raise ValueError("use --matrix-lr-mult for experimental methods; --muon-lr-mult is legacy only")
+    elif matrix_lr_mult is not None:
+        raise ValueError("--matrix-lr-mult requires an explicit experimental optimizer")
     if attn_group_init is not None and (arch != "tied" or not init_from):
         raise ValueError("--attn-group-init requires tied --init-from")
     # ★A08 — 명시한 신규 실험 옵션만 작동한다. **옛 Muon 상태의 조용한 재초기화를 거절한다.**
@@ -209,6 +270,28 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                          "--resume과 함께 쓸 수 없다")
     if anneal_audit and (anneal_audit_every < 1 or anneal_audit_max_modules < 1):
         raise ValueError("--anneal-audit-every/--anneal-audit-max-modules 는 양수여야 한다")
+    if type(ce_vocab_tile) is not int or ce_vocab_tile < 0:
+        raise ValueError("--ce-vocab-tile must be a nonnegative integer")
+    if type(ce_recompute_rows) is not int or ce_recompute_rows < 0:
+        raise ValueError("--ce-recompute-rows must be a nonnegative integer")
+    if ce_recompute_rows and (ce_vocab_tile or compile_):
+        raise ValueError("--ce-recompute-rows requires eager training without vocabulary tiling")
+    if ce_vocab_tile or ce_recompute_rows:
+        ce_option = "--ce-recompute-rows" if ce_recompute_rows else "--ce-vocab-tile"
+        if kd or kd_cache or kd_teacher_hf or mtp_aux or p101a_m0 or ce_chunk or loss_first:
+            raise ValueError(f"{ce_option} requires plain NTP CE without KD, auxiliary heads or another CE backend")
+        if not tag or tag in ("dense", "tied") or not re.fullmatch(r"[A-Za-z0-9_]+", str(tag)):
+            raise ValueError(f"{ce_option} requires a distinct alphanumeric experiment tag")
+        out_tok = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6 else str(int(n_tokens)))
+        out_name = f"{preset}_{data}_{out_tok}_{tag}"
+        out_ckpt = CKPT / f"{out_name}.pt"
+        outputs = (out_ckpt, CKPT / f"{out_name}_best.pt", LOGS / f"{out_name}.json")
+        output_label = "recomputed CE" if ce_recompute_rows else "vocabulary-tiled CE"
+        for output in outputs:
+            if output.is_symlink() or (not resume and output.exists()):
+                raise FileExistsError(f"{output_label} output exists: {output}")
+        if resume and not out_ckpt.is_file():
+            raise FileNotFoundError(f"{output_label} resume needs {out_ckpt}")
     if loss_first:
         if (compile_ or kd or kd_cache or kd_teacher_hf or ce_chunk
                 or chat32_tokenizer or use_ternary_kernel or ternary_kernel_triton
@@ -296,8 +379,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         _p101a_cache_sha = _P101A_EXPECTED[_P101A_CACHE / "meta.json"]
     if chat32_tokenizer:
         if (not exact_cache or tokenizer_hf or kd_teacher_hf or kd or kd_cache
-                or init_from or decay_from or resume or doc_filter):
-            raise ValueError("chat32 parent needs fresh exact unfiltered pool, no old parent/KD/resume")
+                or init_from or decay_from or doc_filter or (resume and _context_plan is None)):
+            raise ValueError("chat32 needs exact unfiltered pool, no parent/KD, and a bound context for resume")
         draw = steps * micro_bs * accum * seq
         if pool_tokens is None or int(pool_tokens) < 2 * draw:
             raise ValueError("chat32 parent pool must be at least twice the training draw")
@@ -306,10 +389,14 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         out_tok = tokstr or (f"{int(n_tokens)//1_000_000}M" if n_tokens >= 10**6
                              else str(int(n_tokens)))
         out_name = f"{preset}_{data}_{out_tok}_{tag}"
-        for output in (CKPT / f"{out_name}.pt", CKPT / f"{out_name}_best.pt",
-                       LOGS / f"{out_name}.json"):
-            if output.exists() or output.is_symlink():
-                raise FileExistsError(f"chat32 parent output exists: {output}")
+        checkpoint = CKPT / f"{out_name}.pt"
+        result = LOGS / f"{out_name}.json"
+        outputs = (checkpoint, CKPT / f"{out_name}_best.pt", result)
+        if any(output.is_symlink() for output in outputs) or result.exists() or (
+                not resume and any(output.exists() for output in outputs)):
+            raise FileExistsError(f"chat32 run output exists or is linked: {out_name}")
+        if resume and not checkpoint.is_file():
+            raise FileNotFoundError(f"chat32 resume requires its own checkpoint: {checkpoint}")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # 시드: 기본 1337 = 종전 하드코딩값(무변). --seed 로 재현 노이즈 σ 실측에 쓴다.
     #   ★val 로더 시드는 아래에서 99 로 **고정**한다 — val crop 이 런마다 바뀌면 비교 자체가 무효다.
@@ -329,13 +416,27 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     # ★2026-08-06 — `doc_filter` 를 학습 경로에도 전달한다. 종전에는 `prepare` 서브커맨드만
     #   이 인자를 받아, **필터 캐시를 만들 수는 있는데 그것으로 학습할 방법이 없었다**
     #   (결과 023 §2 의 "분리해서 쓰는 것과 분리한 것을 읽는 것은 별개 작업" 과 같은 계열).
-    meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache,
-                   doc_filter=doc_filter, doc_min_chars=doc_min_chars,
-                   hf_tok=tokenizer_hf, chat32=chat32_tokenizer)
+    if packed_document_profile is not None:
+        from .packed_document_training import evaluate_packed_documents, load_packed_document_profile
+        from .document_context_curriculum import backward_document_context
+        _packed_inputs = load_packed_document_profile(packed_document_profile)
+        _context_cursor = _packed_inputs.cursor(_context_plan, seed=(1234 + seed - 1337) % (2**31))
+        _context_cache = _packed_inputs.identity
+        meta = {"tokenizer_sha256": _packed_inputs.train.contract["tokenizer_sha256"]}
+        _context_summary = dict(layout="PACKED_DOCUMENTS", plan=_context_plan.contract(),
+                                validation_seed=99, validation_batches=_packed_inputs.validation_batches)
+    else:
+        cache_options = {"existing_only": True} if chat32_tokenizer and resume else {}
+        meta = prepare(data, int(pool_tokens) if pool_tokens else n_tokens, exact=exact_cache,
+                       doc_filter=doc_filter, doc_min_chars=doc_min_chars,
+                       hf_tok=tokenizer_hf, chat32=chat32_tokenizer, **cache_options)
     if chat32_tokenizer and (meta.get("tokenizer_lineage") != "chat32"
                               or not meta.get("tokenizer_sha256")
                               or not str(meta.get("dir", "")).endswith("_chat32")):
         raise ValueError("chat32 train cache has no matching tokenizer provenance")
+    if _context_plan is not None and _packed_inputs is None:
+        from .context_training_state import cache_identity
+        _context_cache = cache_identity(meta["dir"])
     _p101a_blob = None
     _p101a_parent_anneal = None
     if p101a_m0:
@@ -547,6 +648,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     cfg.connectivity_density = float(connectivity_density)
     cfg.connectivity_update_every = int(connectivity_update_every)
     cfg.connectivity_swap_fraction = float(connectivity_swap_fraction)
+    if _packed_inputs is not None and cfg.vocab_size != _packed_inputs.train.contract["vocab_size"]:
+        raise ValueError("packed tokenizer vocabulary and model vocabulary differ")
     model = TiedMLPTransformer(cfg).to(device)
     if p101a_m0:
         from .init_utils import _strip
@@ -612,9 +715,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
     if decay_from:                              # WSD decay-branch: plateau에서 분기
         from .init_utils import _strip
-        st = torch.load(decay_from, map_location=device)
-        model.load_state_dict(_strip(st["model"]))
-        print(f"[decay] plateau 로드 -> cooldown {steps}스텝  <- {decay_from}")
+        if _packed_inputs is not None:
+            from .packed_document_training import load_packed_parent
+            _context_recipe["packed_decay_parent"], st = load_packed_parent(decay_from, read_weights=not resume)
+        else:
+            st = torch.load(decay_from, map_location=device)
+        if st is not None:
+            model.load_state_dict(_strip(st["model"]), strict=True)
+            print(f"[decay] plateau 로드 -> cooldown {steps}스텝  <- {decay_from}")
+        del st
 
     if compile_ and (use_ternary_kernel or ternary_kernel_triton):
         # 커널 경로는 torch.compile 과 근본적으로 상성이 나쁘다:
@@ -664,10 +773,28 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   그래서 *"Muon 이득"* 이라고 적어 온 수는 실은 *"Muon + 행렬 wd 0 의 이득"* 이고
     #   **두 축이 교락**돼 있다(기준표 B.23.6 · P005b b-3). 이 플래그가 그 교락을 푼다.
     #   ✅**`matrix_weight_decay is None` 이면 `model.param_groups(lr)` 그 자체를 돌려준다** = 비트 동일.
-    from .optimizer_audit import matrix_decay_groups
-    _base_groups, _all_matrices = matrix_decay_groups(model, lr, matrix_weight_decay)
+    _experimental_route = None
+    _experimental_manifest = None
+    if optimizer not in EXPERIMENTAL_MATRIX_OPTIMIZERS:
+        from .optimizer_audit import matrix_decay_groups
+        _base_groups, _all_matrices = matrix_decay_groups(model, lr, matrix_weight_decay)
     _mats = []
-    if optimizer == "muon":
+    if optimizer in EXPERIMENTAL_MATRIX_OPTIMIZERS:
+        from .experimental_optimizers import build_experimental_optimizers
+        _experimental_route = build_experimental_optimizers(
+            model, optimizer, lr=lr, matrix_lr_mult=matrix_lr_mult,
+            matrix_weight_decay=matrix_weight_decay, muon_scale=muon_scale,
+            opt_dtype=opt_dtype)
+        opt, opt_muon = _experimental_route.adamw, _experimental_route.matrix
+        _mats = _experimental_route.matrices
+        _experimental_manifest = _experimental_route.manifest
+        print(f"[opt] EXPERIMENTAL {optimizer}: matrices={len(_mats)} "
+              f"matrix_lr={lr * matrix_lr_mult:.8g} "
+              f"matrix_wd={_experimental_manifest['matrix_weight_decay']:.8g} "
+              f"contract={_experimental_manifest['contract_sha256']}")
+        print(f"[opt] {_experimental_manifest['state_rule']}; "
+              "matched role routing; model-quality/full-wall adoption NOT_RUN")
+    elif optimizer == "muon":
         from .muon import Muon, split_params
         _mats, _others = split_params(model)
         # ★★2026-09-05 수정 — 종전에는 AdamW 에 params 하나만 넘겨
@@ -770,8 +897,45 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     start = 0
     ck = CKPT / f"{name}.pt"
     ck_best = CKPT / f"{name}_best.pt"
+    if _packed_inputs is not None:
+        outputs = (ck, ck_best, LOGS / f"{name}.json")
+        if any(path.is_symlink() for path in outputs) or (not resume and any(path.exists() for path in outputs)):
+            raise FileExistsError("packed run output exists; use a fresh tag or the exact resume checkpoint")
+    if _context_plan is not None:
+        from .context_training_state import make_binding
+        _context_binding = make_binding(_context_plan, _context_recipe, _context_cache, device)
+        if resume and not ck.exists():
+            raise ValueError("context --resume requires the existing full checkpoint")
+    _atomic_chat32 = chat32_tokenizer and _context_plan is not None
+    if _packed_inputs is not None or _atomic_chat32:
+        from .packed_document_training import save_packed_checkpoint
+        _save_checkpoint = save_packed_checkpoint
+    else:
+        _save_checkpoint = lambda path, blob: torch.save(blob, path)
     if resume and ck.exists():
-        st = torch.load(ck, map_location=device)
+        # Context RNG vectors must stay on CPU. Optimizer loaders move states to parameters.
+        if chat32_tokenizer:
+            st = torch.load(ck, map_location="cpu", weights_only=True)
+        else:
+            st = torch.load(ck, map_location=("cpu" if _context_plan is not None else device))
+        if st.get("ce_vocab_tile", 0) != ce_vocab_tile:
+            raise ValueError("checkpoint vocabulary tile differs from the requested CE backend")
+        if st.get("ce_recompute_rows", 0) != ce_recompute_rows:
+            raise ValueError("checkpoint recompute rows differ from the requested CE backend")
+        if _experimental_manifest is not None or "experimental_matrix_optimizer" in st:
+            from .experimental_optimizers import validate_optimizer_checkpoint
+            validate_optimizer_checkpoint(st, _experimental_manifest, route=_experimental_route)
+        if _context_plan is not None or CONTEXT_STATE_KEY in st:
+            if _context_plan is None:
+                raise ValueError("context checkpoint cannot silently resume as a legacy layout")
+            from .context_training_state import validate_training_state, validate_trainer_control
+            _context_resume = validate_training_state(st.get(CONTEXT_STATE_KEY),
+                _context_binding, _context_plan, st["step"], packed_cursor=_context_cursor)
+            _saved_cursor = _context_resume["cursor"]
+            _applied = (_saved_cursor if _packed_inputs is not None else _saved_cursor["cursor"])["optimizer_updates"]
+            validate_trainer_control(_context_resume["control"], st["step"], _applied)
+            if st["step"] == steps:
+                raise ValueError("context checkpoint already completed this exact horizon")
         model.load_state_dict(st["model"]); opt.load_state_dict(st["opt"]); start = st["step"]
         # ★★A08 — 🚫**옛 체크포인트에는 `opt_muon` 이 없다.** 그대로 재개하면 모멘텀이
         #   **조용히 0 으로 초기화**돼 재개 이후가 다른 학습이 된다 → **거절한다**(R19: 조용한 실패 금지).
@@ -782,14 +946,16 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                     f"그대로 재개하면 Muon 모멘텀이 조용히 0 이 된다 — "
                     f"🚫정확한 resume 불가. 처음부터 돌리거나 `--optimizer adamw` 로 재개한다")
             opt_muon.load_state_dict(st["opt_muon"])
-            print(f"[opt] ★A08 — `opt_muon` 모멘텀도 복원했다")
+            print(f"[opt] ★A08 — `opt_muon` 상태도 복원했다: {optimizer}")
         print(f"[{arch}] step {start}에서 재개")
+        if _context_plan is not None:
+            st = None  # Release the extra common-container CPU copies, not checkpoint files.
 
     # ★A08 — opt-in 업데이트 계측. 🚫플래그가 없으면 **인스턴스를 안 만들고 import 도 안 한다.**
     _recipe_audit = None
     if optimizer_audit:
         from .optimizer_audit import OptimizerAudit
-        _audit_opts = [("adamw", opt)] + ([("muon", opt_muon)] if opt_muon is not None else [])
+        _audit_opts = [("adamw", opt)] + ([(optimizer, opt_muon)] if opt_muon is not None else [])
         _recipe_audit = OptimizerAudit(
             optimizer_audit, model, _audit_opts, every=optimizer_audit_every,
             contract={"seed": seed, "cfg": cfg.__dict__, "optimizer": optimizer,
@@ -853,9 +1019,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
     #   train: 시드에 따라 크롭 순서가 바뀐다(σ 측정에서 원하는 변동).
     #   val  : **항상 99 고정.** 여기를 흔들면 서로 다른 크롭에서 val loss 를 재게 되어 런 비교가 깨진다.
     #   (mod 2^31 = np.random.default_rng 이 음수 시드를 거부하므로. seed=1337 이면 정확히 1234)
-    tr = Loader("train", micro_bs, seq, device, meta["dir"],
-                seed=(1234 + (seed - 1337)) % (2 ** 31))
-    va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
+    tr = va = None
+    if _packed_inputs is None:
+        tr = Loader("train", micro_bs, seq, device, meta["dir"],
+                    seed=(1234 + (seed - 1337)) % (2 ** 31))
+        va = Loader("val", micro_bs, seq, device, meta["dir"], seed=99)
+    if _context_plan is not None and _packed_inputs is None:
+        from .context_micro_tokens import MicroTokensCursor
+        _context_cursor = MicroTokensCursor(_context_plan, tr,
+            source_sha256=_context_cache["identity_sha256"])
     hist, t0, gmax, gpeak, n_skip = [], time.time(), 0.0, 0.0, 0
     _p101a_eos_id = None
     _p101a_mtp_counts = {"input_draw_tokens": 0, "ntp_targets": 0,
@@ -916,7 +1088,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         """
         nonlocal best_val, best_step, since_improve
         _eval_started = time.perf_counter()
-        m = evaluate(model, va, 50, device, bytes_per_token=bpt); m["ema"] = False   # 주 지표 = raw
+        m = (evaluate_packed_documents(model, _packed_inputs, _context_plan, device)
+             if _packed_inputs is not None else evaluate(model, va, 50, device, bytes_per_token=bpt))
+        m["ema"] = False   # 주 지표 = raw
         ce = train_ce if train_ce is not None else train_loss
         line = (f"    >> val_loss {m['val_loss']:.4f}  ppl {m['ppl']:.2f}  "
                 f"(train_ce {ce:.3f}, val-CE {m['val_loss']-ce:+.3f}"
@@ -959,23 +1133,47 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             _save_started = time.perf_counter()
             blob = {"model": model.state_dict(), "opt": opt.state_dict(),
                     "step": step, "cfg": cfg.__dict__}
+            if ce_vocab_tile:
+                blob["ce_vocab_tile"] = ce_vocab_tile
+            if ce_recompute_rows:
+                blob["ce_recompute_rows"] = ce_recompute_rows
             if p101a_m0:
                 blob["p101a_parent_sha256"] = _p101a_parent_sha
                 blob["p101a_parent_anneal"] = _p101a_parent_anneal
             if chat32_tokenizer:
                 blob["tokenizer_lineage"] = "chat32"
                 blob["tokenizer_sha256"] = meta["tokenizer_sha256"]
+            if _packed_inputs is not None:
+                blob["tokenizer_lineage"] = "packed_document_profile"
+                blob["tokenizer_sha256"] = meta["tokenizer_sha256"]
             # ★★A08 — 종전에는 **Muon 상태를 저장하지 않았다.** 기존 `opt` 와 같은 규약으로 넣는다.
             if opt_muon is not None:
                 blob["opt_muon"] = opt_muon.state_dict()
+            if _experimental_route is not None:
+                from .experimental_optimizers import checkpoint_manifest
+                blob["experimental_matrix_optimizer"] = checkpoint_manifest(_experimental_route)
+            if _context_cursor is not None:
+                from .context_training_state import capture_training_state, validate_trainer_control
+                # Preserve the existing save/best branch: a due non-best save does not
+                # increment since_improve. This records its prospective post-save state.
+                _control = validate_trainer_control(dict(completed_updates=step,
+                    best_val=(m["val_loss"] if is_best else best_val),
+                    best_step=(step if is_best else best_step),
+                    since_improve=(0 if is_best else since_improve), history=hist,
+                    n_skip=n_skip, gmax=gmax, gpeak=gpeak, loss_accumulators=_acc),
+                    step, _context_cursor.optimizer_updates)
+                blob[CONTEXT_STATE_KEY] = capture_training_state(
+                    _context_cursor, va, _context_binding, _control)
             if shadow is not None:
                 blob["ema"] = [sh.detach().cpu() for sh in shadow]
-            if due:
-                torch.save(blob, ck)
+            if due and not (_atomic_chat32 and is_best):
+                _save_checkpoint(ck, blob)
             if is_best:
                 best_val, best_step, since_improve = m["val_loss"], step, 0
-                torch.save(blob, ck_best)
+                _save_checkpoint(ck_best, blob)
                 print(f"       best 갱신 {best_val:.4f} -> {ck_best.name}")
+                if _atomic_chat32 and due:
+                    _save_checkpoint(ck, blob)
             _phase_wall["save_sec"] += time.perf_counter() - _save_started
             _phase_wall["checkpoint_writes"] += int(due) + int(is_best)
         elif is_best:                                            # 도달 불가(위에서 처리) — 방어
@@ -983,6 +1181,17 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         else:
             since_improve += 1
         return m
+
+    if _context_resume is not None:
+        from .context_training_state import restore_training_state
+        _restored = restore_training_state(_context_resume, _context_binding, _context_plan,
+                                           start, _context_cursor, va)
+        hist = _restored["history"]
+        best_val, best_step = _restored["best_val"], _restored["best_step"]
+        since_improve, n_skip = _restored["since_improve"], _restored["n_skip"]
+        gmax, gpeak = _restored["gmax"], _restored["gpeak"]
+        _acc = _restored["loss_accumulators"]
+        _context_resume = None
 
     for s in range(start, steps):
         # LR cooldown·quant 전이·보조경로 제거는 anneal_schedule.py의 서로 다른 계약이다.
@@ -1021,6 +1230,7 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         model.train()
         _t_step = time.time()         # ★T-1: 순수 스텝 시작(eval·저장은 이 뒤에 온다)
         tot, tot_ce = 0.0, 0.0        # tot=실제 최적화 손실(KD면 혼합), tot_ce=항상 순수 CE
+        _context_update = (_context_cursor.prepare() if _context_cursor is not None else None)
         _mtp_batches = None
         if mtp_aux:
             # Capture the same sampler draws before forward so each horizon uses
@@ -1049,8 +1259,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
 
         if ste_update_cache:
             model.begin_quant_update_cache()
-        for micro_idx in range(accum):
-            x, y = (_mtp_batches[micro_idx] if mtp_aux else tr())
+        if _packed_inputs is not None:
+            tot = tot_ce = backward_document_context(
+                model, _context_update, autocast_dtype=torch.bfloat16 if device == "cuda" else None)
+        for micro_idx in range(accum if _packed_inputs is None else 0):
+            x, y = (_context_update.batches[micro_idx] if _context_update is not None else
+                    (_mtp_batches[micro_idx] if mtp_aux else tr()))
             if _cudagraph_step is not None:
                 _cudagraph_step()
             with torch.autocast(device, dtype=torch.bfloat16, enabled=(device == "cuda")):
@@ -1071,6 +1285,12 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
                     ce = (_loss_first_fn(hidden.reshape(-1, hidden.shape[-1]).float(),
                                          model._emb_up_w(), model._emb_w(),
                                          y.reshape(-1), 512) / y.numel())
+                    loss = ce / accum
+                elif ce_vocab_tile:
+                    ce = _ce_vocab_tiled(model, x, y, ce_vocab_tile)
+                    loss = ce / accum
+                elif ce_recompute_rows:
+                    ce = _ce_recomputed(model, x, y, ce_recompute_rows)
                     loss = ce / accum
                 else:
                     logits = model(x)
@@ -1105,6 +1325,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             _anneal_audit.before(s, progress=s / steps, anneal=anneal)
 
         if not torch.isfinite(gn):
+            if _context_cursor is not None:
+                _context_cursor.finish(optimizer_applied=False)
+                _context_update = None
             opt.zero_grad(set_to_none=True)
             if opt_muon is not None:
                 opt_muon.zero_grad(set_to_none=True)
@@ -1117,6 +1340,8 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             print(f"  [skip] step {s}: non-finite grad ({n_skip}회째)  "
                   f"anneal {model.cfg.quant_anneal:.2f}  lr {opt.param_groups[1]['lr']:.2e}")
             if n_skip > 20:
+                if _context_cursor is not None:
+                    raise RuntimeError("context training skip limit reached; no completed-horizon claim")
                 print("  !! non-finite 20회 초과. LR을 낮추고 재시작하세요."); break
             continue
 
@@ -1126,10 +1351,15 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
         # ★P005 — Muon 은 **행렬만** 맡는다. 두 옵티마이저가 같은 스텝에서 함께 간다.
         if _recipe_audit is not None:                   # ★A08 — update 전 스냅샷
             _recipe_audit.before(s)
+        if _experimental_route is not None:
+            _experimental_route.validate_before_step()
         opt.step()
         if opt_muon is not None:
             opt_muon.step()
             opt_muon.zero_grad(set_to_none=True)
+        if _context_cursor is not None:
+            _context_cursor.finish(optimizer_applied=True)
+            _context_update = None
         if (_connectivity is not None and cfg.connectivity_mode == "dynamic"
                 and (s + 1) % cfg.connectivity_update_every == 0):
             _opts = [opt] + ([opt_muon] if opt_muon is not None else [])
@@ -1197,7 +1427,13 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
             print(f"       [snapshot] {snap_steps[s + 1]} 토큰 지점 저장 -> {snap.name}")
 
     _final_eval_started = time.perf_counter()
-    final = evaluate(model, va, 100, device, bytes_per_token=bpt); final["ema"] = False
+    if _packed_inputs is None:
+        final = evaluate(model, va, 100, device, bytes_per_token=bpt)
+    elif hist and hist[-1]["step"] == _context_cursor.next_update:
+        final = {key: hist[-1][key] for key in ("val_loss", "ppl", "val_valid_targets", "val_batches")}
+    else:
+        final = evaluate_packed_documents(model, _packed_inputs, _context_plan, device)
+    final["ema"] = False
     if shadow is not None:
         backup = _swap_in_ema(); fe = evaluate(model, va, 100, device); _swap_out(backup)
         final["val_ema"], final["ppl_ema"] = fe["val_loss"], fe["ppl"]
@@ -1307,8 +1543,9 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "repeat_embed_reinject": bool(getattr(cfg, "repeat_embed_reinject", False)),
            "reuse_attn_on_dup": bool(getattr(cfg, "reuse_attn_on_dup", False)),
            "tokenizer_hf": (str(tokenizer_hf) if tokenizer_hf else None),   # ★P067
-           "tokenizer_lineage": ("chat32" if chat32_tokenizer else "legacy"),
-           "tokenizer_sha256": (meta["tokenizer_sha256"] if chat32_tokenizer else None),
+           "tokenizer_lineage": ("packed_document_profile" if _packed_inputs is not None
+                                 else ("chat32" if chat32_tokenizer else "legacy")),
+           "tokenizer_sha256": meta.get("tokenizer_sha256") if chat32_tokenizer or _packed_inputs is not None else None,
            "kd_teacher_hf": (str(kd_teacher_hf) if kd_teacher_hf else None),
            "teacher_dtype": str(teacher_dtype),
            "ce_chunk": int(ce_chunk),   # ★결과 054
@@ -1323,6 +1560,18 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            #   같은 커밋에 넣는다. 종전에는 `optimizer` 가 json 에 **없어서**
            #   Muon 런과 AdamW 런을 사후에 구별할 수 없었다.
            "optimizer": optimizer,
+           "context_curriculum": _context_summary,
+           "context_cache_identity": _context_cache,
+           "context_source_cursor": (None if _context_cursor is None else _context_cursor.state_dict()),
+           "context_resume_start_step": (start if _context_cursor is not None else None),
+           "context_timing_scope": ("TRAINER_T0_TO_END_CURRENT_PROCESS;SETUP_AND_PRIOR_RUNS_EXCLUDED"
+                                    if _context_cursor is not None else None),
+           "context_document_boundaries": (
+               "PACKED_EXPLICIT_DOCUMENT_IDS_AND_GLOBAL_VALID_TARGETS" if _packed_inputs is not None
+               else ("NOT_EXPOSED_BY_FLAT_TOKEN_LOADER;SOURCE_DOCUMENTS_NOT_INFERRED"
+                     if _context_cursor is not None else None)),
+           "matrix_lr_mult": (float(matrix_lr_mult) if _experimental_route is not None else None),
+           "experimental_matrix_optimizer": _experimental_manifest,
            "muon_lr_mult": (float(muon_lr_mult) if optimizer == "muon" else None),
            "muon_matrices": (len(_mats) if optimizer == "muon" else None),
            # ★P005b b-1 — 규약을 만들면 **그것을 읽는 json 필드**를 같은 커밋에 넣는다.
@@ -1359,6 +1608,10 @@ def train(preset, arch, data, n_tokens, steps, micro_bs, seq, accum, lr, eval_ev
            "vram_reserved_gb": (torch.cuda.max_memory_reserved() / 1024 ** 3) if device == "cuda" else None,
            "tokens_per_microbatch": micro_bs * seq}               # ★M — 속도·VRAM 의 지배 변수
     res["tag"] = name
+    if ce_vocab_tile:
+        res["ce_vocab_tile"] = ce_vocab_tile
+    if ce_recompute_rows:
+        res["ce_recompute_rows"] = ce_recompute_rows
     (LOGS / f"{name}.json").write_text(json.dumps(res, indent=2))
     kd_note = ""
     if teacher is not None and kd_every > 1:

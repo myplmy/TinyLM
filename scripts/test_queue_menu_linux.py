@@ -60,6 +60,15 @@ class LinuxQueueTests(unittest.TestCase):
         self.assertEqual(
             shell_check.experiment_log_contract_errors(path, wrapped), []
         )
+        from_variable = (
+            b'raw_name="P099_fixture_${model}"\n'
+            b'exec python scripts/runlog.py --name "$raw_name" -- python scripts/diag_fixture.py\n'
+        )
+        self.assertEqual(shell_check.experiment_log_contract_errors(path, from_variable), [])
+        for invalid in (from_variable.replace(b'P099_fixture_', b'fixture_'),
+                        from_variable.replace(b'"$raw_name"', b'\'$raw_name\''),
+                        wrapped.replace(b'P099_fixture -- ', b'P099_fixture --note "example -- call" ')):
+            self.assertTrue(shell_check.experiment_log_contract_errors(path, invalid))
 
     def test_same_stem_mapping(self) -> None:
         self.assertEqual(

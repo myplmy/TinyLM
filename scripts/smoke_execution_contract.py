@@ -169,6 +169,8 @@ def execution_source_pins(repo_root: Path, *, guard=None, scope=None) -> dict[st
                 if path.is_absolute() or ".." in path.parts:
                     raise ValueError("source script must be repository relative")
                 names.add(path.as_posix())
+    if "scripts/check_links.py" in names:
+        names.add("scripts/link_snapshot_origins.tsv")
     source_tree = root / "tinylm"
     _no_links(root, source_tree)
     if scope is not None:

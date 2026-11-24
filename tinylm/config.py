@@ -359,8 +359,8 @@ def _m100R1d(seq, ckpt):
     return dataclasses.replace(_m100R1c(seq, ckpt), n_middle=32, mlp_group=16)
 
 
-def _m100s(n_mid):
-    """★P074(2026-08-26) — **얕은 dense 대조군**. `m100` 에서 `n_middle` **한 필드만** 바꾼다.
+def _m100s(n_mid, *, mlp_group=2):
+    """P074의 깊이 대조에 쓰는 `m100` 파생형. 중간 깊이와 MLP 그룹 크기를 정한다.
 
     ★왜 필요한가(사용자 지시 2026-08-26): 우리 논지는 *"타잉으로 상주를 줄인다"* 인데
     **한 번도 물어본 적 없는 반사실**이 있다 — 🚫*"같은 상주를 그냥 **얕은 dense** 로 쓰면?"*
@@ -373,9 +373,10 @@ def _m100s(n_mid):
     #   `n_middle % mlp_group == 0` 을 단언한다 — `n_middle` 만 2 나 6 으로 바꾸면
     #   **프리셋 생성 시점에 죽는다.** `--arch dense` 는 `tie_mlp=False` 라 이 값을 안 쓰지만
     #   단언은 그보다 먼저 돈다. ★2 로 두면 2·4·6·8 을 전부 나눈다.
-    #   🚫**이 프리셋들은 `--arch dense` 전용이다** — tied 로 쓰면 g2 라는 뜻이 된다.
-    return lambda seq, ckpt: dataclasses.replace(_m100(seq, ckpt),
-                                                 n_middle=n_mid, mlp_group=2)
+    # 기존 깊이 대조는 dense로 썼다. tied에서는 지정한 MLP 그룹 크기를 쓴다.
+    return lambda seq, ckpt: dataclasses.replace(
+        _m100(seq, ckpt), n_middle=n_mid, mlp_group=mlp_group,
+    )
 
 
 
@@ -422,6 +423,8 @@ PRESETS = {"tiny": _tiny, "m100": _m100, "m100d": _m100d,
            #   깊이 12(28.0 MiB) 와 16(34.4) 사이가 비어 있어 32 예산의 최적점을 못 짚었다.
            "m100s10": _m100s(10),
            "m100s12": _m100s(12),
+           # P109: P079의 16층 G4 몸통. 재귀 정책은 학습 옵션으로 선택한다.
+           "m100s12_g4": _m100s(12, mlp_group=4),
            # ★2026-09-07(P062 단계14) — **18층.** 무재귀 상주 9.0+1.585x18 = 37.5 MiB 로
            #   40 예산 안이고 방문 18 이라 속도 바닥(방문<=19)도 넘는 **가장 깊은 짝수 깊이**다.
            "m100s14": _m100s(14),

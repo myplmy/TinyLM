@@ -15,7 +15,7 @@
    손으로 고치다 **엉뚱한 행을 지우면 큐가 깨진다.**
    → ★**이 도구가 행을 "삭제" 하지 않고 **완료 주석 블록으로 이동**한다.** 되돌릴 수 있다.
 
-## 삭제 가능 3조건 (`CLAUDE.md` 폴더정리 절)
+## 삭제 가능 3조건 (`ai_dev_tool/Codex/02_핸드오프_규약.md` 제7절)
 
     ① 실험 완료           -> 파일명이 `-done`
     ② ★재현 명령이 결과문서 §재현 명령에 **문자열 일치**로 보존
@@ -39,6 +39,8 @@ ROOT = Path(__file__).resolve().parent.parent
 TSV = ROOT / "experiments.tsv"
 RESULT = ROOT / "test_result"
 MARK = "# ⏸ 배치 미작성(선결 있음 — 계획서에 설계만):"
+RUNLOG_TAG = re.compile(r"(?:^|\s)--name\s+([A-Za-z0-9_-]+)(?=\s|$)")
+RUNLOG_NUMBER = re.compile(r"(?:^|\s)--num\s+([0-9]{3})(?=\s|$)")
 POST_DELETE_GUIDANCE = (
     "★삭제한 뒤에는 `python scripts/sync_experiments_tsv.py --apply` 로 표를 정리한다.",
     "★그 다음 `python scripts/queue_menu.py --audit` 로 확인한다(WSL에서는 Linux audit로 자동 위임).",
@@ -63,7 +65,7 @@ def norm(s):
     return re.sub(r"\s+", " ", s).strip().lower()
 
 
-def batch_commands(p):
+def batch_commands(p, *, keep_runlog=False):
     """배치에서 **실제로 실행되는 명령**만 뽑는다(`--note` 줄은 제외).
 
     ★2026-08-22 — **`call scripts\\batch\\*.bat` 도 명령이다.**
@@ -95,10 +97,37 @@ def batch_commands(p):
             continue
         if "--note" in t and " -- " not in t:
             continue                       # 제목만 찍는 줄
-        if " -- " in t:                    # runlog 경유 -> 뒤쪽이 진짜 명령
-            t = t.split(" -- ", 1)[1]
+        prefix, separator, worker = t.partition(" -- ")
+        named_run = keep_runlog and "scripts/runlog.py" in norm(prefix) and RUNLOG_TAG.search(prefix)
+        if separator and not named_run:
+            t = worker
         out.append(t)
     return out
+
+
+def runlog_record_pattern(command):
+    prefix, separator, _ = command.partition(" -- ")
+    tag = RUNLOG_TAG.search(prefix) if separator else None
+    if not tag or "scripts/runlog.py" not in norm(prefix):
+        return None
+    number = RUNLOG_NUMBER.search(prefix)
+    result_id = number[1] if number else r"[0-9]{3}"
+    return re.compile(rf"(?<![\w]){result_id}_log_[0-9]{{8}}_{re.escape(tag[1].lower())}\.txt(?![\w])")
+
+
+def command_in_result(command, normalized_result):
+    """Keep named shell runs distinct even when their worker command is shared."""
+    if norm(command) in normalized_result:
+        return True
+    log_name = runlog_record_pattern(command)
+    if log_name is None:
+        return False
+    # Each line of result_corpus is one whole result document. Require the old
+    # log's exact tag in the same document when only the worker was copied.
+    payload = norm(command.partition(" -- ")[2])
+    return payload in normalized_result and any(
+        payload in document and log_name.search(document) for document in normalized_result.splitlines()
+    )
 
 
 def result_corpus():
@@ -123,7 +152,7 @@ def report_done(corpus, *, root=ROOT):
         return []
     ok = []
     for p in dones:
-        cmds = batch_commands(p)
+        cmds = batch_commands(p, keep_runlog=True)
         # ★2026-08-30 — `scripts/batch/`의 **재사용 도구 호출은 보존 대상이 아니다**.
         #   그 도구는 영구 보존되는 파일이고(개편 규약, `scripts/batch/README.md`),
         #   인자도 환경변수라 **문자열로 결과문서에 남길 것이 없다**.
@@ -133,7 +162,7 @@ def report_done(corpus, *, root=ROOT):
         # `\b`가 백스페이스 이스케이프로 해석돼 재사용 도구 호출을 못 거른다.
         _keep = [c for c in cmds
                  if not norm(c).startswith("call scripts/batch/")]
-        miss = [c for c in _keep if norm(c) not in corpus]
+        miss = [c for c in _keep if not command_in_result(c, corpus)]
         if not cmds:
             print(f"\n  ⚠️ {p.name}\n      실행 명령을 못 찾았다 — **사람이 본다**")
             continue

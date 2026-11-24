@@ -3,12 +3,14 @@
 from __future__ import annotations
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 import torch
 from tinylm.config import TMTConfig
+from tinylm.data.sft import covered_text, encode_conversation, mask_detail, sft_targets
 from tinylm.model import TiedMLPTransformer
 from tinylm.train import mtp_sft as core
 from tinylm.infer.generate import sample
@@ -31,6 +33,33 @@ class Tokens:
 
 
 class Contracts(unittest.TestCase):
+    def test_canonical_sft_uses_the_declared_assistant_turns(self):
+        class Characters:
+            def encode(self, text):
+                return SimpleNamespace(ids=[ord(char) for char in text],
+                                       offsets=[(i, i + 1) for i in range(len(text))])
+
+        row = {"messages": [
+            {"role": "user", "content": "이름을 쓰세요."},
+            {"role": "assistant", "content": "오답"},
+            {"role": "user", "content": "다시 답하세요."},
+            {"role": "assistant", "content": "정답"},
+        ]}
+        tok = Characters()
+        original = mask_detail(row, tok)
+        restricted = dict(row, meta={"supervised_assistant_turns": [2]})
+        masked = mask_detail(restricted, tok)
+        self.assertEqual(masked["ids"], original["ids"])
+        self.assertEqual(masked["text"], original["text"])
+        self.assertIn("오답", covered_text(original["text"], original["offsets"], original["keep"]))
+        self.assertEqual(covered_text(masked["text"], masked["offsets"], masked["keep"]), "정답<|im_end|>")
+        ids, labels, _ = encode_conversation(restricted, tok)
+        encoded = core.encode_record(restricted, tok)
+        self.assertEqual((encoded.x, encoded.y), sft_targets(ids, labels))
+        self.assertEqual({owner for owner in encoded.segments if owner}, {2})
+        with self.assertRaisesRegex(ValueError, "existing one-based"):
+            encode_conversation(dict(row, meta={"supervised_assistant_turns": [3]}), tok)
+
     def test_mask_does_not_cross_role_or_turn(self):
         y=torch.tensor([[-100,4,5,6,7,-100,8,9]])
         s=torch.tensor([[0,1,1,1,2,0,3,3]])

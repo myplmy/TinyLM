@@ -5,6 +5,7 @@
 --output-stamp	ok	읽기 전용 재계수의 새 요약 출력 식별자. 기존 경로와 링크를 거부하며 원답과 모델은 변경하지 않는다	2026-10-24	scripts/summarize_p106b_core6_pairs.py
 --read-only	ok	완료된 공식 평가 원형의 CPU 재계수만 수행하고 요약 파일도 기록하지 않는다. 모델과 GPU는 사용하지 않는다	2026-10-24	scripts/summarize_p106b_core6_pairs.py
 --epochs	exp	P090 SFT 반복수; 지도 토큰 예산 preflight 선결	2026-09-23	scripts/train_sft_p090.py
+--correction-arm	exp	P108B 교정 교과의 세 팔 중 하나; 정식 SFT 원천 문턱과 최종 분할 지문 필요	2026-11-20	scripts/train_sft_p090.py
 --execute	exp	CPU 준비·모델/교사·평가/학습의 명시 실행. 각 parser의 선결·실제 사용자 권한·해당 source 검산이 필요	2026-10-23	scripts/train_sft_p090.py,scripts/prepare_p106b_official_eval.py,scripts/diag_p106b_official_adapter.py,scripts/diag_p106b_official_core6.py,scripts/diag_p106b_alm_cache.py,scripts/diag_p106b_alm_train.py
 --fetch	exp	P090 pinned HF 원천 다운로드; 별도 HF 경로로 제한	2026-09-23	scripts/audit_aya_collection_ko.py,scripts/prepare_public_sft.py
 --max-chars	exp	P090 문자 길이 필터; 제외량 기록 필요	2026-09-23	scripts/prepare_public_sft.py
@@ -100,10 +101,13 @@ flag	grade	evidence	checked	declared_in
 --cache-data	ok	실제 validation 텍스트 원천 캐시를 명시한다. checkpoint tokenizer와 다르면 decode 후 model tokenizer로 재인코딩한다	2026-09-18	scripts/infer_text_probe.py
 --cache-dir	ok	기존 meta.json과 val.bin이 있는 정확한 cache directory를 명시하며 자동 생성하지 않는다	2026-09-18	scripts/infer_text_probe.py
 --candidate	ok	P085 Stage10c same-panel held-out version comparison candidate JSON	2026-09-14	scripts/compare_heldout_census.py
+--cancel	exp	사용자가 승인한 작업 철회를 원장에 기록하는 상태 전이. 기존 산출물과 판단 근거를 보존	2026-11-24	scripts/wip.py
 --capsule-check	ok		2026-09-04	scripts/wip.py
 --capsule-print	ok		2026-09-04	scripts/wip.py
 --category	ok		2026-09-04	scripts/new_proposal.py
 --ce-chunk	ok		2026-09-04	scripts/common_bpb.py,tinylm/cli.py
+--ce-recompute-rows	exp	P102A 일반 CE 위치별 재계산과 전체 미분 행렬곱, 기본 0	2026-11-19	tinylm/cli.py
+--ce-vocab-tile	exp	P102A 어휘 타일 CE 연구 경로, 기본 0	2026-11-19	tinylm/cli.py
 --center-weights	ok		2026-09-04	tinylm/cli.py
 --changed	ok		2026-09-04	scripts/check_change_scope.py
 --check	ok		2026-09-04	scripts/label_val_unseen_relations.py,scripts/wandb_sync.py
@@ -327,6 +331,9 @@ flag	grade	evidence	checked	declared_in
 --only	ok		2026-09-04	scripts/fetch_bench_data.py
 --opt-dtype	exp	P022B 단계2 - 기본 fp32 = 비트 동일	2026-09-04	tinylm/cli.py
 --optimizer	ok	P005/P005b - 2026-09-18 사용자 확정 기본 muon; AdamW는 명시적 대조로 유지. LR·WD·JSON 기록과 기본 smoke 계약이 함께 판정	2026-09-18	tinylm/cli.py
+--matrix-lr-mult	exp	P005b - training_defaults.EXPERIMENTAL_MATRIX_OPTIMIZERS의 명시 양수 LR 배수. 기본Muon RMS4와별개이며head/embedding/특수·GSQ는원AdamW 그룹유지. normuon_author_fp32는저자matrix규약/scale·None과matched TinyLM AdamW의결합이며원저자AuxAdam과다름. method/역할·LR·WD manifest·새Nor state 선검사뒤재개. 본학습채택미확인	2026-11-17	tinylm/cli.py
+--context-curriculum	exp	P013 - 기본None. 정수end_update:length·원full-window/target/PCG64·M유지/고정source accum. NTP전용·실제cache bytes/recipe·source/validation/Torch RNG와제어상태 재개접점. 실제Native/GPU/전체wall·본학습품질 미검증. KD/MTP/EMA/early-stop/동적연결 제외	2026-11-17	tinylm/cli.py
+--packed-document-profile	exp	P013 명시 인덱스 train/val과 토크나이저, 고정 문서 격리 검증과 전체 유효 타깃 분모, train 및 context-curriculum 전용	2026-11-19	tinylm/cli.py
 --optimizer-audit	ok	A08 - 새 JSONL 에 매 update 의 실제 LR/WD 와 선택 행렬 8개의 gradient·update·weight RMS. CPU 복사 시간이 ms/step 에 섞이므로 속도 판정 팔과 같이 켜지 않는다. --resume 과 배타	2026-09-10	tinylm/cli.py
 --optimizer-audit-every	ok	A08 - 위 계측의 간격(스텝). 기본 100. --optimizer-audit 없이는 무의미	2026-09-10	tinylm/cli.py
 --out	ok		2026-09-04	scripts/census_heldout_discrimination.py,scripts/diag_lut_kernel.py
@@ -588,3 +595,146 @@ flag	grade	evidence	checked	declared_in
 --unit-documents	exp	P106B 재개 가능한 전량 CPU 스캔의 완료청크 크기. 원문 문맥을 자르거나 전체 처리량을 제한하지 않음	2026-10-26	scripts/p106b_corpus_cleanup.py
 --each	exp	P106B HOLD 전량 유형별 문맥판독 패킷의 층별 목적 표본 수. 전체 처리량 상한이나 오류율 추정 표본 아님	2026-10-27	scripts/p106b_hold_recovery.py,scripts/p106b_hold_proposals.py,scripts/p106b_hold_cache.py,scripts/p106b_hold_revision.py
 --proposal-name	exp	P106B HOLD 전량 제안 원장의 동결 버전. 제안 수량을 캐시 채택이나 학습 승인으로 승격하지 않음	2026-10-27	scripts/p106b_hold_cache.py,scripts/p106b_hold_revision.py
+--roster	exp	P106B 잔여 HOLD의 근거SHA 판정원장. 최종용은 잔여0을 요구하고 중간용은 미승인 HOLD를 분리하며 실제 잔여를 보존한다. 기존 채택 불변과 별도 CPU 검증이 필요하고 학습 승인은 아님	2026-10-27	scripts/p106b_hold_resolution_cache.py,scripts/p106b_hold_resolution_partial_cache.py,scripts/p106b_hold_resolution_reviewed_cache_v1.py,scripts/p106b_hold_resolution_reviewed_cache_v2.py
+--after	exp	선행 완료 기록의 지문과 장치 반환을 대기하는 순차 실험 설정	2026-11-23	scripts/queue_p109c_v2_after_p107.py,scripts/run_p109c_ko_ifeval_queue.py
+--defer-hellaswag	exp	별도 CPU 채점에 이미 배정된 HellaSwag를 GPU 복구 범위에서 제외	2026-11-23	scripts/resume_p109c_v2_common_eval.py
+--document-index	ok	새 원문 샘플 배열에 연결하는 기존 문서 경계 프로필 경로	2026-11-23	scripts/prepare_p109c_nonoverlap_raw.py
+--document-index-sha256	ok	기존 문서 경계 프로필의 정확한 SHA-256 지정	2026-11-23	scripts/prepare_p109c_nonoverlap_raw.py
+--eval-until	exp	방문 횟수 대조의 평가 절대 마감 시각	2026-11-23	scripts/queue_p109c_mixed_visit_count.py
+--original-dir	ok	공식 SODA 분할의 승인된 기존 로컬 경로	2026-11-23	scripts/audit_p106b_soda_quote_release.py,scripts/p106b_soda_original_lineage.py
+--partial-ko-profile-sha256	exp	보존된 한국어 응답과 장치 반환을 확인하는 예정 시간 경계의 대체 큐	2026-11-23	scripts/queue_p109c_mixed_visit_count.py
+--report	ok	기존 원본을 검산한 결과의 새 JSON 경로	2026-11-23	scripts/audit_p106b_soda_quote_release.py,scripts/p106b_soda_original_lineage.py
+--stop-by	exp	각 실험의 시간대 포함 절대 마감 시각	2026-11-23	scripts/run_p109c_mixed_visit_count.py,scripts/run_p109c_ko_ifeval_queue.py,scripts/resume_p109c_v2_common_eval.py,scripts/eval_p109c_same_raw_val_cpu.py,scripts/audit_p106b_soda_quote_release.py
+--training-until	exp	방문 횟수 대조의 학습 절대 마감 시각	2026-11-23	scripts/queue_p109c_mixed_visit_count.py
+--uniform-readback	ok	원문 품질 비교의 이미 완료된 균등 팔 결과 파일	2026-11-23	scripts/eval_p109c_same_raw_val_cpu.py
+--uniform-readback-sha256	ok	이미 완료된 균등 팔 결과 파일의 정확한 SHA-256 지정	2026-11-23	scripts/eval_p109c_same_raw_val_cpu.py
+--v1-manifest-sha256	ok	이전 P109C 완주 입력 매니페스트의 정확한 SHA-256 지정	2026-11-23	scripts/eval_p109c_same_raw_val_cpu.py
+--v1-record	ok	공통 원문 품질 비교에 사용할 이전 P109C 완주 기록 경로	2026-11-23	scripts/eval_p109c_same_raw_val_cpu.py
+--visit-count	exp	사전 봉인한 방문 횟수 대조의 공통 평가를 복구하는 선택	2026-11-23	scripts/resume_p109c_v2_common_eval.py
+--adaptive	ok	P107 적응 팔의 보관 인과 원문 평가 경로	2026-11-23	scripts/compare_p107_v11_scored_arms.py
+--after-pair	exp	P107 완주 대조의 기존 두 팔 저장과 반환 기록	2026-11-23	scripts/continue_p107_v11_mask_pair.py
+--arm-receipt	ok	현재 검증하는 팔의 실제 공통 갱신 경계 영수증	2026-11-23	scripts/score_p107_v11_boundary_arm_cpu.py
+--cohort	ok	P107 원문 희귀 목표의 봉인 표본 명세	2026-11-23	scripts/score_p107_v11_boundary_arm_cpu.py
+--cohort-sha256	ok	P107 목표 표본 명세의 SHA-256	2026-11-23	scripts/score_p107_v11_boundary_arm_cpu.py
+--course-share	exp	혼합 갱신에서 응답 감독 손실에 할당한 배율	2026-11-23	scripts/run_p109c_scratch_mixed.py
+--decimal-weight	exp	혼합 갱신에서 자리 보조 손실에 할당한 배율	2026-11-23	scripts/run_p109c_scratch_mixed.py
+--evaluation-profile	ok	기존 공통 평가지의 봉인 요청과 가중치 지정	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--evaluation-profile-sha256	ok	공통 평가 입력 프로필의 SHA-256	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--evaluation-python	exp	작업에 사용하는 기존 평가 환경의 Python 경로	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--evaluation-record	ok	공통 평가의 새 증거 디렉터리	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--evaluation-until	exp	공통 평가의 승인 종료 시각	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--flash-probe	ok	이미 수행한 문서별 Flash 기술 검증 기록	2026-11-23	scripts/continue_p107_v11_mask_pair.py
+--flash-probe-sha256	ok	Flash 기술 검증 영수증의 SHA-256	2026-11-23	scripts/continue_p107_v11_mask_pair.py
+--groups	exp	동결 평가에서 선택한 생성과 선택지 과제 묶음	2026-11-23	scripts/eval_p109c_mixed_v2.py
+--math-attention	exp	같은 문서 경계에서의 MATH 어텐션 실험 경로	2026-11-23	scripts/run_p109c_scratch_mixed.py
+--observe	ok	P107 균등 팔의 보관 인과 원문 평가 경로	2026-11-23	scripts/compare_p107_v11_scored_arms.py
+--pid	ok	선행 작업과 GPU 반환 영수증을 일치시키는 PID	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--probe-record	ok	기술 검증의 새 증거 디렉터리	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--resume-from	exp	봉인된 완전 체크포인트에서 같은 혼합 실험 재개. 한영 혼합은 저장점과 업데이트 기록의 지문도 확인	2026-11-23	scripts/run_p109c_bilingual_mixed.py,scripts/run_p109c_scratch_mixed.py
+--resume-sha256	ok	재개할 체크포인트의 SHA-256	2026-11-23	scripts/run_p109c_bilingual_mixed.py,scripts/run_p109c_scratch_mixed.py
+--rounding-slack	exp	출력 행 보정의 FP16 변환을 앞둔 부등식 여유	2026-11-23	scripts/diag_p108_joint_guarded_output_cpu.py
+--training	ok	실제 저장된 평가 대상 학습 기록 경로	2026-11-23	scripts/diag_p109c_mixed_progress_cpu.py
+--training-manifest-sha256	ok	평가 대상 가중치의 학습 매니페스트 SHA-256	2026-11-23	scripts/eval_p109c_compact_cpu.py,scripts/eval_p109c_ko_ifeval_replies.py,scripts/eval_p109c_mixed_v2.py
+--training-record	ok	동결 평가가 읽는 완주 학습 기록 디렉터리	2026-11-23	scripts/eval_p109c_compact_cpu.py,scripts/eval_p109c_ko_ifeval_replies.py,scripts/eval_p109c_mixed_v2.py
+--until	exp	기존 큐의 시간대가 명시된 승인 마감	2026-11-23	scripts/queue_p109c_v2_after_p107.py
+--visit-plan	ok	갱신별 재귀 방문 횟수를 봉인한 입력 프로필	2026-11-23	scripts/run_p109c_mixed_visit_count.py
+--visit-plan-sha256	ok	재귀 방문 횟수 프로필의 SHA-256	2026-11-23	scripts/run_p109c_mixed_visit_count.py
+--wait-pid	ok	후속 CPU 배포 검증 전에 확인할 학습 소유 PID	2026-11-23	scripts/eval_p109c_compact_cpu.py
+--layout	ok	기존 혼합 패딩에 채울 일반 교과의 봉인 위치표	2026-11-23	scripts/run_p109c_general_course_extension.py
+--layout-sha256	ok	일반 교과 위치표의 정확 SHA-256	2026-11-23	scripts/run_p109c_general_course_extension.py
+--base-source-sha256	ok	일반 교과 확장이 사용하는 기준 학습기 소스의 SHA-256	2026-11-23	scripts/run_p109c_general_course_extension.py
+--replies	ok	한국어 지시 점수에서 재사용하는 저장 응답 파일	2026-11-23	scripts/score_p109c_ko_ifeval_offline.py
+--replies-sha256	ok	한국어 지시 점수가 재사용하는 저장 응답 파일의 SHA-256	2026-11-23	scripts/score_p109c_ko_ifeval_offline.py
+--task-dir	exp	사용자 승인 후 평가 환경 안에서 읽는 봉인 KBS 공식 검사기 디렉터리	2026-11-23	scripts/score_p109c_ko_ifeval_offline.py
+--crossed-guards	exp	희소 출력 편집에서 개발 문구와 값 교차 사례 중 현재 정답을 보호	2026-11-23	scripts/diag_p108_broad_guard_projection_cpu.py
+--fresh	exp	봉인된 P109C 공통 평가를 복구 출력 없이 진행 감시 경로에서 시작	2026-11-23	scripts/resume_p109c_v2_common_eval.py
+--receipt	exp	입력 및 소스 지문을 검증한 실험 영수증을 지정	2026-11-23	scripts/run_p109c_bilingual_mixed.py
+--supervisor	exp	후속 GPU 실행 앞에서 확인할 선행 학습의 종료·장치 반환 영수증을 지정	2026-11-23	scripts/wait_p109_cuda_return.py
+--attempt	ok	P109 Windows CPU 배포 진단의 양의 재시도 번호로 새 출력 경로를 구분	2026-11-23	scripts/diag_p109_248k_win64_cpu.py,scripts/diag_p109_248k_win64_half_history.py,scripts/diag_p109_248k_win64_icu_buffers.py,scripts/diag_p109_248k_win64_icu_text.py
+--balanced-second-pass	exp	P109B 미세 학습에서 둘째 순회의 방문을 배분한 STE 대조 조건 선택	2026-11-23	scripts/run_p109b_micro_ste_learning_pilot.py
+--cache-name	exp	P109C 승인 입력으로 만드는 새 chat32 위치 캐시의 이름을 지정	2026-11-23	scripts/build_p109c_position_cache.py,scripts/build_p109c_v11_handoff.py
+--checkpoint	exp	P109C 학습 재개에 사용할 완전 상태 체크포인트를 지정하고 갱신 위치와 지문을 대조	2026-11-23	scripts/resume_p109c_protected.py,scripts/resume_p109c_scratch330.py
+--checkpoint-sha256	ok	P109C 학습 재개 전에 전달된 체크포인트의 SHA-256을 검증	2026-11-23	scripts/resume_p109c_protected.py,scripts/resume_p109c_scratch330.py
+--compact-course-ce	exp	P109C 위치 재계산 어휘 손실의 교과 위치 압축 대조 선택	2026-11-23	scripts/diag_p109c_ce_position_blocks.py
+--context-ntp	exp	P109C 표 근거 진단에서 문맥 구간 다음 토큰 손실을 추가하는 대조 선택	2026-11-23	scripts/diag_p109c_table_grounding_scores.py
+--deterministic-match	exp	P109C STE 지속 비용 대조에서 고정 결정론 조건 선택	2026-11-23	scripts/diag_p109c_ste_sustained.py
+--existing-aoa-record	exp	P109C AoA 일정의 재개가 명시된 경우에만 기존 관측 기록의 경로를 지정	2026-11-23	scripts/eval_p109c_aoa.py
+--fuse-mlp	exp	P109 248K Windows CPU 진단에서 MLP 버퍼 재사용 대조 선택	2026-11-23	scripts/diag_p109_248k_win64_icu_buffers.py
+--index	exp	P107과 P109C의 정제 v1.1 위치 인덱스를 지정하며 각 도구에서 입력 지문을 대조	2026-11-23	scripts/audit_p109c_v11_partial_overlap.py,scripts/eval_p107_v11_causal_groups_cpu.py,scripts/run_p107_v11_mask_pair.py
+--index-sha256	ok	P107과 P109C의 정제 v1.1 위치 인덱스 SHA-256을 대조	2026-11-23	scripts/audit_p109c_v11_partial_overlap.py,scripts/eval_p107_v11_causal_groups_cpu.py,scripts/run_p107_v11_mask_pair.py
+--native-checkpoint	exp	P109C 교과 손실 기울기 분석의 완료 시점 진단에 읽을 네이티브 체크포인트를 지정	2026-11-23	scripts/diag_p109c_course_gradient_components.py
+--outliers	exp	P109 Qwen 248K INT8 배포 실험의 이상치 경로 0개 또는 8개 선택	2026-11-23	scripts/diag_p109_qwen35_248k_int8_features.py
+--preflight-sha256	ok	P109C 표 근거 실험의 승인 입력과 소스 사전검증 기록 SHA-256을 대조	2026-11-23	scripts/run_p109c_table_grounding.py
+--prior-record	exp	P109C 학습 재개 이전의 원 실행 기록을 지정해 체크포인트 출처를 대조	2026-11-23	scripts/resume_p109c_protected.py,scripts/resume_p109c_scratch330.py
+--raw-ntp	exp	P109C 위치 재계산 어휘 손실 실험에서 원문 다음 토큰 대조 선택	2026-11-23	scripts/diag_p109c_ce_position_blocks.py
+--schedule	exp	P109C 교과 구성기가 읽을 봉인된 배합 일정을 지정	2026-11-23	scripts/compile_p109c_course.py
+--schedule-sha256	ok	P109C 교과 구성기가 읽을 배합 일정의 SHA-256을 대조	2026-11-23	scripts/compile_p109c_course.py
+--stage	exp	P109C 교과 손실 기울기의 교과 투입 전과 학습 완료 시점 중 하나를 선택	2026-11-23	scripts/diag_p109c_course_gradient_components.py
+--ste-per-micro	exp	P109C 무부모 학습에서 마이크로배치별 STE 후보를 명시적으로 선택	2026-11-23	scripts/run_p109c_scratch330.py
+--step	exp	P109C 학습 재개에서 저장점이 기록한 완료 갱신 수를 지정하고 대조	2026-11-23	scripts/resume_p109c_protected.py,scripts/resume_p109c_scratch330.py
+--after-evaluation	ok	P107 평가 영수증의 완료 상태를 확인한 뒤 v1.1 마스크 대조를 시작하는 선행 조건	2026-11-23	scripts/run_p107_v11_mask_pair.py
+--after-run	ok	P107 선행 실행의 완료와 장치 반환을 확인하는 기록 경로	2026-11-23	scripts/diag_p107_v11_full_packed_attention.py
+--arm-receipt-sha256	ok	P107 묶음 어텐션과 옵티마이저 대조 입력 영수증의 SHA-256을 검증	2026-11-23	scripts/diag_p107_v11_full_packed_attention.py,scripts/diag_p107_v11_packed_optimizer.py
+--arms	exp	P108B 검토 및 평가 실행에서 비교할 실험 팔을 명시적으로 선택	2026-11-23	scripts/diag_p108b_evaluate.py,scripts/diag_p108b_policy.py
+--aya-rows	exp	P106B SODA 계보 대조에 승인된 로컬 Aya 부분본 JSONL을 지정	2026-11-23	scripts/p106b_soda_original_lineage.py
+--aya-sha256	ok	P106B SODA 계보 대조에 전달된 로컬 Aya 부분본 SHA-256을 검증	2026-11-23	scripts/p106b_soda_original_lineage.py
+--before	exp	P106B HellaSwag 증분 평가에서 시간대가 명시된 승인 종료 시각을 지정	2026-11-23	scripts/run_p106b_hellaswag_exact_suffix.py
+--context	exp	P077 G4 네이티브 진단의 1,024 또는 2,048 토큰 문맥 조건을 선택	2026-11-23	scripts/p077_g4_blocked_runtime.py
+--fd	ok	P108 CPU 요청 계측의 내보내기와 작업 프로세스가 전달받는 파일 디스크립터	2026-11-23	scripts/diag_p108_g4_cpu_request.py
+--interval-seconds	ok	P106B HellaSwag 증분 평가의 구간별 경과 시간 상한을 지정	2026-11-23	scripts/run_p106b_hellaswag_exact_suffix.py
+--kobest-recovery	exp	P106B Bonsai 선택형 평가에서 놓친 KoBEST 평가 구간을 회수하는 경로 선택	2026-11-23	scripts/diag_p106b_bonsai_native_mc.py
+--last-attention	exp	P077 근거 값 읽기 학습에서 마지막 어텐션을 사용하는 별도 대조 선택	2026-11-23	scripts/train_p077_grounded_value_readout.py
+--mtp	exp	P106B SODA 교사 시험에서 완결한 MTP 비활성 팔과 대조할 후보 선택	2026-11-23	scripts/diag_p106b_soda_exact_teacher.py
+--old-kv-int4	exp	P077 장문 네이티브 대조에서 앞부분 KV의 키 또는 값 또는 양쪽을 INT4로 지정	2026-11-23	scripts/p077_g4_blocked_runtime.py
+--ordinal	ok	P014E CPU 실행기에서 자식 프로세스가 수행할 계측 순번을 지정	2026-11-23	scripts/diag_p014e_cpu_native.py,scripts/diag_p014e_cpu_single_core.py,scripts/diag_p014e_cpu_single_core_resume.py
+--prefill-query-batch	exp	P077 G4 prefill의 쿼리 묶음 대조 선택. 결과 065의 실제 요청 교차 대조에서 시간 단축 미확인	2026-11-23	scripts/p077_g4_blocked_runtime.py
+--publish-from	exp	P106B IFEval의 전체 종료 영수증과 독립 검산 행이 일치할 때 결과 인덱스를 작성	2026-11-23	scripts/p106b_ifeval_response_readback.py
+--question	exp	P108 동결 편집 응답 재현에 사용할 실제 질문을 명시적으로 추가	2026-11-23	scripts/replay_p108_frozen_edit.py
+--receipt-dir	exp	P108 동결 편집 응답 재현의 새 감사 디렉터리를 지정	2026-11-23	scripts/replay_p108_frozen_edit.py
+--reference-sha	ok	P106B Bonsai Core6 완결 검산에 쓰는 기준 파일 지문을 검증	2026-11-23	scripts/readback_p106b_bonsai_exact_core6.py
+--rope	exp	P077 2,048 토큰 네이티브 진단의 RoPE 타일 후보를 선택	2026-11-23	scripts/diag_p077_grounded_near_native.py
+--share-ffn-workspace	exp	P077 G4 어텐션과 FFN 작업 배열을 공유하는 대조 선택. 결과 065에 단계별 RSS와 출력 동등성 기록	2026-11-23	scripts/p077_g4_blocked_runtime.py
+--short-control-of	exp	P077 장문 실험의 조건을 확인할 기존 기록을 지정해 단문 대조에 사용	2026-11-23	scripts/p077_g4_blocked_runtime.py
+--slots	exp	P106B SODA 교사 후보의 요청 슬롯 1개 또는 2개를 선택하며 2개는 MTP 비교에서 적용	2026-11-23	scripts/diag_p106b_soda_exact_teacher.py
+--v3	exp	P077 근거 이동 네이티브 진단에서 V3 후보를 선택	2026-11-23	scripts/diag_p077_grounded_near_native.py
+--assign	exp	정제 CLI. 배정 묶음의 범위와 크기를 계산하며 작업 위치표를 사용하는 모드. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--bind-legacy	exp	정제 CLI. 기존 검증 캐시와 1차 통합본의 대응 범위를 확인하는 모드. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/first_cleanup_pass.py
+--cleaned	exp	정제 CLI. 작업 대상 정제 TXT 경로를 명시. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--compact-after	exp	정제 CLI. 배정 끝 이후 긴 형식 후보의 발췌를 표시하는 모드. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--deduplicate	exp	정제 CLI. 같은 학습 구분 내 완전 일치 원문의 반복 위치를 작업 표에 반영. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--defer-current	exp	정제 CLI. 현재 묶음을 미처리로 남기고 뒤 묶음으로 배정을 이동. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--docs	exp	정제 CLI. 집중 검토에서 표시할 문서 번호 범위를 지정. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--excerpt	exp	정제 CLI. 배정 문서에서 확인할 줄 범위를 반복 지정. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/first_cleanup_pass.py,scripts/next_cleanup_batch.py
+--first	exp	정제 CLI. 지정한 첫 문서의 배정을 조회하거나 승인된 묶음을 접수. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/append_cleanup_batch.py,scripts/next_cleanup_batch.py
+--focus	exp	정제 CLI. 형식 후보와 문맥을 출력하는 배정 미리보기. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--focus-batches-after	exp	정제 CLI. 지정 배정 이후 후보 표시 분량에 따라 묶음 경계를 결정. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--keep-remaining	exp	정제 CLI. 직접 읽고 유지 판정한 수동 문서의 승인 개수를 명시. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/append_cleanup_batch.py
+--merge	exp	정제 CLI. 기존 정제 저장분과 남은 1차 결과의 통합 출력 지정. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/first_cleanup_pass.py
+--metadata	exp	정제 CLI. 정제 상태를 담는 작업 위치표 경로를 명시. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--metadata-after	exp	정제 CLI. 배정 끝 이후 출생·사망 연도와 일치하는 분류 중복을 정리. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--pair	exp	정제 CLI. 원문 ID와 기존 저장분·1차 결과의 연결 위치를 확인해 기록. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/first_cleanup_pass.py
+--prepare-after	exp	정제 CLI. 배정 끝 이후 자동 정제 초안을 준비. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--preserve-through	exp	정제 CLI. 중복 처리에서 유지할 기존 배정의 마지막 문서 번호. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--recover-previous	exp	정제 CLI. 기존 완료 영수증을 해당 정제본 작업 위치표로 복구. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--second-pass	exp	정제 CLI. 현재 배정에서 2차 검토할 1차 본문 범위를 표시. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/first_cleanup_pass.py
+--source-batch-bytes	exp	정제 CLI. 후속 집중 배정의 원문 분량 한도를 지정. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--split-current	exp	정제 CLI. 현재 미저장 묶음을 나누고 이후 경계를 보존. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--split-planned	exp	정제 CLI. 후속 미배정 묶음 하나의 경계를 조정. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--status	ok	정제 CLI. 작업 위치표를 초기화하지 않고 저장 위치와 잔여량을 확인. 해당 정제 자료의 사용자 권한은 별개	2026-11-23	scripts/next_cleanup_batch.py
+--claim	ok	연구 색인의 검증된 비교를 기록된 판정 범위로 제한하는 읽기 전용 조회	2026-11-24	scripts/research_catalog.py
+--dataset	ok	연구 색인의 비교군을 기존 평가 데이터 이름으로 제한하는 읽기 전용 조회	2026-11-24	scripts/research_catalog.py
+--candidate-name	ok	동결 실사용 비교에서 기존 판본명과 중복되지 않는 새 판본 식별자	2026-11-24	scripts/audit_p109c_frozen_model_comparison.py
+--candidate-record	ok	이미 종료한 후보의 봉인 실사용 답 경로를 비교에 추가	2026-11-24	scripts/audit_p109c_frozen_model_comparison.py
+--candidate-semantic	ok	후보 원답과 루브릭의 지문이 같은 의미 판독 파일을 연결	2026-11-24	scripts/audit_p109c_frozen_model_comparison.py
+--hellaswag-complement	ok	같은 완주 평가 파일에서 이미 채점한 HellaSwag 누락 과제만 연결	2026-11-24	scripts/audit_p109c_candidate_official_pairs.py
+--raw	exp	P109C 통합 학습 프로필 준비에서 원문 창 편성을 선택	2026-11-24	scripts/run_p109c_integrated_scratch.py
+--course	exp	P109C 통합 학습 프로필 준비에서 교과 CE 비중 일정을 선택	2026-11-24	scripts/run_p109c_integrated_scratch.py
+--value	exp	P109C 통합 학습 프로필 준비에서 학습 전용 값 위치 감독 일정을 선택	2026-11-24	scripts/run_p109c_integrated_scratch.py
+--transfer	exp	P109C 통합 학습 프로필 준비에서 검증된 한영 짝의 답 전달 계수를 선택	2026-11-24	scripts/run_p109c_integrated_scratch.py
+--padding	exp	P109C 통합 학습 프로필 준비에서 감독 없는 빈 배치의 본체 호출 여부를 선택	2026-11-24	scripts/run_p109c_integrated_scratch.py
+--resume-checkpoint	exp	봉인 프로필과 같은 실제 갱신 기록의 저장점을 복원. 저장점 지문 및 기존 실행 승인 범위가 필요	2026-11-24	scripts/run_p109c_integrated_scratch.py
+--origin	ok	연구 위키의 방법론 판정을 근거 출처로 제한하는 읽기 전용 조회	2026-11-24	scripts/research_catalog.py
+--decision	ok	연구 위키의 방법론 판정을 적용 상태로 제한하는 읽기 전용 조회	2026-11-24	scripts/research_catalog.py
+--allocator-margin	exp	P109의 6GiB 카드 보호에서 데스크톱과 CUDA 자체 사용량에 할당하지 않는 MiB. 장치 상한과 종료 감시를 적용한다.	2026-11-24	scripts/diag_p109_full_train_throughput.py
+--fraction	exp	P109의 감시 프로세스가 내부 자식에 넘기는 CUDA allocator 비율. 실제 카드 상한과 함께 적용한다.	2026-11-24	scripts/diag_p109_full_train_throughput.py
+--reserve-seconds	ok	P109의 전량 시간 계산에 사용하는 평가와 저장의 가정값. 실제 GPU 학습이나 기존 파일을 변경하지 않는다.	2026-11-24	scripts/diag_p109_mixed_budget_readback.py

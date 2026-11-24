@@ -8,6 +8,7 @@ from __future__ import annotations
 from contextlib import nullcontext
 from dataclasses import asdict
 import copy
+import json
 import random
 import time
 
@@ -19,6 +20,9 @@ from .hybrid_mntp import causal_batch, mntp_batch, objective_mean, uniform_mntp_
 
 SCHEMA = "P107_ADAPTIVE_TRAINING_BOUNDARY_V1"
 KD_SCHEMA = "P107_ADAPTIVE_TRAINING_BOUNDARY_V2_CAUSAL_KD"
+SCALED_SCHEMA = "P107_ADAPTIVE_TRAINING_BOUNDARY_V3_SCALED_GROUP"
+SCALED_KD_SCHEMA = "P107_ADAPTIVE_TRAINING_BOUNDARY_V4_SCALED_CAUSAL_KD"
+CONSUME_SCALED_GROUP = "CONSUME_GROUP_COMMIT_FINITE_OBSERVATIONS_ADVANCE_SCHEDULE_V1"
 
 
 class SyntheticDocumentStream:
@@ -69,7 +73,7 @@ class AdaptiveMNTPTrainer:
     """
     def __init__(self, model, optimizers, source, *, policy_config, mode,
                  masked_micros, signature, collect_ids=None, autocast_dtype=None, clip=1.0,
-                 causal_distillation=None):
+                 causal_distillation=None, scaled_group_factory=None, overflow_policy=None):
         if (mode not in ("uniform", "observe", "adaptive") or not isinstance(signature, str)
                 or len(signature) != 64 or any(c not in "0123456789ABCDEF" for c in signature)):
             raise ValueError("명시한 mode와 64자리 실행 서명이 필요합니다")
@@ -99,6 +103,43 @@ class AdaptiveMNTPTrainer:
                 raise ValueError("명시한 CausalTeacherKL 연결이 필요합니다")
             causal_distillation.bind_student(model, policy_config.vocab_size)
             self.kd_contract = copy.deepcopy(causal_distillation.contract)
+        self.scaled_group_factory = scaled_group_factory
+        self.overflow_policy = overflow_policy
+        self.scaled_group = self.scaled_group_contract = None
+        if scaled_group_factory is None:
+            if overflow_policy is not None:
+                raise ValueError('overflow policy requires an explicit scaled-group factory')
+        else:
+            if not callable(scaled_group_factory) or overflow_policy != CONSUME_SCALED_GROUP:
+                raise ValueError('scaled training requires the explicit consumed-group overflow policy')
+            self.scaled_group = self._fresh_scaled_group()
+            self.scaled_group_contract = copy.deepcopy(self.scaled_group.contract)
+
+    def _fresh_scaled_group(self):
+        group = self.scaled_group_factory()
+        required = ('backward', 'finish', 'state_dict', 'load_state_dict', 'validate_checkpoint')
+        if (any(not callable(getattr(group, name, None)) for name in required)
+                or getattr(group, 'run_signature', None) != self.signature
+                or tuple(map(id, getattr(group, 'optimizers', ()))) != tuple(map(id, self.optimizers))
+                or set(map(id, getattr(group, 'parameters', ()))) !=
+                    {id(p) for p in self.model.parameters() if p.requires_grad}
+                or group.contract.get('device') != str(self.device)):
+            raise ValueError('scaled group must bind the same run, parameters and optimizer objects')
+        state = group.state_dict()
+        if (state.get('attempts'), state.get('steps'), state.get('skips')) != (0, 0, 0):
+            raise ValueError('scaled-group factory must return a fresh clean controller')
+        return group
+
+    def _validate_scaled_group(self):
+        if self.scaled_group is not None:
+            if (self.scaled_group.contract != self.scaled_group_contract
+                    or self.scaled_group.attempts != self.cursor):
+                raise ValueError('scaled-group contract or consumed-input cursor changed')
+
+    def _boundary_schema(self):
+        if self.scaled_group is None:
+            return SCHEMA if self.causal_distillation is None else KD_SCHEMA
+        return SCALED_SCHEMA if self.causal_distillation is None else SCALED_KD_SCHEMA
 
     def _validate_teacher(self):
         if self.causal_distillation is not None:
@@ -132,6 +173,7 @@ class AdaptiveMNTPTrainer:
         if self.active or self.dirty:
             raise ValueError("완료 경계 또는 전체 상태 복원이 필요합니다")
         self._validate_teacher()
+        self._validate_scaled_group()
         self._sync()
         started = time.perf_counter()
         source_before, rng_before = cpu_copy(self.source.state_dict()), self._rng()
@@ -143,6 +185,10 @@ class AdaptiveMNTPTrainer:
         forward_attempted = False
         metrics = dict(update=self.cursor, executed_input_tokens=0, masked_targets=0, causal_targets=0,
                        model_forwards=0, observed_micro_batches=0, id_seconds=0.0, observe_seconds=0.0)
+        if self.scaled_group is not None:
+            metrics.update(loss_scaling_enabled=True, overflow_policy=self.overflow_policy,
+                           completion_unit='CONSUMED_INPUT_GROUP',
+                           optimizer_phase_includes_unscale_and_clip=True)
         if self.causal_distillation is not None:
             metrics.update(causal_kd_micro_batches=0, teacher_forwards=0,
                            causal_ce_mean=0.0, causal_kl_mean=0.0)
@@ -151,6 +197,8 @@ class AdaptiveMNTPTrainer:
             pairs = self.source.next_update()
             if not isinstance(pairs, (list, tuple)) or not self.masked_micros < len(pairs):
                 raise ValueError("causal과 MNTP를 모두 포함한 명시 micro 입력이 필요합니다")
+            if self.scaled_group is not None and self.scaled_group.expected_backwards != len(pairs):
+                raise ValueError('scaled group backward count must equal all supplied micros')
             if self.policy:
                 self.policy.begin_update(self.cursor, split="train", expected_observations=self.masked_micros)
                 policy_started = True
@@ -202,7 +250,10 @@ class AdaptiveMNTPTrainer:
                     self.policy.observe(batch, prediction_ids, observation_index=ticket)
                     metrics["observe_seconds"] += time.perf_counter() - at
                     ticket += 1
-                scaled.backward()
+                if self.scaled_group is None:
+                    scaled.backward()
+                else:
+                    self.scaled_group.backward(scaled)
                 weighted_loss += float(scaled.detach())
                 metrics["executed_input_tokens"] += batch.executed_input_tokens
                 metrics["model_forwards"] += 1
@@ -212,8 +263,9 @@ class AdaptiveMNTPTrainer:
             at = time.perf_counter()
             if any(p.grad is None for p in self.model.parameters() if p.requires_grad):
                 raise ValueError("일부 trainable parameter의 gradient가 없습니다")
-            norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip, error_if_nonfinite=True)
-            metrics["pre_clip_gradient_norm"] = float(norm)
+            if self.scaled_group is None:
+                norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.clip, error_if_nonfinite=True)
+                metrics["pre_clip_gradient_norm"] = float(norm)
             # 정책 검증을 먼저 닫는다. optimizer 실패는 전체 복원 전 재사용을 거부한다.
             if self.policy:
                 metrics["policy_commit"] = self.policy.finish_update(accepted=True)
@@ -223,8 +275,19 @@ class AdaptiveMNTPTrainer:
             metrics["clip_and_commit_seconds"] = time.perf_counter() - at
             at = time.perf_counter()
             optimizer_attempted = True
-            for opt in self.optimizers:
-                opt.step()
+            if self.scaled_group is None:
+                for opt in self.optimizers:
+                    opt.step()
+            else:
+                # Finite-loss observations/source are consumed once even if all
+                # optimizer steps are skipped. The session cursor counts input
+                # groups; applied optimizer groups and skips stay separate.
+                report = self.scaled_group.finish(clip_norm=self.clip)
+                metrics.update(scaled_optimizer_group=report,
+                               optimizer_applied=report['status'] == 'STEPPED_ALL',
+                               optimizer_groups_applied=report['completed_optimizer_groups'],
+                               optimizer_groups_skipped=report['skipped_groups'],
+                               pre_clip_gradient_norm=report['pre_clip_gradient_norm'])
             self._sync()
             metrics["optimizer_seconds"] = time.perf_counter() - at
             self.cursor += 1
@@ -249,6 +312,7 @@ class AdaptiveMNTPTrainer:
         if self.active or self.dirty or any(p.grad is not None for p in self.model.parameters()):
             raise ValueError("gradient가 없는 정상 완료 경계에서만 저장할 수 있습니다")
         self._validate_teacher()
+        self._validate_scaled_group()
         state = dict(schema=SCHEMA, signature=self.signature, mode=self.mode, cursor=self.cursor,
                     config=asdict(self.config), autocast_dtype=str(self.autocast_dtype), clip=self.clip,
                     masked_micros=self.masked_micros, model=cpu_copy(self.model.state_dict()),
@@ -258,13 +322,17 @@ class AdaptiveMNTPTrainer:
                     rng=self._rng(), training=self.model.training)
         if self.causal_distillation is not None:
             state.update(schema=KD_SCHEMA, causal_distillation=copy.deepcopy(self.kd_contract))
+        if self.scaled_group is not None:
+            state.update(schema=self._boundary_schema(), overflow_policy=self.overflow_policy,
+                         scaled_group_contract=copy.deepcopy(self.scaled_group_contract),
+                         scaled_optimizer_group=self.scaled_group.state_dict())
         return state
 
     def load_state_dict(self, state):
         if self.active:
             raise ValueError("진행 중 update에는 복원할 수 없습니다")
         self._validate_teacher()
-        expected_schema = SCHEMA if self.causal_distillation is None else KD_SCHEMA
+        expected_schema = self._boundary_schema()
         if state.get("causal_distillation") != self.kd_contract:
             raise ValueError("저장 대상 교사 계약이 다릅니다")
         if (state.get("schema") != expected_schema or state.get("signature") != self.signature
@@ -274,6 +342,18 @@ class AdaptiveMNTPTrainer:
                 or len(state.get("optimizers", [])) != len(self.optimizers)
                 or type(state.get("cursor")) is not int or state["cursor"] < 0):
             raise ValueError("실행 서명·구조·optimizer·경계가 다릅니다")
+        if self.scaled_group is None:
+            if any(state.get(key) is not None for key in
+                   ('overflow_policy', 'scaled_group_contract', 'scaled_optimizer_group')):
+                raise ValueError('unscaled trainer cannot restore a scaled-group boundary')
+        else:
+            if (state.get('overflow_policy') != self.overflow_policy
+                    or json.dumps(state.get('scaled_group_contract'), sort_keys=True, allow_nan=False) !=
+                       json.dumps(self.scaled_group_contract, sort_keys=True, allow_nan=False)):
+                raise ValueError('scaled-group checkpoint policy/contract differs')
+            checked = self.scaled_group.validate_checkpoint(state.get('scaled_optimizer_group'))
+            if checked['attempts'] != state['cursor']:
+                raise ValueError('scaled-group checkpoint and consumed-input cursor differ')
         current = self.model.state_dict()
         if set(current) != set(state["model"]) or any(current[n].shape != state["model"][n].shape
                 or current[n].dtype != state["model"][n].dtype for n in current):
@@ -299,6 +379,13 @@ class AdaptiveMNTPTrainer:
             self.model.train(state["training"])
             self._restore_rng(state["rng"])
             self.model.zero_grad(set_to_none=True)
+            if self.scaled_group_factory is not None:
+                group = self._fresh_scaled_group()
+                if group.contract != self.scaled_group_contract:
+                    raise ValueError('fresh scaled-group factory contract changed during restore')
+                group.load_state_dict(state['scaled_optimizer_group'])
+                self.scaled_group = group
+                self._restore_rng(state['rng'])
             self.cursor, self.dirty = state["cursor"], False
         except BaseException:
             # 실패한 부분 복원을 정상 trainer로 노출하지 않는다.

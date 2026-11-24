@@ -12,8 +12,10 @@ from pathlib import Path, PureWindowsPath
 
 try:
     from scripts.dryrun_batch import launcher_calls
+    from scripts.runlog import _plan_of
 except ModuleNotFoundError:  # direct `python scripts/check_shell_entrypoints.py`
     from dryrun_batch import launcher_calls
+    from runlog import _plan_of
 
 ROOT = Path(__file__).resolve().parent.parent
 COMMON_SHELL_FILES = (
@@ -26,6 +28,9 @@ COMMON_SHELL_FILES = (
     ROOT / "scripts" / "shell" / "tool_wandb_bench_backfill.sh",
 )
 WANDB_MIN_TOKENS = 50_000_000
+ASSIGNMENT = re.compile(r"^([A-Za-z_]\w*)=(.*)$")
+VARIABLE = re.compile(r"\$(?:\{([A-Za-z_]\w*)\}|([A-Za-z_]\w*))\Z")
+PLAN_SUFFIX = re.compile(r"\$\{[A-Za-z_]\w*\}")
 
 
 def shell_files() -> tuple[Path, ...]:
@@ -43,21 +48,52 @@ def experiment_log_contract_errors(path: Path, data: bytes) -> list[str]:
     """
     if not path.name.startswith("run_P") or not path.name.endswith(".sh"):
         return []
-    text = data.decode("utf-8", errors="replace")
-    active = [
-        line.strip()
-        for line in text.splitlines()
-        if line.strip() and not line.lstrip().startswith("#")
-    ]
-    runlog_lines = [line for line in active if "scripts/runlog.py" in line]
-    errors = []
-    if not runlog_lines:
-        errors.append("does not invoke scripts/runlog.py")
-        return errors
-    joined = " ".join(active)
-    if "--name P" not in joined:
-        errors.append("runlog name does not start with a P-plan number")
-    if " -- " not in joined:
+    text = re.sub(r"\\[ \t]*\n[ \t]*", " ", data.decode("utf-8", errors="replace"))
+    assignments: dict[str, str] = {}
+    errors: list[str] = []
+    saw_runlog = saw_child = False
+    for line in text.splitlines():
+        line = line.strip()
+        assignment = ASSIGNMENT.fullmatch(line)
+        if not assignment and "scripts/runlog.py" not in line:
+            continue
+        try:
+            words = shlex.split(line, comments=True)
+        except ValueError:
+            continue  # the independent bash syntax check owns parse errors
+        if assignment:
+            name = assignment[1]
+            assignments.pop(name, None)
+            if len(words) == 1:
+                value = words[0].split("=", 1)[1]
+                prefix = PLAN_SUFFIX.split(value, maxsplit=1)[0]
+                plan = _plan_of(prefix)
+                if plan and (prefix == value or prefix[len(plan):].startswith(("_", "-"))):
+                    assignments[name] = value
+        if "scripts/runlog.py" not in words:
+            continue
+        saw_runlog = True
+        args = words[words.index("scripts/runlog.py") + 1:]
+        if "--" in args:
+            delimiter = args.index("--")
+            saw_child |= delimiter + 1 < len(args)
+            args = args[:delimiter]
+        try:
+            run_name = args[args.index("--name") + 1]
+        except (IndexError, ValueError):
+            run_name = ""
+        reference = VARIABLE.fullmatch(run_name)
+        if reference:
+            if f"'{run_name}'" in line:
+                run_name = ""
+            else:
+                run_name = assignments.get(reference[1] or reference[2], "")
+        if not _plan_of(run_name):
+            if "runlog name does not start with a P-plan number" not in errors:
+                errors.append("runlog name does not start with a P-plan number")
+    if not saw_runlog:
+        return ["does not invoke scripts/runlog.py"]
+    if not saw_child:
         errors.append("runlog child delimiter `--` is missing")
     return errors
 
@@ -180,7 +216,7 @@ def main() -> int:
             errors.append(f"bad shebang: {path.relative_to(ROOT).as_posix()}")
         if b"\r" in data:
             errors.append(f"CR byte found: {path.relative_to(ROOT).as_posix()}")
-        if os.name != "nt" and not os.access(path, os.X_OK):
+        if os.name != "nt" and not path.name.endswith("-done.sh") and not os.access(path, os.X_OK):
             errors.append(f"not executable: {path.relative_to(ROOT).as_posix()}")
         for detail in experiment_log_contract_errors(path, data):
             errors.append(

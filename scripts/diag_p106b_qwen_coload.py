@@ -29,6 +29,8 @@ OUTPUT = ROOT / 'test_result/evidence/101_P106B_Stage6aW_qwen_chat32_coload_role
 
 
 class QwenSession(Session):
+    expected_slots = 1
+
     def __enter__(self):
         from scripts.diag_p106_vram_sample import read_memory
         from scripts.diag_p106b_online_rate5 import capture_server_line
@@ -60,7 +62,8 @@ class QwenSession(Session):
                 except (OSError, ValueError): time.sleep(.25)
             else: raise TimeoutError('owned teacher health deadline')
             self.props = self.request('/props')
-            if self.props.get('total_slots') != 1: raise ValueError('one slot not confirmed')
+            if self.props.get('total_slots') != self.expected_slots:
+                raise ValueError('declared slot count not confirmed')
             self.startup_sec = time.perf_counter() - before
             return self
         except BaseException:

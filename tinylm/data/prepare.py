@@ -533,6 +533,8 @@ def _ensure_bpt(meta):
         if meta.get("hf_tokenizer"):
             from ..hf_spec import load_hf_tokenizer
             tok, _ = load_hf_tokenizer(meta["hf_tokenizer"])
+        elif meta.get("tokenizer_lineage") == "chat32":
+            tok = Tokenizer.from_file(str(chat_tokenizer_path(meta["data"])))
         else:
             tok = Tokenizer.from_file(str(tokenizer_path(meta["data"])))
         _td = np.dtype(meta.get("token_dtype", "uint16"))
@@ -574,7 +576,7 @@ def spam_signature(text, min_chars=50_000):
 
 
 def prepare(name, n_tokens, val_frac=0.005, exact=False,
-            doc_filter=False, doc_min_chars=50_000, hf_tok=None, chat32=False):
+            doc_filter=False, doc_min_chars=50_000, hf_tok=None, chat32=False, *, existing_only=False):
     """★P067(2026-08-22) — `hf_tok` 은 **외부 HF 모델 폴더 경로**다.
 
     주면 우리 BPE 대신 그 모델의 `tokenizer.json` 으로 토큰화하고
@@ -586,6 +588,8 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
     (있으면 그 캐시, 없으면 정확히 그 크기로 신규 생성.) 토큰스윕처럼 '모든 예산이 같은 풀에서 샘플'해야
     할 때, 더 큰 캐시가 존재해도 특정 크기를 콕 집어 요청하는 용도."""
     n_tokens = int(n_tokens)
+    if existing_only and (not exact or name == "synthetic"):
+        raise ValueError("existing-only preparation requires an exact named cache")
     if chat32:
         if name == "synthetic" or name not in DATASETS:
             raise ValueError("chat32 requires a named real-data corpus")
@@ -593,7 +597,8 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
             raise ValueError("chat32 requires exact cache, no HF tokenizer and supported corpus")
         # New token IDs must never reuse the legacy cache or an external HF cache.
         print("[chat32] isolated new-tokenizer cache; legacy checkpoint IDs are incompatible")
-    DATA_CACHE.mkdir(parents=True, exist_ok=True)
+    if not existing_only:
+        DATA_CACHE.mkdir(parents=True, exist_ok=True)
 
     if name != "synthetic":
         if exact:
@@ -623,7 +628,9 @@ def prepare(name, n_tokens, val_frac=0.005, exact=False,
                 if name in TOKEN_BALANCED_DATASETS:
                     _validate_token_balanced_cache(d, m)
                 print(f"[data] 정확 캐시 사용(exact, 상위호환 무시): {n_tokens/1e6:.1f}M ({name}) -> {d}")
-                return _ensure_bpt(m)
+                return m if existing_only else _ensure_bpt(m)
+            if existing_only:
+                raise FileNotFoundError(f"resume requires the intact existing cache: {d}")
             if chat32 and d.exists():
                 raise FileExistsError(f"partial chat32 cache needs user review: {d}")
             print(f"[data] 정확 캐시({name}_{n_tokens}) 없음 → 정확히 그 크기로 신규 생성(상위호환 무시)")
