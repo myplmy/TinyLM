@@ -69,12 +69,12 @@ def measure(deadline):
         if time() >= deadline:
             raise TimeoutError("the frozen CPU audit reached its authorized return time")
         row_counts = Counter()
-        for lane, index in order[order[:, 0] >= 0]:
-            _, _, batch = integrated.supervised.course_microbatch(bundle, slots, address, lane, index)
-            for index, (kind, segment) in enumerate(zip(batch.kinds, batch.segments, strict=True)):
+        for lane, slot in order[order[:, 0] >= 0]:
+            _, _, batch = integrated.supervised.course_microbatch(bundle, slots, address, lane, slot)
+            for row_index, (kind, segment) in enumerate(zip(batch.kinds, batch.segments, strict=True)):
                 values = lengths(kind, segment)
                 if lane == slots.lane:
-                    name = "paired_ko" if index % 2 == 0 else "paired_en"
+                    name = "paired_ko" if row_index % 2 == 0 else "paired_en"
                 elif lane == slots.lane - 1:
                     name = "packed_relation"
                 else:
