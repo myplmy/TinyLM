@@ -22,9 +22,13 @@ PROMPTS = {
     "ko": "답에 넣을 색 이름의 순서는 {values}입니다. answer 하나를 키로 갖는 JSON 객체만 쓰세요. 값은 색 이름을 주어진 순서로 한 칸씩 띄워 넣은 문자열입니다.",
     "en": "The colors for the answer, in order, are {values}. Output only a JSON object with one key, answer. Its string value must contain the colors in the stated order, separated by single spaces.",
 }
+VERBATIM = {
+    "ko": "답 내용은 {values}입니다. answer 하나를 키로 갖고 답 내용 전체를 문자열 값으로 넣은 JSON 객체만 쓰세요.",
+    "en": "The answer content is {values}. Output only a JSON object with one key, answer, whose string value is that entire content.",
+}
 
 
-def panel(tokenizer):
+def panel(tokenizer, verbatim=False):
     manifest = baseline.completed.read_json(baseline.MANIFEST)
     audit = baseline.completed.read_json(baseline.AUDIT)
     if (manifest["rows"] != 200 or manifest["concat_sha256"] != baseline.ARCHIVE_SHA
@@ -49,7 +53,8 @@ def panel(tokenizer):
             for offset in range(len(sequence)):
                 items = repeated[offset:offset+count]
                 values = [value for _, value in items]
-                text = PROMPTS[language].format(values=", ".join(values))
+                template = VERBATIM[language] if verbatim else PROMPTS[language]
+                text = template.format(values=(" " if verbatim else ", ").join(values))
                 prompt = baseline.serialize({"messages": baseline.manual.prompt_messages(text)}, "chatml",
                                             add_generation_prompt=True)
                 ids = tokenizer.encode(prompt).ids
@@ -72,6 +77,7 @@ def score(answer, expected):
 def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--stop-by", required=True, type=datetime.fromisoformat)
+    parser.add_argument("--verbatim", action="store_true", help="present the same answer string already joined")
     args = parser.parse_args()
     if (args.stop_by.tzinfo is None or not datetime.now().astimezone() < args.stop_by <= END
             or os.sched_getaffinity(0) != {14} or os.environ.get("CUDA_VISIBLE_DEVICES") != ""):
@@ -81,12 +87,22 @@ def main():
     torch.set_num_interop_threads(1)
     checkpoint = baseline.reference.checkpoint()
     tokenizer = baseline.completed.load_tokenizer()
-    cases = panel(tokenizer)
-    OUT.mkdir(exist_ok=False)
+    cases = panel(tokenizer, args.verbatim)
+    output = OUT.with_name("p109c_json_output_verbatim_cpu_20261126") if args.verbatim else OUT
+    earlier_sha = None
+    if args.verbatim:
+        previous = OUT / "inputs.json"
+        old = baseline.completed.read_json(previous)["cases"]
+        identity = lambda case: (case["id"], case["originals"], case["expected"])
+        if [identity(case) for case in cases] != [identity(case) for case in old]:
+            raise ValueError("verbatim controls must use the same twenty composed answers")
+        earlier_sha = baseline.reference.file_sha(previous)
+    output.mkdir(exist_ok=False)
     publish = baseline.native.publish
-    inputs = OUT / "inputs.json"
+    inputs = output / "inputs.json"
     publish(inputs, dict(cases=cases, source_sha256=baseline.reference.file_sha(Path(__file__)),
                          model_sha256=baseline.reference.CHECKPOINT_SHA256, previous_answers_sha256=baseline.ARCHIVE_SHA,
+                         previous_composition_input_sha256=earlier_sha, verbatim=args.verbatim,
                          max_new=baseline.MAX_NEW, cutoff=args.stop_by.isoformat()))
     model = baseline.completed.load_model(checkpoint, 2942, "cpu")
     model.cfg.kv_dtype = "fp32"
@@ -107,8 +123,8 @@ def main():
                              metadata=meta, exact=exact, usable=usable))
     if baseline.reference.file_sha(checkpoint) != baseline.reference.CHECKPOINT_SHA256:
         raise ValueError("the v3 weight bytes changed")
-    publish(OUT / "report.json", dict(status="COMPLETE", input_sha256=baseline.reference.file_sha(inputs), rows=rows,
-                                     correct=sum(row["exact"] for row in rows), usable=sum(row["usable"] for row in rows)))
+    publish(output / "report.json", dict(status="COMPLETE", input_sha256=baseline.reference.file_sha(inputs), rows=rows,
+                                        correct=sum(row["exact"] for row in rows), usable=sum(row["usable"] for row in rows)))
     print("P109C_JSON_OUTPUT", len(rows), sum(row["exact"] for row in rows), sum(row["usable"] for row in rows), flush=True)
     return 0
 
