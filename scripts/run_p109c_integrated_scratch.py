@@ -76,15 +76,22 @@ def tallies(bundle, slots, policy, totals, cutoff):
 
 def train(bundle, slots, profile, policy, record, cutoff, resume):
     signature = profile["signature"]
+    tag = profile["tag"]
+    visit_trial = signature.get("raw_visit_schedule")
     expected = tallies(bundle, slots, policy, profile["totals"], cutoff)
-    commands, display = base.native_commands(bundle, TAG, resume is not None)
+    if visit_trial is not None:
+        boundary = visit_trial["boundary"]
+        if (not 0 < boundary < bundle.steps or visit_trial["early_repeat"] not in (1, 2)
+                or sum(row["raw"] for row, _ in expected[:boundary]) != visit_trial["prefix_raw_targets"]):
+            raise ValueError("the raw visit transition differs from the sealed exposure")
+    commands, display = base.native_commands(bundle, tag, resume is not None)
     (record / "ckpt").mkdir()
     (record / "native_logs").mkdir()
-    checkpoint = record / "ckpt" / journal.checkpoint_name(display, TAG)
+    checkpoint = record / "ckpt" / journal.checkpoint_name(display, tag)
     optimizer_rows, prefix_bytes = [], b""
     if resume:
         prefix, optimizer_rows, prefix_bytes = journal.inspect_resume(
-            bundle, resume, TAG, signature, profile, destination=checkpoint)
+            bundle, resume, tag, signature, profile, destination=checkpoint)
         native.publish(record / "resume_prefix.json", prefix)
         for i, row in enumerate(optimizer_rows):
             scalar = expected[i][1]
@@ -93,12 +100,17 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
                 raise ValueError("the committed prior updates used a different absolute loss schedule")
     digest = sha256(prefix_bytes)
     pending, counts, stats, model = {}, None, None, None
+    single_route, raw_route, raw_forward_visits = None, None, 0
     old_bind, old_save, old_ce = state_tools.make_binding, supervised.saves.save_packed_checkpoint, trainer._ce_recomputed
     old_split, real_aux = base.muon.split_params, supervised.terms.auxiliary
 
     def build(cfg):
-        nonlocal model
+        nonlocal model, single_route
         model = supervised.SupervisedG4(cfg)
+        if visit_trial is not None and visit_trial["early_repeat"] == 1:
+            single_route = tuple(supervised.routed.cla.schedule(cfg, model.owner, "uniform", 1))
+            if len(single_route) != cfg.n_layers:
+                raise ValueError("the raw R1 route must visit all physical layers once")
         return model
 
     def bind(plan, recipe, cache, device):
@@ -109,6 +121,8 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
         bundle.unchanged()
         visit = dict(schema="P109_VISIT_POLICY_NTP_V1", policy="uniform_r2", seed=1337,
                      steps=bundle.steps, eval_route="uniform_r2", sources=supervised.routed.source_pins())
+        if visit_trial is not None:
+            visit["raw_visit_schedule"] = visit_trial
         fields = {"p109c_bilingual_mixed": signature, supervised.routed.RECIPE_KEY: visit}
         return old_bind(plan, dict(recipe, **fields), cache, device)
 
@@ -120,7 +134,7 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
 
     class Cursor(context_micro_tokens.MicroTokensCursor):
         def prepare(self):
-            nonlocal counts, stats
+            nonlocal counts, stats, raw_route, raw_forward_visits
             if pending or model.training_route is not None or time.time() >= cutoff:
                 raise RuntimeError("incomplete prior batch or ended authorization")
             update = super().prepare()
@@ -143,6 +157,8 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
                          relation_questions=counts["relations"], decimal_targets=counts["decimals"], decimal_correct=0)
             model.training_route = supervised.routed.route_for(model.cfg, model.owner, "uniform_r2", 1337, index, bundle.steps)
             model.training_forwards = 0
+            raw_route = single_route if visit_trial is not None and index < visit_trial["boundary"] else None
+            raw_forward_visits = 0
             self._pending = replace(update, batches=tuple(batches))
             return self._pending
 
@@ -164,6 +180,16 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
                        contrast_questions=counts["relations"], empty_batches=counts["empty"],
                        reserved_batches=counts["reserved"], actual_forwards=forwards, route_visits=visits,
                        forward_layer_slots=forwards * base.MICRO_TOKENS * visits)
+            if visit_trial is not None:
+                raw_batches = counts["raw"] // base.MICRO_TOKENS
+                raw_visits = len(raw_route) if raw_route is not None else visits
+                if visits != 28 or raw_forward_visits != raw_batches * raw_visits:
+                    raise ValueError("the actual raw and course visits diverged")
+                raw_slots = raw_forward_visits * base.MICRO_TOKENS
+                course_slots = (forwards - raw_batches) * visits * base.MICRO_TOKENS
+                row.update(raw_route_visits=raw_visits, course_route_visits=visits,
+                           raw_forward_layer_slots=raw_slots, course_forward_layer_slots=course_slots,
+                           forward_layer_slots=raw_slots + course_slots)
             raw = (json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n").encode()
             updates.write(raw)
             digest.update(raw)
@@ -172,6 +198,7 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
             return result
 
     def ce(owner, x, y, rows):
+        nonlocal raw_forward_visits
         if not owner.training:
             return old_ce(owner, x, y, rows)
         lane, batch = pending.pop(id(y))
@@ -180,7 +207,19 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
                 return torch.zeros((), dtype=torch.float32, device=x.device, requires_grad=True)
             return owner(x, return_hidden=True).sum() * 0.
         if lane == -1:
-            values, _ = base.target_nll(owner, owner(x, return_hidden=True), y, rows=rows)
+            if raw_route is None:
+                hidden = owner(x, return_hidden=True)
+                if visit_trial is not None:
+                    raw_forward_visits += len(owner.training_route)
+            else:
+                full_route = owner.training_route
+                owner.training_route = raw_route
+                try:
+                    hidden = owner(x, return_hidden=True)
+                    raw_forward_visits += len(owner.training_route)
+                finally:
+                    owner.training_route = full_route
+            values, _ = base.target_nll(owner, hidden, y, rows=rows)
             plain = values.sum()
             loss = plain * stats["raw_context_weight"]
         else:
@@ -228,19 +267,19 @@ def train(bundle, slots, profile, policy, record, cutoff, resume):
     native.publish(record / "training.json", dict(updates=optimizer_rows, input_manifest_sha256=bundle.digest,
                    evaluation_sha256=digest, peak_allocated_mib=torch.cuda.max_memory_allocated()/2**20,
                    peak_reserved_mib=torch.cuda.max_memory_reserved()/2**20, exposure_sums=sums))
-    native.publish(record / "report.json", dict(status="FULL_SCRATCH_MIXED_COMPLETE", tag=TAG,
+    native.publish(record / "report.json", dict(status="FULL_SCRATCH_MIXED_COMPLETE", tag=tag,
                    steps=bundle.steps, input_manifest_sha256=bundle.digest, evaluation_sha256=digest,
                    raw_tokens=totals["raw"], course_tokens=totals["course_inputs"], final_preset=signature))
 
 
-def worker(resume, path, digest, _resuming, record, cutoff):
+def worker(resume, path, digest, _resuming, record, cutoff, *, make_profile=prepare):
     with (journal.locked_record(record), (record / "stdout.txt").open("x", encoding="utf-8", buffering=1) as log,
           redirect_stdout(log), redirect_stderr(log)):
         sealed = json.loads(native.manifest_bytes(path, digest))
         signature = sealed["signature"]
         pair = signature["coefficients"]
-        profile, bundle, slots, policy = prepare(signature["raw"]["name"], pair["course"], pair["location"],
-                                                  signature["transfer_weight"], signature["skip_empty"])
+        profile, bundle, slots, policy = make_profile(signature["raw"]["name"], pair["course"], pair["location"],
+                                                       signature["transfer_weight"], signature["skip_empty"])
         if (profile != sealed or time.time() >= cutoff
                 or torch.cuda.device_count() != 1 or not torch.cuda.is_bf16_supported()):
             raise ValueError("the sealed curriculum and approved CUDA device are required")

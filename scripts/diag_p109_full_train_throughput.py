@@ -145,7 +145,7 @@ def pin_inputs():
     return pins
 
 
-def worker(args):
+def worker(args, *, checkpoint_roundtrip=None, arm_override=None):
     import numpy as np
     import torch
     from torch.nn import functional as F
@@ -159,11 +159,12 @@ def worker(args):
     profile = json.loads((directory.parent / "profile.json").read_bytes())
     if pin_inputs() != profile["pins"] or os.environ.get("CUDA_VISIBLE_DEVICES") != "0":
         raise ValueError("source pin or authorized CUDA device changed")
-    arm = ARMS[args.worker]
+    arm = ARMS[args.worker] if arm_override is None else arm_override
     if arm.mixed:
         from scripts.p109_training_mixed import mixed_worker
 
-        return mixed_worker(args, arm, CACHE, publish, TOKENS_PER_STEP, WIDTH, SEED, CARD_MIB)
+        return mixed_worker(args, arm, CACHE, publish, TOKENS_PER_STEP, WIDTH, SEED, CARD_MIB,
+                            checkpoint_roundtrip=checkpoint_roundtrip)
     torch.set_num_threads(1)
     torch.manual_seed(SEED)
     torch.cuda.set_per_process_memory_fraction(args.fraction, 0)
@@ -329,13 +330,18 @@ def card_sample():
     return total, used, utilization
 
 
-def run_arm(args, directory, label, deadline):
+def run_arm(args, directory, label, deadline, *, worker_module="scripts.diag_p109_full_train_throughput",
+            allocator_limit_mib=None):
     total, background = idle_gpu()
     allocator_mib = CARD_MIB - background - args.allocator_margin
+    if allocator_limit_mib is not None:
+        if allocator_mib < allocator_limit_mib:
+            raise RuntimeError("the desktop baseline leaves no room for the common sealed allocator limit")
+        allocator_mib = allocator_limit_mib
     if allocator_mib <= 0:
         raise RuntimeError("insufficient card headroom")
     directory.mkdir()
-    command = [sys.executable, "-B", "-u", "-m", "scripts.diag_p109_full_train_throughput",
+    command = [sys.executable, "-B", "-u", "-m", worker_module,
                "--worker", label, "--record", str(directory), "--steps", str(args.steps),
                "--fraction", str(allocator_mib/total)]
     start = time.time()

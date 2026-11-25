@@ -8,7 +8,7 @@ from time import perf_counter
 from unittest.mock import patch
 
 
-def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_limit_mib):
+def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_limit_mib, *, checkpoint_roundtrip=None):
     import numpy as np
     import torch
     from torch.nn import functional as F
@@ -30,6 +30,8 @@ def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_l
     torch.cuda.set_per_process_memory_fraction(args.fraction, 0)
     torch.cuda.reset_peak_memory_stats()
     started = perf_counter()
+    raw_ce_rows = getattr(args, "raw_ce_rows", None)
+    course_ce_rows = getattr(args, "course_ce_rows", 1024)
     profile, bundle, slots, policy = prepare("original", "capped", "proportional", 0., True)
     supervised = curriculum.supervised
     prep = curriculum.prep
@@ -136,8 +138,10 @@ def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_l
             actual_course_source_addresses=course_at, packed_policy="intact v3 groups, raw before course in each update",
             paired_validation="fixed v1.1 VAL windows and fully ternary uniform R2", startup_seconds=prepared,
             val_targets=len(val_starts)*width, val_starts_sha256=sha256(val_starts.astype("<i8").tobytes()).hexdigest(),
-            planned_quant_start=anneal_start, schedule="wsd", warmup=warmup, quant_end=.6, decay_fraction=.2))
+            planned_quant_start=anneal_start, schedule="wsd", warmup=warmup, quant_end=.6, decay_fraction=.2,
+            raw_ce_rows=raw_ce_rows, course_ce_rows=course_ce_rows))
     run = []
+    roundtrip = None
     kernel_context = fused_operations() if arm.fused else nullcontext()
     with (sdpa_kernel(SDPBackend.FLASH_ATTENTION), kernel_context,
           patch.object(transformer, "checkpoint", some_checkpoints),
@@ -191,7 +195,7 @@ def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_l
                 for a, b in zip(x.split(arm.batch), y.split(arm.batch), strict=True):
                     with torch.autocast("cuda", dtype=torch.bfloat16):
                         hidden = model(a, return_hidden=True)
-                        values = (row_target_nll(model, hidden, b) if arm.row_head
+                        values = (row_target_nll(model, hidden, b, retain=raw_ce_rows is None, rows=raw_ce_rows) if arm.row_head
                                   else target_nll(model, hidden, b, rows=1024))[0]
                         loss = values.sum()
                     (stats["raw_context_weight"] * loss).backward()
@@ -205,7 +209,7 @@ def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_l
                 with patch.object(supervised, "VALUE_WEIGHT", stats["value_weight"]):
                     for a, b, labels in course:
                         with torch.autocast("cuda", dtype=torch.bfloat16):
-                            _, loss = supervised.course_objective(model, bundle, a, b, 1024, labels, stats)
+                            _, loss = supervised.course_objective(model, bundle, a, b, course_ce_rows, labels, stats)
                         loss.backward()
                 if (visit != 28*len(course) or stats.get("bilingual_pairs", 0) != count["pairs"]
                         or model.training_forwards != prep.ACCUM):
@@ -239,6 +243,15 @@ def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_l
                 raise ValueError("nonfinite mixed update")
             print(json.dumps(row), file=stream)
             run.append(row)
+            if checkpoint_roundtrip is not None and step + 1 == round(args.steps * .70):
+                position = dict(next_update=step + 1, raw_cursor=raw_cursor,
+                                next_raw_window=int(raw_order[raw_cursor]), next_course_source=course_at.get(step + 1))
+                roundtrip = checkpoint_roundtrip(args.record, model, adamw, muon, position)
+                if roundtrip["position"] != position:
+                    raise ValueError("the restored checkpoint did not reproduce the bound next input")
+                raw_cursor = roundtrip["position"]["raw_cursor"]
+                groups = adamw.param_groups + muon.param_groups
+                publish(args.record / "checkpoint_roundtrip.json", roundtrip)
             if step+1 in check_steps:
                 before_validation = perf_counter()
                 value, window_values = validate(anneal)
@@ -247,6 +260,8 @@ def mixed_worker(args, arm, cache, publish, tokens_per_step, width, seed, card_l
                 print(json.dumps(validation), file=val_stream)
                 validations.append(validation)
     bundle.unchanged()
+    if checkpoint_roundtrip is not None and roundtrip is None:
+        raise ValueError("the required save-and-restore boundary was not reached")
     steady = run[1:]
     phases = []
     for repeat in sorted({row["raw_repeat"] for row in steady}):

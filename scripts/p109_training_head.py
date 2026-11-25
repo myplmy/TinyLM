@@ -69,7 +69,7 @@ class RowLoss(torch.autograd.Function):
         return dp, de, None, None
 
 
-def target_nll(model, hidden, targets, *, retain=True):
+def target_nll(model, hidden, targets, *, retain=True, rows=None):
     """Project GPT's tied table, then compute per-position BF16 NLL and mask."""
     if (hidden.device.type != "cuda" or not torch.is_autocast_enabled("cuda")
             or torch.get_autocast_dtype("cuda") != torch.bfloat16
@@ -79,6 +79,13 @@ def target_nll(model, hidden, targets, *, retain=True):
     hidden = F.linear(hidden, model._emb_up_w().t()) if model.emb_up is not None else hidden
     table = model._emb_w().to(torch.bfloat16)
     flat = hidden.flatten(0, 1).to(torch.bfloat16)
+    labels = targets.reshape(-1)
     with torch.autocast("cuda", enabled=False):
-        values = RowLoss.apply(flat, table, targets.reshape(-1), retain)
+        if rows is None:
+            values = RowLoss.apply(flat, table, labels, retain)
+        else:
+            if retain or type(rows) is not int or rows < 1:
+                raise ValueError("bounded position tiles require recomputed row logits")
+            values = torch.cat([RowLoss.apply(part, table, target, False)
+                                for part, target in zip(flat.split(rows), labels.split(rows), strict=True)])
     return values.reshape_as(targets), targets.ne(IGNORE_INDEX)
