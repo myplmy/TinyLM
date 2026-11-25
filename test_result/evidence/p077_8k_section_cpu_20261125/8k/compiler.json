@@ -1,0 +1,116 @@
+{
+  "commands": [
+    [
+      "/usr/bin/gcc",
+      "-std=c11",
+      "-O3",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-Dp014e_cpu_lookup=p014e_scalar_lookup",
+      "-c",
+      "scripts/p014e_direct_cpu.c",
+      "-o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/scalar.o"
+    ],
+    [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O3",
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-ffp-contract=off",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-I",
+      "/home/uranus/tinyLM/scripts",
+      "-c",
+      "scripts/p109_g4_avx2_lookup.cpp",
+      "-o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/avx2.o"
+    ],
+    [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O3",
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-ffp-contract=off",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-I",
+      "/home/uranus/tinyLM/scripts",
+      "-DP109_PREFILL_TOKENS=64",
+      "-Dmain=run_compact_g4",
+      "-x",
+      "c++",
+      "-",
+      "-c",
+      "-o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/64_core.o"
+    ],
+    [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O3",
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-ffp-contract=off",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-I",
+      "/home/uranus/tinyLM/scripts",
+      "-x",
+      "c++",
+      "-",
+      "-x",
+      "none",
+      "/tmp/p109_bounded_prefill_7xzdmozx/64_core.o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/avx2.o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/scalar.o",
+      "-static",
+      "-o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/64_num"
+    ],
+    [
+      "/usr/bin/g++",
+      "-std=c++17",
+      "-O3",
+      "-mavx2",
+      "-mfma",
+      "-mf16c",
+      "-ffp-contract=off",
+      "-Werror",
+      "-Wall",
+      "-Wextra",
+      "-I",
+      "/home/uranus/tinyLM/scripts",
+      "scripts/p109_g4_text_exec.cpp",
+      "/tmp/p109_bounded_prefill_7xzdmozx/64_core.o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/avx2.o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/scalar.o",
+      "-static",
+      "-o",
+      "/tmp/p109_bounded_prefill_7xzdmozx/64_text"
+    ]
+  ],
+  "binaries": {
+    "64": [
+      {
+        "path": "/tmp/p109_bounded_prefill_7xzdmozx/64_num",
+        "sha256": "9209CC65B0EB4ADEF945867E3495958C6463A81AE817CEC683612ABFA2060087"
+      },
+      {
+        "path": "/tmp/p109_bounded_prefill_7xzdmozx/64_text",
+        "sha256": "257A7C8604ABED8AF9F31011C392B89A4174E0E156B23CB8A7901B5D1D453699"
+      }
+    ]
+  },
+  "source_sha256": "D48361B7EAE409732395A9D399EA29DB8D8FA94A76D2544E9CE6E9DEF8B88772"
+}

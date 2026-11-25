@@ -15,6 +15,20 @@ from scripts import eval_p109c_completed as v1
 from scripts import eval_p109c_mixed_v2 as v2
 
 
+def matching_readback_arm(readback, name, profile, profile_sha256, new_step, new_sha):
+    try:
+        arm = readback["arms"][name]
+    except KeyError as error:
+        raise ValueError(f"the sealed raw VAL report has no arm {name!r}") from error
+    if (readback["status"] != "SAME_DOCUMENT_VAL_COMPLETE" or readback["precision"] != "CPU_FP32_MATH"
+            or readback["window_sha256"] != profile["frame_sha256"] or arm["steps"] != new_step
+            or readback["profile_sha256"] != profile_sha256.upper()
+            or readback["scoring_source_sha256"] != profile["source_sha256"]
+            or arm["model_sha256"] == new_sha):
+        raise ValueError("the prior reference arm does not match the candidate's fixed VAL")
+    return arm
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ("v2-record", "profile", "record"):
@@ -25,6 +39,7 @@ def main():
     parser.add_argument("--v1-manifest-sha256")
     parser.add_argument("--uniform-readback", type=Path)
     parser.add_argument("--uniform-readback-sha256")
+    parser.add_argument("--uniform-readback-arm", help="Named arm in a sealed prior raw VAL report. Defaults to v2.")
     parser.add_argument("--wait-pid", type=int)
     parser.add_argument("--stop-by", required=True, type=datetime.fromisoformat)
     args = parser.parse_args()
@@ -32,6 +47,8 @@ def main():
         parser.error("CPU-only device mask and a timezone-aware cutoff are required")
     if bool(args.uniform_readback) != bool(args.uniform_readback_sha256):
         parser.error("provide an exact prior readback path and digest together")
+    if args.uniform_readback_arm and not args.uniform_readback:
+        parser.error("--uniform-readback-arm requires a sealed prior readback")
     if not args.uniform_readback and not (args.v1_record and args.v1_manifest_sha256):
         parser.error("provide the original v1 receipt or reuse a sealed uniform readback")
     torch.set_num_threads(3)
@@ -60,19 +77,15 @@ def main():
     with patch.object(native, "STEPS", new_step):
         new_model = v2.completed_v2(newer, args.v2_manifest_sha256)
     summary = {}
+    prior_arm = None
     if args.uniform_readback is None:
         old_step = native.STEPS
         old_model = v1.completed_checkpoint(args.v1_record.absolute(), args.v1_manifest_sha256)
         arms = (("v1", old_step, old_model), ("v2", new_step, new_model))
     else:
         readback = json.loads(native.manifest_bytes(args.uniform_readback.absolute(), args.uniform_readback_sha256))
-        uniform = readback["arms"]["v2"]
-        if (readback["status"] != "SAME_DOCUMENT_VAL_COMPLETE" or readback["precision"] != "CPU_FP32_MATH"
-                or readback["window_sha256"] != profile["frame_sha256"] or uniform["steps"] != new_step
-                or readback["profile_sha256"] != args.profile_sha256.upper()
-                or readback["scoring_source_sha256"] != profile["source_sha256"]
-                or uniform["model_sha256"] == new_model[1]):
-            raise ValueError("the prior uniform readback does not match the new candidate's fixed VAL")
+        prior_arm = args.uniform_readback_arm or "v2"
+        uniform = matching_readback_arm(readback, prior_arm, profile, args.profile_sha256, new_step, new_model[1])
         measured = uniform["seconds"]
         if time.time() + measured + max(30, measured * .05) > cutoff:
             raise TimeoutError("the remaining window cannot fit one measured raw likelihood arm")
@@ -102,7 +115,7 @@ def main():
                    precision="CPU_FP32_MATH", window_sha256=profile["frame_sha256"],
                    profile_sha256=args.profile_sha256.upper(),
                    scoring_source_sha256=profile["source_sha256"], arms=summary,
-                   prior_readback_sha256=args.uniform_readback_sha256))
+                   prior_readback_sha256=args.uniform_readback_sha256, prior_readback_arm=prior_arm))
 
 
 if __name__ == "__main__":
