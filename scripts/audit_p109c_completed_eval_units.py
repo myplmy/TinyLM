@@ -138,8 +138,10 @@ def official_pair(name, left, right, left_summary, right_summary):
 def compare(reference, reference_profile, candidate, candidate_profile):
     base, left, base_terminal = binding(reference, reference_profile)
     current, right, terminal = binding(candidate, candidate_profile)
-    metadata = ("schema", "training_manifest_sha256", "groups", "inputs", "sources", "policy")
+    metadata = ("schema", "training_manifest_sha256", "inputs", "sources", "policy")
     if (base_terminal["returncode"] != 0 or base_terminal["stop_reason"] is not None
+            or sorted(base["groups"]) != sorted(current["groups"])
+            or len(set(base["groups"])) != len(base["groups"])
             or any(base[key] != current[key] for key in metadata) or left["model_sha256"] == right["model_sha256"]):
         raise ValueError("compare a returned reference and a distinct candidate with identical evaluation conditions")
     sizes = dict(GENERATED, **CORE_COUNTS, **{name: item["rows"]
@@ -166,6 +168,7 @@ def compare(reference, reference_profile, candidate, candidate_profile):
         aggregates["kobest5"] = {side: fsum(row[f"{side}_f1"] for row in kobest.values()) / len(kobest)
                                  for side in ("reference", "candidate")}
     return dict(status="COMPLETED_UNITS_VERIFIED", candidate_terminal=terminal, reference=left, candidate=right,
+                same_group_order=base["groups"] == current["groups"],
                 completed=completed, missing=missing, aggregates=aggregates, evidence=evidence)
 
 
