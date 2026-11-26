@@ -1,0 +1,809 @@
+{
+  "status": "NATIVE_BACKWARD_ATTRIBUTION_COMPLETE",
+  "profile_sha256": "092CA3D1C943DE538761C319F756E4F2B27925BC3A037DB1032CB453DEF0691E",
+  "mode": "native",
+  "addresses": {
+    "31": {
+      "times": [
+        {
+          "baseline": 4.201049301002058,
+          "deferred": 4.209980065992568,
+          "reduction": -0.0021258415102101136
+        },
+        {
+          "deferred": 4.192983467000886,
+          "baseline": 4.346342485994683,
+          "reduction": 0.03528461447480702
+        },
+        {
+          "baseline": 4.166961991999415,
+          "deferred": 4.132958935006172,
+          "reduction": 0.008160155302239014
+        },
+        {
+          "deferred": 4.152342446002876,
+          "baseline": 4.224631832999876,
+          "reduction": 0.01711140517200227
+        }
+      ],
+      "median_reduction": 0.012635780237120642,
+      "operators": {
+        "status": "CAPTURED",
+        "phases": {
+          "raw_forward_cuda_ms": {
+            "total_self_device_us": 1152649.6869999445,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 5408,
+                "self_device_us": 508891.127999989
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 13401,
+                "self_device_us": 179384.82699999394
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 19909,
+                "self_device_us": 175205.1709999642
+              },
+              {
+                "operator": "aten::_flash_attention_forward",
+                "calls": 896,
+                "self_device_us": 95750.78699999227
+              },
+              {
+                "operator": "aten::add",
+                "calls": 9957,
+                "self_device_us": 58298.571000008
+              },
+              {
+                "operator": "aten::silu",
+                "calls": 896,
+                "self_device_us": 35797.00599999678
+              },
+              {
+                "operator": "aten::mean",
+                "calls": 3237,
+                "self_device_us": 34103.88299999299
+              },
+              {
+                "operator": "aten::pow",
+                "calls": 3168,
+                "self_device_us": 31173.679999992368
+              },
+              {
+                "operator": "aten::cat",
+                "calls": 1344,
+                "self_device_us": 20465.70200000485
+              },
+              {
+                "operator": "aten::sub",
+                "calls": 1482,
+                "self_device_us": 8332.649000001244
+              },
+              {
+                "operator": "aten::rsqrt",
+                "calls": 3168,
+                "self_device_us": 2966.9460000066174
+              },
+              {
+                "operator": "aten::sum",
+                "calls": 138,
+                "self_device_us": 518.0249999999869
+              }
+            ]
+          },
+          "unattributed": {
+            "total_self_device_us": 2450216.4420001092,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 10880,
+                "self_device_us": 1040256.8200000024
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 35886,
+                "self_device_us": 515395.7680000398
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 28480,
+                "self_device_us": 270576.78300003044
+              },
+              {
+                "operator": "aten::_flash_attention_backward",
+                "calls": 896,
+                "self_device_us": 252150.28299999726
+              },
+              {
+                "operator": "aten::add_",
+                "calls": 18632,
+                "self_device_us": 183118.85200001762
+              },
+              {
+                "operator": "aten::sum",
+                "calls": 10368,
+                "self_device_us": 90164.12400000668
+              },
+              {
+                "operator": "aten::silu_backward",
+                "calls": 896,
+                "self_device_us": 39741.53700000234
+              },
+              {
+                "operator": "aten::div",
+                "calls": 3269,
+                "self_device_us": 26384.994999993825
+              },
+              {
+                "operator": "aten::cat",
+                "calls": 1344,
+                "self_device_us": 11260.849000010232
+              },
+              {
+                "operator": "aten::neg",
+                "calls": 1344,
+                "self_device_us": 6827.561000004585
+              },
+              {
+                "operator": "aten::add",
+                "calls": 2533,
+                "self_device_us": 5426.776000002005
+              },
+              {
+                "operator": "aten::pow",
+                "calls": 3237,
+                "self_device_us": 4002.2379999942978
+              }
+            ]
+          },
+          "raw_head_forward_cuda_ms": {
+            "total_self_device_us": 57159.73499999466,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 160,
+                "self_device_us": 27702.20200000261
+              },
+              {
+                "operator": "aten::_log_softmax",
+                "calls": 128,
+                "self_device_us": 24857.675999998493
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 384,
+                "self_device_us": 3005.7380000009143
+              },
+              {
+                "operator": "aten::gather",
+                "calls": 128,
+                "self_device_us": 695.2520000004151
+              },
+              {
+                "operator": "Activity Buffer Request",
+                "calls": 1,
+                "self_device_us": 194.6579999998212
+              },
+              {
+                "operator": "aten::neg",
+                "calls": 128,
+                "self_device_us": 109.3479999981937
+              },
+              {
+                "operator": "cudaEventRecordWithFlags",
+                "calls": 8,
+                "self_device_us": 86.63099999935366
+              },
+              {
+                "operator": "aten::ne",
+                "calls": 64,
+                "self_device_us": 79.03799999962212
+              },
+              {
+                "operator": "aten::masked_fill_",
+                "calls": 64,
+                "self_device_us": 69.34800000005635
+              },
+              {
+                "operator": "aten::sum",
+                "calls": 32,
+                "self_device_us": 68.22900000087975
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 64,
+                "self_device_us": 62.15399999773945
+              },
+              {
+                "operator": "aten::bitwise_not",
+                "calls": 64,
+                "self_device_us": 61.036999997886596
+              }
+            ]
+          },
+          "raw_backward_cuda_ms": {
+            "total_self_device_us": 291.07399999912013,
+            "top": [
+              {
+                "operator": "cudaStreamIsCapturing",
+                "calls": 3,
+                "self_device_us": 144.22399999952177
+              },
+              {
+                "operator": "cudaEventRecordWithFlags",
+                "calls": 4,
+                "self_device_us": 122.97999999986496
+              },
+              {
+                "operator": "aten::fill_",
+                "calls": 32,
+                "self_device_us": 23.86999999973341
+              }
+            ]
+          },
+          "raw_head_backward_cuda_ms": {
+            "total_self_device_us": 210913.5079999992,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 192,
+                "self_device_us": 75075.42300000018
+              },
+              {
+                "operator": "aten::_log_softmax_backward_data",
+                "calls": 128,
+                "self_device_us": 43629.415999997436
+              },
+              {
+                "operator": "aten::masked_fill_",
+                "calls": 160,
+                "self_device_us": 29615.139999994324
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 224,
+                "self_device_us": 25714.72599999774
+              },
+              {
+                "operator": "aten::_log_softmax",
+                "calls": 128,
+                "self_device_us": 24158.174999999843
+              },
+              {
+                "operator": "aten::fill_",
+                "calls": 128,
+                "self_device_us": 11635.645000003075
+              },
+              {
+                "operator": "aten::scatter_",
+                "calls": 128,
+                "self_device_us": 578.5210000045336
+              },
+              {
+                "operator": "aten::neg",
+                "calls": 128,
+                "self_device_us": 323.92300000137766
+              },
+              {
+                "operator": "aten::bitwise_not",
+                "calls": 160,
+                "self_device_us": 182.53900000065914
+              }
+            ]
+          },
+          "clip_and_optimizer_cuda_ms": {
+            "total_self_device_us": 30279.222000039183,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 1050,
+                "self_device_us": 20461.126000002027
+              },
+              {
+                "operator": "aten::add",
+                "calls": 841,
+                "self_device_us": 3549.391000011936
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 1052,
+                "self_device_us": 1599.8670000154525
+              },
+              {
+                "operator": "aten::add_",
+                "calls": 140,
+                "self_device_us": 1134.2530000051484
+              },
+              {
+                "operator": "aten::_foreach_mul_",
+                "calls": 4,
+                "self_device_us": 952.5320000005886
+              },
+              {
+                "operator": "aten::mul_",
+                "calls": 70,
+                "self_device_us": 582.0420000003651
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 140,
+                "self_device_us": 446.5119999945164
+              },
+              {
+                "operator": "aten::_foreach_norm",
+                "calls": 1,
+                "self_device_us": 388.0779999997467
+              },
+              {
+                "operator": "aten::linalg_vector_norm",
+                "calls": 71,
+                "self_device_us": 300.54100000299513
+              },
+              {
+                "operator": "aten::div",
+                "calls": 70,
+                "self_device_us": 241.1370000075549
+              },
+              {
+                "operator": "aten::_foreach_addcdiv_",
+                "calls": 2,
+                "self_device_us": 193.57100000139326
+              },
+              {
+                "operator": "aten::_foreach_lerp_",
+                "calls": 2,
+                "self_device_us": 163.8989999992773
+              }
+            ]
+          }
+        }
+      }
+    },
+    "1914": {
+      "times": [
+        {
+          "baseline": 3.9366703699924983,
+          "deferred": 3.840040491995751,
+          "reduction": 0.024546093250101486
+        },
+        {
+          "deferred": 3.872907128010411,
+          "baseline": 4.023674275988014,
+          "reduction": 0.03747001810691619
+        },
+        {
+          "baseline": 4.025583937996998,
+          "deferred": 3.9977697520080255,
+          "reduction": 0.006909354373768828
+        },
+        {
+          "deferred": 4.155659448995721,
+          "baseline": 3.9907572100055404,
+          "reduction": -0.0413210401717099
+        }
+      ],
+      "median_reduction": 0.015727723811935157,
+      "operators": {
+        "status": "CAPTURED",
+        "phases": {
+          "raw_forward_cuda_ms": {
+            "total_self_device_us": 871743.3000000318,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 4224,
+                "self_device_us": 384346.4020000079
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 10545,
+                "self_device_us": 135734.49099998816
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 15567,
+                "self_device_us": 132550.16000003685
+              },
+              {
+                "operator": "aten::_flash_attention_forward",
+                "calls": 700,
+                "self_device_us": 72386.71399999912
+              },
+              {
+                "operator": "aten::add",
+                "calls": 7794,
+                "self_device_us": 44099.22400000199
+              },
+              {
+                "operator": "aten::silu",
+                "calls": 700,
+                "self_device_us": 27034.158999998603
+              },
+              {
+                "operator": "aten::mean",
+                "calls": 2544,
+                "self_device_us": 25834.359000003744
+              },
+              {
+                "operator": "aten::pow",
+                "calls": 2475,
+                "self_device_us": 23548.259999998154
+              },
+              {
+                "operator": "aten::cat",
+                "calls": 1050,
+                "self_device_us": 15463.953000001522
+              },
+              {
+                "operator": "aten::sub",
+                "calls": 1188,
+                "self_device_us": 6364.548000005528
+              },
+              {
+                "operator": "aten::rsqrt",
+                "calls": 2475,
+                "self_device_us": 2243.212999991272
+              },
+              {
+                "operator": "aten::sum",
+                "calls": 138,
+                "self_device_us": 499.4829999999772
+              }
+            ]
+          },
+          "unattributed": {
+            "total_self_device_us": 2208489.5489999945,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 10228,
+                "self_device_us": 944185.664000017
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 33698,
+                "self_device_us": 467730.94199998
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 26548,
+                "self_device_us": 241691.9009999732
+              },
+              {
+                "operator": "aten::_flash_attention_backward",
+                "calls": 840,
+                "self_device_us": 213851.71000000054
+              },
+              {
+                "operator": "aten::add_",
+                "calls": 17490,
+                "self_device_us": 166418.332000002
+              },
+              {
+                "operator": "aten::sum",
+                "calls": 9729,
+                "self_device_us": 81738.45900000233
+              },
+              {
+                "operator": "aten::silu_backward",
+                "calls": 840,
+                "self_device_us": 36000.46600000157
+              },
+              {
+                "operator": "aten::div",
+                "calls": 3085,
+                "self_device_us": 23949.707000003567
+              },
+              {
+                "operator": "aten::cat",
+                "calls": 1260,
+                "self_device_us": 11586.1399999961
+              },
+              {
+                "operator": "aten::neg",
+                "calls": 1276,
+                "self_device_us": 6167.124000008698
+              },
+              {
+                "operator": "aten::add",
+                "calls": 2380,
+                "self_device_us": 5057.0730000081
+              },
+              {
+                "operator": "aten::pow",
+                "calls": 3039,
+                "self_device_us": 3658.619000010138
+              }
+            ]
+          },
+          "raw_head_forward_cuda_ms": {
+            "total_self_device_us": 42925.54699999567,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 125,
+                "self_device_us": 20938.991000001042
+              },
+              {
+                "operator": "aten::_log_softmax",
+                "calls": 100,
+                "self_device_us": 18771.91200000039
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 300,
+                "self_device_us": 2272.6719999980996
+              },
+              {
+                "operator": "aten::gather",
+                "calls": 100,
+                "self_device_us": 519.9679999964865
+              },
+              {
+                "operator": "aten::neg",
+                "calls": 100,
+                "self_device_us": 81.96500000034575
+              },
+              {
+                "operator": "aten::ne",
+                "calls": 50,
+                "self_device_us": 62.62399999922491
+              },
+              {
+                "operator": "aten::masked_fill_",
+                "calls": 50,
+                "self_device_us": 52.08100000153354
+              },
+              {
+                "operator": "aten::sum",
+                "calls": 25,
+                "self_device_us": 51.494999999093125
+              },
+              {
+                "operator": "aten::bitwise_not",
+                "calls": 50,
+                "self_device_us": 45.687000000005355
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 50,
+                "self_device_us": 43.08699999921373
+              },
+              {
+                "operator": "aten::div",
+                "calls": 50,
+                "self_device_us": 41.09999999961292
+              },
+              {
+                "operator": "aten::add",
+                "calls": 25,
+                "self_device_us": 22.46499999939988
+              }
+            ]
+          },
+          "raw_backward_cuda_ms": {
+            "total_self_device_us": 17.962000000537955,
+            "top": [
+              {
+                "operator": "aten::fill_",
+                "calls": 25,
+                "self_device_us": 17.962000000537955
+              }
+            ]
+          },
+          "raw_head_backward_cuda_ms": {
+            "total_self_device_us": 159323.96900000062,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 150,
+                "self_device_us": 56734.38000000098
+              },
+              {
+                "operator": "aten::_log_softmax_backward_data",
+                "calls": 100,
+                "self_device_us": 32949.69600000071
+              },
+              {
+                "operator": "aten::masked_fill_",
+                "calls": 125,
+                "self_device_us": 22375.573999997025
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 175,
+                "self_device_us": 19421.90300000168
+              },
+              {
+                "operator": "aten::_log_softmax",
+                "calls": 100,
+                "self_device_us": 18240.461999999156
+              },
+              {
+                "operator": "aten::fill_",
+                "calls": 100,
+                "self_device_us": 8788.17999999928
+              },
+              {
+                "operator": "aten::scatter_",
+                "calls": 100,
+                "self_device_us": 428.8640000005689
+              },
+              {
+                "operator": "aten::neg",
+                "calls": 100,
+                "self_device_us": 248.03299999953015
+              },
+              {
+                "operator": "aten::bitwise_not",
+                "calls": 125,
+                "self_device_us": 136.87700000168115
+              }
+            ]
+          },
+          "course_forward_cuda_ms": {
+            "total_self_device_us": 168267.9239999783,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 861,
+                "self_device_us": 77360.59399999847
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 2081,
+                "self_device_us": 27125.687999997346
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 3098,
+                "self_device_us": 23954.139999991574
+              },
+              {
+                "operator": "aten::_flash_attention_forward",
+                "calls": 140,
+                "self_device_us": 9246.932999999437
+              },
+              {
+                "operator": "aten::add",
+                "calls": 1582,
+                "self_device_us": 8779.704000005382
+              },
+              {
+                "operator": "aten::silu",
+                "calls": 140,
+                "self_device_us": 5508.274000000325
+              },
+              {
+                "operator": "aten::mean",
+                "calls": 495,
+                "self_device_us": 5130.3169999953825
+              },
+              {
+                "operator": "aten::pow",
+                "calls": 495,
+                "self_device_us": 4744.849999998813
+              },
+              {
+                "operator": "aten::cat",
+                "calls": 216,
+                "self_device_us": 3100.1100000003353
+              },
+              {
+                "operator": "aten::sub",
+                "calls": 225,
+                "self_device_us": 1219.365999999165
+              },
+              {
+                "operator": "aten::rsqrt",
+                "calls": 495,
+                "self_device_us": 448.30299999861745
+              },
+              {
+                "operator": "aten::_log_softmax",
+                "calls": 12,
+                "self_device_us": 374.2679999995162
+              }
+            ]
+          },
+          "course_backward_cuda_ms": {
+            "total_self_device_us": 3.5340000002179295,
+            "top": [
+              {
+                "operator": "aten::fill_",
+                "calls": 5,
+                "self_device_us": 3.5340000002179295
+              }
+            ]
+          },
+          "empty_cuda_ms": {
+            "total_self_device_us": 4.702999999281019,
+            "top": [
+              {
+                "operator": "aten::fill_",
+                "calls": 4,
+                "self_device_us": 2.7749999994412065
+              },
+              {
+                "operator": "aten::div",
+                "calls": 2,
+                "self_device_us": 1.9279999998398125
+              }
+            ]
+          },
+          "clip_and_optimizer_cuda_ms": {
+            "total_self_device_us": 29361.738000010606,
+            "top": [
+              {
+                "operator": "aten::mm",
+                "calls": 1050,
+                "self_device_us": 19787.01000001328
+              },
+              {
+                "operator": "aten::add",
+                "calls": 841,
+                "self_device_us": 3434.52000000095
+              },
+              {
+                "operator": "aten::mul",
+                "calls": 1052,
+                "self_device_us": 1546.6250000004657
+              },
+              {
+                "operator": "aten::add_",
+                "calls": 140,
+                "self_device_us": 1096.151999996975
+              },
+              {
+                "operator": "aten::_foreach_mul_",
+                "calls": 4,
+                "self_device_us": 924.9520000005141
+              },
+              {
+                "operator": "aten::mul_",
+                "calls": 70,
+                "self_device_us": 561.8939999970607
+              },
+              {
+                "operator": "aten::copy_",
+                "calls": 140,
+                "self_device_us": 431.5540000014007
+              },
+              {
+                "operator": "aten::_foreach_norm",
+                "calls": 1,
+                "self_device_us": 376.05500000016764
+              },
+              {
+                "operator": "aten::linalg_vector_norm",
+                "calls": 71,
+                "self_device_us": 288.21999999927357
+              },
+              {
+                "operator": "aten::div",
+                "calls": 70,
+                "self_device_us": 233.4779999991879
+              },
+              {
+                "operator": "aten::_foreach_addcdiv_",
+                "calls": 2,
+                "self_device_us": 191.82500000018626
+              },
+              {
+                "operator": "aten::_foreach_lerp_",
+                "calls": 2,
+                "self_device_us": 160.4240000010468
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "wall_median_reduction": 0.012635780237120642,
+  "both_addresses_reduce": true
+}
